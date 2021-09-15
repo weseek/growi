@@ -47,28 +47,38 @@ module.exports = (crowi) => {
 
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    if (slackAppIntegration == null) return null;
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-
+  // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) return next(); // when /relation-test
-
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    const extractPermissions = await extractPermissionsCommands(tokenPtoG);
 
-    const command = parseSlashCommand(req.body).growiCommandType;
+    let commandPermission;
+    if (extractPermissions != null) { // with proxy
+      const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
+      commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    }
+    else { // without proxy
+      commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    }
+
+    const growiCommand = parseSlashCommand(req.body);
     const fromChannel = req.body.channel_name;
-    const isPermitted = checkPermission(commandPermission, command, fromChannel);
+    const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) return next();
 
-    return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    // IT IS NOT WORKING. FIX THIS GW-7441
+    return res.status(403).send('It is not allowed to run the command to this GROWI.');
   }
 
+  // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkInteractionsPermission(req, res, next) {
     const payload = JSON.parse(req.body.payload);
     if (payload == null) return next(); // when /relation-test
@@ -87,14 +97,22 @@ module.exports = (crowi) => {
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
-    const callbacIdkOrActionId = callbackId || actionId;
+    const extractPermissions = await extractPermissionsCommands(tokenPtoG);
+    let commandPermission;
+    if (extractPermissions != null) { // with proxy
+      const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
+      commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    }
+    else { // without proxy
+      commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    }
 
+    const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
 
-    res.status(403).send('It is not allowed to run  command to this GROWI.');
+    // IT IS NOT WORKING FIX. THIS GW-7441
+    return res.status(403).send('It is not allowed to run the command to this GROWI.');
   }
 
   const addSigningSecretToReq = (req, res, next) => {
@@ -132,7 +150,7 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleCommands(req, res, client);
   });
@@ -187,7 +205,7 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, checkInteractionsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleInteractions(req, res, client);
   });

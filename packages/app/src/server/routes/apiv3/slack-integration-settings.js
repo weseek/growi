@@ -628,8 +628,8 @@ module.exports = (crowi) => {
           'put',
           '/g2s/supported-commands',
           {
-            supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-            supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+            permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+            permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
           },
         );
       }
