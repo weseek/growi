@@ -9,7 +9,7 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 // import activityEvent from '../events/activity';
-import InAppNotification from './in-app-notification';
+import { InAppNotification } from './in-app-notification';
 import Watcher from './watcher';
 // import User from './user';
 import User = require('./user');

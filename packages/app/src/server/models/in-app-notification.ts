@@ -1,13 +1,11 @@
 import {
-  Types, Document, Model, Schema /* , Query */, model,
+  Types, Document, Model, Schema /* , Query */,
 } from 'mongoose';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
 import { Activity, ActivityDocument } from '~/server/models/activity';
-
 
 import User = require('./user');
 
@@ -45,107 +43,105 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
   STATUS_OPENED: string
 }
 
-export default (crowi: Crowi) => {
-  const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotificationModel>({
-    user: {
+const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotificationModel>({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+    require: true,
+  },
+  targetModel: {
+    type: String,
+    require: true,
+    enum: ActivityDefine.getSupportTargetModelNames(),
+  },
+  target: {
+    type: Schema.Types.ObjectId,
+    refPath: 'targetModel',
+    require: true,
+  },
+  action: {
+    type: String,
+    require: true,
+    enum: ActivityDefine.getSupportActionNames(),
+  },
+  activities: [
+    {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      index: true,
-      require: true,
+      ref: 'Activity',
     },
-    targetModel: {
-      type: String,
-      require: true,
-      enum: ActivityDefine.getSupportTargetModelNames(),
-    },
-    target: {
-      type: Schema.Types.ObjectId,
-      refPath: 'targetModel',
-      require: true,
-    },
-    action: {
-      type: String,
-      require: true,
-      enum: ActivityDefine.getSupportActionNames(),
-    },
-    activities: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Activity',
-      },
-    ],
-    status: {
-      type: String,
-      default: STATUS_UNREAD,
-      enum: STATUSES,
-      index: true,
-      require: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  });
-  inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-    return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-  });
-  const transform = (doc, ret) => {
-    // delete ret.activities
-  };
-  inAppNotificationSchema.set('toObject', { virtuals: true, transform });
-  inAppNotificationSchema.set('toJSON', { virtuals: true, transform });
-  inAppNotificationSchema.index({
-    user: 1, target: 1, action: 1, createdAt: 1,
-  });
-
-  inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(user, limitNum, offset) {
-    const limit = limitNum || 10;
-
-    return InAppNotification.find({ user })
-      .sort({ createdAt: -1 })
-      .skip(offset)
-      .limit(limit)
-      .populate(['user', 'target'])
-      .populate({ path: 'activities', populate: { path: 'user' } })
-      .exec();
-  };
-
-  inAppNotificationSchema.statics.removeEmpty = function() {
-    return InAppNotification.deleteMany({ activities: { $size: 0 } });
-  };
-
-  inAppNotificationSchema.statics.read = async function(user) {
-    const query = { user, status: STATUS_UNREAD };
-    const parameters = { status: STATUS_UNOPENED };
-
-    return InAppNotification.updateMany(query, parameters);
-  };
-
-  inAppNotificationSchema.statics.getUnreadCountByUser = async function(user) {
-    const query = { user, status: STATUS_UNREAD };
-
-    try {
-      const count = await InAppNotification.countDocuments(query);
-
-      return count;
-    }
-    catch (err) {
-      logger.error('Error on getUnreadCountByUser', err);
-      throw err;
-    }
-  };
-
-  inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
-    return STATUS_UNOPENED;
-  };
-  inAppNotificationSchema.statics.STATUS_UNREAD = function() {
-    return STATUS_UNREAD;
-  };
-  inAppNotificationSchema.statics.STATUS_OPENED = function() {
-    return STATUS_OPENED;
-  };
-
-  const InAppNotification = getOrCreateModel<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
-
-  return InAppNotification;
+  ],
+  status: {
+    type: String,
+    default: STATUS_UNREAD,
+    enum: STATUSES,
+    index: true,
+    require: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
+  return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+});
+const transform = (doc, ret) => {
+  // delete ret.activities
 };
+inAppNotificationSchema.set('toObject', { virtuals: true, transform });
+inAppNotificationSchema.set('toJSON', { virtuals: true, transform });
+inAppNotificationSchema.index({
+  user: 1, target: 1, action: 1, createdAt: 1,
+});
+
+inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(user, limitNum, offset) {
+  const limit = limitNum || 10;
+
+  return InAppNotification.find({ user })
+    .sort({ createdAt: -1 })
+    .skip(offset)
+    .limit(limit)
+    .populate(['user', 'target'])
+    .populate({ path: 'activities', populate: { path: 'user' } })
+    .exec();
+};
+
+inAppNotificationSchema.statics.removeEmpty = function() {
+  return InAppNotification.deleteMany({ activities: { $size: 0 } });
+};
+
+inAppNotificationSchema.statics.read = async function(user) {
+  const query = { user, status: STATUS_UNREAD };
+  const parameters = { status: STATUS_UNOPENED };
+
+  return InAppNotification.updateMany(query, parameters);
+};
+
+inAppNotificationSchema.statics.getUnreadCountByUser = async function(user) {
+  const query = { user, status: STATUS_UNREAD };
+
+  try {
+    const count = await InAppNotification.countDocuments(query);
+
+    return count;
+  }
+  catch (err) {
+    logger.error('Error on getUnreadCountByUser', err);
+    throw err;
+  }
+};
+
+inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
+  return STATUS_UNOPENED;
+};
+inAppNotificationSchema.statics.STATUS_UNREAD = function() {
+  return STATUS_UNREAD;
+};
+inAppNotificationSchema.statics.STATUS_OPENED = function() {
+  return STATUS_OPENED;
+};
+
+const InAppNotification = getOrCreateModel<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
+
+export { InAppNotification };
