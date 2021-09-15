@@ -176,7 +176,6 @@ activitySchema.statics.getActionUsersFromActivities = function(activities) {
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
   // const User = crowi.model('User');
-  // const Watcher = crowi.model('Watcher');
   const { user: actionUser, targetModel, target } = this;
 
   const model: any = await this.model(targetModel).findById(target);
