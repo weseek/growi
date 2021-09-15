@@ -146,18 +146,7 @@ export class SlackCtrl {
 
     // register
     if (growiCommand.growiCommandType === 'register') {
-      try {
-        return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
-      }
-      catch (err) {
-        // WIP
-        return respond(growiCommand.responseUrl, {
-          blocks: [
-            markdownSectionBlock('*Failed to register.*'),
-            markdownSectionBlock('Invite GROWI Bot to the channel first.'),
-          ],
-        });
-      }
+      return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     // unregister
@@ -289,6 +278,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     const payload = JSON.parse(body.payload);
+    console.log('ぺいろーど！！！\n', payload);
     const callBackId = payload?.view?.callback_id;
 
     // register
@@ -302,13 +292,6 @@ export class SlackCtrl {
           return;
         }
         logger.error(err);
-        // WIP
-        // return respond('responseUrl', {
-        //   blocks: [
-        //     markdownSectionBlock('*Failed to register.*'),
-        //     markdownSectionBlock('Please invite GROWI Bot to the channel first.'),
-        //   ],
-        // });
       }
 
       await this.registerService.notifyServerUriToSlack(authorizeResult.botToken, payload);
