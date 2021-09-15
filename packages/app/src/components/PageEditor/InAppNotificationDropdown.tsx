@@ -1,22 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
 
-interface Props {
+export interface Props {
   // crowi: Crowi
   me: string
 }
 
-interface State {
-  count: number
-  loaded: boolean
-  notifications: Notification[]
-  isOpen: boolean
-}
-
-const InAppNotificationDropdown = (props: Props) => {
+export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -119,5 +112,3 @@ const InAppNotificationDropdown = (props: Props) => {
   );
 
 };
-
-export default InAppNotificationDropdown;
