@@ -203,7 +203,6 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
    * saved hook
    */
 activitySchema.post('save', async(savedActivity: ActivityDocument) => {
-  // const Notification = crowi.model('Notification');
   try {
     const notificationUsers = await savedActivity.getNotificationTargetUsers();
 
