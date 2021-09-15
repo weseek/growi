@@ -22,7 +22,9 @@ export class TopCtrl {
       scopes: requiredScopes,
     });
 
-    return { url, isOfficialMode };
+    const growiBotVersion = process.env.GROWI_BOT_VERSION;
+
+    return { url, isOfficialMode, growiBotVersion };
   }
 
 }
