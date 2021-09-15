@@ -16,10 +16,10 @@ class InAppNotificationService {
     this.commentEvent = crowi.event('comment');
 
     // init
-    this.updateCommentEvent();
+    this.initCommentEvent();
   }
 
-  updateCommentEvent(): void {
+  initCommentEvent(): void {
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
     });
