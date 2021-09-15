@@ -69,12 +69,12 @@ module.exports = (crowi) => {
       commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
     }
 
-    const command = parseSlashCommand(req.body).growiCommandType;
+    const growiCommand = parseSlashCommand(req.body);
     const fromChannel = req.body.channel_name;
-    const isPermitted = checkPermission(commandPermission, command, fromChannel);
+    const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) return next();
 
-    return res.send(`It is not allowed to run '${command}' command to this GROWI.`).status(403);
+    return res.send(`It is not allowed to run '${growiCommand.growiCommandType}' command to this GROWI.`).status(403);
   }
 
   async function checkInteractionsPermission(req, res, next) {
