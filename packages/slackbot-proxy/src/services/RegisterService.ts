@@ -3,10 +3,9 @@ import {
   WebClient, LogLevel, Block, ConversationsSelect,
 } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock, respond,
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock, respond, GrowiCommandProcessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
