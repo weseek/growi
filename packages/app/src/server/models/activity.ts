@@ -216,7 +216,7 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 
 
 /**
- * TODO: implement removeActivity by GW-7481
+ * TODO: improve removeActivity that decleard in InAppNotificationService by GW-7481
  */
 
 // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
