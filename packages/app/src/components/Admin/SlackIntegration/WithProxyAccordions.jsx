@@ -323,6 +323,15 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+      />,
+    },
+    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -330,15 +339,6 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
-      />,
-    },
-    '④': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };
@@ -367,6 +367,15 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+      />,
+    },
+    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -374,15 +383,6 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
-      />,
-    },
-    '⑥': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };
@@ -424,8 +424,8 @@ WithProxyAccordions.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
-  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
-  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
+  permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
+  permissionsForSingleUseCommands: PropTypes.object.isRequired,
 };
 
 export default WithProxyAccordionsWrapper;
