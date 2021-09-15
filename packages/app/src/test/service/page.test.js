@@ -335,7 +335,6 @@ describe('PageService', () => {
     // mock new Date() and Date.now()
     advanceTo(new Date(2000, 1, 1, 0, 0, 0));
     const dateToUse = new Date();
-    const socketClientId = null;
 
     beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
@@ -352,8 +351,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename1, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename1, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
@@ -371,8 +370,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.updatedAt).toEqual(dateToUse);
@@ -390,8 +389,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
@@ -414,8 +413,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename4, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename4, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed4');
         expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
@@ -590,7 +589,6 @@ describe('PageService', () => {
     let pageEventSpy;
     let deleteDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
-    const socketClientId = null;
 
     beforeEach(async() => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
@@ -622,8 +620,8 @@ describe('PageService', () => {
       expect(redirectedFromPageRevision.path).toBe('/parentForDelete1');
       expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete1');
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2, socketClientId);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
     });
 
@@ -650,8 +648,8 @@ describe('PageService', () => {
       expect(redirectedFromPageRevision.path).toBe('/parentForDelete2');
       expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete2');
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2, socketClientId);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
     });
 
@@ -683,7 +681,6 @@ describe('PageService', () => {
     let pageEventSpy;
     let deleteCompletelyOperationSpy;
     let deleteCompletelyDescendantsWithStreamSpy;
-    const socketClientId = null;
 
     let deleteManyBookmarkSpy;
     let deleteManyCommentSpy;
@@ -728,7 +725,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
     });
 
 
@@ -738,7 +735,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
     });
   });
 

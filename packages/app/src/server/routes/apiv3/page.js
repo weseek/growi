@@ -132,6 +132,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting } = crowi.models;
   const { exportService } = crowi;
 
