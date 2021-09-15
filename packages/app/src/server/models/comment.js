@@ -65,14 +65,18 @@ module.exports = function(crowi) {
     }));
   };
 
-  commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, commentId) {
+  commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
     const Comment = this;
+    const commentEvent = crowi.event('comment');
 
-    return Comment.findOneAndUpdate(
+    const commentData = await Comment.findOneAndUpdate(
       { _id: commentId },
       { $set: { comment, isMarkdown } },
     );
 
+    await commentEvent.emit('update', commentData.creator);
+
+    return commentData;
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
@@ -100,15 +104,20 @@ module.exports = function(crowi) {
   /**
    * post save hook
    */
-  commentSchema.post('save', (savedComment) => {
+  commentSchema.post('save', async(savedComment) => {
     const Page = crowi.model('Page');
+    const commentEvent = crowi.event('comment');
 
-    Page.updateCommentCount(savedComment.page)
-      .then((page) => {
-        debug('CommentCount Updated', page);
-      })
-      .catch(() => {
-      });
+    try {
+      const page = await Page.updateCommentCount(savedComment.page);
+      debug('CommentCount Updated', page);
+    }
+    catch (err) {
+      throw err;
+    }
+
+
+    await commentEvent.emit('create', savedComment.creator);
   });
 
   return mongoose.model('Comment', commentSchema);

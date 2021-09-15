@@ -63,6 +63,7 @@ function Crowi() {
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
+  this.inAppNotificationService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -80,6 +81,7 @@ function Crowi() {
     bookmark: new (require('../events/bookmark'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
+    comment: new (require('../events/comment'))(this),
   };
 }
 
@@ -119,6 +121,7 @@ Crowi.prototype.init = async function() {
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
+    this.setupInAppNotificationService(),
     this.setupSyncPageStatusService(),
   ]);
 
@@ -157,6 +160,7 @@ Crowi.prototype.initForTest = async function() {
     // this.setupExport(),
     // this.setupImport(),
     this.setupPageService(),
+    this.setupInAppNotificationService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -632,6 +636,13 @@ Crowi.prototype.setupPageService = async function() {
   const PageEventService = require('../service/page');
   if (this.pageService == null) {
     this.pageService = new PageEventService(this);
+  }
+};
+
+Crowi.prototype.setupInAppNotificationService = async function() {
+  const InAppNotificationService = require('../service/in-app-notification');
+  if (this.inAppNotificationService == null) {
+    this.inAppNotificationService = new InAppNotificationService(this);
   }
 };
 
