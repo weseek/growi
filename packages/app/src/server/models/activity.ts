@@ -3,16 +3,13 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-
 import ActivityDefine from '../util/activityDefine';
 
-// import activityEvent from '../events/activity';
-import { InAppNotification } from './in-app-notification';
 import Watcher from './watcher';
-// import User from './user';
-import User = require('./user');
+// import { InAppNotification } from './in-app-notification';
+// import activityEvent from '../events/activity';
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -175,7 +172,7 @@ activitySchema.statics.getActionUsersFromActivities = function(activities) {
 };
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
-  // const User = crowi.model('User');
+  const User = getModelSafely('User') || require('~/server/models/user')();
   const { user: actionUser, targetModel, target } = this;
 
   const model: any = await this.model(targetModel).findById(target);
@@ -191,11 +188,11 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
     return array.filter(object => !ids.includes(object.toString()));
   };
   const notificationUsers = filter(unique([...targetUsers, ...watchUsers]), [...ignoreUsers, actionUser]);
-  // const activeNotificationUsers = await User.find({
-  //   _id: { $in: notificationUsers },
-  //   status: User.STATUS_ACTIVE,
-  // }).distinct('_id');
-  // return activeNotificationUsers;
+  const activeNotificationUsers = await User.find({
+    _id: { $in: notificationUsers },
+    status: User.STATUS_ACTIVE,
+  }).distinct('_id');
+  return activeNotificationUsers;
 };
 
 /**
