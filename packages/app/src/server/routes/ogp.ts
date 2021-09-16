@@ -12,8 +12,8 @@ module.exports = function(crowi) {
         return res.status(400).send();
       }
 
-      const ogpUri: string = process.env.OGP_URI || '';
-      if (ogpUri === '') {
+      const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
+      if (ogpUri == null) {
         return res.status(400).send('OGP URI for GROWI has not been setup');
       }
 
