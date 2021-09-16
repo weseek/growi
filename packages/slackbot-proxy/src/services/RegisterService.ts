@@ -1,7 +1,9 @@
 import { Inject, Service } from '@tsed/di';
-import { WebClient, LogLevel, Block } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, GrowiCommandProcessor,
+  WebClient, LogLevel, Block, ConversationsSelect,
+} from '@slack/web-api';
+import {
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock, respond, GrowiCommandProcessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
@@ -21,6 +23,13 @@ export class RegisterService implements GrowiCommandProcessor {
     const { botToken } = authorizeResult;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    const conversationsSelectElement: ConversationsSelect = {
+      action_id: 'conversation',
+      type: 'conversations_select',
+      response_url_enabled: true,
+      default_to_current_conversation: true,
+    };
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
@@ -41,24 +50,13 @@ export class RegisterService implements GrowiCommandProcessor {
         private_metadata: JSON.stringify({ channel: body.channel_name }),
 
         blocks: [
+          inputBlock(conversationsSelectElement, 'conversation', 'Channel to which you want to add'),
           inputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           inputSectionBlock('tokenPtoG', 'Access Token Proxy to GROWI', 'contents_input', false, 'jBMZvpk.....'),
           inputSectionBlock('tokenGtoP', 'Access Token GROWI to Proxy', 'contents_input', false, 'sdg15av.....'),
         ],
       },
     });
-  }
-
-  async replyToSlack(client: WebClient, channel: string, user: string, text: string, blocks: Array<Block>): Promise<void> {
-    await client.chat.postEphemeral({
-      channel,
-      user,
-      // Recommended including 'text' to provide a fallback when using blocks
-      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-      text,
-      blocks,
-    });
-    return;
   }
 
   async insertOrderRecord(
@@ -71,20 +69,17 @@ export class RegisterService implements GrowiCommandProcessor {
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
-    const { channel } = JSON.parse(payload.view.private_metadata);
-
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
-
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const url = new URL(growiUrl);
     }
     catch (error) {
-      const invalidErrorMsg = 'Please enter a valid URL';
-      const blocks = [
-        markdownSectionBlock(invalidErrorMsg),
-      ];
-      await this.replyToSlack(client, channel, payload.user.id, 'Invalid URL', blocks);
+      await respond(payload.response_urls[0].response_url, {
+        text: 'Invalid URL',
+        blocks: [
+          markdownSectionBlock('Please enter a valid URL'),
+        ],
+      });
       throw new InvalidUrlError(growiUrl);
     }
 
@@ -102,8 +97,6 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const serverUri = process.env.SERVER_URI;
 
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
-
     const blocks: Block[] = [];
 
     if (isOfficialMode) {
@@ -114,7 +107,10 @@ export class RegisterService implements GrowiCommandProcessor {
       blocks.push(markdownSectionBlock('*Test Connection* to complete the registration in your GROWI.'));
       blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage GROWI commands'));
       blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-      await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
+      await respond(payload.response_urls[0].response_url, {
+        text: 'Proxy URL',
+        blocks,
+      });
       return;
 
     }
@@ -130,7 +126,10 @@ export class RegisterService implements GrowiCommandProcessor {
     blocks.push(markdownSectionBlock('And *Test Connection* to complete the registration in your GROWI.'));
     blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage GROWI commands'));
     blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-    await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
+    await respond(payload.response_urls[0].response_url, {
+      text: 'Proxy URL',
+      blocks,
+    });
     return;
   }
 
