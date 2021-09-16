@@ -11,6 +11,10 @@ import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { InstallationRepository } from '~/repositories/installation';
+import loggerFactory from '~/utils/logger';
+import { DeleteResult } from 'typeorm';
+
+const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -68,14 +72,37 @@ export class UnregisterService implements GrowiCommandProcessor {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async unregister(installation: Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
 
-    const growiUris = payload.state.values.growiUris.selectedGrowiUris.selected_options
-      .map(selectedOption => selectedOption.value);
+    const selectedOptions = payload.state?.values?.growiUris?.selectedGrowiUris?.selected_options;
+    if (Array.isArray(selectedOptions)) {
+      logger.error('Unregisteration failed: Mulformed object was detected\n');
+      await respond(payload.response_url, {
+        text: 'Unregistration failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while unregistering GROWI.'),
+        ],
+      });
+      return;
+    }
+    const growiUris = selectedOptions.map(selectedOption => selectedOption.value);
 
-    const deleteResult = await this.relationRepository.createQueryBuilder('relation')
-      .where('relation.growiUri IN (:uris)', { uris: growiUris })
-      .andWhere('relation.installationId = :installationId', { installationId: installation?.id })
-      .delete()
-      .execute();
+    let deleteResult: DeleteResult;
+    try {
+      deleteResult = await this.relationRepository.createQueryBuilder('relation')
+        .where('relation.growiUri IN (:uris)', { uris: growiUris })
+        .andWhere('relation.installationId = :installationId', { installationId: installation?.id })
+        .delete()
+        .execute();
+    }
+    catch (err) {
+      logger.error('Unregisteration failed\n', err);
+      await respond(payload.response_url, {
+        text: 'Unregistration failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while unregistering GROWI.'),
+        ],
+      });
+      return;
+    }
 
     await respond(payload.response_url, {
       text: 'Unregistration completed',
