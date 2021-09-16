@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -92,7 +95,7 @@ const OfficialBotSettings = (props) => {
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
           const {
-            tokenGtoP, tokenPtoG, _id, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+            tokenGtoP, tokenPtoG, _id, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
           } = slackAppIntegration;
           const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
@@ -109,12 +112,12 @@ const OfficialBotSettings = (props) => {
                 />
               </div>
               <WithProxyAccordions
-                botType="officialBot"
+                botType={SlackbotType.OFFICIAL}
                 slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
-                supportedCommandsForBroadcastUse={supportedCommandsForBroadcastUse}
-                supportedCommandsForSingleUse={supportedCommandsForSingleUse}
+                permissionsForBroadcastUseCommands={permissionsForBroadcastUseCommands}
+                permissionsForSingleUseCommands={permissionsForSingleUseCommands}
                 onUpdateTokens={onUpdateTokens}
                 onSubmitForm={onSubmitForm}
               />

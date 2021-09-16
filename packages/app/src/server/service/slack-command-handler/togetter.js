@@ -46,9 +46,9 @@ module.exports = (crowi) => {
     const channel = payload.channel.id;
     try {
       // validate form
-      const { path, oldest, latest } = await this.togetterValidateForm(client, payload);
+      const { path, oldest, newest } = await this.togetterValidateForm(client, payload);
       // get messages
-      result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
+      result = await this.togetterGetMessages(client, payload, channel, path, newest, oldest);
       // clean messages
       const cleanedContents = await this.togetterCleanMessages(result.messages);
 
@@ -66,9 +66,9 @@ module.exports = (crowi) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = payload.state.values.page_path.page_path.value;
     let oldest = payload.state.values.oldest.oldest.value;
-    let latest = payload.state.values.latest.latest.value;
+    let newest = payload.state.values.newest.newest.value;
     oldest = oldest.trim();
-    latest = latest.trim();
+    newest = newest.trim();
     if (!path) {
       throw new SlackbotError({
         method: 'postMessage',
@@ -91,34 +91,34 @@ module.exports = (crowi) => {
         mainMessage: 'Datetime format for oldest must be yyyy/MM/dd-HH:mm',
       });
     }
-    if (!regexpDatetime.test(latest)) {
+    if (!regexpDatetime.test(newest)) {
       throw new SlackbotError({
         method: 'postMessage',
         to: 'dm',
-        popupMessage: 'Datetime format for latest must be yyyy/MM/dd-HH:mm',
-        mainMessage: 'Datetime format for latest must be yyyy/MM/dd-HH:mm',
+        popupMessage: 'Datetime format for newest must be yyyy/MM/dd-HH:mm',
+        mainMessage: 'Datetime format for newest must be yyyy/MM/dd-HH:mm',
       });
     }
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
     // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
-    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
+    newest = parse(newest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
 
-    if (oldest > latest) {
+    if (oldest > newest) {
       throw new SlackbotError({
         method: 'postMessage',
         to: 'dm',
-        popupMessage: 'Oldest datetime must be older than the latest date time.',
-        mainMessage: 'Oldest datetime must be older than the latest date time.',
+        popupMessage: 'Oldest datetime must be older than the newest date time.',
+        mainMessage: 'Oldest datetime must be older than the newest date time.',
       });
     }
 
-    return { path, oldest, latest };
+    return { path, oldest, newest };
   };
 
-  handler.togetterGetMessages = async function(client, payload, channel, path, latest, oldest) {
+  handler.togetterGetMessages = async function(client, payload, channel, path, newest, oldest) {
     const result = await client.conversations.history({
       channel,
-      latest,
+      newest,
       oldest,
       limit: 100,
       inclusive: true,
@@ -196,9 +196,9 @@ module.exports = (crowi) => {
 
   handler.togetterMessageBlocks = function(messages, body, args, limit) {
     return [
-      markdownSectionBlock('Select the oldest and latest datetime of the messages to use.'),
+      markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
       inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),
-      inputBlock(this.plainTextInputElementWithInitialTime('latest'), 'latest', 'Latest datetime'),
+      inputBlock(this.plainTextInputElementWithInitialTime('newest'), 'newest', 'Newest datetime'),
       inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
       actionsBlock(
         buttonElement({ text: 'Cancel', actionId: 'togetter:cancel' }),

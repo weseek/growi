@@ -9,6 +9,8 @@ import AppContainer from '~/client/services/AppContainer';
 
 import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
+import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
+import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
 
 const i18n = i18nFactory();
 
@@ -38,6 +40,7 @@ if (loginFormElem) {
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
+  const isPasswordResetEnabled = loginFormElem.dataset.isPasswordResetEnabled === 'true';
 
 
   let registrationWhiteList = loginFormElem.dataset.registrationWhiteList;
@@ -68,6 +71,7 @@ if (loginFormElem) {
           isRegistrationEnabled={isRegistrationEnabled}
           registrationMode={registrationMode}
           registrationWhiteList={registrationWhiteList}
+          isPasswordResetEnabled={isPasswordResetEnabled}
           isLocalStrategySetup={isLocalStrategySetup}
           isLdapStrategySetup={isLdapStrategySetup}
           objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
@@ -75,5 +79,35 @@ if (loginFormElem) {
       </Provider>
     </I18nextProvider>,
     loginFormElem,
+  );
+}
+
+// render PasswordResetRequestForm
+const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
+const appContainer = new AppContainer();
+appContainer.initApp();
+if (passwordResetRequestFormElem) {
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[appContainer]}>
+        <PasswordResetRequestForm />
+      </Provider>
+    </I18nextProvider>,
+    passwordResetRequestFormElem,
+  );
+}
+
+// render PasswordResetExecutionForm
+const passwordResetExecutionFormElem = document.getElementById('password-reset-execution-form');
+if (passwordResetExecutionFormElem) {
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[appContainer]}>
+        <PasswordResetExecutionForm />
+      </Provider>
+    </I18nextProvider>,
+    passwordResetExecutionFormElem,
   );
 }

@@ -1,6 +1,6 @@
 {
   "name": "@growi/core",
-  "version": "4.3.3-RC",
+  "version": "4.4.3-RC.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
@@ -8,7 +8,9 @@
   ],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "run-p build:*",
     "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
@@ -19,6 +21,5 @@
     "test": "jest --verbose"
   },
   "dependencies": {},
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

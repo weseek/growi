@@ -1,0 +1,62 @@
+name: Draft Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  # Refs: https://github.com/release-drafter/release-drafter
+  update-release-draft:
+    runs-on: ubuntu-latest
+
+    outputs:
+      CURRENT_VERSION: ${{ steps.package-json.outputs.packageVersion }}
+      RELEASE_DRAFT_BODY: ${{ steps.release-drafter.outputs.body }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Retrieve information from package.json
+        uses: myrotvorets/info-from-package-json-action@0.0.2
+        id: package-json
+
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v5
+        id: release-drafter
+        with:
+          name: v${{ steps.package-json.outputs.packageVersion }}
+          tag: v${{ steps.package-json.outputs.packageVersion }}
+          version: ${{ steps.package-json.outputs.packageVersion }}
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Refs: https://github.com/bakunyo/git-pr-release-action
+  update-release-pr:
+    needs: update-release-draft
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get release version
+        id: release-version
+        run: |
+          RELEASE_VERSION=`npx semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
+          echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
+
+      - name: Create/Update Pull Request
+        uses: bakunyo/git-pr-release-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
+          GIT_PR_RELEASE_BRANCH_STAGING: master
+          GIT_PR_RELEASE_TEMPLATE: .github/git-pr-release-template.erb
+          GIT_PR_RELEASE_TITLE: Release v${{ steps.release-version.outputs.RELEASE_VERSION }}
+          GIT_PR_RELEASE_BODY: ${{ needs.update-release-draft.outputs.RELEASE_DRAFT_BODY }}
+

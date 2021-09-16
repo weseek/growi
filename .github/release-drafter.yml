@@ -1,0 +1,50 @@
+categories:
+  - title: 'BREAKING CHANGES'
+    labels:
+      - 'breaking'
+  - title: '💎 Features'
+    labels:
+      - 'feature'
+  - title: '🚀 Improvement'
+    labels:
+      - 'improvement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'bug'
+  - title: '🧰 Maintenance'
+    labels:
+      - 'support'
+      - 'dependencies'
+category-template: '### $TITLE'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+autolabeler:
+  - label: 'feature'
+    branch:
+      - '/^feat\/.+/'
+  - label: 'improvement'
+    branch:
+      - '/^imprv\/.+/'
+  - label: 'bug'
+    branch:
+      - '/^fix\/.+/'
+    title:
+      - '/^fix/i'
+  - label: 'support'
+    branch:
+      - '/^support\/.+/'
+    title:
+      - '/^ci/i'
+      - '/^docs/i'
+      - '/^test/i'
+  - label: 'exclude from changelog'
+    branch:
+      - '/^chore\/.+/'
+    title:
+      - '/^chore/i'
+
+exclude-labels:
+  - 'exclude from changelog'
+template: |
+  ### Changes
+
+  $CHANGES

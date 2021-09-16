@@ -1,8 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import { SlackbotType } from '@growi/slack';
+
+import { Tooltip } from 'reactstrap';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -67,15 +71,16 @@ const BotInstallProcessForCustomBotWithProxy = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-      <p>2. {t('admin:slack_integration.accordion.select_install_to_workspace')}</p>
-      <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-      <p>3. {t('admin:slack_integration.accordion.click_allow')}</p>
+      <p>1. {t('admin:slack_integration.accordion.go-to-manage-distribution')}</p>
+      <p>2. {t('admin:slack_integration.accordion.activate-public-distribution')}</p>
+      <img src="/images/slack-integration/activate-public-dist.png" className="border border-light img-fluid mb-5" />
+      <p>3. {t('admin:slack_integration.accordion.click-add-to-slack-button')}</p>
+      <img src="/images/slack-integration/click-add-to-slack.png" className="border border-light img-fluid mb-5" />
+      <p>4. {t('admin:slack_integration.accordion.click_allow')}</p>
       <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-      <p>4. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-      <p>5. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
+      <p>5. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
+      <img src="/images/slack-integration/basicinfo-all-checked.png" className="border border-light img-fluid mb-5" />
+      <p>6. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
       <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
       <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
     </div>
@@ -111,6 +116,31 @@ const RegisteringProxyUrlProcess = () => {
   );
 };
 
+// To get different messages for each copy happend, wrapping CopyToClipBoard and Tooltip together
+const CustomCopyToClipBoard = (props) => {
+  const { t } = useTranslation();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const showToolTip = useCallback(() => {
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, 1000);
+  }, []);
+  return (
+    <>
+      <CopyToClipboard text={props.textToBeCopied || ''} onCopy={showToolTip}>
+        <div className="btn input-group-text" id="tooltipTarget">
+          <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+        </div>
+      </CopyToClipboard>
+      <Tooltip target="tooltipTarget" fade={false} isOpen={tooltipOpen}>
+        {t(props.message)}
+      </Tooltip>
+    </>
+  );
+};
+
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
   const { appContainer, slackAppIntegrationId } = props;
@@ -137,11 +167,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
-            <CopyToClipboard text={props.tokenPtoG || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
-              <div className="btn input-group-text">
-                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-              </div>
-            </CopyToClipboard>
+            <CustomCopyToClipBoard textToBeCopied={props.tokenPtoG || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
         </div>
       </div>
@@ -150,11 +176,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
-            <CopyToClipboard text={props.tokenGtoP || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
-              <div className="btn input-group-text">
-                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-              </div>
-            </CopyToClipboard>
+            <CustomCopyToClipBoard textToBeCopied={props.tokenGtoP || ''} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
           </div>
         </div>
       </div>
@@ -189,11 +211,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
             <div className="input-group align-items-center pl-2 mb-3">
               <div className="input-group-prepend w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
-                <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
-                  <div className="btn input-group-text">
-                    <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-                  </div>
-                </CopyToClipboard>
+                <CustomCopyToClipBoard textToBeCopied={props.growiUrl} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
               </div>
             </div>
 
@@ -319,6 +337,15 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+      />,
+    },
+    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -326,15 +353,6 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
-      />,
-    },
-    '④': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };
@@ -363,6 +381,15 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+      />,
+    },
+    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -372,18 +399,9 @@ const WithProxyAccordions = (props) => {
         isLatestConnectionSuccess={isLatestConnectionSuccess}
       />,
     },
-    '⑥': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
   };
 
-  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+  const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
     <div
@@ -416,12 +434,12 @@ const WithProxyAccordions = (props) => {
 const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  botType: PropTypes.string.isRequired,
+  botType: PropTypes.oneOf(Object.values(SlackbotType)).isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
-  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
-  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
+  permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
+  permissionsForSingleUseCommands: PropTypes.object.isRequired,
 };
 
 export default WithProxyAccordionsWrapper;

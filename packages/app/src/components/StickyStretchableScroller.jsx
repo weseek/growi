@@ -89,6 +89,8 @@ const StickyStretchableScroller = (props) => {
       railVisible: true,
       position: 'right',
       height: isScrollEnabled ? viewHeight : contentsHeight,
+      wheelStep: 10,
+      allowPageScroll: true,
     });
 
     // destroy
