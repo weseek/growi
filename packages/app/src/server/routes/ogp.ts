@@ -17,6 +17,8 @@ module.exports = function(crowi) {
         return res.status(400).send('OGP URI for GROWI has not been setup');
       }
 
+      const appTitle = crowi.configManager.getConfig('crowi', 'app:title') || 'GROWI';
+
       let result;
       try {
         result = await axios({
@@ -26,7 +28,7 @@ module.exports = function(crowi) {
           // TODO: Make it possible to display the GROWI APP name and page title
           params: {
             title: 'Page Title',
-            brand: 'GROWI App Name',
+            brand: appTitle,
           },
         });
       }
