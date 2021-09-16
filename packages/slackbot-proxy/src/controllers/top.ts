@@ -3,6 +3,7 @@ import {
 } from '@tsed/common';
 
 import { requiredScopes } from '@growi/slack';
+import pkg from '~/../package.json';
 import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
@@ -22,7 +23,7 @@ export class TopCtrl {
       scopes: requiredScopes,
     });
 
-    const growiBotVersion = process.env.GROWI_BOT_VERSION;
+    const growiBotVersion = pkg.version;
 
     return { url, isOfficialMode, growiBotVersion };
   }
