@@ -450,7 +450,8 @@ ul.pagination {
  */
 .wiki {
   .highlighted {
-    @include highlighted($bgcolor-highlighted);
+    background-color: $bgcolor-highlighted;
+    //@include highlighted($bgcolor-highlighted);
   }
 
   a {
