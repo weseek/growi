@@ -56,9 +56,9 @@ export class UnregisterService implements GrowiCommandProcessor {
       blocks: [
         inputBlock(staticSelectElement, 'growiUris', 'GROWI URL to unregister'),
         actionsBlock(
-          buttonElement({ text: 'Cancel', actionId: 'unregister:cancel', value: JSON.stringify({ dummy: 'DUMMY' }) }),
+          buttonElement({ text: 'Cancel', actionId: 'unregister:cancel', value: JSON.stringify({}) }),
           buttonElement({
-            text: 'Unregister', actionId: 'unregister', style: 'danger', value: JSON.stringify({ dummy: 'DUMMY' }),
+            text: 'Unregister', actionId: 'unregister', style: 'danger', value: JSON.stringify({}),
           }),
         ),
       ],
@@ -88,8 +88,6 @@ export class UnregisterService implements GrowiCommandProcessor {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async cancel(payload: any): Promise<void> {
-    console.log('あんのか', payload.response_url);
-
     await axios.post(payload.response_url, {
       delete_original: true,
     });
