@@ -3,7 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
-import * as ogp from './ogp';
+// import * as ogp from './ogp';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -43,6 +43,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
+  const ogp = require('./ogp')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
