@@ -1,12 +1,14 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 
 export interface Props {
   // crowi: Crowi
   me: string
+  adminSocketIoContainer: AdminSocketIoContainer
 }
 
 export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
@@ -16,23 +18,25 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // // componentDidMount() {
-  // //   this.initializeSocket();
-  // //   this.fetchNotificationList();
-  // //   this.fetchNotificationStatus();
-  // // }
+  useEffect(() => {
+    initializeSocket();
+    // fetchNotificationList();
+    // fetchNotificationStatus();
+  }, []);
 
-  // /**
-  //   * TODO: Listen to socket on the client side by GW-7402
-  //   */
-  // // initializeSocket() {
-  // //   this.props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
-  // //     if (this.props.me === data.user) {
-  // //       this.fetchNotificationList();
-  // //       this.fetchNotificationStatus();
-  // //     }
-  // //   });
-  // // }
+  /**
+    * TODO: Listen to socket on the client side by GW-7402
+    */
+  const initializeSocket = () => {
+    const socket = props.adminSocketIoContainer.getSocket();
+    socket.on('comment updated', (data: { user: string }) => {
+      // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
+      if (props.me === data.user) {
+        // fetchNotificationList();
+        // fetchNotificationStatus();
+      }
+    });
+  };
 
   /**
     * TODO: Fetch notification status by GW-7473
