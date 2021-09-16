@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { WebAPICallResult, WebClient } from '@slack/web-api';
 import { Installation } from '@slack/oauth';
 
 
@@ -38,7 +38,34 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
+const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:string, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
+  const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+    return '\n'
+      + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+  });
+
+  const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
+
+  await client.chat.postEphemeral({
+    text: 'Error occured.',
+    channel: channelId,
+    user: userId,
+    blocks: [
+      markdownSectionBlock('*None of GROWI permitted the command.*'),
+      markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
+      markdownSectionBlock(
+        `To use this command, modify settings from following pages: ${linkUrlList}`,
+      ),
+      markdownSectionBlock(
+        `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
+      ),
+    ],
+  });
+
+  return;
+};
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -77,8 +104,8 @@ export class SlackCtrl {
     if (relations.length === 0) {
       throw new Error('relations must be set');
     }
-    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
 
+    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
     const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
@@ -105,6 +132,7 @@ export class SlackCtrl {
       logger.error(err);
     }
   }
+
 
   @Post('/commands')
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
@@ -203,14 +231,14 @@ export class SlackCtrl {
 
     // check permission
     await Promise.all(relations.map(async(relation) => {
-      const isSupportedForSingleUse = await this.relationsService.isSupportedGrowiCommandForSingleUse(
-        relation, growiCommand.growiCommandType, baseDate,
+      const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
+        relation, growiCommand.growiCommandType, body.channel_name, baseDate,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
-        isSupportedForBroadcastUse = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
-          relation, growiCommand.growiCommandType, baseDate,
+        isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
+          relation, growiCommand.growiCommandType, body.channel_name, baseDate,
         );
       }
 
@@ -261,6 +289,7 @@ export class SlackCtrl {
     }
   }
 
+
   @Post('/interactions')
   @UseBefore(/* AddSigningSecretToReq, verifySlackRequest, */ parseSlackInteractionRequest, AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
@@ -282,12 +311,13 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     const payload = req.interactionPayload;
+    const callbackId:string = payload?.view?.callback_id;
     const callBackId = payload.view?.callback_id;
 
     const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
 
     // register
-    if (callBackId === 'register') {
+    if (callbackId === 'register') {
       try {
         await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
       }
@@ -304,10 +334,18 @@ export class SlackCtrl {
     }
 
     // unregister
-    if (callBackId === 'unregister') {
+    if (callbackId === 'unregister') {
       await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
+
+    let privateMeta:any;
+
+    if (payload.view != null) {
+      privateMeta = JSON.parse(payload?.view?.private_metadata);
+    }
+
+    const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
 
     // forward to GROWI server
     if (actionId === 'select_growi') {
@@ -319,35 +357,60 @@ export class SlackCtrl {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    // check permission
+    const relations = await this.relationRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getMany();
 
-    /*
-    * forward to GROWI server
-    */
-    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
-
-    if (relation == null) {
-      logger.error('*No relation found.*');
-      return;
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
     }
 
+    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    const {
+      allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
+    } = permission;
+
     try {
-      // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
-      await axios.post(url.toString(), {
-        ...body,
-      }, {
-        headers: {
-          'x-growi-ptog-tokens': relation.tokenPtoG,
-        },
-        timeout: REQUEST_TIMEOUT_FOR_PTOG,
-      });
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await postEphemeralErrors(rejectedResults, payload.channel.id, payload.user.id, authorizeResult.botToken!);
     }
     catch (err) {
       logger.error(err);
     }
+
+    if (relations.length === disallowedGrowiUrls.size) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(authorizeResult.botToken!);
+      return postNotAllowedMessage(client, payload.channel.id, payload.user.id, disallowedGrowiUrls, commandName);
+    }
+
+    /*
+     * forward to GROWI server
+     */
+    allowedRelations.map(async(relation) => {
+      try {
+        // generate API URL
+        const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+        await axios.post(url.toString(), {
+          ...body,
+        }, {
+          headers: {
+            'x-growi-ptog-tokens': relation.tokenPtoG,
+          },
+        });
+      }
+      catch (err) {
+        logger.error(err);
+      }
+
+    });
   }
 
   @Post('/events')

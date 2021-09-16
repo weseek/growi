@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
@@ -167,7 +168,6 @@ module.exports = (crowi) => {
       body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
-      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
     renamePage: [
@@ -177,7 +177,6 @@ module.exports = (crowi) => {
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
-      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
     ],
 
     duplicatePage: [
@@ -257,7 +256,7 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
 
     let { path } = req.body;
@@ -271,7 +270,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
     }
 
-    const options = { socketClientId };
+    const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -358,6 +357,26 @@ module.exports = (crowi) => {
         }
       });
 
+      const PageTagRelation = mongoose.model('PageTagRelation');
+      const ids = result.pages.map((page) => { return page._id });
+      const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+
+      // { pageId: [{ tag }, ...] }
+      const relationsMap = new Map();
+      // increment relationsMap
+      relations.forEach((relation) => {
+        const pageId = relation.relatedPage.toString();
+        if (!relationsMap.has(pageId)) {
+          relationsMap.set(pageId, []);
+        }
+        relationsMap.get(pageId).push(relation.relatedTag);
+      });
+      // add tags to each page
+      result.pages.forEach((page) => {
+        const pageId = page._id.toString();
+        page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
@@ -426,7 +445,6 @@ module.exports = (crowi) => {
     const options = {
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: !req.body.isRemainMetadata,
-      socketClientId: +req.body.socketClientId || undefined,
     };
 
     if (!isCreatablePage(newPagePath)) {
@@ -476,9 +494,6 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  validator.emptyTrash = [
-    query('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
-  ];
   /**
    * @swagger
    *
@@ -490,9 +505,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, validator.emptyTrash, apiV3FormValidator, async(req, res) => {
-    const socketClientId = parseInt(req.query.socketClientId);
-    const options = { socketClientId };
+  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+    const options = {};
 
     try {
       const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);
