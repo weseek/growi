@@ -8,7 +8,8 @@ module.exports = function(crowi) {
   return {
     async renderOgp(req: Request, res: Response) {
 
-      if (req.params.pageId === '') {
+      const pageId = req.params.pageId;
+      if (pageId === '') {
         return res.status(400).send();
       }
 
@@ -16,6 +17,9 @@ module.exports = function(crowi) {
       if (ogpUri == null) {
         return res.status(400).send('OGP URI for GROWI has not been setup');
       }
+
+      const Page = crowi.model('Page');
+      const page = await Page.findByIdAndViewer(pageId, req.user);
 
       const appTitle = crowi.configManager.getConfig('crowi', 'app:title') || 'GROWI';
 
@@ -27,7 +31,7 @@ module.exports = function(crowi) {
           responseType: 'stream',
           // TODO: Make it possible to display the GROWI APP name and page title
           params: {
-            title: 'Page Title',
+            title: page.path,
             brand: appTitle,
           },
         });
