@@ -29,14 +29,26 @@ module.exports = {
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
-      const copyForBroadcastUse = defaultDataForBroadcastUse;
-      const copyForSingleUse = defaultDataForSingleUse;
-      doc._doc.supportedCommandsForBroadcastUse.forEach((commandName) => {
-        copyForBroadcastUse[commandName] = true;
-      });
-      doc._doc.supportedCommandsForSingleUse.forEach((commandName) => {
-        copyForSingleUse[commandName] = true;
-      });
+      const copyForBroadcastUse = { ...defaultDataForBroadcastUse };
+      const copyForSingleUse = { ...defaultDataForSingleUse };
+      // when the document does NOT have supportedCommandsFor... columns
+      if (doc._doc.supportedCommandsForBroadcastUse == null) {
+        defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+          copyForBroadcastUse[commandName] = true;
+        });
+        defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+          copyForSingleUse[commandName] = true;
+        });
+      }
+      // // when the document has supportedCommandsFor... columns
+      else {
+        doc._doc.supportedCommandsForBroadcastUse.forEach((commandName) => {
+          copyForBroadcastUse[commandName] = true;
+        });
+        doc._doc.supportedCommandsForSingleUse.forEach((commandName) => {
+          copyForSingleUse[commandName] = true;
+        });
+      }
 
       return {
         updateOne: {
@@ -63,6 +75,7 @@ module.exports = {
 
   async down(db, next) {
     logger.info('Rollback migration');
+    // return next();
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
