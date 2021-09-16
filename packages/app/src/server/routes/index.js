@@ -3,7 +3,6 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
-// import * as ogp from './ogp';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
