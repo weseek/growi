@@ -45,7 +45,7 @@ html[dark] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
-  $bgcolor-highlighted: rgba($primary, 0.2);
+  // $bgcolor-highlighted: $grw-marker-yellow;
 
   // List Group colors
   $color-list: $color-global;
