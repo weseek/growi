@@ -28,14 +28,14 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     * TODO: Listen to socket on the client side by GW-7402
     */
   const initializeSocket = () => {
-    const socket = props.adminSocketIoContainer.getSocket();
-    socket.on('comment updated', (data: { user: string }) => {
-      // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
-      if (props.me === data.user) {
-        // fetchNotificationList();
-        // fetchNotificationStatus();
-      }
-    });
+    // const socket = props.adminSocketIoContainer.getSocket();
+    // socket.on('comment updated', (data: { user: string }) => {
+    // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
+    // if (props.me === data.user) {
+    // fetchNotificationList();
+    // fetchNotificationStatus();
+    //   }
+    // });
   };
 
   /**
