@@ -24,7 +24,7 @@ export interface EditorSettingsDocument extends IEditorSettings, Document {}
 export type EditorSettingsModel = Model<EditorSettingsDocument>
 
 const textlintSettingsSchema = new Schema<ITextlintSettings>({
-  isTextlintEnabled: { type: Boolean, default: true },
+  isTextlintEnabled: { type: Boolean, default: false },
   textlintRules: {
     type: [
       { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
