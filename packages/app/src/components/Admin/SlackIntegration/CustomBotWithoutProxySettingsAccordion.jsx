@@ -7,6 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 import { addLogs } from './slak-integration-util';
+import ManageCommandsProcessWithoutProxy from './ManageCommandsProcessWithoutProxy';
 
 
 export const botInstallationStep = {
@@ -20,7 +21,7 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
     appContainer, activeStep, onTestConnectionInvoked,
-    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, commandPermission,
   } = props;
   const successMessage = 'Successfully sent to Slack workspace.';
 
@@ -124,7 +125,17 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.manage_commands')}</>}
+      >
+        <ManageCommandsProcessWithoutProxy
+          commandPermission={props.commandPermission}
+          apiv3Put={props.appContainer.apiv3.put}
+        />
+      </Accordion>
+      <Accordion
+        defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
+        // eslint-disable-next-line max-len
+        title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -185,6 +196,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+  commandPermission: PropTypes.object,
 
 };
 
