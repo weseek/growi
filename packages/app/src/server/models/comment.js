@@ -116,7 +116,8 @@ module.exports = function(crowi) {
       throw err;
     }
 
-    await commentEvent.emit('update', savedComment.creator);
+
+    await commentEvent.emit('create', savedComment.creator);
   });
 
   return mongoose.model('Comment', commentSchema);

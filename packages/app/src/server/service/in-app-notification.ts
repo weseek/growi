@@ -1,5 +1,5 @@
 import Crowi from '../crowi';
-import InAppNotification from '~/server/models/in-app-notification';
+import { InAppNotification } from '~/server/models/in-app-notification';
 
 class InAppNotificationService {
 
@@ -16,10 +16,14 @@ class InAppNotificationService {
     this.commentEvent = crowi.event('comment');
 
     // init
-    this.updateCommentEvent();
+    this.initCommentEvent();
   }
 
-  updateCommentEvent(): void {
+  initCommentEvent(): void {
+    this.commentEvent.on('create', (user) => {
+      this.commentEvent.onCreate();
+    });
+
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
 
@@ -31,7 +35,6 @@ class InAppNotificationService {
   }
 
   removeActivity = async function(activity) {
-    const InAppNotification = require('../models/in-app-notification')(this.crowi);
     const { _id, target, action } = activity;
     const query = { target, action };
     const parameters = { $pull: { activities: _id } };
