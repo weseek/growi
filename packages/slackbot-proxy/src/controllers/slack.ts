@@ -152,13 +152,6 @@ export class SlackCtrl {
 
     // unregister
     if (growiCommand.growiCommandType === 'unregister') {
-      if (growiCommand.growiCommandArgs.length === 0) {
-        return 'GROWI Urls is required.';
-      }
-      if (!growiCommand.growiCommandArgs.every(v => v.match(/^(https?:\/\/)/))) {
-        return 'GROWI Urls must be urls.';
-      }
-
       return this.unregisterService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
@@ -284,7 +277,9 @@ export class SlackCtrl {
     const payload = req.interactionPayload;
     const callBackId = payload.view?.callback_id;
 
-    const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
+    // TODO: fix this GW-
+    // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
+    const actionId = payload.actions[0]?.action_id;
 
     // register
     if (callBackId === 'register') {
@@ -304,8 +299,14 @@ export class SlackCtrl {
     }
 
     // unregister
-    if (callBackId === 'unregister') {
+    if (actionId === 'unregister') {
       await this.unregisterService.unregister(installation, authorizeResult, payload);
+      return;
+    }
+
+    // cancel action
+    if (actionId === 'unregister:cancel') {
+      await this.unregisterService.cancel(payload);
       return;
     }
 

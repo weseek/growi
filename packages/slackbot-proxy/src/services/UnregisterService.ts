@@ -1,9 +1,16 @@
+import axios from 'axios';
 import { Inject, Service } from '@tsed/di';
-import { WebClient, LogLevel } from '@slack/web-api';
-import { GrowiCommand, GrowiCommandProcessor, markdownSectionBlock } from '@growi/slack';
+import { MultiStaticSelect } from '@slack/web-api';
+import {
+  actionsBlock,
+  buttonElement,
+  GrowiCommand, GrowiCommandProcessor, inputBlock, markdownSectionBlock, respond,
+} from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
+import { Relation } from '~/entities/relation';
+import { InstallationRepository } from '~/repositories/installation';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -13,62 +20,79 @@ export class UnregisterService implements GrowiCommandProcessor {
   @Inject()
   relationRepository: RelationRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
-    const { botToken } = authorizeResult;
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
-    const growiUrls = growiCommand.growiCommandArgs;
-    await client.views.open({
-      trigger_id: body.trigger_id,
-      view: {
-        type: 'modal',
-        callback_id: 'unregister',
-        title: {
-          type: 'plain_text',
-          text: 'Unregister Credentials',
-        },
-        submit: {
-          type: 'plain_text',
-          text: 'Submit',
-        },
-        close: {
-          type: 'plain_text',
-          text: 'Close',
-        },
-        private_metadata: JSON.stringify({ channel: body.channel_name, growiUrls }),
+  @Inject()
+  installationRepository: InstallationRepository;
 
-        blocks: [
-          ...growiUrls.map(growiCommandArg => markdownSectionBlock(`GROWI url: ${growiCommandArg}.`)),
-        ],
+  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]: string}): Promise<void> {
+    // get growi urls
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getMany();
+
+    const staticSelectElement: MultiStaticSelect = {
+      action_id: 'selectedGrowiUris',
+      type: 'multi_static_select',
+      placeholder: {
+        type: 'plain_text',
+        text: 'Select GROWI URLs to unregister',
       },
+      options: relations.map((relation) => {
+        return {
+          text: {
+            type: 'plain_text',
+            text: relation.growiUri,
+          },
+          value: relation.growiUri,
+        };
+      }),
+    };
+
+    await respond(growiCommand.responseUrl, {
+      text: 'Select GROWI URLs to unregister.',
+      blocks: [
+        inputBlock(staticSelectElement, 'growiUris', 'GROWI URL to unregister'),
+        actionsBlock(
+          buttonElement({ text: 'Cancel', actionId: 'unregister:cancel', value: JSON.stringify({ dummy: 'DUMMY' }) }),
+          buttonElement({
+            text: 'Unregister', actionId: 'unregister', style: 'danger', value: JSON.stringify({ dummy: 'DUMMY' }),
+          }),
+        ),
+      ],
     });
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async unregister(installation: Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
-    const { botToken } = authorizeResult;
-    const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    const growiUris = payload.state.values.growiUris.selectedGrowiUris.selected_options
+      .map(selectedOption => selectedOption.value);
 
     const deleteResult = await this.relationRepository.createQueryBuilder('relation')
-      .where('relation.growiUri IN (:uris)', { uris: growiUrls })
+      .where('relation.growiUri IN (:uris)', { uris: growiUris })
       .andWhere('relation.installationId = :installationId', { installationId: installation?.id })
       .delete()
       .execute();
 
-    await client.chat.postEphemeral({
-      channel,
-      user: payload.user.id,
-      // Recommended including 'text' to provide a fallback when using blocks
-      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-      text: 'Delete Relations',
+    await respond(payload.response_url, {
+      text: 'Unregistration completed',
       blocks: [
-        markdownSectionBlock(`Deleted ${deleteResult.affected} Relations.`),
+        markdownSectionBlock(`Unregistered *${deleteResult.affected}* GROWI from this workspace.`),
       ],
     });
-
     return;
-
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  async cancel(payload: any): Promise<void> {
+    console.log('あんのか', payload.response_url);
+
+    await axios.post(payload.response_url, {
+      delete_original: true,
+    });
+  }
 
 }
