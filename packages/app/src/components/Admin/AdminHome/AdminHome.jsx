@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Tooltip } from 'reactstrap';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -68,20 +69,26 @@ class AdminHome extends React.Component {
         <div className="row mb-5">
           <div className="col-md-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.bug_report')}</h2>
-            <p>
+            <div className="d-flex align-items-center">
               <CopyToClipboard
                 text={adminHomeContainer.generatePrefilledHostInformationMarkdown()}
                 onCopy={() => adminHomeContainer.onCopyPrefilledHostInformation()}
               >
-                <button type="button" className="btn btn-primary">
-                  {adminHomeContainer.state.copyState === adminHomeContainer.copyStateValues.DEFAULT
-                    ? t('admin:admin_top:copy_prefilled_host_information:default')
-                    : t('admin:admin_top:copy_prefilled_host_information:done')}
+                <button id="prefilledHostInformationButton" type="button" className="btn btn-primary">
+                  {t('admin:admin_top:copy_prefilled_host_information:default')}
                 </button>
-              </CopyToClipboard>{' '}
+              </CopyToClipboard>
+              <Tooltip
+                placement="bottom"
+                isOpen={adminHomeContainer.state.copyState === adminHomeContainer.copyStateValues.DONE}
+                target="prefilledHostInformationButton"
+                fade={false}
+              >
+                {t('admin:admin_top:copy_prefilled_host_information:done')}
+              </Tooltip>
               {/* eslint-disable-next-line react/no-danger */}
-              <span dangerouslySetInnerHTML={{ __html: t('admin:admin_top:submit_bug_report') }} />
-            </p>
+              <span className="ml-2" dangerouslySetInnerHTML={{ __html: t('admin:admin_top:submit_bug_report') }} />
+            </div>
           </div>
         </div>
       </Fragment>
