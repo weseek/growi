@@ -3,7 +3,7 @@ import {
 } from '@tsed/common';
 
 import { requiredScopes } from '@growi/slack';
-import pkg from '~/../package.json';
+import pkg from '../../package.json';
 import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
