@@ -10,7 +10,7 @@ module.exports = function(crowi) {
 
       const pageId = req.params.pageId;
       if (pageId === '') {
-        return res.status(400).send();
+        return res.status(400).send('page id is not included in the parameter');
       }
 
       const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
