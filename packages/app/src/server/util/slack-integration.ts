@@ -1,3 +1,5 @@
+import { getSupportedGrowiActionsRegExp } from '@growi/slack';
+
 type CommandPermission = { [key:string]: string[] | boolean }
 
 export const checkPermission = (
@@ -8,8 +10,7 @@ export const checkPermission = (
   Object.entries(commandPermission).forEach((entry) => {
     const [command, value] = entry;
     const permission = value;
-    const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
-
+    const commandRegExp = getSupportedGrowiActionsRegExp(command);
     if (!commandRegExp.test(commandOrActionIdOrCallbackId)) return;
 
     // permission check
