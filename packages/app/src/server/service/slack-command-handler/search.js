@@ -188,7 +188,7 @@ module.exports = (crowi) => {
   handler.showNextResults = async function(client, payload) {
     const parsedValue = JSON.parse(payload.actions[0].value);
 
-    const { body, args, offsetNum } = parsedValue;
+    const { body, args, offset: offsetNum } = parsedValue;
     const newOffsetNum = offsetNum + 10;
     let searchResult;
     try {
@@ -258,7 +258,7 @@ module.exports = (crowi) => {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSingleSearchResult',
+            action_id: 'search:shareSinglePageResult',
             text: {
               type: 'plain_text',
               text: 'Share',

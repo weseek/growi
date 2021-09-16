@@ -2,7 +2,6 @@ import { SlackbotType } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
-
 const mongoose = require('mongoose');
 const express = require('express');
 const { body, query, param } = require('express-validator');
@@ -54,8 +53,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-
-  const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+  const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
     botType: [
@@ -107,6 +105,7 @@ module.exports = (crowi) => {
       'slackbot:withoutProxy:signingSecret': null,
       'slackbot:withoutProxy:botToken': null,
       'slackbot:proxyUri': null,
+      'slackbot:withoutProxy:commandPermission': null,
     };
 
     return updateSlackBotSettings(params);
@@ -175,6 +174,7 @@ module.exports = (crowi) => {
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
+      settings.commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
     }
     else {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
@@ -244,6 +244,25 @@ module.exports = (crowi) => {
   const handleBotTypeChanging = async(req, res, initializedBotType) => {
     await resetAllBotSettings(initializedBotType);
     crowi.slackIntegrationService.publishUpdatedMessage();
+
+    if (initializedBotType === 'customBotWithoutProxy') {
+      // set without-proxy command permissions at bot type changing
+      const commandPermission = {};
+      [...defaultSupportedCommandsNameForBroadcastUse, ...defaultSupportedCommandsNameForSingleUse].forEach((commandName) => {
+        commandPermission[commandName] = true;
+      });
+
+      const requestParams = { 'slackbot:withoutProxy:commandPermission': JSON.stringify(commandPermission) };
+      try {
+        await updateSlackBotSettings(requestParams);
+        crowi.slackIntegrationService.publishUpdatedMessage();
+      }
+      catch (error) {
+        const msg = 'Error occured in updating command permission settigns';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      }
+    }
 
     // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
     const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
@@ -348,10 +367,47 @@ module.exports = (crowi) => {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken'),
       };
-      return res.apiv3({ customBotWithoutProxySettingParams });
+      return res.apiv3();
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/without-proxy/update-permissions/:
+   *      put:
+   *        tags: [UpdateWithoutProxyPermissions]
+   *        operationId: putWithoutProxyPermissions
+   *        summary: update customBotWithoutProxy permissions
+   *        description: Update customBotWithoutProxy permissions.
+   *        responses:
+   *           200:
+   *             description: Succeeded to put CustomBotWithoutProxy permissions.
+   */
+
+  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
+      const msg = 'Not CustomBotWithoutProxy';
+      return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
+    }
+
+    const { commandPermission } = req.body;
+    const requestParams = {
+      'slackbot:withoutProxy:commandPermission': JSON.stringify(commandPermission),
+    };
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackIntegrationService.publishUpdatedMessage();
+      return res.apiv3();
+    }
+    catch (error) {
+      const msg = 'Error occured in updating command permission settigns';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
     }
@@ -372,21 +428,30 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
+    if (SlackAppIntegrationRecordsNum >= 10) {
+      const msg = 'Not be able to create more than 10 slack workspace integration settings';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
+    }
+
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
-      const count = await SlackAppIntegration.countDocuments();
-      if (count >= 10) {
-        const msg = 'Not be able to create more than 10 slack workspace integration settings';
-        logger.error('Error', msg);
-        return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
-      }
+      const initialSupportedCommandsForBroadcastUse = new Map();
+      const initialSupportedCommandsForSingleUse = new Map();
+
+      defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+        initialSupportedCommandsForBroadcastUse.set(commandName, true);
+      });
+      defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+        initialSupportedCommandsForSingleUse.set(commandName, true);
+      });
 
       const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
-        isPrimary: count === 0 ? true : undefined,
-        supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
-        supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
+        permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
+        permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
       });
       return res.apiv3(slackAppTokens, 200);
     }
@@ -411,7 +476,6 @@ module.exports = (crowi) => {
    *            description: Succeeded to delete access tokens for slack
    */
   router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { id } = req.params;
 
     try {
@@ -541,13 +605,19 @@ module.exports = (crowi) => {
    */
   // eslint-disable-next-line max-len
   router.put('/slack-app-integrations/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
     const { id } = req.params;
+
+    const updatePermissionsForBroadcastUseCommands = new Map(Object.entries(permissionsForBroadcastUseCommands));
+    const updatePermissionsForSingleUseCommands = new Map(Object.entries(permissionsForSingleUseCommands));
 
     try {
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
-        { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
+        {
+          permissionsForBroadcastUseCommands: updatePermissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: updatePermissionsForSingleUseCommands,
+        },
         { new: true },
       );
 
@@ -558,13 +628,13 @@ module.exports = (crowi) => {
           'put',
           '/g2s/supported-commands',
           {
-            supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-            supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+            permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+            permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
           },
         );
       }
 
-      return res.apiv3({ slackAppIntegration });
+      return res.apiv3({});
     }
     catch (error) {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
@@ -613,8 +683,8 @@ module.exports = (crowi) => {
         'post',
         '/g2s/relation-test',
         {
-          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
         },
       );
 
