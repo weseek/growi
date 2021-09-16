@@ -18,6 +18,7 @@ const EXCLUDE_PATTERNS = [
   // https://regex101.com/r/Lnx7Pz/3
   /^dev\/[\d.x]*$/,
   /^release\/.+$/,
+  /^dependabot\/.+$/,
 ];
 const LEGAL_PATTERNS = [
   /^master$/,
