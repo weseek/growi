@@ -7,12 +7,12 @@ import {
   GrowiCommand, GrowiCommandProcessor, inputBlock, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
+import { DeleteResult } from 'typeorm';
 import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { InstallationRepository } from '~/repositories/installation';
 import loggerFactory from '~/utils/logger';
-import { DeleteResult } from 'typeorm';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 
