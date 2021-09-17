@@ -15,7 +15,17 @@ module.exports = function(crowi, app) {
     next();
   };
 
-  app.use(isOgpUriValid);
+  const isGrowiPublic = async(req: Request, res: Response, next: NextFunction) => {
+    const wikiMode = 'public';
+    // const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    const restrictGuestMode = await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
+    if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
+      return res.status(400).send('This GROWI is not public');
+    }
+    next();
+  };
+
+  app.use(isOgpUriValid, isGrowiPublic);
 
   return {
     async renderOgp(req: Request, res: Response) {
