@@ -296,7 +296,7 @@ export class GrowiToSlackCtrl {
       logger.error(err);
 
       if (err.code === ErrorCode.PlatformError) {
-        return res.simulateWebAPIPlatformError(err.message, err.code);
+        return res.simulateWebAPIPlatformError(err.message, err.data.error);
       }
 
       return res.simulateWebAPIRequestError(err.message, err.response?.status);
