@@ -1,21 +1,28 @@
 import {
-  Request, Response,
+  Request, Response, NextFunction,
 } from 'express';
 
 import axios from '~/utils/axios';
 
-module.exports = function(crowi) {
+module.exports = function(crowi, app) {
+
+  const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
+
+  const isOgpUriValid = (req: Request, res: Response, next: NextFunction) => {
+    if (ogpUri == null) {
+      return res.status(400).send('OGP URI for GROWI has not been setup');
+    }
+    next();
+  };
+
+  app.use(isOgpUriValid);
+
   return {
     async renderOgp(req: Request, res: Response) {
 
       const pageId = req.params.pageId;
       if (pageId === '') {
         return res.status(400).send('page id is not included in the parameter');
-      }
-
-      const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
-      if (ogpUri == null) {
-        return res.status(400).send('OGP URI for GROWI has not been setup');
       }
 
       const Page = crowi.model('Page');
