@@ -36,7 +36,6 @@ module.exports = function(crowi, app) {
           url: ogpUri,
           method: 'GET',
           responseType: 'stream',
-          // TODO: Make it possible to display the GROWI APP name and page title
           params: {
             title: page.path,
             brand: appTitle,
