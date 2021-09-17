@@ -5,6 +5,7 @@ import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset
 import loggerFactory from '~/utils/logger';
 
 import PasswordResetOrder from '../../models/password-reset-order';
+import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 const logger = loggerFactory('growi:routes:apiv3:userActivation'); // eslint-disable-line no-unused-vars
 
@@ -20,7 +21,6 @@ module.exports = (crowi) => {
   } = crowi;
   const path = require('path');
   const User = crowi.model('User');
-  const UserRegistrationOrder = crowi.model('UserRegistrationOrder');
   const csrf = require('../../middlewares/csrf')(crowi);
 
   const apiLimiter = rateLimit({

@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 import PasswordResetOrder from '~/server/models/password-reset-order';
+import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
@@ -11,7 +12,6 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
-  const UserRegistrationOrder = crowi.model('UserRegistrationOrder');
   const { configManager, appService, aclService, mailService } = crowi;
 
   const actions = {};
@@ -122,7 +122,7 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, undefined, async(err, userData) => {
+        UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, crowi.env.PASSWORD_SEED, async(err, userData) => {
           if (err) {
             req.flash('registerWarningMessage', req.t('message.failed_to_register'));
             return res.redirect('/register');
