@@ -299,6 +299,7 @@ export class SlackCtrl {
       return;
     }
 
+    // TAICHI TODO: clean here; installationId is included in authorizeResult, etc.;
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -310,6 +311,7 @@ export class SlackCtrl {
     // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
     const actionId = payload.actions[0]?.action_id;
 
+    // TAICHI TODO: clean here;
     // register
     if (callbackId === 'register') {
       try {
@@ -333,7 +335,7 @@ export class SlackCtrl {
       return;
     }
 
-    // cancel action
+    // unregister cancel action
     if (actionId === 'unregister:cancel') {
       await this.unregisterService.cancel(payload);
       return;
