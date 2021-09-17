@@ -15,19 +15,16 @@ module.exports = function(crowi) {
     };
   }
 
-  const wikiMode = 'public';
-  // const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-  const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-  if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
-    return {
-      renderOgp: (req: Request, res: Response) => {
-        return res.status(400).send('This GROWI is not public');
-      },
-    };
-  }
-
   return {
     async renderOgp(req: Request, res: Response) {
+
+      // TODO: delete a variable
+      const wikiMode = 'public';
+      // const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
+      if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
+        return res.status(400).send('This GROWI is not public');
+      }
 
       const pageId = req.params.pageId;
       if (pageId === '') {
