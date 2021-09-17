@@ -122,34 +122,62 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, crowi.env.PASSWORD_SEED, async(err, userData) => {
-          if (err) {
-            req.flash('registerWarningMessage', req.t('message.failed_to_register'));
-            return res.redirect('/register');
-          }
+        // Condition to save User directly without email authentication if passport-ldap enabled
+        if( configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') === true ){
+          User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+            if (err) {
+              if (err.name === 'UserUpperLimitException') {
+                req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
+              }
+              else {
+                req.flash('registerWarningMessage', req.t('message.failed_to_register'));
+              }
+              return res.redirect('/register');
+            }
 
-          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // send mail asynchronous
-            sendEmailToAllAdmins(userData);
-          }
+            if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+              // send mail asynchronous
+              sendEmailToAllAdmins(userData);
+            }
 
-          // Send email authentication
-          const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-          const i18n = req.language || grobalLang;
-          const appUrl = appService.getSiteUrl();
+            // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
+            // cz. loginSuccess method doesn't work on it's own when using passport
+            //      because `req.login()` prepared by passport is not called.
+            req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
-          const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
-          const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
-          const oneTimeUrl = url.href;
-          await sendActivationTokenEmail('passwordReset', i18n, email, oneTimeUrl);
+            return loginSuccess(req, res, userData);
+          });
+        }
+        else {
+          UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, crowi.env.PASSWORD_SEED, async(err, userData) => {
+            if (err) {
+              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
+              return res.redirect('/register');
+            }
 
-          // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-          // cz. loginSuccess method doesn't work on it's own when using passport
-          //      because `req.login()` prepared by passport is not called.
-          req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
+            if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+              // send mail asynchronous
+              sendEmailToAllAdmins(userData);
+            }
 
-          return res.redirect('/login');
-        });
+            // Send email authentication
+            const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+            const i18n = req.language || grobalLang;
+            const appUrl = appService.getSiteUrl();
+
+            const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
+            const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
+            const oneTimeUrl = url.href;
+            await sendActivationTokenEmail('passwordReset', i18n, email, oneTimeUrl);
+
+            // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
+            // cz. loginSuccess method doesn't work on it's own when using passport
+            //      because `req.login()` prepared by passport is not called.
+            req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
+
+            return res.redirect('/login');
+          });
+        }
       });
     }
     else { // method GET of form is not valid
