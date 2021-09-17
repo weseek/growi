@@ -1,17 +1,15 @@
 import React, { useState, useEffect, FC } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
 
-export interface Props {
-  // crowi: Crowi
-  me: string
-  adminSocketIoContainer: AdminSocketIoContainer
-}
 
-export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
+const InAppNotificationDropdown: FC = (props) => {
+  console.log('propsHoge', props);
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,15 +26,16 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     * TODO: Listen to socket on the client side by GW-7402
     */
   const initializeSocket = () => {
-    // const socket = props.adminSocketIoContainer.getSocket();
+    // const socket = props.socketIoContainer.getSocket();
     // socket.on('comment updated', (data: { user: string }) => {
     // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
     // if (props.me === data.user) {
     // fetchNotificationList();
     // fetchNotificationStatus();
-    //   }
+    // }
     // });
   };
+
 
   /**
     * TODO: Fetch notification status by GW-7473
@@ -116,3 +115,16 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   );
 
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
+
+InAppNotificationDropdown.propTypes = {
+  // crowi: Crowi
+  me: PropTypes.string,
+  socketIoContainer: PropTypes.instanceOf(SocketIoContainer),
+};
+
+export default InAppNotificationDropdownWrapper;
