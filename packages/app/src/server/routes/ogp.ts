@@ -32,12 +32,14 @@ module.exports = function(crowi) {
       try {
         const Page = crowi.model('Page');
         const page = await Page.findByIdAndViewer(pageId);
-        if (page.status !== 'published' || page.grant !== 1) {
-          return res.status(400).send('the page does not exist');
+
+        if (page.status !== 'published' || (page.grant !== 1 && page.grant !== 2)) {
+          return res.status(400).send('the page does not e xist');
         }
         pagePath = page.path;
       }
       catch (err) {
+        console.log(err);
         return res.status(400).send('the page does not exist');
       }
 
