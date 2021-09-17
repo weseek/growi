@@ -129,7 +129,6 @@ const InAppNotificationDropdown: FC = (props) => {
 const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
 
 InAppNotificationDropdown.propTypes = {
-  // crowi: Crowi
   me: PropTypes.string,
   socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
 };
