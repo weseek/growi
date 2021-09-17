@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';
 
-import { REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
+import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp } from '@growi/slack';
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
@@ -163,7 +163,7 @@ export class RelationsService {
     [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
       // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
+      const commandRegExp = getSupportedGrowiActionsRegExp(tempCommandName);
       // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
       if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
         return;

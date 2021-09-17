@@ -35,6 +35,10 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
+    if (pages.length === 0) {
+      return;
+    }
+
     const keywords = this.getKeywords(args);
 
 
@@ -361,7 +365,7 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: `No page found with "${keywords}"`,
         blocks: [
-          markdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
+          markdownSectionBlock(`*No page matches your keyword(s) "${keywords}".*`),
           markdownSectionBlock(':mag: *Help: Searching*'),
           divider(),
           markdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
