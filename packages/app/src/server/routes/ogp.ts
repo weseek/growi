@@ -1,5 +1,5 @@
 import {
-  Request, Response, NextFunction,
+  Request, Response,
 } from 'express';
 
 import axios from '~/utils/axios';
@@ -8,14 +8,13 @@ module.exports = function(crowi, app) {
 
   const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
 
-  const isOgpUriValid = (req: Request, res: Response, next: NextFunction) => {
-    if (ogpUri == null) {
-      return res.status(400).send('OGP URI for GROWI has not been setup');
-    }
-    next();
-  };
-
-  app.use(isOgpUriValid);
+  if (ogpUri == null) {
+    return {
+      renderOgp: (req: Request, res: Response) => {
+        return res.status(400).send('OGP URI for GROWI has not been setup');
+      },
+    };
+  }
 
   return {
     async renderOgp(req: Request, res: Response) {
