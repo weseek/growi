@@ -36,6 +36,17 @@ export class UnregisterService {
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
+    if (relations.length === 0) {
+      await respond(growiCommand.responseUrl, {
+        text: 'No GROWI found to unregister.',
+        blocks: [
+          markdownSectionBlock('You haven\'t registered any GROWI to this workspace.'),
+          markdownSectionBlock('Send `/growi register` to register.'),
+        ],
+      });
+      return;
+    }
+
     const staticSelectElement: MultiStaticSelect = {
       action_id: 'selectedGrowiUris',
       type: 'multi_static_select',
@@ -72,7 +83,7 @@ export class UnregisterService {
   async unregister(authorizeResult: AuthorizeResult, payload: any):Promise<void> {
 
     const selectedOptions = payload.state?.values?.growiUris?.selectedGrowiUris?.selected_options;
-    if (Array.isArray(selectedOptions)) {
+    if (!Array.isArray(selectedOptions)) {
       logger.error('Unregisteration failed: Mulformed object was detected\n');
       await respond(payload.response_url, {
         text: 'Unregistration failed',
