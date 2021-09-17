@@ -498,6 +498,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: 'ptog',
   },
+  OGP_URI: {
+    ns:      'crowi',
+    key:     'app:ogpUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
 };
 
 
