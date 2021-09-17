@@ -26,7 +26,12 @@ class InAppNotificationService {
 
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
+
+      if (this.socketIoService.isInitialized) {
+        this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+      }
     });
+
   }
 
   removeActivity = async function(activity) {

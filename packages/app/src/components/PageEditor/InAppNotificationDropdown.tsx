@@ -1,38 +1,48 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
+import SocketIoContainer from '~/client/services/SocketIoContainer';
 
-export interface Props {
-  // crowi: Crowi
-  me: string
-}
 
-export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
+const InAppNotificationDropdown: FC = (props) => {
+  console.log('propsHoge', props);
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // componentDidMount() {
-  //   this.initializeSocket();
-  //   this.fetchNotificationList();
-  //   this.fetchNotificationStatus();
-  // }
+  useEffect(() => {
+    initializeSocket(props);
+    // fetchNotificationList();
+    // fetchNotificationStatus();
+  }, []);
 
   /**
     * TODO: Listen to socket on the client side by GW-7402
     */
-  // initializeSocket() {
-  //   this.props.crowi.getWebSocket().on('notification updated', (data: { user: string }) => {
-  //     if (this.props.me === data.user) {
-  //       this.fetchNotificationList();
-  //       this.fetchNotificationStatus();
-  //     }
-  //   });
-  // }
+  const initializeSocket = (props) => {
+    console.log(props);
+
+    const socket = props.socketIoContainer.getSocket();
+    socket.on('comment updated', (data: { user: string }) => {
+      // eslint-disable-next-line no-console
+      console.log('socketData', data);
+
+      if (props.me === data.user) {
+        // TODO: Fetch notification status by GW-7473
+        // fetchNotificationList();
+
+        // TODO: Fetch notification list by GW-7473
+        // fetchNotificationStatus();
+      }
+    });
+  };
+
 
   /**
     * TODO: Fetch notification status by GW-7473
@@ -112,3 +122,15 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   );
 
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
+
+InAppNotificationDropdown.propTypes = {
+  me: PropTypes.string,
+  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
+};
+
+export default InAppNotificationDropdownWrapper;
