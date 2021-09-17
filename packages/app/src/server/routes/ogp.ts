@@ -5,8 +5,9 @@ import {
 import axios from '~/utils/axios';
 
 module.exports = function(crowi) {
+  const { configManager, appService, aclService } = crowi;
 
-  const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
+  const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
   if (ogpUri == null) {
     return {
       renderOgp: (req: Request, res: Response) => {
@@ -18,9 +19,31 @@ module.exports = function(crowi) {
   return {
     async renderOgp(req: Request, res: Response) {
 
-      if (req.params.pageId === '') {
-        return res.status(400).send();
+      if (!aclService.isGuestAllowedToRead()) {
+        return res.status(400).send('This GROWI is not public');
       }
+
+      const pageId = req.params.pageId;
+      if (pageId === '') {
+        return res.status(400).send('page id is not included in the parameter');
+      }
+
+      let pagePath;
+      try {
+        const Page = crowi.model('Page');
+        const page = await Page.findByIdAndViewer(pageId);
+
+        if (page.status !== 'published' || (page.grant !== 1 && page.grant !== 2)) {
+          return res.status(400).send('the page does not e xist');
+        }
+        pagePath = page.path;
+      }
+      catch (err) {
+        console.log(err);
+        return res.status(400).send('the page does not exist');
+      }
+
+      const appTitle = appService.getAppTitle();
 
       let result;
       try {
@@ -28,10 +51,9 @@ module.exports = function(crowi) {
           url: ogpUri,
           method: 'GET',
           responseType: 'stream',
-          // TODO: Make it possible to display the GROWI APP name and page title
           params: {
-            title: 'Page Title',
-            brand: 'GROWI App Name',
+            title: pagePath,
+            brand: appTitle,
           },
         });
       }
