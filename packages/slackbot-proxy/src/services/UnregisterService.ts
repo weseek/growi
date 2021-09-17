@@ -10,7 +10,6 @@ import { AuthorizeResult } from '@slack/oauth';
 import { DeleteResult } from 'typeorm';
 import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
-import { Relation } from '~/entities/relation';
 import { InstallationRepository } from '~/repositories/installation';
 import loggerFactory from '~/utils/logger';
 
@@ -19,7 +18,7 @@ const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
-export class UnregisterService implements GrowiCommandProcessor {
+export class UnregisterService {
 
   @Inject()
   relationRepository: RelationRepository;

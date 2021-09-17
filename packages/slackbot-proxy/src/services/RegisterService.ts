@@ -9,6 +9,9 @@ import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
 import { InvalidUrlError } from '../models/errors';
 import { InstallationRepository } from '~/repositories/installation';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:services:RegisterService');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
@@ -62,6 +65,31 @@ export class RegisterService {
     });
   }
 
+  async handleRegisterInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, payload: any,
+  ): Promise<void> {
+    try {
+      await this.insertOrderRecord(authorizeResult, payload);
+    }
+    catch (err) {
+      if (err instanceof InvalidUrlError) {
+        logger.error('Failed to register:\n', err);
+        await respond(payload.response_urls[0].response_url, {
+          text: 'Invalid URL',
+          blocks: [
+            markdownSectionBlock('Please enter a valid URL'),
+          ],
+        });
+        return;
+      }
+
+      logger.error('Error occurred while insertOrderRecord:\n', err);
+    }
+
+    await this.notifyServerUriToSlack(payload);
+  }
+
   async insertOrderRecord(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, payload: any,
@@ -76,12 +104,6 @@ export class RegisterService {
       const url = new URL(growiUrl);
     }
     catch (error) {
-      await respond(payload.response_urls[0].response_url, {
-        text: 'Invalid URL',
-        blocks: [
-          markdownSectionBlock('Please enter a valid URL'),
-        ],
-      });
       throw new InvalidUrlError(growiUrl);
     }
 

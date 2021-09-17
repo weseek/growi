@@ -303,23 +303,11 @@ export class SlackCtrl {
 
     // TAICHI TODO: fix this GW-7496
     // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
-    const actionId = interactionPayload.actions[0]?.action_id;
+    const actionId = interactionPayload.actions?.[0]?.action_id;
 
-    // TAICHI TODO: clean here;
     // register
     if (callbackId === 'register') {
-      try {
-        await this.registerService.insertOrderRecord(authorizeResult, interactionPayload);
-      }
-      catch (err) {
-        if (err instanceof InvalidUrlError) {
-          logger.info(err.message);
-          return;
-        }
-        logger.error(err);
-      }
-
-      await this.registerService.notifyServerUriToSlack(interactionPayload);
+      await this.registerService.handleRegisterInteraction(authorizeResult, interactionPayload);
       return;
     }
 
@@ -328,7 +316,6 @@ export class SlackCtrl {
       await this.unregisterService.unregister(authorizeResult, interactionPayload);
       return;
     }
-
     // unregister cancel action
     if (actionId === 'unregister:cancel') {
       await this.unregisterService.cancel(interactionPayload);
@@ -353,7 +340,6 @@ export class SlackCtrl {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
-    // TAICHI TODO: consider cleaning code below;
     // check permission
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

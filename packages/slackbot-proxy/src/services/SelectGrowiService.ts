@@ -1,11 +1,17 @@
 import { Inject, Service } from '@tsed/di';
 
-import { GrowiCommand, GrowiCommandProcessor, respond } from '@growi/slack';
+import {
+  GrowiCommand, GrowiCommandProcessor, markdownSectionBlock, respond,
+} from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
+import { InstallationRepository } from '~/repositories/installation';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 
 
 type SelectValue = {
@@ -24,6 +30,9 @@ export class SelectGrowiService {
 
   @Inject()
   relationRepository: RelationRepository;
+
+  @Inject()
+  installationRepository: InstallationRepository;
 
   private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string): SelectValue {
     return {
@@ -98,6 +107,23 @@ export class SelectGrowiService {
 
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    let installation: Installation | undefined;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    }
+    catch (err) {
+      logger.error('Growi command failed:\n', err);
+      await respond(payload.response_url, {
+        text: 'Growi command failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while processing GROWI command.'),
+        ],
+      });
+      throw new Error('No installation found.');
+    }
 
     const relation = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.growiUri =:growiUri', { growiUri })
