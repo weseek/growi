@@ -35,6 +35,10 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
+    if (pages.length === 0) {
+      return;
+    }
+
     const keywords = this.getKeywords(args);
 
 
@@ -188,7 +192,7 @@ module.exports = (crowi) => {
   handler.showNextResults = async function(client, payload) {
     const parsedValue = JSON.parse(payload.actions[0].value);
 
-    const { body, args, offsetNum } = parsedValue;
+    const { body, args, offset: offsetNum } = parsedValue;
     const newOffsetNum = offsetNum + 10;
     let searchResult;
     try {
@@ -258,7 +262,7 @@ module.exports = (crowi) => {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSingleSearchResult',
+            action_id: 'search:shareSinglePageResult',
             text: {
               type: 'plain_text',
               text: 'Share',
@@ -361,7 +365,7 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: `No page found with "${keywords}"`,
         blocks: [
-          markdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
+          markdownSectionBlock(`*No page matches your keyword(s) "${keywords}".*`),
           markdownSectionBlock(':mag: *Help: Searching*'),
           divider(),
           markdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),

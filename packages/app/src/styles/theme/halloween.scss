@@ -39,7 +39,7 @@ html[dark] {
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: $bgcolor-global;
-  $bgcolor-highlighted: rgba($primary, 0.4);
+  $bgcolor-highlighted: $grw-marker-cyan;
 
   // Font colors
   $color-global: #e9af2b;

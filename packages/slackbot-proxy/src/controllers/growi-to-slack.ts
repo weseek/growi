@@ -98,14 +98,18 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+
+    const relation = await this.relationRepository.update(
+      { tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands },
+    );
 
     return res.send({ relation });
   }
@@ -145,6 +149,7 @@ export class GrowiToSlackCtrl {
       }
 
       const status = await getConnectionStatus(token);
+
       if (status.error != null) {
         throw createError(400, `failed to get connection. err: ${status.error}`);
       }
@@ -189,7 +194,6 @@ export class GrowiToSlackCtrl {
     // temporary cache for 48 hours
     const expiredAtCommands = addHours(new Date(), 48);
 
-    // Transaction is not considered because it is used infrequently,
     const response = await this.relationRepository.createQueryBuilder('relation')
       .insert()
       .values({
@@ -197,18 +201,17 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        permissionsForBroadcastUseCommands: req.body.permissionsForBroadcastUseCommands,
+        permissionsForSingleUseCommands: req.body.permissionsForSingleUseCommands,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
       .orUpdate({
         conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
       })
       .execute();
 
-    // Find the generated relation
     const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
 
     return res.send({ relation: generatedRelation, slackBotToken: token });
@@ -293,7 +296,7 @@ export class GrowiToSlackCtrl {
       logger.error(err);
 
       if (err.code === ErrorCode.PlatformError) {
-        return res.simulateWebAPIPlatformError(err.message, err.code);
+        return res.simulateWebAPIPlatformError(err.message, err.data.error);
       }
 
       return res.simulateWebAPIRequestError(err.message, err.response?.status);
