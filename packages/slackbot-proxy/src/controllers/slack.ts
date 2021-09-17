@@ -13,6 +13,8 @@ import {
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
+  InteractionHandledResult,
+  getActionIdAndCallbackIdFromPayLoad,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -174,13 +176,13 @@ export class SlackCtrl {
     res.json();
 
     // register
-    if (growiCommand.growiCommandType === 'register') {
-      return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+    if (this.registerService.shouldHandleCommand(growiCommand)) {
+      return this.registerService.processCommand(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     // unregister
-    if (growiCommand.growiCommandType === 'unregister') {
-      return this.unregisterService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+    if (this.unregisterService.shouldHandleCommand(growiCommand)) {
+      return this.unregisterService.processCommand(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
@@ -273,7 +275,7 @@ export class SlackCtrl {
     // select GROWI
     if (allowedRelationsForSingleUse.length > 0) {
       body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
-      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+      return this.selectGrowiService.processCommand(growiCommand, authorizeResult, body);
     }
 
     // forward to GROWI server
@@ -299,44 +301,20 @@ export class SlackCtrl {
       return;
     }
 
-    const callbackId: string = interactionPayload?.view?.callback_id;
-
-    // TAICHI TODO: fix this GW-7496
-    // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
-    const actionId = interactionPayload.actions?.[0]?.action_id;
-
     // register
-    if (callbackId === 'register') {
-      await this.registerService.handleRegisterInteraction(authorizeResult, interactionPayload);
-      return;
-    }
-
+    const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload);
+    if (registerResult.isTerminate) return;
     // unregister
-    if (actionId === 'unregister') {
-      await this.unregisterService.unregister(authorizeResult, interactionPayload);
-      return;
-    }
-    // unregister cancel action
-    if (actionId === 'unregister:cancel') {
-      await this.unregisterService.cancel(interactionPayload);
-      return;
-    }
+    const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload);
+    if (unregisterResult.isTerminate) return;
 
-    let privateMeta:any;
+    // immediate response to slack
+    res.send();
 
-    if (interactionPayload.view != null) {
-      privateMeta = JSON.parse(interactionPayload?.view?.private_metadata);
-    }
-
-    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-
-    // forward to GROWI server
-    if (actionId === 'select_growi') {
-      // Send response immediately to avoid opelation_timeout error
-      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-      res.send();
-
-      const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(authorizeResult, interactionPayload);
+    // select growi
+    const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload);
+    const selectedGrowiInformation = selectGrowiResult.result;
+    if (!selectGrowiResult.isTerminate && selectedGrowiInformation != null) {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
@@ -358,6 +336,14 @@ export class SlackCtrl {
       });
     }
 
+    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+
+    let privateMeta: any;
+    if (interactionPayload.view != null) {
+      privateMeta = JSON.parse(interactionPayload?.view?.private_metadata);
+    }
+
+    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
     const {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,

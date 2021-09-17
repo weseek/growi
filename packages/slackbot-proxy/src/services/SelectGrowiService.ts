@@ -1,7 +1,9 @@
 import { Inject, Service } from '@tsed/di';
 
 import {
-  GrowiCommand, GrowiCommandProcessor, markdownSectionBlock, respond,
+  getActionIdAndCallbackIdFromPayLoad,
+  getInteractionIdRegexpFromCommandName,
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initializeInteractionHandledResult, InteractionHandledResult, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
@@ -26,7 +28,7 @@ export type SelectedGrowiInformation = {
 }
 
 @Service()
-export class SelectGrowiService {
+export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteractionProcessor<SelectedGrowiInformation> {
 
   @Inject()
   relationRepository: RelationRepository;
@@ -41,7 +43,13 @@ export class SelectGrowiService {
     };
   }
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
+  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+    return true;
+  }
+
+  async processCommand(
+      growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]},
+  ): Promise<void> {
     const growiUrls = body.growiUrisForSingleUse;
 
     const chooseSection = growiUrls.map((growiUri) => {
@@ -54,7 +62,7 @@ export class SelectGrowiService {
         },
         accessory: {
           type: 'button',
-          action_id: 'select_growi',
+          action_id: 'select_growi:select_growi',
           text: {
             type: 'plain_text',
             text: 'Choose',
@@ -89,6 +97,25 @@ export class SelectGrowiService {
       ],
     });
 
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleInteraction(interactionPayload: any): boolean {
+    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('select_growi');
+    return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
+  }
+
+  async processInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, interactionPayload: any,
+  ): Promise<InteractionHandledResult<SelectedGrowiInformation>> {
+    const interactionHandledResult: any = initializeInteractionHandledResult();
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+    interactionHandledResult.result = await this.handleSelectInteraction(authorizeResult, interactionPayload);
+    interactionHandledResult.isTerminate = false;
+
+    return interactionHandledResult as InteractionHandledResult<SelectedGrowiInformation>;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
