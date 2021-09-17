@@ -25,8 +25,18 @@ module.exports = function(crowi, app) {
         return res.status(400).send('page id is not included in the parameter');
       }
 
-      const Page = crowi.model('Page');
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      let pagePath;
+      try {
+        const Page = crowi.model('Page');
+        const page = await Page.findByIdAndViewer(pageId, req.user);
+        if (page.status !== 'published' || page.grant !== 1) {
+          return res.status(400).send('the page does not exist');
+        }
+        pagePath = page.path;
+      }
+      catch (err) {
+        return res.status(400).send('the page does not exist');
+      }
 
       const appTitle = crowi.configManager.getConfig('crowi', 'app:title') || 'GROWI';
 
@@ -37,7 +47,7 @@ module.exports = function(crowi, app) {
           method: 'GET',
           responseType: 'stream',
           params: {
-            title: page.path,
+            title: pagePath,
             brand: appTitle,
           },
         });
