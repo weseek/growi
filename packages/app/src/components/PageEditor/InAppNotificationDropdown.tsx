@@ -30,10 +30,14 @@ const InAppNotificationDropdown: FC = (props) => {
 
     const socket = props.socketIoContainer.getSocket();
     socket.on('comment updated', (data: { user: string }) => {
-      console.log('socket', socket);
-      // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
+      // eslint-disable-next-line no-console
+      console.log('socketData', data);
+
       if (props.me === data.user) {
+        // TODO: Fetch notification status by GW-7473
         // fetchNotificationList();
+
+        // TODO: Fetch notification list by GW-7473
         // fetchNotificationStatus();
       }
     });
