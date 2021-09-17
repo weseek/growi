@@ -17,7 +17,7 @@ const InAppNotificationDropdown: FC = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    initializeSocket();
+    initializeSocket(props);
     // fetchNotificationList();
     // fetchNotificationStatus();
   }, []);
@@ -25,15 +25,18 @@ const InAppNotificationDropdown: FC = (props) => {
   /**
     * TODO: Listen to socket on the client side by GW-7402
     */
-  const initializeSocket = () => {
-    // const socket = props.socketIoContainer.getSocket();
-    // socket.on('comment updated', (data: { user: string }) => {
-    // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
-    // if (props.me === data.user) {
-    // fetchNotificationList();
-    // fetchNotificationStatus();
-    // }
-    // });
+  const initializeSocket = (props) => {
+    console.log(props);
+
+    const socket = props.socketIoContainer.getSocket();
+    socket.on('comment updated', (data: { user: string }) => {
+      console.log('socket', socket);
+      // props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
+      if (props.me === data.user) {
+        // fetchNotificationList();
+        // fetchNotificationStatus();
+      }
+    });
   };
 
 
@@ -124,7 +127,7 @@ const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificatio
 InAppNotificationDropdown.propTypes = {
   // crowi: Crowi
   me: PropTypes.string,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer),
+  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
 };
 
 export default InAppNotificationDropdownWrapper;
