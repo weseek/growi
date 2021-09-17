@@ -18,6 +18,7 @@ COPY ./yarn.lock .
 COPY ./lerna.json .
 COPY ./packages/app/package.json packages/app/
 COPY ./packages/core/package.json packages/core/
+COPY ./packages/codemirror-textlint/package.json packages/codemirror-textlint/
 COPY ./packages/plugin-attachment-refs/package.json packages/plugin-attachment-refs/
 COPY ./packages/plugin-lsx/package.json packages/plugin-lsx/
 COPY ./packages/plugin-pukiwiki-like-linker/package.json packages/plugin-pukiwiki-like-linker/
@@ -96,6 +97,7 @@ COPY ./tsconfig.base.json ./
 # copy all related packages
 COPY packages/app packages/app
 COPY packages/core packages/core
+COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
 COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
