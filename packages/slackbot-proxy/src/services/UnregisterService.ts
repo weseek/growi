@@ -2,9 +2,9 @@ import axios from 'axios';
 import { Inject, Service } from '@tsed/di';
 import { MultiStaticSelect } from '@slack/web-api';
 import {
-  actionsBlock,
-  buttonElement,
-  GrowiCommand, GrowiCommandProcessor, inputBlock, markdownSectionBlock, respond,
+  actionsBlock, buttonElement, getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName,
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initializeInteractionHandledResult,
+  inputBlock, InteractionHandledResult, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { DeleteResult } from 'typeorm';
@@ -18,7 +18,7 @@ const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
-export class UnregisterService {
+export class UnregisterService implements GrowiCommandProcessor, GrowiInteractionProcessor<void> {
 
   @Inject()
   relationRepository: RelationRepository;
@@ -26,7 +26,11 @@ export class UnregisterService {
   @Inject()
   installationRepository: InstallationRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]: string}): Promise<void> {
+  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+    return growiCommand.growiCommandType === 'unregister';
+  }
+
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]: string}): Promise<void> {
     // get growi urls
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -72,7 +76,7 @@ export class UnregisterService {
         actionsBlock(
           buttonElement({ text: 'Cancel', actionId: 'unregister:cancel', value: JSON.stringify({}) }),
           buttonElement({
-            text: 'Unregister', actionId: 'unregister', style: 'danger', value: JSON.stringify({}),
+            text: 'Unregister', actionId: 'unregister:unregister', style: 'danger', value: JSON.stringify({}),
           }),
         ),
       ],
@@ -80,7 +84,39 @@ export class UnregisterService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async unregister(authorizeResult: AuthorizeResult, payload: any):Promise<void> {
+  shouldHandleInteraction(interactionPayload: any): boolean {
+    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('unregister');
+    return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
+  }
+
+  async processInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, interactionPayload: any,
+  ): Promise<InteractionHandledResult<void>> {
+    const { actionId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+
+    const interactionHandledResult: any = initializeInteractionHandledResult();
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+
+    switch (actionId) {
+      case 'unregister:unregister':
+        interactionHandledResult.result = await this.handleUnregisterInteraction(authorizeResult, interactionPayload);
+        break;
+      case 'unregister:cancel':
+        interactionHandledResult.result = await this.handleUnregisterCancelInteraction(interactionPayload);
+        break;
+      default:
+        logger.error('This unregister interaction is not implemented.');
+        break;
+    }
+    interactionHandledResult.isTerminate = true;
+
+    return interactionHandledResult as InteractionHandledResult<void>;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  async handleUnregisterInteraction(authorizeResult: AuthorizeResult, payload: any):Promise<void> {
 
     const selectedOptions = payload.state?.values?.growiUris?.selectedGrowiUris?.selected_options;
     if (!Array.isArray(selectedOptions)) {
@@ -141,7 +177,7 @@ export class UnregisterService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async cancel(payload: any): Promise<void> {
+  async handleUnregisterCancelInteraction(payload: any): Promise<void> {
     await axios.post(payload.response_url, {
       delete_original: true,
     });

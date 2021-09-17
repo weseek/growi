@@ -3,7 +3,9 @@ import {
   WebClient, LogLevel, Block, ConversationsSelect,
 } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock, respond, GrowiCommandProcessor,
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
+  respond, GrowiCommandProcessor, GrowiInteractionProcessor, RequestFromSlack, HandlerName,
+  getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName, InteractionHandledResult, initializeInteractionHandledResult,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
@@ -17,7 +19,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Service()
-export class RegisterService {
+export class RegisterService implements GrowiCommandProcessor, GrowiInteractionProcessor<void> {
 
   @Inject()
   orderRepository: OrderRepository;
@@ -25,7 +27,11 @@ export class RegisterService {
   @Inject()
   installationRepository: InstallationRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+    return growiCommand.growiCommandType === 'register';
+  }
+
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
@@ -40,7 +46,7 @@ export class RegisterService {
       trigger_id: body.trigger_id,
       view: {
         type: 'modal',
-        callback_id: 'register',
+        callback_id: 'register:register',
         title: {
           type: 'plain_text',
           text: 'Register Credentials',
@@ -63,6 +69,25 @@ export class RegisterService {
         ],
       },
     });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleInteraction(interactionPayload: any): boolean {
+    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('register');
+    return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
+  }
+
+  async processInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, interactionPayload: any,
+  ): Promise<InteractionHandledResult<void>> {
+    const interactionHandledResult: any = initializeInteractionHandledResult();
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+    interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload);
+    interactionHandledResult.isTerminate = true;
+
+    return interactionHandledResult as InteractionHandledResult<void>;
   }
 
   async handleRegisterInteraction(

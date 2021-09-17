@@ -23,6 +23,7 @@ export const defaultSupportedCommandsNameForSingleUse: string[] = [
 ];
 
 export * from './interfaces/growi-command-processor';
+export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-command';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
@@ -42,3 +43,4 @@ export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';
 export * from './utils/welcome-message';
 export * from './utils/required-scopes';
+export * from './utils/payload-interaction-id-helpers';
