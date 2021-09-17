@@ -307,7 +307,6 @@ export class SlackCtrl {
     const callbackId:string = payload?.view?.callback_id;
     const callBackId = payload.view?.callback_id;
 
-    // TODO: fix this GW-
     // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
     const actionId = payload.actions[0]?.action_id;
 
