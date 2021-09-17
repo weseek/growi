@@ -168,7 +168,7 @@ module.exports = function(crowi, app) {
             const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
             const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
             const oneTimeUrl = url.href;
-            await sendActivationTokenEmail('passwordReset', i18n, email, oneTimeUrl);
+            await sendActivationTokenEmail('userActivation', i18n, email, oneTimeUrl);
 
             // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
             // cz. loginSuccess method doesn't work on it's own when using passport
@@ -210,7 +210,7 @@ module.exports = function(crowi, app) {
       return mailService.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'), // TODO: GW7335 - make new template for activation message
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
         vars: {
           createdUser: userData,
           admin,
