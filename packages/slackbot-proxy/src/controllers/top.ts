@@ -6,7 +6,6 @@ import { requiredScopes } from '@growi/slack';
 import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
-const fs = require('fs');
 
 @Controller('/')
 export class TopCtrl {
@@ -22,6 +21,8 @@ export class TopCtrl {
       scopes: requiredScopes,
     });
 
+    // use await import in order to avoid typescript-eslint error
+    const fs = await import('fs');
     const growiBotVersion = JSON.parse(fs.readFileSync('../../package.json', 'utf8')).version;
 
     return { url, isOfficialMode, growiBotVersion };
