@@ -35,6 +35,10 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
+    if (pages.length === 0) {
+      return;
+    }
+
     const keywords = this.getKeywords(args);
 
 
