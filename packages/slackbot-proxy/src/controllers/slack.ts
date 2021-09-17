@@ -299,23 +299,17 @@ export class SlackCtrl {
       return;
     }
 
-    // TAICHI TODO: clean here; installationId is included in authorizeResult, etc.;
-    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const callbackId: string = interactionPayload?.view?.callback_id;
 
-    const payload = req.interactionPayload;
-    const callbackId:string = payload?.view?.callback_id;
-    const callBackId = payload.view?.callback_id;
-
+    // TAICHI TODO: fix this GW-7496
     // const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
-    const actionId = payload.actions[0]?.action_id;
+    const actionId = interactionPayload.actions[0]?.action_id;
 
     // TAICHI TODO: clean here;
     // register
     if (callbackId === 'register') {
       try {
-        await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
+        await this.registerService.insertOrderRecord(authorizeResult, interactionPayload);
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
@@ -325,29 +319,29 @@ export class SlackCtrl {
         logger.error(err);
       }
 
-      await this.registerService.notifyServerUriToSlack(authorizeResult.botToken, payload);
+      await this.registerService.notifyServerUriToSlack(interactionPayload);
       return;
     }
 
     // unregister
     if (actionId === 'unregister') {
-      await this.unregisterService.unregister(installation, authorizeResult, payload);
+      await this.unregisterService.unregister(authorizeResult, interactionPayload);
       return;
     }
 
     // unregister cancel action
     if (actionId === 'unregister:cancel') {
-      await this.unregisterService.cancel(payload);
+      await this.unregisterService.cancel(interactionPayload);
       return;
     }
 
     let privateMeta:any;
 
-    if (payload.view != null) {
-      privateMeta = JSON.parse(payload?.view?.private_metadata);
+    if (interactionPayload.view != null) {
+      privateMeta = JSON.parse(interactionPayload?.view?.private_metadata);
     }
 
-    const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
+    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
 
     // forward to GROWI server
     if (actionId === 'select_growi') {
@@ -355,11 +349,15 @@ export class SlackCtrl {
       // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
       res.send();
 
-      const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
+      const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(authorizeResult, interactionPayload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
+    // TAICHI TODO: consider cleaning code below;
     // check permission
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
@@ -381,7 +379,7 @@ export class SlackCtrl {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await postEphemeralErrors(rejectedResults, payload.channel.id, payload.user.id, authorizeResult.botToken!);
+      await postEphemeralErrors(rejectedResults, interactionPayload.channel.id, interactionPayload.user.id, authorizeResult.botToken!);
     }
     catch (err) {
       logger.error(err);
@@ -390,7 +388,7 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, payload.channel.id, payload.user.id, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(client, interactionPayload.channel.id, interactionPayload.user.id, disallowedGrowiUrls, commandName);
     }
 
     /*

@@ -70,7 +70,7 @@ export class UnregisterService implements GrowiCommandProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async unregister(installation: Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
+  async unregister(authorizeResult: AuthorizeResult, payload: any):Promise<void> {
 
     const selectedOptions = payload.state?.values?.growiUris?.selectedGrowiUris?.selected_options;
     if (Array.isArray(selectedOptions)) {
@@ -84,6 +84,23 @@ export class UnregisterService implements GrowiCommandProcessor {
       return;
     }
     const growiUris = selectedOptions.map(selectedOption => selectedOption.value);
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    let installation: Installation | undefined;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    }
+    catch (err) {
+      logger.error('Unregisteration failed:\n', err);
+      await respond(payload.response_url, {
+        text: 'Unregistration failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while unregistering GROWI.'),
+        ],
+      });
+      return;
+    }
 
     let deleteResult: DeleteResult;
     try {

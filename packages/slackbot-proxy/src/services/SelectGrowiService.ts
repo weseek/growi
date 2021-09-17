@@ -20,7 +20,7 @@ export type SelectedGrowiInformation = {
 }
 
 @Service()
-export class SelectGrowiService implements GrowiCommandProcessor {
+export class SelectGrowiService {
 
   @Inject()
   relationRepository: RelationRepository;
@@ -83,7 +83,7 @@ export class SelectGrowiService implements GrowiCommandProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async handleSelectInteraction(installation:Installation | undefined, payload:any): Promise<SelectedGrowiInformation> {
+  async handleSelectInteraction(authorizeResult: AuthorizeResult, payload:any): Promise<SelectedGrowiInformation> {
     const { trigger_id: triggerId } = payload;
     const { state, private_metadata: privateMetadata } = payload?.view;
     const { value: growiUri } = state?.values?.select_growi?.growi_app?.selected_option;

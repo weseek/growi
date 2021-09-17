@@ -7,17 +7,20 @@ import {
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
-import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
+import { InstallationRepository } from '~/repositories/installation';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Service()
-export class RegisterService implements GrowiCommandProcessor {
+export class RegisterService {
 
   @Inject()
   orderRepository: OrderRepository;
+
+  @Inject()
+  installationRepository: InstallationRepository;
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
@@ -60,9 +63,8 @@ export class RegisterService implements GrowiCommandProcessor {
   }
 
   async insertOrderRecord(
-      installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      authorizeResult: AuthorizeResult, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
@@ -83,6 +85,10 @@ export class RegisterService implements GrowiCommandProcessor {
       throw new InvalidUrlError(growiUrl);
     }
 
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+
     this.orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
     });
@@ -90,10 +96,8 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      payload: any,
   ): Promise<void> {
-
-    const { channel } = JSON.parse(payload.view.private_metadata);
 
     const serverUri = process.env.SERVER_URI;
 
