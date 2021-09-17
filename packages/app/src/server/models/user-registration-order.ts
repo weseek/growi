@@ -12,25 +12,9 @@ const { listLocaleIds } = require('~/utils/locale-utils');
 const STATUS_TEMPORARY = 0;
 
 export interface IUserRegistrationOrder {
-  userId: string
-  image: string
-  imageAttachment: Schema.Types.ObjectId
-  imageUrlCached: string
-  isGravatarEnabled: boolean
-  isEmailPublished: boolean
-  googleId: string
-  name: string
-  username: string
   email: string
-  introduction: string
   password: string
-  apiToken: string
-  lang: string
-  status: number
   createdAt: Date
-  lastLoginAt: Date
-  admin: boolean
-  isInvitationEmailSended: boolean
 }
 
 export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, Document {}
@@ -41,31 +25,14 @@ export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderD
 }
 
 const userRegistrationOrderSchema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({
-  userId: String,
-  image: String,
-  imageAttachment: { type: Schema.Types.ObjectId, ref: 'Attachment' },
-  imageUrlCached: String,
-  isGravatarEnabled: { type: Boolean, default: false },
-  isEmailPublished: { type: Boolean, default: true },
-  googleId: String,
   name: { type: String },
   username: { type: String, required: true, unique: true },
   email: { type: String, unique: true, sparse: true },
-  introduction: String,
   password: String,
-  apiToken: { type: String, index: true },
-  lang: {
-    type: String,
-    enum: listLocaleIds(),
-    default: 'en_US',
-  },
   status: {
     type: Number, required: true, default: STATUS_TEMPORARY, index: true,
   },
   createdAt: { type: Date, default: Date.now },
-  lastLoginAt: { type: Date },
-  admin: { type: Boolean, default: 0, index: true },
-  isInvitationEmailSended: { type: Boolean, default: false },
 });
 
 userRegistrationOrderSchema.statics.hashPassword = function(passwordseed, password) {
@@ -82,8 +49,8 @@ userRegistrationOrderSchema.statics.createUserRegistrationOrder = async function
     username,
     email,
     password: this.hashPassword(passwordseed, password),
-    createdAt: Date.now(),
     status: STATUS_TEMPORARY,
+    createdAt: Date.now(),
   }, (err, userData) => {
     if (err) {
       return callback(err);

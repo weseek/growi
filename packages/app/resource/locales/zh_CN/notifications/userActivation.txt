@@ -1,10 +1,10 @@
-Account confirmation
+确认账户创建
 
-Hi, {{ email }}
+致{{ email }}，
 
-An acount has been created in GROWI {{ appTitle }}.
-To activate your account, click on the link below.
+已使用 GROWI {{ appTitle }} 创建帐户。
+单击下面的链接以激活您的帐户。
 
 {{ url }}
 
-If you did not created the account, you can safely ignore this email.
+如果您尚未创建，请忽略此电子邮件。
