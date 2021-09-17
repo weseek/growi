@@ -5,8 +5,9 @@ import {
 import axios from '~/utils/axios';
 
 module.exports = function(crowi) {
+  const { configManager, appService, aclService } = crowi;
 
-  const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
+  const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
   if (ogpUri == null) {
     return {
       renderOgp: (req: Request, res: Response) => {
@@ -18,11 +19,7 @@ module.exports = function(crowi) {
   return {
     async renderOgp(req: Request, res: Response) {
 
-      // TODO: delete a variable
-      const wikiMode = 'public';
-      // const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-      const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-      if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
+      if (!aclService.isGuestAllowedToRead()) {
         return res.status(400).send('This GROWI is not public');
       }
 
@@ -34,7 +31,7 @@ module.exports = function(crowi) {
       let pagePath;
       try {
         const Page = crowi.model('Page');
-        const page = await Page.findByIdAndViewer(pageId, req.user);
+        const page = await Page.findByIdAndViewer(pageId);
         if (page.status !== 'published' || page.grant !== 1) {
           return res.status(400).send('the page does not exist');
         }
@@ -44,7 +41,7 @@ module.exports = function(crowi) {
         return res.status(400).send('the page does not exist');
       }
 
-      const appTitle = crowi.configManager.getConfig('crowi', 'app:title') || 'GROWI';
+      const appTitle = appService.getAppTitle();
 
       let result;
       try {
