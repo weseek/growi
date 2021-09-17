@@ -3,11 +3,10 @@ import {
 } from '@tsed/common';
 
 import { requiredScopes } from '@growi/slack';
-import pkg from '@growi/slackbot-proxy/package.json';
 import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
-
+const fs = require('fs');
 
 @Controller('/')
 export class TopCtrl {
@@ -23,7 +22,7 @@ export class TopCtrl {
       scopes: requiredScopes,
     });
 
-    const growiBotVersion = pkg.version;
+    const growiBotVersion = JSON.parse(fs.readFileSync('../../package.json', 'utf8')).version;
 
     return { url, isOfficialMode, growiBotVersion };
   }
