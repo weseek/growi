@@ -1,31 +1,31 @@
 import {
-  Request, Response, NextFunction,
+  Request, Response,
 } from 'express';
 
 import axios from '~/utils/axios';
 
-module.exports = function(crowi, app) {
+module.exports = function(crowi) {
 
   const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
 
-  const isOgpUriValid = (req: Request, res: Response, next: NextFunction) => {
-    if (ogpUri == null) {
-      return res.status(400).send('OGP URI for GROWI has not been setup');
-    }
-    next();
-  };
+  if (ogpUri == null) {
+    return {
+      renderOgp: (req: Request, res: Response) => {
+        return res.status(400).send('OGP URI for GROWI has not been setup');
+      },
+    };
+  }
 
-  const isGrowiPublic = async(req: Request, res: Response, next: NextFunction) => {
-    const wikiMode = 'public';
-    // const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    const restrictGuestMode = await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-    if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
-      return res.status(400).send('This GROWI is not public');
-    }
-    next();
-  };
-
-  app.use(isOgpUriValid, isGrowiPublic);
+  const wikiMode = 'public';
+  // const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+  const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
+  if (wikiMode !== 'public' || restrictGuestMode !== 'Readonly') {
+    return {
+      renderOgp: (req: Request, res: Response) => {
+        return res.status(400).send('This GROWI is not public');
+      },
+    };
+  }
 
   return {
     async renderOgp(req: Request, res: Response) {
