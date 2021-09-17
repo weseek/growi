@@ -7,7 +7,6 @@ import axios from '~/utils/axios';
 module.exports = function(crowi) {
 
   const ogpUri = crowi.configManager.getConfig('crowi', 'app:ogpUri');
-
   if (ogpUri == null) {
     return {
       renderOgp: (req: Request, res: Response) => {
