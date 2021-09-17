@@ -89,6 +89,92 @@ module.exports = {
       },
     },
   ],
+  dict: [
+    {
+      name: 'base.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/base.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'cc.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/cc.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'check.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/check.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_map.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_pos.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_char.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_char.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_compat.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_compat.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_invoke.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_invoke.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_map.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_pos.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+  ],
   style: [
     {
       name: 'lato',

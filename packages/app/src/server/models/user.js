@@ -35,6 +35,7 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
+
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
