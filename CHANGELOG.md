@@ -1,8 +1,31 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.3](https://github.com/weseek/growi/compare/v4.4.2...v4.4.3) - 2021-09-17
+
+### 💎 Features
+
+- feat: Slack command permission for each channel (#4302) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: Copy buttons interaction (#4303) @maow89126
+- imprv: Use socket.io room (#4307) @hakumizuki
+- imprv: Recent changes of sidebar (#4293) @kaho819
+
+### 🐛 Bug Fixes
+
+- fix: Response to slackbot when no pages are found /growi search (#4321) @stevenfukase
+- fix: Keyword highlight styling in search result (#4312) @maow89126
+- fix(slackbot-proxy): Call next in connect-styled middleware (#4286) @yuki-takei
+
+### 🧰 Maintenance
+
+- chore: Refactor for "Slack command permission for each channel" (#4295) @zahmis
+- support: Update APIv3 docs for pages (#4280) @yuki-takei
 
 ## [v4.4.2](https://github.com/weseek/growi/compare/v4.4.0...v4.4.2) - 2021-09-07
 
@@ -115,6 +138,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/43x.html](http
 - Fix: NoSQL injection of access-token-parser
 - Fix: Checking permission when operating share links
 - Fix: Invalid NaN label is shown when deletedAt of the page is undefined (Introduced by v4.2.8)
+
 ## v4.2.19
 
 - Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
@@ -139,6 +163,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/43x.html](http
 ## v4.2.16
 
 - Fix: "Only inside the group" causes an error (Introduced by v4.2.15)
+
 ## v4.2.15
 
 - Improvement: toastr location for editing
@@ -171,6 +196,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/43x.html](http
 ## v4.2.11
 
 - Fix: Rename decendants is not working (Introduced by v4.2.8)
+
 ## v4.2.10
 
 - Feature: Staff Credits for apps on GROWI.cloud
@@ -965,6 +991,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 ## v3.3.2
 
 - Fix: Specified Group ACL is not persisted correctly (Introduced by 3.3.0)
+
 ## v3.3.1
 
 - Feature: NO_CDN Mode
@@ -1414,7 +1441,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 - Improvement: Ensure to prevent suspending own account
 - Fix: Ensure to be able to use `.` for username when invited
-- Fix: monospace font for `&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;`
+- Fix: monospace font for `&amp;amp;lt;code&amp;amp;gt;&amp;amp;lt;/code&amp;amp;gt;`
 
 ## v2.1.1
 
@@ -1482,8 +1509,8 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 ## v1.2.14
 
-- Fix: Tabs(`a[data-toggle=&amp;quot;tab&amp;quot;][href=&amp;quot;#...&amp;quot;]`) push browser history twice
-- Fix: `a[href=&amp;quot;#edit-form&amp;quot;]` still save history even when disabling pushing states option
+- Fix: Tabs(`a[data-toggle=&amp;amp;quot;tab&amp;amp;quot;][href=&amp;amp;quot;#...&amp;amp;quot;]`) push browser history twice
+- Fix: `a[href=&amp;amp;quot;#edit-form&amp;amp;quot;]` still save history even when disabling pushing states option
 
 ## v1.2.13
 
