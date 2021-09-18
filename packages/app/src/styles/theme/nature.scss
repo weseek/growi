@@ -45,7 +45,7 @@ html[dark] {
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnav: #fafafa;
-  // $bgcolor-highlighted: $grw-marker-yellow;
+  $bgcolor-highlighted: rgba($primary, 0.1);
 
   // Font colors
   $color-global: #460039;

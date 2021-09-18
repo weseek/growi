@@ -11,7 +11,7 @@ html[dark] {
   $bgcolor-card: $gray-50;
   $bgcolor-global: lighten($color-themelight, 10%);
   $bgcolor-inline-code: $gray-100; //optional
-  // $bgcolor-highlighted: $grw-marker-yellow;
+  $bgcolor-highlighted: rgba($primary, 0.3);
 
   // Font colors
   $color-global: #112744;
