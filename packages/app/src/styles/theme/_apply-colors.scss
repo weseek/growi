@@ -449,8 +449,16 @@ ul.pagination {
  * GROWI wiki
  */
 .wiki {
-  .highlighted {
-    @include highlighted($bgcolor-highlighted);
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  h7 {
+    &.blink {
+      @include blink-bgcolor($bgcolor-blinked-section);
+    }
   }
 
   a {

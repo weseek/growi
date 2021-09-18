@@ -22,7 +22,7 @@ html[light] {
   $bgcolor-global: white;
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: $gray-50;
-  $bgcolor-highlighted: rgba($primary, 0.1);
+  $bgcolor-blinked-section: rgba($primary, 0.1);
 
   // Font colors
   $color-global: #112744;
@@ -123,7 +123,7 @@ html[dark] {
   $bgcolor-global: #131418;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($bgcolor-global, 5%);
-  $bgcolor-highlighted: rgba($primary, 0.4);
+  $bgcolor-blinked-section: rgba($primary, 0.4);
 
   // Font colors
   $color-global: $gray-400;
