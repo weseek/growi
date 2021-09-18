@@ -51,7 +51,7 @@ html[dark] {
   $bgcolor-global: $themelight;
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: $gray-50;
-  //$bgcolor-highlighted: $grw-marker-yellow;
+  $bgcolor-blinked-section: rgba($primary, 0.15);
 
   // Font colors
   $color-global: black;
