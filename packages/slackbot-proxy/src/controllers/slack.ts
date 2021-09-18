@@ -303,10 +303,10 @@ export class SlackCtrl {
 
     // register
     const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload);
-    if (registerResult.isTerminate) return;
+    if (registerResult.isTerminated) return;
     // unregister
     const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload);
-    if (unregisterResult.isTerminate) return;
+    if (unregisterResult.isTerminated) return;
 
     // immediate response to slack
     res.send();
@@ -314,7 +314,7 @@ export class SlackCtrl {
     // select growi
     const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload);
     const selectedGrowiInformation = selectGrowiResult.result;
-    if (!selectGrowiResult.isTerminate && selectedGrowiInformation != null) {
+    if (!selectGrowiResult.isTerminated && selectedGrowiInformation != null) {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 

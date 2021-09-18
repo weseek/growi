@@ -110,7 +110,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
         logger.error('This unregister interaction is not implemented.');
         break;
     }
-    interactionHandledResult.isTerminate = true;
+    interactionHandledResult.isTerminated = true;
 
     return interactionHandledResult as InteractionHandledResult<void>;
   }

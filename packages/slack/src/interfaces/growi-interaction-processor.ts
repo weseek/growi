@@ -4,12 +4,12 @@ import { RequestFromSlack } from './request-from-slack';
 
 export interface InteractionHandledResult<V> {
   result: V;
-  isTerminate: boolean;
+  isTerminated: boolean;
 }
 
 export const initialInteractionHandledResult = {
   result: null,
-  isTerminate: false,
+  isTerminated: false,
 };
 
 export type HandlerName = string;

@@ -113,7 +113,7 @@ export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteracti
     const interactionHandledResult: any = initialInteractionHandledResult;
     if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
     interactionHandledResult.result = await this.handleSelectInteraction(authorizeResult, interactionPayload);
-    interactionHandledResult.isTerminate = false;
+    interactionHandledResult.isTerminated = false;
 
     return interactionHandledResult as InteractionHandledResult<SelectedGrowiInformation>;
   }
