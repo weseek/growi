@@ -7,11 +7,9 @@ export interface InteractionHandledResult<V> {
   isTerminate: boolean;
 }
 
-export const initializeInteractionHandledResult = (): any => {
-  return {
-    result: null,
-    isTerminate: false,
-  };
+export const initialInteractionHandledResult = {
+  result: null,
+  isTerminate: false,
 };
 
 export type HandlerName = string;
@@ -20,6 +18,7 @@ export interface GrowiInteractionProcessor<V> {
 
   shouldHandleInteraction(interactionPayload: any): boolean;
 
+  // TODO: pass reqFromSlack or accessor instead of interactionPayload and use accessor to interact GW-7496
   processInteraction(authorizeResult: AuthorizeResult, interactionPayload: any): Promise<InteractionHandledResult<V>>;
 
 }

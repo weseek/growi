@@ -5,7 +5,7 @@ import {
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
   respond, GrowiCommandProcessor, GrowiInteractionProcessor, RequestFromSlack, HandlerName,
-  getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName, InteractionHandledResult, initializeInteractionHandledResult,
+  getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName, InteractionHandledResult, initialInteractionHandledResult,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
@@ -82,7 +82,7 @@ export class RegisterService implements GrowiCommandProcessor, GrowiInteractionP
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any,
   ): Promise<InteractionHandledResult<void>> {
-    const interactionHandledResult: any = initializeInteractionHandledResult();
+    const interactionHandledResult: any = initialInteractionHandledResult;
     if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
     interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload);
     interactionHandledResult.isTerminate = true;
