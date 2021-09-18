@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import { MultiStaticSelect } from '@slack/web-api';
 import {
   actionsBlock, buttonElement, getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName,
-  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initializeInteractionHandledResult,
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initialInteractionHandledResult,
   inputBlock, InteractionHandledResult, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
@@ -96,7 +96,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
   ): Promise<InteractionHandledResult<void>> {
     const { actionId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
 
-    const interactionHandledResult: any = initializeInteractionHandledResult();
+    const interactionHandledResult: any = initialInteractionHandledResult;
     if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
 
     switch (actionId) {
@@ -110,7 +110,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
         logger.error('This unregister interaction is not implemented.');
         break;
     }
-    interactionHandledResult.isTerminate = true;
+    interactionHandledResult.isTerminated = true;
 
     return interactionHandledResult as InteractionHandledResult<void>;
   }

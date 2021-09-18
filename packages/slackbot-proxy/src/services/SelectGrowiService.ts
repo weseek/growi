@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import {
   getActionIdAndCallbackIdFromPayLoad,
   getInteractionIdRegexpFromCommandName,
-  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initializeInteractionHandledResult, InteractionHandledResult, markdownSectionBlock, respond,
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initialInteractionHandledResult, InteractionHandledResult, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
@@ -110,10 +110,10 @@ export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteracti
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any,
   ): Promise<InteractionHandledResult<SelectedGrowiInformation>> {
-    const interactionHandledResult: any = initializeInteractionHandledResult();
+    const interactionHandledResult: any = initialInteractionHandledResult;
     if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
     interactionHandledResult.result = await this.handleSelectInteraction(authorizeResult, interactionPayload);
-    interactionHandledResult.isTerminate = false;
+    interactionHandledResult.isTerminated = false;
 
     return interactionHandledResult as InteractionHandledResult<SelectedGrowiInformation>;
   }
