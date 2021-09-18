@@ -35,6 +35,8 @@ html[dark] {
   $bgcolor-global: $themelight;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
   $bgcolor-card: $lightthemecolor;
+  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
