@@ -12,6 +12,7 @@ html[dark] {
   $bgcolor-global: lighten($color-themelight, 10%);
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-blinked-section: rgba($primary, 0.3);
+  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
 
   // Font colors
   $color-global: #112744;

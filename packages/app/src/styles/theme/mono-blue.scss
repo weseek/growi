@@ -15,6 +15,7 @@ html[light] {
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: darken($themelight, 5%);
   $bgcolor-blinked-section: rgba($primary, 0.1);
+  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
 
   // Font colors
   $color-global: $themecolor;
@@ -113,6 +114,7 @@ html[dark] {
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themedark, 5%);
   $bgcolor-blinked-section: rgba($primary, 0.5);
+  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
 
   // Font colors
   $color-global: #d3d4d4;
