@@ -196,11 +196,11 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
 };
 
 /**
-   * saved hook
+   * saved hook   TODO: getNotificationTargetUsers by GW-7346
    */
 activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   try {
-    const notificationUsers = await savedActivity.getNotificationTargetUsers();
+    // const notificationUsers = await savedActivity.getNotificationTargetUsers();
 
     // await Promise.all(notificationUsers.map(user => InAppNotification.upsertByActivity(user, savedActivity)));
     return;
