@@ -35,6 +35,7 @@ export default class AdminCustomizeContainer extends Container {
 
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
+      isSearchScopeChildrenAsDefault: false,
       currentHighlightJsStyleId: '',
       isHighlightJsStyleBorderEnabled: false,
       currentCustomizeTitle: '',
@@ -89,6 +90,7 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationXL: customizeParams.pageLimitationXL,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
+        isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
         currentHighlightJsStyleId: customizeParams.styleName,
         isHighlightJsStyleBorderEnabled: customizeParams.styleBorder,
         currentCustomizeTitle: customizeParams.customizeTitle,
@@ -181,6 +183,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchIsAllReplyShown() {
     this.setState({ isAllReplyShown: !this.state.isAllReplyShown });
+  }
+
+  /**
+   * Switch isSearchScopeChildrenAsDefault
+   */
+  switchIsSearchScopeChildrenAsDefault() {
+    this.setState({ isSearchScopeChildrenAsDefault: !this.state.isSearchScopeChildrenAsDefault });
   }
 
   /**
@@ -295,6 +304,7 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationXL: this.state.pageLimitationXL,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
         isAllReplyShown: this.state.isAllReplyShown,
+        isSearchScopeChildrenAsDefault: this.state.isSearchScopeChildrenAsDefault,
       });
       const { customizedParams } = response.data;
       this.setState({
@@ -307,6 +317,7 @@ export default class AdminCustomizeContainer extends Container {
         pageLimitationXL: customizedParams.pageLimitationXL,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
+        isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
       });
     }
     catch (err) {

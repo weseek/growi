@@ -158,7 +158,9 @@
       "stale_notification": "在过期页上显示通知",
       "stale_notification_desc": "显示自上次更新以来超过1年的页面通知。",
       "show_all_reply_comments": "显示所有回复评论",
-      "show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。"
+      "show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。",
+      "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
     },
     "code_highlight": "代码突出显示",
     "nocdn_desc": "当强制应用环境变量<code>NO_CDN=true</code><br>Github样式时，此函数被禁用。",
