@@ -140,17 +140,17 @@ Crowi.findSectionHeader = function(hash) {
   return null;
 };
 
-Crowi.unhighlightSelectedSection = function(hash) {
+Crowi.unblinkSelectedSection = function(hash) {
   const elem = Crowi.findSectionHeader(hash);
   if (elem != null) {
-    elem.classList.remove('highlighted');
+    elem.classList.remove('blink');
   }
 };
 
-Crowi.highlightSelectedSection = function(hash) {
+Crowi.blinkSelectedSection = function(hash) {
   const elem = Crowi.findSectionHeader(hash);
   if (elem != null) {
-    elem.classList.add('highlighted');
+    elem.classList.add('blink');
   }
 };
 
@@ -219,14 +219,14 @@ window.addEventListener('load', () => {
     });
   }
 
-  Crowi.highlightSelectedSection(window.location.hash);
+  Crowi.blinkSelectedSection(window.location.hash);
   Crowi.modifyScrollTop();
   Crowi.initClassesByOS();
 });
 
 window.addEventListener('hashchange', (e) => {
-  Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
-  Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
+  Crowi.unblinkSelectedSection(Crowi.findHashFromUrl(e.oldURL));
+  Crowi.blinkSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
   const { appContainer } = window;
   const navigationContainer = appContainer.getContainer('NavigationContainer');

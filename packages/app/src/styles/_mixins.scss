@@ -253,7 +253,8 @@
     }
   }
 }
-@mixin highlighted($color) {
+
+@mixin blink-bgcolor($bgcolor) {
   @keyframes fadeout {
     100% {
       opacity: 0;
@@ -270,7 +271,7 @@
     width: 100%;
     height: 70%;
     content: '';
-    background-color: $color;
+    background-color: $bgcolor;
     border-radius: 2px;
     animation: fadeout 1s ease-in 1.5s forwards;
   }

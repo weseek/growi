@@ -35,6 +35,8 @@ html[dark] {
   $bgcolor-global: $themelight;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
   $bgcolor-card: $lightthemecolor;
+  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -45,7 +47,7 @@ html[dark] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
-  // $bgcolor-highlighted: $grw-marker-yellow;
+  $bgcolor-blinked-section: rgba($primary, 0.2);
 
   // List Group colors
   $color-list: $color-global;
