@@ -8,7 +8,6 @@ import loggerFactory from '../../utils/logger';
 import { Activity, ActivityDocument } from '~/server/models/activity';
 
 const logger = loggerFactory('growi:models:inAppNotification');
-const User = getModelSafely('User') || require('~/server/models/user')();
 
 const STATUS_UNREAD = 'UNREAD';
 const STATUS_UNOPENED = 'UNOPENED';
@@ -31,9 +30,9 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
   upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
   // commented out type 'Query' temporary to avoid ts error
   removeEmpty()/* : Query<any> */
-  read(user: typeof User) /* : Promise<Query<any>> */
+  read(user) /* : Promise<Query<any>> */
 
-  open(user: typeof User, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
+  open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
 
   STATUS_UNREAD: string
