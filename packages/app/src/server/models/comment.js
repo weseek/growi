@@ -1,5 +1,6 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
+import { Activity } from './activity';
 
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
@@ -116,8 +117,14 @@ module.exports = function(crowi) {
       throw err;
     }
 
-
     await commentEvent.emit('create', savedComment.creator);
+    try {
+      const activityLog = await Activity.createByPageComment(savedComment);
+      debug('Activity created', activityLog);
+    }
+    catch (err) {
+      throw err;
+    }
   });
 
   return mongoose.model('Comment', commentSchema);
