@@ -13,8 +13,6 @@ import {
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
-  InteractionHandledResult,
-  getActionIdAndCallbackIdFromPayLoad,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -291,7 +289,9 @@ export class SlackCtrl {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
 
-    const { body, authorizeResult, interactionPayload } = req;
+    const {
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+    } = req;
 
     // pass
     if (body.ssl_check != null) {
@@ -302,17 +302,17 @@ export class SlackCtrl {
     }
 
     // register
-    const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload);
+    const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     if (registerResult.isTerminated) return;
     // unregister
-    const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload);
+    const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     if (unregisterResult.isTerminated) return;
 
     // immediate response to slack
     res.send();
 
     // select growi
-    const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload);
+    const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     const selectedGrowiInformation = selectGrowiResult.result;
     if (!selectGrowiResult.isTerminated && selectedGrowiInformation != null) {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
@@ -328,7 +328,7 @@ export class SlackCtrl {
       .getMany();
 
     if (relations.length === 0) {
-      return res.json({
+      return respond(interactionPayloadAccessor.getResponseUrl(), {
         blocks: [
           markdownSectionBlock('*No relation found.*'),
           markdownSectionBlock('Run `/growi register` first.'),
@@ -336,12 +336,9 @@ export class SlackCtrl {
       });
     }
 
-    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
 
-    let privateMeta: any;
-    if (interactionPayload.view != null) {
-      privateMeta = JSON.parse(interactionPayload?.view?.private_metadata);
-    }
+    const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
 
     const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
