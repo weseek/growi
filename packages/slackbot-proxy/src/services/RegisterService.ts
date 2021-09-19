@@ -3,23 +3,42 @@ import {
   WebClient, LogLevel, Block, ConversationsSelect,
 } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock, respond, GrowiCommandProcessor,
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
+  respond, GrowiCommandProcessor, GrowiInteractionProcessor,
+  getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName, InteractionHandledResult,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
-import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
+import { InstallationRepository } from '~/repositories/installation';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:services:RegisterService');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
+export type RegisterCommandBody = {
+  // eslint-disable-next-line camelcase
+  trigger_id: string,
+  // eslint-disable-next-line camelcase
+  channel_name: string,
+}
+
 @Service()
-export class RegisterService implements GrowiCommandProcessor {
+export class RegisterService implements GrowiCommandProcessor<RegisterCommandBody>, GrowiInteractionProcessor<void> {
 
   @Inject()
   orderRepository: OrderRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+  @Inject()
+  installationRepository: InstallationRepository;
+
+  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+    return growiCommand.growiCommandType === 'register';
+  }
+
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, context: RegisterCommandBody): Promise<void> {
     const { botToken } = authorizeResult;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
@@ -31,10 +50,10 @@ export class RegisterService implements GrowiCommandProcessor {
       default_to_current_conversation: true,
     };
     await client.views.open({
-      trigger_id: body.trigger_id,
+      trigger_id: context.trigger_id,
       view: {
         type: 'modal',
-        callback_id: 'register',
+        callback_id: 'register:register',
         title: {
           type: 'plain_text',
           text: 'Register Credentials',
@@ -47,7 +66,7 @@ export class RegisterService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: JSON.stringify({ channel: body.channel_name }),
+        private_metadata: JSON.stringify({ channel: context.channel_name }),
 
         blocks: [
           inputBlock(conversationsSelectElement, 'conversation', 'Channel to which you want to add'),
@@ -59,10 +78,55 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async insertOrderRecord(
-      installation: Installation | undefined,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleInteraction(interactionPayload: any): boolean {
+    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('register');
+    return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
+  }
+
+  async processInteraction(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      authorizeResult: AuthorizeResult, interactionPayload: any,
+  ): Promise<InteractionHandledResult<void>> {
+    const interactionHandledResult: InteractionHandledResult<void> = {
+      isTerminated: false,
+    };
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+    interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload);
+    interactionHandledResult.isTerminated = true;
+
+    return interactionHandledResult as InteractionHandledResult<void>;
+  }
+
+  async handleRegisterInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, payload: any,
+  ): Promise<void> {
+    try {
+      await this.insertOrderRecord(authorizeResult, payload);
+    }
+    catch (err) {
+      if (err instanceof InvalidUrlError) {
+        logger.error('Failed to register:\n', err);
+        await respond(payload.response_urls[0].response_url, {
+          text: 'Invalid URL',
+          blocks: [
+            markdownSectionBlock('Please enter a valid URL'),
+          ],
+        });
+        return;
+      }
+
+      logger.error('Error occurred while insertOrderRecord:\n', err);
+    }
+
+    await this.notifyServerUriToSlack(payload);
+  }
+
+  async insertOrderRecord(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
@@ -74,14 +138,12 @@ export class RegisterService implements GrowiCommandProcessor {
       const url = new URL(growiUrl);
     }
     catch (error) {
-      await respond(payload.response_urls[0].response_url, {
-        text: 'Invalid URL',
-        blocks: [
-          markdownSectionBlock('Please enter a valid URL'),
-        ],
-      });
       throw new InvalidUrlError(growiUrl);
     }
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     this.orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
@@ -90,10 +152,8 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      payload: any,
   ): Promise<void> {
-
-    const { channel } = JSON.parse(payload.view.private_metadata);
 
     const serverUri = process.env.SERVER_URI;
 
