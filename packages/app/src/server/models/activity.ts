@@ -9,8 +9,10 @@ import ActivityDefine from '../util/activityDefine';
 
 import Watcher from './watcher';
 import { InAppNotification } from './in-app-notification';
-import InAppNotificationService from '../service/in-app-notification';
+
 import ActivityEvent from '../events/activity';
+
+const InAppNotificationService = require('../service/in-app-notification');
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -37,8 +39,6 @@ export interface ActivityModel extends Model<ActivityDocument> {
   findByUser(user: any): Promise<ActivityDocument[]>
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
-
-// const activityEvent = crowi.event('Activity');
 
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
@@ -223,11 +223,13 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
 // move 'save' hook from mongoose's events to activityEvent if I have a time.
 const activityEvent = new ActivityEvent();
+
+// const inAppNotificationService = new InAppNotificationService(crowi);
+
 activityEvent.on('remove', async(activity: ActivityDocument) => {
-  const inAppNotificationService = new InAppNotificationService();
 
   try {
-    await inAppNotificationService.removeActivity(activity);
+    // await inAppNotificationService.removeActivity(activity);
   }
   catch (err) {
     logger.error(err);
