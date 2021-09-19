@@ -2,8 +2,8 @@ import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommand } from './growi-command';
 
-export interface GrowiCommandProcessor {
-  shouldHandleCommand(growiCommand: GrowiCommand): boolean;
+export interface GrowiCommandProcessor<ProcessCommandContext = {[key: string]: string}> {
+  shouldHandleCommand(growiCommand?: GrowiCommand): boolean;
 
-  processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void>
+  processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, context?: ProcessCommandContext): Promise<void>
 }

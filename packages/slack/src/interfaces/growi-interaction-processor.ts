@@ -1,16 +1,9 @@
 import { AuthorizeResult } from '@slack/oauth';
 
-import { RequestFromSlack } from './request-from-slack';
-
 export interface InteractionHandledResult<V> {
-  result: V;
+  result?: V;
   isTerminated: boolean;
 }
-
-export const initialInteractionHandledResult = {
-  result: null,
-  isTerminated: false,
-};
 
 export type HandlerName = string;
 
