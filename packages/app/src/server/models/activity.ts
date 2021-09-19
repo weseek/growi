@@ -8,7 +8,7 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import Watcher from './watcher';
-import { InAppNotification } from './in-app-notification';
+// import { InAppNotification } from './in-app-notification';
 // import activityEvent from '../events/activity';
 
 const logger = loggerFactory('growi:models:activity');
