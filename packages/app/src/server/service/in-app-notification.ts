@@ -1,7 +1,7 @@
 import Crowi from '../crowi';
 import { InAppNotification } from '~/server/models/in-app-notification';
 
-class InAppNotificationService {
+export default class InAppNotificationService {
 
   crowi!: any;
 
@@ -47,5 +47,3 @@ class InAppNotificationService {
   };
 
 }
-
-module.exports = InAppNotificationService;

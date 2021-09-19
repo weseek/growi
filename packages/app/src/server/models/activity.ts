@@ -8,8 +8,9 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import Watcher from './watcher';
-// import { InAppNotification } from './in-app-notification';
-// import activityEvent from '../events/activity';
+import { InAppNotification } from './in-app-notification';
+import InAppNotificationService from '../service/in-app-notification';
+import ActivityEvent from '../events/activity';
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -92,8 +93,10 @@ activitySchema.statics.createByParameters = function(parameters) {
    * @param {object} parameters
    */
 activitySchema.statics.removeByParameters = async function(parameters) {
+  const activityEvent = new ActivityEvent();
   const activity = await this.findOne(parameters);
-  // activityEvent.emit('remove', activity);
+
+  activityEvent.emit('remove', activity);
 
   return this.deleteMany(parameters).exec();
 };
@@ -152,9 +155,11 @@ activitySchema.statics.removeByPageUnlike = function(page, user) {
    * @return {Promise}
    */
 activitySchema.statics.removeByPage = async function(page) {
+  const activityEvent = new ActivityEvent();
   const activities = await this.find({ target: page });
+
   for (const activity of activities) {
-    // activityEvent.emit('remove', activity);
+    activityEvent.emit('remove', activity);
   }
   return this.deleteMany({ target: page }).exec();
 };
@@ -217,15 +222,17 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 
 // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
 // move 'save' hook from mongoose's events to activityEvent if I have a time.
-// activityEvent.on('remove', async(activity: ActivityDocument) => {
+const activityEvent = new ActivityEvent();
+activityEvent.on('remove', async(activity: ActivityDocument) => {
+  const inAppNotificationService = new InAppNotificationService();
 
-//   try {
-//     await InAppNotification.removeActivity(activity);
-//   }
-//   catch (err) {
-//     logger.error(err);
-//   }
-// });
+  try {
+    await inAppNotificationService.removeActivity(activity);
+  }
+  catch (err) {
+    logger.error(err);
+  }
+});
 
 const Activity = getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
 export { Activity };
