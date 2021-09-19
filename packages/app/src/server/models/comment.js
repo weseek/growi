@@ -118,6 +118,10 @@ module.exports = function(crowi) {
     }
 
     await commentEvent.emit('create', savedComment.creator);
+
+    /**
+     * TODO: move Activity operation from this model scope by GW-7506
+     */
     try {
       const activityLog = await Activity.createByPageComment(savedComment);
       debug('Activity created', activityLog);
