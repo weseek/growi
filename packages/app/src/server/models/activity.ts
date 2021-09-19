@@ -12,8 +12,6 @@ import { InAppNotification } from './in-app-notification';
 
 import ActivityEvent from '../events/activity';
 
-// const InAppNotificationService = require('../service/in-app-notification');
-
 const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
@@ -95,7 +93,6 @@ activitySchema.statics.createByParameters = function(parameters) {
 activitySchema.statics.removeByParameters = async function(parameters) {
   const activityEvent = new ActivityEvent();
   const activity = await this.findOne(parameters);
-
   activityEvent.emit('remove', activity);
 
   return this.deleteMany(parameters).exec();
