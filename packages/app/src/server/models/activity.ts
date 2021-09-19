@@ -12,7 +12,7 @@ import { InAppNotification } from './in-app-notification';
 
 import ActivityEvent from '../events/activity';
 
-const InAppNotificationService = require('../service/in-app-notification');
+// const InAppNotificationService = require('../service/in-app-notification');
 
 const logger = loggerFactory('growi:models:activity');
 
