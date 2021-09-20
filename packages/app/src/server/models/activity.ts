@@ -232,25 +232,5 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   }
 });
 
-
-/**
- * TODO: improve removeActivity that decleard in InAppNotificationService by GW-7481
- */
-
-// because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
-// move 'save' hook from mongoose's events to activityEvent if I have a time.
-const activityEvent = new ActivityEvent();
-// const inAppNotificationService = new InAppNotificationService(crowi);
-
-activityEvent.on('remove', async(activity: ActivityDocument) => {
-
-  try {
-    // await inAppNotificationService.removeActivity(activity);
-  }
-  catch (err) {
-    logger.error(err);
-  }
-});
-
 const Activity = getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
 export { Activity };
