@@ -97,17 +97,6 @@ module.exports = function(crowi) {
     }
 
     await commentEvent.emit('remove', savedComment);
-
-    /**
-     * TODO: move Activity operation from this model scope by GW-7506
-     */
-    try {
-      const activityLog = await Activity.createByPageComment(savedComment);
-      debug('Activity created', activityLog);
-    }
-    catch (err) {
-      throw err;
-    }
   });
 
   commentSchema.methods.removeWithReplies = async function(comment) {
