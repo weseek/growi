@@ -80,27 +80,47 @@ module.exports = function(crowi) {
     return commentData;
   };
 
-  commentSchema.statics.removeCommentsByPageId = function(pageId) {
-    const Comment = this;
 
-    return new Promise(((resolve, reject) => {
-      Comment.remove({ page: pageId }, (err, done) => {
-        if (err) {
-          return reject(err);
-        }
+  /**
+   * post remove hook
+   */
+  commentSchema.post('reomove', async(savedComment) => {
+    const Page = crowi.model('Page');
+    const commentEvent = crowi.event('comment');
 
-        resolve(done);
-      });
-    }));
-  };
+    try {
+      const page = await Page.updateCommentCount(savedComment.page);
+      debug('CommentCount Updated', page);
+    }
+    catch (err) {
+      throw err;
+    }
 
-  commentSchema.methods.removeWithReplies = async function() {
+    await commentEvent.emit('remove', savedComment);
+
+    /**
+     * TODO: move Activity operation from this model scope by GW-7506
+     */
+    try {
+      const activityLog = await Activity.createByPageComment(savedComment);
+      debug('Activity created', activityLog);
+    }
+    catch (err) {
+      throw err;
+    }
+  });
+
+  commentSchema.methods.removeWithReplies = async function(comment) {
     const Comment = crowi.model('Comment');
+    const commentEvent = crowi.event('comment');
+
+    await commentEvent.emit('remove', comment);
     return Comment.remove({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
   };
+
 
   /**
    * post save hook
