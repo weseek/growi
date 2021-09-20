@@ -120,8 +120,8 @@ activitySchema.statics.createByPageComment = function(comment) {
    * @param {Comment} comment
    * @return {Promise}
    */
-activitySchema.statics.removeByPageCommentDelete = function(comment) {
-  const parameters = {
+activitySchema.statics.removeByPageCommentDelete = async function(comment) {
+  const parameters = await {
     user: comment.creator,
     targetModel: ActivityDefine.MODEL_PAGE,
     target: comment.page,
@@ -130,7 +130,9 @@ activitySchema.statics.removeByPageCommentDelete = function(comment) {
     action: ActivityDefine.ACTION_COMMENT,
   };
 
-  return this.removeByParameters(parameters);
+  await this.removeByParameters(parameters);
+
+  return;
 };
 
 /**

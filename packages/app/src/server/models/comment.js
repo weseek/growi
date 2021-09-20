@@ -115,10 +115,12 @@ module.exports = function(crowi) {
     const commentEvent = crowi.event('comment');
 
     await commentEvent.emit('remove', comment);
-    return Comment.remove({
+
+    await Comment.remove({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
+    return;
   };
 
 

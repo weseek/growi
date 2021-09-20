@@ -25,6 +25,7 @@ class InAppNotificationService {
     this.initCommentEvent();
   }
 
+
   initCommentEvent(): void {
     // create
     this.commentEvent.on('create', async(savedComment) => {
@@ -50,8 +51,15 @@ class InAppNotificationService {
     });
 
     // remove
-    this.commentEvent.on('remove', (commentData) => {
+    this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
+
+      try {
+        await Activity.removeByPageCommentDelete(comment);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     });
 
   }
