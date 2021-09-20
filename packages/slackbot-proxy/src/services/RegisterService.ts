@@ -5,10 +5,9 @@ import {
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
   respond, GrowiCommandProcessor, GrowiInteractionProcessor,
-  getInteractionIdRegexpFromCommandName, InteractionHandledResult,
+  getInteractionIdRegexpFromCommandName, InteractionHandledResult, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
 import { OrderRepository } from '~/repositories/order';
 import { InvalidUrlError } from '../models/errors';
 import { InstallationRepository } from '~/repositories/installation';

@@ -4,9 +4,8 @@ import { MultiStaticSelect } from '@slack/web-api';
 import {
   actionsBlock, buttonElement, getInteractionIdRegexpFromCommandName,
   GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
-  inputBlock, InteractionHandledResult, markdownSectionBlock, respond,
+  inputBlock, InteractionHandledResult, markdownSectionBlock, respond, InteractionPayloadAccessor,
 } from '@growi/slack';
-import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
 import { AuthorizeResult } from '@slack/oauth';
 import { DeleteResult } from 'typeorm';
 import { RelationRepository } from '~/repositories/relation';

@@ -3,10 +3,9 @@ import { Inject, Service } from '@tsed/di';
 import {
   getInteractionIdRegexpFromCommandName,
   GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
-  InteractionHandledResult, markdownSectionBlock, replaceOriginal, respond,
+  InteractionHandledResult, markdownSectionBlock, replaceOriginal, respond, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
 
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
