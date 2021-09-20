@@ -6,9 +6,6 @@ const router = express.Router();
 
 
 module.exports = () => {
-  const actions = {} as any;
-  actions.api = {} as any;
-
   router.get('/list', (req, res) => {
     const user = req.user;
 
@@ -89,4 +86,5 @@ module.exports = () => {
     }
   });
 
+  return router;
 };
