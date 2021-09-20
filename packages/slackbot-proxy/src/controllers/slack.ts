@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult, WebClient } from '@slack/web-api';
+import { WebAPICallResult } from '@slack/web-api';
 import { Installation } from '@slack/oauth';
 
 
