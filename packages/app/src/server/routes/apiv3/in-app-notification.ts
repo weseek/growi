@@ -49,6 +49,19 @@ module.exports = () => {
       });
   });
 
+  router.get('/status', async(req, res) => {
+    const user = req.user;
+
+    try {
+      const count = await InAppNotification.getUnreadCountByUser(user._id);
+      const result = { count };
+      return res.apiv3(result);
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
+
   router.post('/read', (req, res) => {
     const user = req.user;
 
@@ -69,19 +82,6 @@ module.exports = () => {
     try {
       const notification = await InAppNotification.open(user, id);
       const result = { notification };
-      return res.apiv3(result);
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
-
-  router.get('/status', async(req, res) => {
-    const user = req.user;
-
-    try {
-      const count = await InAppNotification.getUnreadCountByUser(user._id);
-      const result = { count };
       return res.apiv3(result);
     }
     catch (err) {
