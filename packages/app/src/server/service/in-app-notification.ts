@@ -20,10 +20,12 @@ class InAppNotificationService {
   }
 
   initCommentEvent(): void {
+    // create
     this.commentEvent.on('create', (user) => {
       this.commentEvent.onCreate();
     });
 
+    // update
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
 
@@ -31,6 +33,8 @@ class InAppNotificationService {
         this.socketIoService.getDefaultSocket().emit('comment updated', { user });
       }
     });
+
+    // remove
 
   }
 
