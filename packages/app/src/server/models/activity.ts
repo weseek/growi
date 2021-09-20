@@ -8,8 +8,7 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import Watcher from './watcher';
-import { InAppNotification } from './in-app-notification';
-
+// import { InAppNotification } from './in-app-notification';
 import ActivityEvent from '../events/activity';
 
 const logger = loggerFactory('growi:models:activity');
@@ -172,11 +171,11 @@ activitySchema.statics.removeByPageUnlike = function(page, user) {
    * @return {Promise}
    */
 activitySchema.statics.removeByPage = async function(page) {
-  const activityEvent = new ActivityEvent();
+  // const activityEvent = new ActivityEvent();
   const activities = await this.find({ target: page });
-
   for (const activity of activities) {
-    activityEvent.emit('remove', activity);
+    // TODO: implement removeActivity when page deleted by GW-7481
+    // activityEvent.emit('remove', activity);
   }
   return this.deleteMany({ target: page }).exec();
 };
