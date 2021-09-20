@@ -55,6 +55,7 @@ class InAppNotificationService {
       this.commentEvent.onRemove();
 
       try {
+        // TODO: Able to remove child activities of comment by GW-7510
         await Activity.removeByPageCommentDelete(comment);
       }
       catch (err) {
