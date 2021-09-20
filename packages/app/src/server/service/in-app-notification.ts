@@ -1,5 +1,11 @@
 import Crowi from '../crowi';
 import { InAppNotification } from '~/server/models/in-app-notification';
+import { Activity } from '~/server/models/activity';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:inAppNotification');
+
 
 class InAppNotificationService {
 
@@ -21,8 +27,16 @@ class InAppNotificationService {
 
   initCommentEvent(): void {
     // create
-    this.commentEvent.on('create', (user) => {
+    this.commentEvent.on('create', async(savedComment) => {
       this.commentEvent.onCreate();
+
+      try {
+        const activityLog = await Activity.createByPageComment(savedComment);
+        logger.info('Activity created', activityLog);
+      }
+      catch (err) {
+        throw err;
+      }
     });
 
     // update
@@ -32,9 +46,13 @@ class InAppNotificationService {
       if (this.socketIoService.isInitialized) {
         this.socketIoService.getDefaultSocket().emit('comment updated', { user });
       }
+
     });
 
     // remove
+    this.commentEvent.on('remove', (commentData) => {
+      this.commentEvent.onRemove();
+    });
 
   }
 

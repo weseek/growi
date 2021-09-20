@@ -137,18 +137,7 @@ module.exports = function(crowi) {
       throw err;
     }
 
-    await commentEvent.emit('create', savedComment.creator);
-
-    /**
-     * TODO: move Activity operation from this model scope by GW-7506
-     */
-    try {
-      const activityLog = await Activity.createByPageComment(savedComment);
-      debug('Activity created', activityLog);
-    }
-    catch (err) {
-      throw err;
-    }
+    await commentEvent.emit('create', savedComment);
   });
 
   return mongoose.model('Comment', commentSchema);
