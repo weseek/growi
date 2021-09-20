@@ -7,8 +7,6 @@ export interface InteractionHandledResult<V> {
   isTerminated: boolean;
 }
 
-export type HandlerName = string;
-
 export interface GrowiInteractionProcessor<V> {
 
   shouldHandleInteraction(interactionPayloadAccessor: any): boolean;
