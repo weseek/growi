@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import {
   getInteractionIdRegexpFromCommandName,
   GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
-  initialInteractionHandledResult, InteractionHandledResult, markdownSectionBlock, replaceOriginal, respond,
+  InteractionHandledResult, markdownSectionBlock, replaceOriginal, respond,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
@@ -16,6 +16,9 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
 
+export type SelectGrowiCommandBody = {
+  growiUrisForSingleUse: string[],
+}
 
 type SelectValue = {
   growiCommand: GrowiCommand,
@@ -29,7 +32,7 @@ export type SelectedGrowiInformation = {
 }
 
 @Service()
-export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteractionProcessor<SelectedGrowiInformation | null> {
+export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiCommandBody | null>, GrowiInteractionProcessor<SelectedGrowiInformation> {
 
   @Inject()
   relationRepository: RelationRepository;
@@ -44,15 +47,15 @@ export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteracti
     };
   }
 
-  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+  shouldHandleCommand(): boolean {
     // TODO: consider to use the default supported commands for single use
     return true;
   }
 
   async processCommand(
-      growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]},
+      growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, context: SelectGrowiCommandBody,
   ): Promise<void> {
-    const growiUrls = body.growiUrisForSingleUse;
+    const growiUrls = context.growiUrisForSingleUse;
 
     const chooseSection = growiUrls.map((growiUri) => {
       const value = this.generateGrowiSelectValue(growiCommand, growiUri);
@@ -111,14 +114,19 @@ export class SelectGrowiService implements GrowiCommandProcessor, GrowiInteracti
   async processInteraction(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
-  ): Promise<InteractionHandledResult<SelectedGrowiInformation | null>> {
-    const interactionHandledResult: any = initialInteractionHandledResult;
-    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
+  ): Promise<InteractionHandledResult<SelectedGrowiInformation>> {
+    const interactionHandledResult: InteractionHandledResult<SelectedGrowiInformation> = {
+      isTerminated: false,
+    };
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
 
-    interactionHandledResult.result = await this.handleSelectInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
+    const selectGrowiInformation = await this.handleSelectInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
+    if (selectGrowiInformation != null) {
+      interactionHandledResult.result = selectGrowiInformation;
+    }
     interactionHandledResult.isTerminated = false;
 
-    return interactionHandledResult as InteractionHandledResult<SelectedGrowiInformation | null>;
+    return interactionHandledResult as InteractionHandledResult<SelectedGrowiInformation>;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

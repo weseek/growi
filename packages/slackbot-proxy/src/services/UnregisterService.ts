@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import { MultiStaticSelect } from '@slack/web-api';
 import {
   actionsBlock, buttonElement, getInteractionIdRegexpFromCommandName,
-  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor, initialInteractionHandledResult,
+  GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
   inputBlock, InteractionHandledResult, markdownSectionBlock, respond,
 } from '@growi/slack';
 import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
@@ -15,8 +15,6 @@ import { InstallationRepository } from '~/repositories/installation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');
-
-const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
 export class UnregisterService implements GrowiCommandProcessor, GrowiInteractionProcessor<void> {
@@ -31,7 +29,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
     return growiCommand.growiCommandType === 'unregister';
   }
 
-  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]: string}): Promise<void> {
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult): Promise<void> {
     // get growi urls
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -95,10 +93,12 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<InteractionHandledResult<void>> {
-    const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
-
-    const interactionHandledResult: any = initialInteractionHandledResult;
+    const interactionHandledResult: InteractionHandledResult<void> = {
+      isTerminated: false,
+    };
     if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
+
+    const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
 
     switch (actionId) {
       case 'unregister:unregister':

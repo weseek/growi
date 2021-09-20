@@ -5,7 +5,7 @@ import {
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
   respond, GrowiCommandProcessor, GrowiInteractionProcessor,
-  getInteractionIdRegexpFromCommandName, InteractionHandledResult, initialInteractionHandledResult,
+  getInteractionIdRegexpFromCommandName, InteractionHandledResult,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { InteractionPayloadAccessor } from '@growi/slack/src/utils/interaction-payload-accessor';
@@ -19,8 +19,15 @@ const logger = loggerFactory('slackbot-proxy:services:RegisterService');
 const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
+export type RegisterCommandBody = {
+  // eslint-disable-next-line camelcase
+  trigger_id: string,
+  // eslint-disable-next-line camelcase
+  channel_name: string,
+}
+
 @Service()
-export class RegisterService implements GrowiCommandProcessor, GrowiInteractionProcessor<void> {
+export class RegisterService implements GrowiCommandProcessor<RegisterCommandBody>, GrowiInteractionProcessor<void> {
 
   @Inject()
   orderRepository: OrderRepository;
@@ -32,7 +39,7 @@ export class RegisterService implements GrowiCommandProcessor, GrowiInteractionP
     return growiCommand.growiCommandType === 'register';
   }
 
-  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, context: RegisterCommandBody): Promise<void> {
     const { botToken } = authorizeResult;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
@@ -44,7 +51,7 @@ export class RegisterService implements GrowiCommandProcessor, GrowiInteractionP
       default_to_current_conversation: true,
     };
     await client.views.open({
-      trigger_id: body.trigger_id,
+      trigger_id: context.trigger_id,
       view: {
         type: 'modal',
         callback_id: 'register:register',
@@ -60,7 +67,7 @@ export class RegisterService implements GrowiCommandProcessor, GrowiInteractionP
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: JSON.stringify({ channel: body.channel_name }),
+        private_metadata: JSON.stringify({ channel: context.channel_name }),
 
         blocks: [
           inputBlock(conversationsSelectElement, 'conversation', 'Channel to which you want to add'),
@@ -83,8 +90,10 @@ export class RegisterService implements GrowiCommandProcessor, GrowiInteractionP
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<InteractionHandledResult<void>> {
-    const interactionHandledResult: any = initialInteractionHandledResult;
-    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
+    const interactionHandledResult: InteractionHandledResult<void> = {
+      isTerminated: false,
+    };
+    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
 
     interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     interactionHandledResult.isTerminated = true;

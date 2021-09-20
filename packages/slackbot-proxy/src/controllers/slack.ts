@@ -32,7 +32,6 @@ import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
-import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
 
 
@@ -175,12 +174,12 @@ export class SlackCtrl {
 
     // register
     if (this.registerService.shouldHandleCommand(growiCommand)) {
-      return this.registerService.processCommand(growiCommand, authorizeResult, body as {[key:string]:string});
+      return this.registerService.processCommand(growiCommand, authorizeResult, body);
     }
 
     // unregister
     if (this.unregisterService.shouldHandleCommand(growiCommand)) {
-      return this.unregisterService.processCommand(growiCommand, authorizeResult, body as {[key:string]:string});
+      return this.unregisterService.processCommand(growiCommand, authorizeResult);
     }
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
