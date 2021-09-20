@@ -1,96 +1,92 @@
-import { Request, Response } from 'express';
-// import ApiResponse from 'server/util/apiResponse';
-import Crowi from '../../crowi';
-
-// export default (crowi: Crowi) => {
 import { InAppNotification } from '../../models/in-app-notification';
 
-const actions = {} as any;
-actions.api = {} as any;
+const express = require('express');
 
-/**
-   * @api {get} /notifications.list
-   * @apiName ListNotifications
-   * @apiGroup Notification
-   *
-   * @apiParam {String} linit
-   */
-actions.api.list = function(req: Request, res: Response) {
-  const user = req.user/*  as UserDocument */;
+const router = express.Router();
 
-  const limit = 10;
-  if (req.query.limit) {
-    // limit = parseInt(req.query.limit, 10);
-  }
 
-  const offset = 0;
-  if (req.query.offset) {
-    // offset = parseInt(req.query.offset, 10);
-  }
+module.exports = () => {
+  const actions = {} as any;
+  actions.api = {} as any;
 
-  const requestLimit = limit + 1;
+  router.get('/list', (req, res) => {
+    const user = req.user;
 
-  InAppNotification.findLatestInAppNotificationsByUser(user._id, requestLimit, offset)
-    .then((notifications) => {
-      let hasPrev = false;
-      if (offset > 0) {
-        hasPrev = true;
-      }
+    let limit = 10;
+    if (req.query.limit) {
+      limit = parseInt(req.query.limit, 10);
+    }
 
-      let hasNext = false;
-      if (notifications.length > limit) {
-        hasNext = true;
-      }
+    let offset = 0;
+    if (req.query.offset) {
+      offset = parseInt(req.query.offset, 10);
+    }
 
-      const result = {
-        notifications: notifications.slice(0, limit),
-        hasPrev,
-        hasNext,
-      };
+    const requestLimit = limit + 1;
 
+    InAppNotification.findLatestInAppNotificationsByUser(user._id, requestLimit, offset)
+      .then((notifications) => {
+        let hasPrev = false;
+        if (offset > 0) {
+          hasPrev = true;
+        }
+
+        let hasNext = false;
+        if (notifications.length > limit) {
+          hasNext = true;
+        }
+
+        const result = {
+          notifications: notifications.slice(0, limit),
+          hasPrev,
+          hasNext,
+        };
+
+        return res.apiv3(result);
+      })
+      .catch((err) => {
+        return res.apiv3Err(err);
+      });
+  });
+
+  router.post('/read', (req, res) => {
+    const user = req.user;
+
+    try {
+      const notification = InAppNotification.read(user);
+      const result = { notification };
       return res.apiv3(result);
-    })
-    .catch((err) => {
+    }
+    catch (err) {
       return res.apiv3Err(err);
-    });
-};
+    }
+  });
 
-actions.api.read = function(req: Request, res: Response) {
-  const user = req.user/* as UserDocument */;
+  router.post('/open', async(req, res) => {
+    const user = req.user;
+    const id = req.body.id;
 
-  try {
-    const notification = InAppNotification.read(user);
-    const result = { notification };
-    return res.apiv3(result);
-  }
-  catch (err) {
-    return res.apiv3Err(err);
-  }
-};
+    try {
+      const notification = await InAppNotification.open(user, id);
+      const result = { notification };
+      return res.apiv3(result);
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
 
-actions.api.open = async function(req: Request, res: Response) {
-  const user = req.user/* as UserDocument */;
-  const id = req.body.id;
+  router.get('/status', async(req, res) => {
+    const user = req.user;
 
-  try {
-    const notification = await InAppNotification.open(user, id);
-    const result = { notification };
-    return res.apiv3(result);
-  }
-  catch (err) {
-    return res.apiv3Err(err);
-  }
-};
+    try {
+      const count = await InAppNotification.getUnreadCountByUser(user._id);
+      const result = { count };
+      return res.apiv3(result);
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
 
-actions.api.status = async function(req: Request, res: Response) {
-  const user = req.user/* as UserDocument */;
-
-  try {
-    const count = await InAppNotification.getUnreadCountByUser(user._id);
-    const result = { count };
-    return res.apiv3(result);
-  }
-  catch (err) {
-    return res.apiv3Err(err);
-  }
 };
