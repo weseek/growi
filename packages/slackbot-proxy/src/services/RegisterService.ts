@@ -158,6 +158,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
   ): Promise<void> {
 
     const serverUri = process.env.SERVER_URI;
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const blocks: Block[] = [];
 
@@ -169,7 +170,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
       blocks.push(markdownSectionBlock('*Test Connection* to complete the registration in your GROWI.'));
       blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage GROWI commands'));
       blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respond(responseUrl, {
         text: 'Proxy URL',
         blocks,
       });
@@ -188,7 +189,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
     blocks.push(markdownSectionBlock('And *Test Connection* to complete the registration in your GROWI.'));
     blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage GROWI commands'));
     blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    await respond(responseUrl, {
       text: 'Proxy URL',
       blocks,
     });

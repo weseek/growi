@@ -121,11 +121,12 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ):Promise<void> {
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const selectedOptions = interactionPayloadAccessor.getStateValues()?.growiUris?.selectedGrowiUris?.selected_options;
     if (!Array.isArray(selectedOptions)) {
       logger.error('Unregisteration failed: Mulformed object was detected\n');
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respond(responseUrl, {
         text: 'Unregistration failed',
         blocks: [
           markdownSectionBlock('Error occurred while unregistering GROWI.'),
@@ -143,7 +144,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
     }
     catch (err) {
       logger.error('Unregisteration failed:\n', err);
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respond(responseUrl, {
         text: 'Unregistration failed',
         blocks: [
           markdownSectionBlock('Error occurred while unregistering GROWI.'),
@@ -162,7 +163,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
     }
     catch (err) {
       logger.error('Unregisteration failed\n', err);
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respond(responseUrl, {
         text: 'Unregistration failed',
         blocks: [
           markdownSectionBlock('Error occurred while unregistering GROWI.'),
@@ -171,7 +172,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
       return;
     }
 
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    await respond(responseUrl, {
       text: 'Unregistration completed',
       blocks: [
         markdownSectionBlock(`Unregistered *${deleteResult.affected}* GROWI from this workspace.`),
