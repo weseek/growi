@@ -65,4 +65,14 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
     return { actionId, callbackId };
   }
 
+  getChannelId(): string | null {
+    // private_metadata should have the channelId parameter when view_submission
+    const privateMetadata = this.getViewPrivateMetaData();
+    if (privateMetadata != null && privateMetadata.channelId != null) {
+      return privateMetadata.channelId;
+    }
+
+    return this.payload.channel.id;
+  }
+
 }

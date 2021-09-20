@@ -23,6 +23,7 @@ export type SelectGrowiCommandBody = {
 type SelectValue = {
   growiCommand: GrowiCommand,
   growiUri: any,
+  sendCommandBody: any,
 }
 
 export type SelectedGrowiInformation = {
@@ -40,10 +41,11 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
   @Inject()
   installationRepository: InstallationRepository;
 
-  private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string): SelectValue {
+  private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string, sendCommandBody: any): SelectValue {
     return {
       growiCommand,
       growiUri,
+      sendCommandBody,
     };
   }
 
@@ -58,7 +60,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     const growiUrls = context.growiUrisForSingleUse;
 
     const chooseSection = growiUrls.map((growiUri) => {
-      const value = this.generateGrowiSelectValue(growiCommand, growiUri);
+      const value = this.generateGrowiSelectValue(growiCommand, growiUri, context);
       return ({
         type: 'section',
         text: {
@@ -118,7 +120,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     const interactionHandledResult: InteractionHandledResult<SelectedGrowiInformation> = {
       isTerminated: false,
     };
-    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
 
     const selectGrowiInformation = await this.handleSelectInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     if (selectGrowiInformation != null) {
@@ -135,16 +137,22 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<SelectedGrowiInformation | null> {
     const { trigger_id: triggerId } = interactionPayload;
-
-    // TAICHI TODO: FIX THIS
-    console.dir(interactionPayloadAccessor.getStateValues());
-    console.dir(interactionPayloadAccessor.getStateValues()?.select_growi?.growi_app);
-    const { value: growiUri } = interactionPayloadAccessor.getStateValues()?.select_growi?.growi_app?.selected_option;
-
-    const parsedPrivateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
-    const { growiCommand, body: sendCommandBody } = parsedPrivateMetadata;
-
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
+
+    const selectGrowiValue = interactionPayloadAccessor.firstAction()?.value;
+    if (selectGrowiValue == null) {
+      logger.error('Growi command failed: growiCommand and body params are required in private_metadata.');
+      await respond(responseUrl, {
+        text: 'Growi command failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while processing GROWI command.'),
+        ],
+      });
+      return null;
+    }
+    const { growiUri, growiCommand } = JSON.parse(selectGrowiValue);
+
+    const { sendCommandBody } = JSON.parse(selectGrowiValue);
 
     if (growiCommand == null || sendCommandBody == null) {
       logger.error('Growi command failed: growiCommand and body params are required in private_metadata.');

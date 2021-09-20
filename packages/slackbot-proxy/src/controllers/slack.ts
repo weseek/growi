@@ -37,7 +37,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
-const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:string, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
+const postNotAllowedMessage = async(responseUrl, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
     return '\n'
@@ -47,10 +47,8 @@ const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:s
   const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
 
-  await client.chat.postEphemeral({
+  await axios.post(responseUrl, {
     text: 'Error occured.',
-    channel: channelId,
-    user: userId,
     blocks: [
       markdownSectionBlock('*None of GROWI permitted the command.*'),
       markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
@@ -354,9 +352,7 @@ export class SlackCtrl {
     }
 
     if (relations.length === disallowedGrowiUrls.size) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, interactionPayload.channel.id, interactionPayload.user.id, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
     }
 
     /*

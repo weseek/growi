@@ -93,7 +93,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
     const interactionHandledResult: InteractionHandledResult<void> = {
       isTerminated: false,
     };
-    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
+    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
 
     interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     interactionHandledResult.isTerminated = true;
