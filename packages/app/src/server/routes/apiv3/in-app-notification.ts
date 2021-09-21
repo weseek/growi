@@ -21,6 +21,12 @@ module.exports = () => {
 
     const requestLimit = limit + 1;
 
+
+    /**
+     * TODO: GW-7482
+     *   -  Replace then/catch to async/awai
+     *   -  Use mongoose-paginate-v2 related to paging
+     */
     InAppNotification.findLatestInAppNotificationsByUser(user._id, requestLimit, offset)
       .then((notifications) => {
         let hasPrev = false;
