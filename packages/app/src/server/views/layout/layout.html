@@ -12,6 +12,14 @@
 
   <meta name="apple-mobile-web-app-title" content="{{ appService.getAppTitle() | preventXss }}">
 
+  {% if page %}
+    <meta property="og:site_name" content="{{ appService.getAppTitle() }}">
+    <meta property="og:title" content="{{ page.path }}"/>
+    <meta property="og:url" content="{{ appService.getSiteUrl() }}/{{ page.id }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="{{ appService.getSiteUrl() }}/ogp/{{ page.id }}" />
+  {% endif %}
+
   {{ getConfig('crowi', 'customize:header') | default('') }}
 
   {% include '../widget/headers/favicon.html' %}
