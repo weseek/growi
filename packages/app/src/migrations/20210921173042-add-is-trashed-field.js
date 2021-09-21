@@ -25,7 +25,6 @@ module.exports = {
 
     if (requests.length > 0) {
       await db.collection('pagetagrelations').bulkWrite(requests);
-      // throw new Error('error!');
     }
 
     logger.info('Migration has successfully applied');
