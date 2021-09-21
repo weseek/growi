@@ -5,7 +5,7 @@ import {
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
   respond, GrowiCommandProcessor, GrowiInteractionProcessor,
-  getActionIdAndCallbackIdFromPayLoad, getInteractionIdRegexpFromCommandName, InteractionHandledResult,
+  getInteractionIdRegexpFromCommandName, InteractionHandledResult, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { OrderRepository } from '~/repositories/order';
@@ -79,21 +79,22 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  shouldHandleInteraction(interactionPayload: any): boolean {
-    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+  shouldHandleInteraction(interactionPayloadAccessor: InteractionPayloadAccessor): boolean {
+    const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('register');
     return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
   }
 
   async processInteraction(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult: AuthorizeResult, interactionPayload: any,
+      authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<InteractionHandledResult<void>> {
     const interactionHandledResult: InteractionHandledResult<void> = {
       isTerminated: false,
     };
-    if (!this.shouldHandleInteraction(interactionPayload)) return interactionHandledResult;
-    interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload);
+    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
+
+    interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     interactionHandledResult.isTerminated = true;
 
     return interactionHandledResult as InteractionHandledResult<void>;
@@ -101,15 +102,15 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
 
   async handleRegisterInteraction(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult: AuthorizeResult, payload: any,
+      authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<void> {
     try {
-      await this.insertOrderRecord(authorizeResult, payload);
+      await this.insertOrderRecord(authorizeResult, interactionPayloadAccessor);
     }
     catch (err) {
       if (err instanceof InvalidUrlError) {
         logger.error('Failed to register:\n', err);
-        await respond(payload.response_urls[0].response_url, {
+        await respond(interactionPayloadAccessor.getResponseUrl(), {
           text: 'Invalid URL',
           blocks: [
             markdownSectionBlock('Please enter a valid URL'),
@@ -121,14 +122,14 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
       logger.error('Error occurred while insertOrderRecord:\n', err);
     }
 
-    await this.notifyServerUriToSlack(payload);
+    await this.notifyServerUriToSlack(interactionPayloadAccessor);
   }
 
   async insertOrderRecord(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult: AuthorizeResult, payload: any,
+      authorizeResult: AuthorizeResult, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<void> {
-    const inputValues = payload.view.state.values;
+    const inputValues = interactionPayloadAccessor.getStateValues();
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
@@ -152,10 +153,11 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      payload: any,
+      interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<void> {
 
     const serverUri = process.env.SERVER_URI;
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const blocks: Block[] = [];
 
@@ -167,7 +169,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
       blocks.push(markdownSectionBlock('*Test Connection* to complete the registration in your GROWI.'));
       blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage GROWI commands'));
       blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-      await respond(payload.response_urls[0].response_url, {
+      await respond(responseUrl, {
         text: 'Proxy URL',
         blocks,
       });
@@ -186,7 +188,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
     blocks.push(markdownSectionBlock('And *Test Connection* to complete the registration in your GROWI.'));
     blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage GROWI commands'));
     blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-    await respond(payload.response_urls[0].response_url, {
+    await respond(responseUrl, {
       text: 'Proxy URL',
       blocks,
     });

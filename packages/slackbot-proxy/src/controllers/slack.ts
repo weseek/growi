@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult, WebClient } from '@slack/web-api';
+import { WebAPICallResult } from '@slack/web-api';
 import { Installation } from '@slack/oauth';
 
 
@@ -13,7 +13,6 @@ import {
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
-  getActionIdAndCallbackIdFromPayLoad,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -38,7 +37,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
-const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:string, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
+const postNotAllowedMessage = async(responseUrl, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
     return '\n'
@@ -48,10 +47,8 @@ const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:s
   const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
 
-  await client.chat.postEphemeral({
+  await axios.post(responseUrl, {
     text: 'Error occured.',
-    channel: channelId,
-    user: userId,
     blocks: [
       markdownSectionBlock('*None of GROWI permitted the command.*'),
       markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
@@ -124,12 +121,22 @@ export class SlackCtrl {
     const results = await Promise.allSettled(promises);
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
-    }
-    catch (err) {
-      logger.error(err);
+    // TODO: USE response_url in postEphemeralErrors GW-7508
+    // try {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    // }
+    if (rejectedResults.length > 0) {
+      logger.error('Growi command failed: No installation found.');
+      await respond(growiCommand.responseUrl, {
+        text: 'Growi command failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while processing GROWI command.'),
+        ],
+      });
     }
   }
 
@@ -289,7 +296,9 @@ export class SlackCtrl {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
 
-    const { body, authorizeResult, interactionPayload } = req;
+    const {
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+    } = req;
 
     // pass
     if (body.ssl_check != null) {
@@ -300,17 +309,17 @@ export class SlackCtrl {
     }
 
     // register
-    const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload);
+    const registerResult = await this.registerService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     if (registerResult.isTerminated) return;
     // unregister
-    const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload);
+    const unregisterResult = await this.unregisterService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     if (unregisterResult.isTerminated) return;
 
     // immediate response to slack
     res.send();
 
     // select growi
-    const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload);
+    const selectGrowiResult = await this.selectGrowiService.processInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
     const selectedGrowiInformation = selectGrowiResult.result;
     if (!selectGrowiResult.isTerminated && selectedGrowiInformation != null) {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
@@ -326,7 +335,7 @@ export class SlackCtrl {
       .getMany();
 
     if (relations.length === 0) {
-      return res.json({
+      return respond(interactionPayloadAccessor.getResponseUrl(), {
         blocks: [
           markdownSectionBlock('*No relation found.*'),
           markdownSectionBlock('Run `/growi register` first.'),
@@ -334,12 +343,9 @@ export class SlackCtrl {
       });
     }
 
-    const { actionId, callbackId } = getActionIdAndCallbackIdFromPayLoad(interactionPayload);
+    const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
 
-    let privateMeta: any;
-    if (interactionPayload.view != null) {
-      privateMeta = JSON.parse(interactionPayload?.view?.private_metadata);
-    }
+    const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
 
     const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
@@ -356,9 +362,7 @@ export class SlackCtrl {
     }
 
     if (relations.length === disallowedGrowiUrls.size) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, interactionPayload.channel.id, interactionPayload.user.id, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
     }
 
     /*

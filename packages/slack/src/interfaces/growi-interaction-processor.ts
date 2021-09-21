@@ -1,17 +1,17 @@
 import { AuthorizeResult } from '@slack/oauth';
+import { InteractionPayloadAccessor } from '../utils/interaction-payload-accessor';
+
 
 export interface InteractionHandledResult<V> {
   result?: V;
   isTerminated: boolean;
 }
 
-export type HandlerName = string;
-
 export interface GrowiInteractionProcessor<V> {
 
-  shouldHandleInteraction(interactionPayload: any): boolean;
+  shouldHandleInteraction(interactionPayloadAccessor: InteractionPayloadAccessor): boolean;
 
-  // TODO: pass reqFromSlack or accessor instead of interactionPayload and use accessor to interact GW-7496
-  processInteraction(authorizeResult: AuthorizeResult, interactionPayload: any): Promise<InteractionHandledResult<V>>;
+  processInteraction(
+    authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<InteractionHandledResult<V>>;
 
 }
