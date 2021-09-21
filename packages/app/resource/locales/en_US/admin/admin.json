@@ -349,6 +349,8 @@
       "allow_specified_long": "Allow specified (The command is allowed from only specified channels)",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
+      "test_connection_only_public_channel":"Please test connection in a public channel",
+
       "error_check_logs_below": "An error has occurred. Please check the logs below.",
       "send_message_to_slack_work_space": "Send message to Slack work space.",
       "add_slack_workspace": "Add a Slack Workspace"

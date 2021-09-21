@@ -138,6 +138,9 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
+        <p className="text-center text-warning">
+          <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+        </p>
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
@@ -160,6 +163,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             </button>
           </form>
         </div>
+        <div className="d-flex justify-content-center mt-3">
+
+        </div>
+
 
         <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
 
