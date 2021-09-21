@@ -163,10 +163,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             </button>
           </form>
         </div>
-        <div className="d-flex justify-content-center mt-3">
-
-        </div>
-
 
         <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
 
