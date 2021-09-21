@@ -262,7 +262,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+      await handler.handleBlockActions(client, interactionPayload, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -277,7 +277,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+      await handler.handleViewSubmission(client, interactionPayload, handlerMethodName);
     }
     catch (err) {
       throw err;
