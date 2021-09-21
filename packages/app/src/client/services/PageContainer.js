@@ -343,6 +343,12 @@ export default class PageContainer extends Container {
     }
   }
 
+  // TODO  : params
+  updateStateAfterTagAdded() {
+    console.log('params to get for updateStateTadAdded is...');
+    // this.setState();
+  }
+
   /**
    * save success handler
    * @param {object} page Page instance
