@@ -154,7 +154,9 @@
       "stale_notification": "Display notification on stale pages",
       "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
       "show_all_reply_comments": "Show all reply comments",
-      "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted."
+      "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
+      "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
     },
     "code_highlight": "Code highlight",
     "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",
