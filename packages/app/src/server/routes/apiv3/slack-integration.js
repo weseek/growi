@@ -133,6 +133,7 @@ module.exports = (crowi) => {
 
   async function handleCommands(req, res, client) {
     const { body } = req;
+    const { growiCommand } = body;
 
     if (body.text == null) {
       return 'No text.';
