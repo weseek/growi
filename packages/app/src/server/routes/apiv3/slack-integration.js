@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
-const { verifySlackRequest, parseSlashCommand } = require('@growi/slack');
+const { verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -120,6 +120,17 @@ module.exports = (crowi) => {
     return next();
   };
 
+  const parseSlackInteractionRequest = (req, res, next) => {
+    if (req.body.payload == null) {
+      return next(new Error('The payload is not in the request from slack or proxy.'));
+    }
+
+    req.interactionPayload = JSON.parse(req.body.payload);
+    req.interactionPayloadAccessor = new InteractionPayloadAccessor(req.interactionPayload);
+
+    return next();
+  };
+
   async function handleCommands(req, res, client) {
     const { body } = req;
 
@@ -174,14 +185,14 @@ module.exports = (crowi) => {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    const payload = JSON.parse(req.body.payload);
-    const { type } = payload;
+    const { interactionPayload, interactionPayloadAccessor } = req;
+    const { type } = interactionPayload;
 
     try {
       switch (type) {
         case 'block_actions':
           try {
-            await crowi.slackIntegrationService.handleBlockActionsRequest(client, payload);
+            await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);
@@ -189,7 +200,7 @@ module.exports = (crowi) => {
           break;
         case 'view_submission':
           try {
-            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, payload);
+            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);
@@ -205,12 +216,12 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, checkInteractionsPermission, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleInteractions(req, res, client);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkInteractionsPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
 
