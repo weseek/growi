@@ -8,6 +8,7 @@ import UserSettings from './UserSettings';
 import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import ApiSettings from './ApiSettings';
+import { EditorSettings } from './EditorSettings';
 
 const PersonalSettings = (props) => {
 
@@ -38,6 +39,12 @@ const PersonalSettings = (props) => {
         Content: ApiSettings,
         i18n: t('API Settings'),
         index: 3,
+      },
+      editor_settings: {
+        Icon: () => <i className="icon-fw icon-pencil"></i>,
+        Content: EditorSettings,
+        i18n: t('editor_settings.editor_settings'),
+        index: 4,
       },
     };
   }, [t]);

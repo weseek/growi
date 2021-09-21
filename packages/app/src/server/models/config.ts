@@ -129,6 +129,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:showPageLimitationXL' : 20,
   'customize:isEnabledStaleNotification': false,
   'customize:isAllReplyShown': false,
+  'customize:isSearchScopeChildrenAsDefault': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,
@@ -205,6 +206,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
     isAllReplyShown: crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
+    isSearchScopeChildrenAsDefault: crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
     xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
@@ -216,7 +218,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
     isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
     customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
-    hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
+    isSlackConfigured: crowi.slackIntegrationService.isSlackConfigured,
     env: {
       PLANTUML_URI: env.PLANTUML_URI || null,
       BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,

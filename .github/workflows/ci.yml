@@ -5,7 +5,8 @@ on:
     branches-ignore:
       - release/**
       - rc/**
-      - tmp/**
+      - chore/**
+      - support/prepare-v**
 
 jobs:
 
@@ -18,30 +19,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -49,6 +34,7 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
     - name: lerna run lint for plugins
       run: |
         yarn lerna run lint --scope @growi/plugin-*
@@ -86,30 +72,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -117,6 +87,7 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
     - name: yarn test
       working-directory: ./packages/app
       run: |
@@ -162,46 +133,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get Date
-      id: date
-      run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules/.cache/hard-source
-      uses: actions/cache@v2
-      with:
-        path: node_modules/.cache
-        key: ${{ runner.OS }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -209,6 +148,7 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
     - name: yarn dev:ci
       working-directory: ./packages/app
       run: |
@@ -247,37 +187,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Get Date
-      id: date
-      run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
-    - name: Get yarn cache dir
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: Install dependencies
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies

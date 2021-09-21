@@ -11,18 +11,6 @@
 |![demo](https://cloud.githubusercontent.com/assets/1638767/26558936/46624c78-44e7-11e7-93f1-eda13b41a5cd.gif)|
 
 
-Install
---------
-
-1. install plugin
-
-    ```
-    $ npm install --save growi-plugin-lsx
-    ```
-
-1. build client app (see official documents)
-
-
 Usage
 ------
 

@@ -11,7 +11,8 @@ html[dark] {
   $bgcolor-global: $themecolor;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themecolor, 5%);
-  $bgcolor-highlighted: rgba($primary, 0.4);
+  $bgcolor-blinked-section: rgba($primary, 0.4);
+  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
 
   // Font colors
   $color-global: #95abba;

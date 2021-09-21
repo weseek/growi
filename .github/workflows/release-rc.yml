@@ -14,11 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup semver
-      id: semver
-      run: |
-        semver=`npm run version --silent`
-        echo "::set-output name=SEMVER::$semver"
+    - name: Retrieve information from package.json
+      uses: myrotvorets/info-from-package-json-action@0.0.2
+      id: package-json
 
     - name: Docker meta
       id: meta
@@ -26,8 +24,8 @@ jobs:
       with:
         images: weseek/growi,ghcr.io/weseek/growi
         tags: |
-          type=raw,value=${{ steps.semver.outputs.SEMVER }}
-          type=raw,value=${{ steps.semver.outputs.SEMVER }}.{{sha}}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
 
     - name: Login to docker.io registry
       run: |
@@ -55,7 +53,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./docker/Dockerfile
+        file: ./packages/app/docker/Dockerfile
         platforms: linux/amd64
         push: true
         cache-from: type=local,src=/tmp/.buildx-cache

@@ -14,6 +14,14 @@ let parentForRename1;
 let parentForRename2;
 let parentForRename3;
 let parentForRename4;
+let parentForRename5;
+let parentForRename6;
+let parentForRename7;
+let parentForRename8;
+let parentForRename9;
+
+let irrelevantPage1;
+let irrelevantPage2;
 
 let childForRename1;
 let childForRename2;
@@ -90,6 +98,48 @@ describe('PageService', () => {
       },
       {
         path: '/parentForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename5',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename6',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/level1/level2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/level1/level2/child',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/level1/level2/level2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename6-2021H1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/level1-2021H1',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -183,6 +233,14 @@ describe('PageService', () => {
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
+    parentForRename5 = await Page.findOne({ path: '/parentForRename5' });
+    parentForRename6 = await Page.findOne({ path: '/parentForRename6' });
+    parentForRename7 = await Page.findOne({ path: '/level1/level2' });
+    parentForRename8 = await Page.findOne({ path: '/level1/level2/child' });
+    parentForRename9 = await Page.findOne({ path: '/level1/level2/level2' });
+
+    irrelevantPage1 = await Page.findOne({ path: '/parentForRename6-2021H1' });
+    irrelevantPage2 = await Page.findOne({ path: '/level1-2021H1' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
@@ -232,13 +290,51 @@ describe('PageService', () => {
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
   });
 
+  describe('rename page without using renameDescendantsWithStreamSpy', () => {
+    test('rename page with different tree with isRecursively [deeper]', async() => {
+      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
+      const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
+      const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+      const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
+
+      expect(resultPage.path).toEqual(expectPage1.path);
+      expect(expectPage2.path).not.toBeNull();
+
+      // Check that pages that are not to be renamed have not been renamed
+      expect(wrongPage).toBeNull();
+    });
+
+    test('rename page with different tree with isRecursively [shallower]', async() => {
+      // setup
+      expect(await Page.findOne({ path: '/level1' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
+
+      // when
+      //   rename /level1/level2 --> /level1
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
+
+      // then
+      expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
+      // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+
+      // Check that pages that are not to be renamed have not been renamed
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
+    });
+  });
+
   describe('rename page', () => {
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     // mock new Date() and Date.now()
     advanceTo(new Date(2000, 1, 1, 0, 0, 0));
     const dateToUse = new Date();
-    const socketClientId = null;
 
     beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
@@ -255,8 +351,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename1, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename1, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
@@ -274,8 +370,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.updatedAt).toEqual(dateToUse);
@@ -293,8 +389,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
@@ -317,8 +413,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename4, testUser2, socketClientId);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename4, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
         expect(resultPage.path).toBe('/renamed4');
         expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
@@ -326,6 +422,16 @@ describe('PageService', () => {
 
         expect(redirectedFromPage).toBeNull();
         expect(redirectedFromPageRevision).toBeNull();
+      });
+
+      test('rename page with different tree with isRecursively', async() => {
+
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, {}, true);
+        const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
+        const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
+
+        expect(resultPage.path).toEqual(expectPage.path);
+        expect(wrongPage).toBeNull();
       });
 
     });
@@ -395,7 +501,6 @@ describe('PageService', () => {
       expect(redirectedFromPageRevision.body).toBe('redirect /renamed3/child');
     });
   });
-
 
   describe('duplicate page', () => {
     let duplicateDescendantsWithStreamSpy;
@@ -484,7 +589,6 @@ describe('PageService', () => {
     let pageEventSpy;
     let deleteDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
-    const socketClientId = null;
 
     beforeEach(async() => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
@@ -516,8 +620,8 @@ describe('PageService', () => {
       expect(redirectedFromPageRevision.path).toBe('/parentForDelete1');
       expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete1');
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2, socketClientId);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
     });
 
@@ -544,8 +648,8 @@ describe('PageService', () => {
       expect(redirectedFromPageRevision.path).toBe('/parentForDelete2');
       expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete2');
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2, socketClientId);
-      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
 
     });
 
@@ -577,7 +681,6 @@ describe('PageService', () => {
     let pageEventSpy;
     let deleteCompletelyOperationSpy;
     let deleteCompletelyDescendantsWithStreamSpy;
-    const socketClientId = null;
 
     let deleteManyBookmarkSpy;
     let deleteManyCommentSpy;
@@ -622,7 +725,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
     });
 
 
@@ -632,7 +735,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
     });
   });
 
