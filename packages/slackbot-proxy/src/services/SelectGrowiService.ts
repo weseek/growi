@@ -22,13 +22,19 @@ export type SelectGrowiCommandBody = {
 type SelectValue = {
   growiCommand: GrowiCommand,
   growiUri: any,
-  sendCommandBody: any,
+}
+
+type SendCommandBody = {
+  // eslint-disable-next-line camelcase
+  trigger_id: string,
+  // eslint-disable-next-line camelcase
+  channel_name: string,
 }
 
 export type SelectedGrowiInformation = {
   relation: Relation,
   growiCommand: GrowiCommand,
-  sendCommandBody: any,
+  sendCommandBody: SendCommandBody,
 }
 
 @Service()
@@ -40,11 +46,10 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
   @Inject()
   installationRepository: InstallationRepository;
 
-  private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string, sendCommandBody: any): SelectValue {
+  private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string): SelectValue {
     return {
       growiCommand,
       growiUri,
-      sendCommandBody,
     };
   }
 
@@ -59,7 +64,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     const growiUrls = context.growiUrisForSingleUse;
 
     const chooseSection = growiUrls.map((growiUri) => {
-      const value = this.generateGrowiSelectValue(growiCommand, growiUri, context);
+      const value = this.generateGrowiSelectValue(growiCommand, growiUri);
       return ({
         type: 'section',
         text: {
@@ -135,7 +140,6 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<SelectedGrowiInformation | null> {
-    const { trigger_id: triggerId } = interactionPayload;
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const selectGrowiValue = interactionPayloadAccessor.firstAction()?.value;
@@ -151,9 +155,8 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     }
     const { growiUri, growiCommand } = JSON.parse(selectGrowiValue);
 
-    const { sendCommandBody } = JSON.parse(selectGrowiValue);
 
-    if (growiCommand == null || sendCommandBody == null) {
+    if (growiCommand == null) {
       logger.error('Growi command failed: growiCommand and body params are required in private_metadata.');
       await respond(responseUrl, {
         text: 'Growi command failed',
@@ -170,9 +173,6 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
         markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${growiUri} ...`),
       ],
     });
-
-    // override trigger_id
-    sendCommandBody.trigger_id = triggerId;
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     let installation: Installation | undefined;
@@ -207,6 +207,23 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
       });
       return null;
     }
+
+    // increment sendCommandBody
+    const channelName = interactionPayloadAccessor.getChannelName();
+    if (channelName == null) {
+      logger.error('Growi command failed: channelName not found.');
+      await respond(responseUrl, {
+        text: 'Growi command failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while processing GROWI command.'),
+        ],
+      });
+      return null;
+    }
+    const sendCommandBody: SendCommandBody = {
+      trigger_id: interactionPayload.trigger_id,
+      channel_name: channelName,
+    };
 
     return {
       relation,

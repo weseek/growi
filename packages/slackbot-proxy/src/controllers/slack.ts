@@ -121,12 +121,22 @@ export class SlackCtrl {
     const results = await Promise.allSettled(promises);
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
-    }
-    catch (err) {
-      logger.error(err);
+    // TODO: USE response_url in postEphemeralErrors GW-7508
+    // try {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    // }
+    if (rejectedResults.length > 0) {
+      logger.error('Growi command failed: No installation found.');
+      await respond(growiCommand.responseUrl, {
+        text: 'Growi command failed',
+        blocks: [
+          markdownSectionBlock('Error occurred while processing GROWI command.'),
+        ],
+      });
     }
   }
 

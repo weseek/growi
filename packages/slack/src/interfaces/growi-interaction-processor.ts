@@ -9,7 +9,7 @@ export interface InteractionHandledResult<V> {
 
 export interface GrowiInteractionProcessor<V> {
 
-  shouldHandleInteraction(interactionPayloadAccessor: any): boolean;
+  shouldHandleInteraction(interactionPayloadAccessor: InteractionPayloadAccessor): boolean;
 
   processInteraction(
     authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<InteractionHandledResult<V>>;
