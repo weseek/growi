@@ -122,7 +122,7 @@ module.exports = (crowi) => {
 
   const parseSlackInteractionRequest = (req, res, next) => {
     if (req.body.payload == null) {
-      return next();
+      return next(new Error('The payload is not in the request from slack or proxy.'));
     }
 
     req.interactionPayload = JSON.parse(req.body.payload);
