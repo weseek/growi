@@ -51,15 +51,18 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-      isLiked: false,
       isBookmarked: false,
+      sumOfBookmarks: 0,
+
       seenUsers: [],
       seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
-      likerUsers: [],
+      isLiked: false,
+      likers: [],
+      likerIds: mainContent.getAttribute('data-page-ids-of-likers'),
       sumOfLikers: 0,
-      sumOfBookmarks: 0,
+
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
@@ -109,7 +112,7 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+    this.checkAndUpdateImageUrlCached(this.state.likers);
 
     const { isSharedUser } = this.appContainer;
 
@@ -119,6 +122,7 @@ export default class PageContainer extends Container {
     if (isAbleToGetAttachedInformationAboutPages) {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
+      this.retrieveLikers();
       this.retrieveBookmarkInfo();
     }
 
@@ -271,6 +275,20 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(users);
   }
 
+  async retrieveLikers() {
+    console.log({ l: this.state.likerIds });
+    let likers = [];
+    if (this.state.likerIds !== '') {
+      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.likerIds });
+      console.log({ users });
+      likers = users;
+    }
+    console.log({ likers });
+
+    this.setState({ likers });
+    this.checkAndUpdateImageUrlCached(likers);
+  }
+
   async retrieveLikeInfo() {
     const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
     const { sumOfLikers, isLiked } = res.data;
@@ -282,11 +300,23 @@ export default class PageContainer extends Container {
   }
 
   async toggleLike() {
-    const bool = !this.state.isLiked;
-    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
-    this.setState({ isLiked: bool });
+    {
+      const bool = !this.state.isLiked;
+      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
+      this.setState({ isLiked: bool });
 
-    return this.retrieveLikeInfo();
+      if (bool) {
+        this.setState({
+          likerIds: [...this.state.likerIds.split(',').filter(id => id !== ''), this.appContainer.currentUserId].join(','),
+        });
+      }
+      else {
+        this.setState({ likerIds: this.state.likerIds.split(',').filter(id => id !== '' && id !== this.appContainer.currentUserId).join(',') });
+      }
+    }
+
+    await this.retrieveLikeInfo();
+    return this.retrieveLikers();
   }
 
   async retrieveBookmarkInfo() {
