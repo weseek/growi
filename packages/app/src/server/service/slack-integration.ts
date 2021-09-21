@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
-import { generateWebClient, markdownSectionBlock, SlackbotType } from '@growi/slack';
+import {
+  generateWebClient, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+} from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
@@ -253,14 +255,14 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
   }
 
-  async handleBlockActionsRequest(client, payload) {
-    const { action_id: actionId } = payload.actions[0];
+  async handleBlockActionsRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+    const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      await handler.handleBlockActions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -268,14 +270,14 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async handleViewSubmissionRequest(client, payload) {
-    const { callback_id: callbackId } = payload.view;
+  async handleViewSubmissionRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+    const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      await handler.handleBlockActions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;
