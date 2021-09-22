@@ -345,11 +345,10 @@ export default class PageContainer extends Container {
 
   // TODO : takes tagsRelation/tags models or date
   updateStateAfterTagAdded() {
-    // const newState = {
-    //   updatedAt: new Date().getTime(),
-    // };
-    // console.log(`date is :${newState.updatedAt}`);
-    // this.setState(newState);
+    const newState = {
+      updatedAt: new Date().getTime(),
+    };
+    this.setState(newState);
   }
 
   /**
