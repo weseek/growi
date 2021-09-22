@@ -147,6 +147,7 @@ module.exports = function(crowi, app) {
       const page = await Page.findById(pageId);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
+
       tagEvent.emit('update', page, tags);
     }
     catch (err) {

@@ -55,8 +55,10 @@ class TagLabels extends React.Component {
     if (editorMode === 'edit') {
       return editorContainer.setState({ tags: newTags });
     }
+
     try {
       const { tags } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
+
       // update pageContainer.state
       pageContainer.setState({ tags });
       // update editorContainer.state
