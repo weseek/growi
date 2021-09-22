@@ -26,7 +26,7 @@ module.exports = (crowi) => {
   router.use('/search', require('./search')(crowi));
 
 
-  router.use('/in-app-notification', inAppNotification);
+  router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
   router.use('/personal-setting', require('./personal-setting')(crowi));
 
@@ -55,7 +55,6 @@ module.exports = (crowi) => {
   router.use('/staffs', require('./staffs')(crowi));
 
   router.use('/forgot-password', require('./forgot-password')(crowi));
-  router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
   return router;
 };
