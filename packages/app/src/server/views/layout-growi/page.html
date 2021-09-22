@@ -1,6 +1,7 @@
 {% extends 'base/layout.html' %}
 
 {% block html_additional_headers %}
+  <!-- OGP -->
   <meta property="og:site_name" content="{{ appService.getAppTitle() }}">
   <meta property="og:title" content="{{ page.path }}"/>
   <meta property="og:url" content="{{ appService.getSiteUrl() }}/{{ page.id }}" />
