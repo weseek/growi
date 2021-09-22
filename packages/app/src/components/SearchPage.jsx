@@ -92,13 +92,14 @@ class SearchPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="search-page-input sps sps--abv">
+        {/* 2021/9/22 TODO: Move to SearchResult */}
+        {/* <div className="search-page-input sps sps--abv">
           <SearchPageForm
             t={this.props.t}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
           />
-        </div>
+        </div> */}
         <SearchResult
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
