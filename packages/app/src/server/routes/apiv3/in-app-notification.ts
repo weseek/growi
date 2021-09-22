@@ -5,8 +5,12 @@ const express = require('express');
 const router = express.Router();
 
 
-module.exports = () => {
-  router.get('/list', (req, res) => {
+module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const csrf = require('../../middlewares/csrf')(crowi);
+
+  router.get('/list', accessTokenParser, loginRequiredStrictly, csrf, (req, res) => {
     const user = req.user;
 
     let limit = 10;
@@ -25,7 +29,7 @@ module.exports = () => {
     /**
      * TODO: GW-7482
      *   -  Replace then/catch to async/awai
-     *   -  Use mongoose-paginate-v2 related to paging
+     *   -  Use mongoose-paginate-v2 for paging
      */
     InAppNotification.findLatestInAppNotificationsByUser(user._id, requestLimit, offset)
       .then((notifications) => {
@@ -52,7 +56,7 @@ module.exports = () => {
       });
   });
 
-  router.get('/status', async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const user = req.user;
 
     try {
@@ -65,7 +69,7 @@ module.exports = () => {
     }
   });
 
-  router.post('/read', (req, res) => {
+  router.post('/read', accessTokenParser, loginRequiredStrictly, csrf, (req, res) => {
     const user = req.user;
 
     try {
@@ -78,7 +82,7 @@ module.exports = () => {
     }
   });
 
-  router.post('/open', async(req, res) => {
+  router.post('/open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const user = req.user;
     const id = req.body.id;
 

@@ -1,5 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import inAppNotification from './in-app-notification';
 
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
 
@@ -56,6 +55,7 @@ module.exports = (crowi) => {
   router.use('/staffs', require('./staffs')(crowi));
 
   router.use('/forgot-password', require('./forgot-password')(crowi));
+  router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
   return router;
 };
