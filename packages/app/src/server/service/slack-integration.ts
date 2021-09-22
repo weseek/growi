@@ -7,8 +7,6 @@ import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, respond, SlackbotType,
 } from '@growi/slack';
 
-// eslint-disable-next-line no-restricted-imports
-import axios from 'axios';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -260,7 +258,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleInteractions(client, interactionPayload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -275,7 +273,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleInteractions(client, interactionPayload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;

@@ -13,7 +13,7 @@ class BaseSlackCommandHandler {
   /**
    * Handle interactions
    */
-  handleInteractions(client, payload, handlerMethodName) { throw new Error('Implement this') }
+  handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) { throw new Error('Implement this') }
 
 }
 
