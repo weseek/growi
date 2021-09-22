@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
+const { markdownSectionBlock, inputSectionBlock, respond } = require('@growi/slack');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
 
@@ -39,15 +39,24 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.handleInteractions = async function(client, payload, handlerMethodName) {
-    await this[handlerMethodName](client, payload);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.createPage = async function(client, payload) {
-    const path = payload.view.state.values.path.path_input.value;
-    const channelId = JSON.parse(payload.view.private_metadata).channelId;
-    const contentsBody = payload.view.state.values.contents.contents_input.value;
-    await createPageService.createPageInGrowi(client, payload, path, channelId, contentsBody);
+  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor) {
+    const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
+    const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
+    if (privateMetadata == null) {
+      await respond(interactionPayloadAccessor.getResponseUrl(), {
+        text: 'Error occurred',
+        blocks: [
+          markdownSectionBlock('Failed to create a page.'),
+        ],
+      });
+      return;
+    }
+    const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
   };
 
   return handler;

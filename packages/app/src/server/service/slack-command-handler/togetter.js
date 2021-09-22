@@ -23,31 +23,31 @@ module.exports = (crowi) => {
     return;
   };
 
-  handler.handleInteractions = async function(client, payload, handlerMethodName) {
-    await this[handlerMethodName](client, payload);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.cancel = async function(client, payload) {
-    const responseUrl = payload.response_url;
-    await deleteOriginal(responseUrl, {
+  handler.cancel = async function(client, payload, interactionPayloadAccessor) {
+    await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
       delete_original: true,
     });
   };
 
-  handler.createPage = async function(client, payload) {
+  handler.createPage = async function(client, payload, interactionPayloadAccessor) {
     let result = [];
-    const channel = payload.channel.id;
+    const channelId = payload.channel.id; // this must exist since the type is always block_actions
+    const userChannelId = payload.user.id;
     try {
       // validate form
-      const { path, oldest, newest } = await this.togetterValidateForm(client, payload);
+      const { path, oldest, newest } = await this.togetterValidateForm(client, payload, interactionPayloadAccessor);
       // get messages
-      result = await this.togetterGetMessages(client, payload, channel, path, newest, oldest);
+      result = await this.togetterGetMessages(client, channelId, newest, oldest);
       // clean messages
       const cleanedContents = await this.togetterCleanMessages(result.messages);
 
       const contentsBody = cleanedContents.join('');
       // create and send url message
-      await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
+      await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
     }
     catch (err) {
       logger.error('Error occured by togetter.');
@@ -55,14 +55,14 @@ module.exports = (crowi) => {
     }
   };
 
-  handler.togetterValidateForm = async function(client, payload) {
+  handler.togetterValidateForm = async function(client, payload, interactionPayloadAccessor) {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
-    const path = payload.state.values.page_path.page_path.value;
-    let oldest = payload.state.values.oldest.oldest.value;
-    let newest = payload.state.values.newest.newest.value;
+    const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
+    let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
+    let newest = interactionPayloadAccessor.getStateValues()?.newest.newest.value;
     oldest = oldest.trim();
     newest = newest.trim();
-    if (!path) {
+    if (path == null) {
       throw new SlackbotError({
         method: 'postMessage',
         to: 'dm',
@@ -108,9 +108,9 @@ module.exports = (crowi) => {
     return { path, oldest, newest };
   };
 
-  handler.togetterGetMessages = async function(client, payload, channel, path, newest, oldest) {
+  handler.togetterGetMessages = async function(client, channelId, newest, oldest) {
     const result = await client.conversations.history({
-      channel,
+      channel: channelId,
       newest,
       oldest,
       limit: 100,
@@ -118,7 +118,7 @@ module.exports = (crowi) => {
     });
 
     // return if no message found
-    if (!result.messages.length) {
+    if (result.messages.length === 0) {
       throw new SlackbotError({
         method: 'postMessage',
         to: 'dm',
@@ -156,12 +156,19 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.togetterCreatePageAndSendPreview = async function(client, payload, path, channel, contentsBody) {
+  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody) {
     try {
-      await createPageService.createPageInGrowi(client, payload, path, channel, contentsBody);
+      await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+    }
+    catch (err) {
+      logger.error('Error occurred while creating a page.');
+      throw err;
+    }
+
+    try {
       // send preview to dm
       await client.chat.postMessage({
-        channel: payload.user.id,
+        channel: userChannelId,
         text: 'Preview from togetter command',
         blocks: [
           markdownSectionBlock('*Preview*'),
@@ -169,11 +176,6 @@ module.exports = (crowi) => {
           markdownSectionBlock(contentsBody),
           divider(),
         ],
-      });
-      // dismiss message
-      const responseUrl = payload.response_url;
-      await deleteOriginal(responseUrl, {
-        delete_original: true,
       });
     }
     catch (err) {
