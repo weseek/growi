@@ -14,7 +14,7 @@ export const DownloadDictModal: FC = () => {
         Warning
       </ModalHeader>
       <ModalBody>
-        Are you sure you want to download the dictionary file?
+        {t('modal_enable_textlint.confirm_download_dict_and_enable_textlint')}
       </ModalBody>
       <ModalFooter>
         <button
@@ -29,7 +29,7 @@ export const DownloadDictModal: FC = () => {
           className="btn btn-outline-primary ml-3"
           onClick={() => console.log('button')}
         >
-          {t('Enable')}
+          {t('modal_enable_textlint.enable_textlint')}
         </button>
       </ModalFooter>
     </Modal>
