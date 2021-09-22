@@ -16,6 +16,7 @@ import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
+import { DownloadDictModal } from './DownloadDictModal';
 
 import pasteHelper from './PasteHelper';
 
@@ -366,6 +367,8 @@ class Editor extends AbstractEditor {
         }
 
         { this.renderCheatsheetModal() }
+
+        <DownloadDictModal />
 
       </div>
     );
