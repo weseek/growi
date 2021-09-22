@@ -3,6 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
   inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider, respond,
+  deleteOriginal,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const axios = require('axios');
@@ -28,7 +29,7 @@ module.exports = (crowi) => {
 
   handler.cancel = async function(client, payload) {
     const responseUrl = payload.response_url;
-    await axios.post(responseUrl, {
+    await deleteOriginal(responseUrl, {
       delete_original: true,
     });
   };
@@ -171,7 +172,7 @@ module.exports = (crowi) => {
       });
       // dismiss message
       const responseUrl = payload.response_url;
-      axios.post(responseUrl, {
+      await deleteOriginal(responseUrl, {
         delete_original: true,
       });
     }

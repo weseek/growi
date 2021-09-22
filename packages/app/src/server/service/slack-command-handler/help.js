@@ -1,5 +1,4 @@
 const { markdownSectionBlock, respond } = require('@growi/slack');
-const { default: axios } = require('axios');
 
 module.exports = () => {
   const BaseSlackCommandHandler = require('./slack-command-handler');

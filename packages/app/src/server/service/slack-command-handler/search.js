@@ -2,9 +2,10 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
-const { markdownSectionBlock, divider, respond } = require('@growi/slack');
+const {
+  markdownSectionBlock, divider, respond, deleteOriginal,
+} = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
-const axios = require('axios');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 10;
@@ -318,7 +319,7 @@ module.exports = (crowi) => {
   handler.dismissSearchResults = async function(client, payload) {
     const { response_url: responseUrl } = payload;
 
-    return axios.post(responseUrl, {
+    return deleteOriginal(responseUrl, {
       delete_original: true,
     });
   };
