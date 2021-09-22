@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 export const DownloadDictModal: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isDontAskAgainChecked, setIsDontAskAgainChecked] = useState(true);
   const { t } = useTranslation('');
   return (
     <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)} className="">
@@ -17,6 +18,16 @@ export const DownloadDictModal: FC = () => {
         {t('modal_enable_textlint.confirm_download_dict_and_enable_textlint')}
       </ModalBody>
       <ModalFooter>
+        <input
+          type="checkbox"
+          className="custom-control-input border-0"
+          id="dont-ask-again"
+          checked={isDontAskAgainChecked}
+          onChange={e => setIsDontAskAgainChecked(e.target.checked)}
+        />
+        <label className="custom-control-label align-center" htmlFor="dont-ask-again">
+          {t('modal_enable_textlint.dont_ask_again')}
+        </label>
         <button
           type="button"
           className="btn btn-outline-secondary"
