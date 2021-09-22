@@ -1,8 +1,35 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) - 2021-09-22
+
+### 💎 Features
+
+- feat: Add Textlint support (#4228) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Highlighting searching keyword (#4327) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Backspace key on last line doesn't work in vim mode (#4347) @yuki-takei
+- fix: Recent Created of home is empty (#4345) @yuki-takei
+- fix: IME suggestion list obscures inputted text (#4335) @yuki-takei
+- fix: Highlighting section header (#4326) @yuki-takei
+
+### 🧰 Maintenance
+
+- chore: Update passport-saml 2.2.0 (#4360) @LuqmanHakim-Grune
+- ci(deps): bump http-errors from 1.6.2 to 1.8.0 (#4353) @dependabot
+- ci(deps-dev): bump @tsed/json-mapper from 6.43.0 to 6.70.1 (#4352) @dependabot
+- ci(deps): bump graceful-fs from 4.1.11 to 4.2.8 (#4351) @dependabot
+- ci(deps): bump myrotvorets/info-from-package-json-action from 0.0.2 to 1.1.0 (#4348) @dependabot
+- ci(deps): bump path-parse from 1.0.5 to 1.0.7 (#4126) @dependabot
+- ci(deps): bump tmpl from 1.0.4 to 1.0.5 (#4337) @dependabot
 
 ## [v4.4.3](https://github.com/weseek/growi/compare/v4.4.2...v4.4.3) - 2021-09-17
 
@@ -1441,7 +1468,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 - Improvement: Ensure to prevent suspending own account
 - Fix: Ensure to be able to use `.` for username when invited
-- Fix: monospace font for `<code></code>`
+- Fix: monospace font for `&lt;code&gt;&lt;/code&gt;`
 
 ## v2.1.1
 
@@ -1509,8 +1536,8 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 ## v1.2.14
 
-- Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
-- Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
+- Fix: Tabs(`a[data-toggle=&quot;tab&quot;][href=&quot;#...&quot;]`) push browser history twice
+- Fix: `a[href=&quot;#edit-form&quot;]` still save history even when disabling pushing states option
 
 ## v1.2.13
 
