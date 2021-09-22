@@ -455,6 +455,10 @@
       "Post": "投稿"
     }
   },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Textlintを有効にしますか？20MBの辞書ファイルをダウンロードします。",
+    "enable_textlint": "Textlintを有効にする"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
