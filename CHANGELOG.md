@@ -1441,7 +1441,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 - Improvement: Ensure to prevent suspending own account
 - Fix: Ensure to be able to use `.` for username when invited
-- Fix: monospace font for `&amp;amp;lt;code&amp;amp;gt;&amp;amp;lt;/code&amp;amp;gt;`
+- Fix: monospace font for `<code></code>`
 
 ## v2.1.1
 
@@ -1509,8 +1509,8 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 ## v1.2.14
 
-- Fix: Tabs(`a[data-toggle=&amp;amp;quot;tab&amp;amp;quot;][href=&amp;amp;quot;#...&amp;amp;quot;]`) push browser history twice
-- Fix: `a[href=&amp;amp;quot;#edit-form&amp;amp;quot;]` still save history even when disabling pushing states option
+- Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
+- Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
 
 ## v1.2.13
 

@@ -15,6 +15,7 @@ export default class EditorContainer extends Container {
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
+    this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
 
     const mainContent = document.querySelector('#content-main');
 
@@ -35,6 +36,9 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
+      isTextlintEnabled: false,
+      textlintRules: [],
+
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
 
@@ -193,6 +197,25 @@ export default class EditorContainer extends Container {
     }
 
     return null;
+  }
+
+
+  /**
+   * Retrieve Editor Settings
+   */
+  async retrieveEditorSettings() {
+    const { data } = await this.appContainer.apiv3Get('/personal-setting/editor-settings');
+
+    if (data?.textlintSettings == null) {
+      return;
+    }
+
+    const { isTextlintEnabled = false, textlintRules = [] } = data.textlintSettings;
+
+    this.setState({
+      isTextlintEnabled,
+      textlintRules,
+    });
   }
 
 }

@@ -33,14 +33,11 @@ autolabeler:
     branch:
       - '/^support\/.+/'
     title:
+      - '/^support/i'
+      - '/^chore/i'
       - '/^ci/i'
       - '/^docs/i'
       - '/^test/i'
-  - label: 'exclude from changelog'
-    branch:
-      - '/^chore\/.+/'
-    title:
-      - '/^chore/i'
 include-labels:
   - breaking
   - feature
