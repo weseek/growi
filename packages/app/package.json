@@ -124,7 +124,7 @@
     "passport-http": "^0.3.0",
     "passport-ldapauth": "^2.0.0",
     "passport-local": "^1.0.0",
-    "passport-saml": "^2.2.0",
+    "passport-saml": "^3.1.0",
     "passport-twitter": "^1.0.4",
     "prom-client": "^13.0.0",
     "react-card-flip": "^1.0.10",
