@@ -900,7 +900,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         <ReactCodeMirror
           ref={(c) => { this.cm = c }}
-          detach
           className={additionalClasses}
           placeholder="search"
           editorDidMount={(editor) => {
