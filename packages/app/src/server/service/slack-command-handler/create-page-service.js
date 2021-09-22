@@ -26,6 +26,7 @@ class CreatePageService {
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
+      // TODO: FIX THIS GW-7446
       await client.chat.postEphemeral({
         channel: channelId,
         user: payload.user.id,
