@@ -177,6 +177,10 @@ module.exports = (crowi) => {
           divider(),
         ],
       });
+      // dismiss
+      await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
+        delete_original: true,
+      });
     }
     catch (err) {
       logger.error('Error occurred while creating a page.', err);

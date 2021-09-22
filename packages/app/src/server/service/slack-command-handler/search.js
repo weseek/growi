@@ -42,15 +42,16 @@ module.exports = (crowi) => {
 
     let searchResultsDesc;
 
+    if (resultsTotal === 0) {
+      await respond(responseUrl, {
+        text: 'No page found.',
+        blocks: [
+          markdownSectionBlock('Please try with other keywords.'),
+        ],
+      });
+      return;
+    }
     switch (resultsTotal) {
-      case 0:
-        await respond(responseUrl, {
-          text: 'No page found.',
-          blocks: [
-            markdownSectionBlock('Please try with other keywords.'),
-          ],
-        });
-        return;
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
@@ -145,15 +146,14 @@ module.exports = (crowi) => {
   };
 
   handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor) {
-    const { channel, user } = payload;
+    const { user } = payload;
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const appUrl = crowi.appService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
-    const channelId = channel.id;
     const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
-    if (value) {
+    if (value == null) {
       await respond(responseUrl, {
         text: 'Error occurred',
         blocks: [
@@ -194,18 +194,18 @@ module.exports = (crowi) => {
       await respond(responseUrl, {
         text: 'Error occurred',
         blocks: [
-          markdownSectionBlock('Failed to share the result.'),
+          markdownSectionBlock('Failed to show the next results.'),
         ],
       });
       return;
     }
     const parsedValue = JSON.parse(value);
 
-    const { body, args, offset: offsetNum } = parsedValue;
+    const { body, growiCommandArgs, offset: offsetNum } = parsedValue;
     const newOffsetNum = offsetNum + 10;
     let searchResult;
     try {
-      searchResult = await this.retrieveSearchResults(responseUrl, client, body, args, newOffsetNum);
+      searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs, newOffsetNum);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -224,20 +224,21 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
 
     let searchResultsDesc;
 
+    if (resultsTotal === 0) {
+      await respond(responseUrl, {
+        text: 'No page found.',
+        blocks: [
+          markdownSectionBlock('Please try with other keywords.'),
+        ],
+      });
+      return;
+    }
     switch (resultsTotal) {
-      case 0:
-        await respond(responseUrl, {
-          text: 'No page found.',
-          blocks: [
-            markdownSectionBlock('Please try with other keywords.'),
-          ],
-        });
-        return;
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
@@ -245,7 +246,6 @@ module.exports = (crowi) => {
         searchResultsDesc = `*${resultsTotal}* pages are found.`;
         break;
     }
-
 
     const contextBlock = {
       type: 'context',
@@ -315,7 +315,7 @@ module.exports = (crowi) => {
             text: 'Next',
           },
           action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, args }),
+          value: JSON.stringify({ offset, body, growiCommandArgs }),
         },
       );
     }
@@ -335,8 +335,8 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.retrieveSearchResults = async function(responseUrl, client, body, args, offset = 0) {
-    const firstKeyword = args[0];
+  handler.retrieveSearchResults = async function(responseUrl, client, body, growiCommandArgs, offset = 0) {
+    const firstKeyword = growiCommandArgs[0];
     if (firstKeyword == null) {
       await respond(responseUrl, {
         text: 'Input keywords',
@@ -347,7 +347,7 @@ module.exports = (crowi) => {
       return { pages: [] };
     }
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
     const { searchService } = crowi;
     const options = { limit: 10, offset };
@@ -391,9 +391,8 @@ module.exports = (crowi) => {
     };
   };
 
-  handler.getKeywords = function(args) {
-    const keywordsArr = args.slice(1);
-    const keywords = keywordsArr.join(' ');
+  handler.getKeywords = function(growiCommandArgs) {
+    const keywords = growiCommandArgs.join(' ');
     return keywords;
   };
 
