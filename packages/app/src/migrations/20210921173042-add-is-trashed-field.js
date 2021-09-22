@@ -11,46 +11,50 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const pages = await Page.find({});
+    const deletedPages = await Page.find({ status: Page.STATUS_DELETED });
+    const deletedPageList = deletedPages.map(deletedPage => deletedPage._id);
 
-    // create requests for bulkWrite
-    const requests = pages.map((page) => {
-      return {
+    const addFieldRequests = [
+      {
         updateMany: {
-          filter: { relatedPage: page._id },
-          update: { $set: { isPageTrashed: page.status === Page.STATUS_DELETED } },
+          filter: { relatedPage: { $in: deletedPageList } },
+          update: { $set: { isPageTrashed: true } },
         },
-      };
-    });
+      },
+      {
+        updateMany: {
+          filter: { relatedPage: { $nin: deletedPageList } },
+          update: { $set: { isPageTrashed: false } },
+        },
+      },
+    ];
 
-    if (requests.length > 0) {
-      await db.collection('pagetagrelations').bulkWrite(requests);
+    try {
+      await db.collection('pagetagrelations').bulkWrite(addFieldRequests);
+      logger.info('Migration has successfully applied');
+    }
+    catch (err) {
+      logger.error(err);
+      logger.info('Migration has failed');
     }
 
-    logger.info('Migration has successfully applied');
   },
 
   async down(db) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const pages = await Page.find({});
-
-    // create requests for bulkWrite
-    const requests = pages.map((page) => {
-      return {
-        updateMany: {
-          filter: { relatedPage: page._id },
-          update: { $unset: { isPageTrashed: '' } },
-        },
-      };
-    });
-
-    if (requests.length > 0) {
-      await db.collection('pagetagrelations').bulkWrite(requests);
+    try {
+      await db.collection('pagetagrelations').updateMany(
+        {},
+        { $unset: { isPageTrashed: '' } },
+      );
+      logger.info('Migration has been successfully rollbacked');
     }
-
-    logger.info('Migration has been successfully rollbacked');
+    catch (err) {
+      logger.error(err);
+      logger.info('Migration has failed');
+    }
 
   },
 };
