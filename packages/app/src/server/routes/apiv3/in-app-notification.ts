@@ -10,7 +10,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
-  router.get('/list', accessTokenParser, loginRequiredStrictly, csrf, (req, res) => {
+  router.get('/list', accessTokenParser, loginRequiredStrictly, (req, res) => {
     const user = req.user;
 
     let limit = 10;
@@ -56,7 +56,7 @@ module.exports = (crowi) => {
       });
   });
 
-  router.get('/status', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
 
     try {
