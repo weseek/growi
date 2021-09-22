@@ -13,10 +13,11 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
-  handler.handleCommand = async function(client, body, args) {
+  handler.handleCommand = async function(growiCommand, client, body) {
+    const { growiCommandArgs } = growiCommand;
     let searchResult;
     try {
-      searchResult = await this.retrieveSearchResults(client, body, args);
+      searchResult = await this.retrieveSearchResults(client, body, growiCommandArgs);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -35,12 +36,15 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
 
     let searchResultsDesc;
 
+    // TODO: handle correctly when case 0 GW-7446
     switch (resultsTotal) {
+      case 0:
+        return; // do something GW-7446
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
@@ -95,21 +99,6 @@ module.exports = (crowi) => {
       contextBlock,
     ];
 
-    // DEFAULT show "Share" button
-    // const actionBlocks = {
-    //   type: 'actions',
-    //   elements: [
-    //     {
-    //       type: 'button',
-    //       text: {
-    //         type: 'plain_text',
-    //         text: 'Share',
-    //       },
-    //       style: 'primary',
-    //       action_id: 'shareSearchResults',
-    //     },
-    //   ],
-    // };
     const actionBlocks = {
       type: 'actions',
       elements: [
@@ -134,21 +123,19 @@ module.exports = (crowi) => {
             text: 'Next',
           },
           action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, args }),
+          value: JSON.stringify({ offset, body, growiCommandArgs }),
         },
       );
     }
     blocks.push(actionBlocks);
 
-    await client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+    await axios.post(growiCommand.responseUrl, {
       text: 'Successed To Search',
       blocks,
     });
   };
 
-  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
+  handler.handleInteractions = async function(client, payload, handlerMethodName) {
     await this[handlerMethodName](client, payload);
   };
 
@@ -216,7 +203,11 @@ module.exports = (crowi) => {
 
     let searchResultsDesc;
 
+    // TODO: FIX THIS when case 0 GW-7446
     switch (resultsTotal) {
+      case 0:
+        return;
+
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
@@ -333,7 +324,7 @@ module.exports = (crowi) => {
   };
 
   handler.retrieveSearchResults = async function(client, body, args, offset = 0) {
-    const firstKeyword = args[1];
+    const firstKeyword = args[0];
     if (firstKeyword == null) {
       client.chat.postEphemeral({
         channel: body.channel_id,

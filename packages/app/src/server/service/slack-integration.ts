@@ -4,9 +4,11 @@ import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
-  generateWebClient, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
 } from '@growi/slack';
 
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -237,20 +239,16 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(command, client, body, ...opt) {
-    let module;
-    try {
-      module = `./slack-command-handler/${command}`;
-    }
-    catch (err) {
-      await this.notCommand(client, body);
-    }
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body) {
+    const { growiCommandType } = growiCommand;
+    const module = `./slack-command-handler/${growiCommandType}`;
 
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleCommand(client, body, ...opt);
+      await handler.handleCommand(growiCommand, client, body);
     }
     catch (err) {
+      await this.notCommand(growiCommand);
       throw err;
     }
   }
@@ -262,7 +260,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, interactionPayload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -277,7 +275,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleViewSubmission(client, interactionPayload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -285,11 +283,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async notCommand(client, body) {
+  async notCommand(growiCommand: GrowiCommand): Promise<void> {
     logger.error('Invalid first argument');
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+    await axios.post(growiCommand.responseUrl, {
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),

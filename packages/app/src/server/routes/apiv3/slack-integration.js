@@ -134,8 +134,9 @@ module.exports = (crowi) => {
   async function handleCommands(req, res, client) {
     const { body } = req;
     const { growiCommand } = body;
+    const { text } = growiCommand;
 
-    if (body.text == null) {
+    if (text == null) {
       return 'No text.';
     }
 
@@ -150,11 +151,9 @@ module.exports = (crowi) => {
       text: 'Processing your request ...',
     });
 
-    const args = body.text.split(' ');
-    const command = args[0];
 
     try {
-      await crowi.slackIntegrationService.handleCommandRequest(command, client, body, args);
+      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body);
     }
     catch (err) {
       await respondIfSlackbotError(client, body, err);
@@ -180,7 +179,7 @@ module.exports = (crowi) => {
     return handleCommands(req, res, client);
   });
 
-  async function handleInteractions(req, res, client) {
+  async function handleInteractionsRequest(req, res, client) {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -219,14 +218,14 @@ module.exports = (crowi) => {
 
   router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
-    return handleInteractions(req, res, client);
+    return handleInteractionsRequest(req, res, client);
   });
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
 
-    return handleInteractions(req, res, client);
+    return handleInteractionsRequest(req, res, client);
   });
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
