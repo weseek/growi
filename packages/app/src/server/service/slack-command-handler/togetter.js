@@ -2,7 +2,8 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider, respond,
+  deleteOriginal,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const axios = require('axios');
@@ -14,29 +15,21 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(client, body, args, limit = 10) {
-    // TODO GW-6721 Get the time from args
-    const result = await client.conversations.history({
-      channel: body.channel_id,
-      limit,
-    });
-      // Return Checkbox Message
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+  handler.handleCommand = async function(growiCommand, client, body) {
+    await respond(growiCommand.responseUrl, {
       text: 'Select messages to use.',
-      blocks: this.togetterMessageBlocks(result.messages, body, args, limit),
+      blocks: this.togetterMessageBlocks(),
     });
     return;
   };
 
-  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
+  handler.handleInteractions = async function(client, payload, handlerMethodName) {
     await this[handlerMethodName](client, payload);
   };
 
   handler.cancel = async function(client, payload) {
     const responseUrl = payload.response_url;
-    axios.post(responseUrl, {
+    await deleteOriginal(responseUrl, {
       delete_original: true,
     });
   };
@@ -179,7 +172,7 @@ module.exports = (crowi) => {
       });
       // dismiss message
       const responseUrl = payload.response_url;
-      axios.post(responseUrl, {
+      await deleteOriginal(responseUrl, {
         delete_original: true,
       });
     }
@@ -194,7 +187,7 @@ module.exports = (crowi) => {
     }
   };
 
-  handler.togetterMessageBlocks = function(messages, body, args, limit) {
+  handler.togetterMessageBlocks = function() {
     return [
       markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
       inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),

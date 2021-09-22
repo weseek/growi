@@ -10,7 +10,7 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async(client, body) => {
+  handler.handleCommand = async(growiCommand, client, body) => {
     await client.views.open({
       trigger_id: body.trigger_id,
 
@@ -39,7 +39,7 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
+  handler.handleInteractions = async function(client, payload, handlerMethodName) {
     await this[handlerMethodName](client, payload);
   };
 

@@ -353,17 +353,18 @@ export class SlackCtrl {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     } = permission;
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await postEphemeralErrors(rejectedResults, interactionPayload.channel.id, interactionPayload.user.id, authorizeResult.botToken!);
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    // TODO: FIX THIS GW-7508
+    // try {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   await postEphemeralErrors(rejectedResults, interactionPayload.channel.id, interactionPayload.user.id, authorizeResult.botToken!);
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    // }
 
-    if (relations.length === disallowedGrowiUrls.size) {
-      return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
-    }
+    // if (relations.length === disallowedGrowiUrls.size) {
+    //   return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
+    // }
 
     /*
      * forward to GROWI server
