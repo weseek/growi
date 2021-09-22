@@ -140,14 +140,18 @@ module.exports = function(crowi, app) {
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;
     const tags = req.body.tags;
-
+    // TODO : あとで消す
+    // console.log(`tag is : ${tags}`); // thisistag,another-tag,new-tag
     const result = {};
     try {
       // TODO GC-1921 consider permission
       const page = await Page.findById(pageId);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
-      result.updatedBy = 'this is string passed from api.update';
+      // TODO :
+      // 1. find pageTagRelation based on 'tags'
+      // 2. set its updatedAt to result.updatedAt
+      // result.updatedAt = ...
       tagEvent.emit('update', page, tags);
     }
     catch (err) {

@@ -25,6 +25,8 @@ const schema = new mongoose.Schema({
     ref: 'Tag',
     required: true,
   },
+  created: { type: Date, default: Date.now },
+  updated: { type: Date, default: Date.now },
 });
 // define unique compound index
 schema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true });

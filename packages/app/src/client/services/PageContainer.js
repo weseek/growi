@@ -343,10 +343,13 @@ export default class PageContainer extends Container {
     }
   }
 
-  // TODO  : params
+  // TODO : takes tagsRelation/tags models or date
   updateStateAfterTagAdded() {
-    console.log('params to get for updateStateTadAdded is...');
-    // this.setState();
+    // const newState = {
+    //   updatedAt: new Date().getTime(),
+    // };
+    // console.log(`date is :${newState.updatedAt}`);
+    // this.setState(newState);
   }
 
   /**

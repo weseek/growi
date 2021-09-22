@@ -12,7 +12,6 @@ import EditorContainer from '~/client/services/EditorContainer';
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
-
 class TagLabels extends React.Component {
 
   constructor(props) {
@@ -56,10 +55,10 @@ class TagLabels extends React.Component {
     if (editorMode === 'edit') {
       return editorContainer.setState({ tags: newTags });
     }
-
+    // const newUpdatedAt;
     try {
-      const { tags, updatedBy } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
-      console.log(`tags object is :${tags} and ${updatedBy}`);
+      const { tags, updatedAt } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
+      // newUpdatedAt = updatedAt;
       // update pageContainer.state
       pageContainer.setState({ tags });
       // update editorContainer.state
@@ -71,8 +70,6 @@ class TagLabels extends React.Component {
       toastError(err, 'fail to update tags');
     }
     pageContainer.updateStateAfterTagAdded();
-    // TODO あとで消す
-    console.log('Tag is added');
   }
 
 
