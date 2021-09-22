@@ -1,4 +1,4 @@
-const { markdownSectionBlock } = require('@growi/slack');
+const { markdownSectionBlock, respond } = require('@growi/slack');
 const { default: axios } = require('axios');
 
 module.exports = () => {
@@ -13,7 +13,7 @@ module.exports = () => {
     message += '`/growi create`                          Create new page\n\n';
     message += '`/growi search [keyword]`       Search pages\n\n';
     message += '`/growi togetter`                      Create new page with existing slack conversations (Alpha)\n\n';
-    await axios.post(growiCommand.responseUrl, {
+    await respond(growiCommand.responseUrl, {
       text: 'Help',
       blocks: [
         markdownSectionBlock(message),

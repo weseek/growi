@@ -2,7 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
-const { markdownSectionBlock, divider } = require('@growi/slack');
+const { markdownSectionBlock, divider, respond } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const axios = require('axios');
 const SlackbotError = require('../../models/vo/slackbot-error');
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
     }
     blocks.push(actionBlocks);
 
-    await axios.post(growiCommand.responseUrl, {
+    await respond(growiCommand.responseUrl, {
       text: 'Successed To Search',
       blocks,
     });

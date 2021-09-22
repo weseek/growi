@@ -4,7 +4,7 @@ import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
-  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, respond, SlackbotType,
 } from '@growi/slack';
 
 // eslint-disable-next-line no-restricted-imports
@@ -285,7 +285,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   async notCommand(growiCommand: GrowiCommand): Promise<void> {
     logger.error('Invalid first argument');
-    await axios.post(growiCommand.responseUrl, {
+    await respond(growiCommand.responseUrl, {
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),

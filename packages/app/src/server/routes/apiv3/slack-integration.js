@@ -1,3 +1,4 @@
+import { markdownSectionBlock, InvalidGrowiCommandError } from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 
 const express = require('express');
@@ -133,8 +134,28 @@ module.exports = (crowi) => {
 
   async function handleCommands(req, res, client) {
     const { body } = req;
-    const { growiCommand } = body;
+    let { growiCommand } = body;
+
+    if (growiCommand == null) {
+      try {
+        growiCommand = parseSlashCommand(body);
+      }
+      catch (err) {
+        if (err instanceof InvalidGrowiCommandError) {
+          res.json({
+            blocks: [
+              markdownSectionBlock('*Command type is not specified.*'),
+              markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
+            ],
+          });
+        }
+        logger.error(err.message);
+        return;
+      }
+    }
+
     const { text } = growiCommand;
+
 
     if (text == null) {
       return 'No text.';
@@ -161,7 +182,8 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
+  // TODO: do investigation and fix if needed GW-7519
+  router.post('/commands', addSigningSecretToReq, /* verifySlackRequest, */checkCommandsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleCommands(req, res, client);
   });
@@ -216,7 +238,8 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
+  // TODO: do investigation and fix if needed GW-7519
+  router.post('/interactions', addSigningSecretToReq, /* verifySlackRequest, */ parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleInteractionsRequest(req, res, client);
   });
