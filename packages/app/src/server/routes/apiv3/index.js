@@ -25,6 +25,9 @@ module.exports = (crowi) => {
   router.use('/import', require('./import')(crowi));
   router.use('/search', require('./search')(crowi));
 
+
+  router.use('/in-app-notification', require('./in-app-notification')(crowi));
+
   router.use('/personal-setting', require('./personal-setting')(crowi));
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
