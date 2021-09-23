@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.5](https://github.com/weseek/growi/compare/v4.4.4...v4.4.5) - 2021-09-23
+
+### 🐛 Bug Fixes
+
+- fix: Revert #4347
+- fix: ERROR: Cannot find module 'tslib' on v4.4.4 (#4368) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: bump @promster/express and @promster/server (#4370) @yuki-takei
+- support: Upgrade codemirror to 5.63.0 (#4364) @yuki-takei
+- ci(deps-dev): bump codemirror from 5.48.4 to 5.58.2 (#4363) @dependabot
 
 ## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) - 2021-09-22
 
