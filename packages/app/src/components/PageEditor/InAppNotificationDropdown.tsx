@@ -9,7 +9,6 @@ import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 
 const InAppNotificationDropdown: FC = (props) => {
-  console.log('propsHoge', props);
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);

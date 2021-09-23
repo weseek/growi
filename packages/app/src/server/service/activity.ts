@@ -1,6 +1,6 @@
 import loggerFactory from '../../utils/logger';
 
-import { ActivityDocument } from '../models/activity';
+import { Activity } from '~/server/models/activity';
 
 const InAppNotificationService = require('./in-app-notification');
 
@@ -11,8 +11,49 @@ class ActivityService {
 
   crowi: any;
 
+  commentEvent!: any;
+
   constructor(crowi) {
     this.crowi = crowi;
+    this.commentEvent = crowi.event('comment');
+
+    // init
+    this.initCommentEvent();
+  }
+
+  initCommentEvent(): void {
+    // create
+    this.commentEvent.on('create', async(savedComment) => {
+      this.commentEvent.onCreate();
+
+      try {
+        const activityLog = await Activity.createByPageComment(savedComment);
+        logger.info('Activity created', activityLog);
+      }
+      catch (err) {
+        throw err;
+      }
+
+    });
+
+    // update
+    this.commentEvent.on('update', (user) => {
+      this.commentEvent.onUpdate();
+    });
+
+    // remove
+    this.commentEvent.on('remove', async(comment) => {
+      this.commentEvent.onRemove();
+
+      try {
+        // TODO: Able to remove child activities of comment by GW-7510
+        await Activity.removeByPageCommentDelete(comment);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
   }
 
 }
