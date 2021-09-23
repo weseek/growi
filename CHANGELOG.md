@@ -17,7 +17,7 @@
 - support: Upgrade codemirror to 5.63.0 (#4364) @yuki-takei
 - ci(deps-dev): bump codemirror from 5.48.4 to 5.58.2 (#4363) @dependabot
 
-## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) - 2021-09-22
+## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) (Discontinued) - 2021-09-22
 
 ### 💎 Features
 
