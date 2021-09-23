@@ -89,6 +89,7 @@ module.exports = function(crowi) {
     const commentEvent = crowi.event('comment');
 
     try {
+      // TODO: move Page.updateCommentCount to commentService by GW7532
       const page = await Page.updateCommentCount(savedComment.page);
       debug('CommentCount Updated', page);
     }
@@ -121,6 +122,7 @@ module.exports = function(crowi) {
     const commentEvent = crowi.event('comment');
 
     try {
+      // TODO: move Page.updateCommentCount to commentService by GW7532
       const page = await Page.updateCommentCount(savedComment.page);
       debug('CommentCount Updated', page);
     }
