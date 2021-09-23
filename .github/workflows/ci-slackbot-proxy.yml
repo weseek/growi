@@ -141,7 +141,7 @@ jobs:
     - name: Remove unnecessary packages
       working-directory: ./packages
       run: |
-        ls | egrep -v '^(slack|slackbot-proxy)$' | rm -r
+        ls | egrep -v '^(slack|slackbot-proxy)$' | xargs rm -r
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
