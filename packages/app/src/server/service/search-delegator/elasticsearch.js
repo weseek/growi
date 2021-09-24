@@ -551,7 +551,12 @@ class ElasticsearchDelegator {
         results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
-        return { _id: elm._id, _score: elm._score, _source: elm._source };
+        return {
+          _id: elm._id,
+          _score: elm._score,
+          _source: elm._source,
+          _highlight: elm.highlight,
+        };
       }),
     };
   }
@@ -856,6 +861,17 @@ class ElasticsearchDelegator {
     };
   }
 
+  appendHighlight(query) {
+    query.body.highlight = {
+      fields: {
+        '*': {
+          fragment_size: 30,
+          fragmenter: 'simple',
+        },
+      },
+    };
+  }
+
   async searchKeyword(queryString, user, userGroups, option) {
     const from = option.offset || null;
     const size = option.limit || null;
@@ -869,7 +885,7 @@ class ElasticsearchDelegator {
     this.appendResultSize(query, from, size);
 
     this.appendFunctionScore(query, queryString);
-
+    this.appendHighlight(query);
     return this.search(query);
   }
 
