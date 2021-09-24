@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -9,7 +9,6 @@ import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 
 const InAppNotificationDropdown: FC = (props) => {
-  console.log('propsHoge', props);
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -108,13 +107,57 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
 
+
+
+
+  const RenderUnLoadedInAppNotification = (): JSX.Element => {
+    return (
+      <i className="fa fa-spinner"></i>
+    )
+  }
+
+  const RenderEmptyInAppNotification = (): JSX.Element => {
+    return (
+      // TODO: apply i18n by GW-7536
+      <>You had no notifications, yet.</>
+    )
+  }
+
+  // TODO: improve renderInAppNotificationList by GW-7535
+  // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
+  const RenderInAppNotificationList = (): JSX.Element => {
+    // notifications.map((notification) =>
+    return (
+      // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
+      <>fuga</>
+    )
+  }
+
+  function renderInAppNotificationContents(): JSX.Element{
+  console.log('isLoadedhoge', isLoaded)
+  if(isLoaded === true){
+    return <RenderUnLoadedInAppNotification />
+  }
+  else if (notifications.length <= 0){
+    return <RenderEmptyInAppNotification />;
+  }
+  else {
+    return <RenderInAppNotificationList />;
+  }
+  }
+
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="nav-link">
         <i className="icon-bell mr-2"></i>
         {badge}
       </DropdownToggle>
-      <DropdownMenu>hoge</DropdownMenu>
+      <DropdownMenu right>
+        {renderInAppNotificationContents}
+        <DropdownItem divider />
+        {/* TODO: Able to show all notifications by GW-7534 */}
+        <a /*href="/me/notifications"*/>See All</a>
+      </DropdownMenu>
     </Dropdown>
   );
 
