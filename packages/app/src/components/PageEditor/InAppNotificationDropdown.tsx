@@ -134,16 +134,15 @@ const InAppNotificationDropdown: FC = (props) => {
   }
 
   function renderInAppNotificationContents(): JSX.Element{
-  console.log('isLoadedhoge', isLoaded)
-  if(isLoaded === true){
-    return <RenderUnLoadedInAppNotification />
-  }
-  else if (notifications.length <= 0){
-    return <RenderEmptyInAppNotification />;
-  }
-  else {
-    return <RenderInAppNotificationList />;
-  }
+    if(isLoaded === true){
+      return <RenderUnLoadedInAppNotification />
+    }
+    else if (notifications.length = 0){
+      return <RenderEmptyInAppNotification />;
+    }
+    else {
+      return <RenderInAppNotificationList />;
+    }
   }
 
   return (
