@@ -113,15 +113,15 @@ const InAppNotificationDropdown: FC = (props) => {
   const RenderUnLoadedInAppNotification = (): JSX.Element => {
     return (
       <i className="fa fa-spinner"></i>
-    )
-  }
+    );
+  };
 
   const RenderEmptyInAppNotification = (): JSX.Element => {
     return (
       // TODO: apply i18n by GW-7536
       <>You had no notifications, yet.</>
-    )
-  }
+    );
+  };
 
   // TODO: improve renderInAppNotificationList by GW-7535
   // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
@@ -130,19 +130,17 @@ const InAppNotificationDropdown: FC = (props) => {
     return (
       // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
       <>fuga</>
-    )
-  }
+    );
+  };
 
-  function renderInAppNotificationContents(): JSX.Element{
-    if(isLoaded === true){
-      return <RenderUnLoadedInAppNotification />
+  function renderInAppNotificationContents(): JSX.Element {
+    if (isLoaded === true) {
+      return <RenderUnLoadedInAppNotification />;
     }
     else if (notifications.length = 0){
       return <RenderEmptyInAppNotification />;
     }
-    else {
-      return <RenderInAppNotificationList />;
-    }
+    return <RenderInAppNotificationList />;
   }
 
   return (
