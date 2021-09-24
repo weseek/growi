@@ -3,7 +3,7 @@ import { respond } from './response-url';
 
 import { markdownSectionBlock } from './block-kit-builder';
 
-export const postEphemeralErrors = async(
+export const respondRejectedErrors = async(
     rejectedResults: PromiseRejectedResult[],
     responseUrl: string,
 ): Promise<WebAPICallResult|void> => {

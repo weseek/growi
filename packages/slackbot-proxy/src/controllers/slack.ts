@@ -9,7 +9,7 @@ import { Installation } from '@slack/oauth';
 
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, generateWebClient,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
@@ -121,7 +121,7 @@ export class SlackCtrl {
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
     try {
-      return postEphemeralErrors(rejectedResults, growiCommand.responseUrl);
+      return respondRejectedErrors(rejectedResults, growiCommand.responseUrl);
     }
     catch (err) {
       logger.error(err);
@@ -342,7 +342,7 @@ export class SlackCtrl {
     } = permission;
 
     try {
-      await postEphemeralErrors(rejectedResults, interactionPayloadAccessor.getResponseUrl());
+      await respondRejectedErrors(rejectedResults, interactionPayloadAccessor.getResponseUrl());
     }
     catch (err) {
       logger.error(err);
