@@ -540,10 +540,11 @@ class ElasticsearchDelegator {
     }
 
     const result = await this.client.search(query);
+
     // for debug
     logger.debug('ES result: ', result);
-    return {
 
+    return {
       meta: {
         took: result.took,
         total: result.hits.total,
