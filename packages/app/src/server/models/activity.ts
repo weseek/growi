@@ -30,7 +30,6 @@ export interface ActivityModel extends Model<ActivityDocument> {
   createByParameters(parameters: any): Promise<ActivityDocument>
   removeByParameters(parameters: any): any
   createByPageComment(comment: any): Promise<ActivityDocument>
-  removeByPageCommentDelete(comment: any): Promise<DeleteWriteOpResultObject['result']>
   createByPageLike(page: any, user: any): Promise<ActivityDocument>
   removeByPageUnlike(page: any, user: any): Promise<DeleteWriteOpResultObject['result']>
   removeByPage(page: any): Promise<DeleteWriteOpResultObject['result']>
@@ -116,25 +115,6 @@ activitySchema.statics.createByPageComment = function(comment) {
 };
 
 /**
-   * @param {Comment} comment
-   * @return {Promise}
-   */
-activitySchema.statics.removeByPageCommentDelete = async function(comment) {
-  const parameters = await {
-    user: comment.creator,
-    targetModel: ActivityDefine.MODEL_PAGE,
-    target: comment.page,
-    eventModel: ActivityDefine.MODEL_COMMENT,
-    event: comment._id,
-    action: ActivityDefine.ACTION_COMMENT,
-  };
-
-  await this.removeByParameters(parameters);
-
-  return;
-};
-
-/**
    * @param {Page} page
    * @param {User} user
    * @return {Promise}
@@ -168,6 +148,7 @@ activitySchema.statics.removeByPageUnlike = function(page, user) {
 
 /**
    * @param {Page} page
+   *
    * @return {Promise}
    */
 activitySchema.statics.removeByPage = async function(page) {

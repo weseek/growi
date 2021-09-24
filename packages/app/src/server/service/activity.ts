@@ -2,6 +2,8 @@ import loggerFactory from '../../utils/logger';
 
 import { Activity } from '~/server/models/activity';
 
+import ActivityDefine from '../util/activityDefine';
+
 const InAppNotificationService = require('./in-app-notification');
 
 
@@ -53,14 +55,31 @@ class ActivityService {
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510
-        await Activity.removeByPageCommentDelete(comment);
+        await this.removeByPageCommentDelete(comment);
       }
       catch (err) {
         logger.error(err);
       }
     });
-
   }
+
+  /**
+   * @param {Comment} comment
+   * @return {Promise}
+   */
+  removeByPageCommentDelete = async function(comment) {
+    const parameters = await {
+      user: comment.creator,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: comment.page,
+      eventModel: ActivityDefine.MODEL_COMMENT,
+      event: comment._id,
+      action: ActivityDefine.ACTION_COMMENT,
+    };
+
+    await Activity.removeByParameters(parameters);
+    return;
+  };
 
 }
 
