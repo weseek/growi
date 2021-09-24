@@ -543,7 +543,6 @@ class ElasticsearchDelegator {
 
     // for debug
     logger.debug('ES result: ', result);
-    // console.log(result.hits.hits[0].highlight, 'highlight');
     return {
       meta: {
         took: result.took,
