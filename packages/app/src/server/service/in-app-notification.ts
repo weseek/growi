@@ -24,8 +24,6 @@ class InAppNotificationService {
 
   emitSocketIo = async(user) => {
     if (this.socketIoService.isInitialized) {
-      console.log('socketIoServiceHoge');
-
       await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
     }
   }
