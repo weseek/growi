@@ -10,6 +10,7 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import { toastError } from '~/client/util/apiNotification';
 
 
 export const defaultEditorOptions = {
@@ -51,6 +52,8 @@ class OptionsSelector extends React.Component {
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
+    this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
+    this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
@@ -109,6 +112,23 @@ class OptionsSelector extends React.Component {
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
+  }
+
+  async updateIsTextlintEnabledToDB(newVal) {
+    const { appContainer } = this.props;
+    try {
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  async switchTextlintEnabledHandler() {
+    const { editorContainer } = this.props;
+    const newVal = !editorContainer.state.isTextlintEnabled;
+    editorContainer.setState({ isTextlintEnabled: newVal });
+    this.updateIsTextlintEnabledToDB(newVal);
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -207,6 +227,7 @@ class OptionsSelector extends React.Component {
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
+            {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -280,6 +301,26 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
           <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderIsTextlintEnabledMenuItem() {
+    const isActive = this.props.editorContainer.state.isTextlintEnabled;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.switchTextlintEnabledHandler}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">Textlint</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>

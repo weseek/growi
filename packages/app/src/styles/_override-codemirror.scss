@@ -45,3 +45,9 @@
     color: $text-muted;
   }
 }
+
+// patch to fix https://github.com/codemirror/CodeMirror/issues/4089
+// see also https://github.com/codemirror/CodeMirror/commit/51a1e7da60a99e019f026a118dc7c98c2b1f9d62
+.CodeMirror-wrap > div > textarea {
+  font-size: #{$line-height-base}rem;
+}

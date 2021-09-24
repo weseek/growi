@@ -50,6 +50,7 @@ const CustomBotWithoutProxySettings = (props) => {
           slackSigningSecret={props.slackSigningSecret}
           onTestConnectionInvoked={props.onTestConnectionInvoked}
           onUpdatedSecretToken={props.onUpdatedSecretToken}
+          commandPermission={props.commandPermission}
         />
       </div>
     </>
@@ -69,6 +70,7 @@ CustomBotWithoutProxySettings.propTypes = {
   onUpdatedSecretToken: PropTypes.func.isRequired,
   onTestConnectionInvoked: PropTypes.func.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
+  commandPermission: PropTypes.object,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
