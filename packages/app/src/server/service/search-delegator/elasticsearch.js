@@ -864,9 +864,7 @@ class ElasticsearchDelegator {
         '*': {
           type: 'plain',
           fragment_size: 30,
-          // number_of_fragments: 3,
           fragmenter: 'simple',
-          // _source: fields,
         },
       },
     };
@@ -886,12 +884,11 @@ class ElasticsearchDelegator {
 
     this.appendFunctionScore(query, queryString);
     this.appendHighlight(query);
-    const hoge = await this.search(query);
-    console.log(hoge, 895, 'search した結果');
-    console.log(hoge.data[0].highlight, 895, '_sourceの中身');
-    console.log(hoge.data[1].highlight, 895, '_sourceの中身その2');
-    console.log(hoge.data[2].highlight, 895, '_sourceの中身その2');
-    return hoge;
+    return this.search(query);
+    // const hoge = await this.search(query);
+
+    // console.log(hoge.data[0].highlight, 895, '_sourceの中身その1');
+    // return hoge;
   }
 
   parseQueryString(queryString) {
