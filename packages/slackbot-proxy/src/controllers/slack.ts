@@ -47,7 +47,7 @@ const postNotAllowedMessage = async(responseUrl, disallowedGrowiUrls:Set<string>
   const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
 
-  await axios.post(responseUrl, {
+  await respond(responseUrl, {
     text: 'Error occured.',
     blocks: [
       markdownSectionBlock('*None of GROWI permitted the command.*'),
@@ -102,7 +102,6 @@ export class SlackCtrl {
       throw new Error('relations must be set');
     }
 
-    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
     const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
@@ -121,23 +120,11 @@ export class SlackCtrl {
     const results = await Promise.allSettled(promises);
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    // TODO: USE response_url in postEphemeralErrors GW-7508
-    // try {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    // }
-    // The code below is temporary. It will be fixed as well GW-7508
-    if (rejectedResults.length > 0) {
-      logger.error('Growi command failed: No installation found.');
-      await respond(growiCommand.responseUrl, {
-        text: 'Growi command failed',
-        blocks: [
-          markdownSectionBlock('Error occurred while processing GROWI command.'),
-        ],
-      });
+    try {
+      return postEphemeralErrors(rejectedResults, growiCommand.responseUrl);
+    }
+    catch (err) {
+      logger.error(err);
     }
   }
 
@@ -354,18 +341,16 @@ export class SlackCtrl {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     } = permission;
 
-    // TODO: FIX THIS GW-7508
-    // try {
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   await postEphemeralErrors(rejectedResults, interactionPayload.channel.id, interactionPayload.user.id, authorizeResult.botToken!);
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    // }
+    try {
+      await postEphemeralErrors(rejectedResults, interactionPayloadAccessor.getResponseUrl());
+    }
+    catch (err) {
+      logger.error(err);
+    }
 
-    // if (relations.length === disallowedGrowiUrls.size) {
-    //   return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
-    // }
+    if (relations.length === disallowedGrowiUrls.size) {
+      return postNotAllowedMessage(interactionPayloadAccessor.getResponseUrl(), disallowedGrowiUrls, commandName);
+    }
 
     /*
      * forward to GROWI server
