@@ -94,7 +94,7 @@ jobs:
         cp config/ci/.env.local.for-ci .env.development.local
         yarn dev:ci
       env:
-        SERVER_URI=http://localhost:8080
+        SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
