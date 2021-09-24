@@ -11,6 +11,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { DownloadDictModal } from './DownloadDictModal';
 
 
 export const defaultEditorOptions = {
@@ -34,6 +35,7 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      isDownloadDictModalShown: false,
     };
 
     this.availableThemes = [
@@ -359,12 +361,15 @@ class OptionsSelector extends React.Component {
 
   render() {
     return (
-      <div className="d-flex flex-row">
-        <span>{this.renderThemeSelector()}</span>
-        <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
-      </div>
+      <>
+        <div className="d-flex flex-row">
+          <span>{this.renderThemeSelector()}</span>
+          <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
+        </div>
+        {this.state.isDownloadDictModalShown && <DownloadDictModal />}
+      </>
     );
   }
 
