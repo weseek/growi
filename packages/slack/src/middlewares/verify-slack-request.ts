@@ -12,7 +12,6 @@ const logger = loggerFactory('@growi/slack:middlewares:verify-slack-request');
  * Verify if the request came from slack
  * See: https://api.slack.com/authentication/verifying-requests-from-slack
  */
-// TODO: do investigation and fix if needed GW-7519
 export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: NextFunction): Record<string, any> | void => {
   const signingSecret = req.slackSigningSecret;
 

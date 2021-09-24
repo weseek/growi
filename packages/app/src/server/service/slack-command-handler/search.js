@@ -42,7 +42,7 @@ module.exports = (crowi) => {
 
     let searchResultsDesc;
 
-    if (resultsTotal === 0) {
+    if (resultsTotal === 0 || resultsTotal == null) {
       await respond(responseUrl, {
         text: 'No page found.',
         blocks: [
@@ -229,7 +229,7 @@ module.exports = (crowi) => {
 
     let searchResultsDesc;
 
-    if (resultsTotal === 0) {
+    if (resultsTotal === 0 || resultsTotal == null) {
       await respond(responseUrl, {
         text: 'No page found.',
         blocks: [
