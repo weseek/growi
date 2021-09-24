@@ -19,21 +19,15 @@ class InAppNotificationService {
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
-    this.commentEvent = crowi.event('comment');
-
-    // init
-    this.initCommentEvent();
   }
 
 
-  initCommentEvent(): void {
-    // update
-    this.commentEvent.on('update', (user) => {
-      if (this.socketIoService.isInitialized) {
-        this.socketIoService.getDefaultSocket().emit('comment updated', { user });
-      }
-    });
+  emitSocketIo = async(user) => {
+    if (this.socketIoService.isInitialized) {
+      console.log('socketIoServiceHoge');
 
+      await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+    }
   }
 
 }

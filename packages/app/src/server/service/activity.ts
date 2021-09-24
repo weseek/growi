@@ -11,10 +11,13 @@ class ActivityService {
 
   crowi: any;
 
+  inAppNotificationService: any;
+
   commentEvent!: any;
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.inAppNotificationService = crowi.inAppNotificationService
     this.commentEvent = crowi.event('comment');
 
     // init
@@ -39,6 +42,9 @@ class ActivityService {
     // update
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
+      const inAppNotificationService = new InAppNotificationService(this.crowi)
+
+      inAppNotificationService.emitSocketIo(user);
     });
 
     // remove
