@@ -1,7 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:CreatePageService');
-const { reshapeContentsBody } = require('@growi/slack');
+const { reshapeContentsBody, respond, markdownSectionBlock } = require('@growi/slack');
 const mongoose = require('mongoose');
 const pathUtils = require('growi-commons').pathUtils;
 const SlackbotError = require('../../models/vo/slackbot-error');
@@ -12,7 +12,7 @@ class CreatePageService {
     this.crowi = crowi;
   }
 
-  async createPageInGrowi(client, payload, path, channelId, contentsBody) {
+  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody) {
     const Page = this.crowi.model('Page');
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
     try {
@@ -26,10 +26,11 @@ class CreatePageService {
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
-      await client.chat.postEphemeral({
-        channel: channelId,
-        user: payload.user.id,
-        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`,
+      await respond(interactionPayloadAccessor.getResponseUrl(), {
+        text: 'Page has been created',
+        blocks: [
+          markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`),
+        ],
       });
     }
     catch (err) {
