@@ -128,6 +128,9 @@ class OptionsSelector extends React.Component {
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
+    if (!editorContainer.state.isTextlintEnabled) {
+      this.setState({ isDownloadDictModalShown: true });
+    }
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);

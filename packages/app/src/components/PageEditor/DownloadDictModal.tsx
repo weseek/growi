@@ -1,13 +1,23 @@
-import React, { useState, FC } from 'react';
+import React, { FC, Dispatch, SetStateAction } from 'react';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+ Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-export const DownloadDictModal: FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
-  const [isDontAskAgainChecked, setIsDontAskAgainChecked] = useState(true);
+type DownloadDictModalProps = {
+  isModalOpen: boolean
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  isDontAskAgainChecked: boolean;
+  setIsDontAskAgainChecked: Dispatch<SetStateAction<boolean>>;
+  onConfirmEnableTextlint: () => void;
+  onCancel: () => void;
+};
+
+export const DownloadDictModal: FC<DownloadDictModalProps> = ({
+  onConfirmEnableTextlint, onCancel, isDontAskAgainChecked, setIsDontAskAgainChecked, isModalOpen, setIsModalOpen,
+}) => {
   const { t } = useTranslation('');
+
   return (
     <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)} className="">
       <ModalHeader tag="h4" toggle={() => setIsModalOpen(false)} className="bg-warning">
@@ -33,14 +43,14 @@ export const DownloadDictModal: FC = () => {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={() => console.log('button')}
+          onClick={onCancel}
         >
           {t('Cancel')}
         </button>
         <button
           type="button"
           className="btn btn-outline-primary ml-3"
-          onClick={() => console.log('button')}
+          onClick={onConfirmEnableTextlint}
         >
           {t('modal_enable_textlint.enable_textlint')}
         </button>
