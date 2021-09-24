@@ -77,13 +77,18 @@ module.exports = (crowi) => {
       if (isPermitted) return next();
       return res.status(403).send(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`);
     }
+
     // without proxy
     growiCommand = parseSlashCommand(req.body);
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
-    if (isPermitted) return next();
-    res.send();
-    await respond(growiCommand.responseUrl, {
+    if (isPermitted) {
+      return next();
+    }
+    // show ephemeral error message if not permitted
+    res.json({
+      response_type: 'ephemeral',
       text: 'Command forbidden',
       blocks: [
         markdownSectionBlock(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`),
@@ -111,13 +116,17 @@ module.exports = (crowi) => {
 
       return res.status(403).send(`This interaction is forbidden on this GROWI: ${siteUrl}`);
     }
+
     // without proxy
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
-    const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-    if (isPermitted) return next();
 
-    res.send();
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
+    if (isPermitted) {
+      return next();
+    }
+    // show ephemeral error message if not permitted
+    res.json({
+      response_type: 'ephemeral',
       text: 'Interaction forbidden',
       blocks: [
         markdownSectionBlock(`This interaction is forbidden on this GROWI: ${siteUrl}`),
