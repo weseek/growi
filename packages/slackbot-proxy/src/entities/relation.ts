@@ -1,7 +1,12 @@
+import { differenceInMilliseconds } from 'date-fns';
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';
 import { Installation } from './installation';
+
+interface PermissionSettingsInterface {
+  [commandName: string]: boolean | string[],
+}
 
 @Entity()
 @Index(['installation', 'growiUri'], { unique: true })
@@ -30,7 +35,17 @@ export class Relation {
   @Column()
   growiUri: string;
 
-  @Column('simple-array')
-  siglePostCommands: string[];
+  @Column({ type: 'json' })
+  permissionsForBroadcastUseCommands: PermissionSettingsInterface;
+
+  @Column({ type: 'json' })
+  permissionsForSingleUseCommands: PermissionSettingsInterface;
+
+  @Column({ type: 'timestamp' })
+  expiredAtCommands: Date;
+
+  getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
+    return differenceInMilliseconds(this.expiredAtCommands, baseDate);
+  }
 
 }

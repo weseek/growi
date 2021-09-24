@@ -5,13 +5,8 @@ on:
     branches-ignore:
       - release/**
       - rc/**
-      - tmp/**
-    paths:
-      - .github/workflows/ci-slackbot-proxy.yml
-      - packages/slack/**
-      - packages/slackbot-proxy/**
-      - package.json
-      - yarn.lock
+      - chore/**
+      - support/prepare-v**
 
 jobs:
 
@@ -24,30 +19,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -55,9 +34,13 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
+    - name: yarn lint
+      run: |
+        yarn lerna run lint --scope @growi/slack --scope @growi/slackbot-proxy
     - name: yarn test
       run: |
-        yarn lerna run test
+        yarn lerna run test --scope @growi/slack --scope @growi/slackbot-proxy
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -89,30 +72,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
     - name: lerna bootstrap
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -120,10 +87,11 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
     - name: yarn dev:ci
       working-directory: ./packages/slackbot-proxy
       run: |
-        cp config/ci/.env.local.for-ci .env.local
+        cp config/ci/.env.local.for-ci .env.development.local
         yarn dev:ci
       env:
         TYPEORM_CONNECTION: mysql
@@ -132,6 +100,7 @@ jobs:
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
         TYPEORM_PASSWORD:
+
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -162,36 +131,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Get Date
-      id: date
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Remove unnecessary packages
+      working-directory: ./packages
       run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
-    - name: Get yarn cache dir
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        ls | egrep -v '^(slack|slackbot-proxy)$' | xargs rm -r
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
@@ -214,7 +164,7 @@ jobs:
     - name: yarn start:prod:ci
       working-directory: ./packages/slackbot-proxy
       run: |
-        cp config/ci/.env.local.for-ci .env.local
+        cp config/ci/.env.local.for-ci .env.production.local
         yarn start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
