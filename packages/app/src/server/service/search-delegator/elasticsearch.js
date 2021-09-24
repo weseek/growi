@@ -552,7 +552,10 @@ class ElasticsearchDelegator {
       },
       data: result.hits.hits.map((elm) => {
         return {
-          _id: elm._id, _score: elm._score, _source: elm._source, highlight: elm.highlight,
+          _id: elm._id,
+          _score: elm._score,
+          _source: elm._source,
+          highlight: elm.highlight,
         };
       }),
     };
@@ -885,10 +888,6 @@ class ElasticsearchDelegator {
     this.appendFunctionScore(query, queryString);
     this.appendHighlight(query);
     return this.search(query);
-    // const hoge = await this.search(query);
-
-    // console.log(hoge.data[0].highlight, 895, '_sourceの中身その1');
-    // return hoge;
   }
 
   parseQueryString(queryString) {
