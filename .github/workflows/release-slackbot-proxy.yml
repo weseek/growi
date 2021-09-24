@@ -124,7 +124,7 @@ jobs:
       uses: myrotvorets/info-from-package-json-action@1.1.0
       id: package-json
       with:
-        workingDir: packages/slackbot
+        workingDir: packages/slackbot-proxy
 
     - name: Commit
       uses: github-actions-x/commit@v2.8
