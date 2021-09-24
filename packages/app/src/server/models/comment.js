@@ -108,6 +108,7 @@ module.exports = function(crowi) {
   commentSchema.post('save', async(savedComment) => {
     const Page = crowi.model('Page');
     const commentEvent = crowi.event('comment');
+    await commentEvent.emit('create', savedComment.creator);
 
     try {
       const page = await Page.updateCommentCount(savedComment.page);
@@ -117,7 +118,6 @@ module.exports = function(crowi) {
       throw err;
     }
 
-    await commentEvent.emit('create', savedComment.creator);
     try {
       const activityLog = await Activity.createByPageComment(savedComment);
       debug('Activity created', activityLog);
