@@ -32,19 +32,19 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <div className="input-group mb-3 d-flex">
-        <div className="flex-fill">
+      <div className="grw-search-form-in-search-result-page">
+        <div className="input-group flex-nowrap">
           <SearchForm
             t={this.props.t}
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
           />
-        </div>
-        <div className="input-group-append">
-          <button className="btn btn-secondary" type="button" id="button-addon2" onClick={this.search}>
-            <i className="icon-magnifier"></i>
-          </button>
+          <div className="input-group-append">
+            <button className="btn pr-3 pr-sm-4" type="button" id="button-addon2" onClick={this.search}>
+              <i className="icon-magnifier"></i>
+            </button>
+          </div>
         </div>
       </div>
     );

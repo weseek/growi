@@ -116,6 +116,38 @@
   }
 }
 
+// searchbox in the search result page
+.grw-search-form-in-search-result-page {
+  $search-box-border-radius: 40px;
+
+  .rbt-input-main {
+    padding-right: 58px;
+    padding-left: 26px;
+    // to display corner radius
+    border-top-left-radius: $search-box-border-radius;
+    border-bottom-left-radius: $search-box-border-radius;
+  }
+
+  .input-group {
+    border: solid 1px $gray-300;
+    border-radius: 40px;
+  }
+
+  .form-control {
+    border: none;
+    &:focus {
+      // to overwrite default css
+      box-shadow: none !important;
+    }
+  }
+
+  #button-addon2 {
+    // to display corner radius
+    border-top-right-radius: $search-box-border-radius;
+    border-bottom-right-radius: $search-box-border-radius;
+  }
+}
+
 // layout
 .grw-global-search-top {
   // centering on navbar
