@@ -1,6 +1,7 @@
 import React, { FC, Dispatch, SetStateAction } from 'react';
+import PropTypes from 'prop-types';
 import {
- Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -10,17 +11,17 @@ type DownloadDictModalProps = {
   isDontAskAgainChecked: boolean;
   setIsDontAskAgainChecked: Dispatch<SetStateAction<boolean>>;
   onConfirmEnableTextlint: () => void;
-  onCancel: () => void;
+  onModalClose: () => void;
 };
 
 export const DownloadDictModal: FC<DownloadDictModalProps> = ({
-  onConfirmEnableTextlint, onCancel, isDontAskAgainChecked, setIsDontAskAgainChecked, isModalOpen, setIsModalOpen,
+  onConfirmEnableTextlint, isDontAskAgainChecked, setIsDontAskAgainChecked, isModalOpen, onModalClose,
 }) => {
   const { t } = useTranslation('');
 
   return (
-    <Modal isOpen={isModalOpen} toggle={() => setIsModalOpen(false)} className="">
-      <ModalHeader tag="h4" toggle={() => setIsModalOpen(false)} className="bg-warning">
+    <Modal isOpen={isModalOpen} toggle={onModalClose} className="">
+      <ModalHeader tag="h4" toggle={onModalClose} className="bg-warning">
         <i className="icon-fw icon-question" />
         Warning
       </ModalHeader>
@@ -43,7 +44,7 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onCancel}
+          onClick={onModalClose}
         >
           {t('Cancel')}
         </button>
@@ -57,4 +58,13 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
       </ModalFooter>
     </Modal>
   );
+};
+
+DownloadDictModal.propTypes = {
+  isModalOpen: PropTypes.bool.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  isDontAskAgainChecked: PropTypes.bool.isRequired,
+  setIsDontAskAgainChecked: PropTypes.func.isRequired,
+  onConfirmEnableTextlint: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };

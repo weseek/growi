@@ -371,7 +371,14 @@ class OptionsSelector extends React.Component {
           <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
           <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
         </div>
-        {this.state.isDownloadDictModalShown && <DownloadDictModal />}
+
+        <DownloadDictModal
+          onConfirmEnableTextlint={}
+          onModalClose={() => this.setState({ isDownloadDictModalShown: false })}
+          isDontAskAgainChecked={}
+          setIsDontAskAgainChecked={}
+          isModalOpen={this.state.isDownloadDictModalShown}
+        />
       </>
     );
   }
