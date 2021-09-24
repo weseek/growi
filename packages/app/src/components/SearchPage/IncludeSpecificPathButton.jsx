@@ -14,9 +14,9 @@ const IncludeSpecificPathButton = (props) => {
     console.log(`now including ${pathToInclude} in search result`);
   }
   return (
-    <div className="border px-2 pt-1">
-      <label>
-        <span className="">{pathToInclude === '/user' ? t('search_result.include_user_path') : t('search_result.include_trash_path')}</span>
+    <div className="border px-2 btn btn-outline-secondary">
+      <label className="mb-0">
+        <span className="font-weight-light">{pathToInclude === '/user' ? t('search_result.include_user_path') : t('search_result.include_trash_path')}</span>
         <input
           type="checkbox"
           name="check"
