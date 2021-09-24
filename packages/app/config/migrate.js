@@ -5,8 +5,6 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-import mongoose from 'mongoose';
-
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 const { URL } = require('url');
@@ -27,6 +25,5 @@ const mongodb = {
 module.exports = {
   mongoUri,
   mongodb,
-  migrationsDir: 'src/migrations/',
   changelogCollectionName: 'migrations',
 };
