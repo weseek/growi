@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.6](https://github.com/weseek/growi/compare/v4.4.5...v4.4.6) - 2021-09-24
+
+### 🚀 Improvement
+
+- imprv: Slackbot response flow (#4296) @yuki-takei
+- imprv(slackbot-proxy): Show version on the top page (#4342) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- support(slackbot-proxy): Bump slackbot proxy version independentry (#4385) @yuki-takei
 
 ## [v4.4.5](https://github.com/weseek/growi/compare/v4.4.4...v4.4.5) - 2021-09-23
 
