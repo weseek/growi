@@ -82,7 +82,8 @@ module.exports = (crowi) => {
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) return next();
-    await respond(growiCommand.response_url, {
+    res.send();
+    await respond(growiCommand.responseUrl, {
       text: 'Command forbidden',
       blocks: [
         markdownSectionBlock(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`),
@@ -115,6 +116,7 @@ module.exports = (crowi) => {
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
 
+    res.send();
     await respond(interactionPayloadAccessor.getResponseUrl(), {
       text: 'Interaction forbidden',
       blocks: [
