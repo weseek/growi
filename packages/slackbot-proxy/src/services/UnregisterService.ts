@@ -4,7 +4,7 @@ import { MultiStaticSelect } from '@slack/web-api';
 import {
   actionsBlock, buttonElement, getInteractionIdRegexpFromCommandName,
   GrowiCommand, GrowiCommandProcessor, GrowiInteractionProcessor,
-  inputBlock, InteractionHandledResult, markdownSectionBlock, respond, InteractionPayloadAccessor,
+  inputBlock, InteractionHandledResult, markdownSectionBlock, respond, InteractionPayloadAccessor, replaceOriginal,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { DeleteResult } from 'typeorm';
@@ -171,7 +171,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
       return;
     }
 
-    await respond(responseUrl, {
+    await replaceOriginal(responseUrl, {
       text: 'Unregistration completed',
       blocks: [
         markdownSectionBlock(`Unregistered *${deleteResult.affected}* GROWI from this workspace.`),

@@ -183,7 +183,7 @@ module.exports = (crowi) => {
   }
 
   // TODO: do investigation and fix if needed GW-7519
-  router.post('/commands', addSigningSecretToReq, /* verifySlackRequest, */checkCommandsPermission, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleCommands(req, res, client);
   });
@@ -239,7 +239,7 @@ module.exports = (crowi) => {
   }
 
   // TODO: do investigation and fix if needed GW-7519
-  router.post('/interactions', addSigningSecretToReq, /* verifySlackRequest, */ parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleInteractionsRequest(req, res, client);
   });
