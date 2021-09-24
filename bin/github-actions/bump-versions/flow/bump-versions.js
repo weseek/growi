@@ -13,6 +13,7 @@ async function bumpVersions({
   help = false,
   dir = '.',
   dryRun = false,
+  updateDependencies = true,
   increment = 'patch',
   preid = 'RC',
 }) {
@@ -26,8 +27,12 @@ async function bumpVersions({
 
   const config = await loadConfig(dir, 'bump-versions.config');
 
-  // get current version
   const { monorepo } = config;
+  if (!updateDependencies) {
+    monorepo.updateDependencies = false;
+  }
+
+  // get current version
   const currentVersion = monorepo && monorepo.mainVersionFile
     ? getCurrentVersion(dir, monorepo.mainVersionFile)
     : getCurrentVersion(dir);
@@ -55,6 +60,7 @@ const arg = {
   '--dir': String,
   '--help': Boolean,
   '--dry-run': Boolean,
+  '--update-dependencies': Boolean,
   '--increment': String,
   '--preid': String,
 
