@@ -1,5 +1,7 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -108,8 +110,6 @@ const InAppNotificationDropdown: FC = (props) => {
   const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
 
 
-
-
   const RenderUnLoadedInAppNotification = (): JSX.Element => {
     return (
       <i className="fa fa-spinner"></i>
@@ -137,7 +137,7 @@ const InAppNotificationDropdown: FC = (props) => {
     if (isLoaded === true) {
       return <RenderUnLoadedInAppNotification />;
     }
-    else if (notifications.length = 0) {
+    if (notifications.length === 0) {
       return <RenderEmptyInAppNotification />;
     }
     return <RenderInAppNotificationList />;
@@ -153,7 +153,7 @@ const InAppNotificationDropdown: FC = (props) => {
         {renderInAppNotificationContents}
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by GW-7534 */}
-        <a /*href="/me/notifications"*/>See All</a>
+        <a>See All</a>
       </DropdownMenu>
     </Dropdown>
   );
