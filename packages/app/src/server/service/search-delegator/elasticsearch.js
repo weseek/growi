@@ -543,7 +543,7 @@ class ElasticsearchDelegator {
 
     // for debug
     logger.debug('ES result: ', result);
-
+    // console.log(result.hits.hits[0].highlight, 'highlight');
     return {
       meta: {
         took: result.took,
@@ -551,7 +551,9 @@ class ElasticsearchDelegator {
         results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
-        return { _id: elm._id, _score: elm._score, _source: elm._source };
+        return {
+          _id: elm._id, _score: elm._score, _source: elm._source, highlight: elm.highlight,
+        };
       }),
     };
   }
@@ -856,6 +858,20 @@ class ElasticsearchDelegator {
     };
   }
 
+  appendHighlight(query) {
+    query.body.highlight = {
+      fields: {
+        '*': {
+          type: 'plain',
+          fragment_size: 30,
+          // number_of_fragments: 3,
+          fragmenter: 'simple',
+          // _source: fields,
+        },
+      },
+    };
+  }
+
   async searchKeyword(queryString, user, userGroups, option) {
     const from = option.offset || null;
     const size = option.limit || null;
@@ -869,8 +885,13 @@ class ElasticsearchDelegator {
     this.appendResultSize(query, from, size);
 
     this.appendFunctionScore(query, queryString);
-
-    return this.search(query);
+    this.appendHighlight(query);
+    const hoge = await this.search(query);
+    console.log(hoge, 895, 'search した結果');
+    console.log(hoge.data[0].highlight, 895, '_sourceの中身');
+    console.log(hoge.data[1].highlight, 895, '_sourceの中身その2');
+    console.log(hoge.data[2].highlight, 895, '_sourceの中身その2');
+    return hoge;
   }
 
   parseQueryString(queryString) {
