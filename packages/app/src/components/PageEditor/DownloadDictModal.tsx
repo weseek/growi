@@ -18,16 +18,18 @@ export const DownloadDictModal: FC = () => {
         {t('modal_enable_textlint.confirm_download_dict_and_enable_textlint')}
       </ModalBody>
       <ModalFooter>
-        <input
-          type="checkbox"
-          className="custom-control-input border-0"
-          id="dont-ask-again"
-          checked={isDontAskAgainChecked}
-          onChange={e => setIsDontAskAgainChecked(e.target.checked)}
-        />
-        <label className="custom-control-label align-center" htmlFor="dont-ask-again">
-          {t('modal_enable_textlint.dont_ask_again')}
-        </label>
+        <div className="mr-3 custom-control custom-checkbox custom-checkbox-info">
+          <input
+            type="checkbox"
+            className="custom-control-input"
+            id="dont-ask-again"
+            checked={isDontAskAgainChecked}
+            onChange={e => setIsDontAskAgainChecked(e.target.checked)}
+          />
+          <label className="custom-control-label align-center" htmlFor="dont-ask-again">
+            {t('modal_enable_textlint.dont_ask_again')}
+          </label>
+        </div>
         <button
           type="button"
           className="btn btn-outline-secondary"
