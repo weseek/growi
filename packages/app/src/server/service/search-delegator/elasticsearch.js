@@ -554,7 +554,7 @@ class ElasticsearchDelegator {
           _id: elm._id,
           _score: elm._score,
           _source: elm._source,
-          highlight: elm.highlight,
+          _highlight: elm.highlight,
         };
       }),
     };
@@ -864,7 +864,6 @@ class ElasticsearchDelegator {
     query.body.highlight = {
       fields: {
         '*': {
-          type: 'plain',
           fragment_size: 30,
           fragmenter: 'simple',
         },
