@@ -18,7 +18,8 @@
     "bunyan": "^1.8.15",
     "extensible-custom-error": "^0.0.7",
     "http-errors": "^1.8.0",
-    "universal-bunyan": "^0.9.2"
+    "universal-bunyan": "^0.9.2",
+    "@slack/oauth": "^2.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
