@@ -294,20 +294,6 @@ class SearchResult extends React.Component {
       <div className="content-main">
         <div className="search-result row" id="search-result">
           <div className="col-lg-4 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
-            <div className="d-flex">
-              <div className="mr-auto">
-                {/* TODO
-                  :place deleteAllButton here
-                  #77739  https://estoc.weseek.co.jp/redmine/issues/77739
-              */}
-              </div>
-              <div className="mr-3">
-                <IncludeSpecificPathButton pathToInclude="/user"></IncludeSpecificPathButton>
-              </div>
-              <div className="mr-4">
-                <IncludeSpecificPathButton pathToInclude="/trash"></IncludeSpecificPathButton>
-              </div>
-            </div>
             <nav>
               <div className="d-flex align-items-start justify-content-between mt-1">
                 <div className="search-result-meta">
