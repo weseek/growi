@@ -55,28 +55,28 @@ module.exports = {
     },
     {
       name: 'codemirror-dialog',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/addon/dialog/dialog.min.js',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/addon/dialog/dialog.min.js',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-keymap-vim',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/keymap/vim.min.js',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/keymap/vim.min.js',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-keymap-emacs',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/keymap/emacs.min.js',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/keymap/emacs.min.js',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-keymap-sublime',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/keymap/sublime.min.js',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/keymap/sublime.min.js',
       args: {
         integrity: '',
       },
@@ -84,6 +84,92 @@ module.exports = {
     {
       name: 'redoc-standalone',
       url: 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js',
+      args: {
+        integrity: '',
+      },
+    },
+  ],
+  dict: [
+    {
+      name: 'base.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/base.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'cc.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/cc.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'check.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/check.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_map.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_pos.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'tid.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_char.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_char.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_compat.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_compat.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_invoke.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_invoke.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_map.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_pos.dat.gz',
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'unk.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk.dat.gz',
       args: {
         integrity: '',
       },
@@ -170,63 +256,63 @@ module.exports = {
     },
     {
       name: 'codemirror-dialog',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/addon/dialog/dialog.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/addon/dialog/dialog.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-eclipse',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/eclipse.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/eclipse.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-elegant',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/elegant.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/elegant.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-neo',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/neo.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/neo.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-mdn-like',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/mdn-like.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/mdn-like.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-material',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/material.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/material.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-dracula',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/dracula.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/dracula.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-monokai',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/monokai.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/monokai.min.css',
       args: {
         integrity: '',
       },
     },
     {
       name: 'codemirror-theme-twilight',
-      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/theme/twilight.min.css',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.63.0/theme/twilight.min.css',
       args: {
         integrity: '',
       },

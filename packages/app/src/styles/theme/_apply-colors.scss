@@ -17,6 +17,7 @@ $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcol
 $color-seen-user: #549c79 !default;
 $reload-btn-rc-color: $gray-500;
 $reload-btn-cs-color: $gray-500;
+$bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -449,8 +450,20 @@ ul.pagination {
  * GROWI wiki
  */
 .wiki {
-  .highlighted {
-    @include highlighted($bgcolor-highlighted);
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  h7 {
+    &.blink {
+      @include blink-bgcolor($bgcolor-blinked-section);
+    }
+  }
+
+  .highlighted-keyword {
+    background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
   }
 
   a {

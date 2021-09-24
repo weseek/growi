@@ -39,7 +39,8 @@ html[dark] {
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: $bgcolor-global;
-  $bgcolor-highlighted: rgba($primary, 0.4);
+  $bgcolor-blinked-section: rgba($primary, 0.4);
+  $bgcolor-keyword-highlighted: darkviolet;
 
   // Font colors
   $color-global: #e9af2b;
