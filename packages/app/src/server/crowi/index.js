@@ -65,6 +65,7 @@ function Crowi() {
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
   this.ActivityService = null;
+  this.CommentService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -124,6 +125,7 @@ Crowi.prototype.init = async function() {
     this.setupPageService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
+    this.setupCommentService(),
     this.setupSyncPageStatusService(),
   ]);
 
@@ -655,6 +657,13 @@ Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
   if (this.activityService == null) {
     this.activityService = new ActivityService(this);
+  }
+};
+
+Crowi.prototype.setupCommentService = async function() {
+  const CommentService = require('../service/comment');
+  if (this.commentService == null) {
+    this.commentService = new CommentService(this);
   }
 };
 

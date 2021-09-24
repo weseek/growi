@@ -1,10 +1,10 @@
 import loggerFactory from '../../utils/logger';
 
-import { Activity } from '~/server/models/activity';
+import { Activity } from '../models/activity';
 
 import ActivityDefine from '../util/activityDefine';
 
-const InAppNotificationService = require('./in-app-notification');
+// const InAppNotificationService = require('./in-app-notification');
 
 
 const logger = loggerFactory('growi:service:ActivityService');
@@ -15,53 +15,53 @@ class ActivityService {
 
   inAppNotificationService: any;
 
-  commentEvent!: any;
+  // commentEvent!: any;
 
   constructor(crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
-    this.commentEvent = crowi.event('comment');
+    // this.commentEvent = crowi.event('comment');
 
-    // init
-    this.initCommentEvent();
+    // // init
+    // this.initCommentEvent();
   }
 
-  initCommentEvent(): void {
-    // create
-    this.commentEvent.on('create', async(savedComment) => {
-      this.commentEvent.onCreate();
+  // initCommentEvent(): void {
+  //   // create
+  //   this.commentEvent.on('create', async(savedComment) => {
+  //     this.commentEvent.onCreate();
 
-      try {
-        const activityLog = await Activity.createByPageComment(savedComment);
-        logger.info('Activity created', activityLog);
-      }
-      catch (err) {
-        throw err;
-      }
+  //     try {
+  //       const activityLog = await Activity.createByPageComment(savedComment);
+  //       logger.info('Activity created', activityLog);
+  //     }
+  //     catch (err) {
+  //       throw err;
+  //     }
 
-    });
+  //   });
 
-    // update
-    this.commentEvent.on('update', (user) => {
-      this.commentEvent.onUpdate();
-      const inAppNotificationService = new InAppNotificationService(this.crowi);
+  //   // update
+  //   this.commentEvent.on('update', (user) => {
+  //     this.commentEvent.onUpdate();
+  //     const inAppNotificationService = new InAppNotificationService(this.crowi);
 
-      inAppNotificationService.emitSocketIo(user);
-    });
+  //     inAppNotificationService.emitSocketIo(user);
+  //   });
 
-    // remove
-    this.commentEvent.on('remove', async(comment) => {
-      this.commentEvent.onRemove();
+  //   // remove
+  //   this.commentEvent.on('remove', async(comment) => {
+  //     this.commentEvent.onRemove();
 
-      try {
-        // TODO: Able to remove child activities of comment by GW-7510
-        await this.removeByPageCommentDelete(comment);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
-  }
+  //     try {
+  //       // TODO: Able to remove child activities of comment by GW-7510
+  //       await this.removeByPageCommentDelete(comment);
+  //     }
+  //     catch (err) {
+  //       logger.error(err);
+  //     }
+  //   });
+  // }
 
   /**
    * @param {Comment} comment
