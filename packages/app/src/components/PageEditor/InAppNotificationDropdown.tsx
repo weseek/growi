@@ -137,7 +137,7 @@ const InAppNotificationDropdown: FC = (props) => {
     if (isLoaded === true) {
       return <RenderUnLoadedInAppNotification />;
     }
-    else if (notifications.length = 0){
+    else if (notifications.length = 0) {
       return <RenderEmptyInAppNotification />;
     }
     return <RenderInAppNotificationList />;
@@ -157,7 +157,6 @@ const InAppNotificationDropdown: FC = (props) => {
       </DropdownMenu>
     </Dropdown>
   );
-
 };
 
 /**
