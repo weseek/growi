@@ -138,6 +138,10 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Remove unnecessary packages
+      working-directory: ./packages
+      run: |
+        ls | egrep -v '^(slack|slackbot-proxy)$' | xargs rm -r
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
@@ -148,7 +152,7 @@ jobs:
         yarn list --depth=0
     - name: lerna run build
       run: |
-        yarn lerna run build --scope @growi/slack --scope @growi/slackbot-proxy
+        yarn lerna run build
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production

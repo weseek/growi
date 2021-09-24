@@ -264,6 +264,9 @@ const TestProcess = ({
   return (
     <>
       <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
+      <p className="text-center text-warning">
+        <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+      </p>
       <div className="d-flex justify-content-center">
         <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
