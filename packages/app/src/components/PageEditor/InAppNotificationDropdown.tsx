@@ -22,9 +22,6 @@ const InAppNotificationDropdown: FC = (props) => {
     // fetchNotificationStatus();
   }, []);
 
-  /**
-    * TODO: Listen to socket on the client side by GW-7402
-    */
   const initializeSocket = (props) => {
     console.log(props);
 
