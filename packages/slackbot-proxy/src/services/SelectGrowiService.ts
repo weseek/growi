@@ -144,7 +144,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
 
     const selectGrowiValue = interactionPayloadAccessor.firstAction()?.value;
     if (selectGrowiValue == null) {
-      logger.error('Growi command failed: growiCommand and body params are required in private_metadata.');
+      logger.error('Growi command failed: The first action element must have the value parameter.');
       await respond(responseUrl, {
         text: 'Growi command failed',
         blocks: [
@@ -157,7 +157,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
 
 
     if (growiCommand == null) {
-      logger.error('Growi command failed: growiCommand and body params are required in private_metadata.');
+      logger.error('Growi command failed: The first action value must have growiCommand parameter.');
       await respond(responseUrl, {
         text: 'Growi command failed',
         blocks: [

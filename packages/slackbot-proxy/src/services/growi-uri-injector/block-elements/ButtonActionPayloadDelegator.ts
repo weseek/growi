@@ -33,11 +33,13 @@ export class ButtonActionPayloadDelegator implements GrowiUriInjector<TypedBlock
   }
 
   extract(action: ButtonActionPayload): GrowiUriWithOriginalData {
-    // TODO: FIX THIS GW-7508
-    // action.value = restoredData.originalData;
-    // return restoredData;
+    const restoredData: GrowiUriWithOriginalData = JSON.parse(action.value || '{}');
 
-    return JSON.parse(action.value || '{}');
+    if (restoredData.originalData != null) {
+      action.value = restoredData.originalData;
+    }
+
+    return restoredData;
   }
 
 

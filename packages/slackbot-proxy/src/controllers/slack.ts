@@ -129,6 +129,7 @@ export class SlackCtrl {
     // catch (err) {
     //   logger.error(err);
     // }
+    // The code below is temporary. It will be fixed as well GW-7508
     if (rejectedResults.length > 0) {
       logger.error('Growi command failed: No installation found.');
       await respond(growiCommand.responseUrl, {
@@ -263,7 +264,7 @@ export class SlackCtrl {
       const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
       return respond(growiCommand.responseUrl, {
-        text: 'Error occured.',
+        text: 'Command not permitted.',
         blocks: [
           markdownSectionBlock('*None of GROWI permitted the command.*'),
           markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
@@ -291,7 +292,7 @@ export class SlackCtrl {
 
 
   @Post('/interactions')
-  @UseBefore(/* AddSigningSecretToReq, verifySlackRequest, */ parseSlackInteractionRequest, AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);

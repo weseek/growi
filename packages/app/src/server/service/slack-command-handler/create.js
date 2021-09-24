@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
-const { markdownSectionBlock, inputSectionBlock, respond } = require('@growi/slack');
+const {
+  markdownSectionBlock, inputSectionBlock, respond, inputBlock,
+} = require('@growi/slack');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
 
@@ -9,6 +11,12 @@ module.exports = (crowi) => {
   const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
+  const conversationsSelectElement = {
+    action_id: 'conversation',
+    type: 'conversations_select',
+    response_url_enabled: true,
+    default_to_current_conversation: true,
+  };
 
   handler.handleCommand = async(growiCommand, client, body) => {
     await client.views.open({
@@ -31,6 +39,7 @@ module.exports = (crowi) => {
         },
         blocks: [
           markdownSectionBlock('Create new page.'),
+          inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
           inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
           inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
         ],
