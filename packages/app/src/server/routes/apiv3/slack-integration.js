@@ -59,6 +59,11 @@ module.exports = (crowi) => {
 
   // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkCommandsPermission(req, res, next) {
+    let { growiCommand } = req.body;
+
+    // when /relation-test or from proxy
+    if (req.body.text == null && growiCommand == null) return next();
+
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);
     const fromChannel = req.body.channel_name;
@@ -66,19 +71,24 @@ module.exports = (crowi) => {
 
     let commandPermission;
     if (extractPermissions != null) { // with proxy
-      const { growiCommand } = req.body;
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
       if (isPermitted) return next();
       return res.status(403).send(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`);
     }
+
     // without proxy
-    const growiCommand = parseSlashCommand(req.body);
+    growiCommand = parseSlashCommand(req.body);
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
-    if (isPermitted) return next();
-    await respond(growiCommand.response_url, {
+    if (isPermitted) {
+      return next();
+    }
+    // show ephemeral error message if not permitted
+    res.json({
+      response_type: 'ephemeral',
       text: 'Command forbidden',
       blocks: [
         markdownSectionBlock(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`),
@@ -106,12 +116,17 @@ module.exports = (crowi) => {
 
       return res.status(403).send(`This interaction is forbidden on this GROWI: ${siteUrl}`);
     }
+
     // without proxy
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
-    const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-    if (isPermitted) return next();
 
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
+    if (isPermitted) {
+      return next();
+    }
+    // show ephemeral error message if not permitted
+    res.json({
+      response_type: 'ephemeral',
       text: 'Interaction forbidden',
       blocks: [
         markdownSectionBlock(`This interaction is forbidden on this GROWI: ${siteUrl}`),
