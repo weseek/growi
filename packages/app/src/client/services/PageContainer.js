@@ -223,7 +223,7 @@ export default class PageContainer extends Container {
    * whether to like button
    * not displayed on user page
    */
-  get isAbleToShowLikeButton() {
+  get isAbleToShowLikeButtons() {
     const { isUserPage } = this.state;
     const { isSharedUser } = this.appContainer;
 

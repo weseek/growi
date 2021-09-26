@@ -10,8 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-class LikeButton extends React.Component {
-
+class LikeButtons extends React.Component {
   constructor(props) {
     super(props);
 
@@ -40,12 +39,10 @@ class LikeButton extends React.Component {
 
     try {
       pageContainer.toggleLike();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
-
 
   render() {
     const { appContainer, pageContainer, t } = this.props;
@@ -84,15 +81,14 @@ class LikeButton extends React.Component {
       </div>
     );
   }
-
 }
 
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer, PageContainer]);
+const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer, PageContainer]);
 
-LikeButton.propTypes = {
+LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
@@ -100,4 +96,4 @@ LikeButton.propTypes = {
   size: PropTypes.string,
 };
 
-export default withTranslation()(LikeButtonWrapper);
+export default withTranslation()(LikeButtonsWrapper);
