@@ -16,7 +16,7 @@ describe('config/migrate.js', () => {
       const initMongooseGlobalSettingsMock = jest.fn();
 
       // mock for mongoose-utils
-      jest.doMock('~/server/util/mongoose-utils', () => {
+      jest.doMock('@growi/core', () => {
         return {
           initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
           getMongoUri: () => {
@@ -27,7 +27,7 @@ describe('config/migrate.js', () => {
 
       const { mongoUri, mongodb } = require('^/config/migrate');
 
-      jest.dontMock('~/server/util/mongoose-utils');
+      jest.dontMock('@growi/core');
 
       expect(initMongooseGlobalSettingsMock).toHaveBeenCalledTimes(1);
       expect(mongoUri).toBe(MONGO_URI);
