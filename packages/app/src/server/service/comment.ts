@@ -14,11 +14,9 @@ class CommentService {
 
   commentEvent!: any;
 
-  activityService: any;
-
   constructor(crowi: any) {
     this.crowi = crowi;
-    this.activityService = crowi.activityService;
+
     this.commentEvent = crowi.event('comment');
 
     // init
