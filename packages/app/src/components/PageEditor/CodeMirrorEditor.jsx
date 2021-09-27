@@ -154,7 +154,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
     this.cmNoCdnScriptRoot = '/static/js/cdn';
     this.cmNoCdnStyleRoot = '/static/styles/cdn';
-    window.kuromojin = { dicPath: '/dict' };
+    window.kuromojin = { dicPath: '/static/dict' };
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
