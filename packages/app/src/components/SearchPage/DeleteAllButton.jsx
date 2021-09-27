@@ -22,7 +22,7 @@ const DeleteAllButton = (props) => {
             }
           }}
         />
-        <span className="search-delete-selected-button">
+        <span className="search-delete-selected-button font-weight-light">
           <i className="icon-trash ml-3"></i>
           {t('search_result.delete_all_selected_page')}
         </span>
