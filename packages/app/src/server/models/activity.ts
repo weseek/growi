@@ -9,7 +9,7 @@ import ActivityDefine from '../util/activityDefine';
 
 import Watcher from './watcher';
 // import { InAppNotification } from './in-app-notification';
-// import activityEvent from '../events/activity';
+import ActivityEvent from '../events/activity';
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -36,8 +36,6 @@ export interface ActivityModel extends Model<ActivityDocument> {
   findByUser(user: any): Promise<ActivityDocument[]>
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
-
-// const activityEvent = crowi.event('Activity');
 
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
@@ -92,8 +90,9 @@ activitySchema.statics.createByParameters = function(parameters) {
    * @param {object} parameters
    */
 activitySchema.statics.removeByParameters = async function(parameters) {
+  const activityEvent = new ActivityEvent();
   const activity = await this.findOne(parameters);
-  // activityEvent.emit('remove', activity);
+  activityEvent.emit('remove', activity);
 
   return this.deleteMany(parameters).exec();
 };
@@ -149,11 +148,14 @@ activitySchema.statics.removeByPageUnlike = function(page, user) {
 
 /**
    * @param {Page} page
+   *
    * @return {Promise}
    */
 activitySchema.statics.removeByPage = async function(page) {
+  // const activityEvent = new ActivityEvent();
   const activities = await this.find({ target: page });
   for (const activity of activities) {
+    // TODO: implement removeActivity when page deleted by GW-7481
     // activityEvent.emit('remove', activity);
   }
   return this.deleteMany({ target: page }).exec();
@@ -209,23 +211,6 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
     logger.error(err);
   }
 });
-
-
-/**
- * TODO: improve removeActivity that decleard in InAppNotificationService by GW-7481
- */
-
-// because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
-// move 'save' hook from mongoose's events to activityEvent if I have a time.
-// activityEvent.on('remove', async(activity: ActivityDocument) => {
-
-//   try {
-//     await InAppNotification.removeActivity(activity);
-//   }
-//   catch (err) {
-//     logger.error(err);
-//   }
-// });
 
 const Activity = getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
 export { Activity };

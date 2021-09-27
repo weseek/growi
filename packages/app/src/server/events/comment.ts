@@ -22,5 +22,9 @@ CommentEvent.prototype.onUpdate = function() {
   logger.info('onUpdate comment event fired');
 };
 
+CommentEvent.prototype.onRemove = function() {
+  logger.info('onRemove comment event fired');
+};
+
 
 module.exports = CommentEvent;
