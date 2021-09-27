@@ -25,6 +25,7 @@ class PageService {
     this.pageEvent.on('create', this.pageEvent.onCreate);
     this.pageEvent.on('update', this.pageEvent.onUpdate);
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+    this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
   /**

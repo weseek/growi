@@ -418,6 +418,8 @@ class ElasticsearchDelegator {
       async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
 
+        console.log(pageIds, 420, 'updateOrInsertPages');
+
         const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
         const idsHavingCount = Object.keys(idToCountMap);
 
@@ -460,17 +462,17 @@ class ElasticsearchDelegator {
       async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
 
-        const idToCountSeenUsersMap = await Page.getPageIdToSeenUsersCount(pageIds);
-        console.log(idToCountSeenUsersMap, 464);
+        const hoge = await Page.find({ _id: { $in: pageIds } });
+        console.log(hoge, 464);
 
-        const idsHavingCount = Object.keys(idToCountSeenUsersMap);
+        // const idsHavingCount = Object.keys(idToCountSeenUsersMap);
 
-        chunk
-          .filter(doc => idsHavingCount.includes(doc._id.toString()))
-          .forEach((doc) => {
-            doc.seenUsers = idToCountSeenUsersMap[doc.id.toString()];
-          });
-        this.push(chunk);
+        // chunk
+        //   .filter(doc => idsHavingCount.includes(doc._id.toString()))
+        //   .forEach((doc) => {
+        //     doc.seenUsers = idToCountSeenUsersMap[doc.id.toString()];
+        //   });
+        // this.push(chunk);
         callback();
       },
     });
@@ -994,7 +996,12 @@ class ElasticsearchDelegator {
     };
   }
 
+  // async syncPageSeen() {
+
+  // }
+
   async syncPageUpdated(page, user) {
+    console.log(page, 1004);
     logger.debug('SearchClient.syncPageUpdated', page.path);
 
     // delete if page should not indexed

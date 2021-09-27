@@ -288,6 +288,7 @@ module.exports = function(crowi) {
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
     pageEvent.on('createMany', pageEvent.onCreateMany);
+    pageEvent.on('addSeenUsers', pageEvent.onAddSeenUsers);
   }
 
   function validateCrowi() {
@@ -416,6 +417,22 @@ module.exports = function(crowi) {
 
     return saved;
   };
+
+  // pageSchema.statics.getPageIdToSeenUsersCount = async function(pageIds) {
+  //   console.log(pageIds, 423);
+  //   const results = await this.aggregate()
+  //     .match({ _id: { $in: pageIds } });
+
+
+  //   console.log(results, 425, 'getPageIdTO');
+  //   const idToCountMap = {};
+  //   results.forEach((result) => {
+  //     idToCountMap[result.id] = result.count;
+  //   });
+
+  //   return idToCountMap;
+
+  // };
 
   pageSchema.methods.updateSlackChannels = function(slackChannels) {
     this.slackChannels = slackChannels;
