@@ -1,5 +1,13 @@
 {% extends 'base/layout.html' %}
 
+{% block html_additional_headers %}
+  <!-- OGP -->　　
+  <meta property="og:site_name" content="{{ appService.getAppTitle() | preventXss }}" />
+  <meta property="og:title" content="{{ page.path | preventXss }}" />
+  <meta property="og:url" content="{{ appService.getSiteUrl() | preventXss }}/{{ page.id }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="{{ appService.getSiteUrl() | preventXss }}/ogp/{{ page.id }}" />
+{% endblock %}
 
 {% block content_main_before %}
 {% endblock %}
