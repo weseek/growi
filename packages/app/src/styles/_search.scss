@@ -155,6 +155,10 @@
   }
 }
 
+.search-delete-selected-button {
+  color: $danger;
+}
+
 .search-result {
   .search-result-list {
     position: sticky;
