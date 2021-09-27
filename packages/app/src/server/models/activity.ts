@@ -7,7 +7,7 @@ import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-import Watcher from './watcher';
+import Watcher from './subscription';
 // import { InAppNotification } from './in-app-notification';
 // import activityEvent from '../events/activity';
 
