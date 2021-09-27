@@ -11,37 +11,29 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const deletedPageStatusQuery = { status: Page.STATUS_DELETED };
-
-    const PAGE_COUNT = await Page.count(deletedPageStatusQuery);
-    const OFFSET = 1000;
-    let skip = 0;
-
-    const deletedPagesPromises = [];
     const addFieldRequests = [];
+    const updateDeletedPageIds = [];
 
-    while (PAGE_COUNT > skip) {
-      deletedPagesPromises.push(Page.find(deletedPageStatusQuery).select('_id').skip(skip).limit(OFFSET));
-      skip += OFFSET;
-    }
-
-    for await (const deletedPages of deletedPagesPromises) {
-      const deletedPageIdList = deletedPages.map(deletedPage => deletedPage._id);
+    for await (const deletedPage of Page.find({ status: Page.STATUS_DELETED }).select('_id').cursor()) {
+      updateDeletedPageIds.push(deletedPage._id);
       addFieldRequests.push(
         {
           updateMany: {
-            filter: { relatedPage: { $in: deletedPageIdList } },
+            filter: { relatedPage: deletedPage._id },
             update: { $set: { isPageTrashed: true } },
-          },
-        },
-        {
-          updateMany: {
-            filter: { relatedPage: { $nin: deletedPageIdList } },
-            update: { $set: { isPageTrashed: false } },
           },
         },
       );
     }
+
+    addFieldRequests.push(
+      {
+        updateMany: {
+          filter: { relatedPage: { $nin: updateDeletedPageIds } },
+          update: { $set: { isPageTrashed: false } },
+        },
+      },
+    );
 
     try {
       await db.collection('pagetagrelations').bulkWrite(addFieldRequests);
