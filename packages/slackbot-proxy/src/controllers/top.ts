@@ -2,6 +2,8 @@ import {
   Controller, Get, Inject, View,
 } from '@tsed/common';
 
+import readPkgUp from 'read-pkg-up';
+
 import { requiredScopes } from '@growi/slack';
 import { InstallerService } from '~/services/InstallerService';
 
@@ -22,8 +24,8 @@ export class TopCtrl {
     });
 
     // use await import in order to avoid typescript-eslint error
-    const fs = await import('fs');
-    const growiBotVersion = JSON.parse(fs.readFileSync('../../package.json', 'utf8')).version;
+    const readPkgUpResult = await readPkgUp();
+    const growiBotVersion = readPkgUpResult?.packageJson.version;
 
     return { url, isOfficialMode, growiBotVersion };
   }

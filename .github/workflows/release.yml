@@ -96,6 +96,7 @@ jobs:
     - name: Bump versions for next RC
       run: |
         node ./bin/github-actions/bump-versions -i prerelease
+        node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.1.0

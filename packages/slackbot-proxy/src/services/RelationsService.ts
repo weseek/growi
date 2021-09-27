@@ -28,7 +28,6 @@ type CheckEachRelationResult = {
 export class RelationsService {
 
   @Inject()
-
   relationRepository: RelationRepository;
 
   async getSupportedGrowiCommands(relation:Relation):Promise<any> {
