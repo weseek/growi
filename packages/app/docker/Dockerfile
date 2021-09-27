@@ -72,15 +72,14 @@ RUN rm node_modules.tar
 ##
 FROM prebuilder-default AS prebuilder-nocdn
 
-# replace env.prod.js for NO_CDN
-COPY docker/nocdn/env.prod.js ${appDir}/config/
+# add dotenv file for NO_CDN
+COPY docker/nocdn/.env.production.local ${appDir}/
 
 
 
 ##
 ## builder
 ##
-# FROM prebuilder-${flavor}
 FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
@@ -113,7 +112,7 @@ RUN tar cf packages.tar \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/.env.production \
+  packages/app/.env.production* \
   packages/app/tsconfig.base.json \
   packages/app/tsconfig.json \
   packages/*/package.json \
