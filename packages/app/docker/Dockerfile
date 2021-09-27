@@ -73,7 +73,7 @@ RUN rm node_modules.tar
 FROM prebuilder-default AS prebuilder-nocdn
 
 # add dotenv file for NO_CDN
-COPY docker/nocdn/.env.production.local ${appDir}/
+COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
 
 
 
