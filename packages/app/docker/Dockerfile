@@ -110,7 +110,6 @@ RUN tar cf packages.tar \
   yarn.lock \
   tsconfig.base.json \
   packages/app/config \
-  packages/app/migrations \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
