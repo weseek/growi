@@ -39,7 +39,7 @@ services:
       - /data/db
 
   ogp:
-    image: ghcr.io/weseek/growi-unique-ogp/growi-unique-ogp:latest
+    image: ghcr.io/weseek/growi-unique-ogp:latest
     ports:
       - 8088:8088
     restart: unless-stopped
