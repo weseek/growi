@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getModelSafely } from '@growi/core';
 import config from '^/config/migrate';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
