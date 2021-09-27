@@ -473,6 +473,7 @@ Crowi.prototype.buildServer = async function() {
 
 Crowi.prototype.setupTerminus = function(server) {
   createTerminus(server, {
+    signals: ['SIGINT', 'SIGTERM'],
     onSignal: async() => {
       logger.info('Server is starting cleanup');
 
