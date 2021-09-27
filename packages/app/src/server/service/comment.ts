@@ -44,7 +44,7 @@ class CommentService {
     // update
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
-      const inAppNotificationService = new InAppNotificationService(this.crowi);
+      const { inAppNotificationService } = this.crowi;
 
       inAppNotificationService.emitSocketIo(user);
     });
@@ -53,7 +53,7 @@ class CommentService {
     this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
 
-      const activityService = new ActivityService(this.crowi);
+      const { activityService } = this.crowi;
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510
