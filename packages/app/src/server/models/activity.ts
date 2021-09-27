@@ -7,7 +7,7 @@ import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-import Watcher from './subscription';
+import Subscription from './subscription';
 // import { InAppNotification } from './in-app-notification';
 // import activityEvent from '../events/activity';
 
@@ -178,8 +178,8 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   const model: any = await this.model(targetModel).findById(target);
   const [targetUsers, watchUsers, ignoreUsers] = await Promise.all([
     model.getNotificationTargetUsers(),
-    Watcher.getWatchers((target as any) as Types.ObjectId),
-    Watcher.getIgnorers((target as any) as Types.ObjectId),
+    Subscription.getWatchers((target as any) as Types.ObjectId),
+    Subscription.getIgnorers((target as any) as Types.ObjectId),
   ]);
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
