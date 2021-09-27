@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
+    "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
     "@growi/codemirror-textlint": "^4.4.7-RC.0",
     "@growi/plugin-attachment-refs": "^4.4.7-RC.0",
