@@ -9,7 +9,7 @@ const STATUS_WATCH = 'WATCH';
 const STATUS_IGNORE = 'IGNORE';
 const STATUSES = [STATUS_WATCH, STATUS_IGNORE];
 
-export interface IWatcher {
+export interface ISubscription {
   user: Types.ObjectId
   targetModel: string
   target: Types.ObjectId
@@ -20,9 +20,9 @@ export interface IWatcher {
   isIgnoring(): boolean
 }
 
-export interface WatcherDocument extends IWatcher, Document {}
+export interface SubscriptionDocument extends ISubscription, Document {}
 
-export interface WatcherModel extends Model<WatcherDocument> {
+export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
   upsertWatcher(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
   watchByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
@@ -30,7 +30,7 @@ export interface WatcherModel extends Model<WatcherDocument> {
   getIgnorers(target: Types.ObjectId): Promise<Types.ObjectId[]>
 }
 
-const watcherSchema = new Schema<WatcherDocument, WatcherModel>({
+const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -55,19 +55,19 @@ const watcherSchema = new Schema<WatcherDocument, WatcherModel>({
   createdAt: { type: Date, default: Date.now },
 });
 
-watcherSchema.methods.isWatching = function() {
+subscriptionSchema.methods.isWatching = function() {
   return this.status === STATUS_WATCH;
 };
 
-watcherSchema.methods.isIgnoring = function() {
+subscriptionSchema.methods.isIgnoring = function() {
   return this.status === STATUS_IGNORE;
 };
 
-watcherSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
+subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
   return this.findOne({ user: userId, target: targetId });
 };
 
-watcherSchema.statics.upsertWatcher = function(user, targetModel, target, status) {
+subscriptionSchema.statics.upsertWatcher = function(user, targetModel, target, status) {
   const query = { user, targetModel, target };
   const doc = { ...query, status };
   const options = {
@@ -76,24 +76,24 @@ watcherSchema.statics.upsertWatcher = function(user, targetModel, target, status
   return this.findOneAndUpdate(query, doc, options);
 };
 
-watcherSchema.statics.watchByPageId = function(user, pageId, status) {
+subscriptionSchema.statics.watchByPageId = function(user, pageId, status) {
   return this.upsertWatcher(user, 'Page', pageId, status);
 };
 
-watcherSchema.statics.getWatchers = async function(target) {
+subscriptionSchema.statics.getWatchers = async function(target) {
   return this.find({ target, status: STATUS_WATCH }).distinct('user');
 };
 
-watcherSchema.statics.getIgnorers = async function(target) {
+subscriptionSchema.statics.getIgnorers = async function(target) {
   return this.find({ target, status: STATUS_IGNORE }).distinct('user');
 };
 
-watcherSchema.statics.STATUS_WATCH = function() {
+subscriptionSchema.statics.STATUS_WATCH = function() {
   return STATUS_WATCH;
 };
 
-watcherSchema.statics.STATUS_IGNORE = function() {
+subscriptionSchema.statics.STATUS_IGNORE = function() {
   return STATUS_IGNORE;
 };
 
-export default getOrCreateModel<WatcherDocument, WatcherModel>('Watcher', watcherSchema);
+export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);
