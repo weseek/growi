@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
-import { generateWebClient, markdownSectionBlock, SlackbotType } from '@growi/slack';
+import {
+  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, respond, SlackbotType,
+} from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
@@ -235,32 +237,28 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(command, client, body, ...opt) {
-    let module;
-    try {
-      module = `./slack-command-handler/${command}`;
-    }
-    catch (err) {
-      await this.notCommand(client, body);
-    }
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body) {
+    const { growiCommandType } = growiCommand;
+    const module = `./slack-command-handler/${growiCommandType}`;
 
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleCommand(client, body, ...opt);
+      await handler.handleCommand(growiCommand, client, body);
     }
     catch (err) {
+      await this.notCommand(growiCommand);
       throw err;
     }
   }
 
-  async handleBlockActionsRequest(client, payload) {
-    const { action_id: actionId } = payload.actions[0];
+  async handleBlockActionsRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+    const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -268,14 +266,14 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async handleViewSubmissionRequest(client, payload) {
-    const { callback_id: callbackId } = payload.view;
+  async handleViewSubmissionRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+    const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
       const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
       throw err;
@@ -283,11 +281,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async notCommand(client, body) {
+  async notCommand(growiCommand: GrowiCommand): Promise<void> {
     logger.error('Invalid first argument');
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+    await respond(growiCommand.responseUrl, {
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),

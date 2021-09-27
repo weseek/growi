@@ -9,8 +9,9 @@ export default () => runStep({}, () => {
   const dir = `--dir ${underline('PATH')}`;
   const increment = `--increment ${underline('LEVEL')}`;
   const preId = `--preid ${underline('IDENTIFIER')}`;
+  const updateDependencies = `--update-dependencies ${underline('true/false')}`;
   const dryRun = '--dry-run';
-  const all = [help, dir, increment, preId, dryRun]
+  const all = [help, dir, increment, preId, updateDependencies, dryRun]
     .map(x => `[${x}]`)
     .join(' ');
 
@@ -45,6 +46,9 @@ export default () => runStep({}, () => {
         'IDENTIFIER',
       )} for semver.inc() with 'prerelease' type (default: 'RC').`,
     ),
+    '',
+    indent(`${updateDependencies}`),
+    indent('  Update dependencies or not (default: true).'),
     '',
     indent(`-D, ${dryRun}`),
     indent('  Displays the steps without actually doing them.'),
