@@ -141,11 +141,6 @@ RUN set -eux; \
 # verify that the binary works
 	gosu nobody true
 
-# Add Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-
 COPY --from=deps-resolver-prod --chown=node:node \
   ${appDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
@@ -169,5 +164,5 @@ WORKDIR ${appDir}/packages/app
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
-CMD ["node", "-r", "dotenv-flow/config", "--expose_gc", "dist/server/app.js"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["yarn preserver && node -r dotenv-flow/config --expose_gc dist/server/app.js"]

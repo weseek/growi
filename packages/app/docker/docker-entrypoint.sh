@@ -11,5 +11,4 @@ fi
 chown -R node:node /data/uploads
 chown -h node:node ./public/uploads
 
-gosu node yarn preserver
-gosu node $@
+exec gosu node /bin/bash -c "$@"
