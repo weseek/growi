@@ -33,9 +33,8 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-// Textlint
+
 window.JSHINT = JSHINT;
-window.kuromojin = { dicPath: '/static/dict' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
@@ -155,7 +154,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
     this.cmNoCdnScriptRoot = '/static/js/cdn';
     this.cmNoCdnStyleRoot = '/static/styles/cdn';
-
+    window.kuromojin = { dicPath: '/static/dict' };
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new PreventMarkdownListInterceptor(),
