@@ -309,6 +309,8 @@ class ElasticsearchDelegator {
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
+    const seenUsersCount = page.seenUsers.length || 0;
+    // console.log(seenUsersCount, 313);
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -316,6 +318,7 @@ class ElasticsearchDelegator {
       username: page.creator != null ? page.creator.username : null,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
+      seenUsers_count: seenUsersCount,
       like_count: page.liker.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
@@ -452,6 +455,26 @@ class ElasticsearchDelegator {
       },
     });
 
+    const appendSeenUsersCountStream = new Transform({
+      objectMode: true,
+      async transform(chunk, encoding, callback) {
+        const pageIds = chunk.map(doc => doc._id);
+
+        const idToCountSeenUsersMap = await Page.getPageIdToSeenUsersCount(pageIds);
+        console.log(idToCountSeenUsersMap, 464);
+
+        const idsHavingCount = Object.keys(idToCountSeenUsersMap);
+
+        chunk
+          .filter(doc => idsHavingCount.includes(doc._id.toString()))
+          .forEach((doc) => {
+            doc.seenUsers = idToCountSeenUsersMap[doc.id.toString()];
+          });
+        this.push(chunk);
+        callback();
+      },
+    });
+
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -504,6 +527,7 @@ class ElasticsearchDelegator {
       .pipe(batchStream)
       .pipe(appendBookmarkCountStream)
       .pipe(appendTagNamesStream)
+      .pipe(appendSeenUsersCountStream)
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
@@ -543,7 +567,8 @@ class ElasticsearchDelegator {
 
     // for debug
     logger.debug('ES result: ', result);
-
+    console.log(result.hits, 550, 'search resluts.hits');
+    console.log(result.hits.hits, 551, 'search results.hits.hits');
     return {
       meta: {
         took: result.took,
@@ -563,7 +588,7 @@ class ElasticsearchDelegator {
 
   createSearchQuerySortedByUpdatedAt(option) {
     // getting path by default is almost for debug
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -584,7 +609,7 @@ class ElasticsearchDelegator {
   }
 
   createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -626,6 +651,8 @@ class ElasticsearchDelegator {
     if (!isInitialized(query.body.query.bool.must_not)) {
       query.body.query.bool.must_not = [];
     }
+
+    console.log(query, 635, 'initializeBoolQuery');
     return query;
   }
 
