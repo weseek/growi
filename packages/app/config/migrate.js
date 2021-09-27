@@ -25,5 +25,6 @@ const mongodb = {
 module.exports = {
   mongoUri,
   mongodb,
+  migrationsDir: process.env.MIGRATIONS_DIR || 'src/migrations/',
   changelogCollectionName: 'migrations',
 };
