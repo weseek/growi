@@ -21,7 +21,7 @@ const IncludeSpecificPathButton = (props) => {
         </span>
         <input
           type="checkbox"
-          name="check"
+          name="check-include-specific-path"
           onChange={() => {
             if (checked) {
               includeSpecificPathInSearchResult(pathToInclude);

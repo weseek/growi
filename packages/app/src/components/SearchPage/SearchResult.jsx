@@ -9,7 +9,6 @@ import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import IncludeSpecificPathButton from './IncludeSpecificPathButton';
 
 class SearchResult extends React.Component {
 

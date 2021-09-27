@@ -568,7 +568,8 @@
     "check_all": "すべてチェック",
     "deletion_modal_header": "以下のページを削除",
     "delete_completely": "完全に削除する",
-    "include_certain_path": "{{pathToInclude}}下を含む "
+    "include_certain_path": "{{pathToInclude}}下を含む ",
+    "delete_all_selected_page" : "一括削除"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
