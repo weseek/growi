@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
 import path from 'path';
+import http from 'http';
 import mongoose from 'mongoose';
+
+import { createTerminus } from '@godaddy/terminus';
 
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import pkg from '^/package.json';
@@ -409,10 +412,17 @@ Crowi.prototype.start = async function() {
   this.pluginService = new PluginService(this, express);
   await this.pluginService.autoDetectAndLoadPlugins();
 
-  const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
+  const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
+
+  const httpServer = http.createServer(app);
+
+  // setup terminus
+  this.setupTerminus(httpServer);
+  // attach to socket.io
+  this.socketIoService.attachServer(httpServer);
 
   // listen
-  const serverListening = server.listen(this.port, () => {
+  const serverListening = httpServer.listen(this.port, () => {
     logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
     if (this.node_env === 'development') {
       this.crowiDev.setupExpressAfterListening(express);
@@ -427,8 +437,6 @@ Crowi.prototype.start = async function() {
       logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
     });
   }
-
-  this.socketIoService.attachServer(serverListening);
 
   // setup Express Routes
   this.setupRoutesAtLast();
@@ -461,6 +469,20 @@ Crowi.prototype.buildServer = async function() {
   }
 
   this.express = express;
+};
+
+Crowi.prototype.setupTerminus = function(server) {
+  createTerminus(server, {
+    onSignal: async() => {
+      logger.info('Server is starting cleanup');
+
+      await mongoose.disconnect();
+      return;
+    },
+    onShutdown: async() => {
+      logger.info('Cleanup finished, server is shutting down');
+    },
+  });
 };
 
 /**
