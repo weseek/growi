@@ -35,7 +35,7 @@ import DrawioModal from './DrawioModal';
 
 
 window.JSHINT = JSHINT;
-window.kuromojin.dicPath = '/dict';
+window.kuromojin = { dicPath: '/dict' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
