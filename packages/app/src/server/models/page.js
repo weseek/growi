@@ -413,24 +413,22 @@ module.exports = function(crowi) {
     const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
+    this.eventFireAfterSeen(saved);
+
     debug('seenUsers updated!', added);
 
     return saved;
   };
 
-  pageSchema.methods.eventFireAfterSeen = async function(page) {
-    // const pageEvent = crowi.event('page');
+  pageSchema.methods.eventFireAfterSeen = function(page) {
     pageEvent.emit('addSeenUsers', page);
     return;
   };
 
   pageSchema.statics.getPageIdToSeenUsersCount = async function(pageIds) {
-    console.log(pageIds, 423);
     const results = await this.aggregate()
       .match({ _id: { $in: pageIds } });
 
-
-    console.log(results, 425, 'getPageIdTO');
     const idToCountMap = {};
     results.forEach((result) => {
       idToCountMap[result.seenUsers] = result.seenUsers.length;
