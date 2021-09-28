@@ -36,6 +36,7 @@ class OptionsSelector extends React.Component {
       isCddMenuOpened: false,
       isMathJaxEnabled,
       isDownloadDictModalShown: false,
+      isDontAskAgainChecked: true,
     };
 
     this.availableThemes = [
@@ -373,11 +374,11 @@ class OptionsSelector extends React.Component {
         </div>
 
         <DownloadDictModal
-          onConfirmEnableTextlint={}
-          onModalClose={() => this.setState({ isDownloadDictModalShown: false })}
-          isDontAskAgainChecked={}
-          setIsDontAskAgainChecked={}
           isModalOpen={this.state.isDownloadDictModalShown}
+          isDontAskAgainChecked={this.state.isDontAskAgainChecked}
+          onConfirmEnableTextlint={this.switchTextlintEnabledHandler}
+          onCancel={() => this.setState({ isDownloadDictModalShown: false })}
+          dontAskAgainCheckboxHandler={isChecked => this.setState({ isDontAskAgainChecked: isChecked })}
         />
       </>
     );

@@ -1,4 +1,4 @@
-import React, { FC, Dispatch, SetStateAction } from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -7,21 +7,20 @@ import { useTranslation } from 'react-i18next';
 
 type DownloadDictModalProps = {
   isModalOpen: boolean
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   isDontAskAgainChecked: boolean;
-  setIsDontAskAgainChecked: Dispatch<SetStateAction<boolean>>;
   onConfirmEnableTextlint: () => void;
-  onModalClose: () => void;
+  onCancel: () => void;
+  dontAskAgainCheckboxHandler: (isChecked: boolean) => void;
 };
 
 export const DownloadDictModal: FC<DownloadDictModalProps> = ({
-  onConfirmEnableTextlint, isDontAskAgainChecked, setIsDontAskAgainChecked, isModalOpen, onModalClose,
+  isModalOpen, isDontAskAgainChecked, onConfirmEnableTextlint, onCancel, dontAskAgainCheckboxHandler,
 }) => {
   const { t } = useTranslation('');
 
   return (
-    <Modal isOpen={isModalOpen} toggle={onModalClose} className="">
-      <ModalHeader tag="h4" toggle={onModalClose} className="bg-warning">
+    <Modal isOpen={isModalOpen} toggle={onCancel} className="">
+      <ModalHeader tag="h4" toggle={onCancel} className="bg-warning">
         <i className="icon-fw icon-question" />
         Warning
       </ModalHeader>
@@ -35,7 +34,7 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
             className="custom-control-input"
             id="dont-ask-again"
             checked={isDontAskAgainChecked}
-            onChange={e => setIsDontAskAgainChecked(e.target.checked)}
+            onChange={e => dontAskAgainCheckboxHandler(e.target.checked)}
           />
           <label className="custom-control-label align-center" htmlFor="dont-ask-again">
             {t('modal_enable_textlint.dont_ask_again')}
@@ -44,7 +43,7 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onModalClose}
+          onClick={onCancel}
         >
           {t('Cancel')}
         </button>
@@ -62,9 +61,8 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
 
 DownloadDictModal.propTypes = {
   isModalOpen: PropTypes.bool.isRequired,
-  setIsModalOpen: PropTypes.func.isRequired,
   isDontAskAgainChecked: PropTypes.bool.isRequired,
-  setIsDontAskAgainChecked: PropTypes.func.isRequired,
   onConfirmEnableTextlint: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  dontAskAgainCheckboxHandler: PropTypes.func.isRequired,
 };
