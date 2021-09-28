@@ -5,7 +5,7 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 const { URL } = require('url');
 
