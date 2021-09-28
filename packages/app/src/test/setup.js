@@ -7,7 +7,7 @@
 
 const mongoose = require('mongoose');
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 mongoose.Promise = global.Promise;
 
