@@ -413,9 +413,8 @@ module.exports = function(crowi) {
     const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
-    pageEvent.emit('addSeenUsers', saved);
-
     debug('seenUsers updated!', added);
+    pageEvent.emit('addSeenUsers', saved);
 
     return saved;
   };
