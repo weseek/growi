@@ -310,7 +310,7 @@ class ElasticsearchDelegator {
 
     const bookmarkCount = page.bookmarkCount || 0;
     const seenUsersCount = page.seenUsers.length || 0;
-    // console.log(seenUsersCount, 313);
+    console.log(seenUsersCount, 313);
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -907,6 +907,7 @@ class ElasticsearchDelegator {
     const size = option.limit || null;
     const type = option.type || null;
     const query = this.createSearchQuerySortedByScore();
+    console.log(query, 910);
     this.appendCriteriaForQueryString(query, queryString);
 
     this.filterPagesByType(query, type);
