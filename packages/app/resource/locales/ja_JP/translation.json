@@ -839,10 +839,8 @@
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
     "failed_to_count_pages": "ページ数の取得に失敗しました",
-    "failed_to_bulk_export_page_markdown": "ページのエクスポートに失敗しました",
     "export_page_markdown": "マークダウン形式でページをエクスポート",
-    "export_page_pdf": "PDF形式でページをエクスポート",
-    "bulk_export_page_markdown": "マークダウン形式で配下のページを全てエクスポート"
+    "export_page_pdf": "PDF形式でページをエクスポート"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
