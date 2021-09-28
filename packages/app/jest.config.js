@@ -14,10 +14,22 @@ module.exports = {
 
   preset: 'ts-jest/presets/js-with-ts',
 
-  globalSetup: '<rootDir>/src/test/global-setup.js',
-  globalTeardown: '<rootDir>/src/test/global-teardown.js',
-
   projects: [
+    {
+      displayName: 'unit',
+
+      preset: 'ts-jest/presets/js-with-ts',
+
+      rootDir: '.',
+      roots: ['<rootDir>/src'],
+      testMatch: ['<rootDir>/src/test-unit/**/*.test.ts', '<rootDir>/src/test-unit/**/*.test.js'],
+
+      testEnvironment: 'node',
+
+      // Automatically clear mock calls and instances between every test
+      clearMocks: true,
+      moduleNameMapper: MODULE_NAME_MAPPING,
+    },
     {
       displayName: 'server',
 
@@ -25,9 +37,13 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>/src'],
-      testEnvironment: 'node',
-      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
       testMatch: ['<rootDir>/src/test/**/*.test.ts', '<rootDir>/src/test/**/*.test.js'],
+
+      testEnvironment: 'node',
+      globalSetup: '<rootDir>/src/test/global-setup.js',
+      globalTeardown: '<rootDir>/src/test/global-teardown.js',
+      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
+
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
       moduleNameMapper: MODULE_NAME_MAPPING,
