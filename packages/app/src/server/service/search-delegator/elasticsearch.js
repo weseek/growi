@@ -644,7 +644,6 @@ class ElasticsearchDelegator {
     if (!isInitialized(query.body.query.bool.must_not)) {
       query.body.query.bool.must_not = [];
     }
-
     return query;
   }
 
@@ -985,10 +984,6 @@ class ElasticsearchDelegator {
       not_tag: notTags,
     };
   }
-
-  // async syncPageSeen() {
-
-  // }
 
   async syncPageUpdated(page, user) {
     logger.debug('SearchClient.syncPageUpdated', page.path);

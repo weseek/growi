@@ -19,7 +19,6 @@ PageEvent.prototype.onCreateMany = function(pages, user) {
   debug('onCreateMany event fired');
 };
 PageEvent.prototype.onAddSeenUsers = function(pages, user) {
-  console.log(22);
   debug('onAddSeenUsers event fired');
 };
 module.exports = PageEvent;
