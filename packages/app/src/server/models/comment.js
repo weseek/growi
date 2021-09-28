@@ -1,6 +1,4 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-import { Activity } from './activity';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
@@ -80,26 +78,41 @@ module.exports = function(crowi) {
     return commentData;
   };
 
-  commentSchema.statics.removeCommentsByPageId = function(pageId) {
-    const Comment = this;
 
-    return new Promise(((resolve, reject) => {
-      Comment.remove({ page: pageId }, (err, done) => {
-        if (err) {
-          return reject(err);
-        }
+  /**
+   * post remove hook
+   */
+  commentSchema.post('reomove', async(savedComment) => {
+    const Page = crowi.model('Page');
+    const commentEvent = crowi.event('comment');
 
-        resolve(done);
-      });
-    }));
-  };
+    try {
+      // TODO: move Page.updateCommentCount to commentService by GW7532
+      const page = await Page.updateCommentCount(savedComment.page);
+      debug('CommentCount Updated', page);
+    }
+    catch (err) {
+      throw err;
+    }
 
-  commentSchema.methods.removeWithReplies = async function() {
+    await commentEvent.emit('remove', savedComment);
+  });
+
+  commentSchema.methods.removeWithReplies = async function(comment) {
     const Comment = crowi.model('Comment');
-    return Comment.remove({
+    const commentEvent = crowi.event('comment');
+
+    await Comment.remove({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
+
+    await commentEvent.emit('remove', comment);
+    return;
+  };
+
+  commentSchema.statics.findCreatorsByPage = async function(page) {
+    return this.distinct('creator', { page }).exec();
   };
 
   /**
@@ -111,6 +124,7 @@ module.exports = function(crowi) {
     await commentEvent.emit('create', savedComment.creator);
 
     try {
+      // TODO: move Page.updateCommentCount to commentService by GW7532
       const page = await Page.updateCommentCount(savedComment.page);
       debug('CommentCount Updated', page);
     }
@@ -119,12 +133,14 @@ module.exports = function(crowi) {
     }
 
     try {
+      const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
       const activityLog = await Activity.createByPageComment(savedComment);
       debug('Activity created', activityLog);
     }
     catch (err) {
       throw err;
     }
+    await commentEvent.emit('create', savedComment);
   });
 
   return mongoose.model('Comment', commentSchema);

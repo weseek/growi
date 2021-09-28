@@ -1,50 +1,72 @@
+import { Types } from 'mongoose';
+import { subDays } from 'date-fns';
 import Crowi from '../crowi';
-import { InAppNotification } from '~/server/models/in-app-notification';
+import { InAppNotification, InAppNotificationDocument, STATUS_UNREAD } from '~/server/models/in-app-notification';
+import { ActivityDocument } from '~/server/models/activity';
 
-class InAppNotificationService {
+import loggerFactory from '~/utils/logger';
 
-  crowi!: any;
+const logger = loggerFactory('growi:service:inAppNotification');
+
+
+export default class InAppNotificationService {
+
+  crowi!: Crowi;
 
   socketIoService!: any;
 
   commentEvent!: any;
 
+  activityEvent!: any;
+
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
-    this.commentEvent = crowi.event('comment');
-
-    // init
-    this.initCommentEvent();
+    this.activityEvent = crowi.event('activity');
   }
 
-  initCommentEvent(): void {
-    this.commentEvent.on('create', (user) => {
-      this.commentEvent.onCreate();
-    });
 
-    this.commentEvent.on('update', (user) => {
-      this.commentEvent.onUpdate();
-
-      if (this.socketIoService.isInitialized) {
-        this.socketIoService.getDefaultSocket().emit('comment updated', { user });
-      }
-    });
-
+  emitSocketIo = async(user) => {
+    if (this.socketIoService.isInitialized) {
+      await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+    }
   }
 
-  removeActivity = async function(activity) {
-    const { _id, target, action } = activity;
-    const query = { target, action };
-    const parameters = { $pull: { activities: _id } };
+  upsertByActivity = async function(
+      users: Types.ObjectId[], activity: ActivityDocument, createdAt?: Date | null,
+  ): Promise<void> {
+    const {
+      _id: activityId, targetModel, target, action,
+    } = activity;
+    const now = createdAt || Date.now();
+    const lastWeek = subDays(now, 7);
+    const operations = users.map((user) => {
+      const filter = {
+        user, target, action, createdAt: { $gt: lastWeek },
+      };
+      const parameters = {
+        user,
+        targetModel,
+        target,
+        action,
+        status: STATUS_UNREAD,
+        createdAt: now,
+        $addToSet: { activities: activityId },
+      };
+      return {
+        updateOne: {
+          filter,
+          update: parameters,
+          upsert: true,
+        },
+      };
+    });
 
-    const result = await InAppNotification.updateMany(query, parameters);
-
-    await InAppNotification.removeEmpty();
-
-    return result;
-  };
+    await InAppNotification.bulkWrite(operations);
+    logger.info('InAppNotification bulkWrite has run');
+    return;
+  }
 
 }
 
