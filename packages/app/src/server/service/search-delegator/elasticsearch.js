@@ -416,8 +416,10 @@ class ElasticsearchDelegator {
       objectMode: true,
       async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
+
         const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
         const idsHavingCount = Object.keys(idToCountMap);
+
         // append count
         chunk
           .filter(doc => idsHavingCount.includes(doc._id.toString()))

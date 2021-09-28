@@ -429,7 +429,6 @@ module.exports = function(crowi) {
     });
 
     return idToCountMap;
-
   };
 
   pageSchema.methods.updateSlackChannels = function(slackChannels) {
