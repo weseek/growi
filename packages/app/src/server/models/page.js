@@ -419,18 +419,6 @@ module.exports = function(crowi) {
     return saved;
   };
 
-  pageSchema.statics.getPageIdToSeenUsersCount = async function(pageIds) {
-    const results = await this.aggregate()
-      .match({ _id: { $in: pageIds } });
-
-    const idToCountMap = {};
-    results.forEach((result) => {
-      idToCountMap[result.seenUsers] = result.seenUsers.length;
-    });
-
-    return idToCountMap;
-  };
-
   pageSchema.methods.updateSlackChannels = function(slackChannels) {
     this.slackChannels = slackChannels;
 

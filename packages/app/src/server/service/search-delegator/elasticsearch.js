@@ -454,23 +454,6 @@ class ElasticsearchDelegator {
       },
     });
 
-    const appendSeenUsersCountStream = new Transform({
-      objectMode: true,
-      async transform(chunk, encoding, callback) {
-        const pageIds = chunk.map(doc => doc._id);
-
-        const idToSeenUsersCountMap = await Page.getPageIdToSeenUsersCount(pageIds);
-        const idsHavingCount = Object.keys(idToSeenUsersCountMap);
-        chunk
-          .filter(doc => idsHavingCount.includes(doc._id.toString()))
-          .forEach((doc) => {
-            doc.seenUsers = idToSeenUsersCountMap[doc._id.toString()];
-          });
-        this.push(chunk);
-        callback();
-      },
-    });
-
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -523,7 +506,6 @@ class ElasticsearchDelegator {
       .pipe(batchStream)
       .pipe(appendBookmarkCountStream)
       .pipe(appendTagNamesStream)
-      .pipe(appendSeenUsersCountStream)
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
