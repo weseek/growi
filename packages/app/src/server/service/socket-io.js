@@ -1,6 +1,8 @@
-import loggerFactory from '~/utils/logger';
+import { Server } from 'socket.io';
 
-const socketIo = require('socket.io');
+import loggerFactory from '~/utils/logger';
+import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
 const expressSession = require('express-session');
 const passport = require('passport');
 
@@ -25,9 +27,11 @@ class SocketIoService {
 
   // Since the Order is important, attachServer() should be async
   async attachServer(server) {
-    this.io = socketIo(server, {
+    this.io = new Server({
       transports: ['websocket'],
+      serveClient: false,
     });
+    this.io.attach(server);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
@@ -40,6 +44,9 @@ class SocketIoService {
     await this.setupCheckConnectionLimitsMiddleware();
 
     await this.setupStoreGuestIdEventHandler();
+
+    await this.setupLoginedUserRoomsJoinOnConnection();
+    await this.setupDefaultSocketJoinRoomsEventHandler();
   }
 
   getDefaultSocket() {
@@ -121,6 +128,26 @@ class SocketIoService {
           this.guestClients.delete(socket.id);
         });
       }
+    });
+  }
+
+  setupLoginedUserRoomsJoinOnConnection() {
+    this.io.on('connection', (socket) => {
+      const user = socket.request.user;
+      if (user == null) {
+        logger.debug('Socket io: An anonymous user has connected');
+        return;
+      }
+      socket.join(getRoomNameWithId(RoomPrefix.USER, user._id));
+    });
+  }
+
+  setupDefaultSocketJoinRoomsEventHandler() {
+    this.io.on('connection', (socket) => {
+      // set event handlers for joining rooms
+      socket.on('join:page', ({ pageId }) => {
+        socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
     });
   }
 

@@ -43,7 +43,8 @@ html[dark] {
   // Background colors
   $bgcolor-card: $gray-50;
   $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-highlighted: rgba($primary, 0.5);
+  $bgcolor-blinked-section: rgba($primary, 0.5);
+  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
 
   // Font colors
   $color-global: #112744;

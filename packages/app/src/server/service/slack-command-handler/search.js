@@ -2,9 +2,10 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
-const { markdownSectionBlock, divider } = require('@growi/slack');
+const {
+  markdownSectionBlock, divider, respond, deleteOriginal,
+} = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
-const axios = require('axios');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 10;
@@ -13,10 +14,11 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
-  handler.handleCommand = async function(client, body, args) {
+  handler.handleCommand = async function(growiCommand, client, body) {
+    const { responseUrl, growiCommandArgs } = growiCommand;
     let searchResult;
     try {
-      searchResult = await this.retrieveSearchResults(client, body, args);
+      searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -35,16 +37,26 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
 
     let searchResultsDesc;
 
+    if (resultsTotal === 0 || resultsTotal == null) {
+      if (keywords === '') return;
+      await respond(responseUrl, {
+        text: 'No page found.',
+        blocks: [
+          markdownSectionBlock(`No page found. keyword(s): *"${keywords}"*`),
+          markdownSectionBlock('Please try other keywords.'),
+        ],
+      });
+      return;
+    }
     switch (resultsTotal) {
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
-
       default:
         searchResultsDesc = `*${resultsTotal}* pages are found.`;
         break;
@@ -95,21 +107,6 @@ module.exports = (crowi) => {
       contextBlock,
     ];
 
-    // DEFAULT show "Share" button
-    // const actionBlocks = {
-    //   type: 'actions',
-    //   elements: [
-    //     {
-    //       type: 'button',
-    //       text: {
-    //         type: 'plain_text',
-    //         text: 'Share',
-    //       },
-    //       style: 'primary',
-    //       action_id: 'shareSearchResults',
-    //     },
-    //   ],
-    // };
     const actionBlocks = {
       type: 'actions',
       elements: [
@@ -134,41 +131,47 @@ module.exports = (crowi) => {
             text: 'Next',
           },
           action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, args }),
+          value: JSON.stringify({ offset, body, growiCommandArgs }),
         },
       );
     }
     blocks.push(actionBlocks);
 
-    await client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+    await respond(responseUrl, {
       text: 'Successed To Search',
       blocks,
     });
   };
 
-  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
-    await this[handlerMethodName](client, payload);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.shareSinglePageResult = async function(client, payload) {
-    const { channel, user, actions } = payload;
+  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor) {
+    const { user } = payload;
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const appUrl = crowi.appService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
-    const channelId = channel.id;
-    const action = actions[0]; // shareSinglePage action must have button action
+    const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
+    if (value == null) {
+      await respond(responseUrl, {
+        text: 'Error occurred',
+        blocks: [
+          markdownSectionBlock('Failed to share the result.'),
+        ],
+      });
+      return;
+    }
 
     // restore page data from value
-    const { page, href, pathname } = JSON.parse(action.value);
+    const { page, href, pathname } = JSON.parse(value);
     const { updatedAt, commentCount } = page;
 
     // share
     const now = new Date();
-    return client.chat.postMessage({
-      channel: channelId,
+    return respond(responseUrl, {
       blocks: [
         { type: 'divider' },
         markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
@@ -185,14 +188,26 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.showNextResults = async function(client, payload) {
-    const parsedValue = JSON.parse(payload.actions[0].value);
+  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
-    const { body, args, offsetNum } = parsedValue;
+    const value = interactionPayloadAccessor.firstAction()?.value;
+    if (value == null) {
+      await respond(responseUrl, {
+        text: 'Error occurred',
+        blocks: [
+          markdownSectionBlock('Failed to show the next results.'),
+        ],
+      });
+      return;
+    }
+    const parsedValue = JSON.parse(value);
+
+    const { body, growiCommandArgs, offset: offsetNum } = parsedValue;
     const newOffsetNum = offsetNum + 10;
     let searchResult;
     try {
-      searchResult = await this.retrieveSearchResults(client, body, args, newOffsetNum);
+      searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs, newOffsetNum);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -211,21 +226,29 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
 
     let searchResultsDesc;
 
+    if (resultsTotal === 0 || resultsTotal == null) {
+      if (keywords === '') return;
+      await respond(responseUrl, {
+        text: 'No page found.',
+        blocks: [
+          markdownSectionBlock('Please try with other keywords.'),
+        ],
+      });
+      return;
+    }
     switch (resultsTotal) {
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
-
       default:
         searchResultsDesc = `*${resultsTotal}* pages are found.`;
         break;
     }
-
 
     const contextBlock = {
       type: 'context',
@@ -258,7 +281,7 @@ module.exports = (crowi) => {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSingleSearchResult',
+            action_id: 'search:shareSinglePageResult',
             text: {
               type: 'plain_text',
               text: 'Share',
@@ -271,21 +294,6 @@ module.exports = (crowi) => {
       contextBlock,
     ];
 
-    // DEFAULT show "Share" button
-    // const actionBlocks = {
-    //   type: 'actions',
-    //   elements: [
-    //     {
-    //       type: 'button',
-    //       text: {
-    //         type: 'plain_text',
-    //         text: 'Share',
-    //       },
-    //       style: 'primary',
-    //       action_id: 'shareSearchResults',
-    //     },
-    //   ],
-    // };
     const actionBlocks = {
       type: 'actions',
       elements: [
@@ -310,15 +318,13 @@ module.exports = (crowi) => {
             text: 'Next',
           },
           action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, args }),
+          value: JSON.stringify({ offset, body, growiCommandArgs }),
         },
       );
     }
     blocks.push(actionBlocks);
 
-    await client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
+    await respond(responseUrl, {
       text: 'Successed To Search',
       blocks,
     });
@@ -327,17 +333,15 @@ module.exports = (crowi) => {
   handler.dismissSearchResults = async function(client, payload) {
     const { response_url: responseUrl } = payload;
 
-    return axios.post(responseUrl, {
+    return deleteOriginal(responseUrl, {
       delete_original: true,
     });
   };
 
-  handler.retrieveSearchResults = async function(client, body, args, offset = 0) {
-    const firstKeyword = args[1];
+  handler.retrieveSearchResults = async function(responseUrl, client, body, growiCommandArgs, offset = 0) {
+    const firstKeyword = growiCommandArgs[0];
     if (firstKeyword == null) {
-      client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
+      await respond(responseUrl, {
         text: 'Input keywords',
         blocks: [
           markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
@@ -346,7 +350,7 @@ module.exports = (crowi) => {
       return { pages: [] };
     }
 
-    const keywords = this.getKeywords(args);
+    const keywords = this.getKeywords(growiCommandArgs);
 
     const { searchService } = crowi;
     const options = { limit: 10, offset };
@@ -356,12 +360,10 @@ module.exports = (crowi) => {
     // no search results
     if (results.data.length === 0) {
       logger.info(`No page found with "${keywords}"`);
-      client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
+      await respond(responseUrl, {
         text: `No page found with "${keywords}"`,
         blocks: [
-          markdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
+          markdownSectionBlock(`*No page matches your keyword(s) "${keywords}".*`),
           markdownSectionBlock(':mag: *Help: Searching*'),
           divider(),
           markdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
@@ -392,9 +394,8 @@ module.exports = (crowi) => {
     };
   };
 
-  handler.getKeywords = function(args) {
-    const keywordsArr = args.slice(1);
-    const keywords = keywordsArr.join(' ');
+  handler.getKeywords = function(growiCommandArgs) {
+    const keywords = growiCommandArgs.join(' ');
     return keywords;
   };
 

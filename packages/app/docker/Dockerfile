@@ -18,6 +18,7 @@ COPY ./yarn.lock .
 COPY ./lerna.json .
 COPY ./packages/app/package.json packages/app/
 COPY ./packages/core/package.json packages/core/
+COPY ./packages/codemirror-textlint/package.json packages/codemirror-textlint/
 COPY ./packages/plugin-attachment-refs/package.json packages/plugin-attachment-refs/
 COPY ./packages/plugin-lsx/package.json packages/plugin-lsx/
 COPY ./packages/plugin-pukiwiki-like-linker/package.json packages/plugin-pukiwiki-like-linker/
@@ -39,10 +40,7 @@ RUN tar cf node_modules.tar \
 ## deps-resolver-prod
 ##
 FROM deps-resolver AS deps-resolver-prod
-
-# shrink dependencies for production
-RUN yarn install --production
-
+RUN npx lerna bootstrap -- --production
 # make artifacts
 RUN tar cf node_modules.tar \
   node_modules \
@@ -74,15 +72,14 @@ RUN rm node_modules.tar
 ##
 FROM prebuilder-default AS prebuilder-nocdn
 
-# replace env.prod.js for NO_CDN
-COPY docker/nocdn/env.prod.js ${appDir}/config/
+# add dotenv file for NO_CDN
+COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
 
 
 
 ##
 ## builder
 ##
-# FROM prebuilder-${flavor}
 FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
@@ -96,6 +93,7 @@ COPY ./tsconfig.base.json ./
 # copy all related packages
 COPY packages/app packages/app
 COPY packages/core packages/core
+COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
 COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
@@ -114,7 +112,7 @@ RUN tar cf packages.tar \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/.env.production \
+  packages/app/.env.production* \
   packages/app/tsconfig.base.json \
   packages/app/tsconfig.json \
   packages/*/package.json \
@@ -141,11 +139,6 @@ RUN set -eux; \
 # verify that the binary works
 	gosu nobody true
 
-# Add Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-
 COPY --from=deps-resolver-prod --chown=node:node \
   ${appDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
@@ -169,5 +162,5 @@ WORKDIR ${appDir}/packages/app
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
-CMD ["node", "-r", "dotenv-flow/config", "--expose_gc", "dist/server/app.js"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["yarn preserver && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
