@@ -54,7 +54,6 @@ class CommentService {
       const { activityService } = this.crowi;
 
       try {
-        // TODO: Able to remove child activities of comment by GW-7510
         await activityService.removeByPageCommentDeleteWithReplies(comments);
       }
       catch (err) {
