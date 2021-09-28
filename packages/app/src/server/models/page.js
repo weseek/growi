@@ -413,16 +413,11 @@ module.exports = function(crowi) {
     const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
-    this.eventFireAfterSeen(saved);
+    pageEvent.emit('addSeenUsers', saved);
 
     debug('seenUsers updated!', added);
 
     return saved;
-  };
-
-  pageSchema.methods.eventFireAfterSeen = function(page) {
-    pageEvent.emit('addSeenUsers', page);
-    return;
   };
 
   pageSchema.statics.getPageIdToSeenUsersCount = async function(pageIds) {
