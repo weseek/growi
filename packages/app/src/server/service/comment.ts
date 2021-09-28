@@ -48,14 +48,14 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('remove', async(comment) => {
+    this.commentEvent.on('remove', async(comments) => {
       this.commentEvent.onRemove();
 
       const { activityService } = this.crowi;
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510
-        await activityService.removeByPageCommentDelete(comment);
+        await activityService.removeByPageCommentDelete(comments);
       }
       catch (err) {
         logger.error(err);

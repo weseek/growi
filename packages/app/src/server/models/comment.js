@@ -100,16 +100,27 @@ module.exports = function(crowi) {
     await commentEvent.emit('remove', savedComment);
   });
 
-  commentSchema.methods.removeWithReplies = async function(comment) {
+  commentSchema.methods.removeWithReplies = async function() {
     const Comment = crowi.model('Comment');
     const commentEvent = crowi.event('comment');
 
-    await Comment.remove({
+    const comments = await Comment.find({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
 
-    await commentEvent.emit('remove', comment);
+    console.log('commentsHoge', comments);
+
+    const relatedCommentIds = comments.map((comment) => { return comment._id });
+
+    await Comment.deleteMany({ _id: { $in: relatedCommentIds } });
+
+    // await Comment.remove({
+    //   $or: (
+    //     [{ replyTo: this._id }, { _id: this._id }]),
+    // });
+
+    await commentEvent.emit('remove', comments);
     return;
   };
 
