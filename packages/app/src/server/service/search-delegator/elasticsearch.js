@@ -421,8 +421,9 @@ class ElasticsearchDelegator {
         console.log(pageIds, 420, 'updateOrInsertPages');
 
         const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
+        console.log(idToCountMap);
         const idsHavingCount = Object.keys(idToCountMap);
-
+        console.log(idsHavingCount);
         // append count
         chunk
           .filter(doc => idsHavingCount.includes(doc._id.toString()))
@@ -462,17 +463,17 @@ class ElasticsearchDelegator {
       async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
 
-        const hoge = await Page.find({ _id: { $in: pageIds } });
-        console.log(hoge, 464);
-
-        // const idsHavingCount = Object.keys(idToCountSeenUsersMap);
-
-        // chunk
-        //   .filter(doc => idsHavingCount.includes(doc._id.toString()))
-        //   .forEach((doc) => {
-        //     doc.seenUsers = idToCountSeenUsersMap[doc.id.toString()];
-        //   });
-        // this.push(chunk);
+        const idToSeenUsersCountMap = await Page.getPageIdToSeenUsersCount(pageIds);
+        console.log(idToSeenUsersCountMap);
+        const idsHavingCount = Object.keys(idToSeenUsersCountMap);
+        console.log(idsHavingCount);
+        chunk
+          .filter(doc => idsHavingCount.includes(doc._id.toString()))
+          .forEach((doc) => {
+            console.log(doc.seenUsers, 473);
+            doc.seenUsers = idToSeenUsersCountMap[doc._id.toString()];
+          });
+        this.push(chunk);
         callback();
       },
     });
