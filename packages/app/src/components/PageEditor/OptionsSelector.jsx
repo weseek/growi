@@ -56,6 +56,7 @@ class OptionsSelector extends React.Component {
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
+    this.confirmEnableTextlintHandler = this.confirmEnableTextlintHandler.bind(this);
     this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
@@ -129,12 +130,27 @@ class OptionsSelector extends React.Component {
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    if (!editorContainer.state.isTextlintEnabled) {
+
+    if (editorContainer.state.isTextlintEnabled === null) {
       this.setState({ isDownloadDictModalShown: true });
+      return;
     }
+
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
-    this.updateIsTextlintEnabledToDB(newVal);
+
+    if (this.state.isDontAskAgainChecked) {
+      await this.updateIsTextlintEnabledToDB(newVal);
+    }
+  }
+
+  async confirmEnableTextlintHandler() {
+    const { editorContainer } = this.props;
+    if (this.state.isDontAskAgainChecked) {
+      await this.updateIsTextlintEnabledToDB(true);
+    }
+    this.setState({ isDownloadDictModalShown: false });
+    editorContainer.setState({ isTextlintEnabled: true });
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -376,9 +392,9 @@ class OptionsSelector extends React.Component {
         <DownloadDictModal
           isModalOpen={this.state.isDownloadDictModalShown}
           isDontAskAgainChecked={this.state.isDontAskAgainChecked}
-          onConfirmEnableTextlint={this.switchTextlintEnabledHandler}
+          onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
           onCancel={() => this.setState({ isDownloadDictModalShown: false })}
-          dontAskAgainCheckboxHandler={isChecked => this.setState({ isDontAskAgainChecked: isChecked })}
+          dontAskAgainCheckboxHandler={isDontAskAgainChecked => this.setState({ isDontAskAgainChecked })}
         />
       </>
     );
