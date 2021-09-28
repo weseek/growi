@@ -163,4 +163,4 @@ VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["yarn preserver && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+CMD ["yarn migrate:up:prod && node -r dotenv-flow/config --expose_gc dist/server/app.js"]

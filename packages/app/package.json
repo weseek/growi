@@ -43,6 +43,7 @@
     "migrate:create": "yarn ts-node node_modules/.bin/migrate-mongo create -f config/migrate.js",
     "migrate:status": "yarn ts-node node_modules/.bin/migrate-mongo status -f config/migrate.js",
     "migrate:up": "yarn ts-node node_modules/.bin/migrate-mongo up -f config/migrate.js",
+    "migrate:up:prod": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo up -f config/migrate.js",
     "migrate:down": "yarn ts-node node_modules/.bin/migrate-mongo down -f config/migrate.js",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config --transpile-only"
   },
