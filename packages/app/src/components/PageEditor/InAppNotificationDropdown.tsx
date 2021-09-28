@@ -133,15 +133,18 @@ const InAppNotificationDropdown: FC = (props) => {
     );
   };
 
-  function renderInAppNotificationContents(): JSX.Element {
+  let hoge;
+  const RenderInAppNotificationContents = () => {
     if (isLoaded === false) {
-      return <RenderUnLoadedInAppNotification />;
+      hoge = <RenderUnLoadedInAppNotification />;
     }
     if (notifications.length === 0) {
-      return <RenderEmptyInAppNotification />;
+      hoge = <RenderEmptyInAppNotification />;
     }
-    return <RenderInAppNotificationList />;
-  }
+    hoge = <RenderInAppNotificationList />;
+
+    return hoge;
+  };
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
@@ -150,7 +153,10 @@ const InAppNotificationDropdown: FC = (props) => {
         {badge}
       </DropdownToggle>
       <DropdownMenu right>
-        {renderInAppNotificationContents}
+        {/* {renderInAppNotificationContents} */}
+        <RenderInAppNotificationContents />
+
+        {/* <RenderUnLoadedInAppNotification /> */}
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by GW-7534 */}
         <a>See All</a>
