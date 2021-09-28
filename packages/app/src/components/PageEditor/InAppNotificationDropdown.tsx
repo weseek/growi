@@ -133,7 +133,7 @@ const InAppNotificationDropdown: FC = (props) => {
     );
   };
 
-  const RenderInAppNotificationContents = (): JSX.Element => {
+  const InAppNotificationContents = (): JSX.Element => {
     if (isLoaded === false) {
       return <RenderUnLoadedInAppNotification />;
     }
@@ -150,7 +150,7 @@ const InAppNotificationDropdown: FC = (props) => {
         {badge}
       </DropdownToggle>
       <DropdownMenu right>
-        <RenderInAppNotificationContents />
+        <InAppNotificationContents />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by GW-7534 */}
         <a>See All</a>
