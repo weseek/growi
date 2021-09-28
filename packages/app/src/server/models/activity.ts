@@ -98,7 +98,7 @@ activitySchema.statics.removeByParameters = async function(parameters) {
 };
 
 /**
-   * @param {Comment} comment
+   * @param {Array.<Comment>} comments array of comment documents
    * @return {Promise}
    */
 activitySchema.statics.createByPageComment = function(comment) {
