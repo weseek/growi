@@ -109,16 +109,9 @@ module.exports = function(crowi) {
         [{ replyTo: this._id }, { _id: this._id }]),
     });
 
-    console.log('commentsHoge', comments);
-
     const relatedCommentIds = comments.map((comment) => { return comment._id });
 
     await Comment.deleteMany({ _id: { $in: relatedCommentIds } });
-
-    // await Comment.remove({
-    //   $or: (
-    //     [{ replyTo: this._id }, { _id: this._id }]),
-    // });
 
     await commentEvent.emit('remove', comments);
     return;

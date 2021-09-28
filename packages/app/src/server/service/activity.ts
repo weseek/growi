@@ -24,18 +24,19 @@ class ActivityService {
    * @param {Comment} comment
    * @return {Promise}
    */
-  removeByPageCommentDelete = async function(comment) {
-    const parameters = await {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
-    };
-
-    await Activity.removeByParameters(parameters);
-    return;
+  removeByPageCommentDelete = async function(comments) {
+    await comments.map(async(comment) => {
+      const parameters = {
+        user: comment.creator,
+        targetModel: ActivityDefine.MODEL_PAGE,
+        target: comment.page,
+        eventModel: ActivityDefine.MODEL_COMMENT,
+        event: comment._id,
+        action: ActivityDefine.ACTION_COMMENT,
+      };
+      await Activity.removeByParameters(parameters);
+      return;
+    });
   };
 
 }
