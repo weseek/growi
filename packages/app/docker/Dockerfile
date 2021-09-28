@@ -112,6 +112,7 @@ RUN tar cf packages.tar \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
+  packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
   packages/app/tsconfig.base.json \
   packages/app/tsconfig.json \
@@ -163,4 +164,4 @@ VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["yarn preserver && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+CMD ["yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
