@@ -55,7 +55,7 @@ class CommentService {
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510
-        await activityService.removeByPageCommentDelete(comments);
+        await activityService.removeByPageCommentDeleteWithReplies(comments);
       }
       catch (err) {
         logger.error(err);

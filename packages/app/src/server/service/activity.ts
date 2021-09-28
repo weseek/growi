@@ -24,7 +24,7 @@ class ActivityService {
    * @param {Comment} comment
    * @return {Promise}
    */
-  removeByPageCommentDelete = async function(comments) {
+  removeByPageCommentDeleteWithReplies = async function(comments) {
     await comments.map(async(comment) => {
       const parameters = {
         user: comment.creator,
