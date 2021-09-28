@@ -17,6 +17,12 @@ RUN mkdir -p /workspace/growi/node_modules
 RUN mkdir -p /workspace/growi/packages/app/node_modules
 RUN mkdir -p /workspace/growi/packages/slackbot-proxy/node_modules
 
+RUN \
+    apt-get update && \
+    apt-get install -y sudo curl git && \
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && \
+    sudo apt-get install git-lfs
+
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
         groupmod --gid $USER_GID $USERNAME \
