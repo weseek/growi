@@ -362,9 +362,10 @@ module.exports = function(crowi, app) {
     if (req.user != null) {
       page = await page.seen(req.user);
       console.log(page, 364);
-      const pageEvent = crowi.event('page');
-      pageEvent.on('addSeenUsers', pageEvent.onAddSeenUsers);
+
+      await page.eventFireAfterSeen(page);
       console.log(367);
+
     }
 
     // populate
