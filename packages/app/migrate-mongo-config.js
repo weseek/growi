@@ -5,13 +5,18 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
-
 const { URL } = require('url');
+
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 initMongooseGlobalSettings();
 
 const mongoUri = getMongoUri();
+const migrationsDir = process.env.MIGRATIONS_DIR;
+
+if (migrationsDir == null) {
+  throw new Error('An env var MIGRATIONS_DIR must be set.');
+}
 
 // parse url
 const url = new URL(mongoUri);
@@ -25,6 +30,6 @@ const mongodb = {
 module.exports = {
   mongoUri,
   mongodb,
-  migrationsDir: process.env.MIGRATIONS_DIR || 'src/migrations/',
+  migrationsDir,
   changelogCollectionName: 'migrations',
 };
