@@ -19,7 +19,7 @@ module.exports = {
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
-      const isExist = await Config.count({ key: newKey });
+      const isExist = (await Config.count({ key: newKey })) > 0;
 
       // remove old key
       if (isExist) {
@@ -39,7 +39,7 @@ module.exports = {
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
-      const isExist = await Config.count({ key: oldKey });
+      const isExist = (await Config.count({ key: oldKey })) > 0;
 
       // remove new key
       if (isExist) {

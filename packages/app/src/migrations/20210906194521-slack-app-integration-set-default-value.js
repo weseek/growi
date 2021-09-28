@@ -18,7 +18,7 @@ module.exports = {
     // Add togetter command if supportedCommandsForBroadcastUse already exists
     const slackAppIntegrations = await SlackAppIntegration.find();
     slackAppIntegrations.forEach(async(doc) => {
-      if (!doc.supportedCommandsForSingleUse.includes('togetter')) {
+      if (doc.supportedCommandsForSingleUse != null && !doc.supportedCommandsForSingleUse.includes('togetter')) {
         doc.supportedCommandsForSingleUse.push('togetter');
       }
       await doc.save();
