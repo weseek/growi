@@ -91,19 +91,6 @@ const PageManagement = (props) => {
     window.location.href = url.href;
   }
 
-  async function bulkExportPageHandler(format) {
-    const { pageId } = pageContainer.state;
-    try {
-      const res = await appContainer.apiv3Post(urljoin('page_attachment_queue'), { pageId, format });
-      if (!res.ok) {
-        throw new Error(t('export_bulk.failed_to_bulk_export_page_markdown'));
-      }
-    }
-    catch (err) {
-      pageContainer.showErrorToastr(err);
-    }
-  }
-
   // TODO GW-2746 create api to bulk export pages
   // function openArchiveModalHandler() {
   //   setIsArchiveCreateModalShown(true);
@@ -127,9 +114,6 @@ const PageManagement = (props) => {
         </button> */}
         <button type="button" className="dropdown-item" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
-        </button>
-        <button type="button" className="dropdown-item" onClick={() => { bulkExportPageHandler('md') }}>
-          <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.bulk_export_page_markdown')}
         </button>
         <div className="dropdown-divider"></div>
       </>
