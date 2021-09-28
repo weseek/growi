@@ -1,6 +1,5 @@
 import loggerFactory from '../../utils/logger';
-
-import { Activity } from '../models/activity';
+import { getModelSafely } from '../util/mongoose-utils';
 
 const InAppNotificationService = require('./in-app-notification');
 const ActivityService = require('./activity');
@@ -30,6 +29,7 @@ class CommentService {
       this.commentEvent.onCreate();
 
       try {
+        const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
         const activityLog = await Activity.createByPageComment(savedComment);
         logger.info('Activity created', activityLog);
       }

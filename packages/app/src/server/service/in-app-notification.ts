@@ -1,24 +1,29 @@
+import { Types } from 'mongoose';
+import { subDays } from 'date-fns';
 import Crowi from '../crowi';
-import { InAppNotification } from '~/server/models/in-app-notification';
-import { Activity } from '~/server/models/activity';
+import { InAppNotification, InAppNotificationDocument, STATUS_UNREAD } from '~/server/models/in-app-notification';
+import { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
 
-class InAppNotificationService {
+export default class InAppNotificationService {
 
-  crowi!: any;
+  crowi!: Crowi;
 
   socketIoService!: any;
 
   commentEvent!: any;
 
+  activityEvent!: any;
+
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
+    this.activityEvent = crowi.event('activity');
   }
 
 
@@ -26,6 +31,41 @@ class InAppNotificationService {
     if (this.socketIoService.isInitialized) {
       await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
     }
+  }
+
+  upsertByActivity = async function(
+      users: Types.ObjectId[], activity: ActivityDocument, createdAt?: Date | null,
+  ): Promise<void> {
+    const {
+      _id: activityId, targetModel, target, action,
+    } = activity;
+    const now = createdAt || Date.now();
+    const lastWeek = subDays(now, 7);
+    const operations = users.map((user) => {
+      const filter = {
+        user, target, action, createdAt: { $gt: lastWeek },
+      };
+      const parameters = {
+        user,
+        targetModel,
+        target,
+        action,
+        status: STATUS_UNREAD,
+        createdAt: now,
+        $addToSet: { activities: activityId },
+      };
+      return {
+        updateOne: {
+          filter,
+          update: parameters,
+          upsert: true,
+        },
+      };
+    });
+
+    await InAppNotification.bulkWrite(operations);
+    logger.info('InAppNotification bulkWrite has run');
+    return;
   }
 
 }

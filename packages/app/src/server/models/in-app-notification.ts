@@ -5,13 +5,14 @@ import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-import { Activity, ActivityDocument } from './activity';
+import { ActivityDocument } from './activity';
 
 const logger = loggerFactory('growi:models:inAppNotification');
+const mongoose = require('mongoose');
 
-const STATUS_UNREAD = 'UNREAD';
-const STATUS_UNOPENED = 'UNOPENED';
-const STATUS_OPENED = 'OPENED';
+export const STATUS_UNREAD = 'UNREAD';
+export const STATUS_UNOPENED = 'UNOPENED';
+export const STATUS_OPENED = 'OPENED';
 const STATUSES = [STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED];
 
 export interface InAppNotificationDocument extends Document {
@@ -27,7 +28,7 @@ export interface InAppNotificationDocument extends Document {
 
 export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
-  upsertByActivity(userIds: Types.ObjectId[], activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
+
   // commented out type 'Query' temporary to avoid ts error
   removeEmpty()/* : Query<any> */
   read(user) /* : Promise<Query<any>> */
@@ -80,9 +81,13 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     default: Date.now,
   },
 });
-inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-  return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-});
+
+// TODO: move this virtual property getter to the service layer if necessary 77893
+// inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
+//   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+//   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+// });
+
 const transform = (doc, ret) => {
   // delete ret.activities
 };
@@ -103,40 +108,6 @@ inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(us
     .populate(['user', 'target'])
     .populate({ path: 'activities', populate: { path: 'user' } })
     .exec();
-};
-
-inAppNotificationSchema.statics.upsertByActivity = async function(
-    users: Types.ObjectId[], activity: ActivityDocument, createdAt: Date | null,
-): Promise<InAppNotificationDocument | null> {
-  const {
-    _id: activityId, targetModel, target, action,
-  } = activity;
-  const now = createdAt || Date.now();
-  const lastWeek = subDays(now, 7);
-  const operations = users.map((user) => {
-    const filter = {
-      user, target, action, createdAt: { $gt: lastWeek },
-    };
-    const parameters = {
-      user,
-      targetModel,
-      target,
-      action,
-      status: STATUS_UNREAD,
-      createdAt: now,
-      $addToSet: { activities: activityId },
-    };
-    return {
-      updateOne: {
-        filter,
-        update: parameters,
-        upsert: true,
-      },
-    };
-  });
-
-  const resultObject = await this.bulkWrite(operations);
-  return resultObject?.result;
 };
 
 inAppNotificationSchema.statics.removeEmpty = function() {
