@@ -22,7 +22,7 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>/src'],
-      testMatch: ['<rootDir>/src/test-unit/**/*.test.ts', '<rootDir>/src/test-unit/**/*.test.js'],
+      testMatch: ['<rootDir>/src/test/unit/**/*.test.ts', '<rootDir>/src/test/unit/**/*.test.js'],
 
       testEnvironment: 'node',
 
@@ -37,12 +37,12 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>/src'],
-      testMatch: ['<rootDir>/src/test/**/*.test.ts', '<rootDir>/src/test/**/*.test.js'],
+      testMatch: ['<rootDir>/src/test/integration/**/*.test.ts', '<rootDir>/src/test/integration/**/*.test.js'],
 
       testEnvironment: 'node',
-      globalSetup: '<rootDir>/src/test/global-setup.js',
-      globalTeardown: '<rootDir>/src/test/global-teardown.js',
-      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
+      globalSetup: '<rootDir>/src/test/integration/global-setup.js',
+      globalTeardown: '<rootDir>/src/test/integration/global-teardown.js',
+      setupFilesAfterEnv: ['<rootDir>/src/test/integration/setup.js'],
 
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
