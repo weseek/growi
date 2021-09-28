@@ -96,6 +96,7 @@ jobs:
     - name: Bump versions for next RC
       run: |
         node ./bin/github-actions/bump-versions -i prerelease
+        node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.1.0
@@ -183,6 +184,8 @@ jobs:
         file: ./packages/app/docker/Dockerfile
         platforms: linux/amd64
         push: true
+        build-args: |
+          flavor=${{ matrix.flavor }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         tags: ${{ steps.meta.outputs.tags }}

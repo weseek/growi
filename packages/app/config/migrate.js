@@ -5,9 +5,7 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-import mongoose from 'mongoose';
-
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 
 const { URL } = require('url');
 
@@ -27,6 +25,6 @@ const mongodb = {
 module.exports = {
   mongoUri,
   mongodb,
-  migrationsDir: 'src/migrations/',
+  migrationsDir: process.env.MIGRATIONS_DIR || 'src/migrations/',
   changelogCollectionName: 'migrations',
 };

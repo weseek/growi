@@ -1,7 +1,8 @@
+import { Server } from 'socket.io';
+
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-const socketIo = require('socket.io');
 const expressSession = require('express-session');
 const passport = require('passport');
 
@@ -26,9 +27,11 @@ class SocketIoService {
 
   // Since the Order is important, attachServer() should be async
   async attachServer(server) {
-    this.io = socketIo(server, {
+    this.io = new Server({
       transports: ['websocket'],
+      serveClient: false,
     });
+    this.io.attach(server);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
