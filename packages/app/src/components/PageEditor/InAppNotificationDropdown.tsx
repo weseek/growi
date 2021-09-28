@@ -96,7 +96,7 @@ const InAppNotificationDropdown: FC = (props) => {
     * TODO: Jump to the page by clicking on the notification by GW-7472
     */
 
-  const handleNotificationOnClick = async(notification: Notification) => {
+  const notificationClickHandler = async(notification: Notification) => {
     try {
       // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
       // jump to target page
