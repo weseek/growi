@@ -310,7 +310,6 @@ class ElasticsearchDelegator {
 
     const bookmarkCount = page.bookmarkCount || 0;
     const seenUsersCount = page.seenUsers.length || 0;
-    console.log(seenUsersCount, 313);
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -417,13 +416,8 @@ class ElasticsearchDelegator {
       objectMode: true,
       async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
-
-        console.log(pageIds, 420, 'updateOrInsertPages');
-
         const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
-        console.log(idToCountMap);
         const idsHavingCount = Object.keys(idToCountMap);
-        console.log(idsHavingCount);
         // append count
         chunk
           .filter(doc => idsHavingCount.includes(doc._id.toString()))
@@ -464,13 +458,10 @@ class ElasticsearchDelegator {
         const pageIds = chunk.map(doc => doc._id);
 
         const idToSeenUsersCountMap = await Page.getPageIdToSeenUsersCount(pageIds);
-        console.log(idToSeenUsersCountMap);
         const idsHavingCount = Object.keys(idToSeenUsersCountMap);
-        console.log(idsHavingCount);
         chunk
           .filter(doc => idsHavingCount.includes(doc._id.toString()))
           .forEach((doc) => {
-            console.log(doc.seenUsers, 473);
             doc.seenUsers = idToSeenUsersCountMap[doc._id.toString()];
           });
         this.push(chunk);
@@ -570,8 +561,7 @@ class ElasticsearchDelegator {
 
     // for debug
     logger.debug('ES result: ', result);
-    console.log(result.hits, 550, 'search resluts.hits');
-    console.log(result.hits.hits, 551, 'search results.hits.hits');
+
     return {
       meta: {
         took: result.took,
@@ -655,7 +645,6 @@ class ElasticsearchDelegator {
       query.body.query.bool.must_not = [];
     }
 
-    console.log(query, 635, 'initializeBoolQuery');
     return query;
   }
 
@@ -907,7 +896,6 @@ class ElasticsearchDelegator {
     const size = option.limit || null;
     const type = option.type || null;
     const query = this.createSearchQuerySortedByScore();
-    console.log(query, 910);
     this.appendCriteriaForQueryString(query, queryString);
 
     this.filterPagesByType(query, type);
@@ -1003,7 +991,6 @@ class ElasticsearchDelegator {
   // }
 
   async syncPageUpdated(page, user) {
-    console.log(page, 1004);
     logger.debug('SearchClient.syncPageUpdated', page.path);
 
     // delete if page should not indexed
