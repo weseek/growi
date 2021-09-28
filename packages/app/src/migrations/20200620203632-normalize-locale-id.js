@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely } from '@growi/core';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:normalize-locale-id');
@@ -10,7 +9,7 @@ const logger = loggerFactory('growi:migrate:normalize-locale-id');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = getModelSafely('User') || require('~/server/models/user')();
 

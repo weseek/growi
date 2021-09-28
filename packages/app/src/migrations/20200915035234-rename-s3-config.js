@@ -1,3 +1,4 @@
+import { getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import Config from '~/server/models/config';
@@ -5,7 +6,6 @@ import Config from '~/server/models/config';
 const logger = loggerFactory('growi:migrate:remove-timeline-type');
 
 const mongoose = require('mongoose');
-const config = require('^/config/migrate');
 
 const awsConfigs = [
   {
@@ -33,7 +33,7 @@ const awsConfigs = [
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const request = awsConfigs.map((awsConfig) => {
       return {
@@ -52,7 +52,7 @@ module.exports = {
   async down(db, client) {
     logger.info('Rollback migration');
 
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const request = awsConfigs.map((awsConfig) => {
       return {
