@@ -13,6 +13,8 @@ import Watcher from './watcher';
 
 const logger = loggerFactory('growi:models:activity');
 
+const mongoose = require('mongoose');
+
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId | any
@@ -195,14 +197,11 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   return activeNotificationUsers;
 };
 
-/**
-   * saved hook   TODO: getNotificationTargetUsers by GW-7346
-   */
 activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   try {
-    // const notificationUsers = await savedActivity.getNotificationTargetUsers();
-
-    // await Promise.all(notificationUsers.map(user => InAppNotification.upsertByActivity(user, savedActivity)));
+    const targetUsers = await savedActivity.getNotificationTargetUsers();
+    const InAppNotification = mongoose.model('InAppNotification');
+    await InAppNotification.upsertByActivity(targetUsers, savedActivity);
     return;
   }
   catch (err) {

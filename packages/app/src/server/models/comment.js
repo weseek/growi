@@ -102,6 +102,10 @@ module.exports = function(crowi) {
     });
   };
 
+  commentSchema.statics.findCreatorsByPage = async function(page) {
+    return this.distinct('creator', { page }).exec();
+  };
+
   /**
    * post save hook
    */

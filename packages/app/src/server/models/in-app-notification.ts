@@ -5,7 +5,7 @@ import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-import { Activity, ActivityDocument } from '~/server/models/activity';
+import { Activity, ActivityDocument } from './activity';
 
 const logger = loggerFactory('growi:models:inAppNotification');
 const User = getModelSafely('User') || require('~/server/models/user')();
@@ -28,7 +28,7 @@ export interface InAppNotificationDocument extends Document {
 
 export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
-  upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
+  upsertByActivity(userIds: Types.ObjectId[], activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
   // commented out type 'Query' temporary to avoid ts error
   removeEmpty()/* : Query<any> */
   read(user: typeof User) /* : Promise<Query<any>> */
@@ -104,6 +104,40 @@ inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(us
     .populate(['user', 'target'])
     .populate({ path: 'activities', populate: { path: 'user' } })
     .exec();
+};
+
+inAppNotificationSchema.statics.upsertByActivity = async function(
+    users: Types.ObjectId[], activity: ActivityDocument, createdAt: Date | null,
+): Promise<InAppNotificationDocument | null> {
+  const {
+    _id: activityId, targetModel, target, action,
+  } = activity;
+  const now = createdAt || Date.now();
+  const lastWeek = subDays(now, 7);
+  const operations = users.map((user) => {
+    const filter = {
+      user, target, action, createdAt: { $gt: lastWeek },
+    };
+    const parameters = {
+      user,
+      targetModel,
+      target,
+      action,
+      status: STATUS_UNREAD,
+      createdAt: now,
+      $addToSet: { activities: activityId },
+    };
+    return {
+      updateOne: {
+        filter,
+        update: parameters,
+        upsert: true,
+      },
+    };
+  });
+
+  const resultObject = await this.bulkWrite(operations);
+  return resultObject?.result;
 };
 
 inAppNotificationSchema.statics.removeEmpty = function() {
