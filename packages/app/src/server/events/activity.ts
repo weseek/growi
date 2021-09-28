@@ -10,4 +10,10 @@ export default class ActivityEvent extends EventEmitter {
     logger.info('onRemove activity event fired');
   }
 
+  onCreate(action: string, activity: any): void {
+    logger.info('onCreate activity event fired');
+  }
+
 }
+
+module.exports = ActivityEvent;

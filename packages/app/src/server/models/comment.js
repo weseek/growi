@@ -1,7 +1,3 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-import { Activity } from './activity';
-
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
@@ -113,6 +109,9 @@ module.exports = function(crowi) {
     return;
   };
 
+  commentSchema.statics.findCreatorsByPage = async function(page) {
+    return this.distinct('creator', { page }).exec();
+  };
 
   /**
    * post save hook
