@@ -14,7 +14,7 @@
     "server": "yarn cross-env NODE_ENV=production node -r dotenv-flow/config --expose_gc dist/server/app.js",
     "server:ci": "yarn server --ci",
     "preserver": "yarn cross-env NODE_ENV=production yarn migrate",
-    "migrate": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo",
+    "migrate": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo up",
     "//// for development": "",
     "dev": "run-p dev:client dev:server",
     "dev:client": "yarn cross-env NODE_ENV=development webpack --config config/webpack.dev.js --progress --watch",
