@@ -211,8 +211,6 @@ export class SlackCtrl {
       ],
     });
 
-    const baseDate = new Date();
-
     const allowedRelationsForSingleUse:Relation[] = [];
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
@@ -220,13 +218,13 @@ export class SlackCtrl {
     // check permission
     await Promise.all(relations.map(async(relation) => {
       const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
-        relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+        relation, growiCommand.growiCommandType, body.channel_name,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
         isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
-          relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+          relation, growiCommand.growiCommandType, body.channel_name,
         );
       }
 
