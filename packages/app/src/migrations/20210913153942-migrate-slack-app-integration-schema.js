@@ -16,6 +16,8 @@ module.exports = {
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
+    if (slackAppIntegrations.length === 0) return;
+
     // create default data
     const defaultDataForBroadcastUse = {};
     defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
@@ -78,6 +80,8 @@ module.exports = {
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
+
+    if (slackAppIntegrations.length === 0) return next();
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
