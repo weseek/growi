@@ -26,16 +26,13 @@ class PageService {
   }
 
   initPageEvent() {
-    console.log('this.crowi.hoge', this.crowi);
-    const { activityService, commentService, slackIntegrationService } = this.crowi;
-    // console.log('commentServiceHoge', commentService);
-    console.log('slackIntegrationServiceHoge', slackIntegrationService);
-
     // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
     // update
     this.pageEvent.on('update', async(page, user) => {
+      const { activityService } = this.crowi;
+
       this.pageEvent.onUpdate();
 
       try {
