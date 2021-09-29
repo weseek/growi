@@ -65,7 +65,7 @@ class SamlSecurityManagementContents extends React.Component {
                 {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
-            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('ldap') && isSamlEnabled)
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
               && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
