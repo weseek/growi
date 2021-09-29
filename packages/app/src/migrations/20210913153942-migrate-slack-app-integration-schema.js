@@ -52,29 +52,27 @@ module.exports = {
       return {
         updateOne: {
           filter: { _id: doc._id },
-          update: [
-            {
-              $set: {
-                permissionsForBroadcastUseCommands: copyForBroadcastUse,
-                permissionsForSingleUseCommands: copyForSingleUse,
-              },
+          update: {
+            $set: {
+              permissionsForBroadcastUseCommands: copyForBroadcastUse,
+              permissionsForSingleUseCommands: copyForSingleUse,
             },
-            {
-              $unset: ['supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+            $unset: {
+              supportedCommandsForBroadcastUse: '',
+              supportedCommandsForSingleUse: '',
             },
-          ],
+          },
         },
       };
     });
 
-    await SlackAppIntegration.bulkWrite(operations);
+    await db.collection('slackappintegrations').bulkWrite(operations);
 
     logger.info('Migration has successfully applied');
   },
 
   async down(db, next) {
     logger.info('Rollback migration');
-    // return next();
     mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
@@ -99,22 +97,21 @@ module.exports = {
       return {
         updateOne: {
           filter: { _id: doc._id },
-          update: [
-            {
-              $set: {
-                supportedCommandsForBroadcastUse: dataForBroadcastUse,
-                supportedCommandsForSingleUse: dataForSingleUse,
-              },
+          update: {
+            $set: {
+              supportedCommandsForBroadcastUse: dataForBroadcastUse,
+              supportedCommandsForSingleUse: dataForSingleUse,
             },
-            {
-              $unset: ['permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
+            $unset: {
+              permissionsForBroadcastUseCommands: '',
+              permissionsForSingleUseCommands: '',
             },
-          ],
+          },
         },
       };
     });
 
-    await SlackAppIntegration.bulkWrite(operations);
+    await db.collection('slackappintegrations').bulkWrite(operations);
 
     next();
     logger.info('Migration has successfully applied');
