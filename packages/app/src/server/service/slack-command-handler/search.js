@@ -8,7 +8,7 @@ const {
 const { formatDistanceStrict } = require('date-fns');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
-const PAGINGLIMIT = 10;
+const PAGINGLIMIT = 7;
 
 module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
@@ -206,7 +206,7 @@ module.exports = (crowi) => {
     const parsedValue = JSON.parse(value);
 
     const { body, growiCommandArgs, offset: offsetNum } = parsedValue;
-    const newOffsetNum = offsetNum + 10;
+    const newOffsetNum = offsetNum + PAGINGLIMIT;
     let searchResult;
     try {
       searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs, newOffsetNum);
@@ -355,7 +355,7 @@ module.exports = (crowi) => {
     const keywords = this.getKeywords(growiCommandArgs);
 
     const { searchService } = crowi;
-    const options = { limit: 10, offset };
+    const options = { limit: PAGINGLIMIT, offset };
     const results = await searchService.searchKeyword(keywords, null, {}, options);
     const resultsTotal = results.meta.total;
 
