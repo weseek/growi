@@ -90,7 +90,7 @@ module.exports = (crowi) => {
           text: {
             type: 'mrkdwn',
             text: `${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
-              + `\n    Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}`,
+              + `  \`${this.generateLastUpdateMrkdwn(updatedAt, now)}\``,
           },
           accessory: {
             type: 'button',
@@ -180,7 +180,9 @@ module.exports = (crowi) => {
           elements: [
             {
               type: 'mrkdwn',
-              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>`
+                + `  |  Last updated: \`${this.generateLastUpdateMrkdwn(updatedAt, now)}\``
+                + `  |  Shared by *${user.username}*`,
             },
           ],
         },
