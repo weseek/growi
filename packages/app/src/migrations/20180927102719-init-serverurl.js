@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:init-serverurl');
@@ -20,7 +20,7 @@ module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
@@ -77,7 +77,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

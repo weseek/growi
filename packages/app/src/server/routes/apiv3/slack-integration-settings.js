@@ -164,7 +164,7 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    const { configManager } = crowi;
+    const { configManager, slackIntegrationService } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     // retrieve settings
@@ -177,8 +177,7 @@ module.exports = (crowi) => {
       settings.commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
     }
     else {
-      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
-      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyUri');
+      settings.proxyServerUri = slackIntegrationService.proxyUriForCurrentType;
     }
 
     // retrieve connection statuses
