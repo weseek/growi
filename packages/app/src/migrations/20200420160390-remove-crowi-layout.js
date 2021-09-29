@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const query = { key: 'customize:layout', value: JSON.stringify('crowi') };
 

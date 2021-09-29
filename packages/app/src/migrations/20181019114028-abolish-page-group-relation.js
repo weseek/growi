@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely } from '@growi/core';
-import config from '^/config/migrate';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:abolish-page-group-relation');
@@ -29,7 +28,7 @@ module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const isPagegrouprelationsExists = await isCollectionExists(db, 'pagegrouprelations');
     if (!isPagegrouprelationsExists) {
@@ -73,7 +72,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const Page = getModelSafely('Page') || require('~/server/models/page')();
     const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
