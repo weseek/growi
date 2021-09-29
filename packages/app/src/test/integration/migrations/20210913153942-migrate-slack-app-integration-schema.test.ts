@@ -14,10 +14,13 @@ describe('migrate-slack-app-integration-schema', () => {
 
     await collection.insertMany([
       {
-        tokenGtoP: 'tokenGtoP1', tokenPtoG: 'tokenPtoG1', supportedCommandsForBroadcastUse: ['foo'], supportedCommandsForSingleUse: ['bar'],
+        tokenGtoP: 'tokenGtoP1', tokenPtoG: 'tokenPtoG1', permissionsForBroadcastUseCommands: { foo: true }, permissionsForSingleUseCommands: { bar: true },
       },
       {
-        tokenGtoP: 'tokenGtoP2', tokenPtoG: 'tokenPtoG2', permissionsForBroadcastUseCommands: { foo: true }, permissionsForSingleUseCommands: { bar: true },
+        tokenGtoP: 'tokenGtoP2', tokenPtoG: 'tokenPtoG2', supportedCommandsForBroadcastUse: ['foo'], supportedCommandsForSingleUse: ['bar'],
+      },
+      {
+        tokenGtoP: 'tokenGtoP3', tokenPtoG: 'tokenPtoG3',
       },
     ]);
   });
@@ -26,12 +29,25 @@ describe('migrate-slack-app-integration-schema', () => {
     // setup
     const doc1 = await collection.findOne({ tokenGtoP: 'tokenGtoP1' });
     const doc2 = await collection.findOne({ tokenGtoP: 'tokenGtoP2' });
+    const doc3 = await collection.findOne({ tokenGtoP: 'tokenGtoP3' });
     expect(doc1 != null).toBeTruthy();
     expect(doc2 != null).toBeTruthy();
+    expect(doc3 != null).toBeTruthy();
     expect(doc1).toStrictEqual({
       _id: doc1._id,
       tokenGtoP: 'tokenGtoP1',
       tokenPtoG: 'tokenPtoG1',
+      permissionsForBroadcastUseCommands: {
+        foo: true,
+      },
+      permissionsForSingleUseCommands: {
+        bar: true,
+      },
+    });
+    expect(doc2).toStrictEqual({
+      _id: doc2._id,
+      tokenGtoP: 'tokenGtoP2',
+      tokenPtoG: 'tokenPtoG2',
       supportedCommandsForBroadcastUse: [
         'foo',
       ],
@@ -39,16 +55,10 @@ describe('migrate-slack-app-integration-schema', () => {
         'bar',
       ],
     });
-    expect(doc2).toStrictEqual({
-      _id: doc2._id,
-      tokenGtoP: 'tokenGtoP2',
-      tokenPtoG: 'tokenPtoG2',
-      permissionsForBroadcastUseCommands: {
-        foo: true,
-      },
-      permissionsForSingleUseCommands: {
-        bar: true,
-      },
+    expect(doc3).toStrictEqual({
+      _id: doc3._id,
+      tokenGtoP: 'tokenGtoP3',
+      tokenPtoG: 'tokenPtoG3',
     });
 
     // when
@@ -57,12 +67,16 @@ describe('migrate-slack-app-integration-schema', () => {
     // then
     const fixedDoc1 = await collection.findOne({ tokenGtoP: 'tokenGtoP1' });
     const fixedDoc2 = await collection.findOne({ tokenGtoP: 'tokenGtoP2' });
+    const fixedDoc3 = await collection.findOne({ tokenGtoP: 'tokenGtoP3' });
     expect(fixedDoc1 != null).toBeTruthy();
     expect(fixedDoc2 != null).toBeTruthy();
+    expect(fixedDoc3 != null).toBeTruthy();
     expect(fixedDoc1.supportedCommandsForBroadcastUse).toBeUndefined();
     expect(fixedDoc1.supportedCommandsForSingleUse).toBeUndefined();
     expect(fixedDoc2.supportedCommandsForBroadcastUse).toBeUndefined();
     expect(fixedDoc2.supportedCommandsForSingleUse).toBeUndefined();
+    expect(fixedDoc3.supportedCommandsForBroadcastUse).toBeUndefined();
+    expect(fixedDoc3.supportedCommandsForSingleUse).toBeUndefined();
     expect(fixedDoc1).toStrictEqual({
       _id: doc1._id,
       tokenGtoP: 'tokenGtoP1',
@@ -83,10 +97,22 @@ describe('migrate-slack-app-integration-schema', () => {
       tokenPtoG: 'tokenPtoG2',
       permissionsForBroadcastUseCommands: {
         foo: true,
-        search: true,
+        search: false,
       },
       permissionsForSingleUseCommands: {
         bar: true,
+        create: false,
+        togetter: false,
+      },
+    });
+    expect(fixedDoc3).toStrictEqual({
+      _id: doc3._id,
+      tokenGtoP: 'tokenGtoP3',
+      tokenPtoG: 'tokenPtoG3',
+      permissionsForBroadcastUseCommands: {
+        search: true,
+      },
+      permissionsForSingleUseCommands: {
         create: true,
         togetter: true,
       },

@@ -30,23 +30,37 @@ module.exports = {
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
-      const copyForBroadcastUse = { ...defaultDataForBroadcastUse };
-      const copyForSingleUse = { ...defaultDataForSingleUse };
-      // when the document does NOT have supportedCommandsFor... columns
-      if (doc._doc.supportedCommandsForBroadcastUse == null) {
-        defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
-          copyForBroadcastUse[commandName] = true;
-        });
-        defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
-          copyForSingleUse[commandName] = true;
-        });
+      let copyForBroadcastUse = { ...defaultDataForBroadcastUse };
+      let copyForSingleUse = { ...defaultDataForSingleUse };
+      // when the document already has permissionsFor... colums
+      if (doc._doc.permissionsForBroadcastUseCommands != null) {
+        // merge
+        copyForBroadcastUse = {
+          ...defaultDataForBroadcastUse,
+          ...Object.fromEntries(doc._doc.permissionsForBroadcastUseCommands),
+        };
+        copyForSingleUse = {
+          ...defaultDataForSingleUse,
+          ...Object.fromEntries(doc._doc.permissionsForSingleUseCommands),
+        };
       }
-      // // when the document has supportedCommandsFor... columns
-      else {
+      // when the document has supportedCommandsFor... columns
+      else if (doc._doc.supportedCommandsForBroadcastUse != null) {
+        // merge
         doc._doc.supportedCommandsForBroadcastUse.forEach((commandName) => {
           copyForBroadcastUse[commandName] = true;
         });
         doc._doc.supportedCommandsForSingleUse.forEach((commandName) => {
+          copyForSingleUse[commandName] = true;
+        });
+      }
+      // when the document does NOT have supportedCommandsFor... columns
+      else {
+        // turn on all
+        defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+          copyForBroadcastUse[commandName] = true;
+        });
+        defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
           copyForSingleUse[commandName] = true;
         });
       }
