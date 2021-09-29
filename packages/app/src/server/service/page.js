@@ -36,8 +36,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        const activityLog = await activityService.createByPageUpdate(page, user);
-        logger.info('Activity created', activityLog);
+        await activityService.createByPageUpdate(page, user);
       }
       catch (err) {
         logger.error(err);

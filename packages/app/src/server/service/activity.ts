@@ -73,7 +73,7 @@ class ActivityService {
         user: user._id,
         targetModel: ActivityDefine.MODEL_PAGE,
         target: page,
-        action: ActivityDefine.ACTION_MODIFY,
+        action: ActivityDefine.ACTION_UPDATE,
       };
       const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
       await Activity.createByParameters(parameters);
