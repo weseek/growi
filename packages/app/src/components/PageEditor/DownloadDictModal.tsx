@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { useState, FC } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -7,16 +7,15 @@ import { useTranslation } from 'react-i18next';
 
 type DownloadDictModalProps = {
   isModalOpen: boolean
-  isDontAskAgainChecked: boolean;
-  onConfirmEnableTextlint: () => void;
-  onCancel: () => void;
-  dontAskAgainCheckboxHandler: (isChecked: boolean) => void;
+  onConfirmEnableTextlint?: (isDontAskAgainChecked: boolean) => void;
+  onCancel?: () => void;
 };
 
 export const DownloadDictModal: FC<DownloadDictModalProps> = ({
-  isModalOpen, isDontAskAgainChecked, onConfirmEnableTextlint, onCancel, dontAskAgainCheckboxHandler,
+  isModalOpen, onConfirmEnableTextlint, onCancel,
 }) => {
   const { t } = useTranslation('');
+  const [isDontAskAgainChecked, setIsDontAskAgainChecked] = useState(true);
 
   return (
     <Modal isOpen={isModalOpen} toggle={onCancel} className="">
@@ -34,7 +33,7 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
             className="custom-control-input"
             id="dont-ask-again"
             checked={isDontAskAgainChecked}
-            onChange={e => dontAskAgainCheckboxHandler(e.target.checked)}
+            onChange={e => setIsDontAskAgainChecked(e.target.checked)}
           />
           <label className="custom-control-label align-center" htmlFor="dont-ask-again">
             {t('modal_enable_textlint.dont_ask_again')}
@@ -43,14 +42,21 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onCancel}
+          onClick={() => {
+            if (onCancel != null) { onCancel() }
+          }}
         >
           {t('Cancel')}
         </button>
         <button
           type="button"
           className="btn btn-outline-primary ml-3"
-          onClick={onConfirmEnableTextlint}
+          onClick={() => {
+            if (onConfirmEnableTextlint != null) {
+              onConfirmEnableTextlint(isDontAskAgainChecked);
+            }
+          }
+          }
         >
           {t('modal_enable_textlint.enable_textlint')}
         </button>
@@ -61,8 +67,6 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
 
 DownloadDictModal.propTypes = {
   isModalOpen: PropTypes.bool.isRequired,
-  isDontAskAgainChecked: PropTypes.bool.isRequired,
-  onConfirmEnableTextlint: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  dontAskAgainCheckboxHandler: PropTypes.func.isRequired,
+  onConfirmEnableTextlint: PropTypes.func,
+  onCancel: PropTypes.func,
 };

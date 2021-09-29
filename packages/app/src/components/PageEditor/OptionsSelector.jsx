@@ -391,10 +391,9 @@ class OptionsSelector extends React.Component {
 
         <DownloadDictModal
           isModalOpen={this.state.isDownloadDictModalShown}
-          isDontAskAgainChecked={this.state.isDontAskAgainChecked}
+          // isDontAskAgainChecked={this.state.isDontAskAgainChecked}
           onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
           onCancel={() => this.setState({ isDownloadDictModalShown: false })}
-          dontAskAgainCheckboxHandler={isDontAskAgainChecked => this.setState({ isDontAskAgainChecked })}
         />
       </>
     );
