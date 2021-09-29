@@ -19,20 +19,17 @@ class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    // this.activityService = this.crowi.activityService;
     this.pageEvent = crowi.event('page');
-
-    // this.pageEvent.on('create', this.pageEvent.onCreate);
-    // this.pageEvent.on('update', this.pageEvent.onUpdate);
-    // this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
 
     // init
     this.initPageEvent();
   }
 
-  async initPageEvent() {
+  initPageEvent() {
     console.log('this.crowi.hoge', this.crowi);
-    const { activityService } = this.crowi;
+    const { activityService, commentService, slackIntegrationService } = this.crowi;
+    // console.log('commentServiceHoge', commentService);
+    console.log('slackIntegrationServiceHoge', slackIntegrationService);
 
     // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
@@ -42,7 +39,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        console.log('activityServiceHoge', activityService);
+        // console.log('activityServiceHoge', activityService);
         const activityLog = await activityService.createByPageUpdate(page, user);
         logger.info('Activity created', activityLog);
       }

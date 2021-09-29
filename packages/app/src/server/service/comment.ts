@@ -1,8 +1,8 @@
 import loggerFactory from '../../utils/logger';
 import { getModelSafely } from '../util/mongoose-utils';
 
-const InAppNotificationService = require('./in-app-notification');
-const ActivityService = require('./activity');
+// const InAppNotificationService = require('./in-app-notification');
+// const ActivityService = require('./activity');
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -51,8 +51,10 @@ class CommentService {
     this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
 
-      const { activityService, inAppNotificationService } = this.crowi;
-      console.log('inAppNotificationServiceFUga', inAppNotificationService);
+      const { activityService } = this.crowi;
+
+      console.log('this.crowiFUga', this.crowi);
+      // console.log('activityServiceFUga', activityService);
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510
