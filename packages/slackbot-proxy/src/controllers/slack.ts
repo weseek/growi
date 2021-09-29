@@ -26,7 +26,6 @@ import {
 } from '~/middlewares/slack-to-growi/authorizer';
 import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
-import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
@@ -130,7 +129,7 @@ export class SlackCtrl {
 
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
