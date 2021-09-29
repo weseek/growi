@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:update-configs-for-slackbot');
@@ -16,7 +16,7 @@ const keyMap = {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
       const isExist = (await Config.count({ key: newKey })) > 0;
@@ -36,7 +36,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
       const isExist = (await Config.count({ key: oldKey })) > 0;
