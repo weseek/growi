@@ -36,7 +36,6 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        // console.log('activityServiceHoge', activityService);
         const activityLog = await activityService.createByPageUpdate(page, user);
         logger.info('Activity created', activityLog);
       }
