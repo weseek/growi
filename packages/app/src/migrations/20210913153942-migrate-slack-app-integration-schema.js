@@ -7,24 +7,24 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:update-configs-for-slackbot');
 
+// create default data
+const defaultDataForBroadcastUse = {};
+defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+  defaultDataForBroadcastUse[commandName] = false;
+});
+const defaultDataForSingleUse = {};
+defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+  defaultDataForSingleUse[commandName] = false;
+});
+
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
-
-    // create default data
-    const defaultDataForBroadcastUse = {};
-    defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
-      defaultDataForBroadcastUse[commandName] = false;
-    });
-    const defaultDataForSingleUse = {};
-    defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
-      defaultDataForSingleUse[commandName] = false;
-    });
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
@@ -75,7 +75,7 @@ module.exports = {
   async down(db, next) {
     logger.info('Rollback migration');
     // return next();
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
