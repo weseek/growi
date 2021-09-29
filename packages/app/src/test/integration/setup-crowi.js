@@ -2,7 +2,7 @@ import Crowi from '~/server/crowi';
 
 let _instance = null;
 
-async function getInstance(isNewInstance) {
+export async function getInstance(isNewInstance) {
   if (isNewInstance) {
     const crowi = new Crowi();
     await crowi.initForTest();
@@ -16,7 +16,3 @@ async function getInstance(isNewInstance) {
   }
   return _instance;
 }
-
-module.exports = {
-  getInstance,
-};
