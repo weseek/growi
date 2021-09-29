@@ -64,8 +64,8 @@ function Crowi() {
   this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
-  this.ActivityService = null;
-  this.CommentService = null;
+  this.activityService = null;
+  this.commentService = null;
   this.xss = new Xss();
 
   this.tokens = null;

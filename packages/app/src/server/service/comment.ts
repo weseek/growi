@@ -51,7 +51,8 @@ class CommentService {
     this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
 
-      const { activityService } = this.crowi;
+      const { activityService, inAppNotificationService } = this.crowi;
+      console.log('inAppNotificationServiceFUga', inAppNotificationService);
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510

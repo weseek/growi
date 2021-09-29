@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
 
-const logger = loggerFactory('growi:models:page');
-const debug = require('debug')('growi:models:page');
+const logger = loggerFactory('growi:service:page');
+const debug = require('debug')('growi:service:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
@@ -19,13 +19,44 @@ class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    // this.activityService = this.crowi.activityService;
     this.pageEvent = crowi.event('page');
 
+    // this.pageEvent.on('create', this.pageEvent.onCreate);
+    // this.pageEvent.on('update', this.pageEvent.onUpdate);
+    // this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+
     // init
+    this.initPageEvent();
+  }
+
+  async initPageEvent() {
+    console.log('this.crowi.hoge', this.crowi);
+    const { activityService } = this.crowi;
+
+    // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
-    this.pageEvent.on('update', this.pageEvent.onUpdate);
+
+    // update
+    this.pageEvent.on('update', async(page, user) => {
+      this.pageEvent.onUpdate();
+
+      try {
+        console.log('activityServiceHoge', activityService);
+        const activityLog = await activityService.createByPageUpdate(page, user);
+        logger.info('Activity created', activityLog);
+      }
+      catch (err) {
+        logger.error(err);
+
+      }
+    });
+
+
+    // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
+
 
   /**
    * go back by using redirectTo and return the paths
