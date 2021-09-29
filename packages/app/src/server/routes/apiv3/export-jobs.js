@@ -41,14 +41,8 @@ module.exports = (crowi) => {
    *                  - pageId
    *                  - format
    *      responses:
-   *        200:
+   *        204:
    *          description: Job successfully created
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  status:
-   *                    $ref: '#/components/schemas/ExportStatus'
    */
   router.post('/', accessTokenParser, loginRequired, csrf, async(req, res) => {
     // TODO: WIP
