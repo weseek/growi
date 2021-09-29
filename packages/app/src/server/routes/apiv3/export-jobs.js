@@ -54,13 +54,10 @@ module.exports = (crowi) => {
     // TODO: WIP
     try {
       const { format, pageId } = req.body;
-      console.log(format);
-      console.log(pageId);
 
       return res.apiv3({});
     }
     catch (err) {
-      // TODO: use ApiV3Error
       logger.error(err);
       const msg = 'Error occurred when starting export';
       return res.apiv3Err(new ErrorV3(msg, 'starting-export-failed'));
