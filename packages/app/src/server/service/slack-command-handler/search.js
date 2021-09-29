@@ -27,6 +27,12 @@ module.exports = (crowi) => {
       : mrkdwn;
   }
 
+  function generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs) {
+    const url = new URL('/_search', appUrl);
+    url.searchParams.append('q', growiCommandArgs.map(kwd => encodeURIComponent(kwd)).join('+'));
+    return `<${url.href} | Results page>`;
+  }
+
   function generatePageLinkMrkdwn(pathname, href) {
     return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
   }
@@ -83,7 +89,10 @@ module.exports = (crowi) => {
       elements: [
         {
           type: 'mrkdwn',
-          text: `keyword(s) : *"${keywords}"*  |  Current: ${offset + 1} - ${offset + pages.length}  |  Total ${resultsTotal} pages`,
+          text: `keyword(s) : *"${keywords}"*`
+          + `  |  Total ${resultsTotal} pages`
+          + `  |  Current: ${offset + 1} - ${offset + pages.length}`
+          + `  |  ${generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs)}`,
         },
       ],
     };
