@@ -3,7 +3,7 @@ export const requiredScopes: string[] = [
   'team:read',
   'chat:write',
   'chat:write.public',
-  // 'channels:join', // add this if use JoinToConversationMiddleware
+  'channels:join',
   'channels:history',
   'groups:history',
   'im:history',
