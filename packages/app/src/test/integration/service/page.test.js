@@ -505,8 +505,8 @@ describe('PageService', () => {
   describe('duplicate page', () => {
     let duplicateDescendantsWithStreamSpy;
 
-    jest.mock('../../server/models/serializers/page-serializer');
-    const { serializePageSecurely } = require('../../server/models/serializers/page-serializer');
+    jest.mock('~/server/models/serializers/page-serializer');
+    const { serializePageSecurely } = require('~/server/models/serializers/page-serializer');
     serializePageSecurely.mockImplementation(page => page);
 
     beforeEach(async() => {

@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely } from '@growi/core';
-import config from '^/config/migrate';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:make-email-unique');
@@ -10,7 +9,7 @@ module.exports = {
 
   async up(db, next) {
     logger.info('Start migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = getModelSafely('User') || require('~/server/models/user')();
 
