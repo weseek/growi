@@ -75,7 +75,6 @@ class ActivityService {
         target: page,
         action: ActivityDefine.ACTION_MODIFY,
       };
-      console.log('createByPageUpdate', parameters);
       const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
       await Activity.createByParameters(parameters);
       return;
