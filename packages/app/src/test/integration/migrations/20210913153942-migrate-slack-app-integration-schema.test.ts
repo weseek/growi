@@ -28,14 +28,28 @@ describe('migrate-slack-app-integration-schema', () => {
     const doc2 = await collection.findOne({ tokenGtoP: 'tokenGtoP2' });
     expect(doc1 != null).toBeTruthy();
     expect(doc2 != null).toBeTruthy();
-    expect(doc1.supportedCommandsForBroadcastUse).toStrictEqual(['foo']);
-    expect(doc1.supportedCommandsForSingleUse).toStrictEqual(['bar']);
-    expect(doc1.permissionsForBroadcastUseCommands).toBeUndefined();
-    expect(doc1.permissionsForSingleUseCommands).toBeUndefined();
-    expect(doc2.supportedCommandsForBroadcastUse).toBeUndefined();
-    expect(doc2.supportedCommandsForSingleUse).toBeUndefined();
-    expect(doc2.permissionsForBroadcastUseCommands).toStrictEqual({ foo: true });
-    expect(doc2.permissionsForSingleUseCommands).toStrictEqual({ bar: true });
+    expect(doc1).toStrictEqual({
+      _id: doc1._id,
+      tokenGtoP: 'tokenGtoP1',
+      tokenPtoG: 'tokenPtoG1',
+      supportedCommandsForBroadcastUse: [
+        'foo',
+      ],
+      supportedCommandsForSingleUse: [
+        'bar',
+      ],
+    });
+    expect(doc2).toStrictEqual({
+      _id: doc2._id,
+      tokenGtoP: 'tokenGtoP2',
+      tokenPtoG: 'tokenPtoG2',
+      permissionsForBroadcastUseCommands: {
+        foo: true,
+      },
+      permissionsForSingleUseCommands: {
+        bar: true,
+      },
+    });
 
     // when
     await migrate.up(mongoose.connection.db);
@@ -47,12 +61,36 @@ describe('migrate-slack-app-integration-schema', () => {
     expect(fixedDoc2 != null).toBeTruthy();
     expect(fixedDoc1.supportedCommandsForBroadcastUse).toBeUndefined();
     expect(fixedDoc1.supportedCommandsForSingleUse).toBeUndefined();
-    expect(fixedDoc1.permissionsForBroadcastUseCommands).toStrictEqual({ foo: true, search: false });
-    expect(fixedDoc1.permissionsForSingleUseCommands).toStrictEqual({ bar: true, create: false, togetter: false });
     expect(fixedDoc2.supportedCommandsForBroadcastUse).toBeUndefined();
     expect(fixedDoc2.supportedCommandsForSingleUse).toBeUndefined();
-    expect(fixedDoc2.permissionsForBroadcastUseCommands).toStrictEqual({ foo: true, search: true });
-    expect(fixedDoc2.permissionsForSingleUseCommands).toStrictEqual({ bar: true, create: true, togetter: true });
+    expect(fixedDoc1).toStrictEqual({
+      _id: doc1._id,
+      tokenGtoP: 'tokenGtoP1',
+      tokenPtoG: 'tokenPtoG1',
+      permissionsForBroadcastUseCommands: {
+        foo: true,
+        search: false,
+      },
+      permissionsForSingleUseCommands: {
+        bar: true,
+        create: false,
+        togetter: false,
+      },
+    });
+    expect(fixedDoc2).toStrictEqual({
+      _id: doc2._id,
+      tokenGtoP: 'tokenGtoP2',
+      tokenPtoG: 'tokenPtoG2',
+      permissionsForBroadcastUseCommands: {
+        foo: true,
+        search: true,
+      },
+      permissionsForSingleUseCommands: {
+        bar: true,
+        create: true,
+        togetter: true,
+      },
+    });
   });
 
 });
