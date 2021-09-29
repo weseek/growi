@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider, respond, deleteOriginal,
+  markdownSectionBlock, divider, respond, replaceOriginal, deleteOriginal,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const SlackbotError = require('../../models/vo/slackbot-error');
@@ -297,7 +297,7 @@ module.exports = (crowi) => {
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
-    await respond(responseUrl, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+    await replaceOriginal(responseUrl, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
   handler.showPrevResults = async function(client, payload, interactionPayloadAccessor) {
