@@ -1,10 +1,10 @@
 const MODEL_PAGE = 'Page';
 const MODEL_COMMENT = 'Comment';
 
-const ACTION_CREATE = 'CREATE'; // Not support yet
 const ACTION_MODIFY = 'MODIFY';
-const ACTION_DELETE = 'DELETE'; // Not support yet
 const ACTION_COMMENT = 'COMMENT';
+const ACTION_CREATE = 'CREATE'; // Not support yet
+const ACTION_DELETE = 'DELETE'; // Not support yet
 const ACTION_LIKE = 'LIKE'; // Not support yet
 
 const getSupportTargetModelNames = () => {
