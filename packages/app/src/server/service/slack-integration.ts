@@ -237,17 +237,25 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(growiCommand: GrowiCommand, client, body) {
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body): Promise<void> {
     const { growiCommandType } = growiCommand;
     const module = `./slack-command-handler/${growiCommandType}`;
 
+    let handler;
     try {
-      const handler = require(module)(this.crowi);
+      handler = require(module)(this.crowi);
+    }
+    catch (err) {
+      logger.error(err);
+      await this.notCommand(growiCommand);
+    }
+
+    try {
       await handler.handleCommand(growiCommand, client, body);
     }
     catch (err) {
-      await this.notCommand(growiCommand);
-      throw err;
+      logger.error(err);
+      await this.notifyInternalError(growiCommand.responseUrl, err);
     }
   }
 
@@ -261,7 +269,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
       await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
-      throw err;
+      logger.error(err);
+      const responseUrl = interactionPayloadAccessor.getResponseUrl();
+      await this.notifyInternalError(responseUrl, err);
     }
     return;
   }
@@ -276,7 +286,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
       await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
-      throw err;
+      logger.error(err);
+      const responseUrl = interactionPayloadAccessor.getResponseUrl();
+      await this.notifyInternalError(responseUrl, err);
     }
     return;
   }
@@ -287,6 +299,16 @@ export class SlackIntegrationService implements S2sMessageHandlable {
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
+      ],
+    });
+    return;
+  }
+
+  async notifyInternalError(responseUrl: string, error: Error): Promise<void> {
+    await respond(responseUrl, {
+      text: 'Internal Server Error',
+      blocks: [
+        markdownSectionBlock(`*Internal Server Error*\n \`${error.message}\``),
       ],
     });
     return;
