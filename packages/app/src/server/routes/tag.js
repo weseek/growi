@@ -135,16 +135,27 @@ module.exports = function(crowi, app) {
    * @apiParam {array} tags
    */
   api.update = async function(req, res) {
+    // GW36 tag update feature problem (when adding/removing tags, page's updatedAt does not get updated)
+    // Idea : call Page.updatePage to update 'updatedAt' when tag is added/removed
+    // ref: api.update in pages.js router
     const Page = crowi.model('Page');
     const PageTagRelation = crowi.model('PageTagRelation');
+    const Revision = crowi.model('Revision');
+    const User = crowi.model('User');
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;
     const tags = req.body.tags;
+    const revisionId = req.body.revisionId;
 
     const result = {};
     try {
       // TODO GC-1921 consider permission
+      // do Page.updatePage
       const page = await Page.findById(pageId);
+      const previousRevision = await Revision.findById(revisionId);
+      // no difference than before, just updating page to have pages 'updatedAt' updated
+      const user = await User.findById('613eda3717b2d80c4874dfb7');
+      await Page.updatePage(page, previousRevision.body, previousRevision.body, user, {});
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 
