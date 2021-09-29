@@ -48,8 +48,7 @@ module.exports = (crowi) => {
     // TODO: WIP
     try {
       const { format, pageId } = req.body;
-
-      return res.apiv3({});
+      return res.apiv3();
     }
     catch (err) {
       logger.error(err);

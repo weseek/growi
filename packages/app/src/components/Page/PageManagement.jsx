@@ -94,13 +94,10 @@ const PageManagement = (props) => {
   async function bulkExportPageHandler(format) {
     const { pageId } = pageContainer.state;
     try {
-      const res = await appContainer.apiv3Post(urljoin('export-jobs'), { pageId, format });
-      if (!res.ok) {
-        throw new Error(t('export_bulk.failed_to_bulk_export_page_markdown'));
-      }
+      await appContainer.apiv3Post(urljoin('export-jobs'), { pageId, format });
     }
     catch (err) {
-      pageContainer.showErrorToastr(err);
+      pageContainer.showErrorToastr(new Error(t('export_bulk.failed_to_bulk_export_page_markdown')));
     }
   }
 
