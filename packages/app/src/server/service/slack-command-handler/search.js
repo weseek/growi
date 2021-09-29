@@ -136,14 +136,29 @@ module.exports = (crowi) => {
         },
       ],
     };
-    // show "Next" button if next page exists
-    if (resultsTotal > offset + PAGINGLIMIT) {
+    // show "Prev" button if previous page exists
+    // eslint-disable-next-line yoda
+    if (0 < offset) {
       actionBlocks.elements.unshift(
         {
           type: 'button',
           text: {
             type: 'plain_text',
-            text: 'Next',
+            text: '< Prev',
+          },
+          action_id: 'search:showPrevResults',
+          value: JSON.stringify({ offset, growiCommandArgs }),
+        },
+      );
+    }
+    // show "Next" button if next page exists
+    if (offset + PAGINGLIMIT < resultsTotal) {
+      actionBlocks.elements.unshift(
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Next >',
           },
           action_id: 'search:showNextResults',
           value: JSON.stringify({ offset, growiCommandArgs }),
@@ -260,7 +275,7 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
+  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true) {
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const value = interactionPayloadAccessor.firstAction()?.value;
@@ -276,11 +291,21 @@ module.exports = (crowi) => {
     const parsedValue = JSON.parse(value);
 
     const { growiCommandArgs, offset: offsetNum } = parsedValue;
-    const newOffsetNum = offsetNum + PAGINGLIMIT;
+    const newOffsetNum = isNext
+      ? offsetNum + PAGINGLIMIT
+      : offsetNum - PAGINGLIMIT;
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
     await respond(responseUrl, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+  }
+
+  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor) {
+    return showPrevOrNextResults(interactionPayloadAccessor, false);
+  };
+
+  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
+    return showPrevOrNextResults(interactionPayloadAccessor, true);
   };
 
   handler.dismissSearchResults = async function(client, payload) {
