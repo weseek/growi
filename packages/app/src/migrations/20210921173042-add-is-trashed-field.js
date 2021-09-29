@@ -11,37 +11,47 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const addFieldRequests = [];
-    const updateDeletedPageIds = [];
+    const LIMIT = 1000;
+    let updateDeletedPageIds = [];
 
-    for await (const deletedPage of Page.find({ status: Page.STATUS_DELETED }).select('_id').cursor()) {
-      updateDeletedPageIds.push(deletedPage._id);
-      addFieldRequests.push(
-        {
-          updateMany: {
-            filter: { relatedPage: deletedPage._id },
-            update: { $set: { isPageTrashed: true } },
-          },
-        },
-      );
-    }
-
-    addFieldRequests.push(
-      {
-        updateMany: {
-          filter: { relatedPage: { $nin: updateDeletedPageIds } },
-          update: { $set: { isPageTrashed: false } },
-        },
-      },
+    // set isPageTrashed as false temporarily
+    await db.collection('pagetagrelations').updateMany(
+      {},
+      { $set: { isPageTrashed: false } },
     );
 
-    try {
-      await db.collection('pagetagrelations').bulkWrite(addFieldRequests);
-      logger.info('Migration has successfully applied');
+    let counter = 0;
+    for await (const deletedPage of Page.find({ status: Page.STATUS_DELETED }).select('_id').cursor()) {
+      counter += 1;
+      updateDeletedPageIds.push(deletedPage._id);
+      if (counter % LIMIT === 0) {
+        try {
+          await db.collection('pagetagrelations').updateMany(
+            { relatedPage: { $in: updateDeletedPageIds } },
+            { $set: { isPageTrashed: true } },
+          );
+          logger.info('Migration of 1,000 deleted page operations has successfully applied');
+        }
+        catch (err) {
+          logger.error(err);
+          logger.info('Migration of 1,000 deleted page operations has failed');
+        }
+        updateDeletedPageIds = [];
+      }
     }
-    catch (err) {
-      logger.error(err);
-      logger.info('Migration has failed');
+
+    if (updateDeletedPageIds.length > 0) {
+      try {
+        await db.collection('pagetagrelations').updateMany(
+          { relatedPage: { $in: updateDeletedPageIds } },
+          { $set: { isPageTrashed: true } },
+        );
+        logger.info(`Migration of ${updateDeletedPageIds.length} deleted page operations has successfully applied`);
+      }
+      catch (err) {
+        logger.error(err);
+        logger.info(`Migration of ${updateDeletedPageIds.length} deleted page operations has failed`);
+      }
     }
 
   },
