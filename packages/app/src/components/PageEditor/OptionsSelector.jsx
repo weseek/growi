@@ -36,7 +36,7 @@ class OptionsSelector extends React.Component {
       isCddMenuOpened: false,
       isMathJaxEnabled,
       isDownloadDictModalShown: false,
-      isDontAskAgainChecked: true,
+      isSkipAskingAgainChecked: false,
     };
 
     this.availableThemes = [
@@ -128,29 +128,29 @@ class OptionsSelector extends React.Component {
     }
   }
 
-  async switchTextlintEnabledHandler() {
+  async toggleTextlint() {
     const { editorContainer } = this.props;
-
-    if (editorContainer.state.isTextlintEnabled === null) {
-      this.setState({ isDownloadDictModalShown: true });
-      return;
-    }
-
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
-
-    if (this.state.isDontAskAgainChecked) {
+    console.log('state', this.state.isSkipAskingAgainChecked);
+    if (this.state.isSkipAskingAgainChecked) {
       await this.updateIsTextlintEnabledToDB(newVal);
     }
   }
 
-  async confirmEnableTextlintHandler() {
+  async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    if (this.state.isDontAskAgainChecked) {
-      await this.updateIsTextlintEnabledToDB(true);
+    if (editorContainer.state.isTextlintEnabled === null) {
+      this.setState({ isDownloadDictModalShown: true });
+      return;
     }
-    this.setState({ isDownloadDictModalShown: false });
-    editorContainer.setState({ isTextlintEnabled: true });
+    await this.toggleTextlint();
+  }
+
+  async confirmEnableTextlintHandler(isSkipAskingAgainChecked) {
+    console.log(isSkipAskingAgainChecked);
+    this.setState({ isDownloadDictModalShown: false, isSkipAskingAgainChecked });
+    await this.toggleTextlint();
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -389,12 +389,13 @@ class OptionsSelector extends React.Component {
           <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
         </div>
 
+        {/* {!this.state.isSkipAskingAgainChecked && ( */}
         <DownloadDictModal
           isModalOpen={this.state.isDownloadDictModalShown}
-          // isDontAskAgainChecked={this.state.isDontAskAgainChecked}
           onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
           onCancel={() => this.setState({ isDownloadDictModalShown: false })}
         />
+        {/* )} */}
       </>
     );
   }
