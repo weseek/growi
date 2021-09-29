@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider, respond, replaceOriginal, deleteOriginal,
+  markdownSectionBlock, divider, respond, respondInChannel, replaceOriginal, deleteOriginal,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const SlackbotError = require('../../models/vo/slackbot-error');
@@ -256,17 +256,17 @@ module.exports = (crowi) => {
 
     // share
     const now = new Date();
-    return respond(responseUrl, {
+    return respondInChannel(responseUrl, {
       blocks: [
         { type: 'divider' },
-        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        markdownSectionBlock(`${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
         {
           type: 'context',
           elements: [
             {
               type: 'mrkdwn',
               text: `<${decodeURI(appUrl)}|*${appTitle}*>`
-                + `  |  Last updated: \`${this.generateLastUpdateMrkdwn(updatedAt, now)}\``
+                + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, now)}\``
                 + `  |  Shared by *${user.username}*`,
             },
           ],
