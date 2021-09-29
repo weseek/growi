@@ -22,6 +22,7 @@ module.exports = (crowi) => {
   router.use('/users', require('./users')(crowi));
   router.use('/user-groups', require('./user-group')(crowi));
   router.use('/export', require('./export')(crowi));
+  router.use('/export-jobs', require('./export-jobs')(crowi));
   router.use('/import', require('./import')(crowi));
   router.use('/search', require('./search')(crowi));
 
