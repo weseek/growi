@@ -28,6 +28,8 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   watchByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getWatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
   getUnwatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  STATUS_WATCH(): string
+  STATUS_UNWATCH(): string
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -88,7 +90,12 @@ subscriptionSchema.statics.getUnwatchers = async function(target) {
   return this.find({ target, status: STATUS_UNWATCH }).distinct('user');
 };
 
-subscriptionSchema.statics.STATUS_WATCH = STATUS_WATCH;
-subscriptionSchema.statics.STATUS_UNWATCH = STATUS_UNWATCH;
+subscriptionSchema.statics.STATUS_WATCH = function() {
+  return STATUS_WATCH;
+};
+
+subscriptionSchema.statics.STATUS_UNWATCH = function() {
+  return STATUS_UNWATCH;
+};
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

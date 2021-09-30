@@ -493,7 +493,7 @@ module.exports = (crowi) => {
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId } = req.body;
     const userId = req.user._id;
-    const status = req.body.status ? Subscription.STATUS_WATCH : Subscription.STATUS_UNWATCH;
+    const status = req.body.status ? Subscription.STATUS_WATCH() : Subscription.STATUS_UNWATCH();
     try {
       const subscription = await Subscription.watchByPageId(userId, pageId, status);
       return res.apiv3({ subscription });
