@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
 
-const logger = loggerFactory('growi:models:page');
-const debug = require('debug')('growi:models:page');
+const logger = loggerFactory('growi:service:page');
+const debug = require('debug')('growi:service:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
@@ -22,10 +22,33 @@ class PageService {
     this.pageEvent = crowi.event('page');
 
     // init
+    this.initPageEvent();
+  }
+
+  initPageEvent() {
+    // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
-    this.pageEvent.on('update', this.pageEvent.onUpdate);
+
+    // update
+    this.pageEvent.on('update', async(page, user) => {
+      const { activityService } = this.crowi;
+
+      this.pageEvent.onUpdate();
+
+      try {
+        await activityService.createByPageUpdate(page, user);
+      }
+      catch (err) {
+        logger.error(err);
+
+      }
+    });
+
+
+    // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
+
 
   /**
    * go back by using redirectTo and return the paths
