@@ -1,19 +1,17 @@
 import loggerFactory from '../../utils/logger';
 import { getModelSafely } from '../util/mongoose-utils';
-
-const InAppNotificationService = require('./in-app-notification');
-const ActivityService = require('./activity');
+import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:CommentService');
 
 
 class CommentService {
 
-  crowi!: any;
+  crowi!: Crowi;
 
   commentEvent!: any;
 
-  constructor(crowi: any) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
 
     this.commentEvent = crowi.event('comment');
@@ -26,15 +24,18 @@ class CommentService {
   initCommentEvent(): void {
     // create
     this.commentEvent.on('create', async(savedComment) => {
-      this.commentEvent.onCreate();
 
       try {
+        const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
+        await Page.updateCommentCount(savedComment.page);
+
         const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
         const activityLog = await Activity.createByPageComment(savedComment);
+
         logger.info('Activity created', activityLog);
       }
       catch (err) {
-        throw err;
+        logger.error('Error occurred while handling the comment create event:\n', err);
       }
 
     });
@@ -52,6 +53,14 @@ class CommentService {
       this.commentEvent.onRemove();
 
       const { activityService } = this.crowi;
+
+      try {
+        const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
+        await Page.updateCommentCount(comment.page);
+      }
+      catch (err) {
+        logger.error('Error occurred while updating the comment count:\n', err);
+      }
 
       try {
         // TODO: Able to remove child activities of comment by GW-7510

@@ -1,7 +1,10 @@
+import { getModelSafely } from '~/server/util/mongoose-utils';
+
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
+  const commentEvent = crowi.event('comment');
 
   const commentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
@@ -64,7 +67,6 @@ module.exports = function(crowi) {
 
   commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
     const Comment = this;
-    const commentEvent = crowi.event('comment');
 
     const commentData = await Comment.findOneAndUpdate(
       { _id: commentId },
@@ -81,24 +83,11 @@ module.exports = function(crowi) {
    * post remove hook
    */
   commentSchema.post('reomove', async(savedComment) => {
-    const Page = crowi.model('Page');
-    const commentEvent = crowi.event('comment');
-
-    try {
-      // TODO: move Page.updateCommentCount to commentService by GW7532
-      const page = await Page.updateCommentCount(savedComment.page);
-      debug('CommentCount Updated', page);
-    }
-    catch (err) {
-      throw err;
-    }
-
     await commentEvent.emit('remove', savedComment);
   });
 
   commentSchema.methods.removeWithReplies = async function(comment) {
     const Comment = crowi.model('Comment');
-    const commentEvent = crowi.event('comment');
 
     await Comment.remove({
       $or: (
@@ -117,18 +106,6 @@ module.exports = function(crowi) {
    * post save hook
    */
   commentSchema.post('save', async(savedComment) => {
-    const Page = crowi.model('Page');
-    const commentEvent = crowi.event('comment');
-
-    try {
-      // TODO: move Page.updateCommentCount to commentService by GW7532
-      const page = await Page.updateCommentCount(savedComment.page);
-      debug('CommentCount Updated', page);
-    }
-    catch (err) {
-      throw err;
-    }
-
     await commentEvent.emit('create', savedComment);
   });
 
