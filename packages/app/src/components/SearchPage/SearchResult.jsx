@@ -303,7 +303,7 @@ class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
             <nav>
-              <div className="col-8 search-page-input sps sps--abv">
+              <div className="search-page-input sps sps--abv">
                 <SearchPageForm
                   t={this.props.t}
                   keyword={this.state.searchingKeyword}
