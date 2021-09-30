@@ -12,11 +12,19 @@ const SubscruibeButton = (props) => {
 
   const [isWatching, setIsWatching] = useState(true);
 
-  const { appContainer } = props;
+  const { appContainer, pageContainer } = props;
 
   const handleClick = async() => {
-    setIsWatching(!isWatching);
-    await appContainer.apiv3Put('page/subscribe', {});
+    try {
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId: pageContainer.state.pageId, status: !isWatching });
+      if (res) {
+        const status = res.data.subscription.status;
+        setIsWatching(status === 'WATCH');
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   return (

@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import Subscription from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -464,19 +465,17 @@ module.exports = (crowi) => {
   // });
 
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
-    console.log('ok');
-    return res.apiv3({});
-    // const { page_id: pageId } = req.body
-    // const { _id: userId } = req.user as UserDocument
-    // const status = req.body.status ? Watcher.STATUS_WATCH : Watcher.STATUS_IGNORE
-    // try {
-    //   const watcher = await Watcher.watchByPageId(userId, pageId, status)
-    //   const result = { watcher }
-    //   return res.json(ApiResponse.success(result))
-    // } catch (err) {
-    //   debug('Error occured while update watch status', err, err.stack)
-    //   return res.json(ApiResponse.error('Failed to watch this page.'))
-    // }
+    const { pageId } = req.body;
+    const userId = req.user._id;
+    const status = req.body.status ? Subscription.STATUS_WATCH : Subscription.STATUS_UNWATCH;
+    try {
+      const subscription = await Subscription.watchByPageId(userId, pageId, status);
+      return res.apiv3({ subscription });
+    }
+    catch (err) {
+      logger.error('Failed to update watch status', err);
+      return res.apiv3Err(err, 500);
+    }
   });
 
   return router;
