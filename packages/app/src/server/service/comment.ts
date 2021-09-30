@@ -59,7 +59,7 @@ class CommentService {
         await Page.updateCommentCount(comment.page);
       }
       catch (err) {
-        throw err;
+        logger.error('Error occurred while updating the comment count:\n', err);
       }
 
       try {
