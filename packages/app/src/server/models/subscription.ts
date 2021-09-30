@@ -6,8 +6,8 @@ import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 const STATUS_WATCH = 'WATCH';
-const STATUS_IGNORE = 'IGNORE';
-const STATUSES = [STATUS_WATCH, STATUS_IGNORE];
+const STATUS_UNWATCH = 'UNWATCH';
+const STATUSES = [STATUS_WATCH, STATUS_UNWATCH];
 
 export interface ISubscription {
   user: Types.ObjectId
@@ -17,7 +17,7 @@ export interface ISubscription {
   createdAt: Date
 
   isWatching(): boolean
-  isIgnoring(): boolean
+  isUnwatching(): boolean
 }
 
 export interface SubscriptionDocument extends ISubscription, Document {}
@@ -27,7 +27,7 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   upsertWatcher(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
   watchByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getWatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  getIgnorers(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  getUnwatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -59,8 +59,8 @@ subscriptionSchema.methods.isWatching = function() {
   return this.status === STATUS_WATCH;
 };
 
-subscriptionSchema.methods.isIgnoring = function() {
-  return this.status === STATUS_IGNORE;
+subscriptionSchema.methods.isUnwatching = function() {
+  return this.status === STATUS_UNWATCH;
 };
 
 subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
@@ -84,16 +84,16 @@ subscriptionSchema.statics.getWatchers = async function(target) {
   return this.find({ target, status: STATUS_WATCH }).distinct('user');
 };
 
-subscriptionSchema.statics.getIgnorers = async function(target) {
-  return this.find({ target, status: STATUS_IGNORE }).distinct('user');
+subscriptionSchema.statics.getUnwatchers = async function(target) {
+  return this.find({ target, status: STATUS_UNWATCH }).distinct('user');
 };
 
 subscriptionSchema.statics.STATUS_WATCH = function() {
   return STATUS_WATCH;
 };
 
-subscriptionSchema.statics.STATUS_IGNORE = function() {
-  return STATUS_IGNORE;
+subscriptionSchema.statics.STATUS_UNWATCH = function() {
+  return STATUS_UNWATCH;
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

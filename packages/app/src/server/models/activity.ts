@@ -179,7 +179,7 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   const [targetUsers, watchUsers, ignoreUsers] = await Promise.all([
     model.getNotificationTargetUsers(),
     Subscription.getWatchers((target as any) as Types.ObjectId),
-    Subscription.getIgnorers((target as any) as Types.ObjectId),
+    Subscription.getUnwatchers((target as any) as Types.ObjectId),
   ]);
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
