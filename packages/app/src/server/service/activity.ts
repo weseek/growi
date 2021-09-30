@@ -63,22 +63,22 @@ class ActivityService {
     return;
   };
 
-    /**
-     * @param {Page} page
-     * @param {User} user
-     * @return {Promise}
-     */
-    createByPageUpdate = async function(page, user) {
-      const parameters = {
-        user: user._id,
-        targetModel: ActivityDefine.MODEL_PAGE,
-        target: page,
-        action: ActivityDefine.ACTION_UPDATE,
-      };
-      const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-      await Activity.createByParameters(parameters);
-      return;
+  /**
+   * @param {Page} page
+   * @param {User} user
+   * @return {Promise}
+   */
+  createByPageUpdate = async function(page, user) {
+    const parameters = {
+      user: user._id,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: page,
+      action: ActivityDefine.ACTION_UPDATE,
     };
+    const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+    await Activity.createByParameters(parameters);
+    return;
+  };
 
 
 }
