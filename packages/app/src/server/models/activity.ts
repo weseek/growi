@@ -184,8 +184,8 @@ module.exports = function(crowi: Crowi) {
     const model: any = await this.model(targetModel).findById(target);
     const [targetUsers, watchUsers, ignoreUsers] = await Promise.all([
       model.getNotificationTargetUsers(),
-      Watcher.getWatchers((target as any) as Types.ObjectId),
-      Watcher.getIgnorers((target as any) as Types.ObjectId),
+      Subscription.getWatchers((target as any) as Types.ObjectId),
+      Subscription.getUnwatchers((target as any) as Types.ObjectId),
     ]);
 
     const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
