@@ -14,7 +14,7 @@ const SubscruibeButton = (props) => {
 
   const { appContainer, pageContainer } = props;
 
-  const handleClick = async() => {
+  const Subscribe = async() => {
     try {
       const res = await appContainer.apiv3Put('page/subscribe', { pageId: pageContainer.state.pageId, status: !isWatching });
       if (res) {
@@ -32,7 +32,7 @@ const SubscruibeButton = (props) => {
       <button
         type="button"
         id="subscribe-button"
-        onClick={handleClick}
+        onClick={Subscribe}
         className={`btn btn-watch border-0 ${`btn-${props.size}`} ${isWatching ? 'active' : ''} `}
       >
         {isWatching && (
