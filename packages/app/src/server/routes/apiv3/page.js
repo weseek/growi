@@ -464,6 +464,32 @@ module.exports = (crowi) => {
   //   return res.apiv3({ dummy });
   // });
 
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      put:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Update subscribe status
+   *        operationId: updateSubscribeStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update subscribe status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const { pageId } = req.body;
     const userId = req.user._id;
