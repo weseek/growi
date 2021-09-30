@@ -8,8 +8,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
 import { toastError } from '~/client/util/apiNotification';
-
-import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
 class SearchPage extends React.Component {
@@ -78,6 +76,12 @@ class SearchPage extends React.Component {
       .then((res) => {
         this.changeURL(keyword);
 
+        // TODO: remove creating dummy snippet lines when the data with snippet is abole to be retrieved
+        res.data.forEach((page) => {
+          page.snippet = `dummy snippet dummpy snippet dummpy snippet dummpy snippet dummpy snippet
+            dummpy snippet dummpy snippet dummpy snippet dummpy snippet`;
+        });
+
         this.setState({
           searchedKeyword: keyword,
           searchedPages: res.data,
@@ -92,15 +96,8 @@ class SearchPage extends React.Component {
   render() {
     return (
       <div>
-        {/* 2021/9/22 TODO: Move to SearchResult */}
-        {/* <div className="search-page-input sps sps--abv">
-          <SearchPageForm
-            t={this.props.t}
-            onSearchFormChanged={this.search}
-            keyword={this.state.searchingKeyword}
-          />
-        </div> */}
         <SearchResult
+          search={this.search}
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}

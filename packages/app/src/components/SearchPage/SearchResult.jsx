@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
+import SearchPageForm from './SearchPageForm';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -15,6 +16,7 @@ class SearchResult extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchingKeyword: decodeURI(this.props.searchingKeyword) || '',
       deletionMode: false,
       selectedPages: new Set(),
       isDeleteCompletely: undefined,
@@ -189,7 +191,11 @@ class SearchResult extends React.Component {
             <div className="form-check my-auto">
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>
-            <Page page={page} noLink />
+            {/* TODO: remove dummy snippet and adjust style */}
+            <div className="d-block">
+              <Page page={page} noLink />
+              <div className="border-gray mt-5">{page.snippet}</div>
+            </div>
             <div className="ml-auto d-flex">
               { this.state.deletionMode
                 && (
@@ -297,22 +303,31 @@ class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
             <nav>
-              <div className="d-flex align-items-start justify-content-between mt-1">
-                <div className="search-result-meta">
-                  <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
-                </div>
-                <div className="text-nowrap">
-                  {deletionModeButtons}
-                  {allSelectCheck}
-                </div>
-              </div>
-
-              <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
+              <div className="col-8 search-page-input sps sps--abv">
+                <SearchPageForm
+                  t={this.props.t}
+                  keyword={this.state.searchingKeyword}
+                  appContainer={this.props.appContainer}
+                  onSearchFormChanged={this.props.search}
+                />
               </div>
             </nav>
+            <div className="d-flex align-items-start justify-content-between mt-1">
+              <div className="search-result-meta">
+                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+              </div>
+              <div className="text-nowrap">
+                {deletionModeButtons}
+                {allSelectCheck}
+              </div>
+            </div>
+
+            <div className="page-list">
+              <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
+            </div>
           </div>
           <div className="col-lg-6 search-result-content" id="search-result-content">
+            {/* TODO: display right side page by retrieving revision body */}
             <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>
@@ -341,6 +356,7 @@ SearchResult.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
+  search: PropTypes.func.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
   searchError: PropTypes.object,
