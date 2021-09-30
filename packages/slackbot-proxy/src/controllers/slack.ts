@@ -282,7 +282,7 @@ export class SlackCtrl {
     logger.debug('receive interaction', req.body);
 
     const {
-      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri, // WIP
     } = req;
 
     // pass
@@ -310,12 +310,15 @@ export class SlackCtrl {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
+    // WIP
+
     // check permission
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
+      .andWhere('relation.growiUri = :uri', { uri: growiUri }) // WIP
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
