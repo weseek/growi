@@ -1,11 +1,10 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-import { Activity } from './activity';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
+  const commentEvent = crowi.event('comment');
 
   const commentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
@@ -68,7 +67,6 @@ module.exports = function(crowi) {
 
   commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
     const Comment = this;
-    const commentEvent = crowi.event('comment');
 
     const commentData = await Comment.findOneAndUpdate(
       { _id: commentId },
@@ -80,51 +78,35 @@ module.exports = function(crowi) {
     return commentData;
   };
 
-  commentSchema.statics.removeCommentsByPageId = function(pageId) {
-    const Comment = this;
 
-    return new Promise(((resolve, reject) => {
-      Comment.remove({ page: pageId }, (err, done) => {
-        if (err) {
-          return reject(err);
-        }
+  /**
+   * post remove hook
+   */
+  commentSchema.post('reomove', async(savedComment) => {
+    await commentEvent.emit('remove', savedComment);
+  });
 
-        resolve(done);
-      });
-    }));
-  };
-
-  commentSchema.methods.removeWithReplies = async function() {
+  commentSchema.methods.removeWithReplies = async function(comment) {
     const Comment = crowi.model('Comment');
-    return Comment.remove({
+
+    await Comment.remove({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
     });
+
+    await commentEvent.emit('remove', comment);
+    return;
+  };
+
+  commentSchema.statics.findCreatorsByPage = async function(page) {
+    return this.distinct('creator', { page }).exec();
   };
 
   /**
    * post save hook
    */
   commentSchema.post('save', async(savedComment) => {
-    const Page = crowi.model('Page');
-    const commentEvent = crowi.event('comment');
-
-    try {
-      const page = await Page.updateCommentCount(savedComment.page);
-      debug('CommentCount Updated', page);
-    }
-    catch (err) {
-      throw err;
-    }
-
-    await commentEvent.emit('create', savedComment.creator);
-    try {
-      const activityLog = await Activity.createByPageComment(savedComment);
-      debug('Activity created', activityLog);
-    }
-    catch (err) {
-      throw err;
-    }
+    await commentEvent.emit('create', savedComment);
   });
 
   return mongoose.model('Comment', commentSchema);
