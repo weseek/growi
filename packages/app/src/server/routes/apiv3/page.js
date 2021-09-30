@@ -499,7 +499,7 @@ module.exports = (crowi) => {
       return res.apiv3({ subscription });
     }
     catch (err) {
-      logger.error('Failed to update watch status', err);
+      logger.error('Failed to update subscribe status', err);
       return res.apiv3Err(err, 500);
     }
   });
