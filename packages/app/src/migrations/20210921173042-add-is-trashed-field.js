@@ -6,12 +6,31 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:add-column-is-trashed');
 const Page = require('~/server/models/page')();
 
+const LIMIT = 1000;
+
+/**
+ * set isPageTrashed of pagetagrelations included in updateIdList as true
+ */
+const setIsPageTrashedToPageTagRelationInList = async(db, updateIdList) => {
+  const OPERATION_MESSAGE_SUBJECT = `Migration of ${updateIdList.length} deleted page operations`;
+  try {
+    await db.collection('pagetagrelations').updateMany(
+      { relatedPage: { $in: updateIdList } },
+      { $set: { isPageTrashed: true } },
+    );
+    logger.info(`${OPERATION_MESSAGE_SUBJECT} has successfully applied`);
+  }
+  catch (err) {
+    logger.error(err);
+    logger.info(`${OPERATION_MESSAGE_SUBJECT} has failed`);
+  }
+};
+
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const LIMIT = 1000;
     let updateDeletedPageIds = [];
 
     // set isPageTrashed as false temporarily
@@ -20,38 +39,18 @@ module.exports = {
       { $set: { isPageTrashed: false } },
     );
 
-    let counter = 0;
     for await (const deletedPage of Page.find({ status: Page.STATUS_DELETED }).select('_id').cursor()) {
-      counter += 1;
       updateDeletedPageIds.push(deletedPage._id);
-      if (counter % LIMIT === 0) {
-        try {
-          await db.collection('pagetagrelations').updateMany(
-            { relatedPage: { $in: updateDeletedPageIds } },
-            { $set: { isPageTrashed: true } },
-          );
-          logger.info('Migration of 1,000 deleted page operations has successfully applied');
-        }
-        catch (err) {
-          logger.error(err);
-          logger.info('Migration of 1,000 deleted page operations has failed');
-        }
+      // excute updateMany by one thousand ids
+      if (updateDeletedPageIds.length === LIMIT) {
+        await setIsPageTrashedToPageTagRelationInList(db, updateDeletedPageIds);
         updateDeletedPageIds = [];
       }
     }
 
+    // use ids that have not been updated
     if (updateDeletedPageIds.length > 0) {
-      try {
-        await db.collection('pagetagrelations').updateMany(
-          { relatedPage: { $in: updateDeletedPageIds } },
-          { $set: { isPageTrashed: true } },
-        );
-        logger.info(`Migration of ${updateDeletedPageIds.length} deleted page operations has successfully applied`);
-      }
-      catch (err) {
-        logger.error(err);
-        logger.info(`Migration of ${updateDeletedPageIds.length} deleted page operations has failed`);
-      }
+      await setIsPageTrashedToPageTagRelationInList(db, updateDeletedPageIds);
     }
 
   },
