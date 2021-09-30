@@ -88,12 +88,7 @@ subscriptionSchema.statics.getUnwatchers = async function(target) {
   return this.find({ target, status: STATUS_UNWATCH }).distinct('user');
 };
 
-subscriptionSchema.statics.STATUS_WATCH = function() {
-  return STATUS_WATCH;
-};
-
-subscriptionSchema.statics.STATUS_UNWATCH = function() {
-  return STATUS_UNWATCH;
-};
+subscriptionSchema.statics.STATUS_WATCH = STATUS_WATCH;
+subscriptionSchema.statics.STATUS_UNWATCH = STATUS_UNWATCH;
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);
