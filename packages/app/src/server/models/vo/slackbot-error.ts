@@ -1,22 +1,35 @@
+import { RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
+
+const generateDefaultRespondBody = (message: string): RespondBodyForResponseUrl => {
+  return {
+    text: message,
+    blocks: [
+      markdownSectionBlock(`*An error occured*\n \`${message}\``),
+    ],
+  };
+};
+
+type SlackbotErrorOpts = {
+  responseUrl?: string,
+  respondBody?: RespondBodyForResponseUrl,
+}
+
 /**
  * Error class for slackbot service
  */
-class SlackbotError extends Error {
+export class SlackbotError extends Error {
 
-  constructor({
-    method, to, popupMessage, mainMessage,
-  } = {}) {
-    super();
-    this.method = method;
-    this.to = to;
-    this.popupMessage = popupMessage;
-    this.mainMessage = mainMessage;
-  }
+  responseUrl?: string;
 
-  static isSlackbotError(obj) {
-    return obj instanceof this;
+  respondBody: RespondBodyForResponseUrl;
+
+  constructor(
+      message: string,
+      opts: SlackbotErrorOpts = {},
+  ) {
+    super(message);
+    this.responseUrl = opts.responseUrl;
+    this.respondBody = opts.respondBody || generateDefaultRespondBody(message);
   }
 
 }
-
-module.exports = SlackbotError;
