@@ -7,6 +7,10 @@ import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, respond, SlackbotType,
 } from '@growi/slack';
 
+import {
+  respondFromGrowi,
+} from './slack-command-handler/response-url';
+
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -147,19 +151,6 @@ export class SlackIntegrationService implements S2sMessageHandlable {
    * generate WebClient instance by tokenPtoG
    * @param tokenPtoG
    */
-  async generateClientByTokenPtoG(tokenPtoG: string): Promise<WebClient> {
-    this.isCheckTypeValid();
-
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-
-    if (slackAppIntegration == null) {
-      throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
-    }
-
-    return this.generateClientBySlackAppIntegration(slackAppIntegration as unknown as { tokenGtoP: string; });
-  }
 
   /**
    * generate WebClient instance by tokenPtoG
@@ -237,17 +228,17 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(growiCommand: GrowiCommand, client, body): Promise<void> {
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body, proxyUri: string | null, tokenGtoP: string | null): Promise<void> {
     const { growiCommandType } = growiCommand;
     const module = `./slack-command-handler/${growiCommandType}`;
 
     let handler;
     try {
-      handler = require(module)(this.crowi);
+      handler = require(module)(this.crowi, proxyUri, tokenGtoP);
     }
     catch (err) {
       logger.error(err);
-      await this.notCommand(growiCommand);
+      await this.notCommand(growiCommand, proxyUri, tokenGtoP);
     }
 
     try {
@@ -259,13 +250,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
   }
 
-  async handleBlockActionsRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+  async handleBlockActionsRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, proxyUri: string | null, tokenGtoP: string | null,
+  ): Promise<void> {
     const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
-      const handler = require(module)(this.crowi);
+      const handler = require(module)(this.crowi, proxyUri, tokenGtoP);
       await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
@@ -276,13 +269,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async handleViewSubmissionRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+  async handleViewSubmissionRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, proxyUri: string | null, tokenGtoP: string | null,
+  ): Promise<void> {
     const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
-      const handler = require(module)(this.crowi);
+      const handler = require(module)(this.crowi, proxyUri, tokenGtoP);
       await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
     }
     catch (err) {
@@ -293,9 +288,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async notCommand(growiCommand: GrowiCommand): Promise<void> {
+  async notCommand(growiCommand: GrowiCommand, proxyUri: string | null, tokenGtoP: string | null): Promise<void> {
     logger.error('Invalid first argument');
-    await respond(growiCommand.responseUrl, {
+    await respondFromGrowi(growiCommand.responseUrl, proxyUri, tokenGtoP, {
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),

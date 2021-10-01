@@ -1,4 +1,7 @@
 import loggerFactory from '~/utils/logger';
+import {
+  respondFromGrowi,
+} from './response-url';
 
 const {
   markdownSectionBlock, inputSectionBlock, respond, inputBlock,
@@ -6,9 +9,9 @@ const {
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
 
-module.exports = (crowi) => {
+module.exports = (crowi, proxyUri, tokenGtoP) => {
   const CreatePageService = require('./create-page-service');
-  const createPageService = new CreatePageService(crowi);
+  const createPageService = new CreatePageService(crowi, proxyUri, tokenGtoP);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
   const conversationsSelectElement = {
@@ -56,7 +59,7 @@ module.exports = (crowi) => {
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
     if (privateMetadata == null) {
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respondFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP, {
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to create a page.'),

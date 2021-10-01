@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
@@ -231,7 +231,7 @@ export class GrowiToSlackCtrl {
       }
     }
     else if (req.body.blocks != null) {
-      const parsedElement = JSON.parse(req.body.blocks);
+      const parsedElement = (typeof req.body.blocks === 'string') ? JSON.parse(req.body.blocks) : req.body.blocks;
       // delegate to ActionsBlockPayloadDelegator
       if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
         this.actionsBlockPayloadDelegator.inject(parsedElement, growiUri);
@@ -243,6 +243,43 @@ export class GrowiToSlackCtrl {
         req.body.blocks = JSON.stringify(parsedElement);
       }
     }
+  }
+
+  @Post('/respond')
+  @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
+  async respondUsingResponseUrl(
+    @QueryParams('response_url') responseUrl: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
+  ): Promise<WebclientRes> {
+    const { tokenGtoPs } = req;
+
+    if (tokenGtoPs.length !== 1) {
+      return res.simulateWebAPIPlatformError('tokenGtoPs is invalid', 'invalid_tokenGtoP');
+    }
+
+    const tokenGtoP = tokenGtoPs[0];
+
+    const relation = await this.relationRepository.createQueryBuilder('relation')
+      .where('tokenGtoP = :token', { token: tokenGtoP })
+      .getOne();
+
+    if (relation == null) {
+      return res.simulateWebAPIPlatformError('relation is invalid', 'invalid_relation');
+    }
+
+    try {
+      this.injectGrowiUri(req, relation.growiUri);
+    }
+    catch (err) {
+      logger.error('Error occurred while injecting GROWI uri:\n', err);
+
+      if (err.code === ErrorCode.PlatformError) {
+        return res.simulateWebAPIPlatformError(err.message, err.data.error);
+      }
+
+      return res.simulateWebAPIRequestError(err.message, err.response?.status);
+    }
+
+    return axios.post(responseUrl, req.body);
   }
 
   @Post('/:method')

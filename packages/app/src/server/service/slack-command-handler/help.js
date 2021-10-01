@@ -1,6 +1,7 @@
 const { markdownSectionBlock, respond } = require('@growi/slack');
+const { respondFromGrowi } = require('./response-url');
 
-module.exports = () => {
+module.exports = (crowi, proxyUri, tokenGtoP) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -12,7 +13,7 @@ module.exports = () => {
     message += '`/growi create`                          Create new page\n\n';
     message += '`/growi search [keyword]`       Search pages\n\n';
     message += '`/growi togetter`                      Create new page with existing slack conversations (Alpha)\n\n';
-    await respond(growiCommand.responseUrl, {
+    await respondFromGrowi(growiCommand.responseUrl, proxyUri, tokenGtoP, {
       text: 'Help',
       blocks: [
         markdownSectionBlock(message),

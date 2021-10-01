@@ -1,22 +1,23 @@
 import loggerFactory from '~/utils/logger';
+import {
+  respondFromGrowi, deleteOriginalFromGrowi,
+} from './response-url';
 
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider, respond,
-  deleteOriginal,
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
-const axios = require('axios');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
-module.exports = (crowi) => {
+module.exports = (crowi, proxyUri, tokenGtoP) => {
   const CreatePageService = require('./create-page-service');
-  const createPageService = new CreatePageService(crowi);
+  const createPageService = new CreatePageService(crowi, proxyUri, tokenGtoP);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
   handler.handleCommand = async function(growiCommand, client, body) {
-    await respond(growiCommand.responseUrl, {
+    await respondFromGrowi(growiCommand.responseUrl, proxyUri, tokenGtoP, {
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
     });
@@ -28,9 +29,7 @@ module.exports = (crowi) => {
   };
 
   handler.cancel = async function(client, payload, interactionPayloadAccessor) {
-    await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
-      delete_original: true,
-    });
+    await deleteOriginalFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP);
   };
 
   handler.createPage = async function(client, payload, interactionPayloadAccessor) {
@@ -167,7 +166,7 @@ module.exports = (crowi) => {
 
     try {
       // send preview to dm
-      await client.chat.postMessage({
+      const promise1 = client.chat.postMessage({
         channel: userChannelId,
         text: 'Preview from togetter command',
         blocks: [
@@ -178,9 +177,8 @@ module.exports = (crowi) => {
         ],
       });
       // dismiss
-      await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
-        delete_original: true,
-      });
+      const promise2 = deleteOriginalFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP);
+      await Promise.all([promise1, promise2]);
     }
     catch (err) {
       logger.error('Error occurred while creating a page.', err);

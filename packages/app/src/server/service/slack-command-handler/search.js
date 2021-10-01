@@ -1,9 +1,12 @@
 import loggerFactory from '~/utils/logger';
+import {
+  respondFromGrowi, respondInChannelFromGrowi, replaceOriginalFromGrowi, deleteOriginalFromGrowi,
+} from './response-url';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider, respond, respondInChannel, replaceOriginal, deleteOriginal,
+  markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const SlackbotError = require('../../models/vo/slackbot-error');
@@ -11,7 +14,7 @@ const SlackbotError = require('../../models/vo/slackbot-error');
 const PAGINGLIMIT = 7;
 
 
-module.exports = (crowi) => {
+module.exports = (crowi, proxyUri, tokenGtoP) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
@@ -234,7 +237,7 @@ module.exports = (crowi) => {
     const { responseUrl, growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);
-    await respond(responseUrl, respondBody);
+    await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, respondBody);
   };
 
   handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
@@ -250,7 +253,7 @@ module.exports = (crowi) => {
 
     const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
     if (value == null) {
-      await respond(responseUrl, {
+      await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, {
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to share the result.'),
@@ -259,13 +262,15 @@ module.exports = (crowi) => {
       return;
     }
 
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
+
     // restore page data from value
-    const { page, href, pathname } = JSON.parse(value);
+    const { page, href, pathname } = parsedValue;
     const { updatedAt, commentCount } = page;
 
     // share
     const now = new Date();
-    return respondInChannel(responseUrl, {
+    return respondInChannelFromGrowi(responseUrl, proxyUri, tokenGtoP, {
       blocks: [
         { type: 'divider' },
         markdownSectionBlock(`${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
@@ -289,7 +294,7 @@ module.exports = (crowi) => {
 
     const value = interactionPayloadAccessor.firstAction()?.value;
     if (value == null) {
-      await respond(responseUrl, {
+      await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, {
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to show the next results.'),
@@ -297,7 +302,8 @@ module.exports = (crowi) => {
       });
       return;
     }
-    const parsedValue = JSON.parse(value);
+
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
 
     const { growiCommandArgs, offset: offsetNum } = parsedValue;
     const newOffsetNum = isNext
@@ -306,7 +312,7 @@ module.exports = (crowi) => {
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
-    await replaceOriginal(responseUrl, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+    await replaceOriginalFromGrowi(responseUrl, proxyUri, tokenGtoP, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
   handler.showPrevResults = async function(client, payload, interactionPayloadAccessor) {
@@ -320,9 +326,7 @@ module.exports = (crowi) => {
   handler.dismissSearchResults = async function(client, payload) {
     const { response_url: responseUrl } = payload;
 
-    return deleteOriginal(responseUrl, {
-      delete_original: true,
-    });
+    return deleteOriginalFromGrowi(responseUrl, proxyUri, tokenGtoP);
   };
 
   return handler;

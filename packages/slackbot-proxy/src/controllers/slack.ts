@@ -310,15 +310,13 @@ export class SlackCtrl {
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
-    // WIP
-
     // check permission
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
-      .andWhere('relation.growiUri = :uri', { uri: growiUri }) // WIP
+      .andWhere('relation.growiUri = :uri', { uri: growiUri })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
