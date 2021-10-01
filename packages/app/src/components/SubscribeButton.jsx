@@ -48,7 +48,9 @@ const SubscruibeButton = (props) => {
 
 };
 
-
+/**
+ * Wrapper component for using unstated
+ */
 const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
 
 SubscruibeButton.propTypes = {
