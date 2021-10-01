@@ -38,16 +38,16 @@ module.exports = (crowi) => {
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const userChannelId = payload.user.id;
 
-      // validate form
-      const { path, oldest, newest } = await this.togetterValidateForm(client, payload, interactionPayloadAccessor);
-      // get messages
-      result = await this.togetterGetMessages(client, channelId, newest, oldest);
-      // clean messages
-      const cleanedContents = await this.togetterCleanMessages(result.messages);
+    // validate form
+    const { path, oldest, newest } = await this.togetterValidateForm(client, payload, interactionPayloadAccessor);
+    // get messages
+    result = await this.togetterGetMessages(client, channelId, newest, oldest);
+    // clean messages
+    const cleanedContents = await this.togetterCleanMessages(result.messages);
 
-      const contentsBody = cleanedContents.join('');
-      // create and send url message
-      await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
+    const contentsBody = cleanedContents.join('');
+    // create and send url message
+    await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
   };
 
   handler.togetterValidateForm = async function(client, payload, interactionPayloadAccessor) {
@@ -83,14 +83,56 @@ module.exports = (crowi) => {
     return { path, oldest, newest };
   };
 
-  handler.togetterGetMessages = async function(client, channelId, newest, oldest) {
-    const result = await client.conversations.history({
+  async function retrieveHistory(client, channelId, newest, oldest) {
+    return client.conversations.history({
       channel: channelId,
       newest,
       oldest,
       limit: 100,
       inclusive: true,
     });
+  }
+
+  handler.togetterGetMessages = async function(client, channelId, newest, oldest) {
+    let result;
+
+    // first attempt
+    try {
+      result = await retrieveHistory(client, channelId, newest, oldest);
+    }
+    catch (err) {
+      const errorCode = err.data?.errorCode;
+
+      if (errorCode === 'not_in_channel') {
+        // join and retry
+        await client.conversations.join({
+          channel: channelId,
+        });
+        result = await retrieveHistory(client, channelId, newest, oldest);
+      }
+      else if (errorCode === 'channel_not_found') {
+
+        const message = ':cry: GROWI Bot couldn\'t get history data because *this channel was private*.'
+          + '\nPlease add GROWI bot to this channel.'
+          + '\n';
+        throw new SlackCommandHandlerError(message, {
+          respondBody: {
+            text: message,
+            blocks: [
+              markdownSectionBlock(message),
+              {
+                type: 'image',
+                image_url: 'https://user-images.githubusercontent.com/1638767/135658794-a8d2dbc8-580f-4203-b368-e74e2f3c7b3a.png',
+                alt_text: 'Add app to this channel',
+              },
+            ],
+          },
+        });
+      }
+      else {
+        throw err;
+      }
+    }
 
     // return if no message found
     if (result.messages.length === 0) {
