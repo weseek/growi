@@ -31,12 +31,16 @@ class PageService {
 
     // update
     this.pageEvent.on('update', async(page, user) => {
-      const { activityService } = this.crowi;
+      const { activityService, inAppNotificationService } = this.crowi;
 
       this.pageEvent.onUpdate();
 
       try {
-        await activityService.createByPageUpdate(page, user);
+        const savedActivity = await activityService.createByPageUpdate(page, user);
+        let targetUsers = [];
+        targetUsers = await savedActivity.getNotificationTargetUsers();
+
+        await inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }
       catch (err) {
         logger.error(err);

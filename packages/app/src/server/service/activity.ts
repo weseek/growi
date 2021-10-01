@@ -59,8 +59,8 @@ class ActivityService {
       action: ActivityDefine.ACTION_UPDATE,
     };
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    await Activity.createByParameters(parameters);
-    return;
+    const savedActivity = await Activity.createByParameters(parameters);
+    return savedActivity;
   };
 
 
