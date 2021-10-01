@@ -1,14 +1,11 @@
 import {
   Types, Document, Model, Schema /* , Query */,
 } from 'mongoose';
-import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
-import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-import { ActivityDocument } from './activity';
 
 const logger = loggerFactory('growi:models:inAppNotification');
-const mongoose = require('mongoose');
 
 export const STATUS_UNREAD = 'UNREAD';
 export const STATUS_UNOPENED = 'UNOPENED';
@@ -82,7 +79,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   },
 });
 
-// TODO: move this virtual property getter to the service layer if necessary 77893
+// TODO: move this virtual property getter to the service layer if necessary by #78284
 // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
 //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
 //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
