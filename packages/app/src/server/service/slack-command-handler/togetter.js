@@ -7,7 +7,7 @@ const {
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const axios = require('axios');
-const SlackCommandHandlerError = require('../../models/vo/slack-command-handler-error');
+const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -60,21 +60,21 @@ module.exports = (crowi) => {
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
     let newest = interactionPayloadAccessor.getStateValues()?.newest.newest.value;
-    oldest = oldest.trim();
-    newest = newest.trim();
-    if (path == null) {
-      throw new SlackCommandHandlerError('Page path is required.');
+
+    if (oldest == null || newest == null || path == null) {
+      throw new SlackCommandHandlerError('All parameters are required. (Oldest datetime, Newst datetime and Page path)');
     }
+
     /**
      * RegExp for datetime yyyy/MM/dd-HH:mm
      * @see https://regex101.com/r/XbxdNo/1
      */
     const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0123]):[0-5][0-9]$/);
 
-    if (!regexpDatetime.test(oldest)) {
+    if (!regexpDatetime.test(oldest.trim())) {
       throw new SlackCommandHandlerError('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
     }
-    if (!regexpDatetime.test(newest)) {
+    if (!regexpDatetime.test(newest.trim())) {
       throw new SlackCommandHandlerError('Datetime format for newest must be yyyy/MM/dd-HH:mm');
     }
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
