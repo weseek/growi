@@ -40,10 +40,7 @@ RUN tar cf node_modules.tar \
 ## deps-resolver-prod
 ##
 FROM deps-resolver AS deps-resolver-prod
-
-# shrink dependencies for production
-RUN yarn install --production
-
+RUN npx lerna bootstrap -- --production
 # make artifacts
 RUN tar cf node_modules.tar \
   node_modules \

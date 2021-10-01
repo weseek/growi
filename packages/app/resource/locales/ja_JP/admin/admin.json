@@ -148,7 +148,9 @@
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",
-      "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。"
+      "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
+      "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
     },
     "code_highlight": "コードハイライト",
     "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
@@ -342,6 +344,7 @@
       "allow_specified-long": "特定のチャンネルを許可 (テキストボックスに入力されたチャンネルのみ許可されます)",
       "test_connection": "連携状況のテストをする",
       "test_connection_by_pressing_button": "以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう",
+      "test_connection_only_public_channel":"連携テストは public チャンネルで確認してください",
       "error_check_logs_below": "エラーが発生しました。下記のログを確認してください。",
       "send_message_to_slack_work_space": "Slack ワークスペースに送信しました",
       "add_slack_workspace": "Slackワークスペースを追加"

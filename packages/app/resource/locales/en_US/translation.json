@@ -566,7 +566,9 @@
     "delete": "Delete",
     "check_all": "Check all",
     "deletion_modal_header": "Delete page",
-    "delete_completely": "Delete completely"
+    "delete_completely": "Delete completely",
+    "include_certain_path" : "Include {{pathToInclude}} path ",
+    "delete_all_selected_page" : "Delete All"
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",

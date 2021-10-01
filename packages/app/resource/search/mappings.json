@@ -74,6 +74,9 @@
         "bookmark_count": {
           "type": "integer"
         },
+        "seenUsers_count":{
+          "type": "integer"
+        },
         "like_count": {
           "type": "integer"
         },

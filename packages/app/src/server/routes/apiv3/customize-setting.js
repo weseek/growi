@@ -51,6 +51,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          isAllReplyShown:
  *            type: boolean
+ *          isSearchScopeChildrenAsDefault:
+ *            type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
  *        type: object
@@ -112,6 +114,7 @@ module.exports = (crowi) => {
       body('pageLimitationXL').isInt().isInt({ min: 1, max: 1000 }),
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
+      body('isSearchScopeChildrenAsDefault').isBoolean(),
     ],
     customizeTitle: [
       body('customizeTitle').isString(),
@@ -166,6 +169,7 @@ module.exports = (crowi) => {
       pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
+      isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -363,6 +367,7 @@ module.exports = (crowi) => {
       'customize:showPageLimitationXL': req.body.pageLimitationXL,
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
+      'customize:isSearchScopeChildrenAsDefault': req.body.isSearchScopeChildrenAsDefault,
     };
 
     try {
@@ -377,6 +382,7 @@ module.exports = (crowi) => {
         pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
+        isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
       };
       return res.apiv3({ customizedParams });
     }
