@@ -1,4 +1,3 @@
-import { DeleteWriteOpResultObject } from 'mongodb';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -13,7 +12,6 @@ import Watcher from './watcher';
 
 const logger = loggerFactory('growi:models:activity');
 
-const mongoose = require('mongoose');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
@@ -30,11 +28,8 @@ export interface ActivityDocument extends Document {
 
 export interface ActivityModel extends Model<ActivityDocument> {
   createByParameters(parameters: any): Promise<ActivityDocument>
-  removeByParameters(parameters: any): any
   createByPageComment(comment: any): Promise<ActivityDocument>
   createByPageLike(page: any, user: any): Promise<ActivityDocument>
-  removeByPageUnlike(page: any, user: any): Promise<DeleteWriteOpResultObject['result']>
-  removeByPage(page: any): Promise<DeleteWriteOpResultObject['result']>
   findByUser(user: any): Promise<ActivityDocument[]>
   getActionUsersFromActivities(activities: ActivityDocument[]): any[]
 }
@@ -92,16 +87,6 @@ module.exports = function(crowi: Crowi) {
   };
 
   /**
-     * @param {object} parameters
-     */
-  activitySchema.statics.removeByParameters = async function(parameters) {
-    const activity = await this.findOne(parameters);
-    activityEvent.emit('remove', activity);
-
-    return this.deleteMany(parameters).exec();
-  };
-
-  /**
      * @param {Comment} comment
      * @return {Promise}
      */
@@ -132,37 +117,6 @@ module.exports = function(crowi: Crowi) {
     };
 
     return this.createByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.removeByPageUnlike = function(page, user) {
-    const parameters = {
-      user,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_LIKE,
-    };
-
-    return this.removeByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     *
-     * @return {Promise}
-     */
-  activitySchema.statics.removeByPage = async function(page) {
-    // const activityEvent = new ActivityEvent();
-    const activities = await this.find({ target: page });
-    for (const activity of activities) {
-      // TODO: implement removeActivity when page deleted by GW-7481
-      // activityEvent.emit('remove', activity);
-    }
-    return this.deleteMany({ target: page }).exec();
   };
 
   /**

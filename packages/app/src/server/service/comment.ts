@@ -72,14 +72,6 @@ class CommentService {
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
       }
-
-      try {
-        // TODO: Able to remove child activities of comment by GW-7510
-        await activityService.removeByPageCommentDelete(comment);
-      }
-      catch (err) {
-        logger.error(err);
-      }
     });
   }
 

@@ -1,14 +1,11 @@
 import { Types } from 'mongoose';
 import Crowi from '../crowi';
-import loggerFactory from '../../utils/logger';
 
 import { ActivityDocument } from '../models/activity';
 
 import ActivityDefine from '../util/activityDefine';
 import { getModelSafely } from '../util/mongoose-utils';
 
-
-const logger = loggerFactory('growi:service:ActivityService');
 
 class ActivityService {
 
@@ -18,33 +15,11 @@ class ActivityService {
 
   activityEvent!: any;
 
-  // commentEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
     this.activityEvent = crowi.event('activity');
   }
-
-
-  /**
-   * @param {Comment} comment
-   * @return {Promise}
-   */
-  removeByPageCommentDelete = async function(comment) {
-    const parameters = await {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
-    };
-
-    const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    await Activity.removeByParameters(parameters);
-    return;
-  };
 
   /**
    * @param {Page} page
