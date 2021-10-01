@@ -282,7 +282,7 @@ export class SlackCtrl {
     logger.debug('receive interaction', req.body);
 
     const {
-      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri, // WIP
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri,
     } = req;
 
     // pass
