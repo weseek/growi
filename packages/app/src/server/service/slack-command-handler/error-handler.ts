@@ -1,66 +1,59 @@
+import assert from 'assert';
+import { ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
+
+import { markdownSectionBlock, respond } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:service:SlackCommandHandler:slack-bot-response');
-const { markdownSectionBlock } = require('@growi/slack');
-const SlackbotError = require('../../models/vo/slackbot-error');
+import { SlackbotError } from '../../models/vo/slackbot-error';
 
-async function respondIfSlackbotError(client, body, err) {
-  // check if the request is to /commands OR /interactions
+const logger = loggerFactory('growi:service:SlackCommandHandler:error-handler');
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function handleErrorWithWebClient(error: Error, client: WebClient, body: any): Promise<ChatPostEphemeralResponse> {
+
   const isInteraction = !body.channel_id;
 
-  // throw non-SlackbotError
-  if (!SlackbotError.isSlackbotError(err)) {
-    logger.error(`A non-SlackbotError error occured.\n${err.toString()}`);
-    throw err;
-  }
+  // this method is expected to use when system couldn't response_url
+  assert(!(error instanceof SlackbotError) || error.responseUrl == null);
 
-  // for both postMessage and postEphemeral
-  let toChannel;
-  // for only postEphemeral
-  let toUser;
-  // decide which channel to send to
-  switch (err.to) {
-    case 'dm':
-      toChannel = isInteraction ? JSON.parse(body.payload).user.id : body.user_id;
-      toUser = toChannel;
-      break;
-    case 'channel':
-      toChannel = isInteraction ? JSON.parse(body.payload).channel.id : body.channel_id;
-      toUser = isInteraction ? JSON.parse(body.payload).user.id : body.user_id;
-      break;
-    default:
-      logger.error('The "to" property of SlackbotError must be "dm" or "channel".');
-      break;
-  }
+  const payload = JSON.parse(body.payload);
 
-  // argumentObj object to pass to postMessage OR postEphemeral
-  let argumentsObj = {};
-  switch (err.method) {
-    case 'postMessage':
-      argumentsObj = {
-        channel: toChannel,
-        text: err.popupMessage,
-        blocks: [
-          markdownSectionBlock(err.mainMessage),
-        ],
-      };
-      break;
-    case 'postEphemeral':
-      argumentsObj = {
-        channel: toChannel,
-        user: toUser,
-        text: err.popupMessage,
-        blocks: [
-          markdownSectionBlock(err.mainMessage),
-        ],
-      };
-      break;
-    default:
-      logger.error('The "method" property of SlackbotError must be "postMessage" or "postEphemeral".');
-      break;
-  }
+  const channel = isInteraction ? payload.channel.id : body.channel_id;
+  const user = isInteraction ? payload.user.id : body.user_id;
 
-  await client.chat[err.method](argumentsObj);
+  return client.chat.postEphemeral({
+    channel,
+    user,
+    text: error.message,
+    blocks: [
+      markdownSectionBlock(`*GROWI Internal Server Error occured.*\n${error.message}`),
+    ],
+  });
 }
 
-module.exports = { respondIfSlackbotError };
+
+export async function handleError(error: SlackbotError, responseUrl?: string): Promise<void>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function handleError(error: Error, client: WebClient, body: any): Promise<ChatPostEphemeralResponse>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function handleError(error: SlackbotError | Error, ...args: any[]): Promise<void|ChatPostEphemeralResponse> {
+  if (error instanceof SlackbotError && typeof args[0] === 'string') {
+    const responseUrl = args[0] || error.responseUrl;
+    if (responseUrl == null) {
+      logger.error('Specify responseUrl.');
+      return;
+    }
+    return respond(responseUrl, error.respondBody);
+  }
+
+  assert(args[0] instanceof WebClient);
+
+  return handleErrorWithWebClient(error, args[0], args[1]);
+}
+
+
+// module.exports = { respondIfSlackbotError };
