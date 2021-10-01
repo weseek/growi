@@ -18,8 +18,8 @@ const SubscruibeButton = (props) => {
     try {
       const res = await appContainer.apiv3Put('page/subscribe', { pageId: pageContainer.state.pageId, status: !isWatching });
       if (res) {
-        const status = res.data.subscription.status;
-        setIsWatching(status === 'WATCH');
+        const { subscription } = res.data;
+        setIsWatching(subscription.status === 'WATCH');
       }
     }
     catch (err) {
