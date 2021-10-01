@@ -4,7 +4,7 @@ import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
 
-import Page from '../PageList/Page';
+import Page from './Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
