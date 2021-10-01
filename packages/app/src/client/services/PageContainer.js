@@ -343,10 +343,10 @@ export default class PageContainer extends Container {
     }
   }
 
-  // TODO : takes tagsRelation/tags models or date
-  updateStateAfterTagAdded() {
+  // TODO : temporaly use only
+  updateStateAfterTagAdded(page) {
     const newState = {
-      updatedAt: new Date().getTime(),
+      updatedAt: page.updatedAt,
     };
     this.setState(newState);
   }

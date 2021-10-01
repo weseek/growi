@@ -50,6 +50,7 @@ class TagLabels extends React.Component {
     } = this.props;
 
     const { pageId, revisionId } = pageContainer.state;
+    const options = editorContainer.getCurrentOptionsToSave;
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === 'edit') {
       return editorContainer.setState({ tags: newTags });
@@ -57,7 +58,7 @@ class TagLabels extends React.Component {
 
     try {
       const { tags } = await appContainer.apiPost('/tags.update', {
-        pageId, tags: newTags, revisionId,
+        pageId, tags: newTags, revisionId, options,
       });
 
       // update pageContainer.state
