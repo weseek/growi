@@ -25,11 +25,11 @@ class CommentService {
     this.activityEvent = crowi.event('activity');
 
     // init
-    this.initCommentEvent();
+    this.initCommentEventListeners();
   }
 
 
-  initCommentEvent(): void {
+  initCommentEventListeners(): void {
     // create
     this.commentEvent.on('create', async(savedComment) => {
 
