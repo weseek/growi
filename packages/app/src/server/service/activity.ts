@@ -1,7 +1,4 @@
-import { Types } from 'mongoose';
 import Crowi from '../crowi';
-
-import { ActivityDocument } from '../models/activity';
 
 import ActivityDefine from '../util/activityDefine';
 import { getModelSafely } from '../util/mongoose-utils';
