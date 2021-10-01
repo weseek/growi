@@ -1,13 +1,9 @@
 import assert from 'assert';
 import { ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
 
-import { markdownSectionBlock, respond } from '@growi/slack';
+import { respond } from '@growi/slack';
 
-import loggerFactory from '~/utils/logger';
-
-import { SlackCommandHandlerError } from '../../models/vo/slack-command-handler-error';
-
-const logger = loggerFactory('growi:service:SlackCommandHandler:error-handler');
+import { SlackCommandHandlerError, generateDefaultRespondBodyForInternalServerError } from '../../models/vo/slack-command-handler-error';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,31 +22,39 @@ async function handleErrorWithWebClient(error: Error, client: WebClient, body: a
   return client.chat.postEphemeral({
     channel,
     user,
-    text: error.message,
-    blocks: [
-      markdownSectionBlock(`*GROWI Internal Server Error occured.*\n${error.message}`),
-    ],
+    ...generateDefaultRespondBodyForInternalServerError(error.message),
   });
 }
 
 
-export async function handleError(error: SlackCommandHandlerError, responseUrl?: string): Promise<void>;
+export async function handleError(error: SlackCommandHandlerError | Error, responseUrl?: string): Promise<void>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleError(error: Error, client: WebClient, body: any): Promise<ChatPostEphemeralResponse>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleError(error: SlackCommandHandlerError | Error, ...args: any[]): Promise<void|ChatPostEphemeralResponse> {
-  if (error instanceof SlackCommandHandlerError && typeof args[0] === 'string') {
+
+  // handle a SlackCommandHandlerError
+  if (error instanceof SlackCommandHandlerError) {
     const responseUrl = args[0] || error.responseUrl;
-    if (responseUrl == null) {
-      logger.error('Specify responseUrl.');
-      return;
-    }
+
+    assert(responseUrl != null, 'Specify responseUrl.');
+
     return respond(responseUrl, error.respondBody);
+  }
+
+  const secondArg = args[0];
+  assert(secondArg != null, 'Couldn\'t handle Error without the second argument.');
+
+  // handle a normal Error with response_url
+  if (typeof secondArg === 'string') {
+    const respondBody = generateDefaultRespondBodyForInternalServerError(error.message);
+    return respond(secondArg, respondBody);
   }
 
   assert(args[0] instanceof WebClient);
 
+  // handle with WebClient
   return handleErrorWithWebClient(error, args[0], args[1]);
 }

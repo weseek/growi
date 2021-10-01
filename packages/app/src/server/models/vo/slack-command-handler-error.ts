@@ -2,11 +2,11 @@ import ExtensibleCustomError from 'extensible-custom-error';
 
 import { RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
 
-const generateDefaultRespondBody = (message: string): RespondBodyForResponseUrl => {
+export const generateDefaultRespondBodyForInternalServerError = (message: string): RespondBodyForResponseUrl => {
   return {
     text: message,
     blocks: [
-      markdownSectionBlock(`*An error occured*\n \`${message}\``),
+      markdownSectionBlock(`*GROWI Internal Server Error occured*\n \`${message}\``),
     ],
   };
 };
@@ -31,7 +31,7 @@ export class SlackCommandHandlerError extends ExtensibleCustomError {
   ) {
     super(message);
     this.responseUrl = opts.responseUrl;
-    this.respondBody = opts.respondBody || generateDefaultRespondBody(message);
+    this.respondBody = opts.respondBody || generateDefaultRespondBodyForInternalServerError(message);
   }
 
 }
