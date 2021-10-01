@@ -1,10 +1,19 @@
 import assert from 'assert';
 import { ChatPostEphemeralResponse, WebClient } from '@slack/web-api';
 
-import { respond } from '@growi/slack';
+import { respond, RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
 
-import { SlackCommandHandlerError, generateDefaultRespondBodyForInternalServerError } from '../../models/vo/slack-command-handler-error';
 
+import { SlackCommandHandlerError } from '../../models/vo/slack-command-handler-error';
+
+function generateRespondBodyForInternalServerError(message): RespondBodyForResponseUrl {
+  return {
+    text: message,
+    blocks: [
+      markdownSectionBlock(`*GROWI Internal Server Error occured.*\n \`${message}\``),
+    ],
+  };
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleErrorWithWebClient(error: Error, client: WebClient, body: any): Promise<ChatPostEphemeralResponse> {
@@ -22,7 +31,7 @@ async function handleErrorWithWebClient(error: Error, client: WebClient, body: a
   return client.chat.postEphemeral({
     channel,
     user,
-    ...generateDefaultRespondBodyForInternalServerError(error.message),
+    ...generateRespondBodyForInternalServerError(error.message),
   });
 }
 
@@ -49,7 +58,7 @@ export async function handleError(error: SlackCommandHandlerError | Error, ...ar
 
   // handle a normal Error with response_url
   if (typeof secondArg === 'string') {
-    const respondBody = generateDefaultRespondBodyForInternalServerError(error.message);
+    const respondBody = generateRespondBodyForInternalServerError(error.message);
     return respond(secondArg, respondBody);
   }
 

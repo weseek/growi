@@ -6,7 +6,7 @@ export const generateDefaultRespondBodyForInternalServerError = (message: string
   return {
     text: message,
     blocks: [
-      markdownSectionBlock(`*GROWI Internal Server Error occured*\n \`${message}\``),
+      markdownSectionBlock(`*An error occured*\n \`${message}\``),
     ],
   };
 };
