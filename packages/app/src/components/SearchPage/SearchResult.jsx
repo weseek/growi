@@ -185,7 +185,7 @@ class SearchResult extends React.Component {
       const pageId = `#id_${page._id}`;
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
-          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId}>
+          <a className="nav-link page-list-link d-flex align-items-baseline py-3" href={pageId}>
             <div className="form-check my-auto">
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>

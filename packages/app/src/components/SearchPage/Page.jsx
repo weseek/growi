@@ -13,17 +13,16 @@ export default class Page extends React.Component {
     } = this.props;
     const dPagePath = new DevidedPagePath(page.path, false, true);
 
-    let pagePathElem = <PagePathLabel page={page} isFormerOnly additionalClassNames={['mx-1']} />;
+    let pagePathElem = <PagePathLabel page={page} isFormerOnly />;
     if (!noLink) {
       pagePathElem = <a className="text-break" href={page.path}>{pagePathElem}</a>;
     }
-    console.log(dPagePath);
 
     return (
       <>
         <div>
           {pagePathElem}
-          <h4>
+          <h4 className="my-1">
             <UserPicture user={page.lastUpdateUser} noLink={noLink} />
             <span className="ml-2">{dPagePath.latter}</span>
           </h4>
