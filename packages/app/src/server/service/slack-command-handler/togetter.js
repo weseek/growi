@@ -7,7 +7,7 @@ const {
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const axios = require('axios');
-const SlackbotError = require('../../models/vo/slackbot-error');
+const SlackCommandHandlerError = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -63,12 +63,7 @@ module.exports = (crowi) => {
     oldest = oldest.trim();
     newest = newest.trim();
     if (path == null) {
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'Page path is required.',
-        mainMessage: 'Page path is required.',
-      });
+      throw new SlackCommandHandlerError('Page path is required.');
     }
     /**
      * RegExp for datetime yyyy/MM/dd-HH:mm
@@ -77,32 +72,17 @@ module.exports = (crowi) => {
     const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0123]):[0-5][0-9]$/);
 
     if (!regexpDatetime.test(oldest)) {
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'Datetime format for oldest must be yyyy/MM/dd-HH:mm',
-        mainMessage: 'Datetime format for oldest must be yyyy/MM/dd-HH:mm',
-      });
+      throw new SlackCommandHandlerError('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
     }
     if (!regexpDatetime.test(newest)) {
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'Datetime format for newest must be yyyy/MM/dd-HH:mm',
-        mainMessage: 'Datetime format for newest must be yyyy/MM/dd-HH:mm',
-      });
+      throw new SlackCommandHandlerError('Datetime format for newest must be yyyy/MM/dd-HH:mm');
     }
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
     // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
     newest = parse(newest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
 
     if (oldest > newest) {
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'Oldest datetime must be older than the newest date time.',
-        mainMessage: 'Oldest datetime must be older than the newest date time.',
-      });
+      throw new SlackCommandHandlerError('Oldest datetime must be older than the newest date time.');
     }
 
     return { path, oldest, newest };
@@ -119,12 +99,7 @@ module.exports = (crowi) => {
 
     // return if no message found
     if (result.messages.length === 0) {
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'No message found from togetter command. Try different datetime.',
-        mainMessage: 'No message found from togetter command. Try different datetime.',
-      });
+      throw new SlackCommandHandlerError('No message found from togetter command. Try different datetime.');
     }
     return result;
   };
@@ -157,40 +132,23 @@ module.exports = (crowi) => {
   };
 
   handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody) {
-    try {
-      await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
-    }
-    catch (err) {
-      logger.error('Error occurred while creating a page.');
-      throw err;
-    }
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
 
-    try {
-      // send preview to dm
-      await client.chat.postMessage({
-        channel: userChannelId,
-        text: 'Preview from togetter command',
-        blocks: [
-          markdownSectionBlock('*Preview*'),
-          divider(),
-          markdownSectionBlock(contentsBody),
-          divider(),
-        ],
-      });
-      // dismiss
-      await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
-        delete_original: true,
-      });
-    }
-    catch (err) {
-      logger.error('Error occurred while creating a page.', err);
-      throw new SlackbotError({
-        method: 'postMessage',
-        to: 'dm',
-        popupMessage: 'Error occurred while creating a page.',
-        mainMessage: 'Error occurred while creating a page.',
-      });
-    }
+    // send preview to dm
+    await client.chat.postMessage({
+      channel: userChannelId,
+      text: 'Preview from togetter command',
+      blocks: [
+        markdownSectionBlock('*Preview*'),
+        divider(),
+        markdownSectionBlock(contentsBody),
+        divider(),
+      ],
+    });
+    // dismiss
+    await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
+      delete_original: true,
+    });
   };
 
   handler.togetterMessageBlocks = function() {
