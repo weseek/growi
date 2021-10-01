@@ -15,3 +15,9 @@ updates:
     commit-message:
       prefix: ci
       include: scope
+    ignore:
+      - dependency-name: escape-string-regexp
+      - dependency-name: string-width
+      - dependency-name: "@handsontable/react"
+      - dependency-name: handsontable
+
