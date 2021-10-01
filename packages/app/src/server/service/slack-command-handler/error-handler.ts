@@ -54,6 +54,3 @@ export async function handleError(error: SlackbotError | Error, ...args: any[]):
 
   return handleErrorWithWebClient(error, args[0], args[1]);
 }
-
-
-// module.exports = { respondIfSlackbotError };
