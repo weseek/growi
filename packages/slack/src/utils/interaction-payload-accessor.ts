@@ -27,7 +27,7 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
       return responseUrl;
     }
 
-    const responseUrls = this.payload;
+    const responseUrls = this.payload.response_urls;
     assert(responseUrls != null);
     assert(responseUrls[0] != null);
 
