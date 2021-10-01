@@ -13,6 +13,7 @@ import {
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
+  getHelpCommandBody,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -175,6 +176,11 @@ export class SlackCtrl {
     // unregister
     if (this.unregisterService.shouldHandleCommand(growiCommand)) {
       return this.unregisterService.processCommand(growiCommand, authorizeResult);
+    }
+
+    // help
+    if (growiCommand.growiCommandType === 'help') {
+      return respond(growiCommand.responseUrl, getHelpCommandBody());
     }
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
