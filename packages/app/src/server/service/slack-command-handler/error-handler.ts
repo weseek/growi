@@ -5,7 +5,7 @@ import { markdownSectionBlock, respond } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
-import { SlackbotError } from '../../models/vo/slackbot-error';
+import { SlackCommandHandlerError } from '../../models/vo/slack-command-handler-error';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:error-handler');
 
@@ -16,7 +16,7 @@ async function handleErrorWithWebClient(error: Error, client: WebClient, body: a
   const isInteraction = !body.channel_id;
 
   // this method is expected to use when system couldn't response_url
-  assert(!(error instanceof SlackbotError) || error.responseUrl == null);
+  assert(!(error instanceof SlackCommandHandlerError) || error.responseUrl == null);
 
   const payload = JSON.parse(body.payload);
 
@@ -34,14 +34,14 @@ async function handleErrorWithWebClient(error: Error, client: WebClient, body: a
 }
 
 
-export async function handleError(error: SlackbotError, responseUrl?: string): Promise<void>;
+export async function handleError(error: SlackCommandHandlerError, responseUrl?: string): Promise<void>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleError(error: Error, client: WebClient, body: any): Promise<ChatPostEphemeralResponse>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function handleError(error: SlackbotError | Error, ...args: any[]): Promise<void|ChatPostEphemeralResponse> {
-  if (error instanceof SlackbotError && typeof args[0] === 'string') {
+export async function handleError(error: SlackCommandHandlerError | Error, ...args: any[]): Promise<void|ChatPostEphemeralResponse> {
+  if (error instanceof SlackCommandHandlerError && typeof args[0] === 'string') {
     const responseUrl = args[0] || error.responseUrl;
     if (responseUrl == null) {
       logger.error('Specify responseUrl.');

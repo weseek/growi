@@ -1,3 +1,5 @@
+import ExtensibleCustomError from 'extensible-custom-error';
+
 import { RespondBodyForResponseUrl, markdownSectionBlock } from '@growi/slack';
 
 const generateDefaultRespondBody = (message: string): RespondBodyForResponseUrl => {
@@ -9,7 +11,7 @@ const generateDefaultRespondBody = (message: string): RespondBodyForResponseUrl 
   };
 };
 
-type SlackbotErrorOpts = {
+type Opts = {
   responseUrl?: string,
   respondBody?: RespondBodyForResponseUrl,
 }
@@ -17,7 +19,7 @@ type SlackbotErrorOpts = {
 /**
  * Error class for slackbot service
  */
-export class SlackbotError extends Error {
+export class SlackCommandHandlerError extends ExtensibleCustomError {
 
   responseUrl?: string;
 
@@ -25,7 +27,7 @@ export class SlackbotError extends Error {
 
   constructor(
       message: string,
-      opts: SlackbotErrorOpts = {},
+      opts: Opts = {},
   ) {
     super(message);
     this.responseUrl = opts.responseUrl;
