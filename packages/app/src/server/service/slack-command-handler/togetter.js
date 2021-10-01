@@ -37,7 +37,7 @@ module.exports = (crowi) => {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const userChannelId = payload.user.id;
-    try {
+
       // validate form
       const { path, oldest, newest } = await this.togetterValidateForm(client, payload, interactionPayloadAccessor);
       // get messages
@@ -48,11 +48,6 @@ module.exports = (crowi) => {
       const contentsBody = cleanedContents.join('');
       // create and send url message
       await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
-    }
-    catch (err) {
-      logger.error('Error occured by togetter.');
-      throw err;
-    }
   };
 
   handler.togetterValidateForm = async function(client, payload, interactionPayloadAccessor) {
