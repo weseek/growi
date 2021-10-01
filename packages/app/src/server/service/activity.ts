@@ -24,25 +24,8 @@ class ActivityService {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
     this.activityEvent = crowi.event('activity');
-
-    this.setUpEventListeners();
   }
 
-  setUpEventListeners() {
-    this.initActivityEventListeners();
-  }
-
-  initActivityEventListeners() {
-    this.activityEvent.on('create', async(targetUsers: Types.ObjectId[], activity: ActivityDocument) => {
-      try {
-        await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
-      }
-      catch (err) {
-        logger.error('Error occurred while saving InAppNotification');
-        throw err;
-      }
-    });
-  }
 
   /**
    * @param {Comment} comment
