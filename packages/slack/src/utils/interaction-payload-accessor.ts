@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
 
 
@@ -26,12 +27,11 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
       return responseUrl;
     }
 
-    const responseUrls = this.payload.response_urls;
-    if (responseUrls != null && responseUrls[0] != null) {
-      return responseUrls[0].response_url;
-    }
+    const responseUrls = this.payload;
+    assert(responseUrls != null);
+    assert(responseUrls[0] != null);
 
-    return '';
+    return responseUrls[0].response_url;
   }
 
   getStateValues(): any | null {
