@@ -1,5 +1,4 @@
 import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -10,7 +9,6 @@ import PageContainer from '~/client/services/PageContainer';
 type Props = {
   appContainer: AppContainer,
   pageContainer: PageContainer,
-  size: string,
 };
 
 const SubscruibeButton: FC<Props> = (props: Props) => {
@@ -38,7 +36,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-watch border-0 ${`btn-${props.size}`} ${isWatching ? 'active' : ''} `}
+        className={`btn btn-watch border-0 ${isWatching ? 'active' : ''} `}
       >
         {isWatching && (
           <i className="fa fa-eye"></i>
@@ -57,15 +55,5 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
  * Wrapper component for using unstated
  */
 const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
-
-// SubscruibeButton.propTypes = {
-//   size: PropTypes.string,
-//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-// };
-
-// SubscruibeButton.defaultProps = {
-//   size: 'md',
-// };
 
 export default SubscruibeButtonWrapper;
