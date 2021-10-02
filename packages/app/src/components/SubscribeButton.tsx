@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-const SubscruibeButton = (props) => {
+type Props = {
+  appContainer: AppContainer,
+  pageContainer: PageContainer,
+  size: string,
+};
+
+const SubscruibeButton: FC<Props> = (props: Props) => {
 
   const [isWatching, setIsWatching] = useState(true);
 
@@ -53,14 +58,14 @@ const SubscruibeButton = (props) => {
  */
 const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
 
-SubscruibeButton.propTypes = {
-  size: PropTypes.string,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-};
+// SubscruibeButton.propTypes = {
+//   size: PropTypes.string,
+//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+// };
 
-SubscruibeButton.defaultProps = {
-  size: 'md',
-};
+// SubscruibeButton.defaultProps = {
+//   size: 'md',
+// };
 
-export default withTranslation()(SubscruibeButtonWrapper);
+export default SubscruibeButtonWrapper;
