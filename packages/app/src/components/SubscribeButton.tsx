@@ -1,5 +1,7 @@
 import React, { useState, FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -12,9 +14,9 @@ type Props = {
 };
 
 const SubscruibeButton: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   const [isWatching, setIsWatching] = useState(true);
-
   const { appContainer, pageContainer } = props;
 
   const handleClick = async() => {
@@ -36,7 +38,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-watch border-0 ${isWatching ? 'active' : ''} `}
+        className={`btn btn-watch border-0 ${isWatching ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
       >
         {isWatching && (
           <i className="fa fa-eye"></i>
@@ -46,6 +48,12 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
           <i className="fa fa-eye-slash"></i>
         )}
       </button>
+
+      {appContainer.isGuestUser && (
+        <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+      )}
     </>
   );
 
@@ -55,5 +63,4 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
  * Wrapper component for using unstated
  */
 const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
-
 export default SubscruibeButtonWrapper;
