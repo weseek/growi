@@ -10,13 +10,13 @@ import PageContainer from '~/client/services/PageContainer';
 
 type Props = {
   appContainer: AppContainer,
-  pageContainer: PageContainer,
+  pageId: string,
 };
 
 const SubscruibeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { appContainer, pageContainer } = props;
+  const { appContainer, pageId } = props;
   const [isWatching, setIsWatching] = useState(false);
 
   const handleClick = async() => {
@@ -25,7 +25,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId: pageContainer.state.pageId, status: !isWatching });
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isWatching });
       if (res) {
         const { subscription } = res.data;
         setIsWatching(subscription.status === 'WATCH');
