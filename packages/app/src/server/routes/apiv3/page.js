@@ -471,31 +471,36 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *  paths:
    *    /page/subscribe:
    *      put:
    *        tags: [Page]
-   *        summary: /page/subscribe
-   *        description: Update subscribe status
    *        operationId: updateSubscribeStatus
+   *        summary: /page/subscribe
+   *        description: update subscribe status
    *        requestBody:
    *          content:
    *            application/json:
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    type: string
+   *                    description: page id
    *                  status:
-   *                    $ref: '#/components/schemas/Subscription/properties/status'
-   *
+   *                    type: boolen
+   *                    description: subscribe status
    *        responses:
    *          200:
-   *            description: Succeeded to update subscribe status.
+   *            description: scceeded to update subscribe status
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Page'
+   *                  properties:
+   *                    subscription:
+   *                      type: object
+   *                      description: subscribe status
    *          500:
-   *            description: Internal server error.
+   *            description: Internal server error
    */
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.body;
