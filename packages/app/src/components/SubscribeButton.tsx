@@ -40,13 +40,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         onClick={handleClick}
         className={`btn btn-subscribe border-0 ${isWatching ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
       >
-        {isWatching && (
-          <i className="fa fa-eye"></i>
-        )}
-
-        {!isWatching && (
-          <i className="fa fa-eye-slash"></i>
-        )}
+        <i className={isWatching ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
       </button>
 
       {appContainer.isGuestUser && (
