@@ -52,22 +52,12 @@ class CommentService {
     this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
 
-      const { activityService } = this.crowi;
-
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(comment.page);
       }
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
-      }
-
-      try {
-        // TODO: Able to remove child activities of comment by GW-7510
-        await activityService.removeByPageCommentDelete(comment);
-      }
-      catch (err) {
-        logger.error(err);
       }
     });
   }
