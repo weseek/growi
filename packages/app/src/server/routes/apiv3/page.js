@@ -162,6 +162,10 @@ module.exports = (crowi) => {
       query('fromPath').isString(),
       query('toPath').isString(),
     ],
+    subscribe: [
+      body('pageId').isString(),
+      body('status').isBoolean(),
+    ],
   };
 
   /**
@@ -490,7 +494,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.body;
     const userId = req.user._id;
     const status = req.body.status ? Subscription.STATUS_WATCH() : Subscription.STATUS_UNWATCH();
