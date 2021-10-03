@@ -493,7 +493,7 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Subscription'
+   *                  $ref: '#/components/schemas/Page'
    *          500:
    *            description: Internal server error.
    */
