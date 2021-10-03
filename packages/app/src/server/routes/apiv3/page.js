@@ -484,13 +484,16 @@ module.exports = (crowi) => {
    *                properties:
    *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  status:
+   *                    $ref: '#.componsnts/schemas/Subscription/properties/status'
+   *
    *        responses:
    *          200:
    *            description: Succeeded to update subscribe status.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Page'
+   *                  $ref: '#/components/schemas/Subscription'
    *          500:
    *            description: Internal server error.
    */
