@@ -38,7 +38,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-watch border-0 ${isWatching ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
+        className={`btn btn-subscribe border-0 ${isWatching ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
       >
         {isWatching && (
           <i className="fa fa-eye"></i>
