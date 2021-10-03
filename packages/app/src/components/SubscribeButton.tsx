@@ -16,7 +16,7 @@ type Props = {
 const SubscruibeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const [isWatching, setIsWatching] = useState(true);
+  const [isWatching, setIsWatching] = useState(false);
   const { appContainer, pageContainer } = props;
 
   const handleClick = async() => {
