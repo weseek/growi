@@ -485,7 +485,7 @@ module.exports = (crowi) => {
    *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *                  status:
-   *                    $ref: '#.componsnts/schemas/Subscription/properties/status'
+   *                    $ref: '#/components/schemas/Subscription/properties/status'
    *
    *        responses:
    *          200:
