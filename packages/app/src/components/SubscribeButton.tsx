@@ -20,6 +20,10 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
   const [isWatching, setIsWatching] = useState(false);
 
   const handleClick = async() => {
+    if (appContainer.isGuestUser) {
+      return;
+    }
+
     try {
       const res = await appContainer.apiv3Put('page/subscribe', { pageId: pageContainer.state.pageId, status: !isWatching });
       if (res) {
