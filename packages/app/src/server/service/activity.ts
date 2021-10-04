@@ -1,14 +1,7 @@
-import { Types } from 'mongoose';
 import Crowi from '../crowi';
-import loggerFactory from '../../utils/logger';
 
-import { ActivityDocument } from '../models/activity';
-
-import ActivityDefine from '../util/activityDefine';
 import { getModelSafely } from '../util/mongoose-utils';
 
-
-const logger = loggerFactory('growi:service:ActivityService');
 
 class ActivityService {
 
@@ -18,8 +11,6 @@ class ActivityService {
 
   activityEvent!: any;
 
-  // commentEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
@@ -28,22 +19,26 @@ class ActivityService {
 
 
   /**
-   * @param {Page} page
+     * @param {object} parameters
+     * @return {Promise}
+     */
+  createByParameters = function(parameters) {
+    const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+    return Activity.create(parameters);
+  };
+
+
+  /**
    * @param {User} user
    * @return {Promise}
    */
-  createByPageUpdate = async function(page, user) {
-    const parameters = {
-      user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_UPDATE,
-    };
-    const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    const savedActivity = await Activity.createByParameters(parameters);
-    return savedActivity;
+  findByUser = function(user) {
+    return this.find({ user }).sort({ createdAt: -1 }).exec();
   };
 
+  getActionUsersFromActivities = function(activities) {
+    return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
+  };
 
 }
 

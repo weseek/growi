@@ -1,7 +1,9 @@
 import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
-import { InAppNotification, InAppNotificationDocument, STATUS_UNREAD } from '~/server/models/in-app-notification';
+import {
+  InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED,
+} from '~/server/models/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '~/utils/logger';
@@ -67,6 +69,34 @@ export default class InAppNotificationService {
     logger.info('InAppNotification bulkWrite has run');
     return;
   }
+
+  // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
+  //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+  //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+  // });
+
+  read = async function(user: Types.ObjectId): Promise<void> {
+    const query = { user, status: STATUS_UNREAD };
+    const parameters = { status: STATUS_UNOPENED };
+    await InAppNotification.updateMany(query, parameters);
+
+    return;
+  };
+
+  getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
+    const query = { user, status: STATUS_UNREAD };
+
+    try {
+      const count = await InAppNotification.countDocuments(query);
+
+      return count;
+    }
+    catch (err) {
+      logger.error('Error on getUnreadCountByUser', err);
+      throw err;
+    }
+  };
+
 
 }
 

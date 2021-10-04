@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import loggerFactory from '../../utils/logger';
 import { getModelSafely } from '../util/mongoose-utils';
-import { ActivityDocument } from '../models/activity';
+import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:CommentService');
@@ -37,8 +37,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-        const savedActivity = await Activity.createByPageComment(savedComment);
+        const savedActivity = await this.createByPageComment(savedComment);
 
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
@@ -72,6 +71,27 @@ class CommentService {
       }
     });
   }
+
+  /**
+   * @param {Comment} comment
+   * @return {Promise}
+   */
+  createByPageComment = function(comment) {
+    const { activityService } = this.crowi;
+
+
+    const parameters = {
+      user: comment.creator,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: comment.page,
+      eventModel: ActivityDefine.MODEL_COMMENT,
+      event: comment._id,
+      action: ActivityDefine.ACTION_COMMENT,
+    };
+
+    return activityService.createByParameters(parameters);
+  };
+
 
 }
 

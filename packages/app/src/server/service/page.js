@@ -1,5 +1,7 @@
 import { pagePathUtils } from '@growi/core';
+import isThisHour from 'date-fns/isThisHour/index.js';
 import loggerFactory from '~/utils/logger';
+import ActivityDefine from '../util/activityDefine';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -31,12 +33,12 @@ class PageService {
 
     // update
     this.pageEvent.on('update', async(page, user) => {
-      const { activityService, inAppNotificationService } = this.crowi;
+      const { inAppNotificationService } = this.crowi;
 
       this.pageEvent.onUpdate();
 
       try {
-        const savedActivity = await activityService.createByPageUpdate(page, user);
+        const savedActivity = await this.createByPageUpdate(page, user);
         let targetUsers = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
 
@@ -763,6 +765,26 @@ class PageService {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
     }
   }
+
+  /**
+   * @param {Page} page
+   * @param {User} user
+   * @return {Promise}
+   */
+  createByPageUpdate = async function(page, user) {
+    const { activityService } = this.crowi;
+
+    const parameters = {
+      user: user._id,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: page,
+      action: ActivityDefine.ACTION_UPDATE,
+    };
+
+    const savedActivity = await activityService.createByParameters(parameters);
+    return savedActivity;
+  };
+
 
 }
 

@@ -1,14 +1,11 @@
 import {
   Types, Document, Model, Schema /* , Query */,
 } from 'mongoose';
-import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
-import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
-import { ActivityDocument } from './activity';
 
 const logger = loggerFactory('growi:models:inAppNotification');
-const mongoose = require('mongoose');
 
 export const STATUS_UNREAD = 'UNREAD';
 export const STATUS_UNOPENED = 'UNOPENED';
@@ -28,13 +25,9 @@ export interface InAppNotificationDocument extends Document {
 
 export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
-
-  // commented out type 'Query' temporary to avoid ts error
-  removeEmpty()/* : Query<any> */
-  read(user) /* : Promise<Query<any>> */
-
-  open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
+  open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
+  read(user) /* : Promise<Query<any>> */
 
   STATUS_UNREAD: string
   STATUS_UNOPENED: string
@@ -82,12 +75,6 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   },
 });
 
-// TODO: move this virtual property getter to the service layer if necessary 77893
-// inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-//   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-//   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-// });
-
 const transform = (doc, ret) => {
   // delete ret.activities
 };
@@ -108,31 +95,6 @@ inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(us
     .populate(['user', 'target'])
     .populate({ path: 'activities', populate: { path: 'user' } })
     .exec();
-};
-
-inAppNotificationSchema.statics.removeEmpty = function() {
-  return InAppNotification.deleteMany({ activities: { $size: 0 } });
-};
-
-inAppNotificationSchema.statics.read = async function(user) {
-  const query = { user, status: STATUS_UNREAD };
-  const parameters = { status: STATUS_UNOPENED };
-
-  return InAppNotification.updateMany(query, parameters);
-};
-
-inAppNotificationSchema.statics.getUnreadCountByUser = async function(user) {
-  const query = { user, status: STATUS_UNREAD };
-
-  try {
-    const count = await InAppNotification.countDocuments(query);
-
-    return count;
-  }
-  catch (err) {
-    logger.error('Error on getUnreadCountByUser', err);
-    throw err;
-  }
 };
 
 inAppNotificationSchema.statics.STATUS_UNOPENED = function() {

@@ -1,4 +1,3 @@
-import { DeleteWriteOpResultObject } from 'mongodb';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -9,11 +8,9 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import Subscription from './subscription';
-// import { InAppNotification } from './in-app-notification';
 
 const logger = loggerFactory('growi:models:activity');
 
-const mongoose = require('mongoose');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
@@ -28,16 +25,7 @@ export interface ActivityDocument extends Document {
   getNotificationTargetUsers(): Promise<any[]>
 }
 
-export interface ActivityModel extends Model<ActivityDocument> {
-  createByParameters(parameters: any): Promise<ActivityDocument>
-  removeByParameters(parameters: any): any
-  createByPageComment(comment: any): Promise<ActivityDocument>
-  createByPageLike(page: any, user: any): Promise<ActivityDocument>
-  removeByPageUnlike(page: any, user: any): Promise<DeleteWriteOpResultObject['result']>
-  removeByPage(page: any): Promise<DeleteWriteOpResultObject['result']>
-  findByUser(user: any): Promise<ActivityDocument[]>
-  getActionUsersFromActivities(activities: ActivityDocument[]): any[]
-}
+export type ActivityModel = Model<ActivityDocument>
 
 module.exports = function(crowi: Crowi) {
   const activityEvent = crowi.event('activity');
@@ -83,99 +71,6 @@ module.exports = function(crowi: Crowi) {
     user: 1, target: 1, action: 1, createdAt: 1,
   }, { unique: true });
 
-  /**
-     * @param {object} parameters
-     * @return {Promise}
-     */
-  activitySchema.statics.createByParameters = function(parameters) {
-    return this.create(parameters);
-  };
-
-  /**
-     * @param {object} parameters
-     */
-  activitySchema.statics.removeByParameters = async function(parameters) {
-    const activity = await this.findOne(parameters);
-    activityEvent.emit('remove', activity);
-
-    return this.deleteMany(parameters).exec();
-  };
-
-  /**
-     * @param {Comment} comment
-     * @return {Promise}
-     */
-  activitySchema.statics.createByPageComment = function(comment) {
-    const parameters = {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
-    };
-
-    return this.createByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.createByPageLike = function(page, user) {
-    const parameters = {
-      user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_LIKE,
-    };
-
-    return this.createByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.removeByPageUnlike = function(page, user) {
-    const parameters = {
-      user,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_LIKE,
-    };
-
-    return this.removeByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     *
-     * @return {Promise}
-     */
-  activitySchema.statics.removeByPage = async function(page) {
-    // const activityEvent = new ActivityEvent();
-    const activities = await this.find({ target: page });
-    for (const activity of activities) {
-      // TODO: implement removeActivity when page deleted by GW-7481
-      // activityEvent.emit('remove', activity);
-    }
-    return this.deleteMany({ target: page }).exec();
-  };
-
-  /**
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.findByUser = function(user) {
-    return this.find({ user }).sort({ createdAt: -1 }).exec();
-  };
-
-  activitySchema.statics.getActionUsersFromActivities = function(activities) {
-    return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
-  };
 
   activitySchema.methods.getNotificationTargetUsers = async function() {
     const User = getModelSafely('User') || require('~/server/models/user')();
