@@ -27,7 +27,6 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
 
   open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
-  getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
 
   STATUS_UNREAD: string
   STATUS_UNOPENED: string

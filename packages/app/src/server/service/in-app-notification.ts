@@ -70,6 +70,8 @@ export default class InAppNotificationService {
     return;
   }
 
+  // ======================= ↓移動 ============================================
+
   // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
   //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
   //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
@@ -83,7 +85,7 @@ export default class InAppNotificationService {
     return;
   };
 
-  getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number> {
+  getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
     const query = { user, status: STATUS_UNREAD };
 
     try {
