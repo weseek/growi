@@ -512,6 +512,32 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /page/subscribe/status:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: get subscribe status
+   *        operationId: getSubscribeStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get subscribe status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
   router.get('/subscribe/status', loginRequired, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     const userId = req.user._id;
