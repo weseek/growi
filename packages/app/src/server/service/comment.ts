@@ -32,13 +32,16 @@ class CommentService {
   initCommentEventListeners(): void {
     // create
     this.commentEvent.on('create', async(savedComment) => {
+      const { activityService } = this.crowi;
+      console.log('activityServiceHoge', activityService);
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-        const savedActivity = await Activity.createByPageComment(savedComment);
+
+        // const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+        const savedActivity = await activityService.createByPageComment(savedComment);
 
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();

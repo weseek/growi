@@ -79,12 +79,6 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   },
 });
 
-// TODO: move this virtual property getter to the service layer if necessary by #78284
-// inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-//   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-//   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-// });
-
 const transform = (doc, ret) => {
   // delete ret.activities
 };
