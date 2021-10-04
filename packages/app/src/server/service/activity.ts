@@ -37,6 +37,8 @@ class ActivityService {
     return savedActivity;
   };
 
+  // ================================↓移動==========================
+
   /**
      * @param {object} parameters
      * @return {Promise}
