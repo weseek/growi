@@ -150,7 +150,19 @@ module.exports = (crowi) => {
     return next();
   };
 
-  async function handleCommands(body, res, client, growiCommand) {
+  function getRespondUtil(responseUrl) {
+    const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
+
+    const appSiteUrl = crowi.appService.getSiteUrl();
+    if (appSiteUrl == null || appSiteUrl === '') {
+      // TODO: use new error handling method
+      logger.error('App site url must exist.');
+    }
+
+    return generateRespondUtil(responseUrl, proxyUri, appSiteUrl);
+  }
+
+  async function handleCommands(body, res, client, growiCommand, respondUtil) {
     const { text } = growiCommand;
 
     if (text == null) {
@@ -171,8 +183,6 @@ module.exports = (crowi) => {
       logger.error('App site url must exist.');
       await handleError(new Error('App site url must exist.'), growiCommand.responseUrl);
     }
-
-    const respondUtil = generateRespondUtil(growiCommand.responseUrl, proxyUri, appSiteUrl);
 
     try {
       await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
@@ -209,12 +219,15 @@ module.exports = (crowi) => {
       logger.error(err.message);
       return;
     }
+
+    const respondUtil = getRespondUtil(growiCommand.responseUrl);
+
     try {
       const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
-      return handleCommands(body, res, client);
+      return handleCommands(body, res, client, growiCommand, respondUtil);
     }
     catch (err) {
-      await respond(growiCommand.responseUrl, {
+      await respondUtil.respond({
         text: 'Internal Server Error',
         blocks: [
           markdownSectionBlock(`*Internal Server Error*\n \`${err.message}\``),
@@ -250,12 +263,14 @@ module.exports = (crowi) => {
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const respondUtil = getRespondUtil(growiCommand.responseUrl);
+
     try {
       const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-      return handleCommands(body, res, client, growiCommand);
+      return handleCommands(body, res, client, growiCommand, respondUtil);
     }
     catch (err) {
-      await respond(growiCommand.responseUrl, {
+      await respondUtil.respond({
         text: 'Internal Server Error',
         blocks: [
           markdownSectionBlock(`*Internal Server Error*\n \`${err.message}\``),
