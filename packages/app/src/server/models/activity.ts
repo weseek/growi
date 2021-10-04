@@ -8,7 +8,6 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import Subscription from './subscription';
-// import { InAppNotification } from './in-app-notification';
 
 const logger = loggerFactory('growi:models:activity');
 
@@ -26,13 +25,7 @@ export interface ActivityDocument extends Document {
   getNotificationTargetUsers(): Promise<any[]>
 }
 
-export interface ActivityModel extends Model<ActivityDocument> {
-  createByParameters(parameters: any): Promise<ActivityDocument>
-  createByPageComment(comment: any): Promise<ActivityDocument>
-  createByPageLike(page: any, user: any): Promise<ActivityDocument>
-  findByUser(user: any): Promise<ActivityDocument[]>
-  getActionUsersFromActivities(activities: ActivityDocument[]): any[]
-}
+export type ActivityModel = Model<ActivityDocument>
 
 module.exports = function(crowi: Crowi) {
   const activityEvent = crowi.event('activity');
@@ -78,58 +71,6 @@ module.exports = function(crowi: Crowi) {
     user: 1, target: 1, action: 1, createdAt: 1,
   }, { unique: true });
 
-  /**
-     * @param {object} parameters
-     * @return {Promise}
-     */
-  activitySchema.statics.createByParameters = function(parameters) {
-    return this.create(parameters);
-  };
-
-  /**
-     * @param {Comment} comment
-     * @return {Promise}
-     */
-  activitySchema.statics.createByPageComment = function(comment) {
-    const parameters = {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
-    };
-
-    return this.createByParameters(parameters);
-  };
-
-  /**
-     * @param {Page} page
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.createByPageLike = function(page, user) {
-    const parameters = {
-      user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_LIKE,
-    };
-
-    return this.createByParameters(parameters);
-  };
-
-  /**
-     * @param {User} user
-     * @return {Promise}
-     */
-  activitySchema.statics.findByUser = function(user) {
-    return this.find({ user }).sort({ createdAt: -1 }).exec();
-  };
-
-  activitySchema.statics.getActionUsersFromActivities = function(activities) {
-    return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
-  };
 
   activitySchema.methods.getNotificationTargetUsers = async function() {
     const User = getModelSafely('User') || require('~/server/models/user')();
