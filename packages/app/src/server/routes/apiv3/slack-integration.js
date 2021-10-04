@@ -183,20 +183,6 @@ module.exports = (crowi) => {
 
   }
 
-  async function getSlackAppIntegration(tokenPtoG) {
-    crowi.slackIntegrationService.isCheckTypeValid();
-
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-
-    if (slackAppIntegration == null) {
-      throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
-    }
-
-    return slackAppIntegration;
-  }
-
   function getGrowiCommand(body) {
     let { growiCommand } = body;
     if (growiCommand == null) {
@@ -255,8 +241,7 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     try {
-      const slackAppIntegration = await getSlackAppIntegration(tokenPtoG);
-      const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
+      const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
       return handleCommands(body, res, client, growiCommand);
     }
     catch (err) {
@@ -322,11 +307,8 @@ module.exports = (crowi) => {
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await getSlackAppIntegration(tokenPtoG);
-    const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
-
-    const { tokenGtoP } = slackAppIntegration;
-    return handleInteractionsRequest(req, res, client, tokenGtoP);
+    const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
+    return handleInteractionsRequest(req, res, client);
   });
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {

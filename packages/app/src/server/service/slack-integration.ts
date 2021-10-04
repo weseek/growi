@@ -148,6 +148,19 @@ export class SlackIntegrationService implements S2sMessageHandlable {
    * generate WebClient instance by tokenPtoG
    * @param tokenPtoG
    */
+  async generateClientByTokenPtoG(tokenPtoG: string): Promise<WebClient> {
+    this.isCheckTypeValid();
+
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+    if (slackAppIntegration == null) {
+      throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
+    }
+
+    return this.generateClientBySlackAppIntegration(slackAppIntegration as unknown as { tokenGtoP: string; });
+  }
 
   /**
    * generate WebClient instance by tokenPtoG
