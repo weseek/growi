@@ -12,7 +12,7 @@ import PageManagement from '../Page/PageManagement';
 
 const SubnavButtons = (props) => {
   const {
-    appContainer, navigationContainer, pageContainer, isCompactMode, pageId,
+    appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
 
   /* eslint-enable react/prop-types */
@@ -23,7 +23,7 @@ const SubnavButtons = (props) => {
     return (
       <>
         <span>
-          <SubscribeButton pageId={pageId} />
+          <SubscribeButton pageId={pageContainer.state.pageId} />
         </span>
         {pageContainer.isAbleToShowLikeButton && (
           <span>
@@ -66,7 +66,6 @@ SubnavButtons.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
-  pageId: PropTypes.string,
 };
 
 export default SubnavButtonsWrapper;
