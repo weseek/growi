@@ -55,12 +55,12 @@ export default class PageContainer extends Container {
       sumOfBookmarks: 0,
 
       seenUsers: [],
-      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
-      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
+      seenUserIds: [],
+      countOfSeenUsers: [],
 
       isLiked: false,
       likers: [],
-      likerIds: mainContent.getAttribute('data-page-ids-of-likers'),
+      likerIds: [],
       sumOfLikers: 0,
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
