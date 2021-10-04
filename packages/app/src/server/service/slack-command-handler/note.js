@@ -38,7 +38,7 @@ module.exports = (crowi) => {
           text: 'Cancel',
         },
         blocks: [
-          markdownSectionBlock('Take a new note on GROWI'),
+          markdownSectionBlock('Take a note on GROWI'),
           inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
           inputSectionBlock('path', 'Page path', 'path_input', false, '/path'),
           inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
