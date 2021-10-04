@@ -8,7 +8,7 @@ export const supportedSlackCommands: string[] = [
 
 export const supportedGrowiCommands: string[] = [
   'search',
-  'create',
+  'note',
   'keep',
   'help',
 ];
@@ -18,7 +18,7 @@ export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
 ];
 
 export const defaultSupportedCommandsNameForSingleUse: string[] = [
-  'create',
+  'note',
   'keep',
 ];
 

@@ -87,7 +87,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
       permissionsForSingleUseCommands: {
         bar: true,
-        create: false,
+        note: false,
         keep: false,
       },
     });
@@ -101,7 +101,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
       permissionsForSingleUseCommands: {
         bar: true,
-        create: false,
+        note: false,
         keep: false,
       },
     });
@@ -113,7 +113,7 @@ describe('migrate-slack-app-integration-schema', () => {
         search: true,
       },
       permissionsForSingleUseCommands: {
-        create: true,
+        note: true,
         keep: true,
       },
     });

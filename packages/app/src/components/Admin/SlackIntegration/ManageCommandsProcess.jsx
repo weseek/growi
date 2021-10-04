@@ -72,7 +72,7 @@ const ManageCommandsProcess = ({
     search: permissionsForBroadcastUseCommands.search,
   });
   const [permissionsForSingleUseCommandsState, setPermissionsForSingleUseCommandsState] = useState({
-    create: permissionsForSingleUseCommands.create,
+    note: permissionsForSingleUseCommands.note,
     keep: permissionsForSingleUseCommands.keep,
   });
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
