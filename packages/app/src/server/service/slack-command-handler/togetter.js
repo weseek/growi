@@ -186,6 +186,7 @@ module.exports = (crowi) => {
 
   handler.togetterMessageBlocks = function() {
     return [
+      markdownSectionBlock('*The togetter command is in alpha.*'),
       markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
       inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),
       inputBlock(this.plainTextInputElementWithInitialTime('newest'), 'newest', 'Newest datetime'),
