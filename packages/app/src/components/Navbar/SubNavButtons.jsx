@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';
 import LikeButton from '../LikeButton';
-import WatchButton from '../WatchButton';
+import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
 const SubnavButtons = (props) => {
@@ -23,7 +23,7 @@ const SubnavButtons = (props) => {
     return (
       <>
         <span>
-          <WatchButton />
+          <SubscribeButton pageId={pageContainer.state.pageId} />
         </span>
         {pageContainer.isAbleToShowLikeButton && (
           <span>

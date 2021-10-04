@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -160,6 +161,10 @@ module.exports = (crowi) => {
     exist: [
       query('fromPath').isString(),
       query('toPath').isString(),
+    ],
+    subscribe: [
+      body('pageId').isString(),
+      body('status').isBoolean(),
     ],
   };
 
@@ -462,6 +467,46 @@ module.exports = (crowi) => {
   //   const dummy = 6;
   //   return res.apiv3({ dummy });
   // });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      put:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Update subscribe status
+   *        operationId: updateSubscribeStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update subscribe status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.body;
+    const userId = req.user._id;
+    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
+    try {
+      const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+      return res.apiv3({ subscription });
+    }
+    catch (err) {
+      logger.error('Failed to update subscribe status', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   return router;
 };
