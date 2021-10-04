@@ -122,7 +122,7 @@ module.exports = (crowi) => {
               markdownSectionBlock(message),
               {
                 type: 'image',
-                image_url: 'https://user-images.githubusercontent.com/1638767/135658794-a8d2dbc8-580f-4203-b368-e74e2f3c7b3a.png',
+                image_url: 'https://user-images.githubusercontent.com/1638767/135834548-2f6b8ce6-30a7-4d47-9fdc-a58ddd692b7e.png',
                 alt_text: 'Add app to this channel',
               },
             ],
