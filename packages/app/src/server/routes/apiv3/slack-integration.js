@@ -12,7 +12,7 @@ const {
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
+const { handleError } = require('../../service/slack-command-handler/error-handler');
 const { checkPermission } = require('../../util/slack-integration');
 
 module.exports = (crowi) => {
@@ -178,7 +178,7 @@ module.exports = (crowi) => {
       await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
     }
     catch (err) {
-      await respondIfSlackbotError(client, body, err);
+      await handleError(err, growiCommand.responseUrl);
     }
 
   }
@@ -285,20 +285,10 @@ module.exports = (crowi) => {
     try {
       switch (type) {
         case 'block_actions':
-          try {
-            await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
-          }
-          catch (err) {
-            await respondIfSlackbotError(client, req.body, err);
-          }
+          await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           break;
         case 'view_submission':
-          try {
-            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
-          }
-          catch (err) {
-            await respondIfSlackbotError(client, req.body, err);
-          }
+          await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           break;
         default:
           break;
@@ -306,8 +296,8 @@ module.exports = (crowi) => {
     }
     catch (error) {
       logger.error(error);
+      await handleError(error, interactionPayloadAccessor.getResponseUrl());
     }
-
   }
 
   router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
