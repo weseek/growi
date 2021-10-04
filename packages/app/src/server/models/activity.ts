@@ -182,10 +182,10 @@ module.exports = function(crowi: Crowi) {
     const { user: actionUser, targetModel, target } = this;
 
     const model: any = await this.model(targetModel).findById(target);
-    const [targetUsers, watchUsers, ignoreUsers] = await Promise.all([
+    const [targetUsers, subscribeUsers, unsubscribeUsers] = await Promise.all([
       model.getNotificationTargetUsers(),
-      Subscription.getWatchers((target as any) as Types.ObjectId),
-      Subscription.getUnwatchers((target as any) as Types.ObjectId),
+      Subscription.getSubscription((target as any) as Types.ObjectId),
+      Subscription.getUnsubscription((target as any) as Types.ObjectId),
     ]);
 
     const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
@@ -193,7 +193,7 @@ module.exports = function(crowi: Crowi) {
       const ids = pull.map(object => object.toString());
       return array.filter(object => !ids.includes(object.toString()));
     };
-    const notificationUsers = filter(unique([...targetUsers, ...watchUsers]), [...ignoreUsers, actionUser]);
+    const notificationUsers = filter(unique([...targetUsers, ...subscribeUsers]), [...unsubscribeUsers, actionUser]);
     const activeNotificationUsers = await User.find({
       _id: { $in: notificationUsers },
       status: User.STATUS_ACTIVE,
