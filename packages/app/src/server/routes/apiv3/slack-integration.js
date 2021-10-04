@@ -151,7 +151,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  async function getRespondUtil(responseUrl) {
+  function getRespondUtil(responseUrl) {
     const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
 
     const appSiteUrl = crowi.appService.getSiteUrl();
@@ -193,7 +193,7 @@ module.exports = (crowi) => {
     let respondUtil;
     try {
       growiCommand = getGrowiCommand(body);
-      respondUtil = await getRespondUtil(responseUrl);
+      respondUtil = getRespondUtil(responseUrl);
     }
     catch (err) {
       logger.error(err.message);
