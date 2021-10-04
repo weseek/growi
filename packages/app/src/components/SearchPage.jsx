@@ -98,7 +98,6 @@ class SearchPage extends React.Component {
     return (
       <div>
         <SearchResult
-          search={this.search}
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}

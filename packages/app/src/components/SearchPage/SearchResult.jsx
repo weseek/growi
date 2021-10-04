@@ -317,7 +317,6 @@ SearchResult.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
-  search: PropTypes.func,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
   searchError: PropTypes.object,
