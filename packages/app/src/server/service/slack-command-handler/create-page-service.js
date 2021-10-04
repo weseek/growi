@@ -1,7 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import {
-  respondFromGrowi,
-} from './response-url';
 
 const logger = loggerFactory('growi:service:CreatePageService');
 const { reshapeContentsBody, respond, markdownSectionBlock } = require('@growi/slack');
@@ -11,13 +8,11 @@ const SlackbotError = require('../../models/vo/slackbot-error');
 
 class CreatePageService {
 
-  constructor(crowi, proxyUri, tokenGtoP) {
+  constructor(crowi) {
     this.crowi = crowi;
-    this.proxyUri = proxyUri;
-    this.tokenGtoP = tokenGtoP;
   }
 
-  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody) {
+  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil) {
     const Page = this.crowi.model('Page');
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
     try {
@@ -31,7 +26,7 @@ class CreatePageService {
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
-      return respondFromGrowi(interactionPayloadAccessor.getResponseUrl(), this.proxyUri, this.tokenGtoP, {
+      return respondUtil.respond({
         text: 'Page has been created',
         blocks: [
           markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`),
