@@ -4,9 +4,6 @@ import Page from '../PageList/Page';
 
 class SearchResultListView extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return this.props.pages.map((page) => {
