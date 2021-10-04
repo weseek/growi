@@ -57,6 +57,7 @@ class OptionsSelector extends React.Component {
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
     this.confirmEnableTextlintHandler = this.confirmEnableTextlintHandler.bind(this);
+    this.toggleTextlint = this.toggleTextlint.bind(this);
     this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
@@ -128,29 +129,29 @@ class OptionsSelector extends React.Component {
     }
   }
 
-  async toggleTextlint() {
+  toggleTextlint() {
     const { editorContainer } = this.props;
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
-    console.log('state', this.state.isSkipAskingAgainChecked);
     if (this.state.isSkipAskingAgainChecked) {
-      await this.updateIsTextlintEnabledToDB(newVal);
+      this.updateIsTextlintEnabledToDB(newVal);
     }
   }
 
-  async switchTextlintEnabledHandler() {
+  switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
     if (editorContainer.state.isTextlintEnabled === null) {
       this.setState({ isDownloadDictModalShown: true });
       return;
     }
-    await this.toggleTextlint();
+    this.toggleTextlint();
   }
 
-  async confirmEnableTextlintHandler(isSkipAskingAgainChecked) {
-    console.log(isSkipAskingAgainChecked);
-    this.setState({ isDownloadDictModalShown: false, isSkipAskingAgainChecked });
-    await this.toggleTextlint();
+  confirmEnableTextlintHandler(isSkipAskingAgainChecked) {
+    this.setState(
+      { isSkipAskingAgainChecked, isDownloadDictModalShown: false },
+      () => this.toggleTextlint(),
+    );
   }
 
   onToggleConfigurationDropdown(newValue) {
