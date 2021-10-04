@@ -28,8 +28,9 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
   getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  STATUS_SUBSCRIBE(): string
-  STATUS_UNSUBSCRIBE(): string
+
+  STATUS_SUBSCRIBE: string
+  STATUS_UNSUBSCRIB: string
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
