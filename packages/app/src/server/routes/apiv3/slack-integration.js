@@ -163,29 +163,6 @@ module.exports = (crowi) => {
     return generateRespondUtil(responseUrl, proxyUri, appSiteUrl);
   }
 
-  async function handleCommands(body, res, client, growiCommand, respondUtil) {
-    const { text } = growiCommand;
-
-    if (text == null) {
-      return 'No text.';
-    }
-
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.json({
-      response_type: 'ephemeral',
-      text: 'Processing your request ...',
-    });
-
-    try {
-      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
-    }
-    catch (err) {
-      await handleError(err, growiCommand.responseUrl);
-    }
-
-  }
-
   function getGrowiCommand(body) {
     let { growiCommand } = body;
     if (growiCommand == null) {
@@ -211,6 +188,40 @@ module.exports = (crowi) => {
     return growiCommand;
   }
 
+  async function handleCommands(body, res, client, responseUrl) {
+    let growiCommand;
+    let respondUtil;
+    try {
+      growiCommand = getGrowiCommand(body);
+      respondUtil = await getRespondUtil(responseUrl);
+    }
+    catch (err) {
+      logger.error(err.message);
+      return handleError(err, responseUrl);
+    }
+
+    const { text } = growiCommand;
+
+    if (text == null) {
+      return 'No text.';
+    }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.json({
+      response_type: 'ephemeral',
+      text: 'Processing your request ...',
+    });
+
+    try {
+      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
+    }
+    catch (err) {
+      return handleError(err, responseUrl);
+    }
+
+  }
+
   // this method will be a middleware when typescriptize in the future
   // this method must return responseUrl
   function getResponseUrl(req) {
@@ -226,12 +237,8 @@ module.exports = (crowi) => {
     const { body } = req;
     const responseUrl = getResponseUrl(req);
 
-    let growiCommand;
-    let respondUtil;
     let client;
     try {
-      growiCommand = getGrowiCommand(body);
-      respondUtil = await getRespondUtil(growiCommand.responseUrl);
       client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     }
     catch (err) {
@@ -239,21 +246,12 @@ module.exports = (crowi) => {
       return handleError(err, responseUrl);
     }
 
-    return handleCommands(body, res, client, growiCommand, respondUtil);
+    return handleCommands(body, res, client, responseUrl);
   });
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
     const { body } = req;
     const responseUrl = getResponseUrl(req);
-
-    let growiCommand;
-    try {
-      growiCommand = getGrowiCommand(body);
-    }
-    catch (err) {
-      logger.error(err.message);
-      return handleError(err, responseUrl);
-    }
 
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
@@ -263,17 +261,15 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    let respondUtil;
     let client;
     try {
-      respondUtil = await getRespondUtil(responseUrl);
       client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
     }
     catch (err) {
       return handleError(err, responseUrl);
     }
 
-    return handleCommands(body, res, client, growiCommand, respondUtil);
+    return handleCommands(body, res, client, responseUrl);
   });
 
   async function handleInteractionsRequest(req, res, client) {
@@ -284,17 +280,10 @@ module.exports = (crowi) => {
 
     const { interactionPayload, interactionPayloadAccessor } = req;
     const { type } = interactionPayload;
-    const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
-
-    const appSiteUrl = crowi.appService.getSiteUrl();
-    if (appSiteUrl == null || appSiteUrl === '') {
-      logger.error('App site url must exist.');
-      await handleError(new Error('App site url must exist.'), interactionPayloadAccessor.getResponseUrl());
-    }
-
-    const respondUtil = generateRespondUtil(interactionPayloadAccessor.getResponseUrl(), proxyUri, appSiteUrl);
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     try {
+      const respondUtil = getRespondUtil(responseUrl);
       switch (type) {
         case 'block_actions':
           await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
@@ -306,9 +295,9 @@ module.exports = (crowi) => {
           break;
       }
     }
-    catch (error) {
-      logger.error(error);
-      await handleError(error, interactionPayloadAccessor.getResponseUrl());
+    catch (err) {
+      logger.error(err);
+      return handleError(err, responseUrl);
     }
   }
 
