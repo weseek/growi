@@ -468,6 +468,26 @@ module.exports = (crowi) => {
   //   return res.apiv3({ dummy });
   // });
 
+  router.get('/subscribe/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { pageId } = req.query;
+    const userId = req.user._id;
+    try {
+      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
+      const getDefaultStatus = async() => {
+        const page = await Page.findById(pageId);
+        if (!page) throw new Error('Page not found');
+        const targetUsers = await page.getNotificationTargetUsers();
+        return targetUsers.some(user => user.toString() === userId.toString());
+      };
+      const subscribing = subscription ? subscription.isSubscribing() : await getDefaultStatus();
+      return res.apiv3({ subscribing });
+    }
+    catch (err) {
+      logger.error('Failed to ge subscribe status', err);
+      return res.apiv3(err, 500);
+    }
+  });
+
   /**
    * @swagger
    *
