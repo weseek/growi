@@ -1,6 +1,5 @@
 import Crowi from '../crowi';
 
-import ActivityDefine from '../util/activityDefine';
 import { getModelSafely } from '../util/mongoose-utils';
 
 
@@ -18,22 +17,6 @@ class ActivityService {
     this.activityEvent = crowi.event('activity');
   }
 
-  /**
-   * @param {Page} page
-   * @param {User} user
-   * @return {Promise}
-   */
-  createByPageUpdate = async function(page, user) {
-    const parameters = {
-      user: user._id,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
-      action: ActivityDefine.ACTION_UPDATE,
-    };
-
-    const savedActivity = await this.createByParameters(parameters);
-    return savedActivity;
-  };
 
   /**
      * @param {object} parameters
