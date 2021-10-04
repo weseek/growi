@@ -70,8 +70,6 @@ export default class InAppNotificationService {
     return;
   }
 
-  // ======================= ↓移動 ============================================
-
   // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
   //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
   //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
