@@ -110,7 +110,7 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubnavButtons isCompactMode={isCompactMode} />
+            <SubnavButtons isCompactMode={isCompactMode} pageId={pageId} />
           </div>
           <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (

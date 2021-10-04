@@ -20,7 +20,7 @@
   }
 }
 
-.btn.btn-watch {
+.btn.btn-subscribe {
   @include button-outline-variant($secondary, $success, rgba(lighten($success, 10%), 0.15), rgba(lighten($success, 10%), 0.5));
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
