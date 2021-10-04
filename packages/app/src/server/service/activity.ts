@@ -77,31 +77,6 @@ class ActivityService {
     return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
   };
 
-  // getNotificationTargetUsers = async function() {
-  //   const User = getModelSafely('User') || require('~/server/models/user')();
-  //   const { user: actionUser, targetModel, target } = this;
-
-  //   const model: any = await this.model(targetModel).findById(target);
-  //   const [targetUsers, watchUsers, ignoreUsers] = await Promise.all([
-  //     model.getNotificationTargetUsers(),
-  //     Subscription.getWatchers((target as any) as Types.ObjectId),
-  //     Subscription.getUnwatchers((target as any) as Types.ObjectId),
-  //   ]);
-
-  //   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
-  //   const filter = (array, pull) => {
-  //     const ids = pull.map(object => object.toString());
-  //     return array.filter(object => !ids.includes(object.toString()));
-  //   };
-  //   const notificationUsers = filter(unique([...targetUsers, ...watchUsers]), [...ignoreUsers, actionUser]);
-  //   const activeNotificationUsers = await User.find({
-  //     _id: { $in: notificationUsers },
-  //     status: User.STATUS_ACTIVE,
-  //   }).distinct('_id');
-  //   return activeNotificationUsers;
-  // };
-
-
 }
 
 module.exports = ActivityService;
