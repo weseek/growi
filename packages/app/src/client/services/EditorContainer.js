@@ -206,6 +206,10 @@ export default class EditorContainer extends Container {
    * Retrieve Editor Settings
    */
   async retrieveEditorSettings() {
+    if (this.appContainer.isGuestUser) {
+      return;
+    }
+
     const { data } = await this.appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings == null) {
