@@ -1,6 +1,6 @@
 const { markdownSectionBlock, respond } = require('@growi/slack');
 
-module.exports = (crowi, proxyUri, tokenGtoP) => {
+module.exports = () => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
