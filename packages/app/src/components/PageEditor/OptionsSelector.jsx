@@ -390,13 +390,13 @@ class OptionsSelector extends React.Component {
           <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
         </div>
 
-        {/* {!this.state.isSkipAskingAgainChecked && ( */}
-        <DownloadDictModal
-          isModalOpen={this.state.isDownloadDictModalShown}
-          onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
-          onCancel={() => this.setState({ isDownloadDictModalShown: false })}
-        />
-        {/* )} */}
+        {!this.state.isSkipAskingAgainChecked && (
+          <DownloadDictModal
+            isModalOpen={this.state.isDownloadDictModalShown}
+            onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
+            onCancel={() => this.setState({ isDownloadDictModalShown: false })}
+          />
+        )}
       </>
     );
   }
