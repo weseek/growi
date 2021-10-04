@@ -258,6 +258,7 @@ export class GrowiToSlackCtrl {
     @QueryParams('response_url') responseUrl: string, @Req() req: RespondReqFromGrowi, @Res() res: WebclientRes,
   ): Promise<WebclientRes> {
 
+    // get growi url from header
     const growiUri = req.headers['x-growi-app-site-url'];
 
     if (growiUri == null) {
