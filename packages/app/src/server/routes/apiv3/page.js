@@ -471,7 +471,6 @@ module.exports = (crowi) => {
   //   return res.apiv3({ dummy });
   // });
 
-
   /**
    * @swagger
    *
@@ -557,7 +556,6 @@ module.exports = (crowi) => {
       return res.apiv3(err, 500);
     }
   });
-
 
   return router;
 };
