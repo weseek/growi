@@ -11,6 +11,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
 class LikeButtons extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -39,7 +40,8 @@ class LikeButtons extends React.Component {
 
     try {
       pageContainer.toggleLike();
-    } catch (err) {
+    }
+    catch (err) {
       toastError(err);
     }
   }
@@ -52,7 +54,7 @@ class LikeButtons extends React.Component {
     } = pageContainer;
 
     return (
-      <div>
+      <div className="btn-group" role="group" aria-label="Like buttons">
         <button
           type="button"
           id="like-button"
@@ -81,6 +83,7 @@ class LikeButtons extends React.Component {
       </div>
     );
   }
+
 }
 
 /**
