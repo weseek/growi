@@ -27,6 +27,7 @@ export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-command';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
+export * from './interfaces/response-url';
 export * from './interfaces/slackbot-types';
 export * from './interfaces/response-url';
 export * from './interfaces/respond-util';
