@@ -44,22 +44,6 @@ class ActivityService {
     return Activity.create(parameters);
   };
 
-  /**
-   * @param {Comment} comment
-   * @return {Promise}
-   */
-  createByPageComment = function(comment) {
-    const parameters = {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
-    };
-
-    return this.createByParameters(parameters);
-  };
 
   /**
    * @param {User} user
