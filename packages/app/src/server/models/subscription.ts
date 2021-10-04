@@ -5,8 +5,8 @@ import {
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-const STATUS_SUBSCRIBE = 'SUBSCRIBE';
-const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';
+export const STATUS_SUBSCRIBE = 'SUBSCRIBE';
+export const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';
 const STATUSES = [STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE];
 
 export interface ISubscription {
@@ -28,9 +28,6 @@ export interface SubscriptionModel extends Model<SubscriptionDocument> {
   subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
   getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
-
-  STATUS_SUBSCRIBE: string
-  STATUS_UNSUBSCRIB: string
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -89,14 +86,6 @@ subscriptionSchema.statics.getSubscription = async function(target) {
 
 subscriptionSchema.statics.getUnsubscription = async function(target) {
   return this.find({ target, status: STATUS_UNSUBSCRIBE }).distinct('user');
-};
-
-subscriptionSchema.statics.STATUS_SUBSCRIBE = function() {
-  return STATUS_SUBSCRIBE;
-};
-
-subscriptionSchema.statics.STATUS_UNSUBSCRIBE = function() {
-  return STATUS_UNSUBSCRIBE;
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

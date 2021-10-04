@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
-import Subscription from '~/server/models/subscription';
+import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -497,7 +497,8 @@ module.exports = (crowi) => {
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.body;
     const userId = req.user._id;
-    const status = req.body.status ? Subscription.STATUS_SUBSCRIBE() : Subscription.STATUS_UNSUBSCRIBE();
+    console.log(Subscription, STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE);
+    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
       return res.apiv3({ subscription });
