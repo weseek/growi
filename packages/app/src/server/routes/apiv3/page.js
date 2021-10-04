@@ -166,6 +166,9 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('status').isBoolean(),
     ],
+    subscribeStatus: [
+      query('pageId').isString(),
+    ],
   };
 
   /**
@@ -468,7 +471,7 @@ module.exports = (crowi) => {
   //   return res.apiv3({ dummy });
   // });
 
-  router.get('/subscribe/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/subscribe/status', loginRequired, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     const userId = req.user._id;
     try {
