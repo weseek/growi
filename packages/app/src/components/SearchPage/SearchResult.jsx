@@ -4,9 +4,7 @@ import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
 
-import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
-import SearchPageForm from './SearchPageForm';
 import SearchResultListView from './SearchResultListView';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
@@ -17,7 +15,6 @@ class SearchResult extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchingKeyword: decodeURI(this.props.searchingKeyword) || '',
       deletionMode: false,
       selectedPages: new Set(),
       isDeleteCompletely: undefined,
@@ -265,12 +262,7 @@ class SearchResult extends React.Component {
           <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
             <nav>
               <div className="search-page-input sps sps--abv">
-                <SearchPageForm
-                  t={this.props.t}
-                  keyword={this.state.searchingKeyword}
-                  appContainer={this.props.appContainer}
-                  onSearchFormChanged={this.props.search}
-                />
+                {this.props.children}
               </div>
             </nav>
             <div className="d-flex align-items-start justify-content-between mt-1">
@@ -330,6 +322,7 @@ SearchResult.propTypes = {
   searchResultMeta: PropTypes.object.isRequired,
   searchError: PropTypes.object,
   tree: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 SearchResult.defaultProps = {
   searchError: null,

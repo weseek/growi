@@ -9,6 +9,7 @@ import AppContainer from '~/client/services/AppContainer';
 
 import { toastError } from '~/client/util/apiNotification';
 import SearchResult from './SearchPage/SearchResult';
+import SearchPageForm from './SearchPage/SearchPageForm';
 
 class SearchPage extends React.Component {
 
@@ -101,7 +102,14 @@ class SearchPage extends React.Component {
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
-        />
+        >
+          <SearchPageForm
+            t={this.props.t}
+            keyword={this.state.searchingKeyword}
+            appContainer={this.props.appContainer}
+            onSearchFormChanged={this.search}
+          />
+        </SearchResult>
       </div>
     );
   }
