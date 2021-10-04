@@ -155,8 +155,8 @@ module.exports = (crowi) => {
 
     const appSiteUrl = crowi.appService.getSiteUrl();
     if (appSiteUrl == null || appSiteUrl === '') {
-      // TODO: use new error handling method
       logger.error('App site url must exist.');
+      await handleError(new Error('App site url must exist.'), responseUrl);
     }
 
     return generateRespondUtil(responseUrl, proxyUri, appSiteUrl);
@@ -175,14 +175,6 @@ module.exports = (crowi) => {
       response_type: 'ephemeral',
       text: 'Processing your request ...',
     });
-
-    const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
-
-    const appSiteUrl = crowi.appService.getSiteUrl();
-    if (appSiteUrl == null || appSiteUrl === '') {
-      logger.error('App site url must exist.');
-      await handleError(new Error('App site url must exist.'), growiCommand.responseUrl);
-    }
 
     try {
       await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
