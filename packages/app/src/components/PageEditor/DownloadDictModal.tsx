@@ -11,14 +11,24 @@ type DownloadDictModalProps = {
   onCancel?: () => void;
 };
 
-export const DownloadDictModal: FC<DownloadDictModalProps> = ({
-  isModalOpen, onConfirmEnableTextlint, onCancel,
-}) => {
+export const DownloadDictModal: FC<DownloadDictModalProps> = (props) => {
   const { t } = useTranslation('');
   const [isSkipAskingAgainChecked, setIsSkipAskingAgainChecked] = useState(true);
 
+  const onCancel = () => {
+    if (props.onCancel != null) {
+      props.onCancel();
+    }
+  };
+
+  const onConfirmEnableTextlint = () => {
+    if (props.onConfirmEnableTextlint != null) {
+      props.onConfirmEnableTextlint(isSkipAskingAgainChecked);
+    }
+  };
+
   return (
-    <Modal isOpen={isModalOpen} toggle={onCancel} className="">
+    <Modal isOpen={props.isModalOpen} toggle={onCancel} className="">
       <ModalHeader tag="h4" toggle={onCancel} className="bg-warning">
         <i className="icon-fw icon-question" />
         Warning
@@ -42,20 +52,14 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = ({
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={() => {
-            if (onCancel != null) { onCancel() }
-          }}
+          onClick={onCancel}
         >
           {t('Cancel')}
         </button>
         <button
           type="button"
           className="btn btn-outline-primary ml-3"
-          onClick={() => {
-            if (onConfirmEnableTextlint != null) {
-              onConfirmEnableTextlint(isSkipAskingAgainChecked);
-            }
-          }}
+          onClick={onConfirmEnableTextlint}
         >
           {t('modal_enable_textlint.enable_textlint')}
         </button>
