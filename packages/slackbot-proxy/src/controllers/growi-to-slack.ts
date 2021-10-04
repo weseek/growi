@@ -23,10 +23,17 @@ import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
 import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
-import { AddAppSiteUrlToReq, RespondReqFromGrowi } from '~/middlewares/growi-to-slack/add-app-site-url-to-req';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
+
+export type RespondReqFromGrowi = Req & BlockKitRequest & {
+  // appended by GROWI
+  headers:{ 'x-growi-app-site-url'?: string },
+
+  // will be extracted from header
+  appSiteUrl: string,
+}
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -247,12 +254,17 @@ export class GrowiToSlackCtrl {
   }
 
   @Post('/respond')
-  @UseBefore(AddAppSiteUrlToReq)
   async respondUsingResponseUrl(
     @QueryParams('response_url') responseUrl: string, @Req() req: RespondReqFromGrowi, @Res() res: WebclientRes,
   ): Promise<WebclientRes> {
 
-    const { appSiteUrl: growiUri } = req;
+    // get growi url from header
+    const growiUri = req.headers['x-growi-app-site-url'];
+
+    if (growiUri == null) {
+      logger.error('Request to this endpoint requires the x-growi-app-site-url header.');
+      return res.status(400).send('Failed to respond.');
+    }
 
     try {
       this.injectGrowiUri(req, growiUri);
