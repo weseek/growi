@@ -88,7 +88,7 @@ describe('migrate-slack-app-integration-schema', () => {
       permissionsForSingleUseCommands: {
         bar: true,
         create: false,
-        togetter: false,
+        keep: false,
       },
     });
     expect(fixedDoc2).toStrictEqual({
@@ -102,7 +102,7 @@ describe('migrate-slack-app-integration-schema', () => {
       permissionsForSingleUseCommands: {
         bar: true,
         create: false,
-        togetter: false,
+        keep: false,
       },
     });
     expect(fixedDoc3).toStrictEqual({
@@ -114,7 +114,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
       permissionsForSingleUseCommands: {
         create: true,
-        togetter: true,
+        keep: true,
       },
     });
   });

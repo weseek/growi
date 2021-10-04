@@ -7,7 +7,7 @@ export const getHelpCommandBody = (): any => {
   message += 'Commands:\n\n';
   message += '`/growi create`                          Create new page\n\n';
   message += '`/growi search [keyword]`       Search pages\n\n';
-  message += '`/growi togetter`                      Create new page with existing slack conversations (Alpha)\n\n';
+  message += '`/growi keep`                      Create new page with existing slack conversations (Alpha)\n\n';
 
   return {
     text: 'Help',

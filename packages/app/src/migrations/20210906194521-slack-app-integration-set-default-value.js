@@ -14,11 +14,11 @@ module.exports = {
     // Add columns + set all default commands if supportedCommandsForBroadcastUse column does not exist
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
-    // Add togetter command if supportedCommandsForBroadcastUse already exists
+    // Add keep command if supportedCommandsForBroadcastUse already exists
     const slackAppIntegrations = await SlackAppIntegration.find();
     slackAppIntegrations.forEach(async(doc) => {
-      if (doc.supportedCommandsForSingleUse != null && !doc.supportedCommandsForSingleUse.includes('togetter')) {
-        doc.supportedCommandsForSingleUse.push('togetter');
+      if (doc.supportedCommandsForSingleUse != null && !doc.supportedCommandsForSingleUse.includes('keep')) {
+        doc.supportedCommandsForSingleUse.push('keep');
       }
       await doc.save();
     });

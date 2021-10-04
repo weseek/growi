@@ -9,7 +9,7 @@ export const supportedSlackCommands: string[] = [
 export const supportedGrowiCommands: string[] = [
   'search',
   'create',
-  'togetter',
+  'keep',
   'help',
 ];
 
@@ -19,7 +19,7 @@ export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
 
 export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'create',
-  'togetter',
+  'keep',
 ];
 
 export * from './interfaces/growi-command-processor';

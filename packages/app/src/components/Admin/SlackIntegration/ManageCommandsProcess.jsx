@@ -73,7 +73,7 @@ const ManageCommandsProcess = ({
   });
   const [permissionsForSingleUseCommandsState, setPermissionsForSingleUseCommandsState] = useState({
     create: permissionsForSingleUseCommands.create,
-    togetter: permissionsForSingleUseCommands.togetter,
+    keep: permissionsForSingleUseCommands.keep,
   });
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
     const initialState = {};
