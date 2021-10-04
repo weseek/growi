@@ -497,7 +497,6 @@ module.exports = (crowi) => {
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.body;
     const userId = req.user._id;
-    console.log(Subscription, STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE);
     const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
