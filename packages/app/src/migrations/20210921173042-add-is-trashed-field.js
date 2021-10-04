@@ -11,19 +11,11 @@ const LIMIT = 1000;
 /**
  * set isPageTrashed of pagetagrelations included in updateIdList as true
  */
-const setIsPageTrashedToPageTagRelationInList = async(db, updateIdList) => {
-  const OPERATION_MESSAGE_SUBJECT = `Migration of ${updateIdList.length} deleted page operations`;
-  try {
-    await db.collection('pagetagrelations').updateMany(
-      { relatedPage: { $in: updateIdList } },
-      { $set: { isPageTrashed: true } },
-    );
-    logger.info(`${OPERATION_MESSAGE_SUBJECT} has successfully applied`);
-  }
-  catch (err) {
-    logger.error(err);
-    logger.info(`${OPERATION_MESSAGE_SUBJECT} has failed`);
-  }
+const updateIsPageTrashed = async(db, updateIdList) => {
+  await db.collection('pagetagrelations').updateMany(
+    { relatedPage: { $in: updateIdList } },
+    { $set: { isPageTrashed: true } },
+  );
 };
 
 module.exports = {
@@ -43,15 +35,17 @@ module.exports = {
       updateDeletedPageIds.push(deletedPage._id);
       // excute updateMany by one thousand ids
       if (updateDeletedPageIds.length === LIMIT) {
-        await setIsPageTrashedToPageTagRelationInList(db, updateDeletedPageIds);
+        await updateIsPageTrashed(db, updateDeletedPageIds);
         updateDeletedPageIds = [];
       }
     }
 
     // use ids that have not been updated
     if (updateDeletedPageIds.length > 0) {
-      await setIsPageTrashedToPageTagRelationInList(db, updateDeletedPageIds);
+      await updateIsPageTrashed(db, updateDeletedPageIds);
     }
+
+    logger.info('Migration has successfully applied');
 
   },
 
