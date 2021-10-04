@@ -209,8 +209,18 @@ module.exports = (crowi) => {
       logger.error(err.message);
       return;
     }
-    const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
-    return handleCommands(body, res, client);
+    try {
+      const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
+      return handleCommands(body, res, client);
+    }
+    catch (err) {
+      await respond(growiCommand.responseUrl, {
+        text: 'Internal Server Error',
+        blocks: [
+          markdownSectionBlock(`*Internal Server Error*\n \`${err.message}\``),
+        ],
+      });
+    }
   });
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
