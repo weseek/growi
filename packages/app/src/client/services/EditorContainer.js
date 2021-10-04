@@ -206,7 +206,7 @@ export default class EditorContainer extends Container {
    * Retrieve Editor Settings
    */
   async retrieveEditorSettings() {
-    if (this.appContainer.isGuestUser === true) {
+    if (this.appContainer.isGuestUser) {
       return;
     }
 
