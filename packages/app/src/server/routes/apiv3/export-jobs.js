@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:export-job');
@@ -46,8 +47,14 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequired, csrf, async(req, res) => {
     // TODO: WIP
+    const { format, pageId } = req.body;
+
+    const Page = mongoose.model('Page');
+
+    // get max 100 pages
+    const pages = await Page.findListWithDesendants();
+
     try {
-      const { format, pageId } = req.body;
       return res.apiv3();
     }
     catch (err) {
