@@ -150,7 +150,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  function getRespondUtil(responseUrl) {
+  async function getRespondUtil(responseUrl) {
     const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
 
     const appSiteUrl = crowi.appService.getSiteUrl();
@@ -212,7 +212,7 @@ module.exports = (crowi) => {
       return;
     }
 
-    const respondUtil = getRespondUtil(growiCommand.responseUrl);
+    const respondUtil = await getRespondUtil(growiCommand.responseUrl);
 
     try {
       const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
@@ -255,7 +255,7 @@ module.exports = (crowi) => {
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const respondUtil = getRespondUtil(growiCommand.responseUrl);
+    const respondUtil = await getRespondUtil(growiCommand.responseUrl);
 
     try {
       const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
