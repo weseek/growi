@@ -51,12 +51,13 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
+
       isBookmarked: false,
       sumOfBookmarks: 0,
 
       seenUsers: [],
       seenUserIds: [],
-      countOfSeenUsers: [],
+      sumOfSeenUsers: [],
 
       isLiked: false,
       likers: [],
@@ -120,9 +121,10 @@ export default class PageContainer extends Container {
     const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
-      this.retrieveSeenUsers();
-      this.retrieveLikeInfo();
-      this.retrieveLikers();
+      // We don't retrieve bookmarks in the initial page load
+      // as it is stored in a separate collection to like and seen user
+      // data so it has a separate api endpoint.
+      this.initialPageLoad();
       this.retrieveBookmarkInfo();
     }
 
@@ -268,55 +270,54 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async retrieveSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
 
-    this.setState({ seenUsers: users });
-    this.checkAndUpdateImageUrlCached(users);
-  }
+  async initialPageLoad() {
+    {
+      const {
+        data: {
+          likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
+        },
+      } = await this.appContainer.apiv3Get('/page/info', { _id: this.state.pageId });
 
-  async retrieveLikers() {
-    console.log({ l: this.state.likerIds });
-    let likers = [];
-    if (this.state.likerIds !== '') {
-      const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.likerIds });
-      console.log({ users });
-      likers = users;
+      await this.setState({
+        sumOfLikers,
+        isLiked,
+        likerIds,
+        seenUserIds,
+        sumOfSeenUsers,
+        isSeen,
+      });
     }
-    console.log({ likers });
 
-    this.setState({ likers });
-    this.checkAndUpdateImageUrlCached(likers);
-  }
-
-  async retrieveLikeInfo() {
-    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
-    const { sumOfLikers, isLiked } = res.data;
-
-    this.setState({
-      sumOfLikers,
-      isLiked,
-    });
+    await this.retrieveLikersAndSeenUsers();
   }
 
   async toggleLike() {
     {
-      const bool = !this.state.isLiked;
-      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
-      this.setState({ isLiked: bool });
+      const toggledIsLiked = !this.state.isLiked;
+      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
 
-      if (bool) {
-        this.setState({
-          likerIds: [...this.state.likerIds.split(',').filter(id => id !== ''), this.appContainer.currentUserId].join(','),
-        });
-      }
-      else {
-        this.setState({ likerIds: this.state.likerIds.split(',').filter(id => id !== '' && id !== this.appContainer.currentUserId).join(',') });
-      }
+      await this.setState(state => ({
+        isLiked: toggledIsLiked,
+        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
+        likerIds: toggledIsLiked
+          ? [...this.state.likerIds, this.appContainer.currentUserId]
+          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
+      }));
     }
 
-    await this.retrieveLikeInfo();
-    return this.retrieveLikers();
+    await this.retrieveLikersAndSeenUsers();
+  }
+
+  async retrieveLikersAndSeenUsers() {
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
+
+    await this.setState({
+      likers: users.filter(({ id }) => this.state.likerIds.includes(id)).slice(0, 15),
+      seenUsers: users.filter(({ id }) => this.state.seenUserIds.includes(id)).slice(0, 15),
+    });
+
+    this.checkAndUpdateImageUrlCached(users);
   }
 
   async retrieveBookmarkInfo() {

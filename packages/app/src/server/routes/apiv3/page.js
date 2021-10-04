@@ -112,17 +112,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          bool:
  *            type: boolean
  *            description: boolean for like status
- *
- *      LikeInfo:
- *        description: LikeInfo
- *        type: object
- *        properties:
- *          sumOfLikers:
- *            type: number
- *            description: how many people liked the page
- *          isLiked:
- *            type: boolean
- *            description: Whether the request user liked (will be returned if the user is included in the request)
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -140,9 +129,6 @@ module.exports = (crowi) => {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
-    ],
-    likeInfo: [
-      query('_id').isMongoId(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -222,50 +208,35 @@ module.exports = (crowi) => {
     }
   });
 
-  /**
-   * @swagger
-   *
-   *    /page/like-info:
-   *      get:
-   *        tags: [Page]
-   *        summary: /page/like-info
-   *        description: Get like info
-   *        operationId: getLikeInfo
-   *        parameters:
-   *          - name: _id
-   *            in: query
-   *            description: page id
-   *            schema:
-   *              type: string
-   *        responses:
-   *          200:
-   *            description: Succeeded to get bookmark info.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/LikeInfo'
-   */
-  router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
-    const pageId = req.query._id;
-
-    const responsesParams = {};
+  router.get(('/info', loginRequired), async(req, res) => {
 
     try {
+      const pageId = req.query._id;
       const page = await Page.findById(pageId);
-      responsesParams.sumOfLikers = page.liker.length;
 
-      // guest user return nothing
-      if (!req.user) {
-        return res.apiv3(responsesParams);
+      const guestUserResponse = {
+        sumOfLikers: page.liker.length,
+        likerIds: page.liker.slice(0, 15),
+        seenUserIds: page.seenUsers.slice(0, 15),
+        sumOfSeenUsers: page.seenUsers.length,
+        isSeen: page.seenUsers.length > 0,
+      };
+
+      {
+        const isGuestUser = !req.user;
+        if (isGuestUser) {
+          return res.apiv3(guestUserResponse);
+        }
       }
 
-      responsesParams.isLiked = page.liker.includes(req.user._id);
-      return res.apiv3(responsesParams);
+      const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
+      return res.apiv3(userResponse);
     }
     catch (err) {
-      logger.error('get-like-count-failed', err);
+      logger.error('get-page-info', err);
       return res.apiv3Err(err, 500);
     }
+
   });
 
   /**
