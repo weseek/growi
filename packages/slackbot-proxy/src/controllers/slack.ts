@@ -26,7 +26,6 @@ import {
 } from '~/middlewares/slack-to-growi/authorizer';
 import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
-import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
@@ -130,7 +129,7 @@ export class SlackCtrl {
 
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
@@ -211,8 +210,6 @@ export class SlackCtrl {
       ],
     });
 
-    const baseDate = new Date();
-
     const allowedRelationsForSingleUse:Relation[] = [];
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
@@ -220,13 +217,13 @@ export class SlackCtrl {
     // check permission
     await Promise.all(relations.map(async(relation) => {
       const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
-        relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+        relation, growiCommand.growiCommandType, body.channel_name,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
         isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
-          relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+          relation, growiCommand.growiCommandType, body.channel_name,
         );
       }
 
