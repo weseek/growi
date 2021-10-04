@@ -17,7 +17,7 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { appContainer, pageId } = props;
-  const [isWatching, setIsWatching] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -25,10 +25,10 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isWatching });
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
       if (res) {
         const { subscription } = res.data;
-        setIsWatching(subscription.status === 'WATCH');
+        setIsSubscribing(subscription.status === 'SUBSCRIBE');
       }
     }
     catch (err) {
@@ -42,9 +42,9 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-subscribe border-0 ${isWatching ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
+        className={`btn btn-subscribe border-0 ${isSubscribing ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={isWatching ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
+        <i className={isSubscribing ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
       </button>
 
       {appContainer.isGuestUser && (

@@ -5,9 +5,9 @@ import {
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-const STATUS_WATCH = 'WATCH';
-const STATUS_UNWATCH = 'UNWATCH';
-const STATUSES = [STATUS_WATCH, STATUS_UNWATCH];
+const STATUS_SUBSCRIBE = 'SUBSCRIBE';
+const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';
+const STATUSES = [STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE];
 
 export interface ISubscription {
   user: Types.ObjectId
@@ -16,20 +16,20 @@ export interface ISubscription {
   status: string
   createdAt: Date
 
-  isWatching(): boolean
-  isUnwatching(): boolean
+  isSubscribing(): boolean
+  isUnsubscribing(): boolean
 }
 
 export interface SubscriptionDocument extends ISubscription, Document {}
 
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
-  upsertWatcher(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
-  watchByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
-  getWatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  getUnwatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  STATUS_WATCH(): string
-  STATUS_UNWATCH(): string
+  upsertSubscription(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
+  subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
+  getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  STATUS_SUBSCRIBE(): string
+  STATUS_UNSUBSCRIBE(): string
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -57,19 +57,19 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   createdAt: { type: Date, default: Date.now },
 });
 
-subscriptionSchema.methods.isWatching = function() {
-  return this.status === STATUS_WATCH;
+subscriptionSchema.methods.isSubscribing = function() {
+  return this.status === STATUS_SUBSCRIBE;
 };
 
-subscriptionSchema.methods.isUnwatching = function() {
-  return this.status === STATUS_UNWATCH;
+subscriptionSchema.methods.isUnsubscribing = function() {
+  return this.status === STATUS_UNSUBSCRIBE;
 };
 
 subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
   return this.findOne({ user: userId, target: targetId });
 };
 
-subscriptionSchema.statics.upsertWatcher = function(user, targetModel, target, status) {
+subscriptionSchema.statics.upsertSubscription = function(user, targetModel, target, status) {
   const query = { user, targetModel, target };
   const doc = { ...query, status };
   const options = {
@@ -78,24 +78,24 @@ subscriptionSchema.statics.upsertWatcher = function(user, targetModel, target, s
   return this.findOneAndUpdate(query, doc, options);
 };
 
-subscriptionSchema.statics.watchByPageId = function(user, pageId, status) {
-  return this.upsertWatcher(user, 'Page', pageId, status);
+subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
+  return this.upsertSubscription(user, 'Page', pageId, status);
 };
 
-subscriptionSchema.statics.getWatchers = async function(target) {
-  return this.find({ target, status: STATUS_WATCH }).distinct('user');
+subscriptionSchema.statics.getSubscription = async function(target) {
+  return this.find({ target, status: STATUS_SUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.getUnwatchers = async function(target) {
-  return this.find({ target, status: STATUS_UNWATCH }).distinct('user');
+subscriptionSchema.statics.getUnsubscription = async function(target) {
+  return this.find({ target, status: STATUS_UNSUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.STATUS_WATCH = function() {
-  return STATUS_WATCH;
+subscriptionSchema.statics.STATUS_SUBSCRIBE = function() {
+  return STATUS_SUBSCRIBE;
 };
 
-subscriptionSchema.statics.STATUS_UNWATCH = function() {
-  return STATUS_UNWATCH;
+subscriptionSchema.statics.STATUS_UNSUBSCRIBE = function() {
+  return STATUS_UNSUBSCRIBE;
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);
