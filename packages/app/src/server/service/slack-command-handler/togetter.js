@@ -1,7 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import {
-  respondFromGrowi, deleteOriginalFromGrowi,
-} from './response-url';
 
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
@@ -10,29 +7,29 @@ const {
 const { parse, format } = require('date-fns');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
-module.exports = (crowi, proxyUri, tokenGtoP) => {
+module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
-  const createPageService = new CreatePageService(crowi, proxyUri, tokenGtoP);
+  const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(growiCommand, client, body) {
-    await respondFromGrowi(growiCommand.responseUrl, proxyUri, tokenGtoP, {
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+    await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
     });
     return;
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.cancel = async function(client, payload, interactionPayloadAccessor) {
-    await deleteOriginalFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP);
+  handler.cancel = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    await respondUtil.deleteOriginal();
   };
 
-  handler.createPage = async function(client, payload, interactionPayloadAccessor) {
+  handler.createPage = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const userChannelId = payload.user.id;
@@ -46,10 +43,10 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
 
       const contentsBody = cleanedContents.join('');
       // create and send url message
-      await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
+      await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody, respondUtil);
     }
     catch (err) {
-      logger.error('Error occured by togetter.');
+      logger.error('Error occured by togetter:', err);
       throw err;
     }
   };
@@ -155,9 +152,9 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
     return cleanedContents;
   };
 
-  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody) {
+  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody, respondUtil) {
     try {
-      await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+      await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
     }
     catch (err) {
       logger.error('Error occurred while creating a page.');
@@ -165,20 +162,22 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
     }
 
     try {
+      // TODO: contentsBody text must be less than 3001 characters
       // send preview to dm
-      const promise1 = client.chat.postMessage({
-        channel: userChannelId,
-        text: 'Preview from togetter command',
-        blocks: [
-          markdownSectionBlock('*Preview*'),
-          divider(),
-          markdownSectionBlock(contentsBody),
-          divider(),
-        ],
-      });
+      // const promise1 = client.chat.postMessage({
+      //   channel: userChannelId,
+      //   text: 'Preview from togetter command',
+      //   blocks: [
+      //     markdownSectionBlock('*Preview*'),
+      //     divider(),
+      //     markdownSectionBlock(contentsBody),
+      //     divider(),
+      //   ],
+      // });
+
       // dismiss
-      const promise2 = deleteOriginalFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP);
-      await Promise.all([promise1, promise2]);
+      const promise2 = respondUtil.deleteOriginal();
+      await Promise.all([promise2]);
     }
     catch (err) {
       logger.error('Error occurred while creating a page.', err);

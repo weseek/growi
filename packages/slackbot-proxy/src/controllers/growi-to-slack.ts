@@ -8,7 +8,7 @@ import { addHours } from 'date-fns';
 import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient, BlockKitRequest,
 } from '@growi/slack';
 
 import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
@@ -23,6 +23,7 @@ import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
 import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
+import { AddAppSiteUrlToReq, RespondReqFromGrowi } from '~/middlewares/growi-to-slack/add-app-site-url-to-req';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -217,7 +218,7 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: generatedRelation, slackBotToken: token });
   }
 
-  injectGrowiUri(req: GrowiReq, growiUri: string): void {
+  injectGrowiUri(req: BlockKitRequest, growiUri: string): void {
     if (req.body.view == null && req.body.blocks == null) {
       return;
     }
@@ -246,37 +247,20 @@ export class GrowiToSlackCtrl {
   }
 
   @Post('/respond')
-  @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
+  @UseBefore(AddAppSiteUrlToReq)
   async respondUsingResponseUrl(
-    @QueryParams('response_url') responseUrl: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
+    @QueryParams('response_url') responseUrl: string, @Req() req: RespondReqFromGrowi, @Res() res: WebclientRes,
   ): Promise<WebclientRes> {
-    const { tokenGtoPs } = req;
 
-    if (tokenGtoPs.length !== 1) {
-      return res.simulateWebAPIPlatformError('tokenGtoPs is invalid', 'invalid_tokenGtoP');
-    }
-
-    const tokenGtoP = tokenGtoPs[0];
-
-    const relation = await this.relationRepository.createQueryBuilder('relation')
-      .where('tokenGtoP = :token', { token: tokenGtoP })
-      .getOne();
-
-    if (relation == null) {
-      return res.simulateWebAPIPlatformError('relation is invalid', 'invalid_relation');
-    }
+    const { appSiteUrl: growiUri } = req;
 
     try {
-      this.injectGrowiUri(req, relation.growiUri);
+      this.injectGrowiUri(req, growiUri);
     }
     catch (err) {
       logger.error('Error occurred while injecting GROWI uri:\n', err);
 
-      if (err.code === ErrorCode.PlatformError) {
-        return res.simulateWebAPIPlatformError(err.message, err.data.error);
-      }
-
-      return res.simulateWebAPIRequestError(err.message, err.response?.status);
+      return res.status(400).send('Failed to respond.');
     }
 
     return axios.post(responseUrl, req.body);

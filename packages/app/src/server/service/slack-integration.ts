@@ -5,11 +5,8 @@ import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, respond, SlackbotType,
+  RespondUtil,
 } from '@growi/slack';
-
-import {
-  respondFromGrowi,
-} from './slack-command-handler/response-url';
 
 import loggerFactory from '~/utils/logger';
 
@@ -228,21 +225,21 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(growiCommand: GrowiCommand, client, body, proxyUri: string | null, tokenGtoP: string | null): Promise<void> {
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body, respondUtil: RespondUtil): Promise<void> {
     const { growiCommandType } = growiCommand;
     const module = `./slack-command-handler/${growiCommandType}`;
 
     let handler;
     try {
-      handler = require(module)(this.crowi, proxyUri, tokenGtoP);
+      handler = require(module)(this.crowi);
     }
     catch (err) {
       logger.error(err);
-      await this.notCommand(growiCommand, proxyUri, tokenGtoP);
+      await this.notCommand(respondUtil);
     }
 
     try {
-      await handler.handleCommand(growiCommand, client, body);
+      await handler.handleCommand(growiCommand, client, body, respondUtil);
     }
     catch (err) {
       logger.error(err);
@@ -251,15 +248,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   async handleBlockActionsRequest(
-      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, proxyUri: string | null, tokenGtoP: string | null,
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
   ): Promise<void> {
     const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
-      const handler = require(module)(this.crowi, proxyUri, tokenGtoP);
-      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+      const handler = require(module)(this.crowi);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
     }
     catch (err) {
       logger.error(err);
@@ -270,15 +267,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   async handleViewSubmissionRequest(
-      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, proxyUri: string | null, tokenGtoP: string | null,
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
   ): Promise<void> {
     const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
     const module = `./slack-command-handler/${commandName}`;
     try {
-      const handler = require(module)(this.crowi, proxyUri, tokenGtoP);
-      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+      const handler = require(module)(this.crowi);
+      await handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
     }
     catch (err) {
       logger.error(err);
@@ -288,9 +285,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return;
   }
 
-  async notCommand(growiCommand: GrowiCommand, proxyUri: string | null, tokenGtoP: string | null): Promise<void> {
+  async notCommand(respondUtil: RespondUtil): Promise<void> {
     logger.error('Invalid first argument');
-    await respondFromGrowi(growiCommand.responseUrl, proxyUri, tokenGtoP, {
+    await respondUtil.respond({
       text: 'No command',
       blocks: [
         markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),

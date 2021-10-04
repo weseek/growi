@@ -1,4 +1,4 @@
-import { markdownSectionBlock, InvalidGrowiCommandError } from '@growi/slack';
+import { markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil } from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 
 const express = require('express');
@@ -150,7 +150,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  async function handleCommands(body, res, client, growiCommand, tokenGtoP = null) {
+  async function handleCommands(body, res, client, growiCommand) {
     const { text } = growiCommand;
 
     if (text == null) {
@@ -166,8 +166,16 @@ module.exports = (crowi) => {
 
     const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
 
+    const appSiteUrl = crowi.appService.getSiteUrl();
+    if (appSiteUrl == null || appSiteUrl === '') {
+      // TODO: use new error handling method
+      logger.error('App site url must exist.');
+    }
+
+    const respondUtil = generateRespondUtil(growiCommand.responseUrl, proxyUri, appSiteUrl);
+
     try {
-      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, proxyUri, tokenGtoP);
+      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
     }
     catch (err) {
       await respondIfSlackbotError(client, body, err);
@@ -249,8 +257,7 @@ module.exports = (crowi) => {
     try {
       const slackAppIntegration = await getSlackAppIntegration(tokenPtoG);
       const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
-      const { tokenGtoP } = slackAppIntegration;
-      return handleCommands(body, res, client, growiCommand, tokenGtoP);
+      return handleCommands(body, res, client, growiCommand);
     }
     catch (err) {
       await respond(growiCommand.responseUrl, {
@@ -262,7 +269,7 @@ module.exports = (crowi) => {
     }
   });
 
-  async function handleInteractionsRequest(req, res, client, tokenGtoP = null) {
+  async function handleInteractionsRequest(req, res, client) {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -272,11 +279,19 @@ module.exports = (crowi) => {
     const { type } = interactionPayload;
     const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
 
+    const appSiteUrl = crowi.appService.getSiteUrl();
+    if (appSiteUrl == null || appSiteUrl === '') {
+      // TODO: use new error handling method
+      logger.error('App site url must exist.');
+    }
+
+    const respondUtil = generateRespondUtil(interactionPayloadAccessor.getResponseUrl(), proxyUri, appSiteUrl);
+
     try {
       switch (type) {
         case 'block_actions':
           try {
-            await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, proxyUri, tokenGtoP);
+            await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);
@@ -284,7 +299,7 @@ module.exports = (crowi) => {
           break;
         case 'view_submission':
           try {
-            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, proxyUri, tokenGtoP);
+            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);

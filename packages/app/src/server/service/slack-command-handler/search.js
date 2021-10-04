@@ -1,7 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import {
-  respondFromGrowi, respondInChannelFromGrowi, replaceOriginalFromGrowi, deleteOriginalFromGrowi,
-} from './response-url';
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
@@ -9,12 +6,11 @@ const {
   markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
-const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 7;
 
 
-module.exports = (crowi, proxyUri, tokenGtoP) => {
+module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
@@ -233,27 +229,26 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
   }
 
 
-  handler.handleCommand = async function(growiCommand, client, body) {
-    const { responseUrl, growiCommandArgs } = growiCommand;
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+    const { growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);
-    await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, respondBody);
+    await respondUtil.respond(respondBody);
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor) {
+  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     const { user } = payload;
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const appUrl = crowi.appService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
     const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
     if (value == null) {
-      await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to share the result.'),
@@ -270,7 +265,7 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
 
     // share
     const now = new Date();
-    return respondInChannelFromGrowi(responseUrl, proxyUri, tokenGtoP, {
+    return respondUtil.respondInChannel({
       blocks: [
         { type: 'divider' },
         markdownSectionBlock(`${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
@@ -289,12 +284,11 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
     });
   };
 
-  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true) {
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
+  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true, respondUtil) {
 
     const value = interactionPayloadAccessor.firstAction()?.value;
     if (value == null) {
-      await respondFromGrowi(responseUrl, proxyUri, tokenGtoP, {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to show the next results.'),
@@ -312,21 +306,19 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
-    await replaceOriginalFromGrowi(responseUrl, proxyUri, tokenGtoP, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+    await respondUtil.replaceOriginal(buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
-  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor) {
-    return showPrevOrNextResults(interactionPayloadAccessor, false);
+  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
   };
 
-  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
-    return showPrevOrNextResults(interactionPayloadAccessor, true);
+  handler.showNextResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
   };
 
-  handler.dismissSearchResults = async function(client, payload) {
-    const { response_url: responseUrl } = payload;
-
-    return deleteOriginalFromGrowi(responseUrl, proxyUri, tokenGtoP);
+  handler.dismissSearchResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return respondUtil.deleteOriginal();
   };
 
   return handler;

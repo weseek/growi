@@ -1,17 +1,14 @@
 import loggerFactory from '~/utils/logger';
-import {
-  respondFromGrowi,
-} from './response-url';
 
 const {
-  markdownSectionBlock, inputSectionBlock, respond, inputBlock,
+  markdownSectionBlock, inputSectionBlock, inputBlock,
 } = require('@growi/slack');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
 
-module.exports = (crowi, proxyUri, tokenGtoP) => {
+module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
-  const createPageService = new CreatePageService(crowi, proxyUri, tokenGtoP);
+  const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
   const conversationsSelectElement = {
@@ -21,7 +18,7 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
     default_to_current_conversation: true,
   };
 
-  handler.handleCommand = async(growiCommand, client, body) => {
+  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await client.views.open({
       trigger_id: body.trigger_id,
 
@@ -51,15 +48,15 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
     });
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor) {
+  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
     if (privateMetadata == null) {
-      await respondFromGrowi(interactionPayloadAccessor.getResponseUrl(), proxyUri, tokenGtoP, {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to create a page.'),
@@ -68,7 +65,7 @@ module.exports = (crowi, proxyUri, tokenGtoP) => {
       return;
     }
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
   };
 
   return handler;
