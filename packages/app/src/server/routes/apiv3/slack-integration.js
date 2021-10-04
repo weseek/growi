@@ -168,8 +168,8 @@ module.exports = (crowi) => {
 
     const appSiteUrl = crowi.appService.getSiteUrl();
     if (appSiteUrl == null || appSiteUrl === '') {
-      // TODO: use new error handling method
       logger.error('App site url must exist.');
+      await handleError(new Error('App site url must exist.'), growiCommand.responseUrl);
     }
 
     const respondUtil = generateRespondUtil(growiCommand.responseUrl, proxyUri, appSiteUrl);
@@ -276,8 +276,8 @@ module.exports = (crowi) => {
 
     const appSiteUrl = crowi.appService.getSiteUrl();
     if (appSiteUrl == null || appSiteUrl === '') {
-      // TODO: use new error handling method
       logger.error('App site url must exist.');
+      await handleError(new Error('App site url must exist.'), interactionPayloadAccessor.getResponseUrl());
     }
 
     const respondUtil = generateRespondUtil(interactionPayloadAccessor.getResponseUrl(), proxyUri, appSiteUrl);
