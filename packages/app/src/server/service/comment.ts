@@ -63,8 +63,6 @@ class CommentService {
     this.commentEvent.on('remove', async(comment) => {
       this.commentEvent.onRemove();
 
-      const { activityService } = this.crowi;
-
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(comment.page);
