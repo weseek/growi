@@ -8,8 +8,8 @@ export const supportedSlackCommands: string[] = [
 
 export const supportedGrowiCommands: string[] = [
   'search',
-  'create',
-  'togetter',
+  'note',
+  'keep',
   'help',
 ];
 
@@ -18,8 +18,8 @@ export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
 ];
 
 export const defaultSupportedCommandsNameForSingleUse: string[] = [
-  'create',
-  'togetter',
+  'note',
+  'keep',
 ];
 
 export * from './interfaces/growi-command-processor';

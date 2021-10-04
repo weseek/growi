@@ -4,7 +4,7 @@ const {
   markdownSectionBlock, inputSectionBlock, inputBlock,
 } = require('@growi/slack');
 
-const logger = loggerFactory('growi:service:SlackCommandHandler:create');
+const logger = loggerFactory('growi:service:SlackCommandHandler:note');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -24,10 +24,10 @@ module.exports = (crowi) => {
 
       view: {
         type: 'modal',
-        callback_id: 'create:createPage',
+        callback_id: 'note:createPage',
         title: {
           type: 'plain_text',
-          text: 'Create Page',
+          text: 'Take a note',
         },
         submit: {
           type: 'plain_text',
@@ -38,9 +38,9 @@ module.exports = (crowi) => {
           text: 'Cancel',
         },
         blocks: [
-          markdownSectionBlock('Create new page.'),
+          markdownSectionBlock('Take a note on GROWI'),
           inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
-          inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+          inputSectionBlock('path', 'Page path', 'path_input', false, '/path'),
           inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
         ],
         private_metadata: JSON.stringify({ channelId: body.channel_id, channelName: body.channel_name }),
