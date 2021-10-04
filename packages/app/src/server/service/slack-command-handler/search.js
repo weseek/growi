@@ -6,7 +6,6 @@ const {
   markdownSectionBlock, divider, respond, respondInChannel, replaceOriginal, deleteOriginal,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
-const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 7;
 
