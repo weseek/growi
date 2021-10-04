@@ -1,7 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 const {
-  markdownSectionBlock, inputSectionBlock, respond, inputBlock,
+  markdownSectionBlock, inputSectionBlock, inputBlock,
 } = require('@growi/slack');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
@@ -18,7 +18,7 @@ module.exports = (crowi) => {
     default_to_current_conversation: true,
   };
 
-  handler.handleCommand = async(growiCommand, client, body) => {
+  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await client.views.open({
       trigger_id: body.trigger_id,
 
@@ -48,15 +48,15 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor) {
+  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
     if (privateMetadata == null) {
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to create a page.'),
@@ -65,7 +65,7 @@ module.exports = (crowi) => {
       return;
     }
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
   };
 
   return handler;

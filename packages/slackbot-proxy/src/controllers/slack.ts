@@ -282,7 +282,7 @@ export class SlackCtrl {
     logger.debug('receive interaction', req.body);
 
     const {
-      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri,
     } = req;
 
     // pass
@@ -316,6 +316,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
+      .andWhere('relation.growiUri = :uri', { uri: growiUri })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 

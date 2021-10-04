@@ -2,11 +2,9 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider, respond,
-  deleteOriginal,
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
-const axios = require('axios');
 const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
@@ -15,25 +13,23 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(growiCommand, client, body) {
-    await respond(growiCommand.responseUrl, {
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+    await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
     });
     return;
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.cancel = async function(client, payload, interactionPayloadAccessor) {
-    await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
-      delete_original: true,
-    });
+  handler.cancel = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    await respondUtil.deleteOriginal();
   };
 
-  handler.createPage = async function(client, payload, interactionPayloadAccessor) {
+  handler.createPage = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const userChannelId = payload.user.id;
@@ -47,7 +43,7 @@ module.exports = (crowi) => {
 
     const contentsBody = cleanedContents.join('');
     // create and send url message
-    await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
+    await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody, respondUtil);
   };
 
   handler.togetterValidateForm = async function(client, payload, interactionPayloadAccessor) {
@@ -168,24 +164,24 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody) {
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody, respondUtil) {
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
 
+    // TODO: contentsBody text characters must be less than 3001
     // send preview to dm
-    await client.chat.postMessage({
-      channel: userChannelId,
-      text: 'Preview from togetter command',
-      blocks: [
-        markdownSectionBlock('*Preview*'),
-        divider(),
-        markdownSectionBlock(contentsBody),
-        divider(),
-      ],
-    });
+    // await client.chat.postMessage({
+    //   channel: userChannelId,
+    //   text: 'Preview from togetter command',
+    //   blocks: [
+    //     markdownSectionBlock('*Preview*'),
+    //     divider(),
+    //     markdownSectionBlock(contentsBody),
+    //     divider(),
+    //   ],
+    // });
+
     // dismiss
-    await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
-      delete_original: true,
-    });
+    await respondUtil.deleteOriginal();
   };
 
   handler.togetterMessageBlocks = function() {

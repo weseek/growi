@@ -5,6 +5,7 @@ import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+  RespondUtil,
 } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
@@ -238,7 +239,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(growiCommand: GrowiCommand, client, body): Promise<void> {
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body, respondUtil: RespondUtil): Promise<void> {
     const { growiCommandType } = growiCommand;
     const module = `./slack-command-handler/${growiCommandType}`;
 
@@ -259,10 +260,12 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
 
     // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
-    return handler.handleCommand(growiCommand, client, body);
+    return handler.handleCommand(growiCommand, client, body, respondUtil);
   }
 
-  async handleBlockActionsRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+  async handleBlockActionsRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
+  ): Promise<void> {
     const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
@@ -278,10 +281,12 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
 
     // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
-    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
   }
 
-  async handleViewSubmissionRequest(client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor): Promise<void> {
+  async handleViewSubmissionRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
+  ): Promise<void> {
     const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
@@ -297,7 +302,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
 
     // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
-    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName);
+    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
   }
 
 }
