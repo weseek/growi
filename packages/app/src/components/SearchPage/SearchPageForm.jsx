@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import SearchForm from '../SearchForm';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:searchPageForm');
 
 // Search.SearchForm
 class SearchPageForm extends React.Component {
@@ -21,9 +24,14 @@ class SearchPageForm extends React.Component {
   }
 
   search() {
-    const keyword = this.state.keyword;
-    this.props.onSearchFormChanged({ keyword });
-    this.setState({ searchedKeyword: keyword });
+    if (this.props.onSearchFormChanged == null) {
+      const keyword = this.state.keyword;
+      this.props.onSearchFormChanged({ keyword });
+      this.setState({ searchedKeyword: keyword });
+    }
+    else {
+      throw new Error('onSearchFormChanged method is null');
+    }
   }
 
   onInputChange(input) { // for only submitting with button
@@ -42,7 +50,19 @@ class SearchPageForm extends React.Component {
           />
         </div>
         <div className="input-group-append">
-          <button className="btn btn-secondary" type="button" id="button-addon2" onClick={this.search}>
+          <button
+            className="btn btn-secondary"
+            type="button"
+            id="button-addon2"
+            onClick={() => {
+              try {
+                this.search();
+              }
+              catch (error) {
+                logger.error(error);
+              }
+            }}
+          >
             <i className="icon-magnifier"></i>
           </button>
         </div>

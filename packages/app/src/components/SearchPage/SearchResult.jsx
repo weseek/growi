@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import SearchPageForm from './SearchPageForm';
+import SearchResultListView from './SearchResultListView';
 import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -26,6 +27,7 @@ class SearchResult extends React.Component {
     this.toggleDeleteCompletely = this.toggleDeleteCompletely.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
   isNotSearchedYet() {
@@ -181,46 +183,6 @@ class SearchResult extends React.Component {
     });
   }
 
-  renderListView(pages) {
-    return pages.map((page) => {
-      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-      const pageId = `#id_${page._id}`;
-      return (
-        <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
-          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId}>
-            <div className="form-check my-auto">
-              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
-            </div>
-            {/* TODO: remove dummy snippet and adjust style */}
-            <div className="d-block">
-              <Page page={page} noLink />
-              <div className="border-gray mt-5">{page.snippet}</div>
-            </div>
-            <div className="ml-auto d-flex">
-              { this.state.deletionMode
-                && (
-                  <div className="custom-control custom-checkbox custom-checkbox-danger">
-                    <input
-                      type="checkbox"
-                      id={`page-delete-check-${page._id}`}
-                      className="custom-control-input search-result-list-delete-checkbox"
-                      value={pageId}
-                      checked={this.state.selectedPages.has(page)}
-                      onChange={() => { return this.toggleCheckbox(page) }}
-                    />
-                    <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
-                  </div>
-                )
-              }
-              <div className="page-list-option">
-                <button type="button" className="btn btn-link p-0" value={page.path} onClick={this.visitPageButtonHandler}><i className="icon-login" /></button>
-              </div>
-            </div>
-          </a>
-        </li>
-      );
-    });
-  }
 
   render() {
     const { t } = this.props;
@@ -292,7 +254,6 @@ class SearchResult extends React.Component {
       );
     }
 
-    const listView = this.renderListView(this.props.pages);
 
     /*
     UI あとで考える
@@ -323,7 +284,15 @@ class SearchResult extends React.Component {
             </div>
 
             <div className="page-list">
-              <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
+              <ul className="page-list-ul page-list-ul-flat nav nav-pills">
+                <SearchResultListView
+                  pages={this.props.pages}
+                  deletionMode={this.state.deletionMode}
+                  selectedPages={this.state.selectedPages}
+                  handleChange={this.toggleCheckbox}
+                >
+                </SearchResultListView>
+              </ul>
             </div>
           </div>
           <div className="col-lg-6 search-result-content" id="search-result-content">
@@ -356,7 +325,7 @@ SearchResult.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
-  search: PropTypes.func.isRequired,
+  search: PropTypes.func,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
   searchError: PropTypes.object,
