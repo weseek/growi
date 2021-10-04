@@ -25,7 +25,7 @@ class CreatePageService {
 
     // Send a message when page creation is complete
     const growiUri = this.crowi.appService.getSiteUrl();
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    await respondUtil.respond({
       text: 'Page has been created',
       blocks: [
         markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`),
