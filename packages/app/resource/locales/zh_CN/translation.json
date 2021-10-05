@@ -595,7 +595,10 @@
       "enable_local": "Enable ID/Password",
       "password_reset_by_users": "用户重置密码",
       "enable_password_reset_by_users": "启用用户重置密码",
-      "password_reset_desc": "忘记密码时，用户可以自行重置"
+      "password_reset_desc": "忘记密码时，用户可以自行重置",
+      "email_authentication": "电子邮件认证",
+      "enable_email_authentication": "启用电子邮件身份验证",
+      "enable_email_authentication_desc": "ID/Password 认证机制的设置，请先启用 SMTP。"
 		},
 		"ldap": {
 			"enable_ldap": "Enable LDAP",

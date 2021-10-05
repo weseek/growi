@@ -381,6 +381,7 @@ module.exports = (crowi) => {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
         isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
+        isEmailAuthenticationEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
       },
       generalAuth: {
         isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
@@ -749,6 +750,7 @@ module.exports = (crowi) => {
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
       'security:passport-local:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
+      'security:passport-local:isEmailAuthenticationEnabled': req.body.isEmailAuthenticationEnabled,
     };
     try {
       await updateAndReloadStrategySettings('local', requestParams);
@@ -757,6 +759,7 @@ module.exports = (crowi) => {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
         isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
+        isEmailAuthenticationEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
       };
       return res.apiv3({ localSettingParams });
     }

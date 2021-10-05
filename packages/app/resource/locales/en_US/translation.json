@@ -607,7 +607,10 @@
       "enable_local": "Enable ID/Password",
       "password_reset_by_users": "Password reset by users",
       "enable_password_reset_by_users": "Enable password reset by users",
-      "password_reset_desc": "when forgot password, users are able to reset it by themselves."
+      "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
+      "email_authentication": "Email authentication",
+      "enable_email_authentication": "Enable email authentication",
+      "enable_email_authentication_desc": "Settings for authentication mechanism of ID/Password, please enable SMTP first."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
