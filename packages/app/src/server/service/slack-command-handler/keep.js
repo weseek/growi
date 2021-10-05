@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
     await respondUtil.respond({
       text: 'Select messages to use.',
-      blocks: this.keepMessageBlocks(),
+      blocks: this.keepMessageBlocks(body.channel_name),
     });
     return;
   };
@@ -184,44 +184,45 @@ module.exports = (crowi) => {
     await respondUtil.deleteOriginal();
   };
 
-  handler.keepMessageBlocks = function() {
+  handler.keepMessageBlocks = function(channelName) {
+    const tzDateSec = new Date().getTime();
+    const grwTzoffset = crowi.appService.getTzoffset() * 60 * 1000;
+
+    const now = tzDateSec - grwTzoffset;
+    const oldest = now - 60 * 60 * 1000;
+    const newest = now;
+
+    const initialOldest = format(oldest, 'yyyy/MM/dd-HH:mm');
+    const initialNewest = format(newest, 'yyyy/MM/dd-HH:mm');
+    const initialPagePath = `/slack/keep/${channelName}/${format(oldest, 'yyyyMMdd-HH:mm')} - ${format(newest, 'yyyyMMdd-HH:mm')}`;
+
     return [
       markdownSectionBlock('*The keep command is in alpha.*'),
       markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
-      inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),
-      inputBlock(this.plainTextInputElementWithInitialTime('newest'), 'newest', 'Newest datetime'),
-      inputBlock(this.keepInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
+      inputBlock({
+        type: 'plain_text_input',
+        action_id: 'oldest',
+        initial_value: initialOldest,
+      }, 'oldest', 'Oldest datetime'),
+      inputBlock({
+        type: 'plain_text_input',
+        action_id: 'newest',
+        initial_value: initialNewest,
+      }, 'newest', 'Newest datetime'),
+      inputBlock({
+        type: 'plain_text_input',
+        placeholder: {
+          type: 'plain_text',
+          text: 'Input page path to create.',
+        },
+        initial_value: initialPagePath,
+        action_id: 'page_path',
+      }, 'page_path', 'Page path'),
       actionsBlock(
         buttonElement({ text: 'Cancel', actionId: 'keep:cancel' }),
         buttonElement({ text: 'Create page', actionId: 'keep:createPage', style: 'primary' }),
       ),
     ];
-  };
-
-  /**
-   * Plain-text input element
-   * https://api.slack.com/reference/block-kit/block-elements#input
-   */
-  handler.keepInputBlockElement = function(actionId, placeholderText = 'Write something ...') {
-    return {
-      type: 'plain_text_input',
-      placeholder: {
-        type: 'plain_text',
-        text: placeholderText,
-      },
-      action_id: actionId,
-    };
-  };
-
-  handler.plainTextInputElementWithInitialTime = function(actionId) {
-    const tzDateSec = new Date().getTime();
-    const grwTzoffset = crowi.appService.getTzoffset() * 60 * 1000;
-    const initialDateTime = format(new Date(tzDateSec - grwTzoffset), 'yyyy/MM/dd-HH:mm');
-    return {
-      type: 'plain_text_input',
-      action_id: actionId,
-      initial_value: initialDateTime,
-    };
   };
 
   return handler;
