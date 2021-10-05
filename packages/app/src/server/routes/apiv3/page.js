@@ -171,8 +171,7 @@ module.exports = (crowi) => {
     ],
   };
 
-  const getDefaultSubscriptionStatus = async(pageId, userId) => {
-    console.log(pageId, userId);
+  const getDefaultSubscriptionStatus = async(userId, pageId) => {
     const page = await Page.findById(pageId);
     if (!page) throw new Error('Page not found');
     const targetUsers = await page.getNotificationTargetUsers();
@@ -550,7 +549,7 @@ module.exports = (crowi) => {
     const userId = req.user._id;
     try {
       const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
-      const subscribing = subscription ? subscription.isSubscribing() : await getDefaultSubscriptionStatus();
+      const subscribing = subscription ? subscription.isSubscribing() : await getDefaultSubscriptionStatus(userId, pageId);
       return res.apiv3({ subscribing });
     }
     catch (err) {
