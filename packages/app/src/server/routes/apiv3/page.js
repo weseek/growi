@@ -485,8 +485,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [Page]
    *        summary: /page/subscribe
-   *        description: Update subscribe status
-   *        operationId: updateSubscribeStatus
+   *        description: Update subscription status
+   *        operationId: updateSubscriptionStatus
    *        requestBody:
    *          content:
    *            application/json:
@@ -496,7 +496,7 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
-   *            description: Succeeded to update subscribe status.
+   *            description: Succeeded to update subscription status.
    *            content:
    *              application/json:
    *                schema:
@@ -524,9 +524,9 @@ module.exports = (crowi) => {
    *    /page/subscribe/status:
    *      get:
    *        tags: [Page]
-   *        summary: /page/subscribe
-   *        description: get subscribe status
-   *        operationId: getSubscribeStatus
+   *        summary: /page/subscribe/status
+   *        description: Get subscription status
+   *        operationId: getSubscriptionStatus
    *        requestBody:
    *          content:
    *            application/json:
@@ -536,7 +536,7 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
-   *            description: Succeeded to get subscribe status.
+   *            description: Succeeded to get subscription status.
    *            content:
    *              application/json:
    *                schema:

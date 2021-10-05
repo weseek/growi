@@ -121,7 +121,7 @@ export default class PageContainer extends Container {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
-      this.retrieveSubscribeStatus();
+      this.retrieveSubscriptionStatus();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -305,7 +305,7 @@ export default class PageContainer extends Container {
     return this.retrieveBookmarkInfo();
   }
 
-  async retrieveSubscribeStatus() {
+  async retrieveSubscriptionStatus() {
     const res = await this.appContainer.apiv3Get('/page/subscribe/status', { pageId: this.state.pageId });
     this.setState({ isSubscribing: res.data.subscribing });
   }
@@ -313,7 +313,7 @@ export default class PageContainer extends Container {
   async toggleSubscribe() {
     const bool = !this.state.isSubscribing;
     await this.appContainer.apiv3Put('page/subscribe', { pageId: this.state.pageId, status: bool });
-    return this.retrieveSubscribeStatus();
+    return this.retrieveSubscriptionStatus();
   }
 
   async checkAndUpdateImageUrlCached(users) {
