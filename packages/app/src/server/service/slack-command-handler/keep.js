@@ -194,7 +194,7 @@ module.exports = (crowi) => {
 
     const initialOldest = format(oldest, 'yyyy/MM/dd-HH:mm');
     const initialNewest = format(newest, 'yyyy/MM/dd-HH:mm');
-    const initialPagePath = `/slack/keep/${channelName}/${format(oldest, 'yyyyMMdd-HH:mm:ss')} - ${format(newest, 'yyyyMMdd-HH:mm:ss')}`;
+    const initialPagePath = `/slack/keep/${channelName}/${format(oldest, 'yyyyMMdd-HH:mm')} - ${format(newest, 'yyyyMMdd-HH:mm')}`;
 
     return [
       markdownSectionBlock('*The keep command is in alpha.*'),
