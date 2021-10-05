@@ -544,7 +544,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/subscribe', loginRequired, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
+  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     const userId = req.user._id;
     try {
