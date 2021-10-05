@@ -306,7 +306,7 @@ export default class PageContainer extends Container {
   }
 
   async retrieveSubscriptionStatus() {
-    const res = await this.appContainer.apiv3Get('/page/subscribe/status', { pageId: this.state.pageId });
+    const res = await this.appContainer.apiv3Get('/page/subscribe', { pageId: this.state.pageId });
     this.setState({ isSubscribing: res.data.subscribing });
   }
 
