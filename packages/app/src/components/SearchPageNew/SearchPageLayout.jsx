@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SearchControl from './SearchControl';
+import SearchResultList from './SearchResultList';
 
 // TODO: SearchPageNew to SearchPage
 // deletion functionality
 
+// create render function that will prepare Components wuth props.s
 const SearchPageLayout = (props) => {
   return (
     <div className="content-main">
@@ -37,8 +40,8 @@ const SearchPageLayout = (props) => {
 };
 
 SearchPageLayout.propTypes = {
-  SearchControlComponent: PropTypes.element,
-  SearchResultList: PropTypes.element,
+  SearchControlComponent: PropTypes.instanceOf(SearchControl).isRequired,
+  SearchResultList: PropTypes.element.instanceOf(SearchResultList).isRequired,
   SearchResultContent: PropTypes.element,
 };
 

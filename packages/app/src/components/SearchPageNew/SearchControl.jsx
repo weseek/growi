@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import SearchPageForm from '../SearchPage/SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 
-
+// TODO: move to serachPage dir
+// now in tmp location
 const SearchControl = (props) => {
 
   return (
@@ -16,7 +17,7 @@ const SearchControl = (props) => {
           onSearchFormChanged={props.search}
         />
       </div>
-      {/* place deleteAll button , relevance button , include specificPath button */}
+      {/* TODO: place deleteAll button , relevance button , include specificPath button */}
     </div>
   );
 };
