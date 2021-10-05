@@ -53,6 +53,7 @@ export default class PageContainer extends Container {
       tocHtml: '',
       isLiked: false,
       isBookmarked: false,
+      isSubscribing: false,
       seenUsers: [],
       seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
@@ -120,6 +121,7 @@ export default class PageContainer extends Container {
       this.retrieveSeenUsers();
       this.retrieveLikeInfo();
       this.retrieveBookmarkInfo();
+      this.retrieveSubscribeStatus();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -301,6 +303,17 @@ export default class PageContainer extends Container {
     const bool = !this.state.isBookmarked;
     await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
     return this.retrieveBookmarkInfo();
+  }
+
+  async retrieveSubscribeStatus() {
+    const res = await this.appContainer.apiv3Get('/page/subscribe/status', { pageId: this.state.pageId });
+    this.setState({ isSubscribing: res.data.subscribing });
+  }
+
+  async toggleSubscribe() {
+    const bool = !this.state.isSubscribing;
+    await this.appContainer.apiv3Put('page/subscribe', { pageId: this.state.pageId, status: bool });
+    return this.retrieveSubscribeStatus();
   }
 
   async checkAndUpdateImageUrlCached(users) {
