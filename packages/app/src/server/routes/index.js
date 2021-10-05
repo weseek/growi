@@ -60,7 +60,7 @@ module.exports = function(crowi, app) {
   app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
   app.post('/login'                   , applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
+  app.post('/register'                , applicationInstalled, form.register(crowi)                 , csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
   app.get('/logout'                   , applicationInstalled, logout.logout);
 
@@ -196,8 +196,9 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.use('/user-activation', express.Router()
-    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, userActivation.userActivation)
+    .get('/:token', apiLimiter, applicationInstalled, injectResetOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.handleHttpErrosMiddleware));
+  app.post('/user-activation/complete-registartion' , apiLimiter, applicationInstalled, form.registerUserActivation , csrf, login.completeRegistration);
 
   app.get('/share/:linkId', page.showSharedPage);
 

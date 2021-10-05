@@ -3,7 +3,7 @@ import {
 } from 'express';
 import { ReqWithPasswordResetOrder } from '../middlewares/inject-reset-order-by-token-middleware';
 
-export const userActivation = (req: ReqWithPasswordResetOrder, res: Response): void => {
+export const form = (req: ReqWithPasswordResetOrder, res: Response): void => {
   const { passwordResetOrder } = req;
   return res.render('user-activation', { passwordResetOrder });
 };

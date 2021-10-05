@@ -45,7 +45,7 @@ schema.statics.generateOneTimeToken = function() {
   return token;
 };
 
-schema.statics.createPasswordResetOrder = async function(email) {
+schema.statics.createPasswordResetOrder = async function(email, expiredAt) {
   let token;
   let duplicateToken;
 
@@ -55,7 +55,7 @@ schema.statics.createPasswordResetOrder = async function(email) {
     duplicateToken = await this.findOne({ token });
   } while (duplicateToken != null);
 
-  const passwordResetOrderData = await this.create({ token, email });
+  const passwordResetOrderData = await this.create({ token, email, expiredAt });
 
   return passwordResetOrderData;
 };

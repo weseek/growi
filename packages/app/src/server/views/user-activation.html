@@ -1,6 +1,9 @@
-{% extends './layout/layout.html' %}
+{% extends 'layout/layout.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('User activation') }}{% endblock %}
+{% block html_base_css %}invited nologin{% endblock %}
+
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('Registration') }}{% endblock %}
+
 
 
 {#
@@ -19,32 +22,115 @@
  {% block fixed-controls %}
  {% endblock %}
 
- {% block html_additional_headers %}
-   <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
- {% endblock %}
 
-{% block layout_main %}
 
-  <div id="main" class="main">
-    <div id="content-main" class="content-main container-lg">
-      <div class="container">
-        <div class="row justify-content-md-center">
-          <div class="col-md-6 mt-5">
-            <div class="text-center">
-              <h1><i class="icon-lock-open large"></i></h1>
-              <h2 class="text-center">User activation of {{ passwordResetOrder.email }}</h2>
-                <div>
-                  <div id="user-activation-execution"></div>
-                  <a href="/login" class="link-switch">
-                    <i class="icon-key"></i> Go to login page
-                  </a>
-                </div>
-            </div>
-          </div>
+ {% block layout_main %}
+
+<div class="main container-fluid">
+
+  <div class="row">
+
+    <div class="login-header offset-4 col-sm-4">
+      <div class="logo">{% include 'widget/logo.html' %}</div>
+      <h1>GROWI</h1>
+
+      <div id="login-form-errors">
+        {% set message = req.flash('warningMessage') %}
+        {% if message.length %}
+        <div class="alert alert-danger">
+          {{ message }}
         </div>
-      </div>
+        {% endif %}
 
+        {% if req.form.errors.length > 0 %}
+        <div class="alert alert-danger">
+          <ul>
+          {% for error in req.form.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
     </div>
-  </div>
+
+    <div class="login-dialog grw-pt-10px p-b-10 offset-4 col-sm-4" id="login-dialog">
+
+      <form role="form" action="/user-activation/complete-registartion" method="post" id="registration-form">
+        <input type="hidden" name="registrationForm[token]" value="{{ passwordResetOrder.token }}" />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-envelope"></i></span>
+          </div>
+          <input type="text" class="form-control" disabled value="{{ passwordResetOrder.email }}">
+        </div>
+        <div class="input-group" id="input-group-username">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-user"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registrationForm[username]" value="{{ req.body.registrationForm.username }}" required>
+        </div>
+        <p class="form-text text-muted">
+          <span id="help-block-username"></span>
+        </p>
+
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-tag"></i></span>
+          </div>
+          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registrationForm[name]" value="{{ req.body.registrationForm.name }}" required>
+        </div>
+
+
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="icon-lock"></i></span>
+          </div>
+          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registrationForm[password]" required>
+        </div>
+
+        <div class="input-group justify-content-center d-flex mt-5">
+          <input type="hidden" name="_csrf" value="{{ csrf() }}">
+          <button type="submit" class="btn btn-fill" id="register">
+            <div class="eff"></div>
+            <span class="btn-label"><i class="icon-user-follow"></i></span>
+            <span class="btn-label-text">{{ t('Create') }}</span>
+          </button>
+        </div>
+
+        <div class="input-group mt-5 d-flex justify-content-center">
+          <a href="https://growi.org" class="link-growi-org">
+            <span class="growi">GROWI</span>.<span class="org">ORG
+          </a>
+        </div>
+      </form>
+    </div>
+
+  </div>{# /.row #}
+
+</div>{# /.main #}
+
+<script>
+$(function() {
+  /*
+  $('#registration-form input[name="registrationForm[username]"]').change(function(e) {
+    var username = $(this).val();
+    $('#login-dialog').removeClass('has-error');
+    $('#input-group-username').removeClass('has-error');
+    $('#help-block-username').html("");
+
+    $.getJSON('/_api/check_username', {username: username}, function(json) {
+      if (!json.valid) {
+        $('#help-block-username').html(
+          '<i class="icon-fw icon-ban"></i>このユーザーIDは利用できません。'
+        );
+        $('#login-dialog').addClass('has-error');
+        $('#input-group-username').addClass('has-error');
+      }
+    });
+  });
+  */
+});
+</script>
 
 {% endblock %}

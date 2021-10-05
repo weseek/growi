@@ -122,8 +122,9 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        // Condition to save User directly without email authentication if passport-ldap enabled
-        if( configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') === true ){
+        // Condition to save User directly without email authentication if email authentication disabled
+        console.log(configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'));
+        if( configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') === false ){
           User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
             if (err) {
               if (err.name === 'UserUpperLimitException') {
@@ -149,34 +150,18 @@ module.exports = function(crowi, app) {
           });
         }
         else {
-          UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, crowi.env.PASSWORD_SEED, async(err, userData) => {
-            if (err) {
-              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
-              return res.redirect('/register');
-            }
+          const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+          const i18n = grobalLang;
+          const appUrl = appService.getSiteUrl();
 
-            if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-              // send mail asynchronous
-              sendEmailToAllAdmins(userData);
-            }
+          makeRegistrationEmailToken(email, i18n, appUrl);
 
-            // Send email authentication
-            const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-            const i18n = req.language || grobalLang;
-            const appUrl = appService.getSiteUrl();
+          // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
+          // cz. loginSuccess method doesn't work on it's own when using passport
+          //      because `req.login()` prepared by passport is not called.
+          req.flash('successMessage', req.t('message.successfully_created',{ username: email }));
 
-            const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
-            const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
-            const oneTimeUrl = url.href;
-            await sendActivationTokenEmail('userActivation', i18n, email, oneTimeUrl);
-
-            // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-            // cz. loginSuccess method doesn't work on it's own when using passport
-            //      because `req.login()` prepared by passport is not called.
-            req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
-
-            return res.redirect('/login');
-          });
+          return res.redirect('/login');
         }
       });
     }
@@ -186,6 +171,13 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
+
+  async function makeRegistrationEmailToken(email, i18n, appUrl){
+    const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email, Date.now() + 1 * 60 * 60 * 1000);
+    const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
+    const oneTimeUrl = url.href;
+    await sendActivationTokenEmail('userActivation', i18n, email, oneTimeUrl);
+  }
 
   async function sendActivationTokenEmail(txtFileName, i18n, email, url) {
     return mailService.send({
@@ -225,6 +217,69 @@ module.exports = function(crowi, app) {
       .filter(result => result.status === 'rejected')
       .forEach(result => logger.error(result.reason));
   }
+
+  actions.completeRegistration = async function(req, res) {
+    if (req.form.isValid) {
+      const registrationForm = req.form.registrationForm || {};
+
+      const token = req.form.registrationForm.token;
+      const passwordResetOrder = await PasswordResetOrder.findOne({ token: token });
+      if (passwordResetOrder == null) {
+        return res.redirect('/login');
+      }
+      console.log(passwordResetOrder);
+      const email = passwordResetOrder.email;
+
+      const username = registrationForm.username;
+      const name = registrationForm.name;
+      const password = registrationForm.password;
+
+      // check user upper limit
+      const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+      if (isUserCountExceedsUpperLimit) {
+        req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
+        return res.redirect('/login');
+      }
+
+      const creatable = await User.isRegisterableUsername(username);
+      if (creatable) {
+        try {
+          await User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+            if (err) {
+              if (err.name === 'UserUpperLimitException') {
+                req.flash('warningMessage', req.t('message.can_not_register_maximum_number_of_users'));
+              }
+              else {
+                req.flash('warningMessage', req.t('message.failed_to_register'));
+              }
+              return res.redirect('/');
+            }
+
+            passwordResetOrder.revokeOneTimeToken();
+
+            if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+              // send mail asynchronous
+              sendEmailToAllAdmins(userData);
+            }
+
+            req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
+
+            return res.redirect('/login');
+          });
+          return res.redirect('/');
+        }
+        catch (err) {
+          req.flash('warningMessage', req.t('message.failed_to_activate'));
+          return res.redirect('/user-activation'); // TODO: grune - redirect back with token
+        }
+      }
+      else {
+        req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
+        debug('username', username);
+        return res.redirect('/user-activation'); // TODO: grune - redirect back with token
+      }
+    }
+  };
 
   actions.invited = async function(req, res) {
     if (!req.user) {

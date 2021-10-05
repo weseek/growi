@@ -40,6 +40,7 @@ if (loginFormElem) {
   const name = loginFormElem.dataset.name;
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
+  const isEmailAuthenticationEnabled = loginFormElem.dataset.isEmailAuthenticationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
   const isPasswordResetEnabled = loginFormElem.dataset.isPasswordResetEnabled === 'true';
 
@@ -70,6 +71,7 @@ if (loginFormElem) {
           name={name}
           email={email}
           isRegistrationEnabled={isRegistrationEnabled}
+          isEmailAuthenticationEnabled={isEmailAuthenticationEnabled}
           registrationMode={registrationMode}
           registrationWhiteList={registrationWhiteList}
           isPasswordResetEnabled={isPasswordResetEnabled}
