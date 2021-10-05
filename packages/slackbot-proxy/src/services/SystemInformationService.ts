@@ -19,7 +19,7 @@ export class SystemInformationService {
   @Inject()
   relationsService: RelationsService;
 
-  async $onInit(): Promise<any> {
+  async $onInit(): Promise<void> {
     await this.onInitCheckVersion();
   }
 
