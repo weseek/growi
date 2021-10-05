@@ -9,7 +9,7 @@ const SearchPageLayout = (props) => {
     <div className="content-main">
       <div className="search-result row" id="search-result">
         <nav>
-          <div className="search-page-input sps sps--abv">{props.SearchControlComponent}</div>
+          {props.SearchControlComponent}
         </nav>
         <div className="d-flex align-items-start justify-content-between mt-1">
           <div className="search-result-meta">
