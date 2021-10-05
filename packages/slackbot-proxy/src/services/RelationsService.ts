@@ -1,13 +1,14 @@
 import { Inject, Service } from '@tsed/di';
 
 import axios from 'axios';
-import { addHours, subDays } from 'date-fns';
+import { addHours } from 'date-fns';
 
 import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp } from '@growi/slack';
 import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
 import loggerFactory from '~/utils/logger';
+import { SystemInformationService } from './SystemInformationService';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 
@@ -30,9 +31,8 @@ export class RelationsService {
   @Inject()
   relationRepository: RelationRepository;
 
-  $onInit(): void {
-    // relations expire when the server is up every time
-    this.relationRepository.update({}, { expiredAtCommands: subDays(new Date(), 30) });
+  async resetAllExpiredAtCommands(): Promise<void> {
+    await this.relationRepository.update({}, { expiredAtCommands: new Date('2000-01-01') });
   }
 
   private async getSupportedGrowiCommands(relation:Relation):Promise<any> {
