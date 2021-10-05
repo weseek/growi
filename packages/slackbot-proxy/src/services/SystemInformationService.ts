@@ -1,7 +1,7 @@
 import { Inject, Service } from '@tsed/di';
 
 import compareVersions from 'compare-versions';
-import pkg from '../../package.json';
+import readPkgUp from 'read-pkg-up';
 
 import { SystemInformation } from '~/entities/system-information';
 import { SystemInformationRepository } from '~/repositories/system-information';
@@ -28,7 +28,10 @@ export class SystemInformationService {
    * make all relations expired if the previous version was <= 4.4.8
    */
   async onInitCheckVersion(): Promise<void> {
-    const proxyVersion: string = pkg.version;
+    const readPkgUpResult = await readPkgUp();
+    const proxyVersion = readPkgUpResult?.packageJson.version;
+    if (proxyVersion == null) return logger.error('version is null');
+
     const isExist = (await this.repository.findAndCount())[1] > 0;
 
     if (isExist) {
