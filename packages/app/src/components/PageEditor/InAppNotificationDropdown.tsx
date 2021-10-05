@@ -126,12 +126,14 @@ const InAppNotificationDropdown: FC = (props) => {
 
   // TODO: improve renderInAppNotificationList by GW-7535
   // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
-  const RenderInAppNotificationList = (): JSX.Element => {
-    // notifications.map((notification) =>
-    return (
+  const RenderInAppNotificationList = () => {
+    notifications.map((notification) => {
+      return (
       // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
-      <InAppNotification />
-    );
+        <InAppNotification notification={notification} onClick={notificationClickHandler} />
+
+      );
+    });
   };
 
   const InAppNotificationContents = (): JSX.Element => {
