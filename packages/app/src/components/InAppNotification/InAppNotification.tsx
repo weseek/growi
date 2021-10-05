@@ -6,15 +6,15 @@ import React, { FC } from 'react';
 
 // import { Notification as NotificationType } from 'client/types/crowi'
 
-interface Props {
-  // notification: NotificationType
-  notification: any
-  // onClick: Function
-  onClick: any
-}
+// interface Props {
+// notification: NotificationType
+// notification: any
+// onClick: Function
+// onClick: any
+// }
 
-// export default class InAppNotificationList extends React.Component<Props> {
-export const InAppNotificationList = (props: Props): JSX.Element => {
+// export default class InAppNotification extends React.Component<Props> {
+export const InAppNotification = (): JSX.Element => {
 
   // onClick() {
   //   props.onClick(props.notification);
@@ -76,7 +76,7 @@ export const InAppNotificationList = (props: Props): JSX.Element => {
   };
 
   return (
-    <>InAppNotificationList</>
+    <>InAppNotification</>
   );
 
 };

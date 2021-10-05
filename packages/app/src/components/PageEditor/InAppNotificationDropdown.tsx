@@ -7,6 +7,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
+import { InAppNotification } from '../InAppNotification/InAppNotification';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 
@@ -129,17 +130,17 @@ const InAppNotificationDropdown: FC = (props) => {
     // notifications.map((notification) =>
     return (
       // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
-      <>RenderInAppNotificationList</>
+      <InAppNotification />
     );
   };
 
   const InAppNotificationContents = (): JSX.Element => {
-    if (isLoaded === false) {
-      return <RenderUnLoadedInAppNotification />;
-    }
-    if (notifications.length === 0) {
-      return <RenderEmptyInAppNotification />;
-    }
+    // if (isLoaded === false) {
+    //   return <RenderUnLoadedInAppNotification />;
+    // }
+    // if (notifications.length === 0) {
+    //   return <RenderEmptyInAppNotification />;
+    // }
     return <RenderInAppNotificationList />;
   };
 
