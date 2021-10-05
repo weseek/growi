@@ -10,12 +10,35 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification } from '../InAppNotification/InAppNotification';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 
+// refer type https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
+interface NotificationType {
+  _id: string
+  user: string
+  targetModel: 'Page'
+  // target: Page
+  target: string
+  action: 'COMMENT' | 'LIKE'
+  status: string
+  actionUsers: string[]
+  createdAt: string
+}
+
 
 const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<NotificationType[]>([{
+    _id: '1',
+    user: 'kaori1',
+    targetModel: 'Page',
+    // target: Page
+    target: 'kaori2',
+    action: 'COMMENT',
+    status: 'hoge',
+    actionUsers: ['taro', 'yamada'],
+    createdAt: 'hoge',
+  }]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -127,21 +150,22 @@ const InAppNotificationDropdown: FC = (props) => {
   // TODO: improve renderInAppNotificationList by GW-7535
   // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
   const RenderInAppNotificationList = () => {
-    notifications.map((notification) => {
-      return (
-      // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
-        <InAppNotification notification={notification} onClick={notificationClickHandler} />
 
+
+    if (notifications.length === 0) {
+      return <RenderEmptyInAppNotification />;
+    }
+    const notificationList = notifications.map((notification: NotificationType) => {
+      return (
+        <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );
     });
+    return <>{notificationList}</>;
   };
 
   const InAppNotificationContents = (): JSX.Element => {
     // if (isLoaded === false) {
     //   return <RenderUnLoadedInAppNotification />;
-    // }
-    // if (notifications.length === 0) {
-    //   return <RenderEmptyInAppNotification />;
     // }
     return <RenderInAppNotificationList />;
   };
