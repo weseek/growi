@@ -6,15 +6,15 @@ import React, { FC } from 'react';
 
 // import { Notification as NotificationType } from 'client/types/crowi'
 
-// interface Props {
-// notification: NotificationType
-// notification: any
-// onClick: Function
-// onClick: any
-// }
+interface Props {
+  // notification: NotificationType
+  notification: any
+  // onClick: Function
+  onClick: any
+}
 
 // export default class InAppNotification extends React.Component<Props> {
-export const InAppNotification = (): JSX.Element => {
+export const InAppNotification = (props: Props): JSX.Element => {
 
   // onClick() {
   //   props.onClick(props.notification);
