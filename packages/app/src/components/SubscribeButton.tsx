@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, useCallback, FC,
-} from 'react';
+import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -13,14 +11,12 @@ import PageContainer from '~/client/services/PageContainer';
 type Props = {
   appContainer: AppContainer,
   pageContainer: PageContainer,
-  pageId: string,
 };
 
 const SubscruibeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { appContainer, pageContainer, pageId } = props;
-  const [isSubscribing, setIsSubscribing] = useState(false);
+  const { appContainer, pageContainer } = props;
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -33,17 +29,6 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-
-    // try {
-    //   const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
-    //   if (res) {
-    //     const { subscription } = res.data;
-    //     setIsSubscribing(subscription.status === 'SUBSCRIBE');
-    //   }
-    // }
-    // catch (err) {
-    //   toastError(err);
-    // }
   };
 
   return (
