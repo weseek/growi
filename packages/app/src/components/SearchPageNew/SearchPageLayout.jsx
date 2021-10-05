@@ -43,6 +43,7 @@ SearchPageLayout.propTypes = {
   SearchControlComponent: PropTypes.instanceOf(SearchControl).isRequired,
   SearchResultList: PropTypes.element.instanceOf(SearchResultList).isRequired,
   SearchResultContent: PropTypes.element,
+  selectedPage: PropTypes.object.isRequired,
 };
 
 export default SearchPageLayout;

@@ -21,6 +21,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
+      // selectedPage: null,
     };
 
     this.search = this.search.bind(this);
@@ -87,6 +88,7 @@ class SearchPage extends React.Component {
           searchedKeyword: keyword,
           searchedPages: res.data,
           searchResultMeta: res.meta,
+          // selectedPage: res.data[0],
         });
       })
       .catch((err) => {
