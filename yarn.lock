@@ -1093,10 +1093,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@godaddy/terminus@^4.8.0":
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/@godaddy/terminus/-/terminus-4.8.0.tgz#7f1258abd731adcf5f08d8ff1aa0216a02d65062"
-  integrity sha512-C3u+LTmlhtqsk1Sjw9UDTAXfVngby62dJL71LyhpRcwX3FDeLb0yd1Rmxh1OjH5HouOr0IIuU4dhiJMT6NNXog==
+"@godaddy/terminus@^4.9.0":
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/@godaddy/terminus/-/terminus-4.9.0.tgz#c7de0b45ede05116854d1461832dd05df169f689"
+  integrity sha512-j1E22ZK5jW+DVb2vIEOx9I6epWT/geJyWzuxsUThyPcds5UxjCBeKcDTtNVkoWLRASM49o9OKRrCKKybX7z9bw==
   dependencies:
     stoppable "^1.1.0"
 
@@ -5716,11 +5716,6 @@ circular-json@^0.3.1:
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
   integrity sha512-UZK3NBx2Mca+b5LsG7bY183pHWt5Y1xts4P3Pz7ENTwGVnJOUWbRb3ocjvX7hx9tq/yTAdclXm9sZ38gNuem4A==
 
-cities-list@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/cities-list/-/cities-list-1.0.3.tgz#cb217d19ea1f355fc833d173a752ad9992f1240c"
-  integrity sha1-yyF9GeofNV/IM9Fzp1KtmZLxJAw=
-
 cjs-module-lexer@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/cjs-module-lexer/-/cjs-module-lexer-1.2.2.tgz#9f84ba3244a512f3a54e5277e8eef4c489864e40"
@@ -7656,35 +7651,6 @@ emotion-theming@^10.0.7:
     "@babel/runtime" "^7.5.5"
     "@emotion/weak-memoize" "0.2.5"
     hoist-non-react-statics "^3.3.0"
-
-en-inflectors@^1.0.7:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/en-inflectors/-/en-inflectors-1.0.12.tgz#fd334776608a021cb4202157f20d52ab934af78a"
-  integrity sha1-/TNHdmCKAhy0ICFX8g1Sq5NK94o=
-  dependencies:
-    en-stemmer "^1.0.2"
-
-en-lexicon@^1.0.8:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/en-lexicon/-/en-lexicon-1.0.11.tgz#3f4da8a9cca9a906f510b8ece11631be3fd1105f"
-  integrity sha1-P02oqcypqQb1ELjs4RYxvj/REF8=
-  dependencies:
-    en-inflectors "^1.0.7"
-
-en-pos@^1.0.16:
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/en-pos/-/en-pos-1.0.16.tgz#5b6ee67eed52a8e11267f3d15fa7501101123fb0"
-  integrity sha1-W27mfu1SqOESZ/PRX6dQEQESP7A=
-  dependencies:
-    cities-list "^1.0.3"
-    en-inflectors "^1.0.7"
-    en-lexicon "^1.0.8"
-    humannames "^1.0.5"
-
-en-stemmer@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/en-stemmer/-/en-stemmer-1.0.3.tgz#2d22fb5db9005a88d6fc58026b38a831c8bc7c19"
-  integrity sha1-LSL7XbkAWojW/FgCazioMci8fBk=
 
 encodeurl@~1.0.1:
   version "1.0.1"
@@ -10495,11 +10461,6 @@ humanize-ms@^1.2.1:
   resolved "https://registry.yarnpkg.com/humanize-ms/-/humanize-ms-1.2.1.tgz#c46e3159a293f6b896da29316d8b6fe8bb79bbed"
   dependencies:
     ms "^2.0.0"
-
-humannames@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/humannames/-/humannames-1.0.5.tgz#a4d60d4168df8737f4b262efd23f2ee32974f1c5"
-  integrity sha1-pNYNQWjfhzf0smLv0j8u4yl08cU=
 
 hyphenate-style-name@^1.0.2:
   version "1.0.4"
@@ -20484,15 +20445,6 @@ textlint-rule-date-weekday-mismatch@^1.0.6:
     chrono-node "^1.2.5"
     moment "^2.29.1"
     textlint-tester "^12.0.2"
-
-textlint-rule-en-capitalization@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/textlint-rule-en-capitalization/-/textlint-rule-en-capitalization-2.0.3.tgz#6b05e5adcc58caed87abfe6fefea88e20c89d7e5"
-  integrity sha512-tIx2gzm3okWfK5+0NNV1ap21LHk9PTc2/IXNqFhd7RDVSqv7YFaZnhwL+UrBZXTEfOh6VgnTQd81Os2Akzas5g==
-  dependencies:
-    en-pos "^1.0.16"
-    sentence-splitter "^3.0.11"
-    textlint-rule-helper "^2.1.1"
 
 textlint-rule-helper@2.0.1:
   version "2.0.1"

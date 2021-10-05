@@ -94,6 +94,7 @@ jobs:
         cp config/ci/.env.local.for-ci .env.development.local
         yarn dev:ci
       env:
+        SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
@@ -167,17 +168,13 @@ jobs:
         cp config/ci/.env.local.for-ci .env.production.local
         yarn start:prod:ci
       env:
+        SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
         TYPEORM_PASSWORD:
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Report
-        path: report
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

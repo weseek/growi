@@ -187,7 +187,7 @@ class RecentChanges extends React.Component {
               className="custom-control-input"
               type="checkbox"
               checked={this.state.isRecentChangesSidebarSmall}
-              onChange={e => this.setState({ isRecentChangesSidebarSmall: e.target.checked })}
+              onChange={this.changeSizeHandler}
             />
             <label className="custom-control-label" htmlFor="recentChangesResize">
             </label>

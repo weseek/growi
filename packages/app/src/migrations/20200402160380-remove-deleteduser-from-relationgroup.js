@@ -1,15 +1,14 @@
 import mongoose from 'mongoose';
 
-import config from '^/config/migrate';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:remove-deleteduser-from-relationgroup');
 
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = getModelSafely('User') || require('~/server/models/user')();
     const UserGroupRelation = getModelSafely('UserGroupRelation') || require('~/server/models/user-group-relation')();
