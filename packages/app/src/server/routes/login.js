@@ -1,6 +1,5 @@
 import loggerFactory from '~/utils/logger';
 import PasswordResetOrder from '~/server/models/password-reset-order';
-import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 // disable all of linting
 // because this file is a deprecated legacy of Crowi

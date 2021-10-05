@@ -609,17 +609,8 @@ module.exports = function(crowi) {
     newUser.name = name;
     newUser.username = username;
     newUser.email = email;
-
-    const sha256Regex = new RegExp('^[A-Fa-f0-9]{64}$');
     if (password != null) {
-      // detect hashed password, no need to hash again
-      // used for move data from UserRegistrationOrder to User on activation use by email process
-      if (sha256Regex.test(password)) {
-        newUser.password = password;
-      }
-      else {
-        newUser.setPassword(password);
-      }
+      newUser.setPassword(password);
     }
 
     const configManager = crowi.configManager;
