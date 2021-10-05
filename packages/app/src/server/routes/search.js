@@ -155,6 +155,7 @@ module.exports = function(crowi, app) {
       findResult.pages.map((page) => {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
+        page._doc.snippet = data._highlight;
         return page;
       });
 
