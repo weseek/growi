@@ -9,7 +9,7 @@ export class SystemInformationRepository extends Repository<SystemInformation> {
 
   async createOrUpdateUniqueRecordWithVersion(systemInfo: SystemInformation | undefined, proxyVersion: string): Promise<void> {
     // update the version if it exists
-    if (systemInfo !== undefined) {
+    if (systemInfo != null) {
       systemInfo.setVersion(proxyVersion);
       await this.save(systemInfo);
       return;
