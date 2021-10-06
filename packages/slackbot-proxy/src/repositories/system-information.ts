@@ -8,8 +8,9 @@ import { SystemInformation } from '~/entities/system-information';
 export class SystemInformationRepository extends Repository<SystemInformation> {
 
   async createOrUpdateUniqueRecordWithVersion(systemInfo: SystemInformation | undefined, proxyVersion: string): Promise<void> {
+    const isExist = systemInfo != null;
     // update the version if it exists
-    if (systemInfo !== undefined) {
+    if (isExist) {
       systemInfo.setVersion(proxyVersion);
       await this.save(systemInfo);
       return;
