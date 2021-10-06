@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import AppContainer from '~/client/services/AppContainer';
-import InAppNotificationDropdown from '~/components/PageEditor/InAppNotificationDropdown';
+import InAppNotificationDropdown from '../InAppNotification/InAppNotificationDropdown';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';

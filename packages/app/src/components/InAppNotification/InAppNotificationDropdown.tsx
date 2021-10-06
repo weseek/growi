@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-import { InAppNotification } from '../InAppNotification/InAppNotification';
+import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 // refer type https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
