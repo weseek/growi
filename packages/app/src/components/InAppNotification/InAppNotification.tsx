@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 // import UserPicture from '../User/UserPicture'
 
 // import PageCommentNotification from './ModelAction/PageCommentNotification'
@@ -19,29 +19,30 @@ export const InAppNotification = (props: Props): JSX.Element => {
   // onClick() {
   //   props.onClick(props.notification);
   // }
+  const { notification } = props;
 
-  // const getActionUsers = () => {
-  //   const notification = props.notification;
-  //   const latestActionUsers = notification.actionUsers.slice(0, 3);
-  //   const latestUsers = latestActionUsers.map((user) => {
-  //     return `@${user.username}`;
-  //   });
+  const getActionUsers = () => {
+    const latestActionUsers = notification.actionUsers.slice(0, 3);
+    const latestUsers = latestActionUsers.map((user) => {
+      return `@${user.username}`;
+    });
 
-  //   let actionedUsers = '';
-  //   const latestUsersCount = latestUsers.length;
-  //   if (latestUsersCount === 1) {
-  //     actionedUsers = latestUsers[0];
-  //   }
-  //   else if (notification.actionUsers.length >= 4) {
-  //     actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
-  //   }
-  //   else {
-  //     actionedUsers = latestUsers.join(', ');
-  //   }
+    let actionedUsers = '';
+    const latestUsersCount = latestUsers.length;
+    if (latestUsersCount === 1) {
+      actionedUsers = latestUsers[0];
+    }
+    else if (notification.actionUsers.length >= 4) {
+      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
+    }
+    else {
+      actionedUsers = latestUsers.join(', ');
+    }
 
-  //   return actionedUsers;
-  // };
+    return actionedUsers;
+  };
 
+  // TODO show userimage by #
   const getUserImage = () => {
     // const latestActionUsers = props.notification.actionUsers.slice(0, 3);
 
@@ -74,6 +75,19 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
     return;
   };
+
+  const componentName = `${notification.targetModel}:${notification.action}`;
+  const propsNew = {
+    actionUsers: getActionUsers(),
+    ...props,
+  };
+
+  switch (componentName) {
+    case 'Page:COMMENT':
+      // return <PageCommentNotification {...propsNew} onClick={props.onClick} />;
+      return;
+    default:
+  }
 
   return (
     <>InAppNotification</>
