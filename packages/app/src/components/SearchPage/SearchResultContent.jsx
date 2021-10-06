@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '~/client/services/AppContainer';
 
-// TODO : move to serachPage dir
 const SearchResultContent = (props) => {
   const renderPage = (page) => {
     const growiRenderer = props.appContainer.getRenderer('searchresult');

@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SearchPageForm from '../SearchPage/SearchPageForm';
+import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 
-// TODO: move to serachPage dir
-// now in tmp location
+
 const SearchControl = (props) => {
 
   return (

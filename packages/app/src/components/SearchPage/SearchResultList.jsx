@@ -1,64 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import RevisionLoader from '../Page/RevisionLoader';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import Page from '../PageList/Page';
 
 class SearchResultList extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.growiRenderer = this.props.appContainer.getRenderer('searchresult');
-  }
-
   render() {
-    const resultList = this.props.pages.map((page) => {
-      const showTags = (page.tags != null) && (page.tags.length > 0);
-
+    return this.props.pages.map((page) => {
+      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
+      const pageId = `#id_${page._id}`;
       return (
-        // Add prefix 'id_' in id attr, because scrollspy of bootstrap doesn't work when the first letter of id of target component is numeral.
-        <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
-          <h2>
-            <a href={page.path} className="text-break">{page.path}</a>
-            { showTags && (
-              <div className="mt-1 small"><i className="tag-icon icon-tag"></i> {page.tags.join(', ')}</div>
-            )}
-          </h2>
-          <RevisionLoader
-            growiRenderer={this.growiRenderer}
-            pageId={page._id}
-            pagePath={page.path}
-            revisionId={page.revision}
-            highlightKeywords={this.props.searchingKeyword}
-          />
-        </div>
+        <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
+          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId} onClick={() => { this.props.clickHandler(pageId) }}>
+            <div className="form-check my-auto">
+              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            </div>
+            {/* TODO: remove dummy snippet and adjust style */}
+            <div className="d-block">
+              <Page page={page} noLink />
+              <div className="border-gray mt-5">{page.snippet}</div>
+            </div>
+            <div className="ml-auto d-flex">
+              {this.props.deletionMode && (
+                <div className="custom-control custom-checkbox custom-checkbox-danger">
+                  <input
+                    type="checkbox"
+                    id={`page-delete-check-${page._id}`}
+                    className="custom-control-input search-result-list-delete-checkbox"
+                    value={pageId}
+                    checked={this.props.selectedPages.has(page)}
+                    onChange={() => { return this.props.handleChange(page) }}
+                  />
+                  <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+                </div>
+              )}
+              <div className="page-list-option">
+                <button
+                  type="button"
+                  className="btn btn-link p-0"
+                  value={page.path}
+                  onClick={(e) => {
+                    window.location.href = e.currentTarget.value;
+                  }}
+                >
+                  <i className="icon-login" />
+                </button>
+              </div>
+            </div>
+          </a>
+        </li>
       );
     });
-
-    return (
-      <div>
-        {resultList}
-      </div>
-    );
   }
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const SearchResultListWrapper = withUnstatedContainers(SearchResultList, [AppContainer]);
 
 SearchResultList.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   pages: PropTypes.array.isRequired,
-  searchingKeyword: PropTypes.string.isRequired,
+  deletionMode: PropTypes.bool.isRequired,
+  selectedPages: PropTypes.array.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  clickHandler: PropTypes.func.isRequired,
 };
 
-SearchResultList.defaultProps = {
-};
 
-export default SearchResultListWrapper;
+export default SearchResultList;

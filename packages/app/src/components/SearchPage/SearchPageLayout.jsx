@@ -4,10 +4,7 @@ import SearchControl from './SearchControl';
 import SearchResultList from './SearchResultList';
 import SearchResultContent from './SearchResultContent';
 
-// TODO: SearchPageNew to SearchPage
-// deletion functionality
 
-// create render function that will prepare Components wuth props.s
 const SearchPageLayout = (props) => {
   return (
     <div className="content-main">
@@ -28,7 +25,6 @@ const SearchPageLayout = (props) => {
           {props.SearchResultContent}
         </div>
       </div>
-      {/* DeletePageListModal */}
     </div>
   );
 };

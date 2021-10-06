@@ -8,13 +8,10 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
 import { toastError } from '~/client/util/apiNotification';
-import SearchResult from './SearchPage/SearchResult';
-import SearchPageForm from './SearchPage/SearchPageForm';
-// TODO: change locatin
-import SearchPageLayout from './SearchPageNew/SearchPageLayout';
-import SearchResultContent from './SearchPageNew/SearchResultContent';
-import SearchResultList from './SearchPageNew/SearchResultList';
-import SearchControl from './SearchPageNew/SearchControl';
+import SearchPageLayout from './SearchPage/SearchPageLayout';
+import SearchResultContent from './SearchPage/SearchResultContent';
+import SearchResultList from './SearchPage/SearchResultList';
+import SearchControl from './SearchPage/SearchControl';
 
 class SearchPage extends React.Component {
 
@@ -178,20 +175,6 @@ class SearchPage extends React.Component {
           searchingKeyword={this.state.searchedKeyword}
         >
         </SearchPageLayout>
-
-
-        {/* <SearchResult
-          pages={this.state.searchedPages}
-          searchingKeyword={this.state.searchingKeyword}
-          searchResultMeta={this.state.searchResultMeta}
-        >
-          <SearchPageForm
-            t={this.props.t}
-            keyword={this.state.searchingKeyword}
-            appContainer={this.props.appContainer}
-            onSearchFormChanged={this.search}
-          />
-        </SearchResult> */}
       </div>
     );
   }
