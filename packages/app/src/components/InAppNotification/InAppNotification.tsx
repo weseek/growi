@@ -1,7 +1,7 @@
 import React from 'react';
 // import UserPicture from '../User/UserPicture'
 
-import PageCommentNotification from './PageCommentNotification';
+import { PageCommentNotification } from './PageCommentNotification';
 // import PageLikeNotification from './ModelAction/PageLikeNotification'
 
 // import { Notification as NotificationType } from 'client/types/crowi'

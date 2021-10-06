@@ -1,11 +1,11 @@
 import React from 'react';
-import PagePath from 'components/PageList/PagePath';
-import { Notification } from 'client/types/crowi';
+// import PagePath from 'components/PageList/PagePath';
+// import { Notification } from 'client/types/crowi';
 import NotificationItem from '../NotificationItem';
 
 interface Props {
   actionUsers: string
-  notification: Notification
+  notification: any
   onClick: () => void
 }
 export const PageCommentNotification = (props: Props) => {
@@ -14,11 +14,13 @@ export const PageCommentNotification = (props: Props) => {
   const notification = props.notification;
 
   return (
-    <NotificationItem {...props} icon="comment">
-      <span>
-        <b>{props.actionUsers}</b> commented on <PagePath page={notification.target} />
-      </span>
-    </NotificationItem>
+  // <NotificationItem {...props} icon="comment">
+
+    <span>
+      <b>{props.actionUsers}</b> commented on
+      {/* <PagePath page={notification.target} /> */}
+    </span>
+    // </NotificationItem>
   );
   // }
 
