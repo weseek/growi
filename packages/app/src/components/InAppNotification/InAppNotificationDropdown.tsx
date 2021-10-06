@@ -4,6 +4,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
+import { InAppNotification as InAppNotificationType } from '../../interfaces/in-app-notification-types';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
@@ -11,29 +12,18 @@ import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 // refer type https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
-interface NotificationType {
-  _id: string
-  user: string
-  targetModel: 'Page'
-  // target: Page
-  target: string
-  action: 'COMMENT' | 'LIKE'
-  status: string
-  actionUsers: string[]
-  createdAt: string
-}
 
 
 const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationType[]>([{
+  const [notifications, setNotifications] = useState<InAppNotificationType[]>([{
     _id: '1',
     user: 'kaori1',
     targetModel: 'Page',
     // target: Page
-    target: 'kaori2',
+    target: 'hogePage',
     action: 'COMMENT',
     status: 'hoge',
     actionUsers: ['taro', 'yamada'],
@@ -155,7 +145,7 @@ const InAppNotificationDropdown: FC = (props) => {
     if (notifications.length === 0) {
       return <RenderEmptyInAppNotification />;
     }
-    const notificationList = notifications.map((notification: NotificationType) => {
+    const notificationList = notifications.map((notification: InAppNotificationType) => {
       return (
         <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );

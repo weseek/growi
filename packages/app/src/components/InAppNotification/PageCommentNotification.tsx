@@ -1,28 +1,22 @@
 import React from 'react';
 // import PagePath from 'components/PageList/PagePath';
-// import { Notification } from 'client/types/crowi';
+import { InAppNotification as InAppNotificationType } from '../../interfaces/in-app-notification-types';
 // import NotificationItem from '../NotificationItem';
 
 interface Props {
   actionUsers: string
-  notification: any
+  notification: InAppNotificationType
   onClick: () => void
 }
 export const PageCommentNotification = (props: Props) => {
   console.log('propsHOge', props);
 
-  // render() {
-  const notification = props.notification;
 
   return (
-  // <NotificationItem {...props} icon="comment">
-
     <span>
       <b>{props.actionUsers}</b> commented on {props.notification.target}
       {/* <PagePath page={notification.target} /> */}
     </span>
-    // </NotificationItem>
   );
-  // }
 
 };

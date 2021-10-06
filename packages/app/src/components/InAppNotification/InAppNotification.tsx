@@ -5,10 +5,11 @@ import { PageCommentNotification } from './PageCommentNotification';
 // import PageLikeNotification from './ModelAction/PageLikeNotification'
 
 // import { Notification as NotificationType } from 'client/types/crowi'
+import { InAppNotification as InAppNotificationType } from '../../interfaces/in-app-notification-types';
 
 interface Props {
   // notification: NotificationType
-  notification: any
+  notification: InAppNotificationType
   // onClick: Function
   onClick: any
 }
@@ -24,7 +25,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
-      return `@${user.username}`;
+      return `@${user}`;
     });
 
     let actionedUsers = '';
