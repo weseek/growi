@@ -23,7 +23,7 @@ const SubnavButtons = (props) => {
     return (
       <>
         <span>
-          <SubscribeButton />
+          <SubscribeButton pageId={pageContainer.state.pageId} />
         </span>
         {pageContainer.isAbleToShowLikeButton && (
           <span>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -11,12 +11,14 @@ import PageContainer from '~/client/services/PageContainer';
 type Props = {
   appContainer: AppContainer,
   pageContainer: PageContainer,
+  pageId: string,
 };
 
 const SubscruibeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const { appContainer, pageContainer } = props;
+  const { appContainer, pageId } = props;
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -24,7 +26,11 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      pageContainer.toggleSubscribe();
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
+      if (res) {
+        const { subscription } = res.data;
+        setIsSubscribing(subscription.status === 'SUBSCRIBE');
+      }
     }
     catch (err) {
       toastError(err);
@@ -37,9 +43,9 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-subscribe border-0 ${pageContainer.state.isSubscribing ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
+        className={`btn btn-subscribe border-0 ${isSubscribing ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={pageContainer.state.isSubscribing ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
+        <i className={isSubscribing ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
       </button>
 
       {appContainer.isGuestUser && (
