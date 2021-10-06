@@ -93,9 +93,6 @@ module.exports = (crowi) => {
       });
     }
 
-    // help
-    if (growiCommand.growiCommandType === 'help') return next();
-
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);
     const fromChannel = req.body.channel_name;
@@ -279,15 +276,19 @@ module.exports = (crowi) => {
     return handleCommands(body, res, client, responseUrl);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
+  router.post('/proxied/verify', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
-    const responseUrl = getResponseUrl(req);
 
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
       return res.send({ challenge: body.challenge });
     }
+  });
+
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
+    const { body } = req;
+    const responseUrl = getResponseUrl(req);
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
