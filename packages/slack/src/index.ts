@@ -48,5 +48,4 @@ export * from './utils/welcome-message';
 export * from './utils/required-scopes';
 export * from './utils/interaction-payload-accessor';
 export * from './utils/payload-interaction-id-helpers';
-export * from './utils/help-message';
 export * from './utils/respond-util-factory';

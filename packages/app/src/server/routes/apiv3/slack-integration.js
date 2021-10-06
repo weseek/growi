@@ -1,4 +1,6 @@
-import { markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil } from '@growi/slack';
+import {
+  markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil, supportedGrowiCommands,
+} from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 
@@ -58,12 +60,41 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-  // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkCommandsPermission(req, res, next) {
-    let { growiCommand } = req.body;
+    const responseUrl = getResponseUrl(req);
 
-    // when /relation-test or from proxy
-    if (req.body.text == null && growiCommand == null) return next();
+    let growiCommand;
+    try {
+      growiCommand = getGrowiCommand(req.body);
+    }
+    catch (err) {
+      // for without proxy
+      res.send();
+
+      logger.error(err.message);
+      return handleError(err, responseUrl);
+    }
+
+    // when /relation-test
+    if (req.body.text == null) return next();
+
+    // not supported commands
+    if (!supportedGrowiCommands.includes(growiCommand.growiCommandType)) {
+      // for without proxy
+      res.send();
+
+      return respond(growiCommand.responseUrl, {
+        text: 'Command is not supported',
+        blocks: [
+          markdownSectionBlock('*Command is not supported*'),
+          // eslint-disable-next-line max-len
+          markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+        ],
+      });
+    }
+
+    // help
+    if (growiCommand.growiCommandType === 'help') return next();
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);
@@ -80,7 +111,6 @@ module.exports = (crowi) => {
     }
 
     // without proxy
-    growiCommand = parseSlashCommand(req.body);
     commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
 
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
@@ -172,7 +202,7 @@ module.exports = (crowi) => {
       catch (err) {
         if (err instanceof InvalidGrowiCommandError) {
           const options = {
-            responseBody: {
+            respondBody: {
               text: 'Command type is not specified',
               blocks: [
                 markdownSectionBlock('*Command type is not specified.*'),
