@@ -10,7 +10,7 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
+  InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
   respond,
   getHelpCommandBody,
@@ -33,6 +33,7 @@ import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
+import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -381,12 +382,16 @@ export class SlackCtrl {
   @Post('/events')
   @UseBefore(UrlVerificationMiddleware, AuthorizeEventsMiddleware)
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
-
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
 
     if (req.body.event.type === 'app_home_opened') {
-      await postWelcomeMessage(client, req.body.event.channel);
+      try {
+        await postWelcomeMessageOnce(client, req.body.event.channel);
+      }
+      catch (err) {
+        logger.error('Failed to post welcome message', err);
+      }
     }
 
     return;
@@ -441,9 +446,9 @@ export class SlackCtrl {
 
         await Promise.all([
           // post message
-          postWelcomeMessage(client, userId),
+          postInstallSuccessMessage(client, userId),
           // publish home
-          // TODO When Home tab show off, use bellow.
+          // TODO: When Home tab show off, use bellow.
           // publishInitialHomeView(client, userId),
         ]);
       }
