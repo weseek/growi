@@ -31,30 +31,17 @@ export class SystemInformationService {
     const proxyVersion = readPkgUpResult?.packageJson.version;
     if (proxyVersion == null) return logger.error('version is null');
 
-    const isExist = (await this.repository.findAndCount())[1] > 0;
+    const systemInfo: SystemInformation | undefined = await this.repository.findOne();
 
-    if (isExist) {
-      const systemInfo = await this.repository.findOne();
-      if (systemInfo == null) return;
-
-      // make relations expired if version is updated
-      if (!(systemInfo.version === proxyVersion)) {
-        await this.relationsService.resetAllExpiredAtCommands();
-      }
-
-      // update the version
-      systemInfo.setVersion(proxyVersion);
-      await this.repository.save(systemInfo);
+    // return if the version didn't change
+    if (systemInfo !== undefined && systemInfo.version === proxyVersion) {
+      return;
     }
-    else {
-      // create new system information object if it didn't exist
-      const newSystemInfo = new SystemInformation();
-      newSystemInfo.setVersion(proxyVersion);
-      await this.repository.save(newSystemInfo);
 
-      // make relations expired
-      await this.relationsService.resetAllExpiredAtCommands();
-    }
+    await this.repository.createOrUpdateUniqueRecordWithVersion(systemInfo, proxyVersion);
+
+    // make relations expired
+    await this.relationsService.resetAllExpiredAtCommands();
   }
 
 }
