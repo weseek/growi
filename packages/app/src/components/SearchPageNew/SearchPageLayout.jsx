@@ -18,10 +18,6 @@ const SearchPageLayout = (props) => {
             <div className="search-result-meta">
               <i className="icon-magnifier" /> Found {props.searchResultMeta.total} pages with &quot;{props.searchingKeyword}&quot;
             </div>
-            <div className="text-nowrap">
-              {}
-              {}
-            </div>
           </div>
 
           <div className="page-list">

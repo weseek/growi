@@ -20,18 +20,22 @@ class SearchPage extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // NOTE : selectedPages is deletion related state, will be used later in story 77535, 77565.
+    // deletionModal, deletion related functions are all removed, add them back when necessary.
+    // i.e ) in story 77525 or any tasks implementing deletion functionalities
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
       selectedPage: {},
+      selectedPages: new Set(),
     };
 
     this.search = this.search.bind(this);
     this.changeURL = this.changeURL.bind(this);
-    this.selectPage = this.selectPage.bind(this);
+    this.selectPageToShow = this.selectPageToShow.bind(this);
+    this.toggleCheckBox = this.toggleCheckBox.bind(this);
   }
 
   componentDidMount() {
@@ -102,15 +106,28 @@ class SearchPage extends React.Component {
       });
   }
 
-  selectPage = (pageId) => {
-    // TODO : fix this part . Iteration and comparison seems not working fine.
+  selectPageToShow= (pageId) => {
+    // TODO : this part can be improved.
+    // pageId is this form: #id_613eda3717b2d80c4874dfb9
     let index;
-    for (let i = 0; i < this.state.searchedPages; i++) {
-      if (this.state.searchedPages[i]._id === pageId) { index = i }
-    }
+    let i = 0;
+    const pId = pageId.slice(4);
+    this.state.searchedPages.forEach((page) => {
+      if (pId === page._id) { index = i }
+      i++;
+    });
     this.setState({
       selectedPage: this.state.searchedPages[index],
     });
+  }
+
+  toggleCheckBox = (page) => {
+    if (this.state.selectedPages.has(page)) {
+      this.state.selectedPages.delete(page);
+    }
+    else {
+      this.state.selectedPages.add(page);
+    }
   }
 
   renderSearchResultContent = () => {
@@ -130,8 +147,9 @@ class SearchPage extends React.Component {
         pages={this.state.searchedPages}
         deletionMode={false}
         selectedPage={this.state.selectedPage}
-        handleChange={}
-        clickHandler={this.selectPage}
+        selectedPages={this.state.selectedPages}
+        handleChange={this.toggleCheckBox}
+        clickHandler={this.selectPageToShow}
       >
       </SearchResultList>
     );

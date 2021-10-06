@@ -7,37 +7,35 @@ import AppContainer from '~/client/services/AppContainer';
 // TODO : move to serachPage dir
 const SearchResultContent = (props) => {
   const renderPage = (page) => {
-    // const growiRenderer = props.appContainer.getRenderer('searchresult');
-    // let showTags;
-    // if (page.tags != null) { showTags = page != null && page.tags.length > 0 }
-    // return (
-    //   // Add prefix 'id_' in id attr, because scrollspy of bootstrap doesn't work when the first letter of id of target component is numeral.
-    //   <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
-    //     <h2>
-    //       <a href={page.path} className="text-break">
-    //         {page.path}
-    //       </a>
-    //       {showTags && (
-    //         <div className="mt-1 small">
-    //           <i className="tag-icon icon-tag"></i> {page.tags.join(', ')}
-    //         </div>
-    //       )}
-    //     </h2>
-    //     <RevisionLoader
-    //       growiRenderer={growiRenderer}
-    //       pageId={page._id}
-    //       pagePath={page.path}
-    //       revisionId={page.revision}
-    //       highlightKeywords={props.searchingKeyword}
-    //     />
-    //   </div>
-    // );
+    const growiRenderer = props.appContainer.getRenderer('searchresult');
+    let showTags = false;
+    if (page.tags != null && page.tags.length > 0) { showTags = true }
+    return (
+      // Add prefix 'id_' in id attr, because scrollspy of bootstrap doesn't work when the first letter of id of target component is numeral.
+      <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
+        <h2>
+          <a href={page.path} className="text-break">
+            {page.path}
+          </a>
+          {showTags && (
+            <div className="mt-1 small">
+              <i className="tag-icon icon-tag"></i> {page.tags.join(', ')}
+            </div>
+          )}
+        </h2>
+        <RevisionLoader
+          growiRenderer={growiRenderer}
+          pageId={page._id}
+          pagePath={page.path}
+          revisionId={page.revision}
+          highlightKeywords={props.searchingKeyword}
+        />
+      </div>
+    );
   };
-  const content = props.selectedPage.path;
+  const content = renderPage(props.selectedPage);
   return (
-    // <div
-    //   dangerouslySetInnerHTML={{ __html: content }}
-    // />
+
     <div>{content}</div>
   );
 };
