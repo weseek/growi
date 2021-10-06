@@ -8,7 +8,6 @@ import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
 import loggerFactory from '~/utils/logger';
-import { SystemInformationService } from './SystemInformationService';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 

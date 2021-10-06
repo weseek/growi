@@ -34,7 +34,7 @@ export class SystemInformationService {
     const systemInfo: SystemInformation | undefined = await this.repository.findOne();
 
     // return if the version didn't change
-    if (systemInfo !== undefined && systemInfo.version === proxyVersion) {
+    if (systemInfo != null && systemInfo.version === proxyVersion) {
       return;
     }
 
