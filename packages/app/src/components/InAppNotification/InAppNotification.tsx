@@ -1,7 +1,7 @@
 import React from 'react';
 // import UserPicture from '../User/UserPicture'
 
-// import PageCommentNotification from './ModelAction/PageCommentNotification'
+import PageCommentNotification from './PageCommentNotification';
 // import PageLikeNotification from './ModelAction/PageLikeNotification'
 
 // import { Notification as NotificationType } from 'client/types/crowi'
@@ -84,13 +84,12 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   switch (componentName) {
     case 'Page:COMMENT':
-      // return <PageCommentNotification {...propsNew} onClick={props.onClick} />;
-      return;
+      return <PageCommentNotification {...propsNew} onClick={props.onClick} />;
     default:
   }
 
-  return (
-    <>InAppNotification</>
-  );
+  // return (
+  //   <>InAppNotification</>
+  // );
 
 };
