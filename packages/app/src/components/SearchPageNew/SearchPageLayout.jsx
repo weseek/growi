@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SearchControl from './SearchControl';
 import SearchResultList from './SearchResultList';
+import SearchResultContent from './SearchResultContent';
 
 // TODO: SearchPageNew to SearchPage
 // deletion functionality
@@ -11,28 +12,25 @@ const SearchPageLayout = (props) => {
   return (
     <div className="content-main">
       <div className="search-result row" id="search-result">
-        <nav>
-          {props.SearchControlComponent}
-        </nav>
-        <div className="d-flex align-items-start justify-content-between mt-1">
-          <div className="search-result-meta">
-            <i className="icon-magnifier" /> Found {} pages with &quot;{}&quot;
+        <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
+          <nav>{props.SearchControlComponent}</nav>
+          <div className="d-flex align-items-start justify-content-between mt-1">
+            <div className="search-result-meta">
+              <i className="icon-magnifier" /> Found {props.searchResultMeta.total} pages with &quot;{props.searchingKeyword}&quot;
+            </div>
+            <div className="text-nowrap">
+              {}
+              {}
+            </div>
           </div>
-          <div className="text-nowrap">
-            {}
-            {}
+
+          <div className="page-list">
+            <ul className="page-list-ul page-list-ul-flat nav nav-pills">{props.SearchResultList}</ul>
           </div>
         </div>
-
-        <div className="page-list">
-          <ul className="page-list-ul page-list-ul-flat nav nav-pills">
-            {props.SearchResultList}
-          </ul>
+        <div className="col-lg-6 search-result-content">
+          {props.SearchResultContent}
         </div>
-      </div>
-
-      <div className="col-lg-6 search-result-content">
-        {props.SearchResultContent}
       </div>
       {/* DeletePageListModal */}
     </div>
@@ -41,9 +39,10 @@ const SearchPageLayout = (props) => {
 
 SearchPageLayout.propTypes = {
   SearchControlComponent: PropTypes.instanceOf(SearchControl).isRequired,
-  SearchResultList: PropTypes.element.instanceOf(SearchResultList).isRequired,
-  SearchResultContent: PropTypes.element,
-  selectedPage: PropTypes.object.isRequired,
+  SearchResultList: PropTypes.instanceOf(SearchResultList).isRequired,
+  SearchResultContent: PropTypes.instanceOf(SearchResultContent).isRequired,
+  searchResultMeta: PropTypes.object.isRequired,
+  searchingKeyword: PropTypes.string.isRequired,
 };
 
 export default SearchPageLayout;

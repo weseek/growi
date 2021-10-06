@@ -10,6 +10,11 @@ import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import SearchResult from './SearchPage/SearchResult';
 import SearchPageForm from './SearchPage/SearchPageForm';
+// TODO: change locatin
+import SearchPageLayout from './SearchPageNew/SearchPageLayout';
+import SearchResultContent from './SearchPageNew/SearchResultContent';
+import SearchResultList from './SearchPageNew/SearchResultList';
+import SearchControl from './SearchPageNew/SearchControl';
 
 class SearchPage extends React.Component {
 
@@ -21,11 +26,12 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
-      // selectedPage: null,
+      selectedPage: {},
     };
 
     this.search = this.search.bind(this);
     this.changeURL = this.changeURL.bind(this);
+    this.selectPage = this.selectPage.bind(this);
   }
 
   componentDidMount() {
@@ -88,7 +94,7 @@ class SearchPage extends React.Component {
           searchedKeyword: keyword,
           searchedPages: res.data,
           searchResultMeta: res.meta,
-          // selectedPage: res.data[0],
+          selectedPage: res.data[0],
         });
       })
       .catch((err) => {
@@ -96,10 +102,67 @@ class SearchPage extends React.Component {
       });
   }
 
+  selectPage = (pageId) => {
+    // TODO : fix this part . Iteration and comparison seems not working fine.
+    let index;
+    for (let i = 0; i < this.state.searchedPages; i++) {
+      if (this.state.searchedPages[i]._id === pageId) { index = i }
+    }
+    this.setState({
+      selectedPage: this.state.searchedPages[index],
+    });
+  }
+
+  renderSearchResultContent = () => {
+    return (
+      <SearchResultContent
+        appContainer={this.props.appContainer}
+        searchingKeyword={this.state.searchingKeyword}
+        selectedPage={this.state.selectedPage}
+      >
+      </SearchResultContent>
+    );
+  }
+
+  renderSearchResultList = () => {
+    return (
+      <SearchResultList
+        pages={this.state.searchedPages}
+        deletionMode={false}
+        selectedPage={this.state.selectedPage}
+        handleChange={}
+        clickHandler={this.selectPage}
+      >
+      </SearchResultList>
+    );
+  }
+
+  renderSearchControl = () => {
+    return (
+      <SearchControl
+        t={this.props.t}
+        searchingKeyword={this.state.searchingKeyword}
+        appContainer={this.props.appContainer}
+        search={this.search}
+      >
+      </SearchControl>
+    );
+  }
+
   render() {
     return (
       <div>
-        <SearchResult
+        <SearchPageLayout
+          SearchControlComponent={this.renderSearchControl()}
+          SearchResultList={this.renderSearchResultList()}
+          SearchResultContent={this.renderSearchResultContent()}
+          searchResultMeta={this.state.searchResultMeta}
+          searchingKeyword={this.state.searchedKeyword}
+        >
+        </SearchPageLayout>
+
+
+        {/* <SearchResult
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
@@ -110,7 +173,7 @@ class SearchPage extends React.Component {
             appContainer={this.props.appContainer}
             onSearchFormChanged={this.search}
           />
-        </SearchResult>
+        </SearchResult> */}
       </div>
     );
   }
