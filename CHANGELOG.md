@@ -1,8 +1,45 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.7](https://github.com/weseek/growi/compare/v4.4.6...v4.4.7) - 2021-09-29
+
+### 🚀 Improvement
+
+- imprv: Slackbot search (#4420) @yuki-takei
+- imprv: Omit textlint-rule-en-capitalization (#4403) @yuki-takei
+- imprv: Apply terminus for graceful shutdown (#4398) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: A problem that GROWI server doesn't retrieve connection status from Official bot proxy (#4416) @yuki-takei
+- fix: Dictionary path of kuromoji invalid when uploaded to server (#4381) @stevenfukase
+- fix: Copy correct dotenv file for NO_CDN docker image (#4397) @yuki-takei
+- fix: Stop using ts-node in production (#4411) @yuki-takei
+- fix: SAML setting says 'setup is not yet complete' even if setup properly (#4390) @nakashimaki
+- fix: SidebarSmall button does not keep selection on reload (#4389) @nakashimaki
+- fix: Migrations for updating data for slackbot (#4406) @yuki-takei
+- fix: Migrations do not run in production (#4395) @yuki-takei
+- fix: Migration file for mongodb 3.6 compatibility (#4413) @hakumizuki
+- fix(slackbot): Sync permission when data stored is not enough (#4417) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Install Git LFS when provisioning of devcontainer (#4405) @stevenfukase
+- chore: Add .dockerignore (#4396) @yuki-takei
+
+## [v4.4.6](https://github.com/weseek/growi/compare/v4.4.5...v4.4.6) - 2021-09-24
+
+### 🚀 Improvement
+
+- imprv: Slackbot response flow (#4296) @yuki-takei
+- imprv(slackbot-proxy): Show version on the top page (#4342) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- support(slackbot-proxy): Bump slackbot proxy version independentry (#4385) @yuki-takei
 
 ## [v4.4.5](https://github.com/weseek/growi/compare/v4.4.4...v4.4.5) - 2021-09-23
 

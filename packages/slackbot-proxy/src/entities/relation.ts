@@ -4,7 +4,7 @@ import {
 } from 'typeorm';
 import { Installation } from './installation';
 
-interface PermissionSettingsInterface {
+export interface PermissionSettingsInterface {
   [commandName: string]: boolean | string[],
 }
 
@@ -44,7 +44,7 @@ export class Relation {
   @Column({ type: 'timestamp' })
   expiredAtCommands: Date;
 
-  getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
+  getDistanceInMillisecondsToExpiredAt(baseDate: Date): number {
     return differenceInMilliseconds(this.expiredAtCommands, baseDate);
   }
 
