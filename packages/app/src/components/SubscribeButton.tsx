@@ -1,4 +1,6 @@
-import React, { FC, useState } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -36,6 +38,21 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       toastError(err);
     }
   };
+
+  const fetchSubscriptionStatus = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/page/subscribe', { pageId });
+      const { subscribing } = res.data;
+      setIsSubscribing(subscribing);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer, pageId]);
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, [fetchSubscriptionStatus]);
 
   return (
     <>
