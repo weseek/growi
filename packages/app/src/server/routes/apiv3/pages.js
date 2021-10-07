@@ -195,7 +195,9 @@ module.exports = (crowi) => {
 
   async function saveTagsAction({ createdPage, pageTags }) {
     if (pageTags != null) {
+      const tagEvent = crowi.event('tag');
       await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      tagEvent.emit('update', createdPage, pageTags);
       return PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
