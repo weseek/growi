@@ -25,6 +25,11 @@ const schema = new mongoose.Schema({
     ref: 'Tag',
     required: true,
   },
+  isPageTrashed: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
 });
 // define unique compound index
 schema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true });
@@ -47,7 +52,7 @@ class PageTagRelation {
 
     const existTagIds = await Tag.find().distinct('_id');
     const tags = await this.aggregate()
-      .match({ relatedTag: { $in: existTagIds } })
+      .match({ relatedTag: { $in: existTagIds }, isPageTrashed: false })
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
       .sort(sortOpt);
 
