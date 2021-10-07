@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
     };
 
     this.changeURL = this.changeURL.bind(this);
-    this.onSearchInvoked = this.onSearchInvoked.bind(this);
+    this.search = this.search.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
   }
@@ -38,7 +38,7 @@ class SearchPage extends React.Component {
   componentDidMount() {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
-      this.onSearchInvoked({ keyword });
+      this.search({ keyword });
     }
   }
 
@@ -66,7 +66,7 @@ class SearchPage extends React.Component {
   }
 
 
-  onSearchInvoked(data) {
+  search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
@@ -151,7 +151,7 @@ class SearchPage extends React.Component {
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
-        onSearchInvoked={this.onSearchInvoked}
+        onSearchInvoked={this.search}
       >
       </SearchControl>
     );
