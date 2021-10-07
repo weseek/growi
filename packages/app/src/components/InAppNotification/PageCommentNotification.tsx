@@ -1,7 +1,6 @@
 import React from 'react';
-// import PagePath from 'components/PageList/PagePath';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
-// import NotificationItem from '../NotificationItem';
+// import PagePath from 'components/PageList/PagePath';
 
 interface Props {
   actionUsers: string
@@ -14,6 +13,7 @@ export const PageCommentNotification = (props: Props) => {
 
   return (
     <span>
+      {/* TODO: show page path by #78706 */}
       <b>{props.actionUsers}</b> commented on {props.notification.target}
       {/* <PagePath page={notification.target} /> */}
     </span>

@@ -56,6 +56,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
     case 'Page:COMMENT':
       return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
     default:
-      return <>InAppNotification</>;
+      return <></>;
   }
 };
