@@ -10,7 +10,7 @@ const SearchPageLayout = (props) => {
     <div className="content-main">
       <div className="search-result row" id="search-result">
         <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
-          <nav>{props.SearchControlComponent}</nav>
+          <nav>{props.SearchControl}</nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
             <div className="search-result-meta">
               <i className="icon-magnifier" /> Found {props.searchResultMeta.total} pages with &quot;{props.searchingKeyword}&quot;
@@ -30,9 +30,9 @@ const SearchPageLayout = (props) => {
 };
 
 SearchPageLayout.propTypes = {
-  SearchControlComponent: PropTypes.instanceOf(SearchControl).isRequired,
-  SearchResultList: PropTypes.instanceOf(SearchResultList).isRequired,
-  SearchResultContent: PropTypes.instanceOf(SearchResultContent).isRequired,
+  SearchControl: PropTypes.element.isRequired,
+  SearchResultList: PropTypes.element.isRequired,
+  SearchResultContent: PropTypes.element.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
 };

@@ -168,7 +168,7 @@ class SearchPage extends React.Component {
     return (
       <div>
         <SearchPageLayout
-          SearchControlComponent={this.renderSearchControl()}
+          SearchControl={this.renderSearchControl()}
           SearchResultList={this.renderSearchResultList()}
           SearchResultContent={this.renderSearchResultContent()}
           searchResultMeta={this.state.searchResultMeta}
