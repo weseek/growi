@@ -867,7 +867,7 @@ class ElasticsearchDelegator {
     query.body.highlight = {
       fields: {
         '*': {
-          fragment_size: 30,
+          fragment_size: 40,
           fragmenter: 'simple',
         },
       },

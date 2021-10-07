@@ -151,11 +151,11 @@ module.exports = function(crowi, app) {
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
-      // add tags and highlight data to result pages
+      // add tags and snippet data to result pages
       findResult.pages.map((page) => {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
-        page._doc.highlight = data._highlight;
+        page._doc.snippet = data._highlight;
         return page;
       });
 
