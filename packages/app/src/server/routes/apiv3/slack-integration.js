@@ -1,6 +1,7 @@
 import {
   markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil, supportedGrowiCommands,
 } from '@growi/slack';
+import createError from 'http-errors';
 import loggerFactory from '~/utils/logger';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 
@@ -30,7 +31,7 @@ module.exports = (crowi) => {
     if (tokenPtoG == null) {
       const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
       logger.warn(message, { body: req.body });
-      return res.status(400).send({ message });
+      return next(createError(400, message));
     }
 
     const SlackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
@@ -61,36 +62,28 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandsPermission(req, res, next) {
-    const responseUrl = getResponseUrl(req);
-
     let growiCommand;
     try {
       growiCommand = getGrowiCommand(req.body);
     }
     catch (err) {
-      // for without proxy
-      res.send();
-
       logger.error(err.message);
-      return handleError(err, responseUrl);
+      return next(err);
     }
-
-    // when /relation-test
-    if (req.body.text == null) return next();
 
     // not supported commands
     if (!supportedGrowiCommands.includes(growiCommand.growiCommandType)) {
-      // for without proxy
-      res.send();
-
-      return respond(growiCommand.responseUrl, {
-        text: 'Command is not supported',
-        blocks: [
-          markdownSectionBlock('*Command is not supported*'),
-          // eslint-disable-next-line max-len
-          markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
-        ],
-      });
+      const options = {
+        respondBody: {
+          text: 'Command is not supported',
+          blocks: [
+            markdownSectionBlock('*Command is not supported*'),
+            // eslint-disable-next-line max-len
+            markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+          ],
+        },
+      };
+      return next(new SlackCommandHandlerError('Command type is not specified', options));
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
@@ -104,7 +97,8 @@ module.exports = (crowi) => {
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
       if (isPermitted) return next();
-      return res.status(403).send(`It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`);
+
+      return next(createError(403, `It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`));
     }
 
     // without proxy
@@ -249,13 +243,12 @@ module.exports = (crowi) => {
 
   }
 
-  // this method will be a middleware when typescriptize in the future
-  // this method must return responseUrl
+  // TODO: this method will be a middleware when typescriptize in the future
   function getResponseUrl(req) {
     const { body } = req;
     const responseUrl = body?.growiCommand?.responseUrl;
     if (responseUrl == null) {
-      return body.response_url;
+      return body.response_url; // may be null
     }
     return responseUrl;
   }
@@ -276,6 +269,7 @@ module.exports = (crowi) => {
     return handleCommands(body, res, client, responseUrl);
   });
 
+  // when relation test
   router.post('/proxied/verify', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
 
@@ -349,6 +343,21 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
 
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+  });
+
+  // error handler
+  router.use(async(err, req, res, next) => {
+    const responseUrl = getResponseUrl(req);
+    if (responseUrl == null) {
+      // pass err to global error handler
+      return next(err);
+    }
+
+    // for without proxy
+    res.send();
+
+    await handleError(err, responseUrl);
+    return;
   });
 
   return router;
