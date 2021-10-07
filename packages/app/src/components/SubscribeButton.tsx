@@ -39,6 +39,10 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   };
 
   const fetchSubscriptionStatus = useCallback(async() => {
+    if (appContainer.isGuestUser) {
+      return;
+    }
+
     try {
       const res = await appContainer.apiv3Get('/page/subscribe', { pageId });
       const { subscribing } = res.data;
