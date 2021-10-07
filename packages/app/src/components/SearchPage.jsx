@@ -31,8 +31,8 @@ class SearchPage extends React.Component {
 
     this.changeURL = this.changeURL.bind(this);
     this.onSearchInvoked = this.onSearchInvoked.bind(this);
-    this.onSelectPageToShowInvoked = this.onSelectPageToShowInvoked.bind(this);
-    this.onToggleCheckBoxInvoked = this.onToggleCheckBoxInvoked.bind(this);
+    this.selectPage = this.selectPage.bind(this);
+    this.toggleCheckBox = this.toggleCheckBox.bind(this);
   }
 
   componentDidMount() {
@@ -103,7 +103,7 @@ class SearchPage extends React.Component {
       });
   }
 
-  onSelectPageToShowInvoked= (pageId) => {
+  selectPage= (pageId) => {
     const index = this.state.searchedPages.findIndex((page) => {
       return page._id === pageId;
     });
@@ -112,7 +112,7 @@ class SearchPage extends React.Component {
     });
   }
 
-  onToggleCheckBoxInvoked = (page) => {
+  toggleCheckBox = (page) => {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
     }
@@ -139,8 +139,8 @@ class SearchPage extends React.Component {
         deletionMode={false}
         selectedPage={this.state.selectedPage}
         selectedPages={this.state.selectedPages}
-        clickHandler={this.onSelectPageToShowInvoked}
-        toggleChangeHandler={this.onToggleCheckBoxInvoked}
+        onClickInvoked={this.selectPage}
+        onChangedInvoked={this.toggleCheckBox}
       >
       </SearchResultList>
     );
