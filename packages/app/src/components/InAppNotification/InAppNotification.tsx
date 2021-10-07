@@ -43,7 +43,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  // TODO show userimage by #
+  // TODO show user image by #78702
   const getUserImage = () => {
     // const latestActionUsers = props.notification.actionUsers.slice(0, 3);
 
@@ -53,27 +53,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
     // }
 
     // return <UserPicture user={latestActionUsers[0]} />;
-    return;
-  };
-
-  const Render = () => {
-    // const notification = props.notification;
-    // const componentName = `${notification.targetModel}:${notification.action}`;
-    // const props = {
-    //   actionUsers: this.getActionUsers(),
-    //   ...props,
-    // };
-
-    // switch (componentName) {
-    //   case 'Page:COMMENT':
-    //     // return <PageCommentNotification {...props} onClick={this.onClick.bind(this)} />;
-    //     return;
-    //   case 'Page:LIKE':
-    //     // return <PageLikeNotification {...props} onClick={this.onClick.bind(this)} />
-    //     return;
-    //   default:
-    // }
-
     return;
   };
 
