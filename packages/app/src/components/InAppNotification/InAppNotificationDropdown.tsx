@@ -131,7 +131,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const RenderEmptyInAppNotification = (): JSX.Element => {
     return (
-      // TODO: apply i18n by GW-7536
+      // TODO: apply i18n by #78569
       <>You had no notifications, yet.</>
     );
   };
