@@ -10,8 +10,7 @@ const SearchResultContent = (props) => {
     let showTags = false;
     if (page.tags != null && page.tags.length > 0) { showTags = true }
     return (
-      // Add prefix 'id_' in id attr, because scrollspy of bootstrap doesn't work when the first letter of id of target component is numeral.
-      <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
+      <div key={page._id} className="search-result-page mb-5">
         <h2>
           <a href={page.path} className="text-break">
             {page.path}

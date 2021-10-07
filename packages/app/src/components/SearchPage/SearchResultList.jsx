@@ -7,10 +7,10 @@ class SearchResultList extends React.Component {
   render() {
     return this.props.pages.map((page) => {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-      const pageId = `#id_${page._id}`;
+      const pageId = `#${page._id}`;
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
-          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId} onClick={() => { this.props.clickHandler(pageId) }}>
+          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId} onClick={() => { this.props.clickHandler(page._id) }}>
             <div className="form-check my-auto">
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>

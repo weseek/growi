@@ -105,12 +105,10 @@ class SearchPage extends React.Component {
 
   onSelectPageToShowInvoked= (pageId) => {
     // TODO : this part can be improved.
-    // pageId is this form: #id_613eda3717b2d80c4874dfb9
     let index;
     let i = 0;
-    const pId = pageId.slice(4);
     this.state.searchedPages.forEach((page) => {
-      if (pId === page._id) { index = i }
+      if (pageId === page._id) { index = i }
       i++;
     });
     this.setState({
