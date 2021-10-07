@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
-import SearchControl from './SearchControl';
-import SearchResultList from './SearchResultList';
-import SearchResultContent from './SearchResultContent';
 
+type SearchResultMeta = {
+  took : number,
+  total : number,
+  results: number
+}
 
-const SearchPageLayout = (props) => {
+type Props = {
+  SearchControl:JSX.Element,
+  SearchResultList: JSX.Element,
+  SearchResultContent: JSX.Element,
+  searchResultMeta: SearchResultMeta,
+  searchingKeyword: string
+}
+
+const SearchPageLayout: FC<Props> = (props: Props) => {
   return (
     <div className="content-main">
       <div className="search-result row" id="search-result">
@@ -33,7 +43,7 @@ SearchPageLayout.propTypes = {
   SearchControl: PropTypes.element.isRequired,
   SearchResultList: PropTypes.element.isRequired,
   SearchResultContent: PropTypes.element.isRequired,
-  searchResultMeta: PropTypes.object.isRequired,
+  // searchResultMeta: PropTypes.object.isRequired, // TODO fix lint error
   searchingKeyword: PropTypes.string.isRequired,
 };
 
