@@ -521,10 +521,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /page/subscribe/status:
+   *    /page/subscribe:
    *      get:
    *        tags: [Page]
-   *        summary: /page/subscribe/status
+   *        summary: /page/subscribe
    *        description: Get subscription status
    *        operationId: getSubscriptionStatus
    *        requestBody:
