@@ -13,7 +13,7 @@ const SearchControl = (props) => {
           t={props.t}
           keyword={props.searchingKeyword}
           appContainer={props.appContainer}
-          onSearchFormChanged={props.search}
+          onSearchFormChanged={props.onSearchInvoked}
         />
       </div>
       {/* TODO: place deleteAll button , relevance button , include specificPath button */}
@@ -25,7 +25,7 @@ SearchControl.propTypes = {
   t: PropTypes.func.isRequired,
   searchingKeyword:  PropTypes.string.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  search: PropTypes.func.isRequired,
+  onSearchInvoked: PropTypes.func.isRequired,
 };
 
 export default SearchControl;

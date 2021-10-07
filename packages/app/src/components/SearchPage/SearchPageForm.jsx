@@ -24,7 +24,7 @@ class SearchPageForm extends React.Component {
   }
 
   search() {
-    if (this.props.onSearchFormChanged == null) {
+    if (this.props.onSearchFormChanged != null) {
       const keyword = this.state.keyword;
       this.props.onSearchFormChanged({ keyword });
       this.setState({ searchedKeyword: keyword });

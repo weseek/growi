@@ -29,16 +29,16 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
     };
 
-    this.search = this.search.bind(this);
     this.changeURL = this.changeURL.bind(this);
-    this.selectPageToShow = this.selectPageToShow.bind(this);
-    this.toggleCheckBox = this.toggleCheckBox.bind(this);
+    this.onSearchInvoked = this.onSearchInvoked.bind(this);
+    this.onSelectPageToShowInvoked = this.onSelectPageToShowInvoked.bind(this);
+    this.onToggleCheckBoxInvoked = this.onToggleCheckBoxInvoked.bind(this);
   }
 
   componentDidMount() {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
-      this.search({ keyword });
+      this.onSearchInvoked({ keyword });
     }
   }
 
@@ -65,7 +65,8 @@ class SearchPage extends React.Component {
     }
   }
 
-  search(data) {
+
+  onSearchInvoked(data) {
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
@@ -80,7 +81,6 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-
     this.props.appContainer.apiGet('/search', { q: keyword })
       .then((res) => {
         this.changeURL(keyword);
@@ -103,7 +103,7 @@ class SearchPage extends React.Component {
       });
   }
 
-  selectPageToShow= (pageId) => {
+  onSelectPageToShowInvoked= (pageId) => {
     // TODO : this part can be improved.
     // pageId is this form: #id_613eda3717b2d80c4874dfb9
     let index;
@@ -118,7 +118,7 @@ class SearchPage extends React.Component {
     });
   }
 
-  toggleCheckBox = (page) => {
+  onToggleCheckBoxInvoked = (page) => {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
     }
@@ -145,8 +145,8 @@ class SearchPage extends React.Component {
         deletionMode={false}
         selectedPage={this.state.selectedPage}
         selectedPages={this.state.selectedPages}
-        handleChange={this.toggleCheckBox}
-        clickHandler={this.selectPageToShow}
+        clickHandler={this.onSelectPageToShowInvoked}
+        toggleChangeHandler={this.onToggleCheckBoxInvoked}
       >
       </SearchResultList>
     );
@@ -158,7 +158,7 @@ class SearchPage extends React.Component {
         t={this.props.t}
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
-        search={this.search}
+        onSearchInvoked={this.onSearchInvoked}
       >
       </SearchControl>
     );

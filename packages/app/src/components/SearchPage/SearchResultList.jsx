@@ -28,7 +28,7 @@ class SearchResultList extends React.Component {
                     className="custom-control-input search-result-list-delete-checkbox"
                     value={pageId}
                     checked={this.props.selectedPages.has(page)}
-                    onChange={() => { return this.props.handleChange(page) }}
+                    onChange={() => { return this.props.toggleChangeHandler(page) }}
                   />
                   <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
                 </div>
@@ -59,8 +59,8 @@ SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
-  handleChange: PropTypes.func.isRequired,
   clickHandler: PropTypes.func.isRequired,
+  toggleChangeHandler: PropTypes.func.isRequired,
 };
 
 
