@@ -210,6 +210,7 @@ class SearchResult extends React.Component {
                 <button type="button" className="btn btn-link p-0" value={page.path} onClick={this.visitPageButtonHandler}><i className="icon-login" /></button>
               </div>
             </div>
+            <div>{page.highlight['page.en'].map(item => <p>{item}</p>)}</div>
           </a>
         </li>
       );
