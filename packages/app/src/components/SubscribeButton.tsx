@@ -12,7 +12,6 @@ import PageContainer from '~/client/services/PageContainer';
 
 type Props = {
   appContainer: AppContainer,
-  pageContainer: PageContainer,
   pageId: string,
 };
 
