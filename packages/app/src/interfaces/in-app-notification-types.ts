@@ -1,3 +1,4 @@
+// refer types https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
 export interface InAppNotification {
   _id: string
   user: string

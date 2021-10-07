@@ -10,7 +10,6 @@ import { InAppNotification as InAppNotificationType } from '../../interfaces/in-
 // import { Notification } from 'client/types/crowi'
 import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
-// refer type https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
 
 
 const InAppNotificationDropdown: FC = (props) => {
