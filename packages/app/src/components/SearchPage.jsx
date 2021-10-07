@@ -153,7 +153,6 @@ class SearchPage extends React.Component {
   renderSearchControl = () => {
     return (
       <SearchControl
-        t={this.props.t}
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.onSearchInvoked}

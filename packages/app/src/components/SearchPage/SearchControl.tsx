@@ -7,7 +7,6 @@ import AppContainer from '../../client/services/AppContainer';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
-  t: (str: string) => string,
   onSearchInvoked: (data : any[]) => boolean,
 }
 
@@ -19,7 +18,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     <div className="">
       <div className="search-page-input sps sps--abv">
         <SearchPageFormTypeAny
-          t={props.t}
           keyword={props.searchingKeyword}
           appContainer={props.appContainer}
           onSearchFormChanged={props.onSearchInvoked}
@@ -31,7 +29,6 @@ const SearchControl: FC <Props> = (props: Props) => {
 };
 
 SearchControl.propTypes = {
-  t: PropTypes.func.isRequired,
   searchingKeyword:  PropTypes.string.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onSearchInvoked: PropTypes.func.isRequired,
