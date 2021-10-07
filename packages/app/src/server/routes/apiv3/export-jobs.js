@@ -46,15 +46,18 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequired, csrf, async(req, res) => {
     // TODO: WIP
+    const { pageId, format } = req.body;
+
+    //
     try {
-      const { format, pageId } = req.body;
-      return res.apiv3();
+      console.log('bulk export here');
     }
     catch (err) {
       logger.error(err);
       const msg = 'Error occurred when starting export';
       return res.apiv3Err(new ErrorV3(msg, 'starting-export-failed'));
     }
+    return res.apiv3();
   });
 
   return router;
