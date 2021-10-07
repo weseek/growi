@@ -14,7 +14,7 @@ type Props = {
   pageId: string,
 };
 
-const SubscruibeButton: FC<Props> = (props: Props) => {
+const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { appContainer, pageId } = props;
@@ -61,5 +61,5 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
-export default SubscruibeButtonWrapper;
+const SubscribeButtonWrapper = withUnstatedContainers(SubscribeButton, [AppContainer, PageContainer]);
+export default SubscribeButtonWrapper;
