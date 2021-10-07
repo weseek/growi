@@ -84,19 +84,19 @@ class SearchPage extends React.Component {
     this.props.appContainer.apiGet('/search', { q: keyword })
       .then((res) => {
         this.changeURL(keyword);
-
-        // TODO: remove creating dummy snippet lines when the data with snippet is abole to be retrieved
-        res.data.forEach((page) => {
-          page.snippet = `dummy snippet dummpy snippet dummpy snippet dummpy snippet dummpy snippet
+        if (res.data.length > 0) {
+          // TODO: remove creating dummy snippet lines when the data with snippet is abole to be retrieved
+          res.data.forEach((page) => {
+            page.snippet = `dummy snippet dummpy snippet dummpy snippet dummpy snippet dummpy snippet
             dummpy snippet dummpy snippet dummpy snippet dummpy snippet`;
-        });
-
-        this.setState({
-          searchedKeyword: keyword,
-          searchedPages: res.data,
-          searchResultMeta: res.meta,
-          selectedPage: res.data[0],
-        });
+          });
+          this.setState({
+            searchedKeyword: keyword,
+            searchedPages: res.data,
+            searchResultMeta: res.meta,
+            selectedPage: res.data[0],
+          });
+        }
       })
       .catch((err) => {
         toastError(err);
