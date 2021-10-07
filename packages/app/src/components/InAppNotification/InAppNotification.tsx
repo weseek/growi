@@ -1,20 +1,13 @@
 import React from 'react';
-// import UserPicture from '../User/UserPicture'
 
 import { PageCommentNotification } from './PageCommentNotification';
-// import PageLikeNotification from './ModelAction/PageLikeNotification'
-
-// import { Notification as NotificationType } from 'client/types/crowi'
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 
 interface Props {
-  // notification: NotificationType
   notification: IInAppNotification
-  // onClick: Function
   onClick: any
 }
 
-// export default class InAppNotification extends React.Component<Props> {
 export const InAppNotification = (props: Props): JSX.Element => {
 
   const { notification } = props;
