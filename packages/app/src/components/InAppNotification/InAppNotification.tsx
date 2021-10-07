@@ -15,7 +15,7 @@ interface Props {
 }
 
 // export default class InAppNotification extends React.Component<Props> {
-export const InAppNotification = (props: Props): JSX.Element => {
+export const InAppNotification = (props: Props) => {
 
   // onClick() {
   //   props.onClick(props.notification);
@@ -88,9 +88,4 @@ export const InAppNotification = (props: Props): JSX.Element => {
       return <PageCommentNotification {...propsNew} onClick={props.onClick} />;
     default:
   }
-
-  // return (
-  //   <>InAppNotification</>
-  // );
-
 };
