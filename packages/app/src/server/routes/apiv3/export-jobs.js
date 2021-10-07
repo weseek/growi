@@ -87,7 +87,7 @@ module.exports = (crowi) => {
           },
         },
         {
-          $lookup: {
+          $lookup: { // WIP
             from: 'revision',
             localField: 'revisionId',
             foreignField: '_id',
