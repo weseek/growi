@@ -347,6 +347,7 @@ export default class PageContainer extends Container {
   updateStateAfterTagAdded(page) {
     const newState = {
       updatedAt: page.updatedAt,
+      revisionAuthor: page.revision.author,
     };
     this.setState(newState);
   }
