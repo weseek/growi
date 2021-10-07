@@ -17,19 +17,17 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState<IInAppNotification[]>([
-    {
+  const [notifications, setNotifications] = useState<IInAppNotification[]>([{
     // This is dummy notification data. Delete it after fetching notification list by #78756
-      _id: '1',
-      user: 'kaori1',
-      targetModel: 'Page',
-      target: 'hogePage',
-      action: 'COMMENT',
-      status: 'hoge',
-      actionUsers: ['taro', 'yamada'],
-      createdAt: 'hoge',
-    },
-  ]);
+    _id: '1',
+    user: 'kaori1',
+    targetModel: 'Page',
+    target: 'hogePage',
+    action: 'COMMENT',
+    status: 'hoge',
+    actionUsers: ['taro', 'yamada'],
+    createdAt: 'hoge',
+  }]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
