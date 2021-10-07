@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import { InAppNotification as InAppNotificationType } from '../../interfaces/in-app-notification-types';
+import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
@@ -16,7 +16,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState<InAppNotificationType[]>([{
+  const [notifications, setNotifications] = useState<IInAppNotification[]>([{
     // This is dummy notification data. Delete it after fetching notification list by #78557
     _id: '1',
     user: 'kaori1',
@@ -143,7 +143,7 @@ const InAppNotificationDropdown: FC = (props) => {
     if (notifications.length === 0) {
       return <RenderEmptyInAppNotification />;
     }
-    const notificationList = notifications.map((notification: InAppNotificationType) => {
+    const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
         <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );

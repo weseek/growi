@@ -5,11 +5,11 @@ import { PageCommentNotification } from './PageCommentNotification';
 // import PageLikeNotification from './ModelAction/PageLikeNotification'
 
 // import { Notification as NotificationType } from 'client/types/crowi'
-import { InAppNotification as InAppNotificationType } from '../../interfaces/in-app-notification-types';
+import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 
 interface Props {
   // notification: NotificationType
-  notification: InAppNotificationType
+  notification: IInAppNotification
   // onClick: Function
   onClick: any
 }
