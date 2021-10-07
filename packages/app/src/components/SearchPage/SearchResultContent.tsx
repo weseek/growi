@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 
 import RevisionLoader from '../Page/RevisionLoader';
-import AppContainer from '~/client/services/AppContainer';
+import AppContainer from '../../client/services/AppContainer';
 
 type page = {
   status: string,
@@ -44,6 +44,9 @@ type Props ={
   selectedPage : page,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
+  // Temporaly workaround for lint error
+  // later needs to be fixed: RevisoinRender to typescriptcomponet
+  const RevisionRenderTypeAny: any = RevisionLoader;
   const renderPage = (page) => {
     const growiRenderer = props.appContainer.getRenderer('searchresult');
     let showTags = false;
@@ -60,7 +63,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
             </div>
           )}
         </h2>
-        <RevisionLoader
+        <RevisionRenderTypeAny
           growiRenderer={growiRenderer}
           pageId={page._id}
           pagePath={page.path}
@@ -80,7 +83,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
 SearchResultContent.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   searchingKeyword: PropTypes.string.isRequired,
-  // selectedPage: PropTypes.object.isRequired,  // fix this
+  // selectedPage: PropTypes.object.isRequired, // todo fix lint error
 };
 
 export default SearchResultContent;

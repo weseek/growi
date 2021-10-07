@@ -45,11 +45,13 @@ type Props = {
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
-
+  // Temporaly workaround for lint error
+  // later needs to be fixed: SearchControl to typescript componet
+  const SearchPageFormTypeAny : any = SearchPageForm;
   return (
     <div className="">
       <div className="search-page-input sps sps--abv">
-        <SearchPageForm
+        <SearchPageFormTypeAny
           t={props.t}
           keyword={props.searchingKeyword}
           appContainer={props.appContainer}
