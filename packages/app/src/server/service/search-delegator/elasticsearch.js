@@ -868,7 +868,7 @@ class ElasticsearchDelegator {
       fields: {
         '*': {
           fragment_size: 40,
-          // fragmenter: 'simple',
+          fragmenter: 'simple',
         },
       },
     };
