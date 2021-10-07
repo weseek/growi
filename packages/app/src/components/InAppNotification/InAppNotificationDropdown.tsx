@@ -18,10 +18,10 @@ const InAppNotificationDropdown: FC = (props) => {
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [notifications, setNotifications] = useState<InAppNotificationType[]>([{
+    // This is dummy notification data. Delete it after fetching notification list by #78557
     _id: '1',
     user: 'kaori1',
     targetModel: 'Page',
-    // target: Page
     target: 'hogePage',
     action: 'COMMENT',
     status: 'hoge',
@@ -45,10 +45,10 @@ const InAppNotificationDropdown: FC = (props) => {
       console.log('socketData', data);
 
       if (props.me === data.user) {
-        // TODO: Fetch notification status by GW-7473
+        // TODO: Fetch notification status by #78563
         // fetchNotificationList();
 
-        // TODO: Fetch notification list by GW-7473
+        // TODO: Fetch notification list by #78557
         // fetchNotificationStatus();
       }
     });
@@ -56,7 +56,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
 
   /**
-    * TODO: Fetch notification status by GW-7473
+    * TODO: Fetch notification status by #78563
     */
   // async fetchNotificationStatus() {
   //   try {
