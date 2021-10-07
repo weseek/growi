@@ -211,6 +211,7 @@ class SearchResult extends React.Component {
               </div>
             </div>
           </a>
+          <div>{page.highlight['body.en']?.map(text => <p dangerouslySetInnerHTML={{ __html: text }} />)}</div>
         </li>
       );
     });
