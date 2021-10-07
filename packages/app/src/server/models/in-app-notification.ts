@@ -84,17 +84,18 @@ inAppNotificationSchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 });
 
-inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(user, limitNum, offset) {
+inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = async function(user, limitNum, offset) {
   const limit = limitNum || 10;
 
-  // TODO: improve populate refer to GROWI way by GW-7482
-  return InAppNotification.find({ user })
-    .sort({ createdAt: -1 })
-    .skip(offset)
-    .limit(limit)
-    .populate(['user', 'target'])
-    .populate({ path: 'activities', populate: { path: 'user' } })
-    .exec();
+  // TODO: improve populate refer to GROWI way by #78756
+  const notificatins = await InAppNotification.find({ user });
+  // .sort({ createdAt: -1 })
+  // .skip(offset)
+  // .limit(limit)
+  // .populate(['user', 'target'])
+  // .populate({ path: 'activities', populate: { path: 'user' } })
+  // .exec();
+  return notificatins;
 };
 
 inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
