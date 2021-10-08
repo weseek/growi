@@ -12,8 +12,7 @@ import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond,
-  getHelpCommandBody,
+  respond, supportedGrowiCommands,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -179,11 +178,7 @@ export class SlackCtrl {
       return this.unregisterService.processCommand(growiCommand, authorizeResult);
     }
 
-    // help
-    if (growiCommand.growiCommandType === 'help') {
-      return respond(growiCommand.responseUrl, getHelpCommandBody());
-    }
-
+    // get relations
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -209,6 +204,23 @@ export class SlackCtrl {
           ...relations.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
+    }
+
+    // not supported commands
+    if (!supportedGrowiCommands.includes(growiCommand.growiCommandType)) {
+      return respond(growiCommand.responseUrl, {
+        text: 'Command is not supported',
+        blocks: [
+          markdownSectionBlock('*Command is not supported*'),
+          // eslint-disable-next-line max-len
+          markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+        ],
+      });
+    }
+
+    // help
+    if (growiCommand.growiCommandType === 'help') {
+      return this.sendCommand(growiCommand, relations, body);
     }
 
     await respond(growiCommand.responseUrl, {

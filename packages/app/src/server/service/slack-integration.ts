@@ -249,6 +249,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
     catch (err) {
       const text = `*No command.*\n \`command: ${growiCommand.text}\``;
+      logger.error(err);
       throw new SlackCommandHandlerError(text, {
         respondBody: {
           text,

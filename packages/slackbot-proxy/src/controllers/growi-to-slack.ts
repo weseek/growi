@@ -59,8 +59,8 @@ export class GrowiToSlackCtrl {
   @Inject()
   sectionBlockPayloadDelegator: SectionBlockPayloadDelegator;
 
-  async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
-    const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
+  async urlVerificationRequestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
+    const url = new URL('/_api/v3/slack-integration/proxied/verify', growiUrl);
     await axios.post(url.toString(), {
       type: 'url_verification',
       challenge: 'this_is_my_challenge_token',
@@ -149,7 +149,7 @@ export class GrowiToSlackCtrl {
       }
 
       try {
-        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+        await this.urlVerificationRequestToGrowi(relation.growiUri, relation.tokenPtoG);
       }
       catch (err) {
         logger.error(err);
@@ -178,7 +178,7 @@ export class GrowiToSlackCtrl {
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
-      await this.requestToGrowi(order.growiUrl, order.tokenPtoG);
+      await this.urlVerificationRequestToGrowi(order.growiUrl, order.tokenPtoG);
     }
     catch (err) {
       logger.error(err);
