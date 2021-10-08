@@ -4,6 +4,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -33,7 +34,7 @@ const InAppNotificationDropdown: FC = (props) => {
   useEffect(() => {
     initializeSocket(props);
     fetchNotificationList(props);
-    // fetchNotificationStatus();
+    fetchNotificationStatus(props);
   }, []);
 
   const initializeSocket = (props) => {
@@ -69,6 +70,18 @@ const InAppNotificationDropdown: FC = (props) => {
   //     // TODO: error handling
   //   }
   // }
+
+  const fetchNotificationStatus = async(props) => {
+    try {
+      const res = await props.appContainer.apiv3Get('in-app-notification/status');
+      const { count } = res.data;
+      console.log(count);
+      setCount(count);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
   const updateNotificationStatus = () => {
     try {
