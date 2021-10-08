@@ -43,7 +43,6 @@ class SearchPageForm extends React.Component {
       <div className="input-group mb-3 d-flex">
         <div className="flex-fill">
           <SearchForm
-            t={this.props.t}
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
@@ -78,7 +77,6 @@ class SearchPageForm extends React.Component {
 const SearchPageFormWrapper = withUnstatedContainers(SearchPageForm, [AppContainer]);
 
 SearchPageForm.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   keyword: PropTypes.string,
