@@ -5,10 +5,7 @@ import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
-<<<<<<< HEAD
   RespondUtil,
-=======
->>>>>>> master
 } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
