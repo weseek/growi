@@ -7,9 +7,9 @@ type SearchResultMeta = {
 }
 
 type Props = {
-  SearchControl: any,
-  SearchResultList: any,
-  SearchResultContent: any,
+  SearchControl: React.FunctionComponent,
+  SearchResultList: React.FunctionComponent,
+  SearchResultContent: React.FunctionComponent,
   searchResultMeta: SearchResultMeta,
   searchingKeyword: string
 }
