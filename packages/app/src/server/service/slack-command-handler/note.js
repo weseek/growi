@@ -1,10 +1,10 @@
 import loggerFactory from '~/utils/logger';
 
 const {
-  markdownSectionBlock, inputSectionBlock, respond, inputBlock,
+  markdownSectionBlock, inputSectionBlock, inputBlock,
 } = require('@growi/slack');
 
-const logger = loggerFactory('growi:service:SlackCommandHandler:create');
+const logger = loggerFactory('growi:service:SlackCommandHandler:note');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -18,16 +18,16 @@ module.exports = (crowi) => {
     default_to_current_conversation: true,
   };
 
-  handler.handleCommand = async(growiCommand, client, body) => {
+  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await client.views.open({
       trigger_id: body.trigger_id,
 
       view: {
         type: 'modal',
-        callback_id: 'create:createPage',
+        callback_id: 'note:createPage',
         title: {
           type: 'plain_text',
-          text: 'Create Page',
+          text: 'Take a note',
         },
         submit: {
           type: 'plain_text',
@@ -38,9 +38,9 @@ module.exports = (crowi) => {
           text: 'Cancel',
         },
         blocks: [
-          markdownSectionBlock('Create new page.'),
+          markdownSectionBlock('Take a note on GROWI'),
           inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
-          inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+          inputSectionBlock('path', 'Page path', 'path_input', false, '/path'),
           inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
         ],
         private_metadata: JSON.stringify({ channelId: body.channel_id, channelName: body.channel_name }),
@@ -48,15 +48,15 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor) {
+  handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
     if (privateMetadata == null) {
-      await respond(interactionPayloadAccessor.getResponseUrl(), {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to create a page.'),
@@ -65,7 +65,7 @@ module.exports = (crowi) => {
       return;
     }
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
   };
 
   return handler;
