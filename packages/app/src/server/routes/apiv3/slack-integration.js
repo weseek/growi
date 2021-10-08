@@ -64,6 +64,8 @@ module.exports = (crowi) => {
   // TODO: move this middleware to each controller
   // no res.send() is allowed after this middleware
   async function checkCommandsPermission(req, res, next) {
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     // for without proxy
     res.send();
 
@@ -129,6 +131,8 @@ module.exports = (crowi) => {
   // TODO: move this middleware to each controller
   // no res.send() is allowed after this middleware
   async function checkInteractionsPermission(req, res, next) {
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     // for without proxy
     res.send();
 
@@ -315,10 +319,6 @@ module.exports = (crowi) => {
   });
 
   async function handleInteractionsRequest(req, res, client) {
-
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
 
     const { interactionPayload, interactionPayloadAccessor } = req;
     const { type } = interactionPayload;
