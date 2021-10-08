@@ -1,7 +1,7 @@
 import {
   Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '@growi/core';
 
 
 export interface ILintRule {

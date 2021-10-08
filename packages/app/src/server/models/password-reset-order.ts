@@ -4,7 +4,7 @@ import mongoose, {
 
 import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '@growi/core';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
