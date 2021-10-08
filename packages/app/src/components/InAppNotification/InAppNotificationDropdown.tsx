@@ -55,27 +55,10 @@ const InAppNotificationDropdown: FC = (props) => {
     });
   };
 
-
-  /**
-    * TODO: Fetch notification status by #78834
-    */
-  // async fetchNotificationStatus() {
-  //   try {
-  //     const { count = null } = await this.props.crowi.apiGet('/notification.status');
-  //     if (count !== null && count !== this.state.count) {
-  //       this.setState({ count });
-  //     }
-  //   }
-  //   catch (err) {
-  //     // TODO: error handling
-  //   }
-  // }
-
   const fetchNotificationStatus = async(props) => {
     try {
       const res = await props.appContainer.apiv3Get('in-app-notification/status');
       const { count } = res.data;
-      console.log(count);
       setCount(count);
     }
     catch (err) {
