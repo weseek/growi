@@ -39,12 +39,5 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   );
 };
 
-SearchPageLayout.propTypes = {
-  SearchControl: PropTypes.element.isRequired,
-  SearchResultList: PropTypes.element.isRequired,
-  SearchResultContent: PropTypes.element.isRequired,
-  // searchResultMeta: PropTypes.object.isRequired, // TODO fix lint error
-  searchingKeyword: PropTypes.string.isRequired,
-};
 
 export default SearchPageLayout;

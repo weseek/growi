@@ -47,10 +47,5 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   );
 };
 
-SearchResultContent.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  searchingKeyword: PropTypes.string.isRequired,
-  // selectedPage: PropTypes.object.isRequired, // todo fix lint error
-};
 
 export default SearchResultContent;
