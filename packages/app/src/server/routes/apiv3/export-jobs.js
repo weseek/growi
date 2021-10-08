@@ -32,7 +32,7 @@ module.exports = (crowi) => {
     const Page = mongoose.model('Page');
     const { isTopPage } = pagePathUtils;
 
-    const $match = {
+    const filter = {
       redirectTo: null,
     };
     // add $or condition if not top page
@@ -40,32 +40,17 @@ module.exports = (crowi) => {
       const basePathNormalized = pathUtils.normalizePath(basePagePath);
       const basePathWithTrailingSlash = pathUtils.addTrailingSlash(basePagePath);
       const startsPattern = escapeStringRegexp(basePathWithTrailingSlash);
-      $match.$or = [{ path: basePathNormalized }, { path: new RegExp(`^${startsPattern}`) }];
+      filter.$or = [{ path: basePathNormalized }, { path: new RegExp(`^${startsPattern}`) }];
     }
 
     return Page
-      .aggregate([
-        {
-          $match, // filter
-        },
-        {
-          $project: { // minimize data to fetch
-            _id: 1,
-            path: 1,
-            revision: 1,
-          },
-        },
-        {
-          $lookup: { // left outer join
-            from: 'revisions',
-            localField: 'revision',
-            foreignField: '_id',
-            as: 'revisions',
-          },
-        },
-      ])
-      .cursor({ batchSize: 100 }) // get stream
-      .exec();
+      .find(
+        filter,
+        { _id: 0, path: 1, revision: 1 }, // projects data to fetch
+      )
+      .populate('revision')
+      .lean()
+      .cursor({ batchSize: 100 }); // get stream
   }
 
   function setUpArchiver() {
@@ -134,7 +119,7 @@ module.exports = (crowi) => {
         objectMode: true,
         async write(page, encoding, callback) {
           try {
-            const revision = page.revisions?.[0];
+            const revision = page.revision;
 
             let markdownBody = 'This page does not have any content.';
             if (revision != null) {
@@ -152,7 +137,7 @@ module.exports = (crowi) => {
           callback();
         },
         final(callback) {
-          // TODO: ここで本来は multi-part upload する
+          // TODO: multi-part upload instead of calling finalize() 78070
           archive.finalize();
           callback();
         },
