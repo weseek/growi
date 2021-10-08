@@ -37,6 +37,7 @@ module.exports = (crowi) => {
     };
     // add $or condition if not top page
     if (!isTopPage(basePagePath)) {
+      // get pages with descendants
       const basePathNormalized = pathUtils.normalizePath(basePagePath);
       const basePathWithTrailingSlash = pathUtils.addTrailingSlash(basePagePath);
       const startsPattern = escapeStringRegexp(basePathWithTrailingSlash);
