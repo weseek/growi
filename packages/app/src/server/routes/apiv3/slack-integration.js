@@ -109,7 +109,7 @@ module.exports = (crowi) => {
     }
 
     // without proxy
-    commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
 
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) {
@@ -156,7 +156,7 @@ module.exports = (crowi) => {
     }
 
     // without proxy
-    commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
 
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) {
