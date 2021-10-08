@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Page from '../PageList/Page';
+import loggerFactory from '~/utils/logger';
 
+const logger = loggerFactory('growi:searchResultList');
 class SearchResultList extends React.Component {
 
   render() {
@@ -10,7 +12,19 @@ class SearchResultList extends React.Component {
       const pageId = `#${page._id}`;
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
-          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId} onClick={() => { this.props.onClickInvoked(page._id) }}>
+          <a
+            className="nav-link page-list-link d-flex align-items-baseline"
+            href={pageId}
+            onClick={() => {
+              try {
+                if (this.props.onClickInvoked == null) { throw new Error('onClickInvoked is null') }
+                this.props.onClickInvoked(page._id);
+              }
+              catch (error) {
+                logger.error(error);
+              }
+            }}
+          >
             <div className="form-check my-auto">
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>
@@ -28,7 +42,15 @@ class SearchResultList extends React.Component {
                     className="custom-control-input search-result-list-delete-checkbox"
                     value={pageId}
                     checked={this.props.selectedPages.has(page)}
-                    onChange={() => { return this.props.onChangeInvoked(page) }}
+                    onChange={() => {
+                      try {
+                        if (this.props.onChangeInvoked == null) { throw new Error('onChnageInvoked is null') }
+                        return this.props.onChangeInvoked(page);
+                      }
+                      catch (error) {
+                        logger.error(error);
+                      }
+                    }}
                   />
                   <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
                 </div>
@@ -59,8 +81,8 @@ SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
-  onClickInvoked: PropTypes.func.isRequired,
-  onChangeInvoked: PropTypes.func.isRequired,
+  onClickInvoked: PropTypes.func,
+  onChangeInvoked: PropTypes.func,
 };
 
 
