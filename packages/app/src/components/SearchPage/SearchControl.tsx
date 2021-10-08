@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 
