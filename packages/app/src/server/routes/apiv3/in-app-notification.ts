@@ -66,7 +66,6 @@ module.exports = (crowi) => {
       return res.apiv3(result);
     }
     catch (err) {
-      console.log(err);
       return res.apiv3Err(err);
     }
   });
