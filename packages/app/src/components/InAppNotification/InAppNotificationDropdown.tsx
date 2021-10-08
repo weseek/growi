@@ -56,7 +56,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
 
   /**
-    * TODO: Fetch notification status by #78563
+    * TODO: Fetch notification status by #78834
     */
   // async fetchNotificationStatus() {
   //   try {
