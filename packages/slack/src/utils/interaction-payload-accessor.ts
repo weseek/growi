@@ -1,4 +1,8 @@
+import assert from 'assert';
 import { IInteractionPayloadAccessor } from '../interfaces/request-from-slack';
+import loggerFactory from './logger';
+
+const logger = loggerFactory('@growi/slack:utils:interaction-payload-accessor');
 
 
 export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
@@ -27,11 +31,10 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
     }
 
     const responseUrls = this.payload.response_urls;
-    if (responseUrls != null && responseUrls[0] != null) {
-      return responseUrls[0].response_url;
-    }
+    assert(responseUrls != null);
+    assert(responseUrls[0] != null);
 
-    return '';
+    return responseUrls[0].response_url;
   }
 
   getStateValues(): any | null {
@@ -78,6 +81,25 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
     }
 
     return null;
+  }
+
+  getOriginalData(): any | null {
+    const value = this.firstAction()?.value;
+    if (value == null) return null;
+
+    const { originalData } = JSON.parse(value);
+    if (originalData == null) return JSON.parse(value);
+
+    let parsedOriginalData;
+    try {
+      parsedOriginalData = JSON.parse(originalData);
+    }
+    catch (err) {
+      logger.error('Failed to parse original data:\n', err);
+      return null;
+    }
+
+    return parsedOriginalData;
   }
 
 }

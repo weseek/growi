@@ -170,7 +170,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     await replaceOriginal(responseUrl, {
       text: `Accepted ${growiCommand.growiCommandType} command.`,
       blocks: [
-        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${growiUri} ...`),
+        markdownSectionBlock(`Forwarding your request *"/growi ${growiCommand.growiCommandType}"* on GROWI to ${growiUri} ...`),
       ],
     });
 

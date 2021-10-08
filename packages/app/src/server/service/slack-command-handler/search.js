@@ -3,33 +3,67 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider, respond, deleteOriginal,
+  markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
-const SlackbotError = require('../../models/vo/slackbot-error');
 
-const PAGINGLIMIT = 10;
+const PAGINGLIMIT = 7;
+
 
 module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
-  handler.handleCommand = async function(growiCommand, client, body) {
-    const { responseUrl, growiCommandArgs } = growiCommand;
-    let searchResult;
-    try {
-      searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs);
-    }
-    catch (err) {
-      logger.error('Failed to get search results.', err);
-      throw new SlackbotError({
-        method: 'postEphemeral',
-        to: 'channel',
-        popupMessage: 'Failed To Search',
-        mainMessage: '*Failed to search.*\n Hint\n `/growi search [keyword]`',
-      });
-    }
 
+  function getKeywords(growiCommandArgs) {
+    const keywords = growiCommandArgs.join(' ');
+    return keywords;
+  }
+
+  function appendSpeechBaloon(mrkdwn, commentCount) {
+    return (commentCount != null && commentCount > 0)
+      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
+      : mrkdwn;
+  }
+
+  function generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs) {
+    const url = new URL('/_search', appUrl);
+    url.searchParams.append('q', growiCommandArgs.map(kwd => encodeURIComponent(kwd)).join('+'));
+    return `<${url.href} | Results page>`;
+  }
+
+  function generatePageLinkMrkdwn(pathname, href) {
+    return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
+  }
+
+  function generateLastUpdateMrkdwn(updatedAt, baseDate) {
+    if (updatedAt != null) {
+      // cast to date
+      const date = new Date(updatedAt);
+      return formatDistanceStrict(date, baseDate);
+    }
+    return '';
+  }
+
+  async function retrieveSearchResults(growiCommandArgs, offset = 0) {
+    const keywords = getKeywords(growiCommandArgs);
+
+    const { searchService } = crowi;
+    const options = { limit: PAGINGLIMIT, offset };
+    const results = await searchService.searchKeyword(keywords, null, {}, options);
+    const resultsTotal = results.meta.total;
+
+    const pages = results.data.map((data) => {
+      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
+      return { path, updatedAt, commentCount };
+    });
+
+    return {
+      pages, offset, resultsTotal,
+    };
+  }
+
+  function buildRespondBodyForSearchResult(searchResult, growiCommandArgs) {
     const appUrl = crowi.appService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
@@ -37,22 +71,9 @@ module.exports = (crowi) => {
       pages, offset, resultsTotal,
     } = searchResult;
 
-    const keywords = this.getKeywords(growiCommandArgs);
-
+    const keywords = getKeywords(growiCommandArgs);
 
     let searchResultsDesc;
-
-    if (resultsTotal === 0 || resultsTotal == null) {
-      if (keywords === '') return;
-      await respond(responseUrl, {
-        text: 'No page found.',
-        blocks: [
-          markdownSectionBlock(`No page found. keyword(s): *"${keywords}"*`),
-          markdownSectionBlock('Please try other keywords.'),
-        ],
-      });
-      return;
-    }
     switch (resultsTotal) {
       case 1:
         searchResultsDesc = `*${resultsTotal}* page is found.`;
@@ -62,13 +83,15 @@ module.exports = (crowi) => {
         break;
     }
 
-
     const contextBlock = {
       type: 'context',
       elements: [
         {
           type: 'mrkdwn',
-          text: `keyword(s) : *"${keywords}"*  |  Current: ${offset + 1} - ${offset + pages.length}  |  Total ${resultsTotal} pages`,
+          text: `keyword(s) : *"${keywords}"*`
+          + `  |  Total ${resultsTotal} pages`
+          + `  |  Current: ${offset + 1} - ${offset + pages.length}`
+          + `  |  ${generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs)}`,
         },
       ],
     };
@@ -89,8 +112,8 @@ module.exports = (crowi) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
-              + `\n    Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}`,
+            text: `${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
+              + `  \`${generateLastUpdateMrkdwn(updatedAt, now)}\``,
           },
           accessory: {
             type: 'button',
@@ -121,246 +144,65 @@ module.exports = (crowi) => {
         },
       ],
     };
-    // show "Next" button if next page exists
-    if (resultsTotal > offset + PAGINGLIMIT) {
+    // show "Prev" button if previous page exists
+    // eslint-disable-next-line yoda
+    if (0 < offset) {
       actionBlocks.elements.unshift(
         {
           type: 'button',
           text: {
             type: 'plain_text',
-            text: 'Next',
+            text: '< Prev',
           },
-          action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, growiCommandArgs }),
+          action_id: 'search:showPrevResults',
+          value: JSON.stringify({ offset, growiCommandArgs }),
         },
       );
     }
-    blocks.push(actionBlocks);
-
-    await respond(responseUrl, {
-      text: 'Successed To Search',
-      blocks,
-    });
-  };
-
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
-  };
-
-  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor) {
-    const { user } = payload;
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
-
-    const appUrl = crowi.appService.getSiteUrl();
-    const appTitle = crowi.appService.getAppTitle();
-
-    const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
-    if (value == null) {
-      await respond(responseUrl, {
-        text: 'Error occurred',
-        blocks: [
-          markdownSectionBlock('Failed to share the result.'),
-        ],
-      });
-      return;
-    }
-
-    // restore page data from value
-    const { page, href, pathname } = JSON.parse(value);
-    const { updatedAt, commentCount } = page;
-
-    // share
-    const now = new Date();
-    return respond(responseUrl, {
-      blocks: [
-        { type: 'divider' },
-        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
-        {
-          type: 'context',
-          elements: [
-            {
-              type: 'mrkdwn',
-              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
-            },
-          ],
-        },
-      ],
-    });
-  };
-
-  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
-
-    const value = interactionPayloadAccessor.firstAction()?.value;
-    if (value == null) {
-      await respond(responseUrl, {
-        text: 'Error occurred',
-        blocks: [
-          markdownSectionBlock('Failed to show the next results.'),
-        ],
-      });
-      return;
-    }
-    const parsedValue = JSON.parse(value);
-
-    const { body, growiCommandArgs, offset: offsetNum } = parsedValue;
-    const newOffsetNum = offsetNum + 10;
-    let searchResult;
-    try {
-      searchResult = await this.retrieveSearchResults(responseUrl, client, body, growiCommandArgs, newOffsetNum);
-    }
-    catch (err) {
-      logger.error('Failed to get search results.', err);
-      throw new SlackbotError({
-        method: 'postEphemeral',
-        to: 'channel',
-        popupMessage: 'Failed To Search',
-        mainMessage: '*Failed to search.*\n Hint\n `/growi search [keyword]`',
-      });
-    }
-
-    const appUrl = crowi.appService.getSiteUrl();
-    const appTitle = crowi.appService.getAppTitle();
-
-    const {
-      pages, offset, resultsTotal,
-    } = searchResult;
-
-    const keywords = this.getKeywords(growiCommandArgs);
-
-
-    let searchResultsDesc;
-
-    if (resultsTotal === 0 || resultsTotal == null) {
-      if (keywords === '') return;
-      await respond(responseUrl, {
-        text: 'No page found.',
-        blocks: [
-          markdownSectionBlock('Please try with other keywords.'),
-        ],
-      });
-      return;
-    }
-    switch (resultsTotal) {
-      case 1:
-        searchResultsDesc = `*${resultsTotal}* page is found.`;
-        break;
-      default:
-        searchResultsDesc = `*${resultsTotal}* pages are found.`;
-        break;
-    }
-
-    const contextBlock = {
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: `keyword(s) : *"${keywords}"*  |  Current: ${offset + 1} - ${offset + pages.length}  |  Total ${resultsTotal} pages`,
-        },
-      ],
-    };
-
-    const now = new Date();
-    const blocks = [
-      markdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
-      contextBlock,
-      { type: 'divider' },
-      // create an array by map and extract
-      ...pages.map((page) => {
-        const { path, updatedAt, commentCount } = page;
-        // generate URL
-        const url = new URL(path, appUrl);
-        const { href, pathname } = url;
-
-        return {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
-              + `\n    Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}`,
-          },
-          accessory: {
-            type: 'button',
-            action_id: 'search:shareSinglePageResult',
-            text: {
-              type: 'plain_text',
-              text: 'Share',
-            },
-            value: JSON.stringify({ page, href, pathname }),
-          },
-        };
-      }),
-      { type: 'divider' },
-      contextBlock,
-    ];
-
-    const actionBlocks = {
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Dismiss',
-          },
-          style: 'danger',
-          action_id: 'search:dismissSearchResults',
-        },
-      ],
-    };
     // show "Next" button if next page exists
-    if (resultsTotal > offset + PAGINGLIMIT) {
+    if (offset + PAGINGLIMIT < resultsTotal) {
       actionBlocks.elements.unshift(
         {
           type: 'button',
           text: {
             type: 'plain_text',
-            text: 'Next',
+            text: 'Next >',
           },
           action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, body, growiCommandArgs }),
+          value: JSON.stringify({ offset, growiCommandArgs }),
         },
       );
     }
     blocks.push(actionBlocks);
 
-    await respond(responseUrl, {
+    return {
       text: 'Successed To Search',
       blocks,
-    });
-  };
+    };
+  }
 
-  handler.dismissSearchResults = async function(client, payload) {
-    const { response_url: responseUrl } = payload;
 
-    return deleteOriginal(responseUrl, {
-      delete_original: true,
-    });
-  };
-
-  handler.retrieveSearchResults = async function(responseUrl, client, body, growiCommandArgs, offset = 0) {
+  async function buildRespondBody(growiCommandArgs) {
     const firstKeyword = growiCommandArgs[0];
+
+    // enpty keyword
     if (firstKeyword == null) {
-      await respond(responseUrl, {
+      return {
         text: 'Input keywords',
         blocks: [
           markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
-      });
-      return { pages: [] };
+      };
     }
 
-    const keywords = this.getKeywords(growiCommandArgs);
-
-    const { searchService } = crowi;
-    const options = { limit: 10, offset };
-    const results = await searchService.searchKeyword(keywords, null, {}, options);
-    const resultsTotal = results.meta.total;
+    const searchResult = await retrieveSearchResults(growiCommandArgs);
 
     // no search results
-    if (results.data.length === 0) {
+    if (searchResult.resultsTotal === 0) {
+      const keywords = getKeywords(growiCommandArgs);
       logger.info(`No page found with "${keywords}"`);
-      await respond(responseUrl, {
+
+      return {
         text: `No page found with "${keywords}"`,
         blocks: [
           markdownSectionBlock(`*No page matches your keyword(s) "${keywords}".*`),
@@ -380,42 +222,103 @@ module.exports = (crowi) => {
           divider(),
           markdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
         ],
+      };
+    }
+
+    return buildRespondBodyForSearchResult(searchResult, growiCommandArgs);
+  }
+
+
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+    const { growiCommandArgs } = growiCommand;
+
+    const respondBody = await buildRespondBody(growiCommandArgs);
+    await respondUtil.respond(respondBody);
+  };
+
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
+  };
+
+  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    const { user } = payload;
+
+    const appUrl = crowi.appService.getSiteUrl();
+    const appTitle = crowi.appService.getAppTitle();
+
+    const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
+    if (value == null) {
+      await respondUtil.respond({
+        text: 'Error occurred',
+        blocks: [
+          markdownSectionBlock('Failed to share the result.'),
+        ],
       });
-      return { pages: [] };
+      return;
     }
 
-    const pages = results.data.map((data) => {
-      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
-      return { path, updatedAt, commentCount };
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
+
+    // restore page data from value
+    const { page, href, pathname } = parsedValue;
+    const { updatedAt, commentCount } = page;
+
+    // share
+    const now = new Date();
+    return respondUtil.respondInChannel({
+      blocks: [
+        { type: 'divider' },
+        markdownSectionBlock(`${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>`
+                + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, now)}\``
+                + `  |  Shared by *${user.username}*`,
+            },
+          ],
+        },
+      ],
     });
-
-    return {
-      pages, offset, resultsTotal,
-    };
   };
 
-  handler.getKeywords = function(growiCommandArgs) {
-    const keywords = growiCommandArgs.join(' ');
-    return keywords;
-  };
+  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true, respondUtil) {
 
-  handler.appendSpeechBaloon = function(mrkdwn, commentCount) {
-    return (commentCount != null && commentCount > 0)
-      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
-      : mrkdwn;
-  };
-
-  handler.generatePageLinkMrkdwn = function(pathname, href) {
-    return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
-  };
-
-  handler.generateLastUpdateMrkdwn = function(updatedAt, baseDate) {
-    if (updatedAt != null) {
-      // cast to date
-      const date = new Date(updatedAt);
-      return formatDistanceStrict(date, baseDate);
+    const value = interactionPayloadAccessor.firstAction()?.value;
+    if (value == null) {
+      await respondUtil.respond({
+        text: 'Error occurred',
+        blocks: [
+          markdownSectionBlock('Failed to show the next results.'),
+        ],
+      });
+      return;
     }
-    return '';
+
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
+
+    const { growiCommandArgs, offset: offsetNum } = parsedValue;
+    const newOffsetNum = isNext
+      ? offsetNum + PAGINGLIMIT
+      : offsetNum - PAGINGLIMIT;
+
+    const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
+
+    await respondUtil.replaceOriginal(buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+  }
+
+  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
+  };
+
+  handler.showNextResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
+  };
+
+  handler.dismissSearchResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return respondUtil.deleteOriginal();
   };
 
   return handler;

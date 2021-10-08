@@ -174,7 +174,7 @@ module.exports = (crowi) => {
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
-      settings.commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+      settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
     }
     else {
       settings.proxyServerUri = slackIntegrationService.proxyUriForCurrentType;
@@ -251,7 +251,7 @@ module.exports = (crowi) => {
         commandPermission[commandName] = true;
       });
 
-      const requestParams = { 'slackbot:withoutProxy:commandPermission': JSON.stringify(commandPermission) };
+      const requestParams = { 'slackbot:withoutProxy:commandPermission': commandPermission };
       try {
         await updateSlackBotSettings(requestParams);
         crowi.slackIntegrationService.publishUpdatedMessage();
@@ -398,7 +398,7 @@ module.exports = (crowi) => {
 
     const { commandPermission } = req.body;
     const requestParams = {
-      'slackbot:withoutProxy:commandPermission': JSON.stringify(commandPermission),
+      'slackbot:withoutProxy:commandPermission': commandPermission,
     };
     try {
       await updateSlackBotSettings(requestParams);
@@ -434,6 +434,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
+    const count = await SlackAppIntegration.count();
+
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
       const initialSupportedCommandsForBroadcastUse = new Map();
@@ -451,6 +453,7 @@ module.exports = (crowi) => {
         tokenPtoG,
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
         permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
+        isPrimary: count === 0,
       });
       return res.apiv3(slackAppTokens, 200);
     }

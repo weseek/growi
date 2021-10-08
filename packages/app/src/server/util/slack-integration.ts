@@ -7,6 +7,11 @@ export const checkPermission = (
 ):boolean => {
   let isPermitted = false;
 
+  // help
+  if (commandOrActionIdOrCallbackId === 'help') {
+    return true;
+  }
+
   Object.entries(commandPermission).forEach((entry) => {
     const [command, value] = entry;
     const permission = value;

@@ -73,10 +73,6 @@ class Comment extends React.PureComponent {
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
 
-  checkPermissionToControlComment() {
-    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
-  }
-
   isCurrentUserEqualsToAuthor() {
     const { creator } = this.props.comment;
     if (creator == null) {
@@ -210,7 +206,7 @@ class Comment extends React.PureComponent {
                   </UncontrolledTooltip>
                 </span>
               </div>
-              {this.checkPermissionToControlComment() && (
+              {this.isCurrentUserEqualsToAuthor() && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
