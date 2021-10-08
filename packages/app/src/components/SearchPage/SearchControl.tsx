@@ -31,7 +31,7 @@ const SearchControl: FC <Props> = (props: Props) => {
 SearchControl.propTypes = {
   searchingKeyword:  PropTypes.string.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onSearchInvoked: PropTypes.func.isRequired,
+  onSearchInvoked: PropTypes.func,
 };
 
 export default SearchControl;

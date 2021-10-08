@@ -82,7 +82,7 @@ SearchPageForm.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   keyword: PropTypes.string,
-  onSearchFormChanged: PropTypes.func.isRequired,
+  onSearchFormChanged: PropTypes.func,
 };
 SearchPageForm.defaultProps = {
 };
