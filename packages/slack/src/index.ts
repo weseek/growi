@@ -8,8 +8,8 @@ export const supportedSlackCommands: string[] = [
 
 export const supportedGrowiCommands: string[] = [
   'search',
-  'create',
-  'togetter',
+  'note',
+  'keep',
   'help',
 ];
 
@@ -18,8 +18,8 @@ export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
 ];
 
 export const defaultSupportedCommandsNameForSingleUse: string[] = [
-  'create',
-  'togetter',
+  'note',
+  'keep',
 ];
 
 export * from './interfaces/growi-command-processor';
@@ -27,7 +27,10 @@ export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-command';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
+export * from './interfaces/response-url';
 export * from './interfaces/slackbot-types';
+export * from './interfaces/response-url';
+export * from './interfaces/respond-util';
 export * from './models/errors';
 export * from './middlewares/parse-slack-interaction-request';
 export * from './middlewares/verify-growi-to-slack-request';
@@ -41,7 +44,7 @@ export * from './utils/reshape-contents-body';
 export * from './utils/response-url';
 export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';
-export * from './utils/welcome-message';
 export * from './utils/required-scopes';
 export * from './utils/interaction-payload-accessor';
 export * from './utils/payload-interaction-id-helpers';
+export * from './utils/respond-util-factory';
