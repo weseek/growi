@@ -46,11 +46,10 @@ const InAppNotificationDropdown: FC = (props) => {
       console.log('socketData', data);
 
       if (props.me === data.user) {
-        // TODO: Fetch notification status by #78563
+        // TODO: Fetch notification list by #78557
         // fetchNotificationList();
 
-        // TODO: Fetch notification list by #78557
-        // fetchNotificationStatus();
+        fetchNotificationStatus(props);
       }
     });
   };
