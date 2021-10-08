@@ -275,7 +275,8 @@ export class GrowiToSlackCtrl {
       return res.status(400).send('Failed to respond.');
     }
 
-    return axios.post(responseUrl, req.body);
+    await axios.post(responseUrl, req.body);
+    return res.send();
   }
 
   @Post('/:method')

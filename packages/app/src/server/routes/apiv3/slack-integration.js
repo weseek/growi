@@ -249,12 +249,17 @@ module.exports = (crowi) => {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     const appSiteUrl = crowi.appService.getSiteUrl();
-    await respondUtil.respond({
-      text: 'Processing your request ...',
-      blocks: [
-        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${appSiteUrl} ...`),
-      ],
-    });
+    try {
+      await respondUtil.respond({
+        text: 'Processing your request ...',
+        blocks: [
+          markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${appSiteUrl} ...`),
+        ],
+      });
+    }
+    catch (err) {
+      logger.error('Error occurred while request via axios:', err);
+    }
 
     try {
       await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
