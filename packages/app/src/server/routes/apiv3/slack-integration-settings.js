@@ -434,6 +434,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
+    const count = await SlackAppIntegration.count();
+
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
       const initialSupportedCommandsForBroadcastUse = new Map();
@@ -451,6 +453,7 @@ module.exports = (crowi) => {
         tokenPtoG,
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
         permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
+        isPrimary: count === 0,
       });
       return res.apiv3(slackAppTokens, 200);
     }
