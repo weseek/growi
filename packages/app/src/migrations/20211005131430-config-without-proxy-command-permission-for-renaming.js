@@ -20,8 +20,12 @@ module.exports = {
 
     const commandPermission = JSON.parse(commandPermissionValue._doc.value);
 
-    const newCommandPermission = {};
-    Object.entries(commandPermission).forEach((key, value) => {
+    const newCommandPermission = {
+      note: false,
+      keep: false,
+    };
+    Object.entries(commandPermission).forEach((entry) => {
+      const [key, value] = entry;
       switch (key) {
         case 'create':
           newCommandPermission.note = value;
@@ -59,8 +63,12 @@ module.exports = {
 
     const commandPermission = JSON.parse(commandPermissionValue._doc.value);
 
-    const newCommandPermission = {};
-    Object.entries(commandPermission).forEach((key, value) => {
+    const newCommandPermission = {
+      create: false,
+      togetter: false,
+    };
+    Object.entries(commandPermission).forEach((entry) => {
+      const [key, value] = entry;
       switch (key) {
         case 'note':
           newCommandPermission.create = value;
