@@ -2,7 +2,6 @@
   "name": "@growi/app",
   "version": "4.4.7-RC.0",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "//// for production": "",
     "start": "yarn build && yarn server",
