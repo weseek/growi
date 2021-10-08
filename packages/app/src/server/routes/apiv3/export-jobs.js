@@ -28,6 +28,70 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
+  function getPageReadableStream(basePagePath) {
+    const Page = mongoose.model('Page');
+    const { isTopPage } = pagePathUtils;
+
+    const $match = {
+      redirectTo: null,
+    };
+    // add $or condition if not top page
+    if (!isTopPage(basePagePath)) {
+      const basePathNormalized = pathUtils.normalizePath(basePagePath);
+      const basePathWithTrailingSlash = pathUtils.addTrailingSlash(basePagePath);
+      const startsPattern = escapeStringRegexp(basePathWithTrailingSlash);
+      $match.$or = [{ path: basePathNormalized }, { path: new RegExp(`^${startsPattern}`) }];
+    }
+
+    return Page
+      .aggregate([
+        {
+          $match, // filter
+        },
+        {
+          $project: { // minimize data to fetch
+            _id: 1,
+            path: 1,
+            revision: 1,
+          },
+        },
+        {
+          $lookup: { // left outer join
+            from: 'revisions',
+            localField: 'revision',
+            foreignField: '_id',
+            as: 'revisions',
+          },
+        },
+      ])
+      .cursor({ batchSize: 100 }) // get stream
+      .exec();
+  }
+
+  function setUpArchiver() {
+    // decide zip file path
+    const timeStamp = (new Date()).getTime();
+    const zipFilePath = path.join(__dirname, `${timeStamp}.md.zip`);
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // maximum compression
+    });
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') logger.error(err);
+      else throw err;
+    });
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => { throw err });
+
+    // pipe archive data to the file
+    const output = fs.createWriteStream(zipFilePath);
+    archive.pipe(output);
+
+    return archive;
+  }
+
   /**
    * @swagger
    *
@@ -55,79 +119,31 @@ module.exports = (crowi) => {
    *          description: Job successfully created
    */
   router.post('/', accessTokenParser, loginRequired, csrf, async(req, res) => {
-    const { isTopPage } = pagePathUtils;
-    const { pageId, path: pagePath, format } = req.body;
-
-    const Page = mongoose.model('Page');
-    const { PageQueryBuilder } = Page;
-
-    const $match = {
-      redirectTo: null,
-    };
-    // add $or condition if not top page
-    if (!isTopPage(pagePath)) {
-      const pathNormalized = pathUtils.normalizePath(pagePath);
-      const pathWithTrailingSlash = pathUtils.addTrailingSlash(pagePath);
-      const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
-      $match.$or = [{ path: pathNormalized }, { path: new RegExp(`^${startsPattern}`) }];
-    }
+    const { pageId, path: basePagePath, format } = req.body;
 
     try {
       // get pages with descendants as stream
-      const pageReadableStream = Page.aggregate([
-        {
-          $match,
-        },
-        {
-          $project: {
-            _id: 1,
-            path: 1,
-            revisionId: 1,
-            redirectTo: 1,
-          },
-        },
-        {
-          $lookup: { // WIP
-            from: 'revision',
-            localField: 'revisionId',
-            foreignField: '_id',
-            as: 'body',
-          },
-        },
-      ]).cursor({ batchSize: 100 }).exec();
+      const pageReadableStream = getPageReadableStream(basePagePath);
 
-      const timeStamp = (new Date()).getTime();
-      const zipFile = path.join(__dirname, `${timeStamp}.md.zip`);
-      const archive = archiver('zip', {
-        zlib: { level: 9 },
-      });
+      // set up archiver
+      const archive = setUpArchiver();
 
-      // good practice to catch warnings (ie stat failures and other non-blocking errors)
-      archive.on('warning', (err) => {
-        if (err.code === 'ENOENT') logger.error(err);
-        else throw err;
-      });
-
-      // good practice to catch this error explicitly
-      archive.on('error', (err) => { throw err });
-
-      const output = fs.createWriteStream(zipFile);
-
-      // pipe archive data to the file
-      archive.pipe(output);
-
+      // read from pageReadableStream, write to markdown file readable buffer, then append it to archiver
+      // pageReadableStream.pipe(pagesWritable) below will pipe the stream
       const pagesWritable = new Writable({
         objectMode: true,
         async write(page, encoding, callback) {
           try {
-            // create readable page buffer
-            const readablePage = new Readable();
-            readablePage._read = () => {}; // WIP
-            readablePage.push('Revision.body'); // WIP
-            readablePage.push(null); // WIP
+            const revision = page.revisions?.[0];
 
-            // push to zip
-            archive.append(readablePage, { name: `${page._id}` }); // WIP
+            let markdownBody = 'This page does not have any content.';
+            if (revision != null) {
+              markdownBody = revision.body;
+            }
+
+            // write to zip
+            const pathNormalized = pathUtils.normalizePath(page.path);
+            archive.append(markdownBody, { name: `${pathNormalized}.md` });
           }
           catch (err) {
             logger.error('Error occurred while converting data to readable: ', err);
@@ -136,8 +152,7 @@ module.exports = (crowi) => {
           callback();
         },
         final(callback) {
-          // finalize the archive (ie we are done appending files but streams have to finish yet)
-          // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+          // TODO: ここで本来は multi-part upload する
           archive.finalize();
           callback();
         },
