@@ -223,12 +223,6 @@ export class SlackCtrl {
       return this.sendCommand(growiCommand, relations, body);
     }
 
-    await respond(growiCommand.responseUrl, {
-      blocks: [
-        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.text}"* ...`),
-      ],
-    });
-
     const allowedRelationsForSingleUse:Relation[] = [];
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
