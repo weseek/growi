@@ -10,6 +10,8 @@ import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+// NOTE : this file will be deleted in the future. Merge conflict happend in this file, so temporaly kept this left here.
+// Task 77833 deleted this file ;
 class SearchResult extends React.Component {
 
   constructor(props) {

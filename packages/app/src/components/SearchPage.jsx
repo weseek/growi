@@ -8,24 +8,31 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
 import { toastError } from '~/client/util/apiNotification';
-
-import SearchPageForm from './SearchPage/SearchPageForm';
-import SearchResult from './SearchPage/SearchResult';
+import SearchPageLayout from './SearchPage/SearchPageLayout';
+import SearchResultContent from './SearchPage/SearchResultContent';
+import SearchResultList from './SearchPage/SearchResultList';
+import SearchControl from './SearchPage/SearchControl';
 
 class SearchPage extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // NOTE : selectedPages is deletion related state, will be used later in story 77535, 77565.
+    // deletionModal, deletion related functions are all removed, add them back when necessary.
+    // i.e ) in story 77525 or any tasks implementing deletion functionalities
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
+      selectedPage: {},
+      selectedPages: new Set(),
     };
 
-    this.search = this.search.bind(this);
     this.changeURL = this.changeURL.bind(this);
+    this.search = this.search.bind(this);
+    this.selectPage = this.selectPage.bind(this);
+    this.toggleCheckBox = this.toggleCheckBox.bind(this);
   }
 
   componentDidMount() {
@@ -58,6 +65,7 @@ class SearchPage extends React.Component {
     }
   }
 
+
   search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
@@ -73,38 +81,93 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-
     this.props.appContainer.apiGet('/search', { q: keyword })
       .then((res) => {
         this.changeURL(keyword);
-
-        this.setState({
-          searchedKeyword: keyword,
-          searchedPages: res.data,
-          searchResultMeta: res.meta,
-        });
+        if (res.data.length > 0) {
+          // TODO: remove creating dummy snippet lines when the data with snippet is abole to be retrieved
+          res.data.forEach((page) => {
+            page.snippet = `dummy snippet dummpy snippet dummpy snippet dummpy snippet dummpy snippet
+            dummpy snippet dummpy snippet dummpy snippet dummpy snippet`;
+          });
+          this.setState({
+            searchedKeyword: keyword,
+            searchedPages: res.data,
+            searchResultMeta: res.meta,
+            selectedPage: res.data[0],
+          });
+        }
       })
       .catch((err) => {
         toastError(err);
       });
   }
 
+  selectPage= (pageId) => {
+    const index = this.state.searchedPages.findIndex((page) => {
+      return page._id === pageId;
+    });
+    this.setState({
+      selectedPage: this.state.searchedPages[index],
+    });
+  }
+
+  toggleCheckBox = (page) => {
+    if (this.state.selectedPages.has(page)) {
+      this.state.selectedPages.delete(page);
+    }
+    else {
+      this.state.selectedPages.add(page);
+    }
+  }
+
+  renderSearchResultContent = () => {
+    return (
+      <SearchResultContent
+        appContainer={this.props.appContainer}
+        searchingKeyword={this.state.searchingKeyword}
+        selectedPage={this.state.selectedPage}
+      >
+      </SearchResultContent>
+    );
+  }
+
+  renderSearchResultList = () => {
+    return (
+      <SearchResultList
+        pages={this.state.searchedPages}
+        deletionMode={false}
+        selectedPage={this.state.selectedPage}
+        selectedPages={this.state.selectedPages}
+        onClickInvoked={this.selectPage}
+        onChangedInvoked={this.toggleCheckBox}
+      >
+      </SearchResultList>
+    );
+  }
+
+  renderSearchControl = () => {
+    return (
+      <SearchControl
+        searchingKeyword={this.state.searchingKeyword}
+        appContainer={this.props.appContainer}
+        onSearchInvoked={this.search}
+      >
+      </SearchControl>
+    );
+  }
+
   render() {
     return (
       <div>
-        {/* 2021/9/22 TODO: Move to SearchResult */}
-        {/* <div className="search-page-input sps sps--abv">
-          <SearchPageForm
-            t={this.props.t}
-            onSearchFormChanged={this.search}
-            keyword={this.state.searchingKeyword}
-          />
-        </div> */}
-        <SearchResult
-          pages={this.state.searchedPages}
-          searchingKeyword={this.state.searchingKeyword}
+        <SearchPageLayout
+          SearchControl={this.renderSearchControl}
+          SearchResultList={this.renderSearchResultList}
+          SearchResultContent={this.renderSearchResultContent}
           searchResultMeta={this.state.searchResultMeta}
-        />
+          searchingKeyword={this.state.searchedKeyword}
+        >
+        </SearchPageLayout>
       </div>
     );
   }
