@@ -47,7 +47,7 @@ module.exports = (crowi) => {
     return Page
       .find(
         filter,
-        { _id: 0, path: 1, revision: 1 }, // projects data to fetch
+        { _id: 0, path: 1, revision: 1 }, // project data to fetch
       )
       .populate('revision')
       .lean()
