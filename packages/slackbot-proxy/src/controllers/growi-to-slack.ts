@@ -279,6 +279,7 @@ export class GrowiToSlackCtrl {
       await axios.post(responseUrl, req.body);
     }
     catch (err) {
+      logger.error('Error occurred while request via axios:', err);
       return res.status(502).send(err.message);
     }
     return res.send();
