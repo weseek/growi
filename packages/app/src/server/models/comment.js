@@ -53,7 +53,7 @@ module.exports = function(crowi) {
 
 
   /**
-   * @return {object} key: page._id, value: comment
+   * @return {object} key: page._id, value: comments
    */
   commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
     const results = await this.aggregate()

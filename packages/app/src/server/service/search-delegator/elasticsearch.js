@@ -442,11 +442,11 @@ class ElasticsearchDelegator {
         const idToCommentMap = await Comment.getPageIdToCommentMap(pageIds);
         const idsHavingComment = Object.keys(idToCommentMap);
 
-        // append count
+        // append comments
         chunk
           .filter(doc => idsHavingComment.includes(doc._id.toString()))
           .forEach((doc) => {
-            // append comment from idToCommentMap
+            // append comments from idToCommentMap
             doc.comments = idToCommentMap[doc._id.toString()];
           });
 
