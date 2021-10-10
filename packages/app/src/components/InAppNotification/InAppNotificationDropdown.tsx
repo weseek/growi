@@ -4,17 +4,29 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
+import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { InAppNotification } from './InAppNotification';
+import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 
 const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<IInAppNotification[]>([{
+    // This is dummy notification data. Delete it after fetching notification list by #78557
+    _id: '1',
+    user: 'kaori1',
+    targetModel: 'Page',
+    target: 'hogePage',
+    action: 'COMMENT',
+    status: 'hoge',
+    actionUsers: ['taro', 'yamada'],
+    createdAt: 'hoge',
+  }]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -32,10 +44,10 @@ const InAppNotificationDropdown: FC = (props) => {
       console.log('socketData', data);
 
       if (props.me === data.user) {
-        // TODO: Fetch notification status by GW-7473
+        // TODO: Fetch notification status by #78563
         // fetchNotificationList();
 
-        // TODO: Fetch notification list by GW-7473
+        // TODO: Fetch notification list by #78557
         // fetchNotificationStatus();
       }
     });
@@ -43,7 +55,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
 
   /**
-    * TODO: Fetch notification status by GW-7473
+    * TODO: Fetch notification status by #78563
     */
   // async fetchNotificationStatus() {
   //   try {
@@ -96,7 +108,7 @@ const InAppNotificationDropdown: FC = (props) => {
     * TODO: Jump to the page by clicking on the notification by GW-7472
     */
 
-  const handleNotificationOnClick = async(notification: Notification) => {
+  const notificationClickHandler = async(notification: Notification) => {
     try {
       // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
       // jump to target page
@@ -118,30 +130,33 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const RenderEmptyInAppNotification = (): JSX.Element => {
     return (
-      // TODO: apply i18n by GW-7536
+      // TODO: apply i18n by #78569
       <>You had no notifications, yet.</>
     );
   };
 
   // TODO: improve renderInAppNotificationList by GW-7535
   // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
-  const RenderInAppNotificationList = (): JSX.Element => {
-    // notifications.map((notification) =>
-    return (
-      // <Notification key={notification._id} notification={notification} onClick={notificationClickHandler} />)
-      <>fuga</>
-    );
-  };
+  const RenderInAppNotificationList = () => {
 
-  function renderInAppNotificationContents(): JSX.Element {
-    if (isLoaded === false) {
-      return <RenderUnLoadedInAppNotification />;
-    }
+
     if (notifications.length === 0) {
       return <RenderEmptyInAppNotification />;
     }
+    const notificationList = notifications.map((notification: IInAppNotification) => {
+      return (
+        <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+      );
+    });
+    return <>{notificationList}</>;
+  };
+
+  const InAppNotificationContents = (): JSX.Element => {
+    // if (isLoaded === false) {
+    //   return <RenderUnLoadedInAppNotification />;
+    // }
     return <RenderInAppNotificationList />;
-  }
+  };
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
@@ -150,7 +165,7 @@ const InAppNotificationDropdown: FC = (props) => {
         {badge}
       </DropdownToggle>
       <DropdownMenu right>
-        {renderInAppNotificationContents}
+        <InAppNotificationContents />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by GW-7534 */}
         <a>See All</a>
