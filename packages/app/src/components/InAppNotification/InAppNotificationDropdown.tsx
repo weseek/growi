@@ -3,6 +3,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -17,7 +18,7 @@ const InAppNotificationDropdown: FC = (props) => {
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [notifications, setNotifications] = useState<IInAppNotification[]>([{
-    // This is dummy notification data. Delete it after fetching notification list by #78557
+    // This is dummy notification data. Delete it after fetching notification list by #78756
     _id: '1',
     user: 'kaori1',
     targetModel: 'Page',
@@ -31,7 +32,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
   useEffect(() => {
     initializeSocket(props);
-    // fetchNotificationList();
+    fetchNotificationList(props);
     // fetchNotificationStatus();
   }, []);
 
@@ -84,13 +85,13 @@ const InAppNotificationDropdown: FC = (props) => {
     * TODO: Fetch notification list by GW-7473
     */
 
-  const fetchNotificationList = async() => {
+  const fetchNotificationList = async(props) => {
+    console.log('propsappContainerHoge', props.appContainer);
     const limit = 6;
     try {
-      // const { notifications } = await this.props.crowi.apiGet('/notification.list', { limit });
-      setIsLoaded(true);
+      const notifications = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
       // setNotifications(notifications);
-      // this.setState({ loaded: true, notifications });
+      // setIsLoaded(true);
     }
     catch (err) {
       // TODO: error handling
@@ -138,6 +139,7 @@ const InAppNotificationDropdown: FC = (props) => {
   // TODO: improve renderInAppNotificationList by GW-7535
   // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
   const RenderInAppNotificationList = () => {
+    console.log('notificationsHoge', notifications);
 
 
     if (notifications.length === 0) {
@@ -177,10 +179,11 @@ const InAppNotificationDropdown: FC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
+const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [AppContainer, SocketIoContainer]);
 
 InAppNotificationDropdown.propTypes = {
   me: PropTypes.string,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
 };
 
