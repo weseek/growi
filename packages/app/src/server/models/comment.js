@@ -58,7 +58,8 @@ module.exports = function(crowi) {
   commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
     const results = await this.aggregate()
       .match({ page: { $in: pageIds } })
-      .group({ _id: '$page', count: { $sum: 1 } });
+      .group({ _id: '$page', commentIds: { $push: '$comment' } });
+
 
     // convert to map
     const idToCommenttMap = {};

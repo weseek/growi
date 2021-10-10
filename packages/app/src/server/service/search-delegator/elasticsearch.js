@@ -449,7 +449,7 @@ class ElasticsearchDelegator {
           .filter(doc => idsHavingComment.includes(doc._id.toString()))
           .forEach((doc) => {
             // append comment from idToCommentMap
-            doc.bookmarkCount = idToCommentMap[doc._id.toString()];
+            doc.comment = idToCommentMap[doc._id.toString()];
           });
 
         this.push(chunk);
