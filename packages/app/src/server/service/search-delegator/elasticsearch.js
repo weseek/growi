@@ -1049,7 +1049,6 @@ class ElasticsearchDelegator {
   }
 
   async syncCommentChanged(comment) {
-    console.log('syncCommentChanged実行されてる?', comment);
     logger.debug('SearchClient.syncCommentChanged', comment);
 
     return this.updateOrInsertPageById(comment.page);
