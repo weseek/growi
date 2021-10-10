@@ -436,12 +436,9 @@ class ElasticsearchDelegator {
     const appendCommentStream = new Transform({
       objectMode: true,
       async transform(chunk, encoding, callback) {
-        console.log('chunkHoge', chunk);
         const pageIds = chunk.map(doc => doc._id);
 
         const idToCommentMap = await Comment.getPageIdToCommentMap(pageIds);
-
-        console.log('idToCommentMap', idToCommentMap);
         const idsHavingComment = Object.keys(idToCommentMap);
 
         // append count

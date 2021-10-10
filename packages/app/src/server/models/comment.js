@@ -60,7 +60,6 @@ module.exports = function(crowi) {
       .match({ page: { $in: pageIds } })
       .group({ _id: '$page', comments: { $push: '$comment' } });
 
-
     // convert to map
     const idToCommentMap = {};
     results.forEach((result, i) => {
