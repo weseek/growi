@@ -347,6 +347,8 @@ module.exports = function(crowi, app) {
     const commentId = commentForm.comment_id;
     const revision = commentForm.revision_id;
 
+    const commentEvent = crowi.event('comment');
+
     if (commentStr === '') {
       return res.json(ApiResponse.error('Comment text is required'));
     }
@@ -377,6 +379,7 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
+      commentEvent.emit('create', updatedComment);
     }
     catch (err) {
       logger.error(err);
@@ -430,6 +433,8 @@ module.exports = function(crowi, app) {
    * @apiParam {String} comment_id Comment Id.
    */
   api.remove = async function(req, res) {
+    const commentEvent = crowi.event('comment');
+
     const commentId = req.body.comment_id;
     if (!commentId) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
@@ -454,6 +459,7 @@ module.exports = function(crowi, app) {
 
       await comment.removeWithReplies();
       await Page.updateCommentCount(comment.page);
+      commentEvent.emit('delete', comment);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
