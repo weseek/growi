@@ -371,6 +371,7 @@ class ElasticsearchDelegator {
     const Page = mongoose.model('Page');
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark');
+    const Comment = mongoose.model('Comment');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
     const socket = this.socketIoService.getAdminSocket();
@@ -424,6 +425,31 @@ class ElasticsearchDelegator {
           .forEach((doc) => {
             // append count from idToCountMap
             doc.bookmarkCount = idToCountMap[doc._id.toString()];
+          });
+
+        this.push(chunk);
+        callback();
+      },
+    });
+
+
+    const appendCommentStream = new Transform({
+      objectMode: true,
+      async transform(chunk, encoding, callback) {
+        console.log('chunkHoge', chunk);
+        const pageIds = chunk.map(doc => doc._id);
+
+        const idToCommentMap = await Comment.getPageIdToCommentMap(pageIds);
+
+        console.log('idToCommentMap', idToCommentMap);
+        const idsHavingComment = Object.keys(idToCommentMap);
+
+        // append count
+        chunk
+          .filter(doc => idsHavingComment.includes(doc._id.toString()))
+          .forEach((doc) => {
+            // append comment from idToCommentMap
+            doc.bookmarkCount = idToCommentMap[doc._id.toString()];
           });
 
         this.push(chunk);
@@ -503,6 +529,7 @@ class ElasticsearchDelegator {
       .pipe(thinOutStream)
       .pipe(batchStream)
       .pipe(appendBookmarkCountStream)
+      .pipe(appendCommentStream)
       .pipe(appendTagNamesStream)
       .pipe(writeStream);
 
@@ -1021,6 +1048,13 @@ class ElasticsearchDelegator {
     logger.debug('SearchClient.syncBookmarkChanged', pageId);
 
     return this.updateOrInsertPageById(pageId);
+  }
+
+  async syncCommentChanged(comment) {
+    console.log('syncCommentChanged実行されてる?', comment);
+    logger.debug('SearchClient.syncCommentChanged', comment);
+
+    return this.updateOrInsertPageById(comment.page);
   }
 
   async syncTagChanged(page) {

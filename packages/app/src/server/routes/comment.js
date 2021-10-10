@@ -231,6 +231,7 @@ module.exports = function(crowi, app) {
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
     const replyTo = commentForm.replyTo;
+    const commentEvent = crowi.event('comment');
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -241,6 +242,7 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
+      commentEvent.emit('create', createdComment);
     }
     catch (err) {
       logger.error(err);

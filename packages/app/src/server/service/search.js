@@ -73,6 +73,9 @@ class SearchService {
     bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
     bookmarkEvent.on('delete', this.delegator.syncBookmarkChanged.bind(this.delegator));
 
+    const commentEvent = this.crowi.event('comment');
+    commentEvent.on('create', this.delegator.syncCommentChanged.bind(this.delegator));
+
     const tagEvent = this.crowi.event('tag');
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
