@@ -65,7 +65,7 @@
             }
           }
         },
-        "comment": {
+        "comments": {
           "type": "text",
           "fields": {
             "ja": {
