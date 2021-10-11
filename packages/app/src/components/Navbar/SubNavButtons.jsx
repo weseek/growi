@@ -15,30 +15,6 @@ const SubnavButtons = (props) => {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
 
-  /* eslint-enable react/prop-types */
-
-  /* eslint-disable react/prop-types */
-  const PageReactionButtons = ({ pageContainer }) => {
-
-    return (
-      <>
-        <span>
-          <SubscribeButton pageId={pageContainer.state.pageId} />
-        </span>
-        {pageContainer.isAbleToShowLikeButton && (
-          <span>
-            <LikeButton />
-          </span>
-        )}
-        <span>
-          <BookmarkButton />
-        </span>
-
-      </>
-    );
-  };
-  /* eslint-enable react/prop-types */
-
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
 
@@ -46,7 +22,21 @@ const SubnavButtons = (props) => {
     <>
       {isViewMode && (
         <>
-          { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+          { pageContainer.isAbleToShowPageReactionButtons && (
+            <>
+              <span>
+                <SubscribeButton pageId={pageContainer.state.pageId} />
+              </span>
+              {pageContainer.isAbleToShowLikeButton && (
+                <span>
+                  <LikeButton />
+                </span>
+              )}
+              <span>
+                <BookmarkButton />
+              </span>
+            </>
+          ) }
           { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
         </>
       )}
