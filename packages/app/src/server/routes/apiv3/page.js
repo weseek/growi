@@ -166,6 +166,9 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('status').isBoolean(),
     ],
+    subscribeStatus: [
+      query('pageId').isString(),
+    ],
   };
 
   /**
@@ -475,8 +478,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [Page]
    *        summary: /page/subscribe
-   *        description: Update subscribe status
-   *        operationId: updateSubscribeStatus
+   *        description: Update subscription status
+   *        operationId: updateSubscriptionStatus
    *        requestBody:
    *          content:
    *            application/json:
@@ -486,7 +489,7 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
-   *            description: Succeeded to update subscribe status.
+   *            description: Succeeded to update subscription status.
    *            content:
    *              application/json:
    *                schema:
@@ -505,6 +508,50 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to update subscribe status', err);
       return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Get subscription status
+   *        operationId: getSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+    const userId = req.user._id;
+
+    const page = await Page.findById(pageId);
+    if (!page) throw new Error('Page not found');
+
+    try {
+      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
+      const subscribing = subscription ? subscription.isSubscribing() : null;
+      return res.apiv3({ subscribing });
+    }
+    catch (err) {
+      logger.error('Failed to ge subscribe status', err);
+      return res.apiv3(err, 500);
     }
   });
 

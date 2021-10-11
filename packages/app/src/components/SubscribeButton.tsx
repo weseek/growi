@@ -1,4 +1,6 @@
-import React, { useState, FC } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -13,11 +15,14 @@ type Props = {
   pageId: string,
 };
 
-const SubscruibeButton: FC<Props> = (props: Props) => {
+const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { appContainer, pageId } = props;
-  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
+
+  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -36,15 +41,39 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
     }
   };
 
+  const fetchSubscriptionStatus = useCallback(async() => {
+    if (appContainer.isGuestUser) {
+      return;
+    }
+
+    try {
+      const res = await appContainer.apiv3Get('page/subscribe', { pageId });
+      const { subscribing } = res.data;
+      if (subscribing == null) {
+        setIsSubscribing(null);
+      }
+      else {
+        setIsSubscribing(subscribing);
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer, pageId]);
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, [fetchSubscriptionStatus]);
+
   return (
     <>
       <button
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-subscribe border-0 ${isSubscribing ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
+        className={`btn btn-subscribe border-0 ${buttonClass}`}
       >
-        <i className={isSubscribing ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
+        <i className={iconClass}></i>
       </button>
 
       {appContainer.isGuestUser && (
@@ -60,5 +89,5 @@ const SubscruibeButton: FC<Props> = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SubscruibeButtonWrapper = withUnstatedContainers(SubscruibeButton, [AppContainer, PageContainer]);
-export default SubscruibeButtonWrapper;
+const SubscribeButtonWrapper = withUnstatedContainers(SubscribeButton, [AppContainer, PageContainer]);
+export default SubscribeButtonWrapper;
