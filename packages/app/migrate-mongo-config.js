@@ -5,11 +5,15 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-import mongoose from 'mongoose';
-
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
-
 const { URL } = require('url');
+
+// get migrationsDir from env var
+const migrationsDir = process.env.MIGRATIONS_DIR;
+if (migrationsDir == null) {
+  throw new Error('An env var MIGRATIONS_DIR must be set.');
+}
+
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 initMongooseGlobalSettings();
 
@@ -25,8 +29,7 @@ const mongodb = {
 };
 
 module.exports = {
-  mongoUri,
   mongodb,
-  migrationsDir: 'src/migrations/',
+  migrationsDir,
   changelogCollectionName: 'migrations',
 };

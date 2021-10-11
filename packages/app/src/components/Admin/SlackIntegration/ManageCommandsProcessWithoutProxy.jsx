@@ -190,7 +190,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
         commandPermission: editingCommandPermission,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.update_successed', { target: 'the permission for commands' }));
     }
     catch (err) {
       toastError(err);

@@ -15,7 +15,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 /**
   * Webpack Constants
   */
-const { ANALYZE } = process.env;
+const { ANALYZE_BUNDLE_SIZE } = process.env;
 
 module.exports = require('./webpack.common')({
   mode: 'production',
@@ -60,7 +60,7 @@ module.exports = require('./webpack.common')({
     }),
 
     new BundleAnalyzerPlugin({
-      analyzerMode: ANALYZE ? 'static' : 'disabled',
+      analyzerMode: ANALYZE_BUNDLE_SIZE ? 'static' : 'disabled',
       reportFilename: path.resolve(__dirname, '../report/bundle-analyzer.html'),
       openAnalyzer: false,
     }),

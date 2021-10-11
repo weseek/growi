@@ -455,6 +455,11 @@
       "Post": "Post"
     }
   },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
+    "enable_textlint": "Enable Textlint",
+    "dont_ask_again": "Don't ask again"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

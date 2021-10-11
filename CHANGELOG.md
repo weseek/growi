@@ -1,8 +1,102 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.8](https://github.com/weseek/growi/compare/v4.4.7...v4.4.8) - 2021-10-08
+
+### 🚀 Improvement
+
+- imprv: Permissions to operate comment (#4466) @yuki-takei
+- imprv: Show modal when enabling Textlint (#4373) @stevenfukase
+- imprv: Slackbot reaction to user (#4442) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Redirected to apiv3 endpoint when guest mode is enabled (#4443) @stevenfukase
+- fix: Unnecessary extra JSON.stringify for configurations for slackbot without proxy (#4467) @hakumizuki
+- fix: Migration for slackbot configurations without proxy (#4465) @hakumizuki
+- fix: Slackbot error/command handling (#4463) @hakumizuki
+- fix(slackbot): Respond bad gateway error & improved help message (#4470) @hakumizuki
+- fix(slackbot): Stop auto-join to channels with middlewarer (#4424) @yuki-takei
+
+## [v4.4.7](https://github.com/weseek/growi/compare/v4.4.6...v4.4.7) - 2021-09-29
+
+### 🚀 Improvement
+
+- imprv: Slackbot search (#4420) @yuki-takei
+- imprv: Omit textlint-rule-en-capitalization (#4403) @yuki-takei
+- imprv: Apply terminus for graceful shutdown (#4398) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: A problem that GROWI server doesn't retrieve connection status from Official bot proxy (#4416) @yuki-takei
+- fix: Dictionary path of kuromoji invalid when uploaded to server (#4381) @stevenfukase
+- fix: Copy correct dotenv file for NO_CDN docker image (#4397) @yuki-takei
+- fix: Stop using ts-node in production (#4411) @yuki-takei
+- fix: SAML setting says 'setup is not yet complete' even if setup properly (#4390) @nakashimaki
+- fix: SidebarSmall button does not keep selection on reload (#4389) @nakashimaki
+- fix: Migrations for updating data for slackbot (#4406) @yuki-takei
+- fix: Migrations do not run in production (#4395) @yuki-takei
+- fix: Migration file for mongodb 3.6 compatibility (#4413) @hakumizuki
+- fix(slackbot): Sync permission when data stored is not enough (#4417) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Install Git LFS when provisioning of devcontainer (#4405) @stevenfukase
+- chore: Add .dockerignore (#4396) @yuki-takei
+
+## [v4.4.6](https://github.com/weseek/growi/compare/v4.4.5...v4.4.6) - 2021-09-24
+
+### 🚀 Improvement
+
+- imprv: Slackbot response flow (#4296) @yuki-takei
+- imprv(slackbot-proxy): Show version on the top page (#4342) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- support(slackbot-proxy): Bump slackbot proxy version independentry (#4385) @yuki-takei
+
+## [v4.4.5](https://github.com/weseek/growi/compare/v4.4.4...v4.4.5) - 2021-09-23
+
+### 🐛 Bug Fixes
+
+- fix: Revert #4347
+- fix: ERROR: Cannot find module 'tslib' on v4.4.4 (#4368) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: bump @promster/express and @promster/server (#4370) @yuki-takei
+- support: Upgrade codemirror to 5.63.0 (#4364) @yuki-takei
+- ci(deps-dev): bump codemirror from 5.48.4 to 5.58.2 (#4363) @dependabot
+
+## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) (Discontinued) - 2021-09-22
+
+### 💎 Features
+
+- feat: Add Textlint support (#4228) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Highlighting searching keyword (#4327) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Backspace key on last line doesn't work in vim mode (#4347) @yuki-takei
+- fix: Recent Created of home is empty (#4345) @yuki-takei
+- fix: IME suggestion list obscures inputted text (#4335) @yuki-takei
+- fix: Highlighting section header (#4326) @yuki-takei
+
+### 🧰 Maintenance
+
+- chore: Update passport-saml 2.2.0 (#4360) @LuqmanHakim-Grune
+- ci(deps): bump http-errors from 1.6.2 to 1.8.0 (#4353) @dependabot
+- ci(deps-dev): bump @tsed/json-mapper from 6.43.0 to 6.70.1 (#4352) @dependabot
+- ci(deps): bump graceful-fs from 4.1.11 to 4.2.8 (#4351) @dependabot
+- ci(deps): bump myrotvorets/info-from-package-json-action from 0.0.2 to 1.1.0 (#4348) @dependabot
+- ci(deps): bump path-parse from 1.0.5 to 1.0.7 (#4126) @dependabot
+- ci(deps): bump tmpl from 1.0.4 to 1.0.5 (#4337) @dependabot
 
 ## [v4.4.3](https://github.com/weseek/growi/compare/v4.4.2...v4.4.3) - 2021-09-17
 
@@ -1441,7 +1535,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 - Improvement: Ensure to prevent suspending own account
 - Fix: Ensure to be able to use `.` for username when invited
-- Fix: monospace font for `<code></code>`
+- Fix: monospace font for `code` tag
 
 ## v2.1.1
 
@@ -1509,8 +1603,8 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 ## v1.2.14
 
-- Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
-- Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
+- Fix: Tabs(`a[data-toggle=tab][href=#...]`) push browser history twice
+- Fix: `a[href=#edit-form]` still save history even when disabling pushing states option
 
 ## v1.2.13
 

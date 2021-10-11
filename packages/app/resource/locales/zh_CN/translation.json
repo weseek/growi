@@ -433,6 +433,11 @@
 			"Post": "提交"
 		}
 	},
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "您确定要启用 Textlint 吗？这将下载 20MB 的字典文件。",
+    "enable_textlint": "启用Textlint",
+    "dont_ask_again": "不要再问"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
@@ -8,7 +8,7 @@ import { addHours } from 'date-fns';
 import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient, BlockKitRequest,
 } from '@growi/slack';
 
 import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
@@ -26,6 +26,14 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
+
+export type RespondReqFromGrowi = Req & BlockKitRequest & {
+  // appended by GROWI
+  headers:{ 'x-growi-app-site-url'?: string },
+
+  // will be extracted from header
+  appSiteUrl: string,
+}
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -51,8 +59,8 @@ export class GrowiToSlackCtrl {
   @Inject()
   sectionBlockPayloadDelegator: SectionBlockPayloadDelegator;
 
-  async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
-    const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
+  async urlVerificationRequestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
+    const url = new URL('/_api/v3/slack-integration/proxied/verify', growiUrl);
     await axios.post(url.toString(), {
       type: 'url_verification',
       challenge: 'this_is_my_challenge_token',
@@ -141,7 +149,7 @@ export class GrowiToSlackCtrl {
       }
 
       try {
-        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+        await this.urlVerificationRequestToGrowi(relation.growiUri, relation.tokenPtoG);
       }
       catch (err) {
         logger.error(err);
@@ -170,7 +178,7 @@ export class GrowiToSlackCtrl {
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
-      await this.requestToGrowi(order.growiUrl, order.tokenPtoG);
+      await this.urlVerificationRequestToGrowi(order.growiUrl, order.tokenPtoG);
     }
     catch (err) {
       logger.error(err);
@@ -217,7 +225,7 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: generatedRelation, slackBotToken: token });
   }
 
-  injectGrowiUri(req: GrowiReq, growiUri: string): void {
+  injectGrowiUri(req: BlockKitRequest, growiUri: string): void {
     if (req.body.view == null && req.body.blocks == null) {
       return;
     }
@@ -231,7 +239,7 @@ export class GrowiToSlackCtrl {
       }
     }
     else if (req.body.blocks != null) {
-      const parsedElement = JSON.parse(req.body.blocks);
+      const parsedElement = (typeof req.body.blocks === 'string') ? JSON.parse(req.body.blocks) : req.body.blocks;
       // delegate to ActionsBlockPayloadDelegator
       if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
         this.actionsBlockPayloadDelegator.inject(parsedElement, growiUri);
@@ -243,6 +251,38 @@ export class GrowiToSlackCtrl {
         req.body.blocks = JSON.stringify(parsedElement);
       }
     }
+  }
+
+  @Post('/respond')
+  async respondUsingResponseUrl(
+    @QueryParams('response_url') responseUrl: string, @Req() req: RespondReqFromGrowi, @Res() res: WebclientRes,
+  ): Promise<WebclientRes> {
+
+    // get growi url from header
+    const growiUri = req.headers['x-growi-app-site-url'];
+
+    if (growiUri == null) {
+      logger.error('Request to this endpoint requires the x-growi-app-site-url header.');
+      return res.status(400).send('Failed to respond.');
+    }
+
+    try {
+      this.injectGrowiUri(req, growiUri);
+    }
+    catch (err) {
+      logger.error('Error occurred while injecting GROWI uri:\n', err);
+
+      return res.status(400).send('Failed to respond.');
+    }
+
+    try {
+      await axios.post(responseUrl, req.body);
+    }
+    catch (err) {
+      logger.error('Error occurred while request via axios:', err);
+      return res.status(502).send(err.message);
+    }
+    return res.send();
   }
 
   @Post('/:method')
