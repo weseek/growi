@@ -828,9 +828,38 @@ module.exports = function(crowi, app) {
     }
 
     // check revision
+    const Revision = crowi.model('Revision');
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
+      // when isUpdatable is false, originRevision is the reqested revision
+      const originRevision = await Revision.findById(revisionId).populate('author');
+      let latestRevision = await Revision.find({ path: originRevision.path }).sort({ createdAt: -1 }).limit(1).populate('author');
+      latestRevision = latestRevision[0];
+
+      const revisions = {};
+
+      revisions.request = {
+        revisionID: '',
+        revisionBody: pageBody,
+        createdAt: new Date(),
+        userName: req.user.name,
+        userImgPath: req.user.imageUrlCached,
+      };
+      revisions.origin = {
+        revisionID: originRevision._id.toString(),
+        revisionBody: originRevision.body,
+        createdAt: originRevision.createdAt,
+        userName: originRevision.author.name,
+        userImgPath: originRevision.author.imageUrlCached,
+      };
+      revisions.latest = {
+        revisionID: latestRevision._id.toString(),
+        revisionBody: latestRevision.body,
+        createdAt: latestRevision.createdAt,
+        userName: latestRevision.author.name,
+        userImgPath: latestRevision.author.imageUrlCached,
+      };
+      return res.json(ApiResponse.success({ isPageNotUptable: true, data: revisions }));
     }
 
     const options = { isSyncRevisionToHackmd };
@@ -839,7 +868,6 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const Revision = crowi.model('Revision');
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);

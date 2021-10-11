@@ -495,6 +495,11 @@ export default class PageContainer extends Container {
     if (!res.ok) {
       throw new Error(res.error);
     }
+    if (res.isPageNotUptable) {
+      const err = new Error();
+      err.data = res.data;
+      throw err;
+    }
     return res;
   }
 
