@@ -4,6 +4,7 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import ActivityDefine from '../util/activityDefine';
+import { ActivityDocument } from './activity';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 
@@ -20,7 +21,7 @@ export interface InAppNotificationDocument extends Document {
   targetModel: string
   target: Types.ObjectId
   action: string
-  activities: Types.ObjectId[]
+  activities: ActivityDocument[]
   status: string
   createdAt: Date
 }
