@@ -90,9 +90,8 @@ module.exports = function(crowi) {
     }));
   };
 
-  revisionSchema.statics.findLatestRevisionByPathPopulatedWithAuthor = async(path) => {
-    const Revision = this;
-    return (await Revision.find({ path }).sort({ createdAt: -1 }).limit(1).populate('author'))[0];
+  revisionSchema.statics.findLatestRevisionByPathPopulatedWithAuthor = async function(path) {
+    return (await this.find({ path }).sort({ createdAt: -1 }).limit(1).populate('author'))[0];
   };
 
   return mongoose.model('Revision', revisionSchema);

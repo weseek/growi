@@ -833,8 +833,7 @@ module.exports = function(crowi, app) {
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
       // when isUpdatable is false, originRevision is the reqested revision
       const originRevision = await Revision.findById(revisionId).populate('author');
-      let latestRevision = await Revision.find({ path: originRevision.path }).sort({ createdAt: -1 }).limit(1).populate('author');
-      latestRevision = latestRevision[0];
+      const latestRevision = await Revision.findLatestRevisionByPathPopulatedWithAuthor(originRevision.path);
 
       const revisions = {};
 
