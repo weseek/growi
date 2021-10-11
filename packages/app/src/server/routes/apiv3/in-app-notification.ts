@@ -26,13 +26,6 @@ module.exports = (crowi) => {
 
     const requestLimit = limit + 1;
 
-
-    /**
-     * TODO: GW-7482
-     *   -  Replace then/catch to async/await
-     *   -  Use mongoose-paginate-v2 for paging
-     */
-
     const latestInAppNotificationList = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
     return latestInAppNotificationList;
 
