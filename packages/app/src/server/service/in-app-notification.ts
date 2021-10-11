@@ -84,8 +84,8 @@ export default class InAppNotificationService {
           { path: 'target' },
           { path: 'activities', populate: { path: 'user' } },
         ],
-      });
-
+      },
+    );
 
     return paginatedInAppNotificationResult;
   }
