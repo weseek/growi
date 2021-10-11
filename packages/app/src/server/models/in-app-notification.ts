@@ -1,6 +1,5 @@
 import {
-  Types, Document, Model, Schema, PaginateModel/* , Query */,
-  FilterQuery, PaginateOptions, PaginateResult,
+  Types, Document, PaginateModel, Schema, /* , Query */
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import ActivityDefine from '../util/activityDefine';
