@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
+
 const logger = loggerFactory('growi:routes:apiv3:export-job');
 
 const express = require('express');
@@ -45,16 +46,17 @@ module.exports = (crowi) => {
    *          description: Job successfully created
    */
   router.post('/', accessTokenParser, loginRequired, csrf, async(req, res) => {
-    // TODO: WIP
+    const { path: basePagePath } = req.body;
+
     try {
-      const { format, pageId } = req.body;
-      return res.apiv3();
+      await crowi.exportService.bulkExportWithBasePagePath(basePagePath);
     }
     catch (err) {
       logger.error(err);
       const msg = 'Error occurred when starting export';
       return res.apiv3Err(new ErrorV3(msg, 'starting-export-failed'));
     }
+    return res.apiv3();
   });
 
   return router;

@@ -92,9 +92,9 @@ const PageManagement = (props) => {
   }
 
   async function bulkExportPageHandler(format) {
-    const { pageId } = pageContainer.state;
+    const { pageId, path } = pageContainer.state;
     try {
-      await appContainer.apiv3Post(urljoin('export-jobs'), { pageId, format });
+      await appContainer.apiv3Post(urljoin('export-jobs'), { pageId, path, format });
     }
     catch (err) {
       pageContainer.showErrorToastr(new Error(t('export_bulk.failed_to_bulk_export_page_markdown')));
@@ -147,6 +147,9 @@ const PageManagement = (props) => {
         </button>
         <button className="dropdown-item" type="button" onClick={() => { exportPageHandler('md') }}>
           <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.export_page_markdown')}
+        </button>
+        <button type="button" className="dropdown-item" onClick={() => { bulkExportPageHandler('md') }}>
+          <i className="icon-fw icon-cloud-download"></i>{t('export_bulk.bulk_export_page_markdown')}
         </button>
         {/* TODO GW-2746 create api to bulk export pages */}
         {/* <button className="dropdown-item" type="button" onClick={openArchiveModalHandler}>
