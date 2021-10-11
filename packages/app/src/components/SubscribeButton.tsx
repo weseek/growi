@@ -52,7 +52,6 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     try {
       const res = await appContainer.apiv3Get('page/subscribe', { pageId });
       const { subscribing } = res.data;
-      console.log(subscribing);
       if (subscribing == null) {
         setIsNull(true);
       }
