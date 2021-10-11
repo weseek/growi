@@ -70,6 +70,26 @@ export default class InAppNotificationService {
     return;
   }
 
+  getLatestNotificationsByUser = async(userId, limitNum, offset) => {
+    // InAppNotification.findLatestInAppNotificationsByUser(userId, requestLimit, offset);
+
+    // const notificatins = await InAppNotification.find({ user: userId });
+    const paginatedInAppNotificationResult = await InAppNotification.find({ user: userId }).paginate({},
+      {
+        sort: { createdAt: -1 },
+        offset,
+        limit: limitNum || 10,
+        populate: [
+          { path: 'user' },
+          { path: 'target' },
+          { path: 'activities', populate: { path: 'user' } },
+        ],
+      });
+
+
+    return paginatedInAppNotificationResult;
+  }
+
   // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
   //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
   //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);

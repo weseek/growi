@@ -1,6 +1,8 @@
 import {
-  Types, Document, Model, Schema /* , Query */,
+  Types, Document, Model, Schema, PaginateModel/* , Query */,
+  FilterQuery, PaginateOptions, PaginateResult,
 } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
@@ -23,8 +25,10 @@ export interface InAppNotificationDocument extends Document {
   createdAt: Date
 }
 
-export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
-  findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
+
+export interface InAppNotificationModel extends PaginateModel<InAppNotificationDocument> {
+  // static paginate: PaginateMethod<PaginatedModel>;
+  findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number)
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
   open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
   read(user) /* : Promise<Query<any>> */
@@ -74,6 +78,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     default: Date.now,
   },
 });
+inAppNotificationSchema.plugin(mongoosePaginate);
 
 const transform = (doc, ret) => {
   // delete ret.activities
@@ -83,20 +88,6 @@ inAppNotificationSchema.set('toJSON', { virtuals: true, transform });
 inAppNotificationSchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 });
-
-inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = async function(user, limitNum, offset) {
-  const limit = limitNum || 10;
-
-  // TODO: improve populate refer to GROWI way by #78756
-  const notificatins = await InAppNotification.find({ user });
-  // .sort({ createdAt: -1 })
-  // .skip(offset)
-  // .limit(limit)
-  // .populate(['user', 'target'])
-  // .populate({ path: 'activities', populate: { path: 'user' } })
-  // .exec();
-  return notificatins;
-};
 
 inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
   return STATUS_UNOPENED;

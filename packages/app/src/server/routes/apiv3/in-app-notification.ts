@@ -9,8 +9,9 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const inAppNotificationService = crowi.inAppNotificationService;
 
-  router.get('/list', accessTokenParser, loginRequiredStrictly, (req, res) => {
+  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
 
     let limit = 10;
@@ -28,32 +29,13 @@ module.exports = (crowi) => {
 
     /**
      * TODO: GW-7482
-     *   -  Replace then/catch to async/awai
+     *   -  Replace then/catch to async/await
      *   -  Use mongoose-paginate-v2 for paging
      */
-    InAppNotification.findLatestInAppNotificationsByUser(user._id, requestLimit, offset)
-      .then((notifications) => {
-        let hasPrev = false;
-        if (offset > 0) {
-          hasPrev = true;
-        }
 
-        let hasNext = false;
-        if (notifications.length > limit) {
-          hasNext = true;
-        }
+    const latestInAppNotificationList = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
+    return latestInAppNotificationList;
 
-        const result = {
-          notifications: notifications.slice(0, limit),
-          hasPrev,
-          hasNext,
-        };
-
-        return res.apiv3(result);
-      })
-      .catch((err) => {
-        return res.apiv3Err(err);
-      });
   });
 
   router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
