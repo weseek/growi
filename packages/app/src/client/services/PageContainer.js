@@ -343,6 +343,15 @@ export default class PageContainer extends Container {
     }
   }
 
+  // TODO : temporaly use only
+  updateStateAfterTagAdded(page) {
+    const newState = {
+      updatedAt: page.updatedAt,
+      revisionAuthor: page.revision.author,
+    };
+    this.setState(newState);
+  }
+
   /**
    * save success handler
    * @param {object} page Page instance
