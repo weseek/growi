@@ -70,7 +70,7 @@ class LikeButtons extends React.Component {
           </UncontrolledTooltip>
         )}
 
-        <button type="button" id="po-total-likes" className="btn btn-like border-0 total-likes">
+        <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
           {sumOfLikers}
         </button>
         <Popover placement="bottom" isOpen={this.state.isPopoverOpen} target="po-total-likes" toggle={this.togglePopover} trigger="legacy">
