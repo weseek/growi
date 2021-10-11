@@ -858,7 +858,7 @@ module.exports = function(crowi, app) {
         userName: latestRevision.author.name,
         userImgPath: latestRevision.author.imageUrlCached,
       };
-      return res.json(ApiResponse.success({ isPageNotUptable: true, data: revisions }));
+      return res.json(ApiResponse.success({ isPageNotUpdatable: true, data: revisions }));
     }
 
     const options = { isSyncRevisionToHackmd };
