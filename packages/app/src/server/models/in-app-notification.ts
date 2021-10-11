@@ -27,7 +27,6 @@ export interface InAppNotificationDocument extends Document {
 
 
 export interface InAppNotificationModel extends PaginateModel<InAppNotificationDocument> {
-  // static paginate: PaginateMethod<PaginatedModel>;
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number)
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
   open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
