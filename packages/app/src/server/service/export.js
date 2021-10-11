@@ -1,3 +1,5 @@
+import { pathUtils } from 'growi-commons';
+import streamToPromise from 'stream-to-promise';
 import loggerFactory from '~/utils/logger';
 import { toArrayIfNot } from '~/utils/array-utils';
 
@@ -8,8 +10,7 @@ const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const { Transform } = require('stream');
-const streamToPromise = require('stream-to-promise');
+const { Transform, Writable } = require('stream');
 const archiver = require('archiver');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
@@ -370,6 +371,90 @@ class ExportService {
     readable.push(null);
 
     return readable;
+  }
+
+  getPageReadableStream(basePagePath) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(basePagePath);
+
+    return builder
+      .query
+      .populate('revision')
+      .lean()
+      .cursor({ batchSize: 100 }); // get stream
+  }
+
+  setUpArchiver() {
+    // decide zip file path
+    const timeStamp = (new Date()).getTime();
+    const zipFilePath = path.join(__dirname, `${timeStamp}.md.zip`);
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // maximum compression
+    });
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') logger.error(err);
+      else throw err;
+    });
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => { throw err });
+
+    // pipe archive data to the file
+    const output = fs.createWriteStream(zipFilePath);
+    archive.pipe(output);
+
+    return archive;
+  }
+
+  // TODO: do multi-part upload instead of exporting to local file system 78070
+  async bulkExportWithBasePagePath(basePagePath) {
+    // get pages with descendants as stream
+    const pageReadableStream = this.getPageReadableStream(basePagePath);
+
+    // set up archiver
+    const archive = this.setUpArchiver();
+
+    // read from pageReadableStream, then append each page to archiver
+    // pageReadableStream.pipe(pagesWritable) below will pipe the stream
+    const pagesWritable = new Writable({
+      objectMode: true,
+      async write(page, encoding, callback) {
+        console.log('なに: ', page);
+        try {
+          const revision = page.revision;
+
+          let markdownBody = 'This page does not have any content.';
+          if (revision != null) {
+            markdownBody = revision.body;
+          }
+
+          // write to zip
+          const pathNormalized = pathUtils.normalizePath(page.path);
+          archive.append(markdownBody, { name: `${pathNormalized}.md` });
+        }
+        catch (err) {
+          logger.error('Error occurred while converting data to readable: ', err);
+          throw Error('だめ');
+        }
+
+        callback();
+      },
+      final(callback) {
+        // TODO: multi-part upload instead of calling finalize() 78070
+        archive.finalize();
+        callback();
+      },
+    });
+
+    pageReadableStream.pipe(pagesWritable);
+
+    await streamToPromise(archive);
   }
 
 }
