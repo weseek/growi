@@ -150,7 +150,7 @@ module.exports = function(crowi, app) {
       const user = await User.findById(userId);
 
       if (!await Page.isAccessiblePageByViewer(page._id, user)) {
-        return res.json(ApiResponse.error("You don't have permission to update this page"));
+        return res.json(ApiResponse.error("You don't have permission to update this page."));
       }
 
       await PageTagRelation.updatePageTags(pageId, tags);
