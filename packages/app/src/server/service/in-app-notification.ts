@@ -71,10 +71,9 @@ export default class InAppNotificationService {
   }
 
   getLatestNotificationsByUser = async(userId, limitNum, offset) => {
-    // InAppNotification.findLatestInAppNotificationsByUser(userId, requestLimit, offset);
 
-    // const notificatins = await InAppNotification.find({ user: userId });
-    const paginatedInAppNotificationResult = await InAppNotification.find({ user: userId }).paginate({},
+    const paginatedInAppNotificationResult = await InAppNotification.paginate(
+      { user: userId },
       {
         sort: { createdAt: -1 },
         offset,
