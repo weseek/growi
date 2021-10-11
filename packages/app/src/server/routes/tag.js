@@ -142,7 +142,6 @@ module.exports = function(crowi, app) {
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;
     const tags = req.body.tags;
-    const options = req.body.options;
     const revisionId = req.body.revisionId;
 
     const result = {};
@@ -150,7 +149,7 @@ module.exports = function(crowi, app) {
       // TODO GC-1921 consider permission
       const page = await Page.findById(pageId);
       const previousRevision = await Revision.findById(revisionId);
-      result.savedPage = await Page.updatePage(page, previousRevision.body, previousRevision.body, req.user, options);
+      result.savedPage = await Page.updatePage(page, previousRevision.body, previousRevision.body, req.user);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 
