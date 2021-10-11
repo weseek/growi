@@ -540,6 +540,10 @@ module.exports = (crowi) => {
   router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
     const userId = req.user._id;
+
+    const page = await Page.findById(pageId);
+    if (!page) throw new Error('Page not found');
+
     try {
       const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
       const subscribing = subscription ? subscription.isSubscribing() : null;
