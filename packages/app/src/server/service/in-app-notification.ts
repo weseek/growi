@@ -88,6 +88,7 @@ export default class InAppNotificationService {
       );
     }
     catch (err) {
+      logger.error('Error', err);
       throw new Error(err);
     }
 
@@ -122,6 +123,7 @@ export default class InAppNotificationService {
 
     }
     catch (err) {
+      logger.error('Error', err);
       throw new Error(err);
     }
   }
