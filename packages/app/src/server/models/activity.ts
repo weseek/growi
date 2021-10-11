@@ -35,7 +35,7 @@ module.exports = function(crowi: Crowi) {
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      // index: true,
+      index: true,
       require: true,
     },
     targetModel: {
