@@ -20,6 +20,11 @@ const SubscribeButton: FC<Props> = (props: Props) => {
 
   const { appContainer, pageId } = props;
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isNull, setIsNull] = useState(false);
+
+  const active = isSubscribing && !isNull ? 'active' : '';
+  const disabled = appContainer.isGuestUser && !isNull ? 'disabled' : '';
+  const eyeOpen = isSubscribing || isNull ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -30,6 +35,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
       if (res) {
         const { subscription } = res.data;
+        setIsNull(false);
         setIsSubscribing(subscription.status === 'SUBSCRIBE');
       }
     }
@@ -44,9 +50,16 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await appContainer.apiv3Get('/page/subscribe', { pageId });
+      const res = await appContainer.apiv3Get('page/subscribe', { pageId });
       const { subscribing } = res.data;
-      setIsSubscribing(subscribing);
+      console.log(subscribing);
+      if (subscribing == null) {
+        setIsNull(true);
+      }
+      else {
+        setIsNull(false);
+        setIsSubscribing(subscribing);
+      }
     }
     catch (err) {
       toastError(err);
@@ -63,9 +76,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-subscribe border-0 ${isSubscribing ? 'active' : ''}  ${appContainer.isGuestUser ? 'disabled' : ''}`}
+        className={`btn btn-subscribe border-0 ${active} ${disabled}`}
       >
-        <i className={isSubscribing ? 'fa fa-eye' : 'fa fa-eye-slash'}></i>
+        <i className={eyeOpen}></i>
       </button>
 
       {appContainer.isGuestUser && (
