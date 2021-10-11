@@ -18,7 +18,6 @@ import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import Activity from '../models/activity';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -301,15 +300,7 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  let allModels = {};
-
-  // include models that dependent on crowi
-  allModels = models;
-
-  // include models that independent from crowi
-  allModels.Activity = Activity;
-
-  Object.keys(allModels).forEach((key) => {
+  Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
 };
