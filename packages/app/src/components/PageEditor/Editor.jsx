@@ -18,6 +18,7 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
+import { ConflictDiffModal } from './ConflictDiffModal';
 
 class Editor extends AbstractEditor {
 
@@ -369,14 +370,7 @@ class Editor extends AbstractEditor {
           { this.renderCheatsheetModal() }
 
         </div>
-        <Modal isOpen toggle={} className="">
-          <ModalHeader tag="h4" toggle={} className="bg-primary text-light">
-            <i className="icon-fw icon-question" />Resolve conflict
-          </ModalHeader>
-          <ModalBody>
-            Test
-          </ModalBody>
-        </Modal>
+        <ConflictDiffModal />
       </>
     );
   }
