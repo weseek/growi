@@ -72,21 +72,28 @@ export default class InAppNotificationService {
 
   getLatestNotificationsByUser = async(userId, limitNum, offset) => {
 
-    const paginatedInAppNotificationResult = await InAppNotification.paginate(
-      { user: userId },
-      {
-        sort: { createdAt: -1 },
-        offset,
-        limit: limitNum || 10,
-        populate: [
-          { path: 'user' },
-          { path: 'target' },
-          { path: 'activities', populate: { path: 'user' } },
-        ],
-      },
-    );
+    try {
+      const pagenatedInAppNotifications = await InAppNotification.paginate(
+        { user: userId },
+        {
+          sort: { createdAt: -1 },
+          offset,
+          limit: limitNum || 10,
+          populate: [
+            { path: 'user' },
+            { path: 'target' },
+            { path: 'activities', populate: { path: 'user' } },
+          ],
+        },
+      );
 
-    return paginatedInAppNotificationResult;
+      console.log('pagenatedInAppNotifications', pagenatedInAppNotifications);
+      return pagenatedInAppNotifications;
+
+    }
+    catch (err) {
+      throw new Error(err);
+    }
   }
 
   // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
