@@ -21,9 +21,8 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const { appContainer, pageId } = props;
   const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
 
-  const active = isSubscribing ? 'active' : '';
-  const disabled = appContainer.isGuestUser ? 'disabled' : '';
-  const eyeOpen = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
+  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -72,9 +71,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={handleClick}
-        className={`btn btn-subscribe border-0 ${active} ${disabled}`}
+        className={`btn btn-subscribe border-0 ${buttonClass}`}
       >
-        <i className={eyeOpen}></i>
+        <i className={iconClass}></i>
       </button>
 
       {appContainer.isGuestUser && (
