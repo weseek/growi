@@ -34,13 +34,20 @@ export type UnfurlRequestEvent = {
   links: UnfurlEventLinks[],
 }
 
-export type UnfurlPageResponseData = {
-  isPrivate: boolean,
+type PrivateData = {
+  isPrivate: false,
+  path: string,
+}
+
+type PublicData = {
+  isPrivate: true,
   path: string,
   pageBody: string,
   updatedAt: string,
   commentCount: number,
 }
+
+export type UnfurlPageResponseData = PrivateData | PublicData;
 
 @Service()
 export class UnfurlService implements GrowiEventProcessor {
@@ -110,7 +117,7 @@ export class UnfurlService implements GrowiEventProcessor {
       const unfurlResults = await Promise.allSettled(data.map(async(datum) => {
         const targetUrl = `${origin}${datum.path}`;
         // return early when page is private
-        if (datum.isPrivate) {
+        if (datum.isPrivate === false) {
           await client.chat.unfurl({
             channel,
             ts,
@@ -124,7 +131,7 @@ export class UnfurlService implements GrowiEventProcessor {
         }
 
         // build unfurl arguments
-        const unfurls = this.generateLinkUnfurls(datum, targetUrl);
+        const unfurls = this.generateLinkUnfurls(datum as PublicData, targetUrl);
         const unfurlArgs: ChatUnfurlArguments = {
           channel,
           ts,
@@ -139,7 +146,7 @@ export class UnfurlService implements GrowiEventProcessor {
 
   }
 
-  generateLinkUnfurls(body: UnfurlPageResponseData, growiTargetUrl: string): LinkUnfurls {
+  generateLinkUnfurls(body: PublicData, growiTargetUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
     const updatedAtFormatted = format(parseISO(updatedAt), 'yyyy-MM-dd HH:mm');
