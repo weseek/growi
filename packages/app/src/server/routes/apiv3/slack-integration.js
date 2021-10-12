@@ -369,37 +369,6 @@ module.exports = (crowi) => {
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
   });
 
-  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, async(req, res) => {
-    try {
-      const { paths } = req.body;
-
-      // get pages with revision
-      const Page = mongoose.model('Page');
-      const pages = await Page.find({ path: { $in: paths } }).populate('revision');
-
-      const responseData = [];
-      pages.forEach((page) => {
-        // not send non-public page
-        if (page.grant !== Page.GRANT_PUBLIC) {
-          return responseData.push({ isPrivate: true });
-        }
-
-        // send the public page data with isPrivate: false
-        const { updatedAt, commentCount } = page;
-        const { body } = page.revision;
-        responseData.push({
-          isPrivate: false, path: page.path, pageBody: body, updatedAt, commentCount,
-        });
-      });
-
-      return res.apiv3({ pageData: responseData });
-    }
-    catch (err) {
-      logger.error('Error occurred while finding a page by path', err);
-      return res.apiv3Err(new ErrorV3('Error occurred while finding a page or page not found.'));
-    }
-  });
-
   // error handler
   router.use(async(err, req, res, next) => {
     const responseUrl = getResponseUrl(req);
