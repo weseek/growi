@@ -12,6 +12,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   const { notification } = props;
 
+  // TODO get actionUsers with mongoose virtual method by #79077
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
