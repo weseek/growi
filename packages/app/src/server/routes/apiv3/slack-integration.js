@@ -4,14 +4,15 @@ import {
 import createError from 'http-errors';
 import loggerFactory from '~/utils/logger';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
+import ErrorV3 from '../../models/vo/error-apiv3';
 
 const express = require('express');
 const mongoose = require('mongoose');
-const urljoin = require('url-join');
 
 const {
   verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
 } = require('@growi/slack');
+
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -366,6 +367,37 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
 
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+  });
+
+  router.post('/proxied/page-unfurl', verifyAccessTokenFromProxy, async(req, res) => {
+    try {
+      const { path } = req.body;
+
+      // get page with revision
+      const Page = mongoose.model('Page');
+      const page = await Page.findByPath(path).populate('revision');
+
+      // ensure a page to be found
+      if (page == null) {
+        throw Error('Page is null.');
+      }
+
+      // not send non-public page
+      if (page.grant !== Page.GRANT_PUBLIC) {
+        return res.apiv3({ isPrivate: true });
+      }
+
+      const { updatedAt, commentCount } = page;
+      const { body } = page.revision;
+
+      return res.apiv3({
+        isPrivate: false, pageBody: body, updatedAt, commentCount,
+      });
+    }
+    catch (err) {
+      logger.error('Error occurred while finding a page by path', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while finding a page or page not found.'));
+    }
   });
 
   // error handler

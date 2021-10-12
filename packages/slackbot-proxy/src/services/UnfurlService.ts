@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { Service } from '@tsed/di';
-import { GrowiEventProcessor } from '@growi/slack';
+import { Inject, Service } from '@tsed/di';
+import { GrowiEventProcessor, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
 import {
   ChatUnfurlArguments, LinkUnfurls, MessageAttachment, WebClient,
 } from '@slack/web-api';
 import { format, parseISO } from 'date-fns';
 import loggerFactory from '~/utils/logger';
+import { RelationRepository } from '~/repositories/relation';
 
 const logger = loggerFactory('slackbot-proxy:services:UnfurlService');
 
@@ -23,8 +24,18 @@ export type UnfurlRequestEvent = {
   links: UnfurlEventLinks[],
 }
 
+export type UnfurlPageResponseData = {
+  isPrivate: boolean,
+  pageBody: string,
+  updatedAt: string,
+  commentCount: number,
+}
+
 @Service()
 export class UnfurlService implements GrowiEventProcessor {
+
+  @Inject()
+  relationRepository: RelationRepository;
 
   shouldHandleEvent(eventType: string): boolean {
     return eventType === 'link_shared';
@@ -36,16 +47,49 @@ export class UnfurlService implements GrowiEventProcessor {
     const results = await Promise.allSettled(links.map(async(link) => {
       const { url: growiTargetUrl } = link;
 
-      // TODO: request to growi to fetch page data 78968
-      const resultOfAxiosRequestToGrowi = {
-        // eslint-disable-next-line max-len
-        body: '## Loooooooong markdown text\n## Loooooooong markdown text\n## Loooooooong markdown text\n## Loooooooong markdown text\n## Loooooooong markdown text\n## Loooooooong markdown text\n## Loooooooong markdown text\n',
-        comments: 10,
-        updatedAt: (new Date()).toISOString(),
-      };
+      const urlObject = new URL(growiTargetUrl);
+
+      const tokenPtoG = await this.getTokenPtoGFromUrlObject(urlObject);
+
+      let result;
+      try {
+        // get origin from growiTargetUrl and create url to use
+        const growiTargetUrlObject = new URL(growiTargetUrl);
+        const url = new URL('/_api/v3/slack-integration/proxied/page-unfurl', growiTargetUrlObject.origin);
+
+        result = await axios.post(url.toString(),
+          { path: growiTargetUrlObject.pathname },
+          {
+            headers: {
+              'x-growi-ptog-tokens': tokenPtoG,
+            },
+            timeout: REQUEST_TIMEOUT_FOR_PTOG,
+          });
+      }
+      catch (err) {
+        return logger.error(err);
+      }
+
+      const data = result.data?.data;
+      if (data == null) {
+        return logger.error('Malformed data found in axios response.');
+      }
+
+      // return early when page is private
+      if (data.isPrivate) {
+        return client.chat.unfurl({
+          channel,
+          ts,
+          unfurls: {
+            [growiTargetUrl]: {
+              text: 'Page is not public.',
+            },
+          },
+        });
+      }
 
       // build unfurl arguments
-      const unfurls = this.getLinkUnfurls(resultOfAxiosRequestToGrowi, growiTargetUrl);
+      const unfurls = this.getLinkUnfurls(data as UnfurlPageResponseData, growiTargetUrl);
       const unfurlArgs: ChatUnfurlArguments = {
         channel,
         ts,
@@ -64,11 +108,11 @@ export class UnfurlService implements GrowiEventProcessor {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  getLinkUnfurls(response: any /* TODO: change any to the other type 78968 */, growiTargetUrl: string): LinkUnfurls {
-    const text = response.body;
-    const updatedAt = format(parseISO(response.updatedAt), 'yyyy-MM-dd HH:mm');
-    const footer = `updated at: ${updatedAt}  comments: ${response.comments}`;
+  getLinkUnfurls(body: UnfurlPageResponseData, growiTargetUrl: string): LinkUnfurls {
+    const { pageBody: text, updatedAt, commentCount } = body;
+
+    const updatedAtFormatted = format(parseISO(updatedAt), 'yyyy-MM-dd HH:mm');
+    const footer = `updated at: ${updatedAtFormatted}  comments: ${commentCount}`;
 
     const attachment: MessageAttachment = {
       text,
@@ -92,6 +136,26 @@ export class UnfurlService implements GrowiEventProcessor {
     };
 
     return unfurls;
+  }
+
+  async getTokenPtoGFromUrlObject(urlObject: URL): Promise<string> {
+    let relation;
+    try {
+      relation = await this.relationRepository.findOneByGrowiUri(urlObject.origin);
+    }
+    catch (err) {
+      return logger.error('Error occurred while finding relation by growi uri:', err);
+    }
+
+    let tokenPtoG;
+    if (relation != null) {
+      tokenPtoG = relation.tokenPtoG;
+    }
+    else {
+      return logger.error('Relation not found');
+    }
+
+    return tokenPtoG;
   }
 
 }
