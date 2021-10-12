@@ -214,11 +214,9 @@ export class UnfurlService implements GrowiEventProcessor {
   logErrorRejectedResults<T>(results: PromiseSettledResult<T>[]): void {
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    if (rejectedResults.length > 0) {
-      rejectedResults.forEach((rejected, i) => {
-        logger.error(`Error occurred (count: ${i}): `, rejected.reason.toString());
-      });
-    }
+    rejectedResults.forEach((rejected, i) => {
+      logger.error(`Error occurred (count: ${i}): `, rejected.reason.toString());
+    });
   }
 
 }
