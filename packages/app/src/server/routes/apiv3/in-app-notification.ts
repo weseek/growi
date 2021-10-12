@@ -32,10 +32,9 @@ module.exports = (crowi) => {
   });
 
   router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const user = req.user;
-
+    const userId = req.user._id;
     try {
-      const count = await InAppNotification.getUnreadCountByUser(user._id);
+      const count = await inAppNotificationService.getUnreadCountByUser(userId);
       const result = { count };
       return res.apiv3(result);
     }

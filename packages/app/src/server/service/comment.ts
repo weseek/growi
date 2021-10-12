@@ -51,11 +51,11 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', (user) => {
+    this.commentEvent.on('update', (userId, pageId) => {
       this.commentEvent.onUpdate();
       const { inAppNotificationService } = this.crowi;
 
-      inAppNotificationService.emitSocketIo(user);
+      inAppNotificationService.emitSocketIo(userId, pageId);
     });
 
     // remove
