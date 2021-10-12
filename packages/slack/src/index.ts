@@ -24,6 +24,7 @@ export const defaultSupportedCommandsNameForSingleUse: string[] = [
 
 export * from './interfaces/growi-command-processor';
 export * from './interfaces/growi-interaction-processor';
+export * from './interfaces/growi-event-processor';
 export * from './interfaces/growi-command';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';

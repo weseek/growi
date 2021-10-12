@@ -28,6 +28,7 @@ import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-veri
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
+import { UnfurlService } from '~/services/UnfurlService';
 import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
@@ -89,6 +90,9 @@ export class SlackCtrl {
 
   @Inject()
   unregisterService: UnregisterService;
+
+  @Inject()
+  unfurlService: UnfurlService;
 
   /**
    * Send command to specified GROWIs
@@ -390,14 +394,21 @@ export class SlackCtrl {
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
+    const { event } = req.body;
 
-    if (req.body.event.type === 'app_home_opened') {
+    // send welcome message
+    if (event.type === 'app_home_opened') {
       try {
-        await postWelcomeMessageOnce(client, req.body.event.channel);
+        await postWelcomeMessageOnce(client, event.channel);
       }
       catch (err) {
         logger.error('Failed to post welcome message', err);
       }
+    }
+
+    // unfurl
+    if (this.unfurlService.shouldHandleEvent(event.type)) {
+      await this.unfurlService.processEvent(client, event);
     }
 
     return;
