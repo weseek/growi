@@ -7,6 +7,7 @@ import {
 import { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '~/utils/logger';
+import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
@@ -31,10 +32,13 @@ export default class InAppNotificationService {
   }
 
 
-  emitSocketIo = async(user) => {
+  emitSocketIo = async(userId, pageId) => {
     if (this.socketIoService.isInitialized) {
-      const count = await this.getUnreadCountByUser(user);
-      await this.socketIoService.getDefaultSocket().emit('InAppNotification:countUpdate', { user, count });
+      const count = await this.getUnreadCountByUser(userId);
+      await this.socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+        .except(getRoomNameWithId(RoomPrefix.USER, userId))
+        .emit('InAppNotification:countUpdate', { userId, count });
     }
   }
 
