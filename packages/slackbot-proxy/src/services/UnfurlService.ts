@@ -170,26 +170,6 @@ export class UnfurlService implements GrowiEventProcessor {
     return unfurls;
   }
 
-  async getTokenPtoGFromUrlObject(urlObject: URL): Promise<string> {
-    let relation;
-    try {
-      relation = await this.relationRepository.findOneByGrowiUri(urlObject.origin);
-    }
-    catch (err) {
-      return logger.error('Error occurred while finding relation by growi uri:', err);
-    }
-
-    let tokenPtoG;
-    if (relation != null) {
-      tokenPtoG = relation.tokenPtoG;
-    }
-    else {
-      return logger.error('Relation not found');
-    }
-
-    return tokenPtoG;
-  }
-
   generateOriginToPathsMapFromLinks(links: UnfurlEventLinks[]): Map<GrowiOrigin, Paths> {
     // paths map for each growi origin
     const originToPathsMap: Map<GrowiOrigin, Paths> = new Map();
