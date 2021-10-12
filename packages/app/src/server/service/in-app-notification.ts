@@ -34,7 +34,7 @@ export default class InAppNotificationService {
   emitSocketIo = async(user) => {
     if (this.socketIoService.isInitialized) {
       const count = await this.getUnreadCountByUser(user);
-      await this.socketIoService.getDefaultSocket().emit('InAppNotification count update', { user, count });
+      await this.socketIoService.getDefaultSocket().emit('InAppNotification:countUpdate', { user, count });
     }
   }
 
