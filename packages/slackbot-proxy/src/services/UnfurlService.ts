@@ -52,19 +52,14 @@ export class UnfurlService implements GrowiEventProcessor {
         unfurls,
       };
 
-      try {
-        await client.chat.unfurl(unfurlArgs);
-      }
-      catch (err) {
-        logger.error('Error occurred while unfurling:', err);
-      }
+      await client.chat.unfurl(unfurlArgs);
     }));
 
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
     if (rejectedResults.length > 0) {
       rejectedResults.forEach((rejected, i) => {
-        logger.error(`Unfurl failed (count: ${i}): `, rejected.reason.toString());
+        logger.error(`Error occurred while unfurling (count: ${i}): `, rejected.reason.toString());
       });
     }
   }
