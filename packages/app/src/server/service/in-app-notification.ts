@@ -26,12 +26,15 @@ export default class InAppNotificationService {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
     this.activityEvent = crowi.event('activity');
+
+    this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
   }
 
 
   emitSocketIo = async(user) => {
     if (this.socketIoService.isInitialized) {
-      await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+      const count = await this.getUnreadCountByUser(user);
+      await this.socketIoService.getDefaultSocket().emit('InAppNotification count update', { user, count });
     }
   }
 

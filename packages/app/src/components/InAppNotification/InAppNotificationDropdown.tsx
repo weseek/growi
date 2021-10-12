@@ -41,7 +41,7 @@ const InAppNotificationDropdown: FC = (props) => {
     console.log(props);
 
     const socket = props.socketIoContainer.getSocket();
-    socket.on('comment updated', (data: { user: string }) => {
+    socket.on('InAppNotification count update', (data: { user: string, count: number }) => {
       // eslint-disable-next-line no-console
       console.log('socketData', data);
 
@@ -49,8 +49,6 @@ const InAppNotificationDropdown: FC = (props) => {
         // TODO: Fetch notification list by #78557
         // fetchNotificationList();
 
-        // TODO Consider a way to fetch notification status
-        fetchNotificationStatus(props);
       }
     });
   };
