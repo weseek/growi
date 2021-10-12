@@ -1,4 +1,5 @@
 module.exports = {
+  Activity: require('./activity'),
   Page: require('./page'),
   // TODO GW-2746 bulk export pages
   // PageArchive: require('./page-archive'),

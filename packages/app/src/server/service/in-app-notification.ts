@@ -70,6 +70,64 @@ export default class InAppNotificationService {
     return;
   }
 
+  getLatestNotificationsByUser = async(userId, limitNum, offset) => {
+
+    try {
+      const pagenatedInAppNotifications = await InAppNotification.paginate(
+        { user: userId },
+        {
+          sort: { createdAt: -1 },
+          offset,
+          limit: limitNum || 10,
+          populate: [
+            { path: 'user' },
+            { path: 'target' },
+            { path: 'activities', populate: { path: 'user' } },
+          ],
+        },
+      );
+    }
+    catch (err) {
+      logger.error('Error', err);
+      throw new Error(err);
+    }
+
+    try {
+      /**
+       * TODO: return results including notifications,hasPrev and hasNext by #78991
+       * refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/lib/controllers/notification.ts
+       */
+      // Notification.findLatestNotificationsByUser(user._id, requestLimit, offset)
+      // .then(function (notifications) {
+      //   let hasPrev = false
+      //   if (offset > 0) {
+      //     hasPrev = true
+      //   }
+
+      //   let hasNext = false
+      //   if (notifications.length > limit) {
+      //     hasNext = true
+      //   }
+
+      //   const result = {
+      //     notifications: notifications.slice(0, limit),
+      //     hasPrev: hasPrev,
+      //     hasNext: hasNext,
+      //   }
+
+      //   return res.json(ApiResponse.success(result))
+      // })
+      // .catch(function (err) {
+      //   return res.json(ApiResponse.error(err))
+      // })
+
+    }
+    catch (err) {
+      logger.error('Error', err);
+      throw new Error(err);
+    }
+  }
+
   // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
   //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
   //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);

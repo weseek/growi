@@ -86,10 +86,10 @@ const InAppNotificationDropdown: FC = (props) => {
     */
 
   const fetchNotificationList = async(props) => {
-    console.log('propsappContainerHoge', props.appContainer);
     const limit = 6;
     try {
-      const notifications = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+      const inAppNotificationList = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+
       // setNotifications(notifications);
       // setIsLoaded(true);
     }
