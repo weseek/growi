@@ -79,6 +79,7 @@ const InAppNotificationDropdown: FC = (props) => {
     const limit = 6;
     try {
       const paginationResult = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+      console.log('paginationResult', paginationResult);
 
       setNotifications(paginationResult.data.docs);
       setIsLoaded(true);
@@ -137,7 +138,7 @@ const InAppNotificationDropdown: FC = (props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        // temporaly notification list. need to delete by #
+        // temporaly notification list. need to delete by #79077
         <div key={notification._id}>action: {notification.action} </div>
         // use this component to show notification list
         // <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
