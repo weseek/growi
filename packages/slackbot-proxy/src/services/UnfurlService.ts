@@ -45,7 +45,7 @@ export class UnfurlService implements GrowiEventProcessor {
       };
 
       // build unfurl arguments
-      const unfurls = this.getLinkUnfurls(resultOfAxiosRequestToGrowi, growiTargetUrl);
+      const unfurls = this.generateLinkUnfurls(resultOfAxiosRequestToGrowi, growiTargetUrl);
       const unfurlArgs: ChatUnfurlArguments = {
         channel,
         ts,
@@ -65,7 +65,7 @@ export class UnfurlService implements GrowiEventProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  getLinkUnfurls(response: any /* TODO: change any to the other type 78968 */, growiTargetUrl: string): LinkUnfurls {
+  generateLinkUnfurls(response: any /* TODO: change any to the other type 78968 */, growiTargetUrl: string): LinkUnfurls {
     const text = response.body;
     const updatedAt = format(parseISO(response.updatedAt), 'yyyy-MM-dd HH:mm');
     const footer = `updated at: ${updatedAt}  comments: ${response.comments}`;
