@@ -369,30 +369,30 @@ module.exports = (crowi) => {
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
   });
 
-  router.post('/proxied/page-unfurl', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, async(req, res) => {
     try {
-      const { path } = req.body;
+      const { paths } = req.body;
 
-      // get page with revision
+      // get pages with revision
       const Page = mongoose.model('Page');
-      const page = await Page.findByPath(path).populate('revision');
+      const pages = await Page.find({ path: { $in: paths } }).populate('revision');
 
-      // ensure a page to be found
-      if (page == null) {
-        throw Error('Page is null.');
-      }
+      const responseData = [];
+      pages.forEach((page) => {
+        // not send non-public page
+        if (page.grant !== Page.GRANT_PUBLIC) {
+          return responseData.push({ isPrivate: true });
+        }
 
-      // not send non-public page
-      if (page.grant !== Page.GRANT_PUBLIC) {
-        return res.apiv3({ isPrivate: true });
-      }
-
-      const { updatedAt, commentCount } = page;
-      const { body } = page.revision;
-
-      return res.apiv3({
-        isPrivate: false, pageBody: body, updatedAt, commentCount,
+        // send the public page data with isPrivate: false
+        const { updatedAt, commentCount } = page;
+        const { body } = page.revision;
+        responseData.push({
+          isPrivate: false, path: page.path, pageBody: body, updatedAt, commentCount,
+        });
       });
+
+      return res.apiv3({ pageData: responseData });
     }
     catch (err) {
       logger.error('Error occurred while finding a page by path', err);

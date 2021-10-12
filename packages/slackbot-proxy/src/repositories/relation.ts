@@ -11,4 +11,8 @@ export class RelationRepository extends Repository<Relation> {
     return this.findOne({ growiUri });
   }
 
+  async findAllByGrowiUris(growiUris: string[]): Promise<Relation[]> {
+    return this.find({ where: growiUris.map(uri => ({ growiUri: uri })) });
+  }
+
 }

@@ -15,6 +15,16 @@ type UnfurlEventLinks = {
   domain: string,
 }
 
+type ResposeDataFromEachOrigin = {
+  origin: string,
+  data: UnfurlPageResponseData[],
+}
+
+// aliases
+type GrowiOrigin = string;
+type Paths = string[];
+type TokenPtoG = string;
+
 export type UnfurlRequestEvent = {
   channel: string,
 
@@ -26,6 +36,7 @@ export type UnfurlRequestEvent = {
 
 export type UnfurlPageResponseData = {
   isPrivate: boolean,
+  path: string,
   pageBody: string,
   updatedAt: string,
   commentCount: number,
@@ -44,68 +55,88 @@ export class UnfurlService implements GrowiEventProcessor {
   async processEvent(client: WebClient, event: UnfurlRequestEvent): Promise<void> {
     const { channel, message_ts: ts, links } = event;
 
-    const results = await Promise.allSettled(links.map(async(link) => {
-      const { url: growiTargetUrl } = link;
+    // generate originToPathsMap
+    const originToPathsMap = this.generateOriginToPathsMapFromLinks(links);
 
-      const urlObject = new URL(growiTargetUrl);
+    const origins = Array.from(originToPathsMap.keys());
 
-      const tokenPtoG = await this.getTokenPtoGFromUrlObject(urlObject);
+    // get tokenPtoG at once
+    const originToTokenPtoGMap = await this.generateOriginToTokenPtoGMapFromOrigins(origins);
 
-      let result;
+    // get pages from each growi
+    const pagesResults = await Promise.allSettled(origins.map(async(origin): Promise<ResposeDataFromEachOrigin> => {
       try {
-        // get origin from growiTargetUrl and create url to use
-        const growiTargetUrlObject = new URL(growiTargetUrl);
-        const url = new URL('/_api/v3/slack-integration/proxied/page-unfurl', growiTargetUrlObject.origin);
+        const paths = originToPathsMap.get(origin);
+        const tokenPtoG = originToTokenPtoGMap.get(origin);
+        // ensure paths and tokenPtoG exist
+        if (paths == null) throw new Error('paths is null');
+        else if (tokenPtoG == null) throw new Error('tokenPtoG is null');
 
-        result = await axios.post(url.toString(),
-          { path: growiTargetUrlObject.pathname },
+        // get origin from growiTargetUrl and create url to use
+        const url = new URL('/_api/v3/slack-integration/proxied/pages-unfurl', origin);
+
+        const response = await axios.post(url.toString(),
+          { paths },
           {
             headers: {
               'x-growi-ptog-tokens': tokenPtoG,
             },
             timeout: REQUEST_TIMEOUT_FOR_PTOG,
           });
+
+        // ensure data is not broken
+        const data: UnfurlPageResponseData[] = response.data?.data?.pageData;
+        if (data == null) {
+          throw Error('Malformed data found in axios response.');
+        }
+
+        return { origin, data };
       }
       catch (err) {
-        return logger.error(err);
+        logger.error('Error occurred while request to growi:', err);
+        throw new Error('Axios request to growi failed.');
       }
-
-      const data = result.data?.data;
-      if (data == null) {
-        return logger.error('Malformed data found in axios response.');
-      }
-
-      // return early when page is private
-      if (data.isPrivate) {
-        return client.chat.unfurl({
-          channel,
-          ts,
-          unfurls: {
-            [growiTargetUrl]: {
-              text: 'Page is not public.',
-            },
-          },
-        });
-      }
-
-      // build unfurl arguments
-      const unfurls = this.generateLinkUnfurls(data as UnfurlPageResponseData, growiTargetUrl);
-      const unfurlArgs: ChatUnfurlArguments = {
-        channel,
-        ts,
-        unfurls,
-      };
-
-      await client.chat.unfurl(unfurlArgs);
     }));
 
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+    // log and extract
+    this.logErrorRejectedResults(pagesResults);
+    const fulfilledPagesResults = this.extractFulfilledResults(pagesResults);
 
-    if (rejectedResults.length > 0) {
-      rejectedResults.forEach((rejected, i) => {
-        logger.error(`Error occurred while unfurling (count: ${i}): `, rejected.reason.toString());
-      });
-    }
+    // unfurl each target url
+    await Promise.all(fulfilledPagesResults.map(async(result) => {
+      const { value } = result;
+      const { origin, data } = value;
+
+      const unfurlResults = await Promise.allSettled(data.map(async(datum) => {
+        const targetUrl = `${origin}${datum.path}`;
+        // return early when page is private
+        if (datum.isPrivate) {
+          await client.chat.unfurl({
+            channel,
+            ts,
+            unfurls: {
+              [targetUrl]: {
+                text: 'Page is not public.',
+              },
+            },
+          });
+          return;
+        }
+
+        // build unfurl arguments
+        const unfurls = this.generateLinkUnfurls(datum, targetUrl);
+        const unfurlArgs: ChatUnfurlArguments = {
+          channel,
+          ts,
+          unfurls,
+        };
+        await client.chat.unfurl(unfurlArgs);
+      }));
+
+      // log errors
+      this.logErrorRejectedResults(unfurlResults);
+    }));
+
   }
 
   generateLinkUnfurls(body: UnfurlPageResponseData, growiTargetUrl: string): LinkUnfurls {
@@ -117,6 +148,7 @@ export class UnfurlService implements GrowiEventProcessor {
     const attachment: MessageAttachment = {
       text,
       footer,
+      // TODO: consider whether to keep these buttons
       actions: [
         {
           type: 'button',
@@ -156,6 +188,57 @@ export class UnfurlService implements GrowiEventProcessor {
     }
 
     return tokenPtoG;
+  }
+
+  generateOriginToPathsMapFromLinks(links: UnfurlEventLinks[]): Map<GrowiOrigin, Paths> {
+    // paths map for each growi origin
+    const originToPathsMap: Map<GrowiOrigin, Paths> = new Map();
+
+    // increment
+    links.forEach((link) => {
+      const { url: growiTargetUrl } = link;
+      const urlObject = new URL(growiTargetUrl);
+      const { origin } = urlObject;
+
+      if (!originToPathsMap.has(origin)) {
+        originToPathsMap.set(origin, []);
+      }
+      // append path
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      originToPathsMap.set(origin, [...originToPathsMap.get(origin)!, urlObject.pathname]);
+    });
+
+    return originToPathsMap;
+  }
+
+  async generateOriginToTokenPtoGMapFromOrigins(origins: GrowiOrigin[]): Promise<Map<GrowiOrigin, TokenPtoG>> {
+    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = new Map();
+
+    // bulk get relations using origins
+    const relations = await this.relationRepository.findAllByGrowiUris(origins);
+
+    // increment map using relation.growiUri & relation.tokenPtoG
+    relations.forEach((relation) => {
+      originToTokenPtoGMap.set(relation.growiUri, relation.tokenPtoG);
+    });
+
+    return originToTokenPtoGMap;
+  }
+
+  extractFulfilledResults<T>(results: PromiseSettledResult<T>[]): PromiseFulfilledResult<T>[] {
+    const fulfilledResults: PromiseFulfilledResult<T>[] = results.filter((result): result is PromiseFulfilledResult<T> => result.status === 'fulfilled');
+
+    return fulfilledResults;
+  }
+
+  logErrorRejectedResults<T>(results: PromiseSettledResult<T>[]): void {
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    if (rejectedResults.length > 0) {
+      rejectedResults.forEach((rejected, i) => {
+        logger.error(`Error occurred (count: ${i}): `, rejected.reason.toString());
+      });
+    }
   }
 
 }
