@@ -17,17 +17,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState<IInAppNotification[]>([{
-    // This is dummy notification data. Delete it after fetching notification list by #78756
-    _id: '1',
-    user: 'kaori1',
-    targetModel: 'Page',
-    target: 'hogePage',
-    action: 'COMMENT',
-    status: 'hoge',
-    actionUsers: ['taro', 'yamada'],
-    createdAt: 'hoge',
-  }]);
+  const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -46,7 +36,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
       if (props.me === data.user) {
         // TODO: Fetch notification status by #78563
-        // fetchNotificationList();
+        fetchNotificationList(props);
 
         // TODO: Fetch notification list by #78557
         // fetchNotificationStatus();
@@ -88,10 +78,10 @@ const InAppNotificationDropdown: FC = (props) => {
   const fetchNotificationList = async(props) => {
     const limit = 6;
     try {
-      const inAppNotificationList = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+      const paginationResult = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
 
-      // setNotifications(notifications);
-      // setIsLoaded(true);
+      setNotifications(paginationResult.data.docs);
+      setIsLoaded(true);
     }
     catch (err) {
       // TODO: error handling
@@ -147,7 +137,10 @@ const InAppNotificationDropdown: FC = (props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        // temporaly notification list. need to delete by #
+        <div key={notification._id}>action: {notification.action} </div>
+        // use this component to show notification list
+        // <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );
     });
     return <>{notificationList}</>;

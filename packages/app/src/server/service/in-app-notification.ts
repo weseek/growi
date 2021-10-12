@@ -73,7 +73,7 @@ export default class InAppNotificationService {
   getLatestNotificationsByUser = async(userId, limitNum, offset) => {
 
     try {
-      const pagenatedInAppNotifications = await InAppNotification.paginate(
+      const paginationResult = await InAppNotification.paginate(
         { user: userId },
         {
           sort: { createdAt: -1 },
@@ -86,41 +86,8 @@ export default class InAppNotificationService {
           ],
         },
       );
-    }
-    catch (err) {
-      logger.error('Error', err);
-      throw new Error(err);
-    }
 
-    try {
-      /**
-       * TODO: return results including notifications,hasPrev and hasNext by #78991
-       * refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/lib/controllers/notification.ts
-       */
-      // Notification.findLatestNotificationsByUser(user._id, requestLimit, offset)
-      // .then(function (notifications) {
-      //   let hasPrev = false
-      //   if (offset > 0) {
-      //     hasPrev = true
-      //   }
-
-      //   let hasNext = false
-      //   if (notifications.length > limit) {
-      //     hasNext = true
-      //   }
-
-      //   const result = {
-      //     notifications: notifications.slice(0, limit),
-      //     hasPrev: hasPrev,
-      //     hasNext: hasNext,
-      //   }
-
-      //   return res.json(ApiResponse.success(result))
-      // })
-      // .catch(function (err) {
-      //   return res.json(ApiResponse.error(err))
-      // })
-
+      return paginationResult;
     }
     catch (err) {
       logger.error('Error', err);
