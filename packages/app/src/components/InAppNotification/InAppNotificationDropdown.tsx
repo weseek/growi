@@ -34,7 +34,6 @@ const InAppNotificationDropdown: FC = (props) => {
   useEffect(() => {
     initializeSocket(props);
     fetchNotificationList(props);
-    fetchNotificationStatus(props);
   }, []);
 
   const initializeSocket = (props) => {
@@ -51,17 +50,6 @@ const InAppNotificationDropdown: FC = (props) => {
 
       }
     });
-  };
-
-  const fetchNotificationStatus = async(props) => {
-    try {
-      const res = await props.appContainer.apiv3Get('in-app-notification/status');
-      const { count } = res.data;
-      setCount(count);
-    }
-    catch (err) {
-      toastError(err);
-    }
   };
 
   const updateNotificationStatus = () => {
