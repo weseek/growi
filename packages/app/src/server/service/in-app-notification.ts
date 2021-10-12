@@ -35,6 +35,8 @@ export default class InAppNotificationService {
   emitSocketIo = async(userId, pageId) => {
     if (this.socketIoService.isInitialized) {
       const count = await this.getUnreadCountByUser(userId);
+
+      // emit to the room for each page
       await this.socketIoService.getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
         .except(getRoomNameWithId(RoomPrefix.USER, userId))
