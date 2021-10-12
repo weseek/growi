@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Service } from '@tsed/di';
 import { GrowiEventProcessor } from '@growi/slack';
 import {
@@ -64,7 +64,8 @@ export class UnfurlService implements GrowiEventProcessor {
     }
   }
 
-  getLinkUnfurls(response: AxiosResponse | any /* TODO: delete any 78968 */, growiTargetUrl: string): LinkUnfurls {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  getLinkUnfurls(response: any /* TODO: change any to the other type 78968 */, growiTargetUrl: string): LinkUnfurls {
     const text = response.body;
     const updatedAt = format(parseISO(response.updatedAt), 'yyyy-MM-dd HH:mm');
     const footer = `updated at: ${updatedAt}  comments: ${response.comments}`;
