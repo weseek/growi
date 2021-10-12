@@ -10,9 +10,9 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
+  InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond,
+  respond, supportedGrowiCommands,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -32,6 +32,7 @@ import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
+import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -177,6 +178,7 @@ export class SlackCtrl {
       return this.unregisterService.processCommand(growiCommand, authorizeResult);
     }
 
+    // get relations
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -204,11 +206,22 @@ export class SlackCtrl {
       });
     }
 
-    await respond(growiCommand.responseUrl, {
-      blocks: [
-        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.text}"* ...`),
-      ],
-    });
+    // not supported commands
+    if (!supportedGrowiCommands.includes(growiCommand.growiCommandType)) {
+      return respond(growiCommand.responseUrl, {
+        text: 'Command is not supported',
+        blocks: [
+          markdownSectionBlock('*Command is not supported*'),
+          // eslint-disable-next-line max-len
+          markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+        ],
+      });
+    }
+
+    // help
+    if (growiCommand.growiCommandType === 'help') {
+      return this.sendCommand(growiCommand, relations, body);
+    }
 
     const allowedRelationsForSingleUse:Relation[] = [];
     const allowedRelationsForBroadcastUse:Relation[] = [];
@@ -282,7 +295,7 @@ export class SlackCtrl {
     logger.debug('receive interaction', req.body);
 
     const {
-      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri,
     } = req;
 
     // pass
@@ -316,6 +329,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
+      .andWhere('relation.growiUri = :uri', { uri: growiUri })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
@@ -374,12 +388,16 @@ export class SlackCtrl {
   @Post('/events')
   @UseBefore(UrlVerificationMiddleware, AuthorizeEventsMiddleware)
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
-
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
 
     if (req.body.event.type === 'app_home_opened') {
-      await postWelcomeMessage(client, req.body.event.channel);
+      try {
+        await postWelcomeMessageOnce(client, req.body.event.channel);
+      }
+      catch (err) {
+        logger.error('Failed to post welcome message', err);
+      }
     }
 
     return;
@@ -434,9 +452,9 @@ export class SlackCtrl {
 
         await Promise.all([
           // post message
-          postWelcomeMessage(client, userId),
+          postInstallSuccessMessage(client, userId),
           // publish home
-          // TODO When Home tab show off, use bellow.
+          // TODO: When Home tab show off, use bellow.
           // publishInitialHomeView(client, userId),
         ]);
       }

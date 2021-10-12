@@ -310,10 +310,10 @@ module.exports = function(crowi, app) {
    *                            $ref: '#/components/schemas/Page/properties/_id'
    *                          revision_id:
    *                            $ref: '#/components/schemas/Revision/properties/_id'
+   *                          comment_id:
+   *                            $ref: '#/components/schemas/Comment/properties/_id'
    *                          comment:
    *                            $ref: '#/components/schemas/Comment/properties/comment'
-   *                          comment_position:
-   *                            $ref: '#/components/schemas/Comment/properties/commentPosition'
    *                required:
    *                  - form
    *        responses:
@@ -340,13 +340,12 @@ module.exports = function(crowi, app) {
   api.update = async function(req, res) {
     const { commentForm } = req.body;
 
-    const pageId = commentForm.page_id;
-    const comment = commentForm.comment;
+    const commentStr = commentForm.comment;
     const isMarkdown = commentForm.is_markdown;
     const commentId = commentForm.comment_id;
-    const author = commentForm.author;
+    const revision = commentForm.revision_id;
 
-    if (comment === '') {
+    if (commentStr === '') {
       return res.json(ApiResponse.error('Comment text is required'));
     }
 
@@ -354,19 +353,28 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('\'comment_id\' is undefined'));
     }
 
-    if (author !== req.user.username) {
-      return res.json(ApiResponse.error('Only the author can edit'));
-    }
-
-    // check whether accessible
-    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-    if (!isAccessible) {
-      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
-    }
-
     let updatedComment;
     try {
-      updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
+      const comment = await Comment.findById(commentId).exec();
+
+      if (comment == null) {
+        throw new Error('This comment does not exist.');
+      }
+
+      // check whether accessible
+      const pageId = comment.page;
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+      if (!isAccessible) {
+        throw new Error('Current user is not accessible to this page.');
+      }
+      if (req.user.id !== comment.creator.toString()) {
+        throw new Error('Current user is not operatable to this comment.');
+      }
+
+      updatedComment = await Comment.findOneAndUpdate(
+        { _id: commentId },
+        { $set: { comment: commentStr, isMarkdown, revision } },
+      );
     }
     catch (err) {
       logger.error(err);
@@ -437,6 +445,9 @@ module.exports = function(crowi, app) {
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
+      }
+      if (req.user.id !== comment.creator.toString()) {
+        throw new Error('Current user is not operatable to this comment.');
       }
 
       await comment.removeWithReplies();

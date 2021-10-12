@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.8](https://github.com/weseek/growi/compare/v4.4.7...v4.4.8) - 2021-10-08
+
+### 🚀 Improvement
+
+- imprv: Permissions to operate comment (#4466) @yuki-takei
+- imprv: Show modal when enabling Textlint (#4373) @stevenfukase
+- imprv: Slackbot reaction to user (#4442) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Redirected to apiv3 endpoint when guest mode is enabled (#4443) @stevenfukase
+- fix: Unnecessary extra JSON.stringify for configurations for slackbot without proxy (#4467) @hakumizuki
+- fix: Migration for slackbot configurations without proxy (#4465) @hakumizuki
+- fix: Slackbot error/command handling (#4463) @hakumizuki
+- fix(slackbot): Respond bad gateway error & improved help message (#4470) @hakumizuki
+- fix(slackbot): Stop auto-join to channels with middlewarer (#4424) @yuki-takei
 
 ## [v4.4.7](https://github.com/weseek/growi/compare/v4.4.6...v4.4.7) - 2021-09-29
 
