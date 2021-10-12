@@ -40,7 +40,7 @@ const InAppNotificationDropdown: FC = (props) => {
     console.log(props);
 
     const socket = props.socketIoContainer.getSocket();
-    socket.on('InAppNotification:countUpdate', (data: { userId: string, count: number }) => {
+    socket.on('commentUpdated', (data: { userId: string, count: number }) => {
       // eslint-disable-next-line no-console
       console.log('socketData', data);
 

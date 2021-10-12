@@ -40,7 +40,7 @@ export default class InAppNotificationService {
       await this.socketIoService.getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
         .except(getRoomNameWithId(RoomPrefix.USER, userId))
-        .emit('InAppNotification:countUpdate', { userId, count });
+        .emit('commentUpdated', { userId, count });
     }
   }
 
