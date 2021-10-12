@@ -12,7 +12,7 @@ type Props ={
 const SearchResultContent: FC<Props> = (props: Props) => {
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
-  const RevisionRenderTypeAny: any = RevisionLoader;
+  const RevisionLoaderTypeAny: any = RevisionLoader;
   const renderPage = (page) => {
     const growiRenderer = props.appContainer.getRenderer('searchresult');
     let showTags = false;
@@ -29,7 +29,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
             </div>
           )}
         </h2>
-        <RevisionRenderTypeAny
+        <RevisionLoaderTypeAny
           growiRenderer={growiRenderer}
           pageId={page._id}
           pagePath={page.path}
