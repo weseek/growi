@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Service } from '@tsed/di';
 import { GrowiEventProcessor } from '@growi/slack';
 import {
