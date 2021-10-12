@@ -89,7 +89,7 @@ export class UnfurlService implements GrowiEventProcessor {
       }
 
       // build unfurl arguments
-      const unfurls = this.getLinkUnfurls(data as UnfurlPageResponseData, growiTargetUrl);
+      const unfurls = this.generateLinkUnfurls(data as UnfurlPageResponseData, growiTargetUrl);
       const unfurlArgs: ChatUnfurlArguments = {
         channel,
         ts,
@@ -108,7 +108,7 @@ export class UnfurlService implements GrowiEventProcessor {
     }
   }
 
-  getLinkUnfurls(body: UnfurlPageResponseData, growiTargetUrl: string): LinkUnfurls {
+  generateLinkUnfurls(body: UnfurlPageResponseData, growiTargetUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
     const updatedAtFormatted = format(parseISO(updatedAt), 'yyyy-MM-dd HH:mm');
