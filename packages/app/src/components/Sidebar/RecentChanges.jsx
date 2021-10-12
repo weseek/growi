@@ -1,20 +1,22 @@
-import React from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { UserPicture } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import { toastError } from '~/client/util/apiNotification';
+import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
 
 import FootstampIcon from '../FootstampIcon';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import { toastError } from '~/client/util/apiNotification';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -119,97 +121,65 @@ function SmallPageItem({ page }) {
 SmallPageItem.propTypes = {
   page: PropTypes.any,
 };
-class RecentChanges extends React.Component {
 
-  static propTypes = {
-    t: PropTypes.func.isRequired, // i18next
-    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isRecentChangesSidebarSmall: false,
-    };
-    this.reloadData = this.reloadData.bind(this);
+const RecentChanges = () => {
+
+  const { t } = useTranslation();
+  const { data: pages, error, mutate } = useSWRxRecentlyUpdated();
+
+  if (error != null) {
+    toastError(error, 'Error occurred in updating History');
   }
 
-  componentWillMount() {
-    this.retrieveSizePreferenceFromLocalStorage();
-  }
+  const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
 
-  async componentDidMount() {
-    this.reloadData();
-  }
-
-  async reloadData() {
-    const { appContainer } = this.props;
-
-    try {
-      await appContainer.retrieveRecentlyUpdated();
-    }
-    catch (error) {
-      logger.error('failed to save', error);
-      toastError(error, 'Error occurred in updating History');
-    }
-  }
-
-  retrieveSizePreferenceFromLocalStorage() {
+  const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
-      this.setState({
-        isRecentChangesSidebarSmall: true,
-      });
+      setIsRecentChangesSidebarSmall(true);
     }
-  }
+  });
 
-  changeSizeHandler = (e) => {
-    this.setState({
-      isRecentChangesSidebarSmall: e.target.checked,
-    });
+  const changeSizeHandler = useCallback((e) => {
+    setIsRecentChangesSidebarSmall(e.target.checked);
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
-  }
+  }, []);
 
-  render() {
-    const { t } = this.props;
-    const { recentlyUpdatedPages } = this.props.appContainer.state;
+  // componentDidMount
+  useEffect(() => {
+    retrieveSizePreferenceFromLocalStorage();
+  }, [retrieveSizePreferenceFromLocalStorage]);
 
-    return (
-      <>
-        <div className="grw-sidebar-content-header p-3 d-flex">
-          <h3 className="mb-0">{t('Recent Changes')}</h3>
-          {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
-          <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={this.reloadData}>
-            <i className="icon icon-reload"></i>
-          </button>
-          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
-            <input
-              id="recentChangesResize"
-              className="custom-control-input"
-              type="checkbox"
-              checked={this.state.isRecentChangesSidebarSmall}
-              onChange={this.changeSizeHandler}
-            />
-            <label className="custom-control-label" htmlFor="recentChangesResize">
-            </label>
-          </div>
+  return (
+    <>
+      <div className="grw-sidebar-content-header p-3 d-flex">
+        <h3 className="mb-0">{t('Recent Changes')}</h3>
+        {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={() => mutate()}>
+          <i className="icon icon-reload"></i>
+        </button>
+        <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
+          <input
+            id="recentChangesResize"
+            className="custom-control-input"
+            type="checkbox"
+            checked={isRecentChangesSidebarSmall}
+            onChange={changeSizeHandler}
+          />
+          <label className="custom-control-label" htmlFor="recentChangesResize">
+          </label>
         </div>
-        <div className="grw-sidebar-content-body grw-recent-changes p-3">
-          <ul className="list-group list-group-flush">
-            {recentlyUpdatedPages.map(page => (this.state.isRecentChangesSidebarSmall
-              ? <SmallPageItem key={page._id} page={page} />
-              : <LargePageItem key={page._id} page={page} />))}
-          </ul>
-        </div>
-      </>
-    );
-  }
+      </div>
+      <div className="grw-sidebar-content-body grw-recent-changes p-3">
+        <ul className="list-group list-group-flush">
+          {(pages || []).map(page => (isRecentChangesSidebarSmall
+            ? <SmallPageItem key={page._id} page={page} />
+            : <LargePageItem key={page._id} page={page} />))}
+        </ul>
+      </div>
+    </>
+  );
 
-}
+};
 
-/**
- * Wrapper component for using unstated
- */
-const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
-
-
-export default withTranslation()(RecentChangesWrapper);
+export default RecentChanges;
