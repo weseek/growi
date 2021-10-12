@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Service } from '@tsed/di';
 import { GrowiEventProcessor } from '@growi/slack';
 import {
@@ -52,24 +52,20 @@ export class UnfurlService implements GrowiEventProcessor {
         unfurls,
       };
 
-      try {
-        await client.chat.unfurl(unfurlArgs);
-      }
-      catch (err) {
-        logger.error('Error occurred while unfurling:', err);
-      }
+      await client.chat.unfurl(unfurlArgs);
     }));
 
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
     if (rejectedResults.length > 0) {
       rejectedResults.forEach((rejected, i) => {
-        logger.error(`Unfurl failed (count: ${i}): `, rejected.reason.toString());
+        logger.error(`Error occurred while unfurling (count: ${i}): `, rejected.reason.toString());
       });
     }
   }
 
-  getLinkUnfurls(response: AxiosResponse | any /* TODO: delete any 78968 */, growiTargetUrl: string): LinkUnfurls {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  getLinkUnfurls(response: any /* TODO: change any to the other type 78968 */, growiTargetUrl: string): LinkUnfurls {
     const text = response.body;
     const updatedAt = format(parseISO(response.updatedAt), 'yyyy-MM-dd HH:mm');
     const footer = `updated at: ${updatedAt}  comments: ${response.comments}`;
