@@ -381,7 +381,7 @@ module.exports = (crowi) => {
       pages.forEach((page) => {
         // not send non-public page
         if (page.grant !== Page.GRANT_PUBLIC) {
-          return responseData.push({ isPrivate: true });
+          return responseData.push({ isPrivate: true, path: page.path });
         }
 
         // send the public page data with isPrivate: false
