@@ -8,7 +8,6 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 
 const express = require('express');
 const mongoose = require('mongoose');
-const { body } = require('express-validator');
 
 const {
   verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
@@ -370,38 +369,26 @@ module.exports = (crowi) => {
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
   });
 
-  const validator = {
-    retrievePagesByPaths: [
-      body('paths').isArray(),
-    ],
-  };
-
-  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, validator.retrievePagesByPaths, async(req, res) => {
+  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, async(req, res) => {
     try {
       const { paths } = req.body;
 
       // get pages with revision
-      const Page = crowi.model('Page');
-      const { PageQueryBuilder } = Page;
-      const pages = await PageQueryBuilder
-        .addConditionToListByPathsArray(paths)
-        .query
-        .populate('revision')
-        .lean()
-        .exec();
+      const Page = mongoose.model('Page');
+      const pages = await Page.find({ path: { $in: paths } }).populate('revision');
 
       const responseData = [];
       pages.forEach((page) => {
         // not send non-public page
         if (page.grant !== Page.GRANT_PUBLIC) {
-          return responseData.push({ isPublic: false, path: page.path });
+          return responseData.push({ isPrivate: true, path: page.path });
         }
 
         // send the public page data with isPrivate: false
         const { updatedAt, commentCount } = page;
         const { body } = page.revision;
         responseData.push({
-          isPublic: true, path: page.path, pageBody: body, updatedAt, commentCount,
+          isPrivate: false, path: page.path, pageBody: body, updatedAt, commentCount,
         });
       });
 
