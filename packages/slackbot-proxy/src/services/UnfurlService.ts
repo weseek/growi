@@ -62,16 +62,66 @@ export class UnfurlService implements GrowiEventProcessor {
   async processEvent(client: WebClient, event: UnfurlRequestEvent): Promise<void> {
     const { channel, message_ts: ts, links } = event;
 
-    // generate originToPathsMap
-    const originToPathsMap = this.generateOriginToPathsMapFromLinks(links);
+    const originToPathsMap: Map<GrowiOrigin, Paths> = this.generateOriginToPathsMapFromLinks(links);
 
-    const origins = Array.from(originToPathsMap.keys());
+    const origins: string[] = Array.from(originToPathsMap.keys());
 
     // get tokenPtoG at once
-    const originToTokenPtoGMap = await this.generateOriginToTokenPtoGMapFromOrigins(origins);
+    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = await this.generateOriginToTokenPtoGMapFromOrigins(origins);
 
     // get pages from each growi
-    const pagesResults = await Promise.allSettled(origins.map(async(origin): Promise<ResposeDataFromEachOrigin> => {
+    const pagesResults = await this.fetchPagesByPathsFromEachGrowi(origins, originToPathsMap, originToTokenPtoGMap);
+
+    // log and extract
+    this.logErrorRejectedResults(pagesResults);
+    const fulfilledPagesResults = this.extractFulfilledResults(pagesResults);
+
+    // unfurl each link sent on slack one by one
+    await this.unfurlEachTarget(client, channel, ts, fulfilledPagesResults);
+  }
+
+  // generate Map<GrowiOrigin, Paths>
+  generateOriginToPathsMapFromLinks(links: UnfurlEventLinks[]): Map<GrowiOrigin, Paths> {
+    const originToPathsMap: Map<GrowiOrigin, Paths> = new Map();
+
+    // increment
+    links.forEach((link) => {
+      const { url: growiTargetUrl } = link;
+      const urlObject = new URL(growiTargetUrl);
+      const { origin } = urlObject;
+
+      if (!originToPathsMap.has(origin)) {
+        originToPathsMap.set(origin, []);
+      }
+      // append path
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      originToPathsMap.set(origin, [...originToPathsMap.get(origin)!, urlObject.pathname]);
+    });
+
+    return originToPathsMap;
+  }
+
+  // generate Map<GrowiOrigin, TokenPtoG>
+  async generateOriginToTokenPtoGMapFromOrigins(origins: GrowiOrigin[]): Promise<Map<GrowiOrigin, TokenPtoG>> {
+    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = new Map();
+
+    // get relations using origins at once
+    const relations = await this.relationRepository.findAllByGrowiUris(origins);
+
+    // increment map using relation.growiUri & relation.tokenPtoG
+    relations.forEach((relation) => {
+      originToTokenPtoGMap.set(relation.growiUri, relation.tokenPtoG);
+    });
+
+    return originToTokenPtoGMap;
+  }
+
+  // request to each growi origins to fetch pages data
+  async fetchPagesByPathsFromEachGrowi(
+      origins: string[], originToPathsMap: Map<GrowiOrigin, Paths>, originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG>,
+  ): Promise<PromiseSettledResult<ResposeDataFromEachOrigin>[]> {
+
+    return Promise.allSettled(origins.map(async(origin): Promise<ResposeDataFromEachOrigin> => {
       try {
         const paths = originToPathsMap.get(origin);
         const tokenPtoG = originToTokenPtoGMap.get(origin);
@@ -104,16 +154,17 @@ export class UnfurlService implements GrowiEventProcessor {
         throw new Error('Axios request to growi failed.');
       }
     }));
+  }
 
-    // log and extract
-    this.logErrorRejectedResults(pagesResults);
-    const fulfilledPagesResults = this.extractFulfilledResults(pagesResults);
-
-    // unfurl each target url
+  // unfurl each link sent on slack one by one
+  async unfurlEachTarget(
+      client: WebClient, channel: string, ts: string, fulfilledPagesResults: PromiseFulfilledResult<ResposeDataFromEachOrigin>[],
+  ): Promise<void> {
     await Promise.all(fulfilledPagesResults.map(async(result) => {
       const { value } = result;
       const { origin, data } = value;
 
+      // datum determines the unfurl appearance for each link
       const unfurlResults = await Promise.allSettled(data.map(async(datum) => {
         const targetUrl = `${origin}${datum.path}`;
         // return early when page is private
@@ -143,9 +194,9 @@ export class UnfurlService implements GrowiEventProcessor {
       // log errors
       this.logErrorRejectedResults(unfurlResults);
     }));
-
   }
 
+  // builder method for unfurl parameter
   generateLinkUnfurls(body: PublicData, growiTargetUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
@@ -177,47 +228,14 @@ export class UnfurlService implements GrowiEventProcessor {
     return unfurls;
   }
 
-  generateOriginToPathsMapFromLinks(links: UnfurlEventLinks[]): Map<GrowiOrigin, Paths> {
-    // paths map for each growi origin
-    const originToPathsMap: Map<GrowiOrigin, Paths> = new Map();
-
-    // increment
-    links.forEach((link) => {
-      const { url: growiTargetUrl } = link;
-      const urlObject = new URL(growiTargetUrl);
-      const { origin } = urlObject;
-
-      if (!originToPathsMap.has(origin)) {
-        originToPathsMap.set(origin, []);
-      }
-      // append path
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      originToPathsMap.set(origin, [...originToPathsMap.get(origin)!, urlObject.pathname]);
-    });
-
-    return originToPathsMap;
-  }
-
-  async generateOriginToTokenPtoGMapFromOrigins(origins: GrowiOrigin[]): Promise<Map<GrowiOrigin, TokenPtoG>> {
-    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = new Map();
-
-    // bulk get relations using origins
-    const relations = await this.relationRepository.findAllByGrowiUris(origins);
-
-    // increment map using relation.growiUri & relation.tokenPtoG
-    relations.forEach((relation) => {
-      originToTokenPtoGMap.set(relation.growiUri, relation.tokenPtoG);
-    });
-
-    return originToTokenPtoGMap;
-  }
-
+  // Promise util method to extract fulfilled results
   extractFulfilledResults<T>(results: PromiseSettledResult<T>[]): PromiseFulfilledResult<T>[] {
     const fulfilledResults: PromiseFulfilledResult<T>[] = results.filter((result): result is PromiseFulfilledResult<T> => result.status === 'fulfilled');
 
     return fulfilledResults;
   }
 
+  // Promise util method to output rejected results
   logErrorRejectedResults<T>(results: PromiseSettledResult<T>[]): void {
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
