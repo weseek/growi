@@ -10,11 +10,17 @@ import { InAppNotification as IInAppNotification } from '../../interfaces/in-app
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-import { InAppNotification } from './InAppNotification';
+// import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 
-const InAppNotificationDropdown: FC = (props) => {
+type Props = {
+  appContainer: AppContainer,
+  socketIoContainer: SocketIoContainer,
+  me: string,
+};
+
+const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { appContainer } = props;
 
   const [count, setCount] = useState(0);
@@ -157,11 +163,5 @@ const InAppNotificationDropdown: FC = (props) => {
  * Wrapper component for using unstated
  */
 const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [AppContainer, SocketIoContainer]);
-
-InAppNotificationDropdown.propTypes = {
-  me: PropTypes.string,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
-};
 
 export default InAppNotificationDropdownWrapper;
