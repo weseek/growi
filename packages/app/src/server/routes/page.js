@@ -831,9 +831,10 @@ module.exports = function(crowi, app) {
     const Revision = crowi.model('Revision');
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      // when isUpdatable is false, originRevision is the reqested revision
-      const originRevision = await Revision.findById(revisionId).populate('author');
-      const latestRevision = await Revision.findLatestRevisionByPathPopulatedWithAuthor(originRevision.path);
+      const populatedFields = 'name imageUrlCached';
+      // when isUpdatable is false, originRevisionId is a reqested revisionId
+      const originRevision = await Revision.findById(revisionId).populate('author', populatedFields);
+      const latestRevision = await Revision.findById(page.revision).populate('author', populatedFields);
 
       const revisions = {};
 
@@ -858,7 +859,7 @@ module.exports = function(crowi, app) {
         userName: latestRevision.author.name,
         userImgPath: latestRevision.author.imageUrlCached,
       };
-      return res.json(ApiResponse.success({ isPageNotUpdatable: true, data: revisions }));
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', revisions));
     }
 
     const options = { isSyncRevisionToHackmd };
