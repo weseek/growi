@@ -2,9 +2,9 @@ import React, { useState, useEffect, FC } from 'react';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
+import loggerFactory from '~/utils/logger';
+
 import AppContainer from '../../client/services/AppContainer';
-import { toastError } from '../../client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -12,6 +12,8 @@ import { InAppNotification as IInAppNotification } from '../../interfaces/in-app
 // import { Notification } from 'client/types/crowi'
 // import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
+
+const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 
 type Props = {
@@ -48,7 +50,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       setCount(0);
     }
     catch (err) {
-      // TODO: error handling
+      logger.error(err);
     }
   };
 
@@ -66,8 +68,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       setIsLoaded(true);
     }
     catch (err) {
-      // TODO: error handling
-      console.log('err', err);
+      logger.error(err);
     }
   };
 
@@ -96,7 +97,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       // window.location.href = notification.target.path;
     }
     catch (err) {
-      // TODO: error handling
+      logger.error(err);
     }
   };
 
