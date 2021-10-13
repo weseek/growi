@@ -383,7 +383,8 @@ module.exports = (crowi) => {
       // get pages with revision
       const Page = crowi.model('Page');
       const { PageQueryBuilder } = Page;
-      const pages = await PageQueryBuilder
+      const pageQueryBuilder = new PageQueryBuilder(Page.find());
+      const pages = await pageQueryBuilder
         .addConditionToListByPathsArray(paths)
         .query
         .populate('revision')
