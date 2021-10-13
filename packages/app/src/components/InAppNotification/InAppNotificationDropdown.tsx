@@ -2,38 +2,36 @@ import React, { useState, useEffect, FC } from 'react';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
-import AppContainer from '~/client/services/AppContainer';
-import { toastError } from '~/client/util/apiNotification';
+import loggerFactory from '~/utils/logger';
+
+import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-import { InAppNotification } from './InAppNotification';
+// import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
+const logger = loggerFactory('growi:InAppNotificationDropdown');
 
-const InAppNotificationDropdown: FC = (props) => {
+
+type Props = {
+  appContainer: AppContainer,
+  socketIoContainer: SocketIoContainer,
+  me: string,
+};
+
+const InAppNotificationDropdown: FC<Props> = (props: Props) => {
+  const { appContainer } = props;
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState<IInAppNotification[]>([{
-    // This is dummy notification data. Delete it after fetching notification list by #78756
-    _id: '1',
-    user: 'kaori1',
-    targetModel: 'Page',
-    target: 'hogePage',
-    action: 'COMMENT',
-    status: 'hoge',
-    actionUsers: ['taro', 'yamada'],
-    createdAt: 'hoge',
-  }]);
+  const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     initializeSocket(props);
-    fetchNotificationList(props);
   }, []);
 
   const initializeSocket = (props) => {
@@ -43,12 +41,6 @@ const InAppNotificationDropdown: FC = (props) => {
     socket.on('commentUpdated', (data: { userId: string, count: number }) => {
       // eslint-disable-next-line no-console
       console.log('socketData', data);
-
-      if (props.me === data.userId) {
-        // TODO: Fetch notification list by #78557
-        // fetchNotificationList();
-
-      }
     });
   };
 
@@ -58,7 +50,7 @@ const InAppNotificationDropdown: FC = (props) => {
       setCount(0);
     }
     catch (err) {
-      // TODO: error handling
+      logger.error(err);
     }
   };
 
@@ -66,25 +58,32 @@ const InAppNotificationDropdown: FC = (props) => {
   /**
     * TODO: Fetch notification list by GW-7473
     */
-
-  const fetchNotificationList = async(props) => {
+  const fetchNotificationList = async() => {
     const limit = 6;
     try {
-      const inAppNotificationList = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+      const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
+      console.log('paginationResult', paginationResult);
 
-      // setNotifications(notifications);
-      // setIsLoaded(true);
+      setNotifications(paginationResult.data.docs);
+      setIsLoaded(true);
     }
     catch (err) {
-      // TODO: error handling
+      logger.error(err);
     }
   };
+
 
   const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
       updateNotificationStatus();
     }
-    setIsOpen(!isOpen);
+
+    const newIsOpenState = !isOpen;
+    setIsOpen(newIsOpenState);
+
+    if (newIsOpenState === true) {
+      fetchNotificationList();
+    }
   };
 
   /**
@@ -98,7 +97,7 @@ const InAppNotificationDropdown: FC = (props) => {
       // window.location.href = notification.target.path;
     }
     catch (err) {
-      // TODO: error handling
+      logger.error(err);
     }
   };
 
@@ -129,7 +128,10 @@ const InAppNotificationDropdown: FC = (props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        // temporaly notification list. need to delete by #79077
+        <div key={notification._id}>action: {notification.action} </div>
+        // use this component to show notification list
+        // <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );
     });
     return <>{notificationList}</>;
@@ -162,11 +164,5 @@ const InAppNotificationDropdown: FC = (props) => {
  * Wrapper component for using unstated
  */
 const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [AppContainer, SocketIoContainer]);
-
-InAppNotificationDropdown.propTypes = {
-  me: PropTypes.string,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  socketIoContainer: PropTypes.instanceOf(SocketIoContainer).isRequired,
-};
 
 export default InAppNotificationDropdownWrapper;

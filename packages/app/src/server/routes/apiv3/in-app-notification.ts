@@ -26,8 +26,8 @@ module.exports = (crowi) => {
 
     const requestLimit = limit + 1;
 
-    const latestInAppNotificationList = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
-    return latestInAppNotificationList;
+    const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
+    return res.apiv3(paginationResult);
 
   });
 
