@@ -10,14 +10,14 @@ import { RelationRepository } from '~/repositories/relation';
 
 const logger = loggerFactory('slackbot-proxy:services:UnfurlService');
 
-type UnfurlEventLinks = {
+type UnfurlEventLink = {
   url: string,
   domain: string,
 }
 
 type ResposeDataFromEachOrigin = {
   origin: string,
-  data: UnfurlPageResponseData[],
+  data: DataForUnfurl[],
 }
 
 // aliases
@@ -31,7 +31,7 @@ export type UnfurlRequestEvent = {
   // eslint-disable-next-line camelcase
   message_ts: string,
 
-  links: UnfurlEventLinks[],
+  links: UnfurlEventLink[],
 }
 
 type PrivateData = {
@@ -47,7 +47,7 @@ type PublicData = {
   commentCount: number,
 }
 
-export type UnfurlPageResponseData = PrivateData | PublicData;
+export type DataForUnfurl = PrivateData | PublicData;
 
 @Service()
 export class UnfurlService implements GrowiEventProcessor {
@@ -81,7 +81,7 @@ export class UnfurlService implements GrowiEventProcessor {
   }
 
   // generate Map<GrowiOrigin, Paths>
-  generateOriginToPathsMapFromLinks(links: UnfurlEventLinks[]): Map<GrowiOrigin, Paths> {
+  generateOriginToPathsMapFromLinks(links: UnfurlEventLink[]): Map<GrowiOrigin, Paths> {
     const originToPathsMap: Map<GrowiOrigin, Paths> = new Map();
 
     // increment
@@ -142,7 +142,7 @@ export class UnfurlService implements GrowiEventProcessor {
           });
 
         // ensure data is not broken
-        const data: UnfurlPageResponseData[] = response.data?.data?.pageData;
+        const data: DataForUnfurl[] = response.data?.data?.pageData;
         if (data == null) {
           throw Error('Malformed data found in axios response.');
         }
