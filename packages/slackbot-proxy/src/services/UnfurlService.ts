@@ -62,12 +62,10 @@ export class UnfurlService implements GrowiEventProcessor {
   async processEvent(client: WebClient, event: UnfurlRequestEvent): Promise<void> {
     const { channel, message_ts: ts, links } = event;
 
+    // create maps
     const originToPathsMap: Map<GrowiOrigin, Paths> = this.generateOriginToPathsMapFromLinks(links);
-
     const origins: string[] = Array.from(originToPathsMap.keys());
-
-    // get tokenPtoG at once
-    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = await this.generateOriginToTokenPtoGMapFromOrigins(origins);
+    const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = await this.generateOriginToTokenPtoGMapFromOrigins(origins); // get tokenPtoG at once
 
     // get pages from each growi
     const pagesResults = await this.fetchPagesByPathsFromEachGrowi(origins, originToPathsMap, originToTokenPtoGMap);
