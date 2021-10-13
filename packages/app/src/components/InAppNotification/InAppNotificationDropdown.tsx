@@ -24,7 +24,6 @@ const InAppNotificationDropdown: FC = (props) => {
 
   useEffect(() => {
     initializeSocket(props);
-    // fetchNotificationList(props);
   }, []);
 
   const initializeSocket = (props) => {
@@ -66,15 +65,16 @@ const InAppNotificationDropdown: FC = (props) => {
     }
   };
 
+
   const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
       updateNotificationStatus();
     }
 
-    const toggleIsOpen = !isOpen;
-    setIsOpen(toggleIsOpen);
+    const newIsOpenState = !isOpen;
+    setIsOpen(newIsOpenState);
 
-    if (toggleIsOpen === true) {
+    if (newIsOpenState === true) {
       fetchNotificationList();
     }
   };
