@@ -4,14 +4,16 @@ import {
 import createError from 'http-errors';
 import loggerFactory from '~/utils/logger';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
+import ErrorV3 from '../../models/vo/error-apiv3';
 
 const express = require('express');
 const mongoose = require('mongoose');
-const urljoin = require('url-join');
+const { body } = require('express-validator');
 
 const {
   verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
 } = require('@growi/slack');
+
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -366,6 +368,50 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
 
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+  });
+
+  const validator = {
+    retrievePagesByPaths: [
+      body('paths').isArray(),
+    ],
+  };
+
+  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, validator.retrievePagesByPaths, async(req, res) => {
+    try {
+      const { paths } = req.body;
+
+      // get pages with revision
+      const Page = crowi.model('Page');
+      const { PageQueryBuilder } = Page;
+      const pageQueryBuilder = new PageQueryBuilder(Page.find());
+      const pages = await pageQueryBuilder
+        .addConditionToListByPathsArray(paths)
+        .query
+        .populate('revision')
+        .lean()
+        .exec();
+
+      const responseData = [];
+      pages.forEach((page) => {
+        // not send non-public page
+        if (page.grant !== Page.GRANT_PUBLIC) {
+          return responseData.push({ isPublic: false, path: page.path });
+        }
+
+        // send the public page data with isPrivate: false
+        const { updatedAt, commentCount } = page;
+        const { body } = page.revision;
+        responseData.push({
+          isPublic: true, path: page.path, pageBody: body, updatedAt, commentCount,
+        });
+      });
+
+      return res.apiv3({ pageData: responseData });
+    }
+    catch (err) {
+      logger.error('Error occurred while finding a page by path', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while finding a page or page not found.'));
+    }
   });
 
   // error handler
