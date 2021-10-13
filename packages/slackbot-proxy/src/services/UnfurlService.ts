@@ -35,12 +35,12 @@ export type UnfurlRequestEvent = {
 }
 
 type PrivateData = {
-  isPrivate: false,
+  isPublic: false,
   path: string,
 }
 
 type PublicData = {
-  isPrivate: true,
+  isPublic: true,
   path: string,
   pageBody: string,
   updatedAt: string,
@@ -117,7 +117,7 @@ export class UnfurlService implements GrowiEventProcessor {
       const unfurlResults = await Promise.allSettled(data.map(async(datum) => {
         const targetUrl = `${origin}${datum.path}`;
         // return early when page is private
-        if (datum.isPrivate === false) {
+        if (datum.isPublic === false) {
           await client.chat.unfurl({
             channel,
             ts,
