@@ -3,8 +3,8 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import AppContainer from '~/client/services/AppContainer';
-import { toastError } from '~/client/util/apiNotification';
+import AppContainer from '../../client/services/AppContainer';
+import { toastError } from '../../client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -15,6 +15,7 @@ import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 
 const InAppNotificationDropdown: FC = (props) => {
+  const { appContainer } = props;
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -23,7 +24,7 @@ const InAppNotificationDropdown: FC = (props) => {
 
   useEffect(() => {
     initializeSocket(props);
-    fetchNotificationList(props);
+    // fetchNotificationList(props);
   }, []);
 
   const initializeSocket = (props) => {
@@ -33,12 +34,6 @@ const InAppNotificationDropdown: FC = (props) => {
     socket.on('commentUpdated', (data: { userId: string, count: number }) => {
       // eslint-disable-next-line no-console
       console.log('socketData', data);
-
-      if (props.me === data.userId) {
-        // TODO: Fetch notification list by #78557
-        // fetchNotificationList();
-
-      }
     });
   };
 
@@ -56,11 +51,10 @@ const InAppNotificationDropdown: FC = (props) => {
   /**
     * TODO: Fetch notification list by GW-7473
     */
-
-  const fetchNotificationList = async(props) => {
+  const fetchNotificationList = async() => {
     const limit = 6;
     try {
-      const paginationResult = await props.appContainer.apiv3Get('/in-app-notification/list', { limit });
+      const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
       console.log('paginationResult', paginationResult);
 
       setNotifications(paginationResult.data.docs);
@@ -68,6 +62,7 @@ const InAppNotificationDropdown: FC = (props) => {
     }
     catch (err) {
       // TODO: error handling
+      console.log('err', err);
     }
   };
 
@@ -75,7 +70,13 @@ const InAppNotificationDropdown: FC = (props) => {
     if (isOpen === false && count > 0) {
       updateNotificationStatus();
     }
-    setIsOpen(!isOpen);
+
+    const toggleIsOpen = !isOpen;
+    setIsOpen(toggleIsOpen);
+
+    if (toggleIsOpen === true) {
+      fetchNotificationList();
+    }
   };
 
   /**
