@@ -47,6 +47,9 @@ class SavePageControls extends React.Component {
       await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
     }
     catch (error) {
+      // TODO: display resolve conflict button when operation to update page is conflicted
+      // ref: https://estoc.weseek.co.jp/redmine/issues/78784
+      console.log(error.data);
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
