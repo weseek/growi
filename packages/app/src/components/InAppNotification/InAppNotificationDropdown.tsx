@@ -4,6 +4,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
@@ -23,42 +24,23 @@ const InAppNotificationDropdown: FC = (props) => {
   useEffect(() => {
     initializeSocket(props);
     fetchNotificationList(props);
-    // fetchNotificationStatus();
   }, []);
 
   const initializeSocket = (props) => {
     console.log(props);
 
     const socket = props.socketIoContainer.getSocket();
-    socket.on('comment updated', (data: { user: string }) => {
+    socket.on('commentUpdated', (data: { userId: string, count: number }) => {
       // eslint-disable-next-line no-console
       console.log('socketData', data);
 
-      if (props.me === data.user) {
-        // TODO: Fetch notification status by #78563
-        fetchNotificationList(props);
-
+      if (props.me === data.userId) {
         // TODO: Fetch notification list by #78557
-        // fetchNotificationStatus();
+        // fetchNotificationList();
+
       }
     });
   };
-
-
-  /**
-    * TODO: Fetch notification status by #78563
-    */
-  // async fetchNotificationStatus() {
-  //   try {
-  //     const { count = null } = await this.props.crowi.apiGet('/notification.status');
-  //     if (count !== null && count !== this.state.count) {
-  //       this.setState({ count });
-  //     }
-  //   }
-  //   catch (err) {
-  //     // TODO: error handling
-  //   }
-  // }
 
   const updateNotificationStatus = () => {
     try {

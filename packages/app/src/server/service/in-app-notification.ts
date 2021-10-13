@@ -7,6 +7,7 @@ import {
 import { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '~/utils/logger';
+import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
@@ -26,12 +27,20 @@ export default class InAppNotificationService {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
     this.activityEvent = crowi.event('activity');
+
+    this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
   }
 
 
-  emitSocketIo = async(user) => {
+  emitSocketIo = async(userId, pageId) => {
     if (this.socketIoService.isInitialized) {
-      await this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+      const count = await this.getUnreadCountByUser(userId);
+
+      // emit to the room for each page
+      await this.socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+        .except(getRoomNameWithId(RoomPrefix.USER, userId))
+        .emit('commentUpdated', { userId, count });
     }
   }
 
