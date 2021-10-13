@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:update-mail-transmission');
@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:migrate:update-mail-transmission');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const sesExist = await Config.findOne({
       ns: 'crowi',
@@ -33,7 +33,7 @@ module.exports = {
 
   async down(db, client) {
     logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'mail:transmissionMethod'
     await Config.findOneAndDelete({

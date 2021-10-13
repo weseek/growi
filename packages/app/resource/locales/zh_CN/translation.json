@@ -433,6 +433,11 @@
 			"Post": "提交"
 		}
 	},
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "您确定要启用 Textlint 吗？这将下载 20MB 的字典文件。",
+    "enable_textlint": "启用Textlint",
+    "dont_ask_again": "不要再问"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",
@@ -839,7 +844,9 @@
 		"delete": "删除",
 		"check_all": "全部检查",
 		"deletion_modal_header": "删除页",
-		"delete_completely": "完全删除"
+		"delete_completely": "完全删除",
+    "include_certain_path": "包含 {{pathToInclude}} 路径 ",
+    "delete_all_selected_page": "删除所有"
 	},
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {

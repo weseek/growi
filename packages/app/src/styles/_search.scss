@@ -197,6 +197,7 @@
     .nav.nav-pills {
       > li {
         > a {
+          height: 123px;
           padding: 2px 8px;
           word-break: break-all;
           border-radius: 0;
@@ -207,7 +208,7 @@
           }
           &.active {
             padding-right: 5px;
-            border-right: solid 3px transparent;
+            border-left: solid 3px transparent;
           }
           > * {
             margin-right: 3px;
@@ -254,6 +255,7 @@
   }
 }
 
+// 2021/9/22 TODO: Remove after moving to SearchResult
 .search-page-input {
   position: sticky;
   top: 15px;

@@ -10,6 +10,8 @@ import DeletePageListModal from './DeletePageListModal';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+// NOTE : this file will be deleted in the future. Merge conflict happend in this file, so temporaly kept this left here.
+// Task 77833 deleted this file ;
 class SearchResult extends React.Component {
 
   constructor(props) {
@@ -184,8 +186,11 @@ class SearchResult extends React.Component {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#id_${page._id}`;
       return (
-        <li key={page._id} className="nav-item page-list-li w-100 m-1">
+        <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
           <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId}>
+            <div className="form-check my-auto">
+              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            </div>
             <Page page={page} noLink />
             <div className="ml-auto d-flex">
               { this.state.deletionMode
@@ -208,6 +213,7 @@ class SearchResult extends React.Component {
               </div>
             </div>
           </a>
+          <div>{page.highlight['body.en']?.map(text => <p dangerouslySetInnerHTML={{ __html: text }} />)}</div>
         </li>
       );
     });
@@ -292,7 +298,7 @@ class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-lg-4 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
+          <div className="col-lg-6 d-none d-lg-block page-list search-result-list pr-0" id="search-result-list">
             <nav>
               <div className="d-flex align-items-start justify-content-between mt-1">
                 <div className="search-result-meta">
@@ -309,7 +315,7 @@ class SearchResult extends React.Component {
               </div>
             </nav>
           </div>
-          <div className="col-lg-8 search-result-content" id="search-result-content">
+          <div className="col-lg-6 search-result-content" id="search-result-content">
             <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>

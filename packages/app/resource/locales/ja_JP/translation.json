@@ -455,6 +455,11 @@
       "Post": "投稿"
     }
   },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Textlintを有効にしますか？20MBの辞書ファイルをダウンロードします。",
+    "enable_textlint": "Textlintを有効にする",
+    "dont_ask_again": "常に許可する"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
@@ -567,7 +572,9 @@
     "delete": "削除",
     "check_all": "すべてチェック",
     "deletion_modal_header": "以下のページを削除",
-    "delete_completely": "完全に削除する"
+    "delete_completely": "完全に削除する",
+    "include_certain_path": "{{pathToInclude}}下を含む ",
+    "delete_all_selected_page" : "一括削除"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
