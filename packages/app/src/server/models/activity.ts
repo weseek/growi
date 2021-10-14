@@ -4,12 +4,10 @@ import {
 import Crowi from '../crowi';
 
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
-import loggerFactory from '../../utils/logger';
+
 import ActivityDefine from '../util/activityDefine';
 
 import Subscription from './subscription';
-
-const logger = loggerFactory('growi:models:activity');
 
 
 export interface ActivityDocument extends Document {
@@ -28,7 +26,6 @@ export interface ActivityDocument extends Document {
 export type ActivityModel = Model<ActivityDocument>
 
 module.exports = function(crowi: Crowi) {
-  const activityEvent = crowi.event('activity');
 
   // TODO: add revision id
   const activitySchema = new Schema<ActivityDocument, ActivityModel>({
@@ -95,18 +92,6 @@ module.exports = function(crowi: Crowi) {
     }).distinct('_id');
     return activeNotificationUsers;
   };
-
-  activitySchema.post('save', async(savedActivity: ActivityDocument) => {
-    let targetUsers: Types.ObjectId[] = [];
-    try {
-      targetUsers = await savedActivity.getNotificationTargetUsers();
-    }
-    catch (err) {
-      logger.error(err);
-    }
-
-    activityEvent.emit('create', targetUsers, savedActivity);
-  });
 
   return getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
 

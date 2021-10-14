@@ -1,7 +1,14 @@
+import {
+  Types,
+} from 'mongoose';
 import Crowi from '../crowi';
+
 
 import { getModelSafely } from '../util/mongoose-utils';
 
+import loggerFactory from '../../utils/logger';
+
+const logger = loggerFactory('growi:service:activity');
 
 class ActivityService {
 
@@ -22,9 +29,21 @@ class ActivityService {
      * @param {object} parameters
      * @return {Promise}
      */
-  createByParameters = function(parameters) {
+  createByParameters = async function(parameters) {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    return Activity.create(parameters);
+    const savedActivity = Activity.create(parameters);
+
+    let targetUsers: Types.ObjectId[] = [];
+    try {
+      targetUsers = await savedActivity.getNotificationTargetUsers();
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
+    this.activityEvent.emit('create', targetUsers, savedActivity);
+
+    return savedActivity;
   };
 
 
