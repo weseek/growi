@@ -7310,6 +7310,11 @@ diff@^5.0.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.0.0.tgz#7ed6ad76d859d030787ec35855f5b1daf31d852b"
   integrity sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==
 
+diff_match_patch@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/diff_match_patch/-/diff_match_patch-0.1.1.tgz#d3f14d5b76fb4b5a9cf44706261dadb5bd97edbc"
+  integrity sha1-0/FNW3b7S1qc9EcGJh2ttb2X7bw=
+
 diffie-hellman@^5.0.0:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/diffie-hellman/-/diffie-hellman-5.0.2.tgz#b5835739270cfe26acf632099fded2a07f209e5e"

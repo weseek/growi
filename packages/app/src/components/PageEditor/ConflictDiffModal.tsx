@@ -1,40 +1,66 @@
 import React, {
-  useState, useEffect, useRef, FC,
+  createElement, useState, useEffect, useRef, FC,
 } from 'react';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
-import CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror/lib/codemirror';
+import { JSHINT } from 'jshint';
 
-import('codemirror/addon/merge/merge');
+require('codemirror/addon/merge/merge');
+require('codemirror/lib/codemirror.css');
+require('codemirror/theme/eclipse.css');
+require('codemirror/theme/neat.css');
+require('codemirror/addon/lint/lint.css');
+require('codemirror/addon/merge/merge.css');
+require('codemirror/mode/javascript/javascript');
+require('codemirror/addon/lint/lint');
+require('codemirror/addon/lint/javascript-lint');
+require('codemirror/addon/merge/merge');
+
+
+Object.keys(JSHINT).forEach((key) => { window[key] = JSHINT[key] });
+const DMP = require('diff_match_patch');
+
+Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 export const ConflictDiffModal: FC = () => {
 
-  const codeMirrorRef = useRef(null);
+  const codeMirrorRef = useRef<HTMLDivElement | null>(null);
 
-  const [val, setVal] = useState('');
-  const [orig, setOrig] = useState('');
+  const [val, setVal] = useState('Test Value');
+  const [orig, setOrig] = useState('Original Value');
 
+  const divElem = createElement('div');
 
   useEffect(() => {
-    CodeMirror.MergeView(codeMirrorRef.current, {
+    console.log(divElem);
+    const test = CodeMirror.MergeView(divElem, {
+      theme: 'eclipse',
       value: val,
-      origLeft: orig,
-      origRight: null,
+      origLeft: null,
+      origRight: orig,
       allowEditingOriginals: true,
+      lineNumbers: true,
+      mode: 'javascript',
+      highlightDifferences: true,
       gutters: ['CodeMirror-lint-markers'],
       lint: true,
       connect: 'align',
     });
-  });
+    console.log(test);
+
+  }, []);
 
   return (
     <Modal isOpen className="modal-gfm-cheatsheet">
       <ModalHeader tag="h4" className="bg-primary text-light">
-        <i className="icon-fw icon-question" />Markdown help
+        <i className="icon-fw icon-question" />Resolve Conflict
       </ModalHeader>
       <ModalBody>
-        <div ref={codeMirrorRef} />
+        <div
+          ref={codeMirrorRef}
+        />
       </ModalBody>
     </Modal>
   );
