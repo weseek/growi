@@ -1,12 +1,10 @@
 import { WebClient } from '@slack/web-api';
-import {
-  GrowiBotEvent,
-} from '@growi/slack';
+import { GrowiBotEvent } from '@growi/slack';
 
-export interface SlackEventHandler {
+export interface SlackEventHandler<T> {
 
   shouldHandle(eventType: string): boolean
 
-  handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent): Promise<void>
+  handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<T>): Promise<void>
 
 }

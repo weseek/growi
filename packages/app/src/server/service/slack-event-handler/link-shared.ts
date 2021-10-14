@@ -10,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 
-export class LinkSharedEventHandler implements SlackEventHandler {
+export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEvent> {
 
   crowi!: any;
 
