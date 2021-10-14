@@ -1,6 +1,7 @@
 import React, {
-  createElement, useState, useEffect, useRef, FC,
+  useState, useEffect, useRef, FC, createElement,
 } from 'react';
+import ReactDOM from 'react-dom';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -31,11 +32,11 @@ export const ConflictDiffModal: FC = () => {
   const [val, setVal] = useState('Test Value');
   const [orig, setOrig] = useState('Original Value');
 
-  const divElem = createElement('div');
-
   useEffect(() => {
-    console.log(divElem);
-    const test = CodeMirror.MergeView(divElem, {
+    const containerElem = document.getElementById('cm-mv');
+    const DivElem = createElement('div');
+    console.log(containerElem);
+    CodeMirror.MergeView(DivElem, {
       theme: 'eclipse',
       value: val,
       origLeft: null,
@@ -48,9 +49,9 @@ export const ConflictDiffModal: FC = () => {
       lint: true,
       connect: 'align',
     });
-    console.log(test);
-
+    ReactDOM.render(DivElem, containerElem);
   }, []);
+
 
   return (
     <Modal isOpen className="modal-gfm-cheatsheet">
@@ -58,9 +59,7 @@ export const ConflictDiffModal: FC = () => {
         <i className="icon-fw icon-question" />Resolve Conflict
       </ModalHeader>
       <ModalBody>
-        <div
-          ref={codeMirrorRef}
-        />
+        <div id="cm-mv"></div>
       </ModalBody>
     </Modal>
   );
