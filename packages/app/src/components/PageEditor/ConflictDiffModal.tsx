@@ -34,7 +34,7 @@ export const ConflictDiffModal: FC = () => {
 
   useEffect(() => {
     const containerElem = document.getElementById('cm-mv');
-    const DivElem = createElement('div');
+    const DivElem = document.createElement('div');
     console.log(containerElem);
     CodeMirror.MergeView(DivElem, {
       theme: 'eclipse',
