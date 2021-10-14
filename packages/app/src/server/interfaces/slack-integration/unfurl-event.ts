@@ -7,7 +7,7 @@ export type PublicData = {
   isPublic: true,
   path: string,
   pageBody: string,
-  updatedAt: string,
+  updatedAt: Date,
   commentCount: number,
 }
 
