@@ -373,16 +373,17 @@ module.exports = (crowi) => {
   const validator = {
     validateEventRequest: [
       body('growiBotEvent').exists(),
+      body('data').exists(),
     ],
   };
 
   router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async(req, res) => {
-    const { growiBotEvent } = req.body;
+    const { growiBotEvent, data } = req.body;
 
     try {
       const tokenPtoG = req.headers['x-growi-ptog-tokens'];
       const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent);
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, data);
       return res.apiv3({});
     }
     catch (err) {
