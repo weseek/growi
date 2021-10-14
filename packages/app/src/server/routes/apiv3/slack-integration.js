@@ -376,30 +376,11 @@ module.exports = (crowi) => {
     ],
   };
 
-  router.post('/proxied/events', /* verifyAccessTokenFromProxy, */ validator.validateEventRequest, async(req, res) => {
-    // const { growiBotEvent } = req.body;
-
-    // TODO: remove this hard code
-    const growiBotEvent = {
-      eventType: 'link_shared',
-      event: {
-        type: 'link_shared',
-        channel: 'C026WBK4K96',
-        message_ts: '1634195260.002300',
-        links: [
-          {
-            url: 'https://92e3-217-178-32-41.ap.ngrok.io/huhu',
-            domain: '92e3-217-178-32-41.ap.ngrok.io',
-          },
-        ],
-      },
-      data: {
-        origin: 'https://92e3-217-178-32-41.ap.ngrok.io',
-      },
-    };
+  router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async(req, res) => {
+    const { growiBotEvent } = req.body;
 
     try {
-      const tokenPtoG = 'UiOYuQDpSldD3EIyjrSxlM8NxRQKgq9CjSmCGnnx4FSVwS6Ep9zTtN9wbTFBdCNnWt/Zmh70znn792c1n73EZg=='; // req.headers['x-growi-ptog-tokens']
+      const tokenPtoG = req.headers['x-growi-ptog-tokens'];
       const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
       await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent);
       return res.apiv3({});
