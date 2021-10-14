@@ -1,7 +1,6 @@
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
-import Crowi from '../crowi';
 
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 
