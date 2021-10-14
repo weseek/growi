@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { Inject, Service } from '@tsed/di';
 import { GrowiEventProcessor, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
-import {
-  ChatUnfurlArguments, LinkUnfurls, MessageAttachment, WebClient,
-} from '@slack/web-api';
-import { format, parseISO } from 'date-fns';
+import { WebClient } from '@slack/web-api';
 import loggerFactory from '~/utils/logger';
 import { RelationRepository } from '~/repositories/relation';
 
@@ -15,14 +12,8 @@ type UnfurlEventLink = {
   domain: string,
 }
 
-type ResposeDataFromEachOrigin = {
-  origin: string,
-  data: DataForUnfurl[],
-}
-
 // aliases
 type GrowiOrigin = string;
-type Paths = string[];
 type TokenPtoG = string;
 
 export type UnfurlRequestEvent = {
@@ -65,7 +56,11 @@ export class UnfurlService implements GrowiEventProcessor {
     const origins: string[] = links.map((link: UnfurlEventLink) => (new URL(link.url)).origin);
     const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = await this.generateOriginToTokenPtoGMapFromOrigins(origins); // get tokenPtoG at once
 
-    const result = await this.forwardToEachGrowiOrigin(origins, event);
+    // forward to GROWI
+    const result = await this.forwardToEachGrowiOrigin(origins, event, originToTokenPtoGMap);
+
+    // log error
+    this.logErrorRejectedResults(result);
   }
 
   // generate Map<GrowiOrigin, TokenPtoG>
@@ -102,26 +97,20 @@ export class UnfurlService implements GrowiEventProcessor {
         if (tokenPtoG == null) throw new Error('tokenPtoG is null');
 
         // get origin from growiTargetUrl and create url to use
-        const url = new URL('/_api/v3/slack-integration/proxied/pages-unfurl', origin);
+        const url = new URL('/_api/v3/slack-integration/proxied/events', origin);
 
-        const response = await axios.post(url.toString(),
-          { event },
+        await axios.post(url.toString(),
+          requestBody,
           {
             headers: {
               'x-growi-ptog-tokens': tokenPtoG,
             },
             timeout: REQUEST_TIMEOUT_FOR_PTOG,
           });
-
-        // ensure data is not broken
-        const data: DataForUnfurl[] = response.data?.data?.pageData;
-        if (data == null) {
-          throw Error('Malformed data found in axios response.');
-        }
       }
       catch (err) {
-        logger.error('Error occurred while request to growi:', err);
-        throw new Error('Axios request to growi failed.');
+        logger.error(`Error occurred while request to growi (origin=${origin}):`, err);
+        throw err;
       }
     }));
   }
