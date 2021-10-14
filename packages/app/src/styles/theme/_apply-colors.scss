@@ -591,6 +591,9 @@ body.pathname-sidebar {
 .search-result {
   .search-result-list {
     .page-list {
+      .highlighted-keyword {
+        background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
+      }
       .page-list-ul {
         > li.nav-item > a.nav-link {
           color: inherit;

@@ -30,6 +30,7 @@ module.exports = function(crowi, app) {
   // var debug = require('debug')('growi:routes:search')
   const Page = crowi.model('Page');
   const User = crowi.model('User');
+  const Revision = crowi.model('Revision');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
@@ -150,14 +151,27 @@ module.exports = function(crowi, app) {
 
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
-
-      // add tags and snippet data to result pages
-      findResult.pages.map((page) => {
+      const xss = require('xss');
+      const options = {
+        whiteList: {
+          em: ['class'],
+        },
+      };
+      const myXss = new xss.FilterXSS(options);
+      // add tags and snippet data/contentWithNoKeyword to result pages
+      await Promise.all(findResult.pages.map(async(page) => {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
-        page._doc.snippet = data._highlight;
+        if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
+          const revision = await Revision.findById(page.revision);
+          page._doc.contentWithNoKeyword = myXss.process(revision.body);
+        }
+        else {
+          const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
+          page._doc.snippet = myXss.process(snippet);
+        }
         return page;
-      });
+      }));
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;

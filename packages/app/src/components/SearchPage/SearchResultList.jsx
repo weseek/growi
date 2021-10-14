@@ -9,6 +9,13 @@ class SearchResultList extends React.Component {
   render() {
     return this.props.pages.map((page) => {
       const pageId = `#${page._id}`;
+      let snippet = '';
+      if (page.snippet == null) {
+        snippet = page.contentWithNoKeyword;
+      }
+      else {
+        snippet = page.snippet;
+      }
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
           <a
@@ -30,6 +37,11 @@ class SearchResultList extends React.Component {
             {/* TODO: remove dummy snippet and adjust style */}
             <div className="d-block">
               <Page page={page} noLink />
+              <div
+                className="border-gray mt-5"
+                dangerouslySetInnerHTML={{ __html: snippet }}
+              >
+              </div>
             </div>
             <div className="ml-auto d-flex">
               {this.props.deletionMode && (
