@@ -30,7 +30,8 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
     const unfurlData = await this.generateUnfurlsObject(links);
 
-    const unfurlResults = await Promise.allSettled(unfurlData.map(async(data) => {
+    // unfurl
+    const unfurlResults = await Promise.allSettled(unfurlData.map(async(data: DataForUnfurl) => {
       // datum determines the unfurl appearance for each link
       const targetUrl = `${origin}${data.path}`;
 

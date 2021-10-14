@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 
 import { IncomingWebhookSendArguments } from '@slack/webhook';
-import {
-  ChatPostMessageArguments, WebClient,
-} from '@slack/web-api';
+import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
