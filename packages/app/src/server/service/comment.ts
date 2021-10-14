@@ -42,6 +42,8 @@ class CommentService {
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
 
+        this.activityEvent.emit('create', targetUsers, savedActivity);
+
         await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }
       catch (err) {

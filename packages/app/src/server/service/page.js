@@ -22,6 +22,7 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.activityEvent = crowi.event('activity');
 
     // init
     this.initPageEvent();
@@ -41,6 +42,8 @@ class PageService {
         const savedActivity = await this.createByPageUpdate(page, user);
         let targetUsers = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
+
+        this.activityEvent.emit('create', targetUsers, savedActivity);
 
         await inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }

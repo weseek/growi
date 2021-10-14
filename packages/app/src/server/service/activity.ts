@@ -31,19 +31,8 @@ class ActivityService {
      */
   createByParameters = async function(parameters) {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-    const savedActivity = Activity.create(parameters);
 
-    let targetUsers: Types.ObjectId[] = [];
-    try {
-      targetUsers = await savedActivity.getNotificationTargetUsers();
-    }
-    catch (err) {
-      logger.error(err);
-    }
-
-    this.activityEvent.emit('create', targetUsers, savedActivity);
-
-    return savedActivity;
+    return Activity.create(parameters);
   };
 
 
