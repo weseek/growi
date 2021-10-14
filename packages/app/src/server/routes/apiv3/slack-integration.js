@@ -371,46 +371,23 @@ module.exports = (crowi) => {
   });
 
   const validator = {
-    retrievePagesByPaths: [
-      body('paths').isArray(),
+    validateEventRequest: [
+      body('growiBotEvent').isArray(),
     ],
   };
 
-  router.post('/proxied/pages-unfurl', verifyAccessTokenFromProxy, validator.retrievePagesByPaths, async(req, res) => {
+  router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async(req, res) => {
+    const { growiBotEvent } = req.body;
+
     try {
-      const { paths } = req.body;
-
-      // get pages with revision
-      const Page = crowi.model('Page');
-      const { PageQueryBuilder } = Page;
-      const pageQueryBuilder = new PageQueryBuilder(Page.find());
-      const pages = await pageQueryBuilder
-        .addConditionToListByPathsArray(paths)
-        .query
-        .populate('revision')
-        .lean()
-        .exec();
-
-      const responseData = [];
-      pages.forEach((page) => {
-        // not send non-public page
-        if (page.grant !== Page.GRANT_PUBLIC) {
-          return responseData.push({ isPublic: false, path: page.path });
-        }
-
-        // send the public page data with isPrivate: false
-        const { updatedAt, commentCount } = page;
-        const { body } = page.revision;
-        responseData.push({
-          isPublic: true, path: page.path, pageBody: body, updatedAt, commentCount,
-        });
-      });
-
-      return res.apiv3({ pageData: responseData });
+      const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+      const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent);
+      return res.apiv3({});
     }
     catch (err) {
-      logger.error('Error occurred while finding a page by path', err);
-      return res.apiv3Err(new ErrorV3('Error occurred while finding a page or page not found.'));
+      logger.error('Error occurred while handling event request.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
     }
   });
 
