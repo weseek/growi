@@ -372,7 +372,7 @@ module.exports = (crowi) => {
 
   const validator = {
     validateEventRequest: [
-      body('growiBotEvent').isArray(),
+      body('growiBotEvent').exists(),
     ],
   };
 
