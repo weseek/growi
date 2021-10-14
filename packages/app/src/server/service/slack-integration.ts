@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 
 import { IncomingWebhookSendArguments } from '@slack/webhook';
-import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
+import {
+  ChatPostMessageArguments, WebClient,
+} from '@slack/web-api';
 
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
-  RespondUtil,
+  RespondUtil, GrowiBotEvent,
 } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
@@ -16,7 +18,7 @@ import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
-
+import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
@@ -34,10 +36,13 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   lastLoadedAt?: Date;
 
+  linkSharedHandler!: LinkSharedEventHandler;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
+    this.linkSharedHandler = new LinkSharedEventHandler(crowi);
 
     this.initialize();
   }
@@ -304,6 +309,16 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
     // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
     return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
+  }
+
+  async handleEventsRequest(client: WebClient, growiBotEvent: GrowiBotEvent): Promise<void> {
+    const { eventType } = growiBotEvent;
+
+    if (this.linkSharedHandler.shouldHandle(eventType)) {
+      return this.linkSharedHandler.handleEvent(client, growiBotEvent);
+    }
+
+    logger.error(`Handler for '${eventType}'' event is not implemented`);
   }
 
 }
