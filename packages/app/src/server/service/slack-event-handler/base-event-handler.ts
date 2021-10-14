@@ -5,6 +5,6 @@ export interface SlackEventHandler<T> {
 
   shouldHandle(eventType: string): boolean
 
-  handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<T>): Promise<void>
+  handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<T>, data: any): Promise<void>
 
 }

@@ -23,8 +23,8 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     return eventType === 'link_shared';
   }
 
-  async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>): Promise<void> {
-    const { event, data } = growiBotEvent;
+  async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data: {origin: string}): Promise<void> {
+    const { event } = growiBotEvent;
     const { origin } = data;
     const { channel, message_ts: ts, links } = event;
 
