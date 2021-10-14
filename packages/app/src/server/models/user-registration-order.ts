@@ -6,32 +6,27 @@ import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-export interface IPasswordResetOrder {
+export interface IUserRegistrationOrder {
   token: string,
   email: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  relatedUser: any,
   isRevoked: boolean,
   createdAt: Date,
   expiredAt: Date,
 }
 
-export interface PasswordResetOrderDocument extends IPasswordResetOrder, Document {
+export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, Document {
   isExpired(): Promise<boolean>
   revokeOneTimeToken(): Promise<void>
 }
 
-export interface PasswordResetOrderModel extends Model<PasswordResetOrderDocument> {
+export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderDocument> {
   generateOneTimeToken(): string
-  createPasswordResetOrder(email: string): PasswordResetOrderDocument
+  createPasswordResetOrder(email: string): UserRegistrationOrderDocument
 }
 
-const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
+const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
-  relatedUser: { type: ObjectId, ref: 'User' },
   isRevoked: { type: Boolean, default: false, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
   expiredAt: { type: Date, default: Date.now() + 600000, required: true },
@@ -45,7 +40,7 @@ schema.statics.generateOneTimeToken = function() {
   return token;
 };
 
-schema.statics.createPasswordResetOrder = async function(email) {
+schema.statics.createUserRegistrationOrder = async function(email) {
   let token;
   let duplicateToken;
 
@@ -55,9 +50,9 @@ schema.statics.createPasswordResetOrder = async function(email) {
     duplicateToken = await this.findOne({ token });
   } while (duplicateToken != null);
 
-  const passwordResetOrderData = await this.create({ token, email });
+  const userRegistrationOrderData = await this.create({ token, email });
 
-  return passwordResetOrderData;
+  return userRegistrationOrderData;
 };
 
 schema.methods.isExpired = function() {
@@ -69,4 +64,4 @@ schema.methods.revokeOneTimeToken = async function() {
   return this.save();
 };
 
-export default getOrCreateModel<PasswordResetOrderDocument, PasswordResetOrderModel>('PasswordResetOrder', schema);
+export default getOrCreateModel<UserRegistrationOrderDocument, UserRegistrationOrderModel>('UserRegistrationOrder', schema);

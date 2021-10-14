@@ -42,11 +42,12 @@
         </div>
         {% endif %}
 
-        {% if req.form.errors.length > 0 %}
+        {% set errors = req.flash('errors') %}
+        {% if errors.length > 0 %}
         <div class="alert alert-danger">
           <ul>
-          {% for error in req.form.errors %}
-            <li>{{ error }}</li>
+          {% for error in errors %}
+            <li>{{ error.msg }}</li>
           {% endfor %}
           </ul>
         </div>
@@ -54,21 +55,23 @@
       </div>
     </div>
 
+    {% set formInputs = req.flash('inputs')[0] %}
+    {{ formInputs.username }}
     <div class="login-dialog grw-pt-10px p-b-10 offset-4 col-sm-4" id="login-dialog">
 
       <form role="form" action="/user-activation/complete-registartion" method="post" id="registration-form">
-        <input type="hidden" name="registrationForm[token]" value="{{ passwordResetOrder.token }}" />
+        <input type="hidden" name="token" value="{{ userRegistrationOrder.token }}" />
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="icon-envelope"></i></span>
           </div>
-          <input type="text" class="form-control" disabled value="{{ passwordResetOrder.email }}">
+          <input type="text" class="form-control" disabled value="{{ userRegistrationOrder.email }}">
         </div>
         <div class="input-group" id="input-group-username">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="icon-user"></i></span>
           </div>
-          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registrationForm[username]" value="{{ req.body.registrationForm.username }}" required>
+          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="username" value="{{ formInputs.username }}" required>
         </div>
         <p class="form-text text-muted">
           <span id="help-block-username"></span>
@@ -78,7 +81,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="icon-tag"></i></span>
           </div>
-          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registrationForm[name]" value="{{ req.body.registrationForm.name }}" required>
+          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="name" value="{{ formInputs.name }}" required>
         </div>
 
 
@@ -86,7 +89,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="icon-lock"></i></span>
           </div>
-          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registrationForm[password]" required>
+          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="password" required>
         </div>
 
         <div class="input-group justify-content-center d-flex mt-5">
@@ -112,8 +115,7 @@
 
 <script>
 $(function() {
-  /*
-  $('#registration-form input[name="registrationForm[username]"]').change(function(e) {
+  $('#registration-form input[name="username"]').change(function(e) {
     var username = $(this).val();
     $('#login-dialog').removeClass('has-error');
     $('#input-group-username').removeClass('has-error');
@@ -129,7 +131,6 @@ $(function() {
       }
     });
   });
-  */
 });
 </script>
 

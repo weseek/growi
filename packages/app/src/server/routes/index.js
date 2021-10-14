@@ -1,9 +1,11 @@
 import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
+import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
 import * as userActivation from './user-activation';
+import { completeRegeistrationRules, validateCompleteRegistrationForm } from '../middlewares/form-validator-user-activation';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -196,9 +198,9 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.use('/user-activation', express.Router()
-    .get('/:token', apiLimiter, applicationInstalled, injectResetOrderByTokenMiddleware, userActivation.form)
+    .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.handleHttpErrosMiddleware));
-  app.post('/user-activation/complete-registartion' , apiLimiter, applicationInstalled, form.registerUserActivation , csrf, login.completeRegistration);
+  app.post('/user-activation/complete-registartion', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, csrf, completeRegeistrationRules(), validateCompleteRegistrationForm, userActivation.completeRegistrationAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
 
