@@ -22,9 +22,9 @@ export interface ActivityDocument extends Document {
   getNotificationTargetUsers(): Promise<any[]>
 }
 
-export type ActivityModel = Model<ActivityDocument>
-
-
+export interface ActivityModel extends Model<ActivityDocument> {
+  getActionUsersFromActivities(activities: ActivityDocument[]): any[]
+}
 // TODO: add revision id
 const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   user: {
@@ -89,6 +89,11 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
     status: User.STATUS_ACTIVE,
   }).distinct('_id');
   return activeNotificationUsers;
+};
+
+
+activitySchema.statics.getActionUsersFromActivities = function(activities) {
+  return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
 };
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);

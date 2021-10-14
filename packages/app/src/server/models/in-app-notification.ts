@@ -2,8 +2,10 @@ import {
   Types, Document, PaginateModel, Schema, /* , Query */
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+
+import Activity, { ActivityDocument } from './activity';
 import ActivityDefine from '../util/activityDefine';
-import { ActivityDocument } from './activity';
+
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 
@@ -78,6 +80,10 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   },
 });
 inAppNotificationSchema.plugin(mongoosePaginate);
+
+inAppNotificationSchema.virtual('actionUsers').get(function(this: NotificationDocument) {
+  return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+});
 
 const transform = (doc, ret) => {
   // delete ret.activities

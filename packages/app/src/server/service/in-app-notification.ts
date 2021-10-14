@@ -3,10 +3,10 @@ import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
   InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED,
-} from '~/server/models/in-app-notification';
-import { ActivityDocument } from '~/server/models/activity';
+} from '../models/in-app-notification';
+import { ActivityDocument } from '../models/activity';
 
-import loggerFactory from '~/utils/logger';
+import loggerFactory from '../../utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const logger = loggerFactory('growi:service:inAppNotification');
@@ -103,11 +103,6 @@ export default class InAppNotificationService {
       throw new Error(err);
     }
   }
-
-  // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-  //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-  //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-  // });
 
   read = async function(user: Types.ObjectId): Promise<void> {
     const query = { user, status: STATUS_UNREAD };
