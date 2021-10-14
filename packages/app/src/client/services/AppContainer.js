@@ -330,9 +330,9 @@ export default class AppContainer extends Container {
       return res.data;
     }
 
-    // Return error code if code is exist
+    // Return error code and data if error code exists
     if (res.data.code != null) {
-      const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
+      const error = new Apiv1ErrorHandler(res.data.error, res.data.code, res.data.data);
       throw error;
     }
 
