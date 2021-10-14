@@ -1,4 +1,4 @@
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
 import {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
@@ -62,7 +62,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   generateLinkUnfurls(body: PublicData, growiTargetUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
-    const updatedAtFormatted = format(parseISO(updatedAt), 'yyyy-MM-dd HH:mm');
+    const updatedAtFormatted = format(updatedAt, 'yyyy-MM-dd HH:mm');
     const footer = `updated at: ${updatedAtFormatted}  comments: ${commentCount}`;
 
     const attachment: MessageAttachment = {
