@@ -8,7 +8,6 @@ class SearchResultList extends React.Component {
 
   render() {
     return this.props.pages.map((page) => {
-      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#${page._id}`;
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
@@ -31,7 +30,6 @@ class SearchResultList extends React.Component {
             {/* TODO: remove dummy snippet and adjust style */}
             <div className="d-block">
               <Page page={page} noLink />
-              <div className="border-gray mt-5">{page.snippet}</div>
             </div>
             <div className="ml-auto d-flex">
               {this.props.deletionMode && (
