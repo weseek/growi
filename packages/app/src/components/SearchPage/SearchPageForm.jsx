@@ -40,7 +40,8 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <div className="grw-search-form-in-search-result-page">
+      // TODO: modify design
+      <div className="grw-search-form-in-search-result-page d-flex">
         <div className="input-group flex-nowrap">
           <SearchForm
             onSubmit={this.search}

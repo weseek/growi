@@ -12,6 +12,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import { specificPath } from '../client/util/search/specificPath';
 
 class SearchPage extends React.Component {
 
@@ -27,12 +28,15 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
+      isNotIncludeUserPath: true,
+      isNotIncludeTrashPath: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
+    this.toggleIncludedSpecificPath = this.toggleIncludedSpecificPath.bind(this);
   }
 
   componentDidMount() {
@@ -54,6 +58,17 @@ class SearchPage extends React.Component {
     return query;
   }
 
+  toggleIncludedSpecificPath(pathType) {
+    switch (pathType) {
+      case specificPath.user:
+        this.setState({ isNotIncludeUserPath: !this.state.isNotIncludeUserPath });
+        break;
+      case specificPath.trash:
+        this.setState({ isNotIncludeTrashPath: !this.state.isNotIncludeTrashPath });
+        break;
+    }
+  }
+
   changeURL(keyword, refreshHash) {
     let hash = window.location.hash || '';
     // TODO 整理する
@@ -65,6 +80,19 @@ class SearchPage extends React.Component {
     }
   }
 
+  createSearchQuery(keyword) {
+    let query = keyword;
+
+    // pages included in specific path are not retrived when prefix is added
+    if (this.state.isNotIncludeTrashPath) {
+      query = `${query} -prefix:/${specificPath.trash}`;
+    }
+    if (this.state.isNotIncludeUserPath) {
+      query = `${query} -prefix:/${specificPath.user}`;
+    }
+
+    return query;
+  }
 
   search(data) {
     const keyword = data.keyword;
@@ -81,7 +109,7 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-    this.props.appContainer.apiGet('/search', { q: keyword })
+    this.props.appContainer.apiGet('/search', { q: this.createSearchQuery(keyword) })
       .then((res) => {
         this.changeURL(keyword);
         if (res.data.length > 0) {
@@ -95,6 +123,14 @@ class SearchPage extends React.Component {
             searchedPages: res.data,
             searchResultMeta: res.meta,
             selectedPage: res.data[0],
+          });
+        }
+        else {
+          this.setState({
+            searchedKeyword: keyword,
+            searchedPages: [],
+            searchResultMeta: {},
+            selectedPage: {},
           });
         }
       })
@@ -152,6 +188,7 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.search}
+        toggleIncludedSpecificPath={this.toggleIncludedSpecificPath}
       >
       </SearchControl>
     );
