@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
-import { GrowiBotEvent } from '@growi/slack';
+import { GrowiBotEvent, markdownSectionBlock } from '@growi/slack';
 import { SlackEventHandler } from './base-event-handler';
 import {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
@@ -28,14 +28,21 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     const { origin } = data;
     const { channel, message_ts: ts, links } = event;
 
-    const unfurlData = await this.generateUnfurlsObject(links);
+    let unfurlData: DataForUnfurl[];
+    try {
+      unfurlData = await this.generateUnfurlsObject(links);
+    }
+    catch (err) {
+      logger.error('Failed to generate unfurl data:', err);
+      throw err;
+    }
 
     // unfurl
     const unfurlResults = await Promise.allSettled(unfurlData.map(async(data: DataForUnfurl) => {
       // datum determines the unfurl appearance for each link
       const targetUrl = `${origin}${data.path}`;
 
-      let unfurls;
+      let unfurls: LinkUnfurls;
 
       if (data.isPublic === false) {
         unfurls = {
@@ -66,22 +73,12 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     const footer = `updated at: ${updatedAtFormatted}  comments: ${commentCount}`;
 
     const attachment: MessageAttachment = {
+      title: body.path,
+      title_link: growiTargetUrl,
       text,
       footer,
-      // TODO: consider whether to keep these buttons
-      actions: [
-        {
-          type: 'button',
-          text: 'View',
-          url: growiTargetUrl,
-        },
-        {
-          type: 'button',
-          text: 'Edit',
-          url: `${growiTargetUrl}#edit`,
-        },
-      ],
     };
+
     const unfurls: LinkUnfurls = {
       [growiTargetUrl]: attachment,
     };
@@ -93,7 +90,8 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     const paths: string[] = links.map((link) => {
       const { url: growiTargetUrl } = link;
       const urlObject = new URL(growiTargetUrl);
-      return urlObject.pathname;
+
+      return decodeURI(urlObject.pathname);
     });
 
     // get pages with revision
