@@ -1,56 +1,42 @@
-import React, {
-  useState, useEffect, useRef, FC, createElement,
-} from 'react';
-import ReactDOM from 'react-dom';
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
+import React, { useState, useEffect, FC } from 'react';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import CodeMirror from 'codemirror/lib/codemirror';
-import { JSHINT } from 'jshint';
+// import { JSHINT } from 'jshint';
 
 require('codemirror/addon/merge/merge');
 require('codemirror/lib/codemirror.css');
-require('codemirror/theme/eclipse.css');
-require('codemirror/theme/neat.css');
-require('codemirror/addon/lint/lint.css');
 require('codemirror/addon/merge/merge.css');
-require('codemirror/mode/javascript/javascript');
-require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/javascript-lint');
 require('codemirror/addon/merge/merge');
 
 
-Object.keys(JSHINT).forEach((key) => { window[key] = JSHINT[key] });
+// Object.keys(JSHINT).forEach((key) => { window[key] = JSHINT[key] });
 const DMP = require('diff_match_patch');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 export const ConflictDiffModal: FC = () => {
 
-  const codeMirrorRef = useRef<HTMLDivElement | null>(null);
 
   const [val, setVal] = useState('Test Value');
   const [orig, setOrig] = useState('Original Value');
+  const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+
+  const mergeViewOptions = {
+    // theme: 'eclipse',
+    value: val,
+    origLeft: orig,
+    origRight: null,
+    allowEditingOriginals: false,
+    lineNumbers: true,
+    highlightDifferences: true,
+    connect: 'align',
+  };
 
   useEffect(() => {
-    const containerElem = document.getElementById('cm-mv');
-    const DivElem = document.createElement('div');
-    console.log(containerElem);
-    CodeMirror.MergeView(DivElem, {
-      theme: 'eclipse',
-      value: val,
-      origLeft: null,
-      origRight: orig,
-      allowEditingOriginals: true,
-      lineNumbers: true,
-      mode: 'javascript',
-      highlightDifferences: true,
-      gutters: ['CodeMirror-lint-markers'],
-      lint: true,
-      connect: 'align',
-    });
-    ReactDOM.render(DivElem, containerElem);
-  }, []);
+    if (codeMirrorRef) {
+      CodeMirror.MergeView(codeMirrorRef, mergeViewOptions);
+    }
+  }, [codeMirrorRef]);
 
 
   return (
@@ -59,7 +45,7 @@ export const ConflictDiffModal: FC = () => {
         <i className="icon-fw icon-question" />Resolve Conflict
       </ModalHeader>
       <ModalBody>
-        <div id="cm-mv"></div>
+        <div ref={(el) => { setCodeMirrorRef(el) }}></div>
       </ModalBody>
     </Modal>
   );
