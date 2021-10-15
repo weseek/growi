@@ -126,7 +126,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   }
 
   // Promise util method to output rejected results
-  logErrorRejectedResults<T>(results: PromiseSettledResult<T>[]): void {
+  private logErrorRejectedResults<T>(results: PromiseSettledResult<T>[]): void {
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
     rejectedResults.forEach((rejected, i) => {
