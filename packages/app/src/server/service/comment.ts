@@ -15,14 +15,11 @@ class CommentService {
 
   commentEvent!: any;
 
-  activityEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
-    this.activityEvent = crowi.event('activity');
 
     // init
     this.initCommentEventListeners();

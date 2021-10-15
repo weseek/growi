@@ -4,7 +4,7 @@ import loggerFactory from '../../utils/logger';
 const logger = loggerFactory('growi:events:activity');
 
 
-export default class ActivityEvent extends EventEmitter {
+class ActivityEvent extends EventEmitter {
 
   onRemove(action: string, activity: any): void {
     logger.info('onRemove activity event fired');
@@ -16,4 +16,5 @@ export default class ActivityEvent extends EventEmitter {
 
 }
 
-module.exports = ActivityEvent;
+const instance = new ActivityEvent();
+export default instance;

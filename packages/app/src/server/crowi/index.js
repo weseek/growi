@@ -19,6 +19,8 @@ import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 
+import Actiity from '../models/activity';
+
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
 
@@ -84,7 +86,6 @@ function Crowi() {
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
     comment: new (require('../events/comment'))(this),
-    activity: new (require('../events/activity'))(),
   };
 }
 
@@ -300,7 +301,15 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  Object.keys(models).forEach((key) => {
+  let allModels = {};
+
+  // include models that dependent on crowi
+  allModels = models;
+
+  // include models that independent from crowi
+  allModels.Activity = Actiity;
+
+  Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
 };

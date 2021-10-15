@@ -9,12 +9,9 @@ class ActivityService {
 
   inAppNotificationService!: any;
 
-  activityEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
-    this.activityEvent = crowi.event('activity');
   }
 
 
@@ -24,6 +21,7 @@ class ActivityService {
      */
   createByParameters = function(parameters) {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
+
     return Activity.create(parameters);
   };
 
