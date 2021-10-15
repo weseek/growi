@@ -92,11 +92,10 @@ export class UnfurlService implements GrowiEventProcessor {
         },
       };
       try {
-        // ensure paths and tokenPtoG exist
+        // ensure tokenPtoG exists
         const tokenPtoG = originToTokenPtoGMap.get(origin);
         if (tokenPtoG == null) throw new Error('tokenPtoG is null');
 
-        // get origin from growiTargetUrl and create url to use
         const url = new URL('/_api/v3/slack-integration/proxied/events', origin);
 
         await axios.post(url.toString(),
