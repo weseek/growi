@@ -158,7 +158,7 @@ module.exports = function(crowi, app) {
         },
       };
       const myXss = new xss.FilterXSS(options);
-      // add tags and snippet data/contentWithNoKeyword to result pages
+      // add tags snippet data/contentWithNoKeyword and mattched page name to result pages
       await Promise.all(findResult.pages.map(async(page) => {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
@@ -169,6 +169,10 @@ module.exports = function(crowi, app) {
         else {
           const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
           page._doc.snippet = myXss.process(snippet);
+        }
+        if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
+          const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
+          page._doc.mattchedPath = pathMatch;
         }
         return page;
       }));

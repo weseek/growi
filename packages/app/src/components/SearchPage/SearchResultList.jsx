@@ -11,7 +11,12 @@ class SearchResultList extends React.Component {
       const pageId = `#${page._id}`;
       let snippet = '';
       if (page.snippet == null) {
-        snippet = page.contentWithNoKeyword;
+        if (page.contentWithNoKeyword.length >= 40) {
+          snippet = page.contentWithNoKeyword.substr(0, 40);
+        }
+        else {
+          snippet = page.contentWithNoKeyword;
+        }
       }
       else {
         snippet = page.snippet;
