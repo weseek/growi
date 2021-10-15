@@ -40,7 +40,7 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      // TODO: modify design
+      // TODO: modify design after other component created
       <div className="grw-search-form-in-search-result-page d-flex">
         <div className="input-group flex-nowrap">
           <SearchForm

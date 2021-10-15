@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import SearchPageForm from './SearchPageForm';
-import { specificPath } from '../../client/util/search/specificPath';
+import { specificPathNames } from '../../client/util/search/path';
 import AppContainer from '../../client/services/AppContainer';
 
 
@@ -32,7 +32,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             type="checkbox"
             value=""
             id="flexCheckDefault"
-            onClick={() => props.toggleIncludedSpecificPath(specificPath.user)}
+            onClick={() => props.toggleIncludedSpecificPath(specificPathNames.user)}
           />
           <label className="form-check-label" htmlFor="flexCheckDefault">
             /user下を含む
@@ -44,7 +44,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             type="checkbox"
             value=""
             id="flexCheckChecked"
-            onClick={() => props.toggleIncludedSpecificPath(specificPath.trash)}
+            onClick={() => props.toggleIncludedSpecificPath(specificPathNames.trash)}
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">
             /trash下を含む

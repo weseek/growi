@@ -12,7 +12,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
-import { specificPath } from '../client/util/search/specificPath';
+import { specificPathNames } from '../client/util/search/path';
 
 class SearchPage extends React.Component {
 
@@ -60,10 +60,10 @@ class SearchPage extends React.Component {
 
   toggleIncludedSpecificPath(pathType) {
     switch (pathType) {
-      case specificPath.user:
+      case specificPathNames.user:
         this.setState({ isNotIncludeUserPath: !this.state.isNotIncludeUserPath });
         break;
-      case specificPath.trash:
+      case specificPathNames.trash:
         this.setState({ isNotIncludeTrashPath: !this.state.isNotIncludeTrashPath });
         break;
     }
@@ -84,11 +84,14 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.isNotIncludeTrashPath) {
-      query = `${query} -prefix:/${specificPath.trash}`;
+    if (this.state.isNotIncludeTrashPath && this.state.isNotIncludeUserPath) {
+      query = `${query} -prefix:/${specificPathNames.trash}/${specificPathNames.user}`;
     }
-    if (this.state.isNotIncludeUserPath) {
-      query = `${query} -prefix:/${specificPath.user}`;
+    else if (this.state.isNotIncludeTrashPath) {
+      query = `${query} -prefix:/${specificPathNames.trash}`;
+    }
+    else if (this.state.isNotIncludeUserPath) {
+      query = `${query} -prefix:/${specificPathNames.user}`;
     }
 
     return query;
