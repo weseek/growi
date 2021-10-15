@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
-import { GrowiBotEvent, markdownSectionBlock } from '@growi/slack';
+import { GrowiBotEvent } from '@growi/slack';
 import { SlackEventHandler } from './base-event-handler';
 import {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
