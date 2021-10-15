@@ -112,9 +112,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
-  const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
-
-
   const RenderUnLoadedInAppNotification = (): JSX.Element => {
     return (
       <i className="fa fa-spinner"></i>
@@ -155,11 +152,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     return <RenderInAppNotificationList />;
   };
 
+  const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
+
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="nav-link">
-        <i className="icon-bell mr-2"></i>
-        {badge}
+        <i className="icon-bell mr-2" /> {badge}
       </DropdownToggle>
       <DropdownMenu right>
         <InAppNotificationContents />
