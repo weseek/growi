@@ -7,12 +7,11 @@ import loggerFactory from '../../utils/logger';
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 
 import ActivityDefine from '../util/activityDefine';
+import activityEvent from '../events/activity';
 
 import Subscription from './subscription';
 
-import activityEvent from '../events/activity';
-
-const logger = loggerFactory('growi:model:activity');
+const logger = loggerFactory('growi:models:activity');
 
 
 export interface ActivityDocument extends Document {
