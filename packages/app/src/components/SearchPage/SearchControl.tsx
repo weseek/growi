@@ -24,7 +24,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           onSearchFormChanged={props.onSearchInvoked}
         />
       </div>
-      {/* TODO: place the following elements deleteAll button , relevance button and include specificPath button component */}
+      {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="d-flex my-4">
         <div className="form-check border-gray">
           <input
