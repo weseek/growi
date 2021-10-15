@@ -1,42 +1,47 @@
 import React, { useState, useEffect, FC } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import CodeMirror from 'codemirror/lib/codemirror';
-// import { JSHINT } from 'jshint';
 
-require('codemirror/addon/merge/merge');
 require('codemirror/lib/codemirror.css');
-require('codemirror/addon/merge/merge.css');
 require('codemirror/addon/merge/merge');
-
-
-// Object.keys(JSHINT).forEach((key) => { window[key] = JSHINT[key] });
+require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
+
+const val1 = 'blah laha';
+
+const val2 = 'blah blah';
+
+
 export const ConflictDiffModal: FC = () => {
 
 
-  const [val, setVal] = useState('Test Value');
-  const [orig, setOrig] = useState('Original Value');
+  const [val, setVal] = useState(val1);
+  const [orig, setOrig] = useState(val2);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+  const [vm, setVm] = useState();
 
-  const mergeViewOptions = {
-    // theme: 'eclipse',
-    value: val,
-    origLeft: orig,
-    origRight: null,
-    allowEditingOriginals: false,
-    lineNumbers: true,
-    highlightDifferences: true,
-    connect: 'align',
-  };
 
   useEffect(() => {
     if (codeMirrorRef) {
-      CodeMirror.MergeView(codeMirrorRef, mergeViewOptions);
+      setVm(CodeMirror.MergeView(codeMirrorRef, {
+        value: val,
+        origLeft: orig,
+        origRight: null,
+        allowEditingOriginals: false,
+        lineNumbers: true,
+        highlightDifferences: true,
+        collapseIdentical: true,
+        connect: 'align',
+      }));
     }
-  }, [codeMirrorRef]);
+  }, [codeMirrorRef, val, orig]);
+
+  useEffect(() => {
+    console.log(vm);
+  }, [vm]);
 
 
   return (
