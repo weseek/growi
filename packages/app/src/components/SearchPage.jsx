@@ -84,13 +84,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.isNotIncludeTrashPath && this.state.isNotIncludeUserPath) {
-      query = `${query} -prefix:/${specificPathNames.trash}/${specificPathNames.user}`;
-    }
-    else if (this.state.isNotIncludeTrashPath) {
+    if (this.state.isNotIncludeTrashPath) {
       query = `${query} -prefix:/${specificPathNames.trash}`;
     }
-    else if (this.state.isNotIncludeUserPath) {
+    if (this.state.isNotIncludeUserPath) {
       query = `${query} -prefix:/${specificPathNames.user}`;
     }
 
