@@ -16,32 +16,31 @@ const val2 = 'blah blah';
 
 
 export const ConflictDiffModal: FC = () => {
-
-
   const [val, setVal] = useState(val1);
   const [orig, setOrig] = useState(val2);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
-  const [vm, setVm] = useState();
-
 
   useEffect(() => {
     if (codeMirrorRef) {
-      setVm(CodeMirror.MergeView(codeMirrorRef, {
+      CodeMirror.MergeView(codeMirrorRef, {
         value: val,
         origLeft: orig,
         origRight: null,
-        allowEditingOriginals: false,
-        lineNumbers: true,
-        highlightDifferences: true,
-        collapseIdentical: true,
         connect: 'align',
-      }));
+        lineNumbers: true,
+        collapseIdentical: true,
+        highlightDifferences: true,
+        allowEditingOriginals: false,
+        onChange: (_editor, _data, value) => {
+          setVal(value);
+        },
+      });
     }
-  }, [codeMirrorRef, val, orig]);
+  }, [codeMirrorRef]);
 
   useEffect(() => {
-    console.log(vm);
-  }, [vm]);
+    console.log(val);
+  }, [val]);
 
 
   return (
