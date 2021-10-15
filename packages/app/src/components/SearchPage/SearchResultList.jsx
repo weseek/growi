@@ -39,7 +39,6 @@ class SearchResultList extends React.Component {
             <div className="form-check my-auto">
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>
-            {/* TODO: remove dummy snippet and adjust style */}
             <div className="d-block">
               <Page page={page} noLink matchedPath={page.matchedPath} />
               <div
