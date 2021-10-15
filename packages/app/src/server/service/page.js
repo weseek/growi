@@ -43,8 +43,6 @@ class PageService {
         let targetUsers = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
 
-        this.activityEvent.emit('create', targetUsers, savedActivity);
-
         await inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }
       catch (err) {
