@@ -18,15 +18,21 @@ export const PagePathLabel = (props) => {
     ? <><strong>/</strong></>
     : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
 
+  if (props.matchedPath !== null) {
+    return <span dangerouslySetInnerHTML={{ __html: props.matchedPath }} />;
+  }
   return <span className={classNames.join(' ')}>{textElem}</span>;
+
 };
 
 PagePathLabel.propTypes = {
   page: PropTypes.object.isRequired,
   isLatterOnly: PropTypes.bool,
   additionalClassNames: PropTypes.arrayOf(PropTypes.string),
+  matchedPath: PropTypes.string, // For search result list
 };
 
 PagePathLabel.defaultProps = {
   additionalClassNames: [],
+  matchedPath: null,
 };

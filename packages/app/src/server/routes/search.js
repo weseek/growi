@@ -172,7 +172,7 @@ module.exports = function(crowi, app) {
         }
         if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
           const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
-          page._doc.mattchedPath = pathMatch;
+          page._doc.matchedPath = pathMatch;
         }
         return page;
       }));

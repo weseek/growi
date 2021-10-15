@@ -41,7 +41,7 @@ class SearchResultList extends React.Component {
             </div>
             {/* TODO: remove dummy snippet and adjust style */}
             <div className="d-block">
-              <Page page={page} noLink />
+              <Page page={page} noLink matchedPath={page.matchedPath} />
               <div
                 className="border-gray mt-5"
                 dangerouslySetInnerHTML={{ __html: snippet }}
