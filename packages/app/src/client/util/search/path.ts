@@ -1,8 +1,4 @@
-interface SpecificPathNames {
-  [pathName: string]: string;
-}
-
-export const specificPathNames: SpecificPathNames = {
+export const specificPathNames: { [pathName : string]: string} = {
   user: 'user',
   trash: 'trash',
 };
