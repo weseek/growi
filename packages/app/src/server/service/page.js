@@ -22,7 +22,6 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
-    this.activityEvent = crowi.event('activity');
 
     // init
     this.initPageEvent();
