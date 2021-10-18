@@ -22,6 +22,8 @@ class CustomizeThemeOptions extends React.Component {
       name: 'mono-blue',  bg: '#F7FBFD', topbar: '#2a2929', sidebar: '#00587A', theme: '#00587A',
     }, {
       name: 'hufflepuff',  bg: '#EFE2CF', topbar: '#2a2929', sidebar: '#EAAB20', theme: '#993439',
+    }, {
+      name: 'fire-red',  bg: '#FDFDFD', topbar: '#2c2c2c', sidebar: '#BFBFBF', theme: '#EA5532',
     }];
 
     const uniqueTheme = [{
