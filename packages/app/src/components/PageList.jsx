@@ -8,39 +8,29 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
+import { toastError } from '~/client/util/apiNotification';
+import { useSWRxPageList } from '~/stores/page';
+
 import PaginationWrapper from './PaginationWrapper';
 
 
 const PageList = (props) => {
   const { appContainer, pageContainer, t } = props;
   const { path } = pageContainer.state;
-  const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(Infinity);
+
+  const { data: pagesListData, error, mutate } = useSWRxPageList(path, activePage);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
   }
 
-  const updatePageList = useCallback(async() => {
-    const page = activePage;
-    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+  if (error != null) {
+    toastError(error, 'Error occurred in PageList');
+  }
 
-    setPages(res.data.pages);
-    setIsLoading(false);
-    setTotalPages(res.data.totalCount);
-    setLimit(res.data.limit);
-  }, [appContainer, path, activePage]);
-
-  useEffect(() => {
-    updatePageList();
-  }, [updatePageList]);
-
-
-  if (isLoading) {
+  if (!pagesListData?.pages) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -51,7 +41,7 @@ const PageList = (props) => {
   }
 
   const liClasses = props.liClasses.join(' ');
-  const pageList = pages.map(page => (
+  const pageList = pagesListData?.pages.map(page => (
     <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
@@ -73,6 +63,9 @@ const PageList = (props) => {
     );
   }
 
+  const totalPages = pagesListData.totalCount ? pagesListData.totalCount : 0;
+  const limit = pagesListData.limit ? pagesListData.limit : Infinity;
+
   return (
     <div className="page-list">
       <ul className="page-list-ul page-list-ul-flat">
@@ -87,8 +80,6 @@ const PageList = (props) => {
       />
     </div>
   );
-
-
 };
 
 const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);
