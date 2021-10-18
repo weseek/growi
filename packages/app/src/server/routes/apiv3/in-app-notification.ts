@@ -47,9 +47,8 @@ module.exports = (crowi) => {
     const user = req.user;
 
     try {
-      const notification = await inAppNotificationService.read(user);
-      const result = { notification };
-      return res.apiv3(result);
+      await inAppNotificationService.read(user);
+      return res.apiv3();
     }
     catch (err) {
       return res.apiv3Err(err);
