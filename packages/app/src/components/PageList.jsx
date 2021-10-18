@@ -26,8 +26,12 @@ const PageList = (props) => {
     setActivePage(selectedPageNumber);
   }
 
+
+  // TODO: To be implemented in #79549
   if (error != null) {
-    toastError(error, 'Error occurred in PageList');
+    // toastError(error, 'Error occurred in PageList');
+    // eslint-disable-next-line no-console
+    console.log(error, 'Error occurred in PageList');
   }
 
   if (!pagesListData?.pages) {
