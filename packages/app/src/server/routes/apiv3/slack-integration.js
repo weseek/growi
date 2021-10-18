@@ -382,7 +382,7 @@ module.exports = (crowi) => {
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
   });
 
-  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, /* verifySlackRequest, */ async(req, res) => {
+  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     const { event } = req.body;
 
     const growiBotEvent = {
