@@ -439,6 +439,7 @@ class ExportService {
         }
         catch (err) {
           logger.error('Error occurred while converting data to readable: ', err);
+          throw err;
         }
 
         callback();
