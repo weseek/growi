@@ -39,7 +39,7 @@ export const verifySlackRequest = (req: RequestFromSlack & { rawBody: any }, res
     return next(createError(403, message));
   }
 
-  // generate growi signature
+  // use req.rawBody for Events API
   let sigBaseString: string;
   if (req.body.event != null) {
     sigBaseString = `v0:${timestamp}:${req.rawBody}`;
@@ -47,6 +47,7 @@ export const verifySlackRequest = (req: RequestFromSlack & { rawBody: any }, res
   else {
     sigBaseString = `v0:${timestamp}:${stringify(req.body, { format: 'RFC1738' })}`;
   }
+  // generate growi signature
   const hasher = createHmac('sha256', signingSecret);
   hasher.update(sigBaseString, 'utf8');
   const hashedSigningSecret = hasher.digest('hex');
