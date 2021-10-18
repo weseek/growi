@@ -47,6 +47,7 @@ module.exports = (options) => {
       'styles/theme-hufflepuff':      './src/styles/theme/hufflepuff.scss',
       'styles/theme-fire-red':      './src/styles/theme/fire-red.scss',
       'styles/theme-jade-green':      './src/styles/theme/jade-green.scss',
+      'styles/theme-blackboard':      './src/styles/theme/blackboard.scss',
       // styles for external services
       'styles/style-hackmd':          './src/styles-hackmd/style.scss',
     }, options.entry || {}), // Merge with env dependent settings
