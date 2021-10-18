@@ -182,6 +182,18 @@ module.exports = (crowi) => {
     return next();
   };
 
+  const verifyUrlMiddleware = (req, res, next) => {
+    const { body } = req;
+
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return res.send({ challenge: body.challenge });
+    }
+
+    next();
+  };
+
   const parseSlackInteractionRequest = (req, res, next) => {
     if (req.body.payload == null) {
       return next(new Error('The payload is not in the request from slack or proxy.'));
@@ -368,6 +380,24 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
 
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+  });
+
+  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, /* verifySlackRequest, */ async(req, res) => {
+    const { event } = req.body;
+
+    const growiBotEvent = {
+      eventType: event.type,
+      event,
+    };
+    try {
+      const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent);
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error('Error occurred while handling event request.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
+    }
   });
 
   const validator = {
