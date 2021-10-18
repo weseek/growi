@@ -425,6 +425,7 @@ class ExportService {
     const pagesWritable = new Writable({
       objectMode: true,
       async write(page, encoding, callback) {
+        console.log('なに: ', page);
         try {
           const revision = page.revision;
 
@@ -439,6 +440,7 @@ class ExportService {
         }
         catch (err) {
           logger.error('Error occurred while converting data to readable: ', err);
+          throw Error('だめ');
         }
 
         callback();
