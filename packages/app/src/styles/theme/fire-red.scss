@@ -4,7 +4,7 @@
 html[light] {
   // Theme colors
   $themecolor: #ea5532;
-  $themelight: #ebebeb;
+  $themelight: #ffffff;
   $accentcolor: #bfbfbf;
   $subthemecolor: #e6e6e6;
 
@@ -37,13 +37,13 @@ html[light] {
   // $bgcolor-list-active: $primary;
 
   // Navbar
-  $bgcolor-navbar: #ffffff;
+  $bgcolor-navbar: $color-global;
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, $primary 0%, darken($primary, 5%) 100%);
 
   // Logo colors
-  $bgcolor-logo: $color-global;
-  $fillcolor-logo-mark: $color-global;
+  $bgcolor-logo: $themelight;
+  $fillcolor-logo-mark: $themelight;
 
   // Sidebar
   $bgcolor-sidebar: $accentcolor;
@@ -137,7 +137,7 @@ html[dark] {
   // $bgcolor-list-active: $primary;
 
   // Navbar
-  $bgcolor-navbar: #000000;
+  $bgcolor-navbar: #2c2c2c;
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #ea5532 0%, #c9171e 100%);
 
