@@ -586,7 +586,7 @@ class ElasticsearchDelegator {
   }
 
   createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'body', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
