@@ -3,7 +3,7 @@ import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 import { IPage } from '~/interfaces/page';
-import { IPageListResult } from '~/interfaces/page-list-result';
+import { IPagingResult } from '~/interfaces/paging-result';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Error> => {
@@ -17,10 +17,16 @@ export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Erro
 export const useSWRxPageList = (
     path: string,
     pageNumber?: number,
-): SWRResponse<IPage[], Error> => {
+): SWRResponse<IPagingResult<IPage>, Error> => {
   const page = pageNumber || 1;
   return useSWR(
     `/pages/list?path=${path}&page=${page}`,
-    endpoint => apiv3Get<{ pageListResult: IPageListResult<IPage> }>(endpoint).then(response => response.data),
+    endpoint => apiv3Get<IPagingResult<IPage>>(endpoint).then((response) => {
+      return {
+        items: response.data.pages,
+        totalCount: response.data.totalCount,
+        limit: response.data.limit,
+      };
+    }),
   );
 };

@@ -34,7 +34,7 @@ const PageList = (props) => {
     console.log(error, 'Error occurred in PageList');
   }
 
-  if (!pagesListData?.pages) {
+  if (!pagesListData?.items) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -45,7 +45,7 @@ const PageList = (props) => {
   }
 
   const liClasses = props.liClasses.join(' ');
-  const pageList = pagesListData?.pages.map(page => (
+  const pageList = pagesListData?.items.map(page => (
     <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
