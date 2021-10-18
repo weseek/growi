@@ -11,3 +11,14 @@ export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Erro
     endpoint => apiv3Get<{ pages: IPage[] }>(endpoint).then(response => response.data?.pages),
   );
 };
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxPageList = (
+    path: string,
+    number: number,
+): SWRResponse<IPage[], Error> => {
+  return useSWR(
+    `/pages/list?path=${path}&page=${number}`,
+    endpoint => apiv3Get<{ pages: IPage[] }>(endpoint).then(response => response.data?.pages),
+  );
+};
