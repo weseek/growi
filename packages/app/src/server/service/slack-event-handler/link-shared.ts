@@ -1,3 +1,4 @@
+import urljoin from 'url-join';
 import { format } from 'date-fns';
 import {
   MessageAttachment, LinkUnfurls, WebClient,
@@ -40,7 +41,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     // unfurl
     const unfurlResults = await Promise.allSettled(unfurlData.map(async(data: DataForUnfurl) => {
       // datum determines the unfurl appearance for each link
-      const targetUrl = `${origin}${data.path}`;
+      const targetUrl = urljoin(origin, data.path);
 
       let unfurls: LinkUnfurls;
 
