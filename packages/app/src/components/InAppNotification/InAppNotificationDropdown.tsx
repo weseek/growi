@@ -45,9 +45,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     });
   };
 
-  const updateNotificationStatus = () => {
+  const updateNotificationStatus = async() => {
     try {
-      // await this.props.crowi.apiPost('/notification.read');
+      await appContainer.apiv3Post('/in-app-notification/read');
       setCount(0);
     }
     catch (err) {

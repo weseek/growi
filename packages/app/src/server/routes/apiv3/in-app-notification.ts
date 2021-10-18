@@ -43,11 +43,11 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/read', accessTokenParser, loginRequiredStrictly, csrf, (req, res) => {
+  router.post('/read', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     const user = req.user;
 
     try {
-      const notification = InAppNotification.read(user);
+      const notification = await inAppNotificationService.read(user);
       const result = { notification };
       return res.apiv3(result);
     }
