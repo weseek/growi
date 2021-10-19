@@ -40,6 +40,7 @@ export const verifySlackRequest = (req: RequestFromSlack & { rawBody: any }, res
   }
 
   // use req.rawBody for Events API
+  // reference: https://stackoverflow.com/questions/64794287/how-to-verify-a-request-from-slack-events-api
   let sigBaseString: string;
   if (req.body.event != null) {
     sigBaseString = `v0:${timestamp}:${req.rawBody}`;
