@@ -49,6 +49,22 @@ class PageStatusAlert extends React.Component {
     ];
   }
 
+  getContentsForRevisionOutdated() {
+    const { t } = this.props;
+    return [
+      ['bg-success', 'd-hackmd-none'],
+      <>
+        <i className="icon-fw icon-pencil"></i>
+        {/* {t('hackmd.this_page_has_draft')} */}
+        Merge Conflict
+      </>,
+      <a href="#hackmd" className="btn btn-outline-white">
+        <i className="fa fa-fw fa-file-text-o mr-1"></i>
+        Resolve conflict
+      </a>,
+    ];
+  }
+
   getContentsForDraftExistsAlert(isRealtime) {
     const { t } = this.props;
     return [
@@ -95,6 +111,10 @@ class PageStatusAlert extends React.Component {
     // when remote revision is newer than both
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
       getContentsFunc = this.getContentsForUpdatedAlert;
+    }
+    // when remote revision is newer
+    else if (isRevisionOutdated) {
+      getContentsFunc = this.getContentsForRevisionOutdated;
     }
     // when someone editing with HackMD
     else if (isHackmdDraftUpdatingInRealtime) {

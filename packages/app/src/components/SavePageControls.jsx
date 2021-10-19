@@ -49,9 +49,10 @@ class SavePageControls extends React.Component {
     catch (error) {
       // TODO: display resolve conflict button when operation to update page is conflicted
       // ref: https://estoc.weseek.co.jp/redmine/issues/78784
-      console.log(error.data);
+      console.log(error);
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
+      pageContainer.setState({})
     }
   }
 
