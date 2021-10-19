@@ -6,6 +6,7 @@ import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-
 import * as forgotPassword from './forgot-password';
 import * as userActivation from './user-activation';
 import { completeRegeistrationRules, validateCompleteRegistrationForm } from '../middlewares/form-validator-user-activation';
+import { validateRegisterForm } from '../middlewares/form-validator-register';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -62,7 +63,7 @@ module.exports = function(crowi, app) {
   app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
   app.post('/login'                   , applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, form.register(crowi)                 , csrf, login.register);
+  app.post('/register'                , applicationInstalled, validateRegisterForm(crowi), csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
   app.get('/logout'                   , applicationInstalled, logout.logout);
 
@@ -73,7 +74,7 @@ module.exports = function(crowi, app) {
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , applicationNotInstalled , form.register , csrf, installer.install);
+    app.post('/installer'             , applicationNotInstalled , validateRegisterForm(crowi), csrf, installer.install);
     return;
   }
 
