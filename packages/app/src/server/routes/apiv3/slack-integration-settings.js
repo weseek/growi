@@ -71,14 +71,14 @@ module.exports = (crowi) => {
       param('id').isMongoId().withMessage('id is required'),
     ],
     updatePermissionsWithoutProxy: [
-      body('commandPermission').isObject(),
-      body('eventActionsPermission').isObject(),
+      body('commandPermission').exists(),
+      body('eventActionsPermission').exists(),
       param('id').isMongoId().withMessage('id is required'),
     ],
     updatePermissionsWithProxy: [
-      body('permissionsForBroadcastUseCommands').isObject(),
-      body('permissionsForSingleUseCommands').isObject(),
-      body('permissionsForSlackEventActions').isObject(),
+      body('permissionsForBroadcastUseCommands').exists(),
+      body('permissionsForSingleUseCommands').exists(),
+      body('permissionsForSlackEventActions').exists(),
       param('id').isMongoId().withMessage('id is required'),
     ],
     relationTest: [
