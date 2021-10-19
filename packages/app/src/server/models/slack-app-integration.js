@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
   permissionsForSingleUseCommands: Map,
   permissionsForSlackEventActions: {
     type: Map,
-    default: new Map(defaultSupportedSlackEventActions.map(action => [action, true])),
+    default: new Map(defaultSupportedSlackEventActions.map(action => [action, false])),
   },
 });
 
