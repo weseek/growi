@@ -1,14 +1,7 @@
-import {
-  Types,
-} from 'mongoose';
 import Crowi from '../crowi';
-
 
 import { getModelSafely } from '../util/mongoose-utils';
 
-import loggerFactory from '../../utils/logger';
-
-const logger = loggerFactory('growi:service:activity');
 
 class ActivityService {
 
@@ -16,12 +9,9 @@ class ActivityService {
 
   inAppNotificationService!: any;
 
-  activityEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
-    this.activityEvent = crowi.event('activity');
   }
 
 
@@ -29,7 +19,7 @@ class ActivityService {
      * @param {object} parameters
      * @return {Promise}
      */
-  createByParameters = async function(parameters) {
+  createByParameters = function(parameters) {
     const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
 
     return Activity.create(parameters);

@@ -15,14 +15,11 @@ class CommentService {
 
   commentEvent!: any;
 
-  activityEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
-    this.activityEvent = crowi.event('activity');
 
     // init
     this.initCommentEventListeners();
@@ -41,8 +38,6 @@ class CommentService {
 
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
-
-        this.activityEvent.emit('create', targetUsers, savedActivity);
 
         await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }

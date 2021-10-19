@@ -20,13 +20,10 @@ export default class InAppNotificationService {
 
   commentEvent!: any;
 
-  activityEvent!: any;
-
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
-    this.activityEvent = crowi.event('activity');
 
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
   }

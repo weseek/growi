@@ -32,6 +32,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     initializeSocket(props);
+    fetchNotificationStatus();
   }, []);
 
   const initializeSocket = (props) => {
@@ -44,9 +45,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     });
   };
 
-  const updateNotificationStatus = () => {
+  const updateNotificationStatus = async() => {
     try {
-      // await this.props.crowi.apiPost('/notification.read');
+      await appContainer.apiv3Post('/in-app-notification/read');
       setCount(0);
     }
     catch (err) {
@@ -54,6 +55,16 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
+  const fetchNotificationStatus = async() => {
+    try {
+      const res = await appContainer.apiv3Get('/in-app-notification/status');
+      const { count } = res.data;
+      setCount(count);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  };
 
   /**
     * TODO: Fetch notification list by GW-7473
@@ -101,9 +112,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
-  const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
-
-
   const RenderUnLoadedInAppNotification = (): JSX.Element => {
     return (
       <i className="fa fa-spinner"></i>
@@ -144,11 +152,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     return <RenderInAppNotificationList />;
   };
 
+  const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
+
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="nav-link">
-        <i className="icon-bell mr-2"></i>
-        {badge}
+        <i className="icon-bell mr-2" /> {badge}
       </DropdownToggle>
       <DropdownMenu right>
         <InAppNotificationContents />

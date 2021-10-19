@@ -2,11 +2,16 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
+import loggerFactory from '../../utils/logger';
+
 import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 
 import ActivityDefine from '../util/activityDefine';
+import activityEvent from '../events/activity';
 
 import Subscription from './subscription';
+
+const logger = loggerFactory('growi:models:activity');
 
 
 export interface ActivityDocument extends Document {
@@ -91,9 +96,21 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   return activeNotificationUsers;
 };
 
-
 activitySchema.statics.getActionUsersFromActivities = function(activities) {
   return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
 };
+
+activitySchema.post('save', async(savedActivity: ActivityDocument) => {
+  let targetUsers: Types.ObjectId[] = [];
+  try {
+    targetUsers = await savedActivity.getNotificationTargetUsers();
+  }
+  catch (err) {
+    logger.error(err);
+  }
+
+  activityEvent.emit('create', targetUsers, savedActivity);
+});
+
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
