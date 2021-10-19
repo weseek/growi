@@ -103,7 +103,7 @@ const CopyDropdown = (props) => {
    * render
    */
   const {
-    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
+    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode, showCaret,
   } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
@@ -112,7 +112,7 @@ const CopyDropdown = (props) => {
     <>
       <Dropdown className="grw-copy-dropdown" isOpen={dropdownOpen} toggle={toggleDropdown}>
         <DropdownToggle
-          caret
+          caret={showCaret}
           className={dropdownToggleClassName}
         >
           <span id={dropdownToggleId}>{children}</span>
@@ -208,6 +208,7 @@ CopyDropdown.propTypes = {
   pageId: PropTypes.string,
   dropdownToggleClassName: PropTypes.string,
   isShareLinkMode: PropTypes.bool,
+  showCaret: PropTypes.bool,
 };
 
 export default withTranslation()(CopyDropdown);

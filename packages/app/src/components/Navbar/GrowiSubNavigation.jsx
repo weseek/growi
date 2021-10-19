@@ -57,6 +57,7 @@ const PagePathNav = ({
             pagePath={pagePath}
             dropdownToggleId={copyDropdownId}
             dropdownToggleClassName={copyDropdownToggleClassName}
+            showCaret
           >
             <i className="ti-clipboard"></i>
           </CopyDropdown>
