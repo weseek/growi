@@ -75,6 +75,10 @@ module.exports = (crowi) => {
       body('supportedCommandsForBroadcastUse').toArray(),
       param('id').isMongoId().withMessage('id is required'),
     ],
+    updateSupportedEventActions: [
+      body('supportedEventActions').toArray(),
+      param('id').isMongoId().withMessage('id is required'),
+    ],
     relationTest: [
       param('id').isMongoId(),
       body('channel').trim().isString(),
@@ -176,6 +180,7 @@ module.exports = (crowi) => {
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
       settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
+      settings.eventActionsPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission');
     }
     else {
       settings.proxyServerUri = slackIntegrationService.proxyUriForCurrentType;
@@ -252,9 +257,18 @@ module.exports = (crowi) => {
         commandPermission[commandName] = true;
       });
 
-      const requestParams = { 'slackbot:withoutProxy:commandPermission': commandPermission };
+      // default event actions permission value
+      const eventActionsPermission = {};
+      defaultSupportedSlackEventActions.forEach((action) => {
+        eventActionsPermission[action] = true;
+      });
+
+      const params = {
+        'slackbot:withoutProxy:commandPermission': commandPermission,
+        'slackbot:withoutProxy:eventActionsPermission': eventActionsPermission,
+      };
       try {
-        await updateSlackBotSettings(requestParams);
+        await updateSlackBotSettings(params);
         crowi.slackIntegrationService.publishUpdatedMessage();
       }
       catch (error) {
@@ -362,11 +376,6 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings(requestParams);
       crowi.slackIntegrationService.publishUpdatedMessage();
-
-      const customBotWithoutProxySettingParams = {
-        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret'),
-        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken'),
-      };
       return res.apiv3();
     }
     catch (error) {
@@ -397,12 +406,13 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
     }
 
-    const { commandPermission } = req.body;
-    const requestParams = {
+    const { commandPermission, eventActionsPermission } = req.body;
+    const params = {
       'slackbot:withoutProxy:commandPermission': commandPermission,
+      'slackbot:withoutProxy:eventActionsPermission': eventActionsPermission,
     };
     try {
-      await updateSlackBotSettings(requestParams);
+      await updateSlackBotSettings(params);
       crowi.slackIntegrationService.publishUpdatedMessage();
       return res.apiv3();
     }
@@ -638,6 +648,30 @@ module.exports = (crowi) => {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-supported-commands-failed'), 500);
+    }
+  });
+
+  // eslint-disable-next-line max-len
+  router.put('/slack-app-integrations/:id/supported-event-actions', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedEventActions, apiV3FormValidator, async(req, res) => {
+    const { permissionsForSlackEventActions } = req.body;
+    const { id } = req.params;
+
+    const newPermissionsForSlackEventActions = new Map(Object.entries(permissionsForSlackEventActions));
+
+    try {
+      await SlackAppIntegration.findByIdAndUpdate(
+        id,
+        {
+          permissionsForBroadcastUseCommands: newPermissionsForSlackEventActions,
+        },
+      );
+
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = `Error occured while updating settings. Cause: ${error.message}`;
+      logger.error('Error occured while updating settings', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-supported-event-actions-failed'), 500);
     }
   });
 
