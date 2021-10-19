@@ -18,6 +18,7 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
+import { ConflictDiffModal } from './ConflictDiffModal';
 
 class Editor extends AbstractEditor {
 
@@ -29,6 +30,7 @@ class Editor extends AbstractEditor {
       dropzoneActive: false,
       isUploading: false,
       isCheatsheetModalShown: false,
+      isConflictDiffModalOpen: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
@@ -286,88 +288,95 @@ class Editor extends AbstractEditor {
     const isMobile = this.props.isMobile;
 
     return (
-      <div style={flexContainer} className="editor-container">
-        <Dropzone
-          ref={(c) => { this.dropzone = c }}
-          accept={this.getAcceptableType()}
-          noClick
-          noKeyboard
-          multiple={false}
-          onDragLeave={this.dragLeaveHandler}
-          onDrop={this.dropHandler}
-        >
-          {({
-            getRootProps,
-            getInputProps,
-            isDragAccept,
-            isDragReject,
-          }) => {
-            return (
-              <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
-                { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+      <>
+        <div style={flexContainer} className="editor-container">
+          <Dropzone
+            ref={(c) => { this.dropzone = c }}
+            accept={this.getAcceptableType()}
+            noClick
+            noKeyboard
+            multiple={false}
+            onDragLeave={this.dragLeaveHandler}
+            onDrop={this.dropHandler}
+          >
+            {({
+              getRootProps,
+              getInputProps,
+              isDragAccept,
+              isDragReject,
+            }) => {
+              return (
+                <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
+                  { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-                { this.state.isComponentDidMount && this.renderNavbar() }
+                  { this.state.isComponentDidMount && this.renderNavbar() }
 
-                {/* for PC */}
-                { !isMobile && (
-                  <Subscribe to={[EditorContainer]}>
-                    { editorContainer => (
-                      // eslint-disable-next-line arrow-body-style
-                      <CodeMirrorEditor
-                        ref={(c) => { this.cmEditor = c }}
-                        indentSize={editorContainer.state.indentSize}
-                        editorOptions={editorContainer.state.editorOptions}
-                        isTextlintEnabled={editorContainer.state.isTextlintEnabled}
-                        textlintRules={editorContainer.state.textlintRules}
-                        onInitializeTextlint={editorContainer.retrieveEditorSettings}
-                        onPasteFiles={this.pasteFilesHandler}
-                        onDragEnter={this.dragEnterHandler}
-                        onMarkdownHelpButtonClicked={this.showMarkdownHelp}
-                        onAddAttachmentButtonClicked={this.addAttachmentHandler}
-                        {...this.props}
-                      />
-                    )}
-                  </Subscribe>
-                )}
+                  {/* for PC */}
+                  { !isMobile && (
+                    <Subscribe to={[EditorContainer]}>
+                      { editorContainer => (
+                        // eslint-disable-next-line arrow-body-style
+                        <CodeMirrorEditor
+                          ref={(c) => { this.cmEditor = c }}
+                          indentSize={editorContainer.state.indentSize}
+                          editorOptions={editorContainer.state.editorOptions}
+                          isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                          textlintRules={editorContainer.state.textlintRules}
+                          onInitializeTextlint={editorContainer.retrieveEditorSettings}
+                          onPasteFiles={this.pasteFilesHandler}
+                          onDragEnter={this.dragEnterHandler}
+                          onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                          onAddAttachmentButtonClicked={this.addAttachmentHandler}
+                          {...this.props}
+                        />
+                      )}
+                    </Subscribe>
+                  )}
 
-                {/* for mobile */}
-                { isMobile && (
-                  <TextAreaEditor
-                    ref={(c) => { this.taEditor = c }}
-                    onPasteFiles={this.pasteFilesHandler}
-                    onDragEnter={this.dragEnterHandler}
-                    {...this.props}
-                  />
-                )}
+                  {/* for mobile */}
+                  { isMobile && (
+                    <TextAreaEditor
+                      ref={(c) => { this.taEditor = c }}
+                      onPasteFiles={this.pasteFilesHandler}
+                      onDragEnter={this.dragEnterHandler}
+                      {...this.props}
+                    />
+                  )}
 
-                <input {...getInputProps()} />
-              </div>
-            );
-          }}
-        </Dropzone>
+                  <input {...getInputProps()} />
+                </div>
+              );
+            }}
+          </Dropzone>
 
-        { this.props.isUploadable
-          && (
-            <button
-              type="button"
-              className="btn btn-outline-secondary btn-block btn-open-dropzone"
-              onClick={this.addAttachmentHandler}
-            >
-              <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
-              Attach files
-              <span className="d-none d-sm-inline">
-              &nbsp;by dragging &amp; dropping,&nbsp;
-                <span className="btn-link">selecting them</span>,&nbsp;
-                or pasting from the clipboard.
-              </span>
+          { this.props.isUploadable
+            && (
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-block btn-open-dropzone"
+                onClick={this.addAttachmentHandler}
+              >
+                <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+                Attach files
+                <span className="d-none d-sm-inline">
+                &nbsp;by dragging &amp; dropping,&nbsp;
+                  <span className="btn-link">selecting them</span>,&nbsp;
+                  or pasting from the clipboard.
+                </span>
 
-            </button>
-          )
-        }
+              </button>
+            )
+          }
 
-        { this.renderCheatsheetModal() }
+          { this.renderCheatsheetModal() }
 
-      </div>
+        </div>
+        <ConflictDiffModal
+          isOpen={this.state.isConflictDiffModalOpen}
+          onCancel={() => this.setState({ isConflictDiffModalOpen: false })}
+          onResolveConflict={() => {}}
+        />
+      </>
     );
   }
 

@@ -438,6 +438,10 @@
     "enable_textlint": "启用Textlint",
     "dont_ask_again": "不要再问"
   },
+  "modal_resolve_conflict": {
+    "title": "解决冲突",
+    "resolve_and_save" : "解决冲突并保存"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

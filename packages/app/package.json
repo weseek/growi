@@ -85,6 +85,7 @@
     "date-fns": "^2.23.0",
     "detect-indent": "^6.0.0",
     "diff": "^5.0.0",
+    "diff_match_patch": "^0.1.1",
     "elasticsearch": "^16.0.0",
     "entities": "^2.0.0",
     "esa-nodejs": "^0.0.7",
