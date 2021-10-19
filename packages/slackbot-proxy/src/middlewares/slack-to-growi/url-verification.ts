@@ -1,5 +1,5 @@
 import {
-  IMiddleware, Middleware, Req, Res,
+  IMiddleware, Middleware, Req, Res, Next,
 } from '@tsed/common';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 
@@ -7,7 +7,7 @@ import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 @Middleware()
 export class UrlVerificationMiddleware implements IMiddleware {
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res, @Next() next: Next): Promise<void> {
 
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
@@ -15,6 +15,8 @@ export class UrlVerificationMiddleware implements IMiddleware {
       res.send(req.body.challenge);
       return;
     }
+
+    next();
   }
 
 }

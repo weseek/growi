@@ -1,4 +1,4 @@
-import { SlackbotType } from '@growi/slack';
+import { SlackbotType, defaultSupportedSlackEventActions } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
@@ -439,17 +439,9 @@ module.exports = (crowi) => {
 
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
-      const initialSupportedCommandsForBroadcastUse = new Map();
-      const initialSupportedCommandsForSingleUse = new Map();
-      // TODO: avoid hard coding
-      const initialPermissionsForSlackEventActions = new Map(['link_shared', true]);
-
-      defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
-        initialSupportedCommandsForBroadcastUse.set(commandName, true);
-      });
-      defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
-        initialSupportedCommandsForSingleUse.set(commandName, true);
-      });
+      const initialSupportedCommandsForBroadcastUse = new Map(defaultSupportedCommandsNameForBroadcastUse.map(command => [command, true]));
+      const initialSupportedCommandsForSingleUse = new Map(defaultSupportedCommandsNameForSingleUse.map(command => [command, true]));
+      const initialPermissionsForSlackEventActions = new Map(defaultSupportedSlackEventActions.map(action => [action, true]));
 
       const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,

@@ -22,6 +22,10 @@ export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'keep',
 ];
 
+export const defaultSupportedSlackEventActions: string[] = [
+  'unfurl',
+];
+
 export * from './interfaces/growi-command-processor';
 export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-event-processor';

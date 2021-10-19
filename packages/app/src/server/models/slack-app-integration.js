@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } = require('@growi/slack');
+const { defaultSupportedSlackEventActions } = require('@growi/slack');
 
 
 const schema = new mongoose.Schema({
@@ -9,7 +9,10 @@ const schema = new mongoose.Schema({
   isPrimary: { type: Boolean, unique: true, sparse: true },
   permissionsForBroadcastUseCommands: Map,
   permissionsForSingleUseCommands: Map,
-  permissionsForSlackEventActions: Map,
+  permissionsForSlackEventActions: {
+    type: Map,
+    default: new Map(defaultSupportedSlackEventActions.map(action => [action, true])),
+  },
 });
 
 class SlackAppIntegration {

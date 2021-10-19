@@ -17,6 +17,7 @@ import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
 import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
+import { EventActionsPermission } from '../interfaces/slack-integration/events';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
@@ -309,14 +310,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
   }
 
-  async handleEventsRequest(client: WebClient, growiBotEvent: GrowiBotEvent<any>, data?: any): Promise<void> {
+  async handleEventsRequest(client: WebClient, growiBotEvent: GrowiBotEvent<any>, permission: EventActionsPermission, data?: any): Promise<void> {
     const { eventType } = growiBotEvent;
+    const { channel = '' } = growiBotEvent.event;
 
-    if (this.linkSharedHandler.shouldHandle(eventType)) {
+    if (this.linkSharedHandler.shouldHandle(eventType, permission, channel)) {
       return this.linkSharedHandler.handleEvent(client, growiBotEvent, data);
     }
 
-    logger.error(`Handler for '${eventType}'' event is not implemented`);
+    logger.error(`Any event actions are not permitted, or, a handler for '${eventType}' event is not implemented`);
   }
 
 }

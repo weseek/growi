@@ -389,9 +389,14 @@ module.exports = (crowi) => {
       eventType: event.type,
       event,
     };
+
     try {
       const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
-      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent);
+      // convert permission object to map
+      const permission = new Map(Object.entries(crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission')));
+
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permission);
+
       return res.apiv3({});
     }
     catch (err) {
@@ -412,8 +417,18 @@ module.exports = (crowi) => {
 
     try {
       const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-      const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, data);
+      const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+      if (slackAppIntegration == null) {
+        throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
+      }
+
+      const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
+      const { permissionsForSlackEventActions } = slackAppIntegration;
+
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permissionsForSlackEventActions, data);
+
       return res.apiv3({});
     }
     catch (err) {
