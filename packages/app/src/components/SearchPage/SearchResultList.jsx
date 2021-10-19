@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Page from '../PageList/Page';
+import CopyDropdown from '../Page/CopyDropdown';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
@@ -10,6 +11,8 @@ class SearchResultList extends React.Component {
     return this.props.pages.map((page) => {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#${page._id}`;
+      const copyDropdownId = `copydropdown--subnav-compact${page.id}`;
+      const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
           <a
@@ -66,6 +69,14 @@ class SearchResultList extends React.Component {
                 >
                   <i className="icon-login" />
                 </button>
+                <CopyDropdown
+                  pageId={page._id}
+                  pagePath={page.path}
+                  dropdownToggleId={copyDropdownId}
+                  dropdownToggleClassName={copyDropdownToggleClassName}
+                >
+                  <i className="ti-clipboard"></i>
+                </CopyDropdown>
               </div>
             </div>
           </a>
