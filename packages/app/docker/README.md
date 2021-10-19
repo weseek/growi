@@ -10,8 +10,8 @@ GROWI Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`4.4.7`, `4.4`, `4`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.7/docker/Dockerfile)
-* [`4.4.7-nocdn`, `4.4-nocdn`, `4-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.7/docker/Dockerfile)
+* [`4.4.9`, `4.4`, `4`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.9/docker/Dockerfile)
+* [`4.4.9-nocdn`, `4.4-nocdn`, `4-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.9/docker/Dockerfile)
 * [`4.3.3`, `4.3` (Dockerfile)](https://github.com/weseek/growi/blob/v4.3.3/docker/Dockerfile)
 * [`4.3.3-nocdn`, `4.3-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.3.3/docker/Dockerfile)
 
