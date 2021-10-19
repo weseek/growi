@@ -78,6 +78,7 @@ class CommentService {
   createByPageComment = function(comment) {
     const { activityService } = this.crowi;
 
+    // TODO: Changing the action name in Create and Update
 
     const parameters = {
       user: comment.creator,
