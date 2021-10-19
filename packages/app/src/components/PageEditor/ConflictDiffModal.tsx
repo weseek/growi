@@ -1,6 +1,10 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import PropTypes from 'prop-types';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import CodeMirror from 'codemirror/lib/codemirror';
+import { useTranslation } from 'react-i18next';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -9,13 +13,17 @@ const DMP = require('diff_match_patch');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
+type ConflictDiffModalProps = {
+  isOpen: boolean;
+  onCancel: () => void;
+  onResolveConflict: () => void;
+};
 
-
-
-export const ConflictDiffModal: FC = () => {
-  const [val, setVal] = useState('value 1'));
+export const ConflictDiffModal: FC<ConflictDiffModalProps> = ({ isOpen, onCancel, onResolveConflict }) => {
+  const [val, setVal] = useState('value 1');
   const [orig, setOrig] = useState('value 2');
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+  const { t } = useTranslation('');
 
   useEffect(() => {
     if (codeMirrorRef) {
@@ -29,22 +37,40 @@ export const ConflictDiffModal: FC = () => {
         highlightDifferences: true,
         allowEditingOriginals: false,
       });
-
-      // mvInstance.on('change', (editor) => {
-      //   console.log(editor.getValue());
-      // });
     }
   }, [codeMirrorRef, orig, val]);
 
 
   return (
-    <Modal isOpen className="modal-gfm-cheatsheet">
-      <ModalHeader tag="h4" className="bg-primary text-light">
-        <i className="icon-fw icon-question" />Resolve Conflict
+    <Modal isOpen={isOpen} toggle={onCancel} className="modal-gfm-cheatsheet">
+      <ModalHeader tag="h4" toggle={onCancel} className="bg-primary text-light">
+        <i className="icon-fw icon-exclamation" />Resolve Conflict
       </ModalHeader>
       <ModalBody>
         <div ref={(el) => { setCodeMirrorRef(el) }}></div>
       </ModalBody>
+      <ModalFooter>
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
+          onClick={onCancel}
+        >
+          {t('Cancel')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-outline-primary ml-3"
+          onClick={onResolveConflict}
+        >
+          {t('Done')}
+        </button>
+      </ModalFooter>
     </Modal>
   );
+};
+
+ConflictDiffModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onResolveConflict: PropTypes.func.isRequired,
 };

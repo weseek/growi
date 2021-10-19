@@ -30,6 +30,7 @@ class Editor extends AbstractEditor {
       dropzoneActive: false,
       isUploading: false,
       isCheatsheetModalShown: false,
+      isConflictDiffModalOpen: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
@@ -370,7 +371,9 @@ class Editor extends AbstractEditor {
           { this.renderCheatsheetModal() }
 
         </div>
-        <ConflictDiffModal />
+        <ConflictDiffModal
+          isOpen={isConflictDiffModalOpen}
+        />
       </>
     );
   }
