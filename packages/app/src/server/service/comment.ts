@@ -53,6 +53,7 @@ class CommentService {
       this.commentEvent.onUpdate();
       const { inAppNotificationService } = this.crowi;
 
+      // TODO: 79713
       // inAppNotificationService.emitSocketIo(userId, pageId);
     });
 
