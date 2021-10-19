@@ -18,9 +18,7 @@ export const PagePathLabel = (props) => {
     ? <><strong>/</strong></>
     : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
 
-
   return <span className={classNames.join(' ')}>{textElem}</span>;
-
 };
 
 PagePathLabel.propTypes = {

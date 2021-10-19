@@ -30,7 +30,6 @@ module.exports = function(crowi, app) {
   // var debug = require('debug')('growi:routes:search')
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Revision = crowi.model('Revision');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
@@ -159,7 +158,7 @@ module.exports = function(crowi, app) {
       };
       const myXss = new xss.FilterXSS(options);
       // add tags snippet data/contentWithNoKeyword and mattched page name to result pages
-      findResult.pages.map(async(page) => {
+      findResult.pages.map((page) => {
         const elasticSearchResult = { snippet: '', matchedPath: '' };
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
@@ -196,7 +195,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    console.log(JSON.stringify(result));
     return res.json(ApiResponse.success(result));
   };
 
