@@ -7,7 +7,7 @@ import { GrowiBotEvent } from '@growi/slack';
 import { SlackEventHandler } from './base-event-handler';
 import {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
-} from '../../interfaces/slack-integration/unfurl-event';
+} from '../../interfaces/slack-integration/link-shared-unfurl';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');

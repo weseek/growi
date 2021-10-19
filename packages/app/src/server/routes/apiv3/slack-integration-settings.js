@@ -440,6 +440,8 @@ module.exports = (crowi) => {
     try {
       const initialSupportedCommandsForBroadcastUse = new Map();
       const initialSupportedCommandsForSingleUse = new Map();
+      // TODO: avoid hard coding
+      const initialPermissionsForSlackEventActions = new Map(['link_shared', true]);
 
       defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
         initialSupportedCommandsForBroadcastUse.set(commandName, true);
@@ -453,6 +455,7 @@ module.exports = (crowi) => {
         tokenPtoG,
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
         permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
+        permissionsForSlackEvents: initialPermissionsForSlackEventActions,
         isPrimary: count === 0,
       });
       return res.apiv3(slackAppTokens, 200);

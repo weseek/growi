@@ -9,6 +9,7 @@ const schema = new mongoose.Schema({
   isPrimary: { type: Boolean, unique: true, sparse: true },
   permissionsForBroadcastUseCommands: Map,
   permissionsForSingleUseCommands: Map,
+  permissionsForSlackEventActions: Map,
 });
 
 class SlackAppIntegration {

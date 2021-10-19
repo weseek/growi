@@ -28,7 +28,7 @@ import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-veri
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
-import { UnfurlService } from '~/services/UnfurlService';
+import { LinkSharedService } from '~/services/LinkSharedService';
 import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
@@ -92,7 +92,7 @@ export class SlackCtrl {
   unregisterService: UnregisterService;
 
   @Inject()
-  unfurlService: UnfurlService;
+  linkSharedService: LinkSharedService;
 
   /**
    * Send command to specified GROWIs
@@ -407,8 +407,8 @@ export class SlackCtrl {
     }
 
     // unfurl
-    if (this.unfurlService.shouldHandleEvent(event.type)) {
-      await this.unfurlService.processEvent(client, event);
+    if (this.linkSharedService.shouldHandleEvent(event.type)) {
+      await this.linkSharedService.processEvent(client, event);
     }
 
     return;

@@ -5,9 +5,9 @@ import { WebClient } from '@slack/web-api';
 import loggerFactory from '~/utils/logger';
 import { RelationRepository } from '~/repositories/relation';
 
-const logger = loggerFactory('slackbot-proxy:services:UnfurlService');
+const logger = loggerFactory('slackbot-proxy:services:LinkSharedService');
 
-type UnfurlEventLink = {
+type LinkSharedEventLink = {
   url: string,
   domain: string,
 }
@@ -16,13 +16,13 @@ type UnfurlEventLink = {
 type GrowiOrigin = string;
 type TokenPtoG = string;
 
-export type UnfurlRequestEvent = {
+export type LinkSharedRequestEvent = {
   channel: string,
 
   // eslint-disable-next-line camelcase
   message_ts: string,
 
-  links: UnfurlEventLink[],
+  links: LinkSharedEventLink[],
 }
 
 type PrivateData = {
@@ -38,10 +38,10 @@ type PublicData = {
   commentCount: number,
 }
 
-export type DataForUnfurl = PrivateData | PublicData;
+export type DataForLinkShared = PrivateData | PublicData;
 
 @Service()
-export class UnfurlService implements GrowiEventProcessor {
+export class LinkSharedService implements GrowiEventProcessor {
 
   @Inject()
   relationRepository: RelationRepository;
@@ -50,10 +50,10 @@ export class UnfurlService implements GrowiEventProcessor {
     return eventType === 'link_shared';
   }
 
-  async processEvent(client: WebClient, event: UnfurlRequestEvent): Promise<void> {
+  async processEvent(client: WebClient, event: LinkSharedRequestEvent): Promise<void> {
     const { links } = event;
 
-    const origins: string[] = links.map((link: UnfurlEventLink) => (new URL(link.url)).origin);
+    const origins: string[] = links.map((link: LinkSharedEventLink) => (new URL(link.url)).origin);
     const originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG> = await this.generateOriginToTokenPtoGMapFromOrigins(origins); // get tokenPtoG at once
 
     // forward to GROWI
@@ -79,7 +79,7 @@ export class UnfurlService implements GrowiEventProcessor {
   }
 
   async forwardToEachGrowiOrigin(
-      origins: string[], event: UnfurlRequestEvent, originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG>,
+      origins: string[], event: LinkSharedRequestEvent, originToTokenPtoGMap: Map<GrowiOrigin, TokenPtoG>,
   ): Promise<PromiseSettledResult<void>[]> {
     return Promise.allSettled(origins.map(async(origin) => {
       const requestBody = {
