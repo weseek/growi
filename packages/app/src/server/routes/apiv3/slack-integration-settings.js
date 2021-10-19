@@ -106,6 +106,7 @@ module.exports = (crowi) => {
       'slackbot:withoutProxy:botToken': null,
       'slackbot:proxyUri': null,
       'slackbot:withoutProxy:commandPermission': null,
+      'slackbot:withoutProxy:eventActionsPermission': null,
     };
 
     return updateSlackBotSettings(params);
