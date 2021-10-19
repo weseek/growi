@@ -9,6 +9,7 @@ import {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
 } from '../../interfaces/slack-integration/link-shared-unfurl';
 import loggerFactory from '~/utils/logger';
+import { EventActionsPermission } from '~/server/interfaces/slack-integration/events';
 
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 
@@ -20,8 +21,11 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     this.crowi = crowi;
   }
 
-  shouldHandle(eventType: string): boolean {
-    return eventType === 'link_shared';
+  shouldHandle(eventType: string, permission: EventActionsPermission, channel: string): boolean {
+    if (eventType !== 'link_shared') return false;
+
+    const unfurlPermission = permission.get('unfurl');
+    return (Array.isArray(unfurlPermission) && unfurlPermission.includes(channel)) || unfurlPermission as boolean;
   }
 
   async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data?: {origin: string}): Promise<void> {
