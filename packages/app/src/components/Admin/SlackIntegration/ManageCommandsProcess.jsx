@@ -131,7 +131,7 @@ const ManageCommandsProcess = ({
   const updateCommandsHandler = async(e) => {
     try {
       // TODO: add new attribute 78975
-      await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/supported-commands`, {
+      await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/permissions`, {
         permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsState,
         permissionsForSingleUseCommands: permissionsForSingleUseCommandsState,
       });
