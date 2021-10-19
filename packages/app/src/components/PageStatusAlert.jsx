@@ -26,6 +26,7 @@ class PageStatusAlert extends React.Component {
     };
 
     this.getContentsForSomeoneEditingAlert = this.getContentsForSomeoneEditingAlert.bind(this);
+    this.getContentsForRevisionOutdated = this.getContentsForRevisionOutdated.bind(this);
     this.getContentsForDraftExistsAlert = this.getContentsForDraftExistsAlert.bind(this);
     this.getContentsForUpdatedAlert = this.getContentsForUpdatedAlert.bind(this);
   }
@@ -55,12 +56,11 @@ class PageStatusAlert extends React.Component {
       ['bg-success', 'd-hackmd-none'],
       <>
         <i className="icon-fw icon-pencil"></i>
-        {/* {t('hackmd.this_page_has_draft')} */}
-        Merge Conflict
+        {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
       </>,
       <a href="#hackmd" className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
-        Resolve conflict
+        {t('modal_resolve_conflict.resolve_conflict')}
       </a>,
     ];
   }

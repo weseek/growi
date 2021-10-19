@@ -461,7 +461,8 @@
     "dont_ask_again": "Don't ask again"
   },
   "modal_resolve_conflict": {
-    "title": "Resolve Conflict",
+    "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",
+    "resolve_conflict": "Resolve Conflict",
     "resolve_and_save" : "Resolve and save"
   },
   "link_edit": {

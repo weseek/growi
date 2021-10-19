@@ -461,7 +461,8 @@
     "dont_ask_again": "常に許可する"
   },
   "modal_resolve_conflict": {
-    "title": "衝突を解消する",
+    "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
+    "resolve_conflict": "衝突を解消する",
     "resolve_and_save" : "解消し保存する"
   },
   "link_edit": {
