@@ -14,12 +14,12 @@ const DMP = require('diff_match_patch');
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 type ConflictDiffModalProps = {
-  isOpen: boolean;
-  onCancel: () => void;
-  onResolveConflict: () => void;
+  isOpen: boolean | null;
+  onCancel: (() => void) | null;
+  onResolveConflict: (() => void) | null;
 };
 
-export const ConflictDiffModal: FC<ConflictDiffModalProps> = ({ isOpen, onCancel, onResolveConflict }) => {
+export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [val, setVal] = useState('value 1');
   const [orig, setOrig] = useState('value 2');
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
@@ -40,9 +40,20 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = ({ isOpen, onCancel
     }
   }, [codeMirrorRef, orig, val]);
 
+  const onCancel = () => {
+    if (props.onCancel != null) {
+      props.onCancel();
+    }
+  };
+
+  const onResolveConflict = () => {
+    if (props.onResolveConflict != null) {
+      props.onResolveConflict();
+    }
+  };
 
   return (
-    <Modal isOpen={isOpen} toggle={onCancel} className="modal-gfm-cheatsheet">
+    <Modal isOpen={props.isOpen || false} toggle={onCancel} className="modal-gfm-cheatsheet">
       <ModalHeader tag="h4" toggle={onCancel} className="bg-primary text-light">
         <i className="icon-fw icon-exclamation" />Resolve Conflict
       </ModalHeader>
@@ -70,7 +81,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = ({ isOpen, onCancel
 };
 
 ConflictDiffModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onResolveConflict: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  onCancel: PropTypes.func,
+  onResolveConflict: PropTypes.func,
+};
+
+ConflictDiffModal.defaultProps = {
+  isOpen: false,
 };

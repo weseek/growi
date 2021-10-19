@@ -372,7 +372,9 @@ class Editor extends AbstractEditor {
 
         </div>
         <ConflictDiffModal
-          isOpen={isConflictDiffModalOpen}
+          isOpen={this.state.isConflictDiffModalOpen}
+          onCancel={() => {}}
+          onResolveConflict={() => {}}
         />
       </>
     );
