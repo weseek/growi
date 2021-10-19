@@ -29,7 +29,7 @@ class GrowiNavbar extends React.Component {
     return (
       <>
         <li>
-          <InAppNotificationDropdown />
+          <InAppNotificationDropdown currentUserId={currentUser._id} />
         </li>
 
         <li className="nav-item d-none d-md-block">

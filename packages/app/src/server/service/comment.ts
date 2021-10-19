@@ -39,6 +39,7 @@ class CommentService {
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
 
+        await this.inAppNotificationService.emitSocketIo(targetUsers);
         await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }
       catch (err) {
@@ -52,7 +53,7 @@ class CommentService {
       this.commentEvent.onUpdate();
       const { inAppNotificationService } = this.crowi;
 
-      inAppNotificationService.emitSocketIo(userId, pageId);
+      // inAppNotificationService.emitSocketIo(userId, pageId);
     });
 
     // remove
