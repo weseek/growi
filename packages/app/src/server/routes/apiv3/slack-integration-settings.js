@@ -601,23 +601,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id/supported-commands:
+   *    /slack-integration-settings/slack-app-integrations/:id/permissions:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putSupportedCommands
-   *        summary: /slack-integration-settings/:id/supported-commands
+   *        summary: /slack-integration-settings/:id/permissions
    *        description: update supported commands
    *        responses:
    *          200:
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
+  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions } = req.body;
     const { id } = req.params;
 
     const updatePermissionsForBroadcastUseCommands = new Map(Object.entries(permissionsForBroadcastUseCommands));
     const updatePermissionsForSingleUseCommands = new Map(Object.entries(permissionsForSingleUseCommands));
+    const newPermissionsForSlackEventActions = new Map(Object.entries(permissionsForSlackEventActions));
+
 
     try {
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
@@ -625,6 +627,7 @@ module.exports = (crowi) => {
         {
           permissionsForBroadcastUseCommands: updatePermissionsForBroadcastUseCommands,
           permissionsForSingleUseCommands: updatePermissionsForSingleUseCommands,
+          permissionsForSlackEventActions: newPermissionsForSlackEventActions,
         },
         { new: true },
       );
@@ -647,31 +650,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-supported-commands-failed'), 500);
-    }
-  });
-
-  // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/supported-event-actions', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedEventActions, apiV3FormValidator, async(req, res) => {
-    const { permissionsForSlackEventActions } = req.body;
-    const { id } = req.params;
-
-    const newPermissionsForSlackEventActions = new Map(Object.entries(permissionsForSlackEventActions));
-
-    try {
-      await SlackAppIntegration.findByIdAndUpdate(
-        id,
-        {
-          permissionsForBroadcastUseCommands: newPermissionsForSlackEventActions,
-        },
-      );
-
-      return res.apiv3({});
-    }
-    catch (error) {
-      const msg = `Error occured while updating settings. Cause: ${error.message}`;
-      logger.error('Error occured while updating settings', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-supported-event-actions-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'update-permissions-failed'), 500);
     }
   });
 
