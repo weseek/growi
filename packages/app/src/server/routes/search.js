@@ -150,32 +150,8 @@ module.exports = function(crowi, app) {
 
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
-      const xss = require('xss');
-      const options = {
-        whiteList: {
-          em: ['class'],
-        },
-      };
-      const myXss = new xss.FilterXSS(options);
-      // add tags snippet data/contentWithNoKeyword and mattched page name to result pages
-      findResult.pages.map((page) => {
-        const elasticSearchResult = { snippet: '', matchedPath: '' };
-        const data = esResult.data.find((data) => { return page.id === data._id });
-        page._doc.tags = data._source.tag_names;
-        if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
-          elasticSearchResult.contentWithNoSearchedKeyword = myXss.process(data._source.body);
-        }
-        else {
-          const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
-          elasticSearchResult.snippet = myXss.process(snippet);
-        }
-        if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
-          const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
-          elasticSearchResult.matchedPath = pathMatch;
-        }
-        page._doc.elasticSearchResultInfo = elasticSearchResult;
-        return page;
-      });
+
+      searchService.addElasticSearchInfo(findResult.pages, esResult);
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;

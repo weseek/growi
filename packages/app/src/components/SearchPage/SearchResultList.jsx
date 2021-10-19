@@ -13,10 +13,7 @@ class SearchResultList extends React.Component {
       // story: 77515 task : not created yet.
       let snippet = '';
       if (page.elasticSearchResultInfo.contentWithNoSearchedKeyword != null) {
-        if (page.elasticSearchResultInfo.contentWithNoSearchedKeyword.length > 40) {
-          snippet = page.elasticSearchResultInfo.contentWithNoSearchedKeyword.substr(0, 40);
-        }
-        snippet = page.elasticSearchResultInfo.contentWithNoSearchedKeyword;
+        snippet = page.elasticSearchResultInfo.contentWithNoSearchedKeyword.substr(0, 40);
       }
       else { snippet = page.elasticSearchResultInfo.snippet }
       return (

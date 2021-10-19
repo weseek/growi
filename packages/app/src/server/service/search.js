@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+const xss = require('xss');
 
 class SearchService {
 
@@ -147,6 +148,36 @@ class SearchService {
       this.isErrorOccuredOnSearching = true;
       throw err;
     }
+  }
+
+  addElasticSearchInfo(pages, esResult) {
+    const options = {
+      whiteList: {
+        em: ['class'],
+      },
+    };
+    const myXss = new xss.FilterXSS(options);
+
+    pages.map((page) => {
+      const elasticSearchResult = { snippet: '', matchedPath: '' };
+      const data = esResult.data.find((data) => {
+        return page.id === data._id;
+      });
+      page._doc.tags = data._source.tag_names;
+      if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
+        elasticSearchResult.contentWithNoSearchedKeyword = myXss.process(data._source.body);
+      }
+      else {
+        const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
+        elasticSearchResult.snippet = myXss.process(snippet);
+      }
+      if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
+        const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
+        elasticSearchResult.matchedPath = pathMatch;
+      }
+      page._doc.elasticSearchResultInfo = elasticSearchResult;
+      return page;
+    });
   }
 
 }
