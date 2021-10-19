@@ -159,23 +159,24 @@ module.exports = function(crowi, app) {
       };
       const myXss = new xss.FilterXSS(options);
       // add tags snippet data/contentWithNoKeyword and mattched page name to result pages
-      await Promise.all(findResult.pages.map(async(page) => {
+      findResult.pages.map(async(page) => {
+        const elasticSearchResult = { snippet: '', matchedPath: '' };
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
         if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
-          const revision = await Revision.findById(page.revision);
-          page._doc.contentWithNoKeyword = myXss.process(revision.body);
+          elasticSearchResult.snippet = myXss.process(data._source.body);
         }
         else {
           const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
-          page._doc.snippet = myXss.process(snippet);
+          elasticSearchResult.snippet = myXss.process(snippet);
         }
         if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
           const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
-          page._doc.matchedPath = pathMatch;
+          elasticSearchResult.matchedPath = pathMatch;
         }
+        page._doc.elasticSearchResultInfo = elasticSearchResult;
         return page;
-      }));
+      });
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
@@ -195,7 +196,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-
     return res.json(ApiResponse.success(result));
   };
 

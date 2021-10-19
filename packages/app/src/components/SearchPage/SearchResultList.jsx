@@ -9,18 +9,6 @@ class SearchResultList extends React.Component {
   render() {
     return this.props.pages.map((page) => {
       const pageId = `#${page._id}`;
-      let snippet = '';
-      if (page.snippet == null) {
-        if (page.contentWithNoKeyword.length >= 40) {
-          snippet = page.contentWithNoKeyword.substr(0, 40);
-        }
-        else {
-          snippet = page.contentWithNoKeyword;
-        }
-      }
-      else {
-        snippet = page.snippet;
-      }
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
           <a
@@ -40,12 +28,9 @@ class SearchResultList extends React.Component {
               <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>
             <div className="d-block">
-              <Page page={page} noLink matchedPath={page.matchedPath} />
-              <div
-                className="border-gray mt-5"
-                dangerouslySetInnerHTML={{ __html: snippet }}
-              >
-              </div>
+              {/* TODO  77750 place component that takes page.elasticSearchResultInfo.matchedPath here */}
+              <Page page={page} noLink />
+              <div className="border-gray mt-5" dangerouslySetInnerHTML={{ __html: page.elasticSearchResultInfo.snippet }}></div>
             </div>
             <div className="ml-auto d-flex">
               {this.props.deletionMode && (
