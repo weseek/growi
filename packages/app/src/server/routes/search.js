@@ -164,7 +164,7 @@ module.exports = function(crowi, app) {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
         if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
-          elasticSearchResult.snippet = myXss.process(data._source.body);
+          elasticSearchResult.contentWithNoSearchedKeyword = myXss.process(data._source.body);
         }
         else {
           const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
@@ -196,6 +196,7 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+    console.log(JSON.stringify(result));
     return res.json(ApiResponse.success(result));
   };
 
