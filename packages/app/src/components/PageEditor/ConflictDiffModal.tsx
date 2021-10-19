@@ -10,14 +10,11 @@ const DMP = require('diff_match_patch');
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 
-const val1 = 'blah laha';
-
-const val2 = 'blah blah';
 
 
 export const ConflictDiffModal: FC = () => {
-  const [val, setVal] = useState(val1);
-  const [orig, setOrig] = useState(val2);
+  const [val, setVal] = useState('value 1'));
+  const [orig, setOrig] = useState('value 2');
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -31,16 +28,13 @@ export const ConflictDiffModal: FC = () => {
         collapseIdentical: true,
         highlightDifferences: true,
         allowEditingOriginals: false,
-        onChange: (_editor, _data, value) => {
-          setVal(value);
-        },
       });
-    }
-  }, [codeMirrorRef]);
 
-  useEffect(() => {
-    console.log(val);
-  }, [val]);
+      // mvInstance.on('change', (editor) => {
+      //   console.log(editor.getValue());
+      // });
+    }
+  }, [codeMirrorRef, orig, val]);
 
 
   return (
