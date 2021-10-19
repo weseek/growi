@@ -390,7 +390,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  @UseBefore(UrlVerificationMiddleware, AuthorizeEventsMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, UrlVerificationMiddleware, AuthorizeEventsMiddleware)
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
