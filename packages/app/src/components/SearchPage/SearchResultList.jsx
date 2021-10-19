@@ -9,8 +9,9 @@ class SearchResultList extends React.Component {
   render() {
     return this.props.pages.map((page) => {
       const pageId = `#${page._id}`;
-      // TODO : send cetain chars of body (revisionBody) from elastisearch by adding some settings to the query
-      // story: 77515 task : not created yet.
+      // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query
+      // if such thing not possible , find revisionBody using query each time needed instead of putting body to esResult.
+      // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
       let snippet = '';
       if (page.elasticSearchResultInfo.contentWithNoSearchedKeyword != null) {
         snippet = page.elasticSearchResultInfo.contentWithNoSearchedKeyword.substr(0, 40);
