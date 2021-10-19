@@ -460,6 +460,10 @@
     "enable_textlint": "Textlintを有効にする",
     "dont_ask_again": "常に許可する"
   },
+  "modal_resolve_conflict": {
+    "title": "衝突を解消する",
+    "resolve_and_save" : "解消し保存する"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",

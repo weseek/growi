@@ -30,7 +30,8 @@ class Editor extends AbstractEditor {
       dropzoneActive: false,
       isUploading: false,
       isCheatsheetModalShown: false,
-      isConflictDiffModalOpen: false,
+      isConflictDiffModalOpen: true,
+      // isConflictDiffModalOpen: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
