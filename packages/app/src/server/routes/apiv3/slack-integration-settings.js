@@ -616,6 +616,7 @@ module.exports = (crowi) => {
    */
   // eslint-disable-next-line max-len
   router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
+    // TODO: look here 78975
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions } = req.body;
     const { id } = req.params;
 
