@@ -70,13 +70,15 @@ module.exports = (crowi) => {
     makePrimary: [
       param('id').isMongoId().withMessage('id is required'),
     ],
-    updateSupportedCommands: [
-      body('supportedCommandsForSingleUse').toArray(),
-      body('supportedCommandsForBroadcastUse').toArray(),
+    updatePermissionsWithoutProxy: [
+      body('commandPermission').isObject(),
+      body('eventActionsPermission').isObject(),
       param('id').isMongoId().withMessage('id is required'),
     ],
-    updateSupportedEventActions: [
-      body('supportedEventActions').toArray(),
+    updatePermissionsWithProxy: [
+      body('permissionsForBroadcastUseCommands').isObject(),
+      body('permissionsForSingleUseCommands').isObject(),
+      body('permissionsForSlackEventActions').isObject(),
       param('id').isMongoId().withMessage('id is required'),
     ],
     relationTest: [
@@ -399,13 +401,14 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy permissions.
    */
 
-  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithoutProxy, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
     }
 
+    // TODO: look here 78978
     const { commandPermission, eventActionsPermission } = req.body;
     const params = {
       'slackbot:withoutProxy:commandPermission': commandPermission,
@@ -612,7 +615,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, csrf, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions } = req.body;
     const { id } = req.params;
 
