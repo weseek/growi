@@ -34,7 +34,7 @@ export default class InAppNotificationService {
       targetUsers.forEach(async(userId) => {
         const count = await this.getUnreadCountByUser(userId);
         await this.socketIoService.getDefaultSocket()
-          .emit('commentUpdated', { userId, count });
+          .emit('notificationUpdated', { userId, count });
       });
     }
   }

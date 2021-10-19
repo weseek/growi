@@ -37,7 +37,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const initializeSocket = (props) => {
     const socket = props.socketIoContainer.getSocket();
-    socket.on('commentUpdated', (data: { userId: string, count: number }) => {
+    socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
       if (data.userId === props.currentUserId) {
         setCount(data.count);
       }
