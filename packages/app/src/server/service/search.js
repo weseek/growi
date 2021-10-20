@@ -157,15 +157,11 @@ class SearchService {
     }
     esResult.data.forEach((data) => {
       const elasticSearchResult = { snippet: '', matchedPath: '' };
-      if (data._highlight['body.en'] == null && data._highlight['body.ja'] == null) {
-        elasticSearchResult.contentWithNoSearchedKeyword = myXss.process(data._source.body);
-      }
-      else {
-        const snippet = data._highlight['body.en'] == null ? data._highlight['body.ja'] : data._highlight['body.en'];
-        elasticSearchResult.snippet = myXss.process(snippet);
-      }
-      if (data._highlight['path.en'] !== null && data._highlight['path.ja'] !== null) {
-        const pathMatch = data._highlight['path.en'] == null ? data._highlight['path.ja'] : data._highlight['path.en'];
+      const highlightData = data._highlight;
+      const snippet = highlightData['body.en'] || highlightData['body.ja'];
+      elasticSearchResult.snippet = myXss.process(snippet);
+      if (highlightData['path.en'] != null && highlightData['path.ja'] != null) {
+        const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         elasticSearchResult.matchedPath = pathMatch;
       }
       data.elasticSearchResultInfo = elasticSearchResult;
