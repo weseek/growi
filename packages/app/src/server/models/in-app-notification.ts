@@ -81,12 +81,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
 });
 inAppNotificationSchema.plugin(mongoosePaginate);
 
-inAppNotificationSchema.virtual('actionUsers',
-  {
-    ref: 'Activity',
-    localField: 'activities',
-    foreignField: 'user',
-  }).get(function(this: InAppNotificationDocument) {
+inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
 
   const actionUsers = Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
 
