@@ -141,6 +141,7 @@ class SearchPage extends React.Component {
         selectedPages={this.state.selectedPages}
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}
+        appContainer={this.props.appContainer}
       >
       </SearchResultList>
     );
