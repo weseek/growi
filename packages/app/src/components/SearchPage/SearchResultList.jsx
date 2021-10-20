@@ -58,7 +58,7 @@ class SearchResultList extends React.Component {
                   <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
                 </div>
               )}
-              <div className="page-list-option">
+              <div className="page-list-option d-flex">
                 <button
                   type="button"
                   className="btn btn-link p-0"
