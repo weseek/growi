@@ -19,7 +19,6 @@ const logger = loggerFactory('growi:InAppNotificationDropdown');
 type Props = {
   appContainer: AppContainer,
   socketIoContainer: SocketIoContainer,
-  me: string,
 };
 
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
@@ -36,10 +35,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   }, []);
 
   const initializeSocket = (props) => {
-    console.log(props);
-
     const socket = props.socketIoContainer.getSocket();
-    socket.on('commentUpdated', (data: { userId: string, count: number }) => {
+    socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
+      setCount(data.count);
       // eslint-disable-next-line no-console
       console.log('socketData', data);
     });
