@@ -8,8 +8,6 @@ interface Props {
   onClick: () => void
 }
 export const PageCommentNotification = (props: Props) => {
-  console.log('propsHOge', props);
-
 
   return (
     <>

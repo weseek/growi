@@ -7,9 +7,6 @@ import loggerFactory from '~/utils/logger';
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
-// import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
-// import Crowi from 'client/util/Crowi'
-// import { Notification } from 'client/types/crowi'
 import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
