@@ -29,15 +29,16 @@ export default class InAppNotificationService {
   }
 
 
-  emitSocketIo = async(userId, pageId) => {
+  emitSocketIo = async(targetUsers) => {
     if (this.socketIoService.isInitialized) {
-      const count = await this.getUnreadCountByUser(userId);
+      targetUsers.forEach(async(userId) => {
+        const count = await this.getUnreadCountByUser(userId);
 
-      // emit to the room for each page
-      await this.socketIoService.getDefaultSocket()
-        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-        .except(getRoomNameWithId(RoomPrefix.USER, userId))
-        .emit('commentUpdated', { userId, count });
+        // emit to the room for each user
+        await this.socketIoService.getDefaultSocket()
+          .in(getRoomNameWithId(RoomPrefix.USER, userId))
+          .emit('notificationUpdated', { userId, count });
+      });
     }
   }
 

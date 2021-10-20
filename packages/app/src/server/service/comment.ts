@@ -39,6 +39,7 @@ class CommentService {
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
 
+        await this.inAppNotificationService.emitSocketIo(targetUsers);
         await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
       }
       catch (err) {
@@ -50,9 +51,10 @@ class CommentService {
     // update
     this.commentEvent.on('update', (userId, pageId) => {
       this.commentEvent.onUpdate();
-      const { inAppNotificationService } = this.crowi;
 
-      inAppNotificationService.emitSocketIo(userId, pageId);
+      // TODO: 79713
+      // const { inAppNotificationService } = this.crowi;
+      // inAppNotificationService.emitSocketIo(userId, pageId);
     });
 
     // remove
@@ -76,6 +78,7 @@ class CommentService {
   createByPageComment = function(comment) {
     const { activityService } = this.crowi;
 
+    // TODO: Changing the action name in Create and Update
 
     const parameters = {
       user: comment.creator,
