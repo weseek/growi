@@ -33,7 +33,6 @@ const ShareLinkList = (props) => {
                   dropdownToggleId={`copydropdown-${shareLink._id}`}
                   pageId={shareLink._id}
                   isShareLinkMode
-                  showCaret
                 >
                   Copy Link
                 </CopyDropdown>

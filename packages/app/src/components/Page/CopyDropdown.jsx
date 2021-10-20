@@ -103,7 +103,7 @@ const CopyDropdown = (props) => {
    * render
    */
   const {
-    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode, showCaret,
+    t, dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode, showCaret = true,
   } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
