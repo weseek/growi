@@ -34,7 +34,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const savedActivity = await this.createByPageComment(savedComment);
+        const savedActivity = await this.createCommentActivity(savedComment);
 
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
@@ -75,7 +75,7 @@ class CommentService {
    * @param {Comment} comment
    * @return {Promise}
    */
-  createByPageComment = function(comment) {
+  createCommentActivity = function(comment) {
     const { activityService } = this.crowi;
 
     // TODO: Changing the action name in Create and Update
