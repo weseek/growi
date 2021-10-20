@@ -12,7 +12,11 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
-import { specificPathNames } from '../client/util/search/path';
+
+export const specificPathNames = {
+  user: '/user',
+  trash: '/trash',
+};
 
 class SearchPage extends React.Component {
 
@@ -28,15 +32,16 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
-      isNotIncludeUserPath: true,
-      isNotIncludeTrashPath: true,
+      excludeUsersHome: true,
+      excludeTrash: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.toggleIncludedSpecificPath = this.toggleIncludedSpecificPath.bind(this);
+    this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
+    this.onExcludeTrash = this.onExcludeTrash.bind(this);
   }
 
   componentDidMount() {
@@ -58,15 +63,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  toggleIncludedSpecificPath(pathType) {
-    switch (pathType) {
-      case specificPathNames.user:
-        this.setState({ isNotIncludeUserPath: !this.state.isNotIncludeUserPath });
-        break;
-      case specificPathNames.trash:
-        this.setState({ isNotIncludeTrashPath: !this.state.isNotIncludeTrashPath });
-        break;
-    }
+  onExcludeUsersHome() {
+    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
+  }
+
+  onExcludeTrash() {
+    this.setState({ excludeTrash: !this.state.excludeTrash });
   }
 
   changeURL(keyword, refreshHash) {
@@ -84,11 +86,11 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.isNotIncludeTrashPath) {
-      query = `${query} -prefix:/${specificPathNames.trash}`;
+    if (this.state.excludeTrash) {
+      query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.isNotIncludeUserPath) {
-      query = `${query} -prefix:/${specificPathNames.user}`;
+    if (this.state.excludeUsersHome) {
+      query = `${query} -prefix:${specificPathNames.user}`;
     }
 
     return query;
@@ -188,7 +190,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.search}
-        toggleIncludedSpecificPath={this.toggleIncludedSpecificPath}
+        onExcludeUsersHome={this.onExcludeUsersHome}
+        onExcludeTrash={this.onExcludeTrash}
       >
       </SearchControl>
     );
