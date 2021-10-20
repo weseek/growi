@@ -34,10 +34,6 @@ class ActivityService {
     return this.find({ user }).sort({ createdAt: -1 }).exec();
   };
 
-  getActionUsersFromActivities = function(activities) {
-    return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
-  };
-
 }
 
 module.exports = ActivityService;

@@ -102,11 +102,6 @@ export default class InAppNotificationService {
     }
   }
 
-  // inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-  //   const Activity = getModelSafely('Activity') || require('../models/activity')(this.crowi);
-  //   return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
-  // });
-
   read = async function(user: Types.ObjectId): Promise<void> {
     const query = { user, status: STATUS_UNREAD };
     const parameters = { status: STATUS_UNOPENED };
