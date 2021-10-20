@@ -73,7 +73,7 @@ class CommentService {
 
   createAndSendNotifications = async function(comment, actionType) {
 
-    // create activity
+    // Create activity
     const parameters = {
       user: comment.creator,
       targetModel: ActivityDefine.MODEL_PAGE,
@@ -88,7 +88,7 @@ class CommentService {
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
-    // create and send notifications
+    // Create and send notifications
     await this.inAppNotificationService.emitSocketIo(targetUsers);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
   };
