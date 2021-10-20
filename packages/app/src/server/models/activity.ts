@@ -113,8 +113,7 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
 });
 
 activitySchema.statics.getActionUsersFromActivities = function(activities: ActivityDocument[]): any[] {
-  const actionUsers = activities.map((activity) => { return activity.user });
-
+  const actionUsers = activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
   return actionUsers;
 };
 
