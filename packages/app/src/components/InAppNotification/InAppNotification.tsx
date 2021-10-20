@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { UserPicture } from '@growi/ui';
 import { PageCommentNotification } from './PageCommentNotification';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 
@@ -34,17 +35,16 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  // TODO show user image by #78702
   const getUserImage = () => {
-    // const latestActionUsers = props.notification.actionUsers.slice(0, 3);
+    const actionUsers = notification.actionUsers;
+    console.log();
 
-    // if (latestActionUsers.length < 1) {
+    if (actionUsers.length < 1) {
     // what is this case?
-    //   return '';
-    // }
+      return '';
+    }
 
-    // return <UserPicture user={latestActionUsers[0]} />;
-    return;
+    return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
   };
 
   const componentName = `${notification.targetModel}:${notification.action}`;
@@ -55,7 +55,13 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   switch (componentName) {
     case 'Page:COMMENT':
-      return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      return (
+        <>
+          {getUserImage()}
+          <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
+        </>
+
+      );
     default:
       return <></>;
   }
