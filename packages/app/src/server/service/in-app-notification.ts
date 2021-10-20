@@ -3,10 +3,10 @@ import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
   InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED,
-} from '../models/in-app-notification';
-import { ActivityDocument } from '../models/activity';
+} from '~/server/models/in-app-notification';
+import { ActivityDocument } from '~/server/models/activity';
 
-import loggerFactory from '../../utils/logger';
+import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const logger = loggerFactory('growi:service:inAppNotification');
