@@ -160,7 +160,7 @@ class SearchService {
       const highlightData = data._highlight;
       const snippet = highlightData['body.en'] || highlightData['body.ja'];
       elasticSearchResult.snippet = myXss.process(snippet);
-      if (highlightData['path.en'] != null && highlightData['path.ja'] != null) {
+      if (highlightData['path.en'] != null || highlightData['path.ja'] != null) {
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
         elasticSearchResult.matchedPath = pathMatch;
       }
