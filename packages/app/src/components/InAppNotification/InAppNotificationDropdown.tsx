@@ -10,7 +10,7 @@ import { InAppNotification as IInAppNotification } from '../../interfaces/in-app
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
-// import { InAppNotification } from './InAppNotification';
+import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
@@ -71,7 +71,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     const limit = 6;
     try {
       const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
-      console.log('paginationResult', paginationResult);
 
       setNotifications(paginationResult.data.docs);
       setIsLoaded(true);
@@ -144,9 +143,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   const InAppNotificationContents = (): JSX.Element => {
-    // if (isLoaded === false) {
-    //   return <RenderUnLoadedInAppNotification />;
-    // }
+    if (isLoaded === false) {
+      return <RenderUnLoadedInAppNotification />;
+    }
     return <RenderInAppNotificationList />;
   };
 
