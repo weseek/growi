@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
-
 
 type Props = {
   searchingKeyword: string,
@@ -15,6 +15,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
+  const { t } = useTranslation('');
 
   const onExcludeUsersHome = () => {
     if (props.onExcludeUsersHome != null) {
@@ -48,7 +49,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClick={() => onExcludeUsersHome()}
           />
           <label className="form-check-label" htmlFor="flexCheckDefault">
-            /user下を含む
+            {t('Include Subordinated Target Page', { target: '/user' })}
           </label>
         </div>
         <div className="form-check">
@@ -60,7 +61,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClick={() => onExcludeTrash()}
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">
-            /trash下を含む
+            {t('Include Subordinated Target Page', { target: '/trash' })}
           </label>
         </div>
       </div>
