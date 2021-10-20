@@ -72,6 +72,8 @@ class CommentService {
   }
 
   createAndSendNotifications = async function(comment, actionType) {
+
+    // create activity
     const parameters = {
       user: comment.creator,
       targetModel: ActivityDefine.MODEL_PAGE,
@@ -82,9 +84,11 @@ class CommentService {
     };
     const activity = await this.activityService.createByParameters(parameters);
 
+    // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
+    // create and send notifications
     await this.inAppNotificationService.emitSocketIo(targetUsers);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
   };
