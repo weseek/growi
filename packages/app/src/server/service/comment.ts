@@ -55,9 +55,6 @@ class CommentService {
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
       }
-
-      // TODO: 79713
-      // const { inAppNotificationService } = this.crowi;
     });
 
     // remove
@@ -73,7 +70,6 @@ class CommentService {
       }
     });
   }
-
 
   createAndSendNotifications = async function(comment, actionType) {
     const parameters = {
@@ -92,28 +88,6 @@ class CommentService {
     await this.inAppNotificationService.emitSocketIo(targetUsers);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
   };
-
-
-  /**
-   * @param {Comment} comment
-   * @param {string} actionType
-   * @return {Promise}
-   */
-  createCommentActivity = function(comment, actionType) {
-    const { activityService } = this.crowi;
-
-    const parameters = {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action: actionType,
-    };
-
-    return activityService.createByParameters(parameters);
-  };
-
 
 }
 
