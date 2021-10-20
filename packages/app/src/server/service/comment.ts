@@ -53,12 +53,12 @@ class CommentService {
       try {
         this.commentEvent.onUpdate();
 
-        const savedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
+        const updatedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
 
         let targetUsers: Types.ObjectId[] = [];
-        targetUsers = await savedActivity.getNotificationTargetUsers();
+        targetUsers = await updatedActivity.getNotificationTargetUsers();
 
-        await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+        await this.inAppNotificationService.upsertByActivity(targetUsers, updatedActivity);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -85,6 +85,7 @@ class CommentService {
 
   /**
    * @param {Comment} comment
+   * @param {string} actionType
    * @return {Promise}
    */
   createCommentActivity = function(comment, actionType) {
