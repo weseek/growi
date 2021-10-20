@@ -7,14 +7,27 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onExcludeUsersHome: () => void,
-  onExcludeTrash: () => void,
+  onExcludeUsersHome: (() => void) | null,
+  onExcludeTrash: (() => void) | null,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
+
+  const onExcludeUsersHome = () => {
+    if (props.onExcludeUsersHome != null) {
+      props.onExcludeUsersHome();
+    }
+  };
+
+  const onExcludeTrash = () => {
+    if (props.onExcludeTrash != null) {
+      props.onExcludeTrash();
+    }
+  };
+
   return (
     <div className="">
       <div className="search-page-input sps sps--abv">
@@ -32,7 +45,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             type="checkbox"
             value=""
             id="flexCheckDefault"
-            onClick={() => props.onExcludeUsersHome()}
+            onClick={() => onExcludeUsersHome()}
           />
           <label className="form-check-label" htmlFor="flexCheckDefault">
             /user下を含む
@@ -44,7 +57,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             type="checkbox"
             value=""
             id="flexCheckChecked"
-            onClick={() => props.onExcludeTrash()}
+            onClick={() => onExcludeTrash()}
           />
           <label className="form-check-label" htmlFor="flexCheckChecked">
             /trash下を含む
