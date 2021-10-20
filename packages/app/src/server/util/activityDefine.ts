@@ -6,6 +6,8 @@ const ACTION_COMMENT = 'COMMENT';
 const ACTION_CREATE = 'CREATE'; // Not support yet
 const ACTION_DELETE = 'DELETE'; // Not support yet
 const ACTION_LIKE = 'LIKE'; // Not support yet
+const ACTION_COMMENT_CREATE = 'COMMENT_CREATE';
+const ACTION_COMMENT_UPDATE = 'COMMENT_UPDATE';
 
 const getSupportTargetModelNames = () => {
   return [MODEL_PAGE];
@@ -22,6 +24,8 @@ const getSupportActionNames = () => {
     // ACTION_DELETE,
     ACTION_COMMENT,
     // ACTION_LIKE,
+    ACTION_COMMENT_CREATE,
+    ACTION_COMMENT_UPDATE,
   ];
 };
 
@@ -34,6 +38,8 @@ const activityDefine = {
   ACTION_DELETE, // Not support yet
   ACTION_COMMENT,
   ACTION_LIKE,
+  ACTION_COMMENT_CREATE,
+  ACTION_COMMENT_UPDATE,
 
   getSupportTargetModelNames,
   getSupportEventModelNames,

@@ -11,12 +11,15 @@ class CommentService {
 
   crowi!: Crowi;
 
+  activityService!: any;
+
   inAppNotificationService!: any;
 
   commentEvent!: any;
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
+    this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
@@ -34,13 +37,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const savedActivity = await this.createByPageComment(savedComment);
-
-        let targetUsers: Types.ObjectId[] = [];
-        targetUsers = await savedActivity.getNotificationTargetUsers();
-
-        await this.inAppNotificationService.emitSocketIo(targetUsers);
-        await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+        await this.createAndSendNotifications(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -49,12 +46,15 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', (userId, pageId) => {
-      this.commentEvent.onUpdate();
+    this.commentEvent.on('update', async(updatedComment) => {
+      try {
+        this.commentEvent.onUpdate();
 
-      // TODO: 79713
-      // const { inAppNotificationService } = this.crowi;
-      // inAppNotificationService.emitSocketIo(userId, pageId);
+        await this.createAndSendNotifications(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
+      }
+      catch (err) {
+        logger.error('Error occurred while handling the comment update event:\n', err);
+      }
     });
 
     // remove
@@ -71,27 +71,27 @@ class CommentService {
     });
   }
 
-  /**
-   * @param {Comment} comment
-   * @return {Promise}
-   */
-  createByPageComment = function(comment) {
-    const { activityService } = this.crowi;
+  private createAndSendNotifications = async function(comment, actionType) {
 
-    // TODO: Changing the action name in Create and Update
-
+    // Create activity
     const parameters = {
       user: comment.creator,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: comment.page,
       eventModel: ActivityDefine.MODEL_COMMENT,
       event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
+      action: actionType,
     };
+    const activity = await this.activityService.createByParameters(parameters);
 
-    return activityService.createByParameters(parameters);
+    // Get user to be notified
+    let targetUsers: Types.ObjectId[] = [];
+    targetUsers = await activity.getNotificationTargetUsers();
+
+    // Create and send notifications
+    await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
+    await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
-
 
 }
 
