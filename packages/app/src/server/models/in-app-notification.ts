@@ -90,8 +90,6 @@ inAppNotificationSchema.virtual('actionUsers',
 
   const actionUsers = Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
 
-  console.log('actionUsersInAppNotification', actionUsers);
-
   return actionUsers;
 });
 
