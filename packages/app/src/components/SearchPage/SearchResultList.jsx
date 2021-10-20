@@ -25,47 +25,51 @@ class SearchResultList extends React.Component {
               }
             }}
           >
-            <div className="form-check my-auto">
-              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
-            </div>
-            {/* TODO: remove dummy snippet and adjust style */}
-            <div className="d-block">
-              <Page page={page} noLink />
-              <div className="border-gray mt-5">{page.snippet}</div>
-            </div>
-            <div className="ml-auto d-flex">
-              {this.props.deletionMode && (
-                <div className="custom-control custom-checkbox custom-checkbox-danger">
-                  <input
-                    type="checkbox"
-                    id={`page-delete-check-${page._id}`}
-                    className="custom-control-input search-result-list-delete-checkbox"
-                    value={pageId}
-                    checked={this.props.selectedPages.has(page)}
-                    onChange={() => {
-                      try {
-                        if (this.props.onChangeInvoked == null) { throw new Error('onChnageInvoked is null') }
-                        return this.props.onChangeInvoked(page);
-                      }
-                      catch (error) {
-                        logger.error(error);
-                      }
-                    }}
-                  />
-                  <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+            <div className="d-flex">
+              <div className="form-check my-auto">
+                <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+              </div>
+              <div>
+                <div className="d-block d-flex">
+                  <Page page={page} noLink />
+                  <div className="ml-auto d-flex">
+                    {this.props.deletionMode && (
+                      <div className="custom-control custom-checkbox custom-checkbox-danger">
+                        <input
+                          type="checkbox"
+                          id={`page-delete-check-${page._id}`}
+                          className="custom-control-input search-result-list-delete-checkbox"
+                          value={pageId}
+                          checked={this.props.selectedPages.has(page)}
+                          onChange={() => {
+                            try {
+                              if (this.props.onChangeInvoked == null) { throw new Error('onChnageInvoked is null') }
+                              return this.props.onChangeInvoked(page);
+                            }
+                            catch (error) {
+                              logger.error(error);
+                            }
+                          }}
+                        />
+                        <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+                      </div>
+                    )}
+                    <div className="page-list-option">
+                      <button
+                        type="button"
+                        className="btn btn-link p-0"
+                        value={page.path}
+                        onClick={(e) => {
+                          window.location.href = e.currentTarget.value;
+                        }}
+                      >
+                        <i className="icon-login" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              )}
-              <div className="page-list-option">
-                <button
-                  type="button"
-                  className="btn btn-link p-0"
-                  value={page.path}
-                  onClick={(e) => {
-                    window.location.href = e.currentTarget.value;
-                  }}
-                >
-                  <i className="icon-login" />
-                </button>
+                {/* TODO: remove dummy snippet and adjust style */}
+                <div className="border-gray mt-5">{page.snippet}</div>
               </div>
             </div>
           </a>
