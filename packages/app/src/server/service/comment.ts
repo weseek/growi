@@ -48,15 +48,21 @@ class CommentService {
 
     });
 
+    // update
     this.commentEvent.on('update', async(updatedComment) => {
-      this.commentEvent.onUpdate();
+      try {
+        this.commentEvent.onUpdate();
 
-      const savedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
+        const savedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
 
-      let targetUsers: Types.ObjectId[] = [];
-      targetUsers = await savedActivity.getNotificationTargetUsers();
+        let targetUsers: Types.ObjectId[] = [];
+        targetUsers = await savedActivity.getNotificationTargetUsers();
 
-      await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+        await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+      }
+      catch (err) {
+        logger.error('Error occurred while handling the comment update event:\n', err);
+      }
 
       // TODO: 79713
       // const { inAppNotificationService } = this.crowi;
