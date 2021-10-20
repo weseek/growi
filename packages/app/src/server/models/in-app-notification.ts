@@ -81,12 +81,22 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
 });
 inAppNotificationSchema.plugin(mongoosePaginate);
 
-inAppNotificationSchema.virtual('actionUsers').get(function(this: NotificationDocument) {
-  return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+inAppNotificationSchema.virtual('actionUsers',
+  {
+    ref: 'Activity',
+    localField: 'activities',
+    foreignField: 'user',
+  }).get(function(this: InAppNotificationDocument) {
+
+  const actionUsers = Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
+
+  console.log('actionUsersInAppNotification', actionUsers);
+
+  return actionUsers;
 });
 
 const transform = (doc, ret) => {
-  // delete ret.activities
+  delete ret.activities;
 };
 inAppNotificationSchema.set('toObject', { virtuals: true, transform });
 inAppNotificationSchema.set('toJSON', { virtuals: true, transform });

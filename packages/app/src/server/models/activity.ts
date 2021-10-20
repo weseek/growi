@@ -112,5 +112,10 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   activityEvent.emit('create', targetUsers, savedActivity);
 });
 
+activitySchema.statics.getActionUsersFromActivities = function(activities: ActivityDocument[]): any[] {
+  const actionUsers = activities.map((activity) => { return activity.user });
+
+  return actionUsers;
+};
 
 export default getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
