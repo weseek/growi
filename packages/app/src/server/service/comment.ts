@@ -11,12 +11,15 @@ class CommentService {
 
   crowi!: Crowi;
 
+  activityService!: any;
+
   inAppNotificationService!: any;
 
   commentEvent!: any;
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
+    this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
 
     this.commentEvent = crowi.event('comment');
@@ -34,13 +37,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const savedActivity = await this.createCommentActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
-
-        let targetUsers: Types.ObjectId[] = [];
-        targetUsers = await savedActivity.getNotificationTargetUsers();
-
-        await this.inAppNotificationService.emitSocketIo(targetUsers);
-        await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+        await this.createAndSendNotifications(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -53,13 +50,7 @@ class CommentService {
       try {
         this.commentEvent.onUpdate();
 
-        const updatedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
-
-        let targetUsers: Types.ObjectId[] = [];
-        targetUsers = await updatedActivity.getNotificationTargetUsers();
-
-        await this.inAppNotificationService.emitSocketIo(targetUsers);
-        await this.inAppNotificationService.upsertByActivity(targetUsers, updatedActivity);
+        await this.createAndSendNotifications(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -82,6 +73,26 @@ class CommentService {
       }
     });
   }
+
+
+  createAndSendNotifications = async function(comment, actionType) {
+    const parameters = {
+      user: comment.creator,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: comment.page,
+      eventModel: ActivityDefine.MODEL_COMMENT,
+      event: comment._id,
+      action: actionType,
+    };
+    const activity = await this.activityService.createByParameters(parameters);
+
+    let targetUsers: Types.ObjectId[] = [];
+    targetUsers = await activity.getNotificationTargetUsers();
+
+    await this.inAppNotificationService.emitSocketIo(targetUsers);
+    await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
+  };
+
 
   /**
    * @param {Comment} comment
