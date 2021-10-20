@@ -71,7 +71,7 @@ class CommentService {
     });
   }
 
-  createAndSendNotifications = async function(comment, actionType) {
+  private createAndSendNotifications = async function(comment, actionType) {
 
     // Create activity
     const parameters = {
