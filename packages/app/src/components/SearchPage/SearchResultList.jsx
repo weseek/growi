@@ -12,7 +12,7 @@ class SearchResultList extends React.Component {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#${page._id}`;
       const copyDropdownId = `copydropdown-${page._id}`;
-      const copyDropdownToggleClassName = 'd-block text-info bg-transparent border-0 p-0 mx-3';
+      const copyDropdownToggleClassName = 'd-block text-info bg-transparent border-0 p-0 mx-4';
       return (
         <li key={page._id} className="nav-item page-list-li w-100 m-0 border-bottom">
           <a
