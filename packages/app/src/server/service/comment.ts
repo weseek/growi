@@ -34,7 +34,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        const savedActivity = await this.createCommentActivity(savedComment);
+        const savedActivity = await this.createCommentActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
 
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await savedActivity.getNotificationTargetUsers();
@@ -48,9 +48,15 @@ class CommentService {
 
     });
 
-    // update
-    this.commentEvent.on('update', (userId, pageId) => {
+    this.commentEvent.on('update', async(updatedComment) => {
       this.commentEvent.onUpdate();
+
+      const savedActivity = await this.createCommentActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
+
+      let targetUsers: Types.ObjectId[] = [];
+      targetUsers = await savedActivity.getNotificationTargetUsers();
+
+      await this.inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
 
       // TODO: 79713
       // const { inAppNotificationService } = this.crowi;
@@ -75,10 +81,8 @@ class CommentService {
    * @param {Comment} comment
    * @return {Promise}
    */
-  createCommentActivity = function(comment) {
+  createCommentActivity = function(comment, actionType) {
     const { activityService } = this.crowi;
-
-    // TODO: Changing the action name in Create and Update
 
     const parameters = {
       user: comment.creator,
@@ -86,7 +90,7 @@ class CommentService {
       target: comment.page,
       eventModel: ActivityDefine.MODEL_COMMENT,
       event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
+      action: actionType,
     };
 
     return activityService.createByParameters(parameters);
