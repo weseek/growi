@@ -89,8 +89,8 @@ class CommentService {
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await this.inAppNotificationService.emitSocketIo(targetUsers);
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
+    await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
 }
