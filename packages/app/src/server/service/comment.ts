@@ -58,6 +58,7 @@ class CommentService {
         let targetUsers: Types.ObjectId[] = [];
         targetUsers = await updatedActivity.getNotificationTargetUsers();
 
+        await this.inAppNotificationService.emitSocketIo(targetUsers);
         await this.inAppNotificationService.upsertByActivity(targetUsers, updatedActivity);
       }
       catch (err) {
@@ -66,7 +67,6 @@ class CommentService {
 
       // TODO: 79713
       // const { inAppNotificationService } = this.crowi;
-      // inAppNotificationService.emitSocketIo(userId, pageId);
     });
 
     // remove
