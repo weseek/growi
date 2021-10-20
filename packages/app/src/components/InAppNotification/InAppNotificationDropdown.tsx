@@ -133,10 +133,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        // temporaly notification list. need to delete by #79077
-        <div key={notification._id}>action: {notification.action} </div>
-        // use this component to show notification list
-        // <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
       );
     });
     return <>{notificationList}</>;
