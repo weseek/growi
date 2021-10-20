@@ -478,6 +478,7 @@
   },
   "toaster": {
     "update_successed": "{{target}}を更新しました",
+    "remove_successed": "{{target}}を削除しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
