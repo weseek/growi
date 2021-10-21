@@ -18,7 +18,7 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
-import { ConflictDiffModal } from './ConflictDiffModal';
+
 
 class Editor extends AbstractEditor {
 
@@ -30,7 +30,6 @@ class Editor extends AbstractEditor {
       dropzoneActive: false,
       isUploading: false,
       isCheatsheetModalShown: false,
-      isConflictDiffModalOpen: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
@@ -244,10 +243,10 @@ class Editor extends AbstractEditor {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
-          { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
+          {this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
-          }) }
+          })}
         </ul>
       </div>
     );
@@ -307,14 +306,14 @@ class Editor extends AbstractEditor {
             }) => {
               return (
                 <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
-                  { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+                  {this.state.dropzoneActive && this.renderDropzoneOverlay()}
 
-                  { this.state.isComponentDidMount && this.renderNavbar() }
+                  {this.state.isComponentDidMount && this.renderNavbar()}
 
                   {/* for PC */}
-                  { !isMobile && (
+                  {!isMobile && (
                     <Subscribe to={[EditorContainer]}>
-                      { editorContainer => (
+                      {editorContainer => (
                         // eslint-disable-next-line arrow-body-style
                         <CodeMirrorEditor
                           ref={(c) => { this.cmEditor = c }}
@@ -334,7 +333,7 @@ class Editor extends AbstractEditor {
                   )}
 
                   {/* for mobile */}
-                  { isMobile && (
+                  {isMobile && (
                     <TextAreaEditor
                       ref={(c) => { this.taEditor = c }}
                       onPasteFiles={this.pasteFilesHandler}
@@ -349,7 +348,7 @@ class Editor extends AbstractEditor {
             }}
           </Dropzone>
 
-          { this.props.isUploadable
+          {this.props.isUploadable
             && (
               <button
                 type="button"
@@ -359,7 +358,7 @@ class Editor extends AbstractEditor {
                 <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
                 Attach files
                 <span className="d-none d-sm-inline">
-                &nbsp;by dragging &amp; dropping,&nbsp;
+                  &nbsp;by dragging &amp; dropping,&nbsp;
                   <span className="btn-link">selecting them</span>,&nbsp;
                   or pasting from the clipboard.
                 </span>
@@ -368,14 +367,9 @@ class Editor extends AbstractEditor {
             )
           }
 
-          { this.renderCheatsheetModal() }
+          {this.renderCheatsheetModal()}
 
         </div>
-        <ConflictDiffModal
-          isOpen={this.state.isConflictDiffModalOpen}
-          onCancel={() => this.setState({ isConflictDiffModalOpen: false })}
-          onResolveConflict={() => {}}
-        />
       </>
     );
   }
