@@ -6,6 +6,38 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:searchResultList');
 class SearchResultList extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.renderDropDown = this.renderDropDown.bind(this);
+  }
+
+  renderDropDown() {
+    return (
+      <>
+        <button
+          type="button"
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+          data-toggle="dropdown"
+        >
+          <i className="icon-options"></i>
+        </button>
+        <div className="dropdown-menu dropdown-menu-right">
+          <button className="dropdown-item" type="button">
+            <i className="icon-fw  icon-action-redo"></i>QQQQ
+          </button>
+          <button className="dropdown-item" type="button">
+            <i className="icon-fw icon-docs"></i>QQQQ
+          </button>
+          <button className="dropdown-item text-danger" type="button">
+            <i className="icon-fw icon-fire"></i>delete
+          </button>
+        </div>
+
+      </>
+    );
+  }
+
   render() {
     return this.props.pages.map((page) => {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -55,6 +87,9 @@ class SearchResultList extends React.Component {
                   <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
                 </div>
               )}
+              <div className="page-list-option">
+                {this.renderDropDown()}
+              </div>
               <div className="page-list-option">
                 <button
                   type="button"
