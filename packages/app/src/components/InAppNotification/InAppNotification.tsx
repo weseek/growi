@@ -37,7 +37,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   const getUserImage = () => {
     const actionUsers = notification.actionUsers;
-    console.log();
 
     if (actionUsers.length < 1) {
     // what is this case?
