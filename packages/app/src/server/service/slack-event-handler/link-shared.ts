@@ -114,8 +114,12 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       .lean()
       .exec();
 
-    // TODO: get revision
-    const pagesByIds = (await Page.findListByPageIds(ids)).pages;
+    const pagesByIds = await pageQueryBuilder
+      .addConditionToListByPageIdsArray(ids)
+      .query
+      .populate('revision')
+      .lean()
+      .exec();
 
     const pages = [...pagesByPaths, ...pagesByIds];
 
