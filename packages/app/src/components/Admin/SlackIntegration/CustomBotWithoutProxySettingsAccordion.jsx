@@ -21,7 +21,7 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
     appContainer, activeStep, onTestConnectionInvoked,
-    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, commandPermission,
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, commandPermission, eventActionsPermission,
   } = props;
   const successMessage = 'Successfully sent to Slack workspace.';
 
@@ -128,7 +128,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.manage_commands')}</>}
       >
         <ManageCommandsProcessWithoutProxy
-          commandPermission={props.commandPermission}
+          commandPermission={commandPermission}
+          eventActionsPermission={eventActionsPermission}
           apiv3Put={props.appContainer.apiv3.put}
         />
       </Accordion>
@@ -200,7 +201,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   commandPermission: PropTypes.object,
-
+  eventActionsPermission: PropTypes.object,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;

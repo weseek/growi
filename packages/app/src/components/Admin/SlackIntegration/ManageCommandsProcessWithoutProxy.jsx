@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -153,9 +153,10 @@ PermissionSettingForEachCommandComponent.propTypes = {
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
+const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventActionsPermission }) => {
   const { t } = useTranslation();
   const [editingCommandPermission, setEditingCommandPermission] = useState({});
+  const [editingEventActionsPermission, setEditingEventActionsPermission] = useState({});
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
@@ -163,6 +164,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
     // update state
     setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
+  }, []);
+
+  const updateEventActionsState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+
+    // update state
+    setEditingEventActionsPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
   }, []);
 
 
@@ -173,6 +182,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const updatedState = { ...commandPermission };
     setEditingCommandPermission(updatedState);
   }, [commandPermission]);
+
+  useEffect(() => {
+    if (eventActionsPermission == null) {
+      return;
+    }
+    const updatedState = { ...eventActionsPermission };
+    setEditingEventActionsPermission(updatedState);
+  }, [eventActionsPermission]);
 
   const updateChannelsListState = useCallback((e) => {
     const { target } = e;
@@ -189,6 +206,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
         commandPermission: editingCommandPermission,
+        eventActionsPermission: editingEventActionsPermission,
       });
       toastSuccess(t('toaster.update_successed', { target: 'the permission for commands' }));
     }
@@ -197,6 +215,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       logger.error(err);
     }
   };
+
 
   return (
     <div className="py-4 px-5">
@@ -217,6 +236,24 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                   />
                 );
               })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="mb-4 font-weight-bold">Events</p>
+      <div className="row d-flex flex-column align-items-center">
+        <div className="col-8">
+          <div className="custom-control custom-checkbox">
+            <div className="row mb-5 d-block">
+              { defaultSupportedSlackEventActions.map(actionName => (
+                <PermissionSettingForEachCommandComponent
+                  key={`${actionName}-component`}
+                  commandName={actionName}
+                  editingCommandPermission={editingCommandPermission}
+                  onPermissionTypeClicked={updateEventActionsState}
+                  onPermissionListChanged={updateChannelsListState}
+                />
+              ))}
             </div>
           </div>
         </div>
