@@ -13,9 +13,7 @@ module.exports = (crowi) => {
     const appTitle = crowi.appService.getAppTitle();
     const appSiteUrl = crowi.appService.getSiteUrl();
     // adjust spacing
-    let message = '*Help*\n\n';
-    message += `GROWI App Title: *${appTitle}*`;
-    message += `GROWI Url: ${appSiteUrl}`;
+    let message = `*Help* (*${appTitle}* at ${appSiteUrl})\n\n`;
     message += 'Usage:     `/growi [command] [args]`\n\n';
     message += 'Commands:\n\n';
     message += '`/growi note`                          Take a note on GROWI\n\n';
