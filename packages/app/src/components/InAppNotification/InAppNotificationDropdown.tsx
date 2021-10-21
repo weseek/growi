@@ -139,7 +139,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   const InAppNotificationContents = (): JSX.Element => {
-    if (isLoaded === false) {
+    if (!isLoaded) {
       return <RenderUnLoadedInAppNotification />;
     }
     return <RenderInAppNotificationList />;
