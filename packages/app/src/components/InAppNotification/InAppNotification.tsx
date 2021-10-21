@@ -53,19 +53,24 @@ export const InAppNotification = (props: Props): JSX.Element => {
     ...props,
   };
 
-  switch (componentName) {
-    case 'Page:COMMENT':
-      return (
-        <>
-          <div>
-            {renderUserImage()}
-            <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
-          </div>
-          <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-        </>
+  const renderInAppNotificationContent = () => {
+    switch (componentName) {
+      case 'Page:COMMENT':
+        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      default:
+        return <></>;
+    }
+  };
 
-      );
-    default:
-      return <></>;
-  }
+  return (
+    <>
+      <div>
+        {renderUserImage()}
+        {renderInAppNotificationContent()}
+      </div>
+      <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
+    </>
+  );
+
+
 };
