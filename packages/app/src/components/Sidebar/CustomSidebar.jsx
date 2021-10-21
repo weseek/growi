@@ -57,7 +57,7 @@ const CustomSidebar = (props) => {
   return (
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="mb-0">
+        <h3 className="mb-0 text-nowrap">
           Custom Sidebar
           <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
         </h3>
