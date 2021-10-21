@@ -8,15 +8,11 @@ interface Props {
   onClick: () => void
 }
 export const PageCommentNotification = (props: Props) => {
-  console.log('propsHOge', props);
-
 
   return (
-    <span>
-      {/* TODO: show page path by #78706 */}
-      <b>{props.actionUsers}</b> commented on {props.notification.target}
-      {/* <PagePath page={notification.target} /> */}
-    </span>
+    <>
+      <b>{props.actionUsers}</b> commented on {props.notification.target.path}
+    </>
   );
 
 };

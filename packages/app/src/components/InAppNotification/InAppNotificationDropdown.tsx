@@ -7,10 +7,7 @@ import loggerFactory from '~/utils/logger';
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
-// import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
-// import Crowi from 'client/util/Crowi'
-// import { Notification } from 'client/types/crowi'
-// import { InAppNotification } from './InAppNotification';
+import { InAppNotification } from './InAppNotification';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
@@ -71,7 +68,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     const limit = 6;
     try {
       const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
-      console.log('paginationResult', paginationResult);
 
       setNotifications(paginationResult.data.docs);
       setIsLoaded(true);
@@ -134,19 +130,18 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        // temporaly notification list. need to delete by #79077
-        <div key={notification._id}>action: {notification.action} </div>
-        // use this component to show notification list
-        // <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        <div className="my-2">
+          <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        </div>
       );
     });
     return <>{notificationList}</>;
   };
 
   const InAppNotificationContents = (): JSX.Element => {
-    // if (isLoaded === false) {
-    //   return <RenderUnLoadedInAppNotification />;
-    // }
+    if (!isLoaded) {
+      return <RenderUnLoadedInAppNotification />;
+    }
     return <RenderInAppNotificationList />;
   };
 

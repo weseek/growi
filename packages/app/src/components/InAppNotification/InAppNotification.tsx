@@ -16,7 +16,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
-      return `@${user}`;
+      return `@${user.name}`;
     });
 
     let actionedUsers = '';
