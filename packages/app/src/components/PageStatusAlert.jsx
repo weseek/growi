@@ -10,7 +10,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import { ConflictDiffModal } from '~/components/PageEditor/ConflictDiffModal';
 
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
