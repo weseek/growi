@@ -35,7 +35,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const getUserImage = () => {
+  const renderUserImage = () => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
@@ -56,7 +56,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     case 'Page:COMMENT':
       return (
         <>
-          {getUserImage()}
+          {renderUserImage()}
           <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
         </>
 
