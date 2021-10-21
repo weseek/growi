@@ -61,7 +61,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
             {renderUserImage()}
             <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
           </div>
-          <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} />
+          <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
         </>
 
       );
