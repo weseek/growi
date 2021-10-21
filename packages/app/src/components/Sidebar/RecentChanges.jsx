@@ -177,18 +177,21 @@ class RecentChanges extends React.Component {
       <>
         <div className="grw-sidebar-content-header p-3 d-flex">
           <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
+          <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={this.reloadData}>
             <i className="icon icon-reload"></i>
           </button>
-          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
-            <input
-              id="recentChangesResize"
-              className="custom-control-input"
-              type="checkbox"
-              checked={this.state.isRecentChangesSidebarSmall}
-              onChange={this.changeSizeHandler}
-            />
-            <label className="custom-control-label" htmlFor="recentChangesResize">
-            </label>
+          <div className="d-flex align-items-center">
+            <div className="grw-recent-changes-resize-button custom-control custom-switch ml-1">
+              <input
+                id="recentChangesResize"
+                className="custom-control-input"
+                type="checkbox"
+                checked={this.state.isRecentChangesSidebarSmall}
+                onChange={this.changeSizeHandler}
+              />
+              <label className="custom-control-label" htmlFor="recentChangesResize">
+              </label>
+            </div>
           </div>
         </div>
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
