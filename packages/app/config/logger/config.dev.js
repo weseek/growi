@@ -35,5 +35,6 @@ module.exports = {
   'growi:services:*': 'debug',
   // 'growi:StaffCredit': 'debug',
   // 'growi:cli:StickyStretchableScroller': 'debug',
+  'growi:searchResultList': 'debug',
 
 };
