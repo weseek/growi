@@ -323,7 +323,7 @@ module.exports = (crowi) => {
       await Subscription.subscribeByPageId(req.user._id, createdPage._id, STATUS_SUBSCRIBE);
     }
     catch (err) {
-      logger.error('Failed to update subscribe status', err);
+      logger.error('Failed to create subscription document', err);
     }
 
     return res.apiv3(result, 201);
