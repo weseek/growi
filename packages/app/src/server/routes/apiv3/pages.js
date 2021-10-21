@@ -295,6 +295,8 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    res.apiv3(result, 201);
+
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
@@ -325,8 +327,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to create subscription document', err);
     }
-
-    return res.apiv3(result, 201);
   });
 
 
