@@ -7,8 +7,8 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onExcludeUsersHome: (() => void) | null,
-  onExcludeTrash: (() => void) | null,
+  onExcludeUsersHome?: () => void,
+  onExcludeTrash?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
