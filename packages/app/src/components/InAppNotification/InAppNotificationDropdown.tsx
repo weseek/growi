@@ -130,8 +130,8 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        <div className="my-2">
-          <InAppNotification key={notification._id} notification={notification} onClick={notificationClickHandler} />
+        <div className="my-2" key={notification._id}>
+          <InAppNotification notification={notification} onClick={notificationClickHandler} />
         </div>
       );
     });
