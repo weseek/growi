@@ -99,8 +99,15 @@ module.exports = function(crowi, app) {
   app.set('view engine', 'html');
   app.set('views', crowi.viewsDir);
   app.use(methodOverride());
-  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(bodyParser.json({ limit: '50mb' }));
+
+  // inject rawBody to req
+  const rawBodySaver = (req, res, buf, encoding) => {
+    if (buf && buf.length) {
+      req.rawBody = buf.toString(encoding || 'utf8');
+    }
+  };
+  app.use(bodyParser.urlencoded({ verify: rawBodySaver, extended: true, limit: '50mb' }));
+  app.use(bodyParser.json({ verify: rawBodySaver, limit: '50mb' }));
   app.use(cookieParser());
 
   // configure express-session
