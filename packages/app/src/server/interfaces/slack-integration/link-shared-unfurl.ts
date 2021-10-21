@@ -1,10 +1,12 @@
 export type PrivateData = {
   isPublic: false,
+  id: string,
   path: string,
 }
 
 export type PublicData = {
   isPublic: true,
+  id: string,
   path: string,
   pageBody: string,
   updatedAt: Date,

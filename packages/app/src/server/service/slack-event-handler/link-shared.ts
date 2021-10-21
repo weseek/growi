@@ -92,36 +92,45 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
   async generateUnfurlsObject(links: UnfurlEventLink[]): Promise<DataForUnfurl[]> {
     // generate paths array
-    const paths: string[] = links.map((link) => {
+    const pathOrIds: string[] = links.map((link) => {
       const { url: growiTargetUrl } = link;
       const urlObject = new URL(growiTargetUrl);
 
       return decodeURI(urlObject.pathname);
     });
 
+    const idRegExp = /^\/[0-9a-z]{24}$/;
+    const paths = pathOrIds.filter(pathOrId => !idRegExp.test(pathOrId));
+    const ids = pathOrIds.filter(pathOrId => idRegExp.test(pathOrId)).map(id => id.replace('/', '')); // remove a slash
+
     // get pages with revision
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
     const pageQueryBuilder = new PageQueryBuilder(Page.find());
-    const pages = await pageQueryBuilder
+    const pagesByPaths = await pageQueryBuilder
       .addConditionToListByPathsArray(paths)
       .query
       .populate('revision')
       .lean()
       .exec();
 
+    // TODO: get revision
+    const pagesByIds = (await Page.findListByPageIds(ids)).pages;
+
+    const pages = [...pagesByPaths, ...pagesByIds];
+
     const unfurlData: DataForUnfurl[] = [];
     pages.forEach((page) => {
       // not send non-public page
       if (page.grant !== Page.GRANT_PUBLIC) {
-        return unfurlData.push({ isPublic: false, path: page.path });
+        return unfurlData.push({ isPublic: false, id: page._id, path: page.path });
       }
 
       // send the public page data with isPrivate: false
       const { updatedAt, commentCount } = page;
       const { body } = page.revision;
       unfurlData.push({
-        isPublic: true, path: page.path, pageBody: body, updatedAt, commentCount,
+        isPublic: true, id: page._id, path: page.path, pageBody: body, updatedAt, commentCount,
       });
     });
 
