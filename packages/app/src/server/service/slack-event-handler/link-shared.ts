@@ -44,8 +44,15 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
     // unfurl
     const unfurlResults = await Promise.allSettled(unfurlData.map(async(data: DataForUnfurl) => {
-      // datum determines the unfurl appearance for each link
-      const targetUrl = urljoin(origin, data.path);
+      const toUrl = urljoin(origin, data.id);
+
+      let targetUrl;
+      if (data.isPermalink) {
+        targetUrl = urljoin(origin, data.id);
+      }
+      else {
+        targetUrl = urljoin(origin, data.path);
+      }
 
       let unfurls: LinkUnfurls;
 
@@ -57,7 +64,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
         };
       }
       else {
-        unfurls = this.generateLinkUnfurls(data as PublicData, targetUrl);
+        unfurls = this.generateLinkUnfurls(data as PublicData, targetUrl, toUrl);
       }
 
       await client.chat.unfurl({
@@ -71,7 +78,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   }
 
   // builder method for unfurl parameter
-  generateLinkUnfurls(body: PublicData, growiTargetUrl: string): LinkUnfurls {
+  generateLinkUnfurls(body: PublicData, growiTargetUrl: string, toUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
     const updatedAtFormatted = format(updatedAt, 'yyyy-MM-dd HH:mm');
@@ -79,7 +86,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
     const attachment: MessageAttachment = {
       title: body.path,
-      title_link: growiTargetUrl,
+      title_link: toUrl, // permalink
       text,
       footer,
     };
@@ -106,35 +113,47 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     // get pages with revision
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
-    const pageQueryBuilder = new PageQueryBuilder(Page.find());
-    const pagesByPaths = await pageQueryBuilder
+
+    const pageQueryBuilderByPaths = new PageQueryBuilder(Page.find());
+    const pagesByPaths = await pageQueryBuilderByPaths
       .addConditionToListByPathsArray(paths)
       .query
       .populate('revision')
       .lean()
       .exec();
 
-    const pagesByIds = await pageQueryBuilder
+    const pageQueryBuilderByIds = new PageQueryBuilder(Page.find());
+    const pagesByIds = await pageQueryBuilderByIds
       .addConditionToListByPageIdsArray(ids)
       .query
       .populate('revision')
       .lean()
       .exec();
 
-    const pages = [...pagesByPaths, ...pagesByIds];
+    const unfurlDataFromNormalLinks = this.generateDataForUnfurl(pagesByPaths, false);
+    const unfurlDataFromPermalinks = this.generateDataForUnfurl(pagesByIds, true);
 
+    return [...unfurlDataFromNormalLinks, ...unfurlDataFromPermalinks];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private generateDataForUnfurl(pages: any, isPermalink: boolean): DataForUnfurl[] {
+    const Page = this.crowi.model('Page');
     const unfurlData: DataForUnfurl[] = [];
+
     pages.forEach((page) => {
       // not send non-public page
       if (page.grant !== Page.GRANT_PUBLIC) {
-        return unfurlData.push({ isPublic: false, id: page._id, path: page.path });
+        return unfurlData.push({
+          isPublic: false, isPermalink, id: page._id.toString(), path: page.path,
+        });
       }
 
-      // send the public page data with isPrivate: false
+      // public page
       const { updatedAt, commentCount } = page;
       const { body } = page.revision;
       unfurlData.push({
-        isPublic: true, id: page._id, path: page.path, pageBody: body, updatedAt, commentCount,
+        isPublic: true, isPermalink, id: page._id.toString(), path: page.path, pageBody: body, updatedAt, commentCount,
       });
     });
 
