@@ -156,6 +156,11 @@ class LoginForm extends React.Component {
       registrationWhiteList,
     } = this.props;
 
+    let registerAction = '/register';
+    if (isEmailAuthenticationEnabled === true) {
+      registerAction = '/user-activation/register';
+    }
+
     return (
       <React.Fragment>
         {registrationMode === 'Restricted' && (
@@ -165,7 +170,7 @@ class LoginForm extends React.Component {
             {t('page_register.notice.restricted_defail')}
           </p>
         )}
-        <form role="form" action="/register" method="post" id="register-form">
+        <form role="form" action={registerAction} method="post" id="register-form">
 
           {isEmailAuthenticationEnabled === false && (
             <div>

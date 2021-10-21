@@ -9,6 +9,35 @@ export const form = (req, res): void => {
   return res.render('user-activation', { userRegistrationOrder });
 };
 
+async function makeRegistrationEmailToken(email, crowi) {
+  const {
+    configManager,
+    mailService,
+    localeDir,
+    appService,
+  } = crowi;
+
+  const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+  const i18n = grobalLang;
+  const appUrl = appService.getSiteUrl();
+
+  const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
+  const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
+  const oneTimeUrl = url.href;
+  const txtFileName = 'userActivation';
+
+  return mailService.send({
+    to: email,
+    subject: txtFileName,
+    template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+    vars: {
+      appTitle: appService.getAppTitle(),
+      email,
+      url: oneTimeUrl,
+    },
+  });
+}
+
 async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url) {
   const promises = admins.map((admin) => {
     return mailService.send({
@@ -24,6 +53,19 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
     });
   });
 }
+
+export const registerAction = (crowi) => {
+  return async function(req, res) {
+    const registerForm = req.body.registerForm || {};
+    const email = registerForm.email;
+
+    makeRegistrationEmailToken(email, crowi);
+
+    req.flash('successMessage', req.t('message.successfully_created', { username: email }));
+
+    return res.redirect('/login');
+  };
+};
 
 export const completeRegistrationAction = (crowi) => {
   const User = crowi.model('User');
@@ -103,25 +145,6 @@ export const completeRegistrationAction = (crowi) => {
       }
     });
   };
-};
-
-export const makeRegistrationEmailToken = async(email, i18n, appUrl, crowi) => {
-  const { mailService, localeDir, appService } = crowi;
-  const passwordResetOrderData = await UserRegistrationOrder.createUserRegistrationOrder(email);
-  const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
-  const oneTimeUrl = url.href;
-  const txtFileName = 'userActivation';
-
-  return mailService.send({
-    to: email,
-    subject: txtFileName,
-    template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
-    vars: {
-      appTitle: appService.getAppTitle(),
-      email,
-      url: oneTimeUrl,
-    },
-  });
 };
 
 // middleware to handle error

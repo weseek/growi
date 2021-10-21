@@ -1,5 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import { makeRegistrationEmailToken } from './user-activation';
 
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
@@ -121,46 +120,29 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        // Condition to save User directly without email authentication if email authentication disabled
-        if( configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') === false ){
-          User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
-            if (err) {
-              if (err.name === 'UserUpperLimitException') {
-                req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
-              }
-              else {
-                req.flash('registerWarningMessage', req.t('message.failed_to_register'));
-              }
-              return res.redirect('/register');
+        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+          if (err) {
+            if (err.name === 'UserUpperLimitException') {
+              req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
             }
-
-            if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-              // send mail asynchronous
-              sendEmailToAllAdmins(userData);
+            else {
+              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
             }
+            return res.redirect('/register');
+          }
 
-            // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-            // cz. loginSuccess method doesn't work on it's own when using passport
-            //      because `req.login()` prepared by passport is not called.
-            req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
-
-            return loginSuccess(req, res, userData);
-          });
-        }
-        else {
-          const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-          const i18n = grobalLang;
-          const appUrl = appService.getSiteUrl();
-
-          makeRegistrationEmailToken(email, i18n, appUrl, crowi);
+          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+            // send mail asynchronous
+            sendEmailToAllAdmins(userData);
+          }
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
           //      because `req.login()` prepared by passport is not called.
-          req.flash('successMessage', req.t('message.successfully_created',{ username: email }));
+          req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
-          return res.redirect('/login');
-        }
+          return loginSuccess(req, res, userData);
+        });
       });
     }
     else { // method GET of form is not valid
