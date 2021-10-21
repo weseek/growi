@@ -546,16 +546,7 @@ module.exports = (crowi) => {
 
     try {
       const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
-
-      let subscribing;
-      if (subscription) {
-        subscribing = subscription.isSubscribing();
-      }
-      else {
-        const targetUsers = await page.getNotificationTargetUsers();
-        const defaultStatus = targetUsers.some(user => user.toString() === userId.toString());
-        subscribing = defaultStatus ? true : null;
-      }
+      const subscribing = subscription ? subscription.isSubscribing() : null;
 
       return res.apiv3({ subscribing });
     }
