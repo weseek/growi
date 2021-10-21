@@ -2,10 +2,9 @@ import {
   NextFunction, Request, RequestHandler, Response,
 } from 'express';
 import path from 'path';
-import { ReqWithUserRegistrationOrder } from '../middlewares/inject-user-registration-order-by-token-middleware';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 
-export const form = (req: ReqWithUserRegistrationOrder, res: Response): void => {
+export const form = (req, res): void => {
   const { userRegistrationOrder } = req;
   return res.render('user-activation', { userRegistrationOrder });
 };
@@ -35,7 +34,7 @@ export const completeRegistrationAction = (crowi) => {
     mailService,
   } = crowi;
 
-  return async function(req: ReqWithUserRegistrationOrder, res: Response) {
+  return async function(req, res) {
     if (req.user != null) {
       return res.redirect('/');
     }
@@ -107,7 +106,6 @@ export const completeRegistrationAction = (crowi) => {
 };
 
 export const makeRegistrationEmailToken = async(email, i18n, appUrl, crowi) => {
-  console.log('nooneeye ganteng');
   const { mailService, localeDir, appService } = crowi;
   const passwordResetOrderData = await UserRegistrationOrder.createUserRegistrationOrder(email);
   const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);

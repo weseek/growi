@@ -53,7 +53,7 @@ const validateRegisterForm = (crowi) => {
     }
 
     req.form = { isValid: false };
-    const extractedErrors = [];
+    const extractedErrors: string[] = [];
     errors.array().map(err => extractedErrors.push(err.msg));
 
     req.flash('registerWarningMessage', extractedErrors);

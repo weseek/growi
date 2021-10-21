@@ -21,7 +21,7 @@ export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, D
 
 export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderDocument> {
   generateOneTimeToken(): string
-  createPasswordResetOrder(email: string): UserRegistrationOrderDocument
+  createUserRegistrationOrder(email: string): UserRegistrationOrderDocument
 }
 
 const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({

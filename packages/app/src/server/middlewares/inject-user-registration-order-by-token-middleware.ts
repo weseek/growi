@@ -1,13 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
 
-import UserRegistrationOrder, { IUserRegistrationOrder } from '../models/user-registration-order';
+import UserRegistrationOrder from '../models/user-registration-order';
 
-export type ReqWithUserRegistrationOrder = Request & {
-  passwordResetOrder: IUserRegistrationOrder,
-};
-
-export default async(req: ReqWithUserRegistrationOrder, res: Response, next: NextFunction): Promise<void> => {
+export default async(req, res, next): Promise<void> => {
   const token = req.params.token || req.body.token;
 
   if (token == null) {
