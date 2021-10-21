@@ -33,20 +33,14 @@ class PageService {
 
     // update
     this.pageEvent.on('update', async(page, user) => {
-      const { inAppNotificationService } = this.crowi;
 
       this.pageEvent.onUpdate();
 
       try {
-        const savedActivity = await this.createByPageUpdate(page, user);
-        let targetUsers = [];
-        targetUsers = await savedActivity.getNotificationTargetUsers();
-
-        await inAppNotificationService.upsertByActivity(targetUsers, savedActivity);
+        await this.createAndSendNotifications(page, user);
       }
       catch (err) {
         logger.error(err);
-
       }
     });
 
@@ -766,25 +760,26 @@ class PageService {
     }
   }
 
-  /**
-   * @param {Page} page
-   * @param {User} user
-   * @return {Promise}
-   */
-  createByPageUpdate = async function(page, user) {
-    const { activityService } = this.crowi;
+  createAndSendNotifications = async function(page, user) {
 
+    const { activityService, inAppNotificationService } = this.crowi;
+
+    // Create activity
     const parameters = {
       user: user._id,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: page,
       action: ActivityDefine.ACTION_UPDATE,
     };
+    const activity = await activityService.createByParameters(parameters);
 
-    const savedActivity = await activityService.createByParameters(parameters);
-    return savedActivity;
+    // Get user to be notified
+    const targetUsers = await activity.getNotificationTargetUsers();
+
+    // Create and send notifications
+    await inAppNotificationService.upsertByActivity(targetUsers, activity);
+    await inAppNotificationService.emitSocketIo(targetUsers);
   };
-
 
 }
 
