@@ -36,12 +36,12 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserImage = () => {
+  const renderUserImage = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
     // what is this case?
-      return '';
+      return <></>;
     }
 
     return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
@@ -53,7 +53,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     ...props,
   };
 
-  const renderInAppNotificationContent = () => {
+  const renderInAppNotificationContent = (): JSX.Element => {
     switch (componentName) {
       case 'Page:COMMENT':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
@@ -64,6 +64,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   return (
     <>
+      {/* TODO: notification popup adjustment by #79315 */}
       <div>
         {renderUserImage()}
         {renderInAppNotificationContent()}
