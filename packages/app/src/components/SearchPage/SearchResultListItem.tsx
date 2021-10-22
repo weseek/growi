@@ -113,11 +113,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     );
   }, []);
 
-  const pageList: JSX.Element = renderPage;
+  const pageItem: JSX.Element = renderPage;
 
   return (
     <>
-      {pageList}
+      {pageItem}
     </>
   );
 };
