@@ -22,7 +22,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const renderDropDown = (pageId: string, revisionId: string, pagePath: string): JSX.Element => {
+  const renderDropDownIcon = (pageId: string, revisionId: string, pagePath: string): JSX.Element => {
     return (
       <>
         <button
@@ -102,7 +102,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 </div>
                 {/* doropdown icon */}
                 <div className="ml-auto">
-                  {renderDropDown(page._id, page.revision, page.path)}
+                  {renderDropDownIcon(page._id, page.revision, page.path)}
                 </div>
               </div>
               <div className="mt-1">{page.snippet}</div>
