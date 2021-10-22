@@ -40,7 +40,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
-    // what is this case?
       return <></>;
     }
 
