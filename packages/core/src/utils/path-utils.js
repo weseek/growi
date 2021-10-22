@@ -17,13 +17,13 @@ function matchSlashes(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
-export function hasHeadingSlash(path) {
+exports = function hasHeadingSlash(path) {
   if (path === '') {
     return false;
   }
   const match = matchSlashes(path);
   return (match[2] != null);
-}
+};
 
 /**
  *
@@ -31,13 +31,13 @@ export function hasHeadingSlash(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
-export function hasTrailingSlash(path) {
+exports = function hasTrailingSlash(path) {
   if (path === '') {
     return false;
   }
   const match = matchSlashes(path);
   return (match[4] != null);
-}
+};
 
 /**
  *
@@ -45,16 +45,16 @@ export function hasTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-export function addHeadingSlash(path) {
+exports = function addHeadingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  if (!hasHeadingSlash(path)) {
+  if (!exports.hasHeadingSlash(path)) {
     return `/${path}`;
   }
   return path;
-}
+};
 
 /**
  *
@@ -62,16 +62,16 @@ export function addHeadingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-export function addTrailingSlash(path) {
+exports = function addTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  if (!hasTrailingSlash(path)) {
+  if (!exports.hasTrailingSlash(path)) {
     return `${path}/`;
   }
   return path;
-}
+};
 
 /**
  *
@@ -79,14 +79,14 @@ export function addTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-export function removeTrailingSlash(path) {
+exports = function removeTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
 
   const match = matchSlashes(path);
   return match[1];
-}
+};
 
 /**
  * A short-hand method to add heading slash and remove trailing slash.
@@ -95,7 +95,7 @@ export function removeTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-export function normalizePath(path) {
+exports = function normalizePath(path) {
   if (path === '' || path === '/') {
     return '/';
   }
@@ -105,4 +105,4 @@ export function normalizePath(path) {
     return '/';
   }
   return `/${match[3]}`;
-}
+};
