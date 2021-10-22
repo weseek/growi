@@ -3,6 +3,7 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import { PageCommentNotification } from './PageCommentNotification';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification
@@ -35,12 +36,11 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserImage = () => {
+  const renderUserImage = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
-    // what is this case?
-      return '';
+      return <></>;
     }
 
     return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
@@ -52,16 +52,25 @@ export const InAppNotification = (props: Props): JSX.Element => {
     ...props,
   };
 
-  switch (componentName) {
-    case 'Page:COMMENT':
-      return (
-        <>
-          {renderUserImage()}
-          <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
-        </>
+  const renderInAppNotificationContent = (): JSX.Element => {
+    switch (componentName) {
+      case 'Page:COMMENT':
+        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      default:
+        return <></>;
+    }
+  };
 
-      );
-    default:
-      return <></>;
-  }
+  return (
+    <>
+      {/* TODO: notification popup adjustment by #79315 */}
+      <div>
+        {renderUserImage()}
+        {renderInAppNotificationContent()}
+      </div>
+      <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
+    </>
+  );
+
+
 };

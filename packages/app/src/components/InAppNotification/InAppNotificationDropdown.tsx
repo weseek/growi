@@ -155,7 +155,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       <DropdownMenu right>
         <InAppNotificationContents />
         <DropdownItem divider />
-        {/* TODO: Able to show all notifications by GW-7534 */}
+        {/* TODO: Able to show all notifications by #79317 */}
         <a>See All</a>
       </DropdownMenu>
     </Dropdown>
