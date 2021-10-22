@@ -28,6 +28,44 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
+
+  const renderDropDown = () => {
+    return (
+      <>
+        <button
+          type="button"
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+          data-toggle="dropdown"
+        >
+          <i className="fa fa-ellipsis-v text-muted"></i>
+        </button>
+        <div className="dropdown-menu dropdown-menu-right">
+          {/* TODO: if there is the following button in XD please add it here
+          <button
+            type="button"
+            className="btn btn-link p-0"
+            value={page.path}
+            onClick={(e) => {
+              window.location.href = e.currentTarget.value;
+            }}
+          >
+            <i className="icon-login" />
+          </button>
+          */}
+          <button className="dropdown-item" type="button">
+            <i className="icon-fw  icon-action-redo"></i>Move/Rename
+          </button>
+          <button className="dropdown-item" type="button">
+            <i className="icon-fw icon-docs"></i>Duplicate
+          </button>
+          <button className="dropdown-item text-danger" type="button">
+            <i className="icon-fw icon-fire"></i>Delete
+          </button>
+        </div>
+      </>
+    );
+  };
+
   return (
     <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
       <a
@@ -66,21 +104,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon */}
               <div className="ml-auto">
-                <i className="fa fa-ellipsis-v text-muted"></i>
+                {renderDropDown()}
               </div>
-
-              {/* Todo: add the following icon into dropdown menu */}
-              {/* <button
-                type="button"
-                className="btn btn-link p-0"
-                value={page.path}
-                onClick={(e) => {
-                  window.location.href = e.currentTarget.value;
-                }}
-              >
-                <i className="icon-login" />
-              </button> */}
-
             </div>
             <div className="mt-1">{page.snippet}</div>
           </div>
