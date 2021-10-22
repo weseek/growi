@@ -58,6 +58,10 @@ class PageStatusAlert extends React.Component {
         <i className="icon-fw icon-pencil"></i>
         {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
       </>,
+      <button type="button" onClick={() => { }} className="btn btn-outline-white">
+        <i className="icon-fw icon-reload mr-1"></i>
+        Reload
+      </button>,
       <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         {t('modal_resolve_conflict.resolve_conflict')}
