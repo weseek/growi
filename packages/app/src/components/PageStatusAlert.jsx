@@ -8,7 +8,6 @@ import PageContainer from '~/client/services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import { ConflictDiffModal } from '~/components/PageEditor/ConflictDiffModal';
 
 /**
  *
@@ -25,7 +24,6 @@ class PageStatusAlert extends React.Component {
     super(props);
 
     this.state = {
-      isConflictDiffModalOpen: false,
     };
 
     this.getContentsForSomeoneEditingAlert = this.getContentsForSomeoneEditingAlert.bind(this);
@@ -54,14 +52,14 @@ class PageStatusAlert extends React.Component {
   }
 
   getContentsForRevisionOutdated() {
-    const { t } = this.props;
+    const { t, pageContainer } = this.props;
     return [
       ['bg-warning', 'd-hackmd-none'],
       <>
         <i className="icon-fw icon-pencil"></i>
         {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
       </>,
-      <button type="button" onClick={() => this.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
+      <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         {t('modal_resolve_conflict.resolve_conflict')}
       </button>,
@@ -135,23 +133,16 @@ class PageStatusAlert extends React.Component {
     const [additionalClasses, label, btn] = getContentsFunc();
 
     return (
-      <>
-        <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
-          <div className="card-body">
-            <p className="card-text grw-card-label-container">
-              {label}
-            </p>
-            <p className="card-text grw-card-btn-container">
-              {btn}
-            </p>
-          </div>
+      <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
+        <div className="card-body">
+          <p className="card-text grw-card-label-container">
+            {label}
+          </p>
+          <p className="card-text grw-card-btn-container">
+            {btn}
+          </p>
         </div>
-        <ConflictDiffModal
-          isOpen={this.state.isConflictDiffModalOpen}
-          onCancel={() => this.setState({ isConflictDiffModalOpen: false })}
-          onResolveConflict={() => { }}
-        />
-      </>
+      </div>
     );
   }
 

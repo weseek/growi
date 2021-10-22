@@ -10,6 +10,7 @@ import {
 import Dropzone from 'react-dropzone';
 
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import Cheatsheet from './Cheatsheet';
@@ -18,6 +19,7 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
+import { ConflictDiffModal } from '~/components/PageEditor/ConflictDiffModal';
 
 
 class Editor extends AbstractEditor {
@@ -370,6 +372,11 @@ class Editor extends AbstractEditor {
           { this.renderCheatsheetModal() }
 
         </div>
+        <ConflictDiffModal
+          isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
+          onCancel={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          onResolveConflict={() => { }}
+        />
       </>
     );
   }
@@ -385,6 +392,7 @@ Editor.propTypes = Object.assign({
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 }, AbstractEditor.propTypes);
 
-export default withUnstatedContainers(Editor, [EditorContainer]);
+export default withUnstatedContainers(Editor, [EditorContainer, PageContainer]);
