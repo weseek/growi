@@ -1,11 +1,11 @@
-const pathUtils = require('../utils/path-utils');
+import * as pathUtils from '../utils/path-utils';
 
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 // https://regex101.com/r/WVpPpY/1
 const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
-class DevidedPagePath {
+export class DevidedPagePath {
 
   constructor(path, skipNormalize = false, evalDatePath = false) {
 
@@ -43,5 +43,3 @@ class DevidedPagePath {
   }
 
 }
-
-module.exports = DevidedPagePath;

@@ -1,6 +1,6 @@
-const pathUtils = require('./utils/path-utils');
-const pagePathUtils = require('./utils/page-path-utils');
-const templateChecker = require('./utils/template-checker');
+import * as _pathUtils from './utils/path-utils';
+import * as _pagePathUtils from './utils/page-path-utils';
+import * as _templateChecker from './utils/template-checker';
 
 // module.exports = {
 //   BasicInterceptor: require('./utils/basic-interceptor'),
@@ -12,25 +12,11 @@ const templateChecker = require('./utils/template-checker');
 //   LocalStorageManager: require('./service/localstorage-manager'),
 // };
 
-const { PluginMetaV4, PluginDefinitionV4 } = require('./plugin/interfaces/plugin-definition-v4');
-const DevidedPagePath = require('./models/devided-page-path');
-const {
-  initMongooseGlobalSettings, getMongoUri, getModelSafely, getOrCreateModel, mongoOptions,
-} = require('./utils/mongoose-utils');
-
+export * from './plugin/interfaces/plugin-definition-v4';
+export * from './models/devided-page-path';
+export * from './utils/mongoose-utils';
 
 // export utils
-
-module.exports = {
-  PluginMetaV4,
-  PluginDefinitionV4,
-  DevidedPagePath,
-  initMongooseGlobalSettings,
-  getMongoUri,
-  getModelSafely,
-  getOrCreateModel,
-  mongoOptions,
-  pathUtils,
-  pagePathUtils,
-  templateChecker,
-};
+export const pathUtils = _pathUtils;
+export const pagePathUtils = _pagePathUtils;
+export const templateChecker = _templateChecker;
