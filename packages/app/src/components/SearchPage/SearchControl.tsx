@@ -7,8 +7,8 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onExcludeUsersHome?: () => void,
-  onExcludeTrash?: () => void,
+  onIncludeUsersHome?: () => void,
+  onIncludeTrash?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -17,15 +17,15 @@ const SearchControl: FC <Props> = (props: Props) => {
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
 
-  const onExcludeUsersHome = () => {
-    if (props.onExcludeUsersHome != null) {
-      props.onExcludeUsersHome();
+  const onIncludeUsersHome = () => {
+    if (props.onIncludeUsersHome != null) {
+      props.onIncludeUsersHome();
     }
   };
 
-  const onExcludeTrash = () => {
-    if (props.onExcludeTrash != null) {
-      props.onExcludeTrash();
+  const onIncludeTrash = () => {
+    if (props.onIncludeTrash != null) {
+      props.onIncludeTrash();
     }
   };
 
@@ -40,29 +40,27 @@ const SearchControl: FC <Props> = (props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="d-flex my-4">
-        <div className="form-check border-gray">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            value=""
-            id="flexCheckDefault"
-            onClick={() => onExcludeUsersHome()}
-          />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
+        {/* ボタン1 */}
+        <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
+          <label className="my-0 mr-2" htmlFor="flexCheckDefault">
             {t('Include Subordinated Target Page', { target: '/user' })}
           </label>
-        </div>
-        <div className="form-check">
           <input
-            className="form-check-input"
             type="checkbox"
-            value=""
-            id="flexCheckChecked"
-            onClick={() => onExcludeTrash()}
+            id="flexCheckDefault"
+            onClick={() => onIncludeUsersHome()}
           />
-          <label className="form-check-label" htmlFor="flexCheckChecked">
+        </div>
+        {/* ボタン２ */}
+        <div className="d-flex align-items-center border rounded border-gray px-2 mr-3">
+          <label className="my-0 mr-2" htmlFor="flexCheckChecked">
             {t('Include Subordinated Target Page', { target: '/trash' })}
           </label>
+          <input
+            type="checkbox"
+            id="flexCheckChecked"
+            onClick={() => onIncludeTrash()}
+          />
         </div>
       </div>
     </div>

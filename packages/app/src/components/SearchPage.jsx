@@ -32,16 +32,16 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
-      excludeUsersHome: true,
-      excludeTrash: true,
+      includeUsersHome: false,
+      includeTrash: false,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
-    this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.onIncludeUsersHome = this.onIncludeUsersHome.bind(this);
+    this.onIncludeTrash = this.onIncludeTrash.bind(this);
   }
 
   componentDidMount() {
@@ -63,12 +63,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  onExcludeUsersHome() {
-    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
+  onIncludeUsersHome() {
+    this.setState({ includeUsersHome: !this.state.includeUsersHome });
   }
 
-  onExcludeTrash() {
-    this.setState({ excludeTrash: !this.state.excludeTrash });
+  onIncludeTrash() {
+    this.setState({ includeTrash: !this.state.includeTrash });
   }
 
   changeURL(keyword, refreshHash) {
@@ -86,10 +86,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.excludeTrash) {
+    if (this.state.includeTrash) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.excludeUsersHome) {
+    if (this.state.includeUsersHome) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
@@ -190,8 +190,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.search}
-        onExcludeUsersHome={this.onExcludeUsersHome}
-        onExcludeTrash={this.onExcludeTrash}
+        onIncludeUsersHome={this.onIncludeUsersHome}
+        onIncludeTrash={this.onIncludeTrash}
       >
       </SearchControl>
     );
