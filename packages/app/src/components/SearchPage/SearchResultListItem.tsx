@@ -1,20 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+import { page } from './SearchResultList';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type Props ={
-  page: {
-    _id: string,
-    snippet: string,
-    path: string,
-    noLink: boolean,
-    lastUpdateUser: any
-  },
+  page: page,
   onClickInvoked: (data: string) => void,
 }
 
@@ -28,8 +23,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-
-  const renderDropDown = () => {
+  const renderDropDown = (pageId: string, revisionId: string, pagePath: string): JSX.Element => {
     return (
       <>
         <button
@@ -52,7 +46,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             <i className="icon-login" />
           </button>
           */}
-          <button className="dropdown-item" type="button">
+          <button className="dropdown-item" type="button" onClick={() => console.log(pageId, revisionId, pagePath)}>
             <i className="icon-fw  icon-action-redo"></i>Move/Rename
           </button>
           <button className="dropdown-item" type="button">
@@ -66,52 +60,60 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     );
   };
 
-  return (
-    <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
-      <a
-        className="d-block pt-3"
-        href={pageId}
-        onClick={() => {
-          try {
-            if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-            onClickInvoked(page._id);
-          }
-          catch (error) {
-            logger.error(error);
-          }
-        }}
-      >
-        <div className="d-flex">
-          {/* checkbox */}
-          <div className="form-check my-auto mx-2">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
-          </div>
-          <div className="w-100">
-            {/* page path */}
-            <small className="mb-1">
-              <i className="icon-fw icon-home"></i>
-              {pagePathElem}
-            </small>
-            <div className="d-flex my-1 align-items-center">
-              {/* page title */}
-              <h3 className="mb-0">
-                <UserPicture user={page.lastUpdateUser} />
-                <span className="mx-2">{dPagePath.latter}</span>
-              </h3>
-              {/* page meta */}
-              <div className="d-flex mx-2">
-                <PageListMeta page={page} />
-              </div>
-              {/* doropdown icon */}
-              <div className="ml-auto">
-                {renderDropDown()}
-              </div>
+  const renderPage = useMemo(() => {
+    return (
+      <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
+        <a
+          className="d-block pt-3"
+          href={pageId}
+          onClick={() => {
+            try {
+              if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
+              onClickInvoked(page._id);
+            }
+            catch (error) {
+              logger.error(error);
+            }
+          }}
+        >
+          <div className="d-flex">
+            {/* checkbox */}
+            <div className="form-check my-auto mx-2">
+              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
             </div>
-            <div className="mt-1">{page.snippet}</div>
+            <div className="w-100">
+              {/* page path */}
+              <small className="mb-1">
+                <i className="icon-fw icon-home"></i>
+                {pagePathElem}
+              </small>
+              <div className="d-flex my-1 align-items-center">
+                {/* page title */}
+                <h3 className="mb-0">
+                  <UserPicture user={page.lastUpdateUser} />
+                  <span className="mx-2">{dPagePath.latter}</span>
+                </h3>
+                {/* page meta */}
+                <div className="d-flex mx-2">
+                  <PageListMeta page={page} />
+                </div>
+                {/* doropdown icon */}
+                <div className="ml-auto">
+                  {renderDropDown(page._id, page.revision, page.path)}
+                </div>
+              </div>
+              <div className="mt-1">{page.snippet}</div>
+            </div>
           </div>
-        </div>
-      </a>
-    </li>
+        </a>
+      </li>
+    );
+  }, []);
+
+  return (
+    <>
+      {renderPage}
+    </>
   );
 };
 export default SearchResultListItem;
