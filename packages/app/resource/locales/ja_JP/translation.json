@@ -64,7 +64,7 @@
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
-  "Include Subordinated Target Page": "{{target}}下を含む",
+  "Include Subordinated Target Page": "{{target}} 配下を含む",
   "All Subordinated Page": "全ての配下ページ",
   "Specify Hierarchy": "階層の深さを指定",
   "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
