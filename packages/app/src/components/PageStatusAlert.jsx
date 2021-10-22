@@ -8,7 +8,6 @@ import PageContainer from '~/client/services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>

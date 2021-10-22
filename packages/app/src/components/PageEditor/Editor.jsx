@@ -19,8 +19,7 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
-import { ConflictDiffModal } from '~/components/PageEditor/ConflictDiffModal';
-
+import { ConflictDiffModal } from './ConflictDiffModal';
 
 class Editor extends AbstractEditor {
 
