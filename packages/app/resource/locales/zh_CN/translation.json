@@ -65,6 +65,7 @@
   "Include Attachment File": "包含附件",
   "Include Comment": "包含评论",
   "Include Subordinated Page": "包括子页面",
+  "Include Subordinated Target Page": "包括 {{target}}",
   "All Subordinated Page": "所有子页面",
   "Specify Hierarchy": "指定层级",
   "Submitted the request to create the archive": "提交创建归档请求",

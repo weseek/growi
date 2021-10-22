@@ -13,6 +13,11 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
+export const specificPathNames = {
+  user: '/user',
+  trash: '/trash',
+};
+
 class SearchPage extends React.Component {
 
   constructor(props) {
@@ -27,12 +32,16 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
+      excludeUsersHome: true,
+      excludeTrash: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
+    this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
+    this.onExcludeTrash = this.onExcludeTrash.bind(this);
   }
 
   componentDidMount() {
@@ -54,6 +63,14 @@ class SearchPage extends React.Component {
     return query;
   }
 
+  onExcludeUsersHome() {
+    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
+  }
+
+  onExcludeTrash() {
+    this.setState({ excludeTrash: !this.state.excludeTrash });
+  }
+
   changeURL(keyword, refreshHash) {
     let hash = window.location.hash || '';
     // TODO 整理する
@@ -65,6 +82,19 @@ class SearchPage extends React.Component {
     }
   }
 
+  createSearchQuery(keyword) {
+    let query = keyword;
+
+    // pages included in specific path are not retrived when prefix is added
+    if (this.state.excludeTrash) {
+      query = `${query} -prefix:${specificPathNames.trash}`;
+    }
+    if (this.state.excludeUsersHome) {
+      query = `${query} -prefix:${specificPathNames.user}`;
+    }
+
+    return query;
+  }
 
   search(data) {
     const keyword = data.keyword;
@@ -81,7 +111,7 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-    this.props.appContainer.apiGet('/search', { q: keyword })
+    this.props.appContainer.apiGet('/search', { q: this.createSearchQuery(keyword) })
       .then((res) => {
         this.changeURL(keyword);
         if (res.data.length > 0) {
@@ -90,6 +120,14 @@ class SearchPage extends React.Component {
             searchedPages: res.data,
             searchResultMeta: res.meta,
             selectedPage: res.data[0],
+          });
+        }
+        else {
+          this.setState({
+            searchedKeyword: keyword,
+            searchedPages: [],
+            searchResultMeta: {},
+            selectedPage: {},
           });
         }
       })
@@ -147,6 +185,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.search}
+        onExcludeUsersHome={this.onExcludeUsersHome}
+        onExcludeTrash={this.onExcludeTrash}
       >
       </SearchControl>
     );
