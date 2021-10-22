@@ -2,19 +2,18 @@ import React, { FC, useMemo } from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { page } from './SearchResultList';
+import { Page } from './SearchResultList';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type Props ={
-  page: page,
-  onClickInvoked: (data: string) => void,
+  page: Page,
+  onClickInvoked?: (data: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-
   const { page, onClickInvoked } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -34,7 +33,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
           <i className="fa fa-ellipsis-v text-muted"></i>
         </button>
         <div className="dropdown-menu dropdown-menu-right">
-          {/* TODO: if there is the following button in XD please add it here
+          {/* TODO: if there is the following button in XD add it here
           <button
             type="button"
             className="btn btn-link p-0"
@@ -46,14 +45,18 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             <i className="icon-login" />
           </button>
           */}
-          <button className="dropdown-item" type="button" onClick={() => console.log(pageId, revisionId, pagePath)}>
-            <i className="icon-fw  icon-action-redo"></i>Move/Rename
+          {/* TODO: add function to the following buttons */}
+          <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+            <i className="icon-fw icon-fire"></i>Delete
           </button>
-          <button className="dropdown-item" type="button">
+          <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+            <i className="icon-fw icon-docs"></i>add to bookmarks
+          </button>
+          <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
             <i className="icon-fw icon-docs"></i>Duplicate
           </button>
-          <button className="dropdown-item text-danger" type="button">
-            <i className="icon-fw icon-fire"></i>Delete
+          <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+            <i className="icon-fw  icon-action-redo"></i>Move/Rename
           </button>
         </div>
       </>
@@ -110,10 +113,13 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     );
   }, []);
 
+  const pageList: JSX.Element = renderPage;
+
   return (
     <>
-      {renderPage}
+      {pageList}
     </>
   );
 };
+
 export default SearchResultListItem;

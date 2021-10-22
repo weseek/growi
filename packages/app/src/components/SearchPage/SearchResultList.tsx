@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import SearchResultListItem from './SearchResultListItem';
 
-export interface page {
+export type Page = {
   _id: string;
   snippet: string;
   path: string;
@@ -11,12 +11,11 @@ export interface page {
   lastUpdateUser: any;
 }
 
-type Props ={
-  pages: page[],
+type Props = {
+  pages: Page[],
   deletionMode: boolean,
-  selectedPages: page[],
+  selectedPages: Page[],
   onClickInvoked?: (pageId: string) => void,
-  onChangeInvoked?: (page: {any}) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
@@ -42,7 +41,6 @@ SearchResultList.propTypes = {
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
   onClickInvoked: PropTypes.func,
-  onChangeInvoked: PropTypes.func,
 };
 
 export default SearchResultList;
