@@ -26,6 +26,7 @@ class PageStatusAlert extends React.Component {
     };
 
     this.getContentsForSomeoneEditingAlert = this.getContentsForSomeoneEditingAlert.bind(this);
+    this.getContentsForRevisionOutdated = this.getContentsForRevisionOutdated.bind(this);
     this.getContentsForDraftExistsAlert = this.getContentsForDraftExistsAlert.bind(this);
     this.getContentsForUpdatedAlert = this.getContentsForUpdatedAlert.bind(this);
   }
@@ -46,6 +47,27 @@ class PageStatusAlert extends React.Component {
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
+    ];
+  }
+
+  getContentsForRevisionOutdated() {
+    const { t, pageContainer } = this.props;
+    return [
+      ['bg-warning', 'd-hackmd-none'],
+      <>
+        <i className="icon-fw icon-pencil"></i>
+        {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
+      </>,
+      <>
+        <button type="button" onClick={() => { }} className="btn btn-outline-white mr-4">
+          <i className="icon-fw icon-reload mr-1"></i>
+          Reload
+        </button>
+        <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
+          <i className="fa fa-fw fa-file-text-o mr-1"></i>
+          {t('modal_resolve_conflict.resolve_conflict')}
+        </button>
+      </>,
     ];
   }
 
@@ -84,7 +106,7 @@ class PageStatusAlert extends React.Component {
 
   render() {
     const {
-      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
     } = this.props.pageContainer.state;
 
     const isRevisionOutdated = revisionId !== remoteRevisionId;
@@ -92,8 +114,12 @@ class PageStatusAlert extends React.Component {
 
     let getContentsFunc = null;
 
+    // when conflicting on save
+    if (isConflictingOnSave) {
+      getContentsFunc = this.getContentsForRevisionOutdated;
+    }
     // when remote revision is newer than both
-    if (isHackmdDocumentOutdated && isRevisionOutdated) {
+    else if (isHackmdDocumentOutdated && isRevisionOutdated) {
       getContentsFunc = this.getContentsForUpdatedAlert;
     }
     // when someone editing with HackMD

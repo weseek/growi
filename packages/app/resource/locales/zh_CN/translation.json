@@ -439,7 +439,8 @@
     "dont_ask_again": "不要再问"
   },
   "modal_resolve_conflict": {
-    "title": "解决冲突",
+    "file_conflicting_with_newer_remote": "此文件与较新的远程文件冲突",
+    "resolve_conflict": "解决冲突",
     "resolve_and_save" : "解决冲突并保存"
   },
   "link_edit": {

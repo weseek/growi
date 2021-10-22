@@ -55,7 +55,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   return (
     <Modal isOpen={props.isOpen || false} toggle={onCancel} className="modal-gfm-cheatsheet">
       <ModalHeader tag="h4" toggle={onCancel} className="bg-primary text-light">
-        <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.title')}
+        <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
         <div ref={(el) => { setCodeMirrorRef(el) }}></div>
