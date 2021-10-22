@@ -24,16 +24,15 @@ class SearchResultList extends React.Component {
         </button>
         <div className="dropdown-menu dropdown-menu-right">
           <button className="dropdown-item" type="button">
-            <i className="icon-fw  icon-action-redo"></i>QQQQ
+            <i className="icon-fw  icon-action-redo"></i>Move/Rename
           </button>
           <button className="dropdown-item" type="button">
-            <i className="icon-fw icon-docs"></i>QQQQ
+            <i className="icon-fw icon-docs"></i>Duplicate
           </button>
           <button className="dropdown-item text-danger" type="button">
-            <i className="icon-fw icon-fire"></i>delete
+            <i className="icon-fw icon-fire"></i>Delete
           </button>
         </div>
-
       </>
     );
   }
