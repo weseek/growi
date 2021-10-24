@@ -156,7 +156,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         <InAppNotificationContents />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}
-        <a>See All</a>
+        <a className="d-flex align-items-center justify-content-center">See All</a>
       </DropdownMenu>
     </Dropdown>
   );
