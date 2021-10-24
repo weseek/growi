@@ -130,7 +130,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
-        <div className="my-2" key={notification._id}>
+        <div className="d-flex flex-row" key={notification._id}>
           <InAppNotification notification={notification} onClick={notificationClickHandler} />
         </div>
       );
@@ -156,7 +156,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         <InAppNotificationContents />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}
-        <a className="d-flex align-items-center justify-content-center">See All</a>
+        <a className="d-flex justify-content-center">See All</a>
       </DropdownMenu>
     </Dropdown>
   );
