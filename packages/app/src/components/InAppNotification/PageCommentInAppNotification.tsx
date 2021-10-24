@@ -6,7 +6,9 @@ interface Props {
   notification: IInAppNotification
   onClick: () => void
 }
-export const PageCommentNotification = (props: Props): JSX.Element => {
+export const PageCommentInAppNotification = (props: Props): JSX.Element => {
+
+  // TODO: need to add page comment create and update statuses.
 
   return (
     <>

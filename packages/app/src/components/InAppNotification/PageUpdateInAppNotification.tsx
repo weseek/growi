@@ -6,7 +6,7 @@ interface Props {
   notification: IInAppNotification
   onClick: () => void
 }
-export const PageUpdateNotification = (props: Props): JSX.Element => {
+export const PageUpdateInAppNotification = (props: Props): JSX.Element => {
 
   return (
     <>
