@@ -6,11 +6,11 @@ interface Props {
   notification: IInAppNotification
   onClick: () => void
 }
-export const PageCommentNotification = (props: Props): JSX.Element => {
+export const PageUpdateNotification = (props: Props): JSX.Element => {
 
   return (
     <>
-      <b>{props.actionUsers}</b> commented on {props.notification.target.path}
+      <b>{props.actionUsers}</b> updated {props.notification.target.path}
     </>
   );
 

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { PageCommentNotification } from './PageCommentNotification';
+import { PageUpdateNotification } from './PageUpdateNotification';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -56,6 +57,8 @@ export const InAppNotification = (props: Props): JSX.Element => {
     switch (componentName) {
       case 'Page:COMMENT':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      case 'Page:UPDATE':
+        return <PageUpdateNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
         return <></>;
     }
