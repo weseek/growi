@@ -63,12 +63,17 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   return (
     <>
-      {/* TODO: notification popup adjustment by #79315 */}
-      <div>
-        {renderUserImage()}
-        {renderInAppNotificationContent()}
+      <div className="dropdown-item d-flex flex-row mb-3">
+        <div className="p-2 d-flex align-items-center">
+          {renderUserImage()}
+        </div>
+        <div className="p-2">
+          {renderInAppNotificationContent()}
+          <div>
+            <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
+          </div>
+        </div>
       </div>
-      <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
     </>
   );
 
