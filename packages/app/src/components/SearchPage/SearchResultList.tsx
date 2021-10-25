@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 import SearchResultListItem from './SearchResultListItem';
 
 export type Page = {
@@ -32,13 +31,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
     </>
   );
 
-};
-
-SearchResultList.propTypes = {
-  pages: PropTypes.array.isRequired,
-  deletionMode: PropTypes.bool.isRequired,
-  selectedPages: PropTypes.array.isRequired,
-  onClickInvoked: PropTypes.func,
 };
 
 export default SearchResultList;

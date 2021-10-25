@@ -13,11 +13,11 @@ type Props ={
   onClickInvoked?: (data: string) => void,
 }
 
-type DropDownProp ={
+type PageItemProp ={
   page: Page,
 }
 
-const DropDownIcon: FC<Props> = (props:DropDownProp) => {
+const PageItemOperation: FC<Props> = (props:PageItemProp) => {
 
   const { page } = props;
   const { t } = useTranslation('');
@@ -70,7 +70,7 @@ const DropDownIcon: FC<Props> = (props:DropDownProp) => {
 
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-  const { page, onClickInvoked } = props;
+  const { page } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -78,21 +78,19 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
+  const onClickInvoked = (pageId) => {
+    if (props.onClickInvoked != null) {
+      onClickInvoked(pageId);
+    }
+  };
+
   const renderPageItem = useMemo(() => {
     return (
       <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
         <a
           className="d-block pt-3"
           href={pageId}
-          onClick={() => {
-            try {
-              if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-              onClickInvoked(page._id);
-            }
-            catch (error) {
-              logger.error(error);
-            }
-          }}
+          onClick={() => onClickInvoked(page._id)}
         >
           <div className="d-flex">
             {/* checkbox */}
@@ -117,7 +115,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 </div>
                 {/* doropdown icon */}
                 <div className="ml-auto">
-                  <DropDownIcon page={page} />
+                  <PageItemOperation page={page} />
                 </div>
               </div>
               <div className="mt-1">{page.snippet}</div>
@@ -128,11 +126,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     );
   }, []);
 
-  const pageItem: JSX.Element = renderPageItem;
-
   return (
     <>
-      {pageItem}
+      {renderPageItem}
     </>
   );
 };
