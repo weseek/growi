@@ -39,10 +39,9 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       </div>
     );
   };
-  const content = renderPage(props.selectedPage);
   return (
 
-    <div>{content}</div>
+    <div>{Object.keys(props.selectedPage).length !== 0 && renderPage(props.selectedPage)}</div>
   );
 };
 
