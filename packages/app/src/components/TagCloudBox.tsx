@@ -16,7 +16,7 @@ type Props = {
 const MIN_FONT_SIZE = 12;
 const MAX_FONT_SIZE = 36;
 
-const TagCloudContent: FC<Props> = (props:Props) => {
+const TagCloudBox: FC<Props> = (props:Props) => {
 
   return (
     <>
@@ -35,8 +35,8 @@ const TagCloudContent: FC<Props> = (props:Props) => {
 
 };
 
-TagCloudContent.propTypes = {
+TagCloudBox.propTypes = {
   tags: PropTypes.array.isRequired,
 };
 
-export default TagCloudContent;
+export default TagCloudBox;

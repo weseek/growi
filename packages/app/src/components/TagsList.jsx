@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import PaginationWrapper from './PaginationWrapper';
-import TagCloudContent from './TagCloudContent';
+import TagCloudBox from './TagCloudBox';
 
 class TagsList extends React.Component {
 
@@ -69,8 +69,8 @@ class TagsList extends React.Component {
 
     return (
       <div className="row text-center">
-        <div className="col-12 mb-5">
-          <TagCloudContent tags={this.state.tagData} />
+        <div className="col-12 mb-5 px-5">
+          <TagCloudBox tags={this.state.tagData} />
         </div>
         <div className="col-12 tag-list">
           <ul className="list-group text-left">
