@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { PageCommentNotification, PageUpdateNotification } from './PageContent';
+import { PageUpdatedNotification, PageCommentCreatedNotification } from './PageContent';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
 
 interface Props {
@@ -55,9 +55,9 @@ export const InAppNotification = (props: Props): JSX.Element => {
     switch (componentName) {
       // TODO Is the naming of componentName too subtle?
       case 'Page:UPDATE':
-        return <PageUpdateNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageUpdatedNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       case 'Page:COMMENT_CREATE':
-        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageCommentCreatedNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       case 'Page:COMMENT_UPDATE':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
