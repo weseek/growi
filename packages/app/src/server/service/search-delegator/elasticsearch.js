@@ -869,6 +869,8 @@ class ElasticsearchDelegator {
         '*': {
           fragment_size: 40,
           fragmenter: 'simple',
+          pre_tags: ["<em class='highlighted-keyword'>"],
+          post_tags: ['</em>'],
         },
       },
     };
