@@ -68,7 +68,7 @@ class SearchPage extends React.Component {
   }
 
   onExcludeTrash() {
-    this.setState({ exxcludeTrash: !this.state.exxcludeTrash });
+    this.setState({ excludeTrash: !this.state.excludeTrash });
   }
 
   changeURL(keyword, refreshHash) {
