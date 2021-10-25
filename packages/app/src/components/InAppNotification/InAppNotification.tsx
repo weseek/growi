@@ -2,8 +2,7 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
-import { PageUpdatedNotification, PageCommentCreatedNotification, PageCommentUpdatedNotification } from './PageContent';
-
+import { PageUpdatedNotification, PageCommentCreatedNotification, PageCommentUpdatedNotification } from './NotificationContent';
 
 interface Props {
   notification: IInAppNotification

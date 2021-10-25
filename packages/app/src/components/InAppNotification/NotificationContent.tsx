@@ -9,7 +9,7 @@ interface Props {
   onClick: () => void
 }
 
-export const PageCommentCreatedNotification = (props: Props) => {
+export const PageCommentCreatedNotification = (props: Props): JSX.Element => {
 
   return (
     <>
@@ -22,7 +22,7 @@ export const PageCommentCreatedNotification = (props: Props) => {
   );
 };
 
-export const PageCommentUpdatedNotification = (props: Props) => {
+export const PageCommentUpdatedNotification = (props: Props): JSX.Element => {
 
   return (
     <>
@@ -35,7 +35,7 @@ export const PageCommentUpdatedNotification = (props: Props) => {
   );
 };
 
-export const PageUpdatedNotification = (props: Props) => {
+export const PageUpdatedNotification = (props: Props): JSX.Element => {
 
   return (
     <>
