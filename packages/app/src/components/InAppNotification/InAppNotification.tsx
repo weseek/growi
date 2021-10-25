@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { PageCommentNotification } from './PageCommentNotification';
+import { PageCommentInAppNotification } from './PageCommentInAppNotification';
+import { PageUpdateInAppNotification } from './PageUpdateInAppNotification';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification
@@ -35,12 +37,11 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserImage = () => {
+  const renderUserImage = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
-    // what is this case?
-      return '';
+      return <></>;
     }
 
     return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
@@ -52,16 +53,32 @@ export const InAppNotification = (props: Props): JSX.Element => {
     ...props,
   };
 
-  switch (componentName) {
-    case 'Page:COMMENT':
-      return (
-        <>
-          {renderUserImage()}
-          <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />
-        </>
+  const renderInAppNotificationContent = (): JSX.Element => {
+    switch (componentName) {
+      case 'Page:COMMENT':
+        return <PageCommentInAppNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      case 'Page:UPDATE':
+        return <PageUpdateInAppNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      default:
+        return <></>;
+    }
+  };
 
-      );
-    default:
-      return <></>;
-  }
+  return (
+    <>
+      <div className="dropdown-item d-flex flex-row mb-3">
+        <div className="p-2 d-flex align-items-center">
+          {renderUserImage()}
+        </div>
+        <div className="p-2">
+          {renderInAppNotificationContent()}
+          <div>
+            <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+
 };
