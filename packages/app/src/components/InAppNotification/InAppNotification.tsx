@@ -3,7 +3,6 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import { PageCommentNotification } from './PageCommentNotification';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification
@@ -73,7 +72,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
         {renderUserImage()}
         {renderInAppNotificationContent()}
       </div>
-      {/* <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} /> */}
     </>
   );
 
