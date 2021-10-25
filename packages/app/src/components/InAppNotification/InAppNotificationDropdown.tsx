@@ -154,7 +154,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
           <i className="icon-bell mr-2" /> {badge}
         </button>
       </DropdownToggle>
-      <DropdownMenu className="grw-in-app-notification-dropdown-menu px-2" right>
+      <DropdownMenu className="px-2" right>
         <InAppNotificationContents />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}

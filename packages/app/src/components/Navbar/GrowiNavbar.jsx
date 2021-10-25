@@ -28,7 +28,7 @@ class GrowiNavbar extends React.Component {
 
     return (
       <>
-        <li className="grw-in-app-notification-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
+        <li className="nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <InAppNotificationDropdown />
         </li>
 
