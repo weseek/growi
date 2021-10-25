@@ -7,8 +7,8 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onIncludeUsersHome?: () => void,
-  onIncludeTrash?: () => void,
+  onExcludeUsersHome?: () => void,
+  onExcludeTrash?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -17,15 +17,15 @@ const SearchControl: FC <Props> = (props: Props) => {
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
 
-  const onIncludeUsersHome = () => {
-    if (props.onIncludeUsersHome != null) {
-      props.onIncludeUsersHome();
+  const onExcludeUsersHome = () => {
+    if (props.onExcludeUsersHome != null) {
+      props.onExcludeUsersHome();
     }
   };
 
-  const onIncludeTrash = () => {
-    if (props.onIncludeTrash != null) {
-      props.onIncludeTrash();
+  const onExcludeTrash = () => {
+    if (props.onExcludeTrash != null) {
+      props.onExcludeTrash();
     }
   };
 
@@ -47,7 +47,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <input
             type="checkbox"
             id="flexCheckDefault"
-            onClick={() => onIncludeUsersHome()}
+            onClick={() => onExcludeUsersHome()}
           />
         </div>
         <div className="d-flex align-items-center border rounded border-gray px-2 mr-3">
@@ -57,7 +57,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <input
             type="checkbox"
             id="flexCheckChecked"
-            onClick={() => onIncludeTrash()}
+            onClick={() => onExcludeTrash()}
           />
         </div>
       </div>
