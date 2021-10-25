@@ -38,6 +38,8 @@ const TagCloudBox: FC<Props> = (props:Props) => {
 
 TagCloudBox.propTypes = {
   tags: PropTypes.array.isRequired,
+  minSize: PropTypes.number,
+  maxSize: PropTypes.number,
 };
 
 export default TagCloudBox;
