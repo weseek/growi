@@ -15,7 +15,7 @@ export const PageUpdateNotification = (props: Props) => {
       <div>
         <b>{props.actionUsers}</b> page updated on {props.notification.target.path}
       </div>
-      <i className="fa fa-comment-o mr-2" />
+      <i className="fa fa-file-o mr-2" />
       <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
     </>
   );
