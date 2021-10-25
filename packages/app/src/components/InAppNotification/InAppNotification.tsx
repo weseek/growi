@@ -64,7 +64,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
   return (
     <>
       {/* TODO: notification popup adjustment by #79315 */}
-      <div className="d-flex flex-row mb-3">
+      <div className="dropdown-item d-flex flex-row mb-3">
         <div className="p-2 d-flex align-items-center">
           {renderUserImage()}
         </div>
