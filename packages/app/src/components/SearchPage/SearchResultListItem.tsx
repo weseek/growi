@@ -15,12 +15,15 @@ type Props ={
     lastUpdateUser: any
   },
   snippet: string,
+  highlightedPath: string,
   onClickInvoked: (data: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const { page, snippet, onClickInvoked } = props;
+  const {
+    page, snippet, highlightedPath, onClickInvoked,
+  } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -56,7 +59,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             {/* page path */}
             <small className="mb-1">
               <i className="icon-fw icon-home"></i>
-              {pagePathElem}
+              {/* eslint-disable-next-line react/no-danger */}
+              <div dangerouslySetInnerHTML={{ __html: highlightedPath }}>{pagePathElem}</div>
             </small>
             <div className="d-flex my-1 align-items-center">
               {/* page title */}

@@ -6,6 +6,7 @@ import { DevidedPagePath } from '@growi/core';
 export const PagePathLabel = (props) => {
 
   const dPagePath = new DevidedPagePath(props.page.path, false, true);
+  console.log(props.page.path);
 
   let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);

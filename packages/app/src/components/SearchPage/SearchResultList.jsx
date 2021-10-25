@@ -10,11 +10,13 @@ class SearchResultList extends React.Component {
       //         when keyword is not in page content, display revisionBody.
       // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
       const snippet = page.elasticSearchResult.snippet;
+      const highlightedPath = page.elasticSearchResult.highlightedPath;
       return (
         <SearchResultListItem
           page={page}
           onClickInvoked={this.props.onClickInvoked}
           snippet={snippet}
+          highlightedPath={highlightedPath}
           noLink
         />
       );
