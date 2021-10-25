@@ -150,7 +150,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a">
-        <button type="button" className="nav-link border-0 bg-transparent">
+        <button type="button" className="nav-link border-0 bg-transparent waves-effect waves-light">
           <i className="icon-bell mr-2" /> {badge}
         </button>
       </DropdownToggle>
