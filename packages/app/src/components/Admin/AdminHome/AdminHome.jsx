@@ -10,6 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
 import EnvVarsTable from './EnvVarsTable';
@@ -32,10 +33,23 @@ class AdminHome extends React.Component {
   }
 
   render() {
-    const { t, adminHomeContainer } = this.props;
+    const { t, adminHomeContainer, adminAppContainer } = this.props;
+    const { isPageSchemaV4Compatible } = adminAppContainer.state;
 
     return (
       <Fragment>
+        {
+          !isPageSchemaV4Compatible
+          && (
+            <div className="alert alert-warning">
+              GROWI is running with v4 compatible mode. To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
+              <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
+                <i className="fa fa-link ml-1" aria-hidden="true"></i>
+                <strong>Upgrade to v5</strong>
+              </a>
+            </div>
+          )
+        }
         <p>
           {t('admin:admin_top.wiki_administrator')}
           <br></br>
@@ -97,12 +111,13 @@ class AdminHome extends React.Component {
 
 }
 
-const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
+const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer, AdminAppContainer]);
 
 AdminHome.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AdminHomeWrapper);

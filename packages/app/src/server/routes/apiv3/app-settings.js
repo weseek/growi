@@ -225,6 +225,7 @@ module.exports = (crowi) => {
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+      isPageSchemaV4Compatible: crowi.configManager.getConfig('crowi', 'app:isPageSchemaV4Compatible'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
       isMailerSetup: crowi.mailService.isMailerSetup,

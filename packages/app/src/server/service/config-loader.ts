@@ -172,6 +172,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  IS_PAGE_SCHEMA_V4_COMPATIBLE: {
+    ns:      'crowi',
+    key:     'app:isPageSchemaV4Compatible',
+    type:    ValueType.STRING,
+    default: false,
+  },
   S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:serverType',

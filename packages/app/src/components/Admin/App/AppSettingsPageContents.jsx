@@ -2,19 +2,36 @@ import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppSetting from './AppSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import MailSetting from './MailSetting';
 import PluginSetting from './PluginSetting';
 import FileUploadSetting from './FileUploadSetting';
+import { V4PageMigration } from './V4PageMigration';
+
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 class AppSettingsPageContents extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, adminAppContainer } = this.props;
+    const { isPageSchemaV4Compatible } = adminAppContainer.state;
 
     return (
       <Fragment>
+        {
+          !isPageSchemaV4Compatible
+          && (
+            <div className="row">
+              <div className="col-lg-12">
+                <h2 className="admin-setting-header">V4 Page Migration</h2>
+                <V4PageMigration />
+              </div>
+            </div>
+          )
+        }
+
         <div className="row">
           <div className="col-lg-12">
             <h2 className="admin-setting-header">{t('App Settings')}</h2>
@@ -55,8 +72,14 @@ class AppSettingsPageContents extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const AppSettingsPageContentsWrapper = withUnstatedContainers(AppSettingsPageContents, [AdminAppContainer]);
+
 AppSettingsPageContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
-export default withTranslation()(AppSettingsPageContents);
+export default withTranslation()(AppSettingsPageContentsWrapper);
