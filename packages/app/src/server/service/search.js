@@ -148,7 +148,7 @@ class SearchService {
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
     try {
-      return this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+      return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
       logger.error(err);
