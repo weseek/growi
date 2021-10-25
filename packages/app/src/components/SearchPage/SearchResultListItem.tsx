@@ -15,6 +15,7 @@ type Props ={
     lastUpdateUser: any
     elasticSearchResult: {
       snippet: string,
+      highlightedPath: string
     }
   },
   highlightedPath: string,
@@ -60,7 +61,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             <small className="mb-1">
               <i className="icon-fw icon-home"></i>
               {/* eslint-disable-next-line react/no-danger */}
-              <div dangerouslySetInnerHTML={{ __html: highlightedPath }}>{pagePathElem}</div>
+              <div dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.highlightedPath }}></div>
             </small>
             <div className="d-flex my-1 align-items-center">
               {/* page title */}
