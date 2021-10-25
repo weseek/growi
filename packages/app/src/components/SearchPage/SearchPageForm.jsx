@@ -40,8 +40,9 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <div className="input-group mb-3 d-flex">
-        <div className="flex-fill">
+      // TODO: modify design after other component is created
+      <div className="grw-search-form-in-search-result-page d-flex">
+        <div className="input-group flex-nowrap">
           <SearchForm
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
