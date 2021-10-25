@@ -232,6 +232,7 @@
     "stylelint": "^13.2.0",
     "stylelint-config-recess-order": "^2.0.1",
     "swagger2openapi": "^5.3.1",
+    "swr": "^1.0.1",
     "terser-webpack-plugin": "^4.1.0",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
