@@ -57,7 +57,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
       case 'Page:UPDATE':
         return <></>;
       case 'Page:COMMENT_CREATE':
-        return <></>;
+        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       case 'Page:COMMENT_UPDATE':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
