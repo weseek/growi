@@ -13,17 +13,17 @@ type Props ={
     path: string,
     noLink: boolean,
     lastUpdateUser: any
+    elasticSearchResult: {
+      snippet: string,
+    }
   },
-  snippet: string,
   highlightedPath: string,
   onClickInvoked: (data: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const {
-    page, snippet, highlightedPath, onClickInvoked,
-  } = props;
+  const { page, onClickInvoked } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -91,7 +91,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
             </div>
             {/* eslint-disable-next-line react/no-danger */}
-            <div className="mt-1" dangerouslySetInnerHTML={{ __html: snippet }}></div>
+            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
           </div>
         </div>
       </a>
