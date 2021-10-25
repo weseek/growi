@@ -165,13 +165,13 @@ class SearchService {
   formatResult(esResult) {
     esResult.data.forEach((data) => {
       const highlightData = data._highlight;
-      const snippet = highlightData['body.en'] || highlightData['body.ja'];
-      const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
+      const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+      const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
 
       data.elasticSearchResult = {
         snippet: filterXss.process(snippet),
         // todo: use filter xss.process() for matchedPath;
-        matchedPath: pathMatch || '',
+        matchedPath: pathMatch,
       };
     });
     return esResult;
