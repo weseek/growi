@@ -17,7 +17,7 @@ class SearchResultList extends React.Component {
             />
           );
         })}
-        <div className="mt-5 mx-auto">
+        <div className="mt-4 mx-auto">
           <PaginationWrapper
             activePage={1}
             changePage={() => { console.log('page chagned') }} // Todo: function to change state vars
