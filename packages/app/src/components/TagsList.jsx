@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import PaginationWrapper from './PaginationWrapper';
+import TagCloudContent from './TagCloudContent';
 
 class TagsList extends React.Component {
 
@@ -67,8 +68,11 @@ class TagsList extends React.Component {
     const messageForNoTag = this.state.tagData.length ? null : <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
 
     return (
-      <div className="text-center">
-        <div className="tag-list">
+      <div className="row text-center">
+        <div className="col-12 mb-5">
+          <TagCloudContent tags={this.state.tagData} />
+        </div>
+        <div className="col-12 tag-list">
           <ul className="list-group text-left">
             {this.generateTagList(this.state.tagData)}
           </ul>
