@@ -1,10 +1,14 @@
 export type PrivateData = {
   isPublic: false,
+  isPermalink: boolean,
+  id: string,
   path: string,
 }
 
 export type PublicData = {
   isPublic: true,
+  isPermalink: boolean,
+  id: string,
   path: string,
   pageBody: string,
   updatedAt: Date,
