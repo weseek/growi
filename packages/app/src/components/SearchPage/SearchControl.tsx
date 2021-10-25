@@ -40,29 +40,25 @@ const SearchControl: FC <Props> = (props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="d-flex my-4">
-        <div className="form-check border-gray">
+        <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
+          <label className="my-0 mr-2" htmlFor="flexCheckDefault">
+            {t('Include Subordinated Target Page', { target: '/user' })}
+          </label>
           <input
-            className="form-check-input"
             type="checkbox"
-            value=""
             id="flexCheckDefault"
             onClick={() => onExcludeUsersHome()}
           />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
-            {t('Include Subordinated Target Page', { target: '/user' })}
-          </label>
         </div>
-        <div className="form-check">
+        <div className="d-flex align-items-center border rounded border-gray px-2 mr-3">
+          <label className="my-0 mr-2" htmlFor="flexCheckChecked">
+            {t('Include Subordinated Target Page', { target: '/trash' })}
+          </label>
           <input
-            className="form-check-input"
             type="checkbox"
-            value=""
             id="flexCheckChecked"
             onClick={() => onExcludeTrash()}
           />
-          <label className="form-check-label" htmlFor="flexCheckChecked">
-            {t('Include Subordinated Target Page', { target: '/trash' })}
-          </label>
         </div>
       </div>
     </div>
