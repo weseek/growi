@@ -54,6 +54,11 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   const renderInAppNotificationContent = (): JSX.Element => {
     switch (componentName) {
+      // TODO Is the naming of componentName too subtle?
+      case 'Page:UPDATE':
+        return <></>;
+      case 'Page:COMMENT_CREATE':
+        return <></>;
       case 'Page:COMMENT_UPDATE':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
