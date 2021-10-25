@@ -17,10 +17,10 @@ class SearchResultList extends React.Component {
             />
           );
         })}
-        <div className="mt-4 mx-auto">
+        <div className="my-4 mx-auto">
           <PaginationWrapper
             activePage={1}
-            changePage={() => { console.log('page chagned') }} // Todo: function to change state vars
+            changePage={() => { console.log('page chagned') }} // Todo: replace this with a function to change state vars
             // a total number of pages that can be retrieved from elasticsearch on the current search condition
             totalItemsCount={10} // Todo: replace this with a state that dynamically changes its value
             // a number of pages to show in one page
