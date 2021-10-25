@@ -70,7 +70,7 @@ class TagsList extends React.Component {
     return (
       <div className="row text-center">
         <div className="col-12 mb-5 px-5">
-          <TagCloudBox tags={this.state.tagData} />
+          <TagCloudBox tags={this.state.tagData} minSize={20} />
         </div>
         <div className="col-12 tag-list">
           <ul className="list-group text-left">

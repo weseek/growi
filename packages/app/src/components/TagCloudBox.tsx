@@ -10,19 +10,20 @@ type Tags = {
 }
 
 type Props = {
-  tags:Tags[];
+  tags:Tags[],
+  minSize?: number,
+  maxSize?: number,
 }
 
 const MIN_FONT_SIZE = 12;
 const MAX_FONT_SIZE = 36;
 
 const TagCloudBox: FC<Props> = (props:Props) => {
-
   return (
     <>
       <TagCloud
-        minSize={MIN_FONT_SIZE}
-        maxSize={MAX_FONT_SIZE}
+        minSize={props.minSize || MIN_FONT_SIZE}
+        maxSize={props.maxSize || MAX_FONT_SIZE}
         tags={props.tags.map((tag) => {
           return { value: tag.name, count: tag.count };
         })}
