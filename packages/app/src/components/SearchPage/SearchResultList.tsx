@@ -19,15 +19,13 @@ type Props = {
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const SearchResultListItemAny: any = SearchResultListItem;
   return (
     <>
       {props.pages.map((page) => {
         return (
-          <SearchResultListItemAny
+          <SearchResultListItem
             page={page}
             onClickInvoked={props.onClickInvoked}
-            noLink
           />
         );
       })}

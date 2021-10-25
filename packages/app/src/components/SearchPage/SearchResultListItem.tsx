@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { Page } from './SearchResultList';
@@ -13,6 +13,62 @@ type Props ={
   onClickInvoked?: (data: string) => void,
 }
 
+type DropDownProp ={
+  page: Page,
+}
+
+const DropDownIcon: FC<Props> = (props:DropDownProp) => {
+
+  const { page } = props;
+  const { t } = useTranslation('');
+
+  return (
+    <>
+      <button
+        type="button"
+        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        data-toggle="dropdown"
+      >
+        <i className="fa fa-ellipsis-v text-muted"></i>
+      </button>
+      <div className="dropdown-menu dropdown-menu-right">
+
+        {/* TODO: if there is the following button in XD add it here
+        <button
+          type="button"
+          className="btn btn-link p-0"
+          value={page.path}
+          onClick={(e) => {
+            window.location.href = e.currentTarget.value;
+          }}
+        >
+          <i className="icon-login" />
+        </button>
+        */}
+
+        {/*
+          TODO: add function to the following buttons like using modal or others
+          ref: https://estoc.weseek.co.jp/redmine/issues/79026
+        */}
+        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+          <i className="icon-fw icon-fire"></i>{t('Delete')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+          <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+          <i className="icon-fw icon-docs"></i>{t('Duplicate')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+          <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
+        </button>
+      </div>
+    </>
+  );
+
+};
+
+
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const { page, onClickInvoked } = props;
 
@@ -22,48 +78,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const renderDropDownIcon = (pageId: string, revisionId: string, pagePath: string): JSX.Element => {
-    return (
-      <>
-        <button
-          type="button"
-          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
-          data-toggle="dropdown"
-        >
-          <i className="fa fa-ellipsis-v text-muted"></i>
-        </button>
-        <div className="dropdown-menu dropdown-menu-right">
-          {/* TODO: if there is the following button in XD add it here
-          <button
-            type="button"
-            className="btn btn-link p-0"
-            value={page.path}
-            onClick={(e) => {
-              window.location.href = e.currentTarget.value;
-            }}
-          >
-            <i className="icon-login" />
-          </button>
-          */}
-          {/* TODO: add function to the following buttons */}
-          <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
-            <i className="icon-fw icon-fire"></i>Delete
-          </button>
-          <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
-            <i className="icon-fw icon-docs"></i>add to bookmarks
-          </button>
-          <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
-            <i className="icon-fw icon-docs"></i>Duplicate
-          </button>
-          <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
-            <i className="icon-fw  icon-action-redo"></i>Move/Rename
-          </button>
-        </div>
-      </>
-    );
-  };
-
-  const renderPage = useMemo(() => {
+  const renderPageItem = useMemo(() => {
     return (
       <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
         <a
@@ -102,7 +117,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 </div>
                 {/* doropdown icon */}
                 <div className="ml-auto">
-                  {renderDropDownIcon(page._id, page.revision, page.path)}
+                  <DropDownIcon page={page} />
                 </div>
               </div>
               <div className="mt-1">{page.snippet}</div>
@@ -113,7 +128,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     );
   }, []);
 
-  const pageItem: JSX.Element = renderPage;
+  const pageItem: JSX.Element = renderPageItem;
 
   return (
     <>
