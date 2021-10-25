@@ -32,8 +32,8 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
-      includeUsersHome: false,
-      includeTrash: false,
+      excludeUsersHome: true,
+      exxcludeTrash: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -64,11 +64,11 @@ class SearchPage extends React.Component {
   }
 
   onIncludeUsersHome() {
-    this.setState({ includeUsersHome: !this.state.includeUsersHome });
+    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
   }
 
   onIncludeTrash() {
-    this.setState({ includeTrash: !this.state.includeTrash });
+    this.setState({ exxcludeTrash: !this.state.exxcludeTrash });
   }
 
   changeURL(keyword, refreshHash) {
@@ -86,10 +86,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.includeTrash) {
+    if (this.state.exxcludeTrash) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.includeUsersHome) {
+    if (this.state.excludeUsersHome) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 

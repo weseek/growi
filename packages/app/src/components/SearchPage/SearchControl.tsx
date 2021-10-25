@@ -40,7 +40,6 @@ const SearchControl: FC <Props> = (props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="d-flex my-4">
-        {/* ボタン1 */}
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
             {t('Include Subordinated Target Page', { target: '/user' })}
@@ -51,7 +50,6 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClick={() => onIncludeUsersHome()}
           />
         </div>
-        {/* ボタン２ */}
         <div className="d-flex align-items-center border rounded border-gray px-2 mr-3">
           <label className="my-0 mr-2" htmlFor="flexCheckChecked">
             {t('Include Subordinated Target Page', { target: '/trash' })}
