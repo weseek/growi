@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { PageUpdatedNotification, PageCommentCreatedNotification } from './PageContent';
 import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import { PageUpdatedNotification, PageCommentCreatedNotification, PageCommentUpdatedNotification } from './PageContent';
+
 
 interface Props {
   notification: IInAppNotification
@@ -59,7 +60,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
       case 'Page:COMMENT_CREATE':
         return <PageCommentCreatedNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       case 'Page:COMMENT_UPDATE':
-        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageCommentUpdatedNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
         return <></>;
     }
