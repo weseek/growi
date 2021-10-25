@@ -4,6 +4,15 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:search');
 const xss = require('xss');
 
+// options for filtering xss
+const filterXssOptions = {
+  whiteList: {
+    em: ['class'],
+  },
+};
+
+const filterXss = new xss.FilterXSS(filterXssOptions);
+
 class SearchService {
 
   constructor(crowi) {
@@ -138,15 +147,8 @@ class SearchService {
   }
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
-    const options = {
-      whiteList: {
-        em: ['class'],
-      },
-    };
-    const myXss = new xss.FilterXSS(options);
-    let esResult;
     try {
-      esResult = await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+      return this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
       logger.error(err);
@@ -155,16 +157,22 @@ class SearchService {
       this.isErrorOccuredOnSearching = true;
       throw err;
     }
+  }
+
+  /**
+   * formatting result
+   */
+  formatResult(esResult) {
     esResult.data.forEach((data) => {
-      const elasticSearchResult = { snippet: '', matchedPath: '' };
       const highlightData = data._highlight;
       const snippet = highlightData['body.en'] || highlightData['body.ja'];
-      elasticSearchResult.snippet = myXss.process(snippet);
-      if (highlightData['path.en'] != null || highlightData['path.ja'] != null) {
-        const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
-        elasticSearchResult.matchedPath = pathMatch;
-      }
-      data.elasticSearchResultInfo = elasticSearchResult;
+      const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
+
+      data.elasticSearchResult = {
+        snippet: filterXss.process(snippet),
+        // todo: use filter xss.process() for matchedPath;
+        matchedPath: pathMatch || '',
+      };
     });
     return esResult;
   }
