@@ -681,11 +681,22 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO: use job to show progress
   router.get('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
+    const Page = crowi.model('Page');
+    await Page.insertMany([
+      { path: '/XSAUNMAX' },
+      { path: '/XSAUNMAX/B1' },
+      { path: '/XSAUNMAX/B2' },
+      { path: '/XSAUNMAX/B1/C1' },
+      { path: '/XSAUNMAX/B2/C1' },
+      { path: '/XSAUNMAX/B2/C2/D1' },
+      { path: '/XSAUNMAX/B3/f/f/f/f' },
+    ]);
 
     try {
       const Page = crowi.model('Page');
-      // not await
+      // not await but should be dealed as a job
       crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
     }
     catch (err) {

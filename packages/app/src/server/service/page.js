@@ -742,15 +742,17 @@ class PageService {
     const BATCH_SIZE = 100;
     const Page = this.crowi.model('Page');
 
-    let randomPagesStream = await Page
+    const randomPagesStream = await Page
       .aggregate([
-        {
-          $sample: {
-            size: BATCH_SIZE,
-          },
-        },
+        // TODO: randomize somehow sample does not work when the result is under 100?
+        // {
+        //   $sample: {
+        //     size: BATCH_SIZE,
+        //   },
+        // },
         {
           $match: {
+            path: /^\/XSAUNMAX/g,
             grant,
             parent: null,
           },
@@ -770,11 +772,15 @@ class PageService {
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
+        console.log('ぺーじす', pages, 'ぺーじす');
         // bulkWrite to update parent
-        const updateManyOperations = await Promise.all(pages.map(async(page) => {
+        const updateManyOperations = await Promise.all(pages.map(async(page, index) => {
           const parentPath = pathlib.dirname(page.path);
+          console.log(`PARENT_PATH${index}`, parentPath);
 
-          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1 }).lean().exec();
+
+          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1, path: 1 }).lean().exec(); // かえる(path)
+          console.log(`PARENT${index}`, parent);
           if (parent == null) {
             try {
               parent = await (new Page({ path: parentPath, isEmpty: true })).save();
@@ -785,13 +791,22 @@ class PageService {
             }
           }
 
+          let parentPathForRegexp = parentPath;
+          if (parentPath === '/') {
+            parentPathForRegexp = '';
+          }
+
+          const parentId = parent._id;
+
+          console.log(`LAST_PARENTID${index}`, parentId);
+
           return {
             updateMany: {
               filter: {
-                path: new RegExp(`^\\/${parentPath}\\/[^/]+\\/?$`), // ex. /parent/any_child
+                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') }, // ex. /parent/any_child OR /any_level1
               },
               update: {
-                parent,
+                parent: parentId,
               },
             },
           };
@@ -812,9 +827,7 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    randomPagesStream = null;
-
-    if ((await Page.exists({ grant, parent: null, path: { $ne: '/' } }))) {
+    if (false && (await Page.exists({ grant, parent: null }))) {
       await this.v5RecursiveMigration(grant, rootPath);
     }
   }
