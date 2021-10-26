@@ -30,7 +30,7 @@ module.exports = (crowi) => {
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
 
-    interface IdocType {
+    interface IDoc {
       status: string,
       _id: string
       action: string,
@@ -42,8 +42,8 @@ module.exports = (crowi) => {
       id: string,
     }
 
-    interface IseriarizedPaginationResult {
-      docs: Array<IdocType | null>,
+    interface IPaginationResult {
+      docs: Array<IDoc | null>,
       totalDocs: number,
       offset: number,
       limit: number,
@@ -56,7 +56,7 @@ module.exports = (crowi) => {
       nextPage: number | null,
     }
 
-    const seriarizedPaginationResult: IseriarizedPaginationResult = {
+    const seriarizedPaginationResult: IPaginationResult = {
       docs: [],
       totalDocs: paginationResult.totalDocs,
       offset: paginationResult.offset,
@@ -80,8 +80,6 @@ module.exports = (crowi) => {
       const serializedActionUsers = doc.actionUsers.map((actionUser) => {
         return serializeUserSecurely(actionUser);
       });
-
-      console.log('serializedActionUsers', serializedActionUsers);
 
       seriarizedPaginationResult.docs.push({
         status: doc.status,
