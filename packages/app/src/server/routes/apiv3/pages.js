@@ -685,7 +685,8 @@ module.exports = (crowi) => {
 
     try {
       const Page = crowi.model('Page');
-      await crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
+      // not await
+      crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
     }
     catch (err) {
       logger.error('Error\n', err);
