@@ -21,8 +21,8 @@ class SearchResultList extends React.Component {
           <PaginationWrapper
             activePage={1}
             changePage={() => { console.log('page chagned') }} // Todo: replace this with a function to change state vars
-            // a total number of pages that can be retrieved from elasticsearch on the current search condition
-            totalItemsCount={10} // Todo: replace this with a state that dynamically changes its value
+            // a total number of pages retrieved from elasticsearch on the current search condition
+            totalItemsCount={this.props.searchResultCount}
             // a number of pages to show in one page
             pagingLimit={5} // Todo: replace this with a state that dynamically changes its value
           />
@@ -37,6 +37,7 @@ SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
+  searchResultCount: PropTypes.number,
   onClickInvoked: PropTypes.func,
   onChangeInvoked: PropTypes.func,
 };

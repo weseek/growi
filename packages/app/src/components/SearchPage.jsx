@@ -32,6 +32,7 @@ class SearchPage extends React.Component {
       searchResultMeta: {},
       selectedPage: {},
       selectedPages: new Set(),
+      searchResultCount: 0,
       excludeUsersHome: true,
       excludeTrash: true,
     };
@@ -124,6 +125,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: res.data,
             searchResultMeta: res.meta,
+            searchResultCount: res.totalCount,
             selectedPage: res.data[0],
           });
         }
@@ -177,6 +179,7 @@ class SearchPage extends React.Component {
         deletionMode={false}
         selectedPage={this.state.selectedPage}
         selectedPages={this.state.selectedPages}
+        searchResultCount={this.state.searchResultCount}
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}
       >
