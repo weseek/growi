@@ -77,6 +77,4 @@ export const InAppNotification = (props: Props): JSX.Element => {
       </div>
     </>
   );
-
-
 };

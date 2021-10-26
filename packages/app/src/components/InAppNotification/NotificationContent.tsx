@@ -48,5 +48,4 @@ export const PageUpdatedNotification = (props: Props): JSX.Element => {
       <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
     </>
   );
-
 };

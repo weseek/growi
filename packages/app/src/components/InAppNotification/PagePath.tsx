@@ -21,5 +21,4 @@ export const PagePath = (props: Props): JSX.Element => {
       {pathPrefix}<strong>{shortPath}</strong>
     </>
   );
-
 };
