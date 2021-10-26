@@ -681,7 +681,7 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO: use job to show progress
+  // TODO: use socket conn to show progress
   router.get('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
     try {
       const Page = crowi.model('Page');

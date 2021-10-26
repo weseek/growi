@@ -741,6 +741,7 @@ class PageService {
   async v5RecursiveMigration(grant, rootPath = null) {
     const BATCH_SIZE = 100;
     const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
 
     const randomPagesStream = await Page
       .aggregate([
@@ -773,25 +774,39 @@ class PageService {
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
-        // bulkWrite to update parent
-        const updateManyOperations = await Promise.all(pages.map(async(page) => {
-          const parentPath = pathlib.dirname(page.path);
+        // make list to create empty pages
+        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPaths = Array.from(parentPathsSet);
 
-          // get parent OR create an empty page as a parent
-          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1 }).lean().exec();
-          if (parent == null) {
-            try {
-              parent = await (new Page({ path: parentPath, isEmpty: true })).save();
-            }
-            catch (err) {
-              logger.error('Couldnt create parent', err);
-              throw err;
-            }
-          }
+        // find existing parents
+        const builder1 = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
+        const existingParents = await builder1
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+        const existingParentPaths = existingParents.map(parent => parent.path);
+
+        // paths to create empty pages
+        const notExistingParentPaths = parentPaths.filter(path => !existingParentPaths.includes(path));
+
+        // insertMany empty pages
+        await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
+
+        // find parents again
+        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+        const parents = await builder2
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+
+        // bulkWrite to update parent
+        const updateManyOperations = parents.map((parent) => {
           const parentId = parent._id;
 
           // modify to adjust for RegExp
-          const parentPathForRegexp = parentPath === '/' ? parentPath : '';
+          const parentPath = parent.path === '/' ? '' : parent.path;
 
           // TODO: consider filter to improve the target selection
           return {
@@ -799,15 +814,14 @@ class PageService {
               filter: {
                 // regexr.com/6889f
                 // ex. /parent/any_child OR /any_level1
-                path: { $regex: new RegExp(`^${parentPathForRegexp}(\\/[^/]+)\\/?$`, 'g') },
+                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
               },
               update: {
                 parent: parentId,
               },
             },
           };
-        }));
-
+        });
         await Page.bulkWrite(updateManyOperations);
 
         callback();
@@ -822,8 +836,7 @@ class PageService {
       .pipe(migratePagesStream);
 
     await streamToPromise(migratePagesStream);
-
-    if ((await Page.exists({ grant, parent: null }))) {
+    if (await Page.exists({ grant, parent: null })) {
       await this.v5RecursiveMigration(grant, rootPath);
     }
   }
