@@ -1,4 +1,5 @@
 import escapeStringRegexp from 'escape-string-regexp';
+import path from 'path';
 
 /**
  * Whether path is the top page
@@ -131,4 +132,32 @@ export const generateEditorPath = (...paths: string[]): string => {
   catch (err) {
     throw new Error('Invalid path format');
   }
+};
+
+/**
+ * Get the child path
+ * @param {string} path
+ * @returns {string}
+ */
+export const path2name = (path: string): string => {
+  const name = path;
+
+  // /.../YYYY/MM/DD
+  if (name.match(/^.*?([^/]+\/\d{4}\/\d{2}\/\d{2}\/?)$/)) {
+    return name.replace(/^.*?([^/]+\/\d{4}\/\d{2}\/\d{2}\/?)$/, '$1');
+  }
+
+  // /.../YYYY/MM
+  if (name.match(/^.*?([^/]+\/\d{4}\/\d{2}\/?)$/)) {
+    return name.replace(/^.*?([^/]+\/\d{4}\/\d{2}\/?)$/, '$1');
+  }
+
+  // /.../YYYY
+  if (name.match(/^.*?([^/]+\/\d{4}\/?)$/)) {
+    return name.replace(/^.*?([^/]+\/\d{4}\/?)$/, '$1');
+  }
+
+  // Pick up the end of the page
+  const suffix = name.replace(/.*\/(.+\/?)$/, '$1');
+  return suffix || name;
 };
