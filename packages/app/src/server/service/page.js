@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
+const pathlib = require('path');
 
 const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
@@ -734,6 +735,109 @@ class PageService {
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
+
+  async v5RecursiveMigration(grant, rootPath = null) {
+    const BATCH_SIZE = 100;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const randomPagesStream = await Page
+      .aggregate([
+        // TODO: randomize somehow sample does not work when the result is under 100?
+        // {
+        //   $sample: {
+        //     size: BATCH_SIZE,
+        //   },
+        // },
+        {
+          $match: {
+            grant,
+            parent: null,
+          },
+        },
+        {
+          $project: { // minimize data to fetch
+            _id: 1,
+            path: 1,
+          },
+        },
+      ])
+      .cursor({ batchSize: BATCH_SIZE }) // get stream
+      .exec();
+
+    // use batch stream
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    // migrate all siblings for each page
+    const migratePagesStream = new Writable({
+      objectMode: true,
+      async write(pages, encoding, callback) {
+        // make list to create empty pages
+        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPaths = Array.from(parentPathsSet);
+
+        // find existing parents
+        const builder1 = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
+        const existingParents = await builder1
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+        const existingParentPaths = existingParents.map(parent => parent.path);
+
+        // paths to create empty pages
+        const notExistingParentPaths = parentPaths.filter(path => !existingParentPaths.includes(path));
+
+        // insertMany empty pages
+        await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
+
+        // find parents again
+        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+        const parents = await builder2
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+
+        // bulkWrite to update parent
+        const updateManyOperations = parents.map((parent) => {
+          const parentId = parent._id;
+
+          // modify to adjust for RegExp
+          const parentPath = parent.path === '/' ? '' : parent.path;
+
+          // TODO: consider filter to improve the target selection
+          return {
+            updateMany: {
+              filter: {
+                // regexr.com/6889f
+                // ex. /parent/any_child OR /any_level1
+                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+              },
+              update: {
+                parent: parentId,
+              },
+            },
+          };
+        });
+        await Page.bulkWrite(updateManyOperations);
+
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+
+    randomPagesStream
+      .pipe(batchStream)
+      .pipe(migratePagesStream);
+
+    await streamToPromise(migratePagesStream);
+    if (await Page.exists({ grant, parent: null })) {
+      await this.v5RecursiveMigration(grant, rootPath);
     }
   }
 
