@@ -135,11 +135,11 @@ export const generateEditorPath = (...paths: string[]): string => {
 };
 
 /**
- * Get the child path
+ * Get page title
  * @param {string} path
  * @returns {string}
  */
-export const path2name = (path: string): string => {
+export const getPageTitle = (path: string): string => {
   const name = path;
 
   // /.../YYYY/MM/DD
