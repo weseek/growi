@@ -116,11 +116,6 @@ class SearchPage extends React.Component {
       .then((res) => {
         this.changeURL(keyword);
         if (res.data.length > 0) {
-          // TODO: remove creating dummy snippet lines when the data with snippet is abole to be retrieved
-          res.data.forEach((page) => {
-            page.snippet = `dummy snippet dummpy snippet dummpy snippet dummpy snippet dummpy snippet
-            dummpy snippet dummpy snippet dummpy snippet dummpy snippet`;
-          });
           this.setState({
             searchedKeyword: keyword,
             searchedPages: res.data,
