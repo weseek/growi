@@ -8,7 +8,7 @@ import SiteUrlSetting from './SiteUrlSetting';
 import MailSetting from './MailSetting';
 import PluginSetting from './PluginSetting';
 import FileUploadSetting from './FileUploadSetting';
-import { V4PageMigration } from './V4PageMigration';
+import { V5PageMigration } from './V5PageMigration';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
@@ -16,17 +16,17 @@ class AppSettingsPageContents extends React.Component {
 
   render() {
     const { t, adminAppContainer } = this.props;
-    const { isPageSchemaV4Compatible } = adminAppContainer.state;
+    const { isV5Compatible } = adminAppContainer.state;
 
     return (
       <Fragment>
         {
-          !isPageSchemaV4Compatible
+          !isV5Compatible
           && (
             <div className="row">
               <div className="col-lg-12">
-                <h2 className="admin-setting-header">V4 Page Migration</h2>
-                <V4PageMigration />
+                <h2 className="admin-setting-header">V5 Page Migration</h2>
+                <V5PageMigration isV5Compatible={isV5Compatible} />
               </div>
             </div>
           )
