@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
+const pathlib = require('path');
 
 const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
@@ -734,6 +735,87 @@ class PageService {
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
+
+  async v5RecursiveMigration(grant, rootPath = null) {
+    const BATCH_SIZE = 100;
+    const Page = this.crowi.model('Page');
+
+    let randomPagesStream = await Page
+      .aggregate([
+        {
+          $sample: {
+            size: BATCH_SIZE,
+          },
+        },
+        {
+          $match: {
+            grant,
+            parent: null,
+          },
+        },
+        {
+          $project: { // minimize data to fetch
+            _id: 1,
+            path: 1,
+          },
+        },
+      ])
+      .cursor({ batchSize: BATCH_SIZE }) // get stream
+      .exec();
+
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    const migratePagesStream = new Writable({
+      objectMode: true,
+      async write(pages, encoding, callback) {
+        // bulkWrite to update parent
+        const updateManyOperations = await Promise.all(pages.map(async(page) => {
+          const parentPath = pathlib.dirname(page.path);
+
+          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1 }).lean().exec();
+          if (parent == null) {
+            try {
+              parent = await (new Page({ path: parentPath, isEmpty: true })).save();
+            }
+            catch (err) {
+              logger.error('Couldnt create parent', err);
+              throw err;
+            }
+          }
+
+          return {
+            updateMany: {
+              filter: {
+                path: new RegExp(`^\\/${parentPath}\\/[^/]+\\/?$`), // ex. /parent/any_child
+              },
+              update: {
+                parent,
+              },
+            },
+          };
+        }));
+
+        await Page.bulkWrite(updateManyOperations);
+
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+
+    randomPagesStream
+      .pipe(batchStream)
+      .pipe(migratePagesStream);
+
+    await streamToPromise(migratePagesStream);
+
+    randomPagesStream = null;
+
+    if ((await Page.exists({ grant, parent: null, path: { $ne: '/' } }))) {
+      await this.v5RecursiveMigration(grant, rootPath);
     }
   }
 

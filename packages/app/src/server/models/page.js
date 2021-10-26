@@ -37,6 +37,10 @@ const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
 const pageSchema = new mongoose.Schema({
+  parent: {
+    type: ObjectId, ref: 'Page', default: null,
+  },
+  isEmpty: { type: Boolean, default: false },
   path: {
     type: String, required: true, index: true, unique: true,
   },
