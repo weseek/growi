@@ -30,6 +30,7 @@ module.exports = (crowi) => {
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
 
+    // TODO: serialize actionUsers as well by #80112
     paginationResult.docs.forEach((doc) => {
       if (doc.user != null && doc.user instanceof User) {
         doc.user = serializeUserSecurely(doc.user);
