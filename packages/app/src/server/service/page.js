@@ -777,8 +777,8 @@ class PageService {
         const updateManyOperations = await Promise.all(pages.map(async(page) => {
           const parentPath = pathlib.dirname(page.path);
 
-          // get parentId for updating siblings
-          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1, path: 1 }).lean().exec();
+          // get parent OR create an empty page as a parent
+          let parent = await Page.findOne({ path: parentPath }).select({ _id: 1 }).lean().exec();
           if (parent == null) {
             try {
               parent = await (new Page({ path: parentPath, isEmpty: true })).save();
