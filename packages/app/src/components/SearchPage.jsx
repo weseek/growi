@@ -35,7 +35,7 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 2,
+      pagingLimit: 0,
       excludeUsersHome: true,
       excludeTrash: true,
     };
@@ -47,6 +47,8 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPageChagned = this.onPageChagned.bind(this);
+    this.getDisplayPages = this.getDisplayPages.bind(this);
+
   }
 
   componentDidMount() {
@@ -54,6 +56,9 @@ class SearchPage extends React.Component {
     if (keyword !== '') {
       this.search({ keyword });
     }
+    this.setState({
+      pagingLimit: 2, // change to an appropriate limit number
+    });
   }
 
   static getQueryByLocation(location) {
@@ -108,6 +113,8 @@ class SearchPage extends React.Component {
         searchingKeyword: '',
         searchedPages: [],
         searchResultMeta: {},
+        searchResultCount: 0,
+        activePage: 1,
       });
 
       return true;
@@ -131,6 +138,7 @@ class SearchPage extends React.Component {
             searchResultMeta: res.meta,
             searchResultCount: res.totalCount,
             selectedPage: res.data[0],
+            activePage: 1,
           });
         }
         else {
@@ -138,7 +146,9 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
+            searchResultCount: res.totalCount,
             selectedPage: {},
+            activePage: 1,
           });
         }
       })
@@ -165,11 +175,20 @@ class SearchPage extends React.Component {
     }
   }
 
-   onPageChagned = (selectedPage) => {
-     this.setState({
-       activePage: selectedPage,
-     });
-   }
+  onPageChagned = (selectedPage) => {
+    this.setState({
+      activePage: selectedPage,
+    });
+  }
+
+  getDisplayPages = () => {
+    // return empty array if no pages returned
+    if (this.state.searchResultCount === 0) return [];
+
+    const end = this.state.activePage * this.state.pagingLimit;
+    const start = end - this.state.pagingLimit;
+    return this.state.searchedPages.slice(start, end);
+  }
 
   renderSearchResultContent = () => {
     return (
@@ -186,7 +205,7 @@ class SearchPage extends React.Component {
     return (
       <>
         <SearchResultList
-          pages={this.state.searchedPages}
+          pages={this.getDisplayPages()}
           deletionMode={false}
           selectedPage={this.state.selectedPage}
           selectedPages={this.state.selectedPages}
