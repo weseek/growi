@@ -3,7 +3,6 @@ import { InAppNotification } from '../../models/in-app-notification';
 const express = require('express');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
-
 const router = express.Router();
 
 
