@@ -12,6 +12,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import PaginationWrapper from './PaginationWrapper';
 
 export const specificPathNames = {
   user: '/user',
@@ -33,6 +34,8 @@ class SearchPage extends React.Component {
       selectedPage: {},
       selectedPages: new Set(),
       searchResultCount: 0,
+      activePage: 1,
+      pagingLimit: 2,
       excludeUsersHome: true,
       excludeTrash: true,
     };
@@ -43,6 +46,7 @@ class SearchPage extends React.Component {
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.onPageChagned = this.onPageChagned.bind(this);
   }
 
   componentDidMount() {
@@ -161,6 +165,12 @@ class SearchPage extends React.Component {
     }
   }
 
+   onPageChagned = (selectedPage) => {
+     this.setState({
+       activePage: selectedPage,
+     });
+   }
+
   renderSearchResultContent = () => {
     return (
       <SearchResultContent
@@ -174,16 +184,25 @@ class SearchPage extends React.Component {
 
   renderSearchResultList = () => {
     return (
-      <SearchResultList
-        pages={this.state.searchedPages}
-        deletionMode={false}
-        selectedPage={this.state.selectedPage}
-        selectedPages={this.state.selectedPages}
-        searchResultCount={this.state.searchResultCount}
-        onClickInvoked={this.selectPage}
-        onChangedInvoked={this.toggleCheckBox}
-      >
-      </SearchResultList>
+      <>
+        <SearchResultList
+          pages={this.state.searchedPages}
+          deletionMode={false}
+          selectedPage={this.state.selectedPage}
+          selectedPages={this.state.selectedPages}
+          onClickInvoked={this.selectPage}
+          onChangedInvoked={this.toggleCheckBox}
+        >
+        </SearchResultList>
+        <div className="my-4 mx-auto">
+          <PaginationWrapper
+            activePage={this.state.activePage}
+            changePage={this.onPageChagned}
+            totalItemsCount={this.state.searchResultCount}
+            pagingLimit={this.state.pagingLimit}
+          />
+        </div>
+      </>
     );
   }
 
