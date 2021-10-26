@@ -22,6 +22,7 @@ export default class AdminAppContainer extends Container {
       isEmailPublishedForNewUser: true,
       fileUpload: '',
 
+      isV5Compatible: null,
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
@@ -81,6 +82,7 @@ export default class AdminAppContainer extends Container {
       globalLang: appSettingsParams.globalLang,
       isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
+      isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
@@ -158,6 +160,13 @@ export default class AdminAppContainer extends Container {
    */
   changeFileUpload(fileUpload) {
     this.setState({ fileUpload });
+  }
+
+  /**
+   * Change site url
+   */
+  changeisV5Compatible(isV5Compatible) {
+    this.setState({ isV5Compatible });
   }
 
   /**

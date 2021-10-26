@@ -36,6 +36,7 @@ export const generateConfigsForInstalling = (): { [key: string]: any } => {
   config['app:installed'] = true;
   config['app:fileUpload'] = true;
   config['customize:isSavedStatesOfTabChanges'] = false;
+  config['app:isV5Compatible'] = true;
 
   return config;
 };
