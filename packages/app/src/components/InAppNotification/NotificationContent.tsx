@@ -9,7 +9,7 @@ interface Props {
   onClick: () => void
 }
 
-export const PageCommentCreatedNotification = (props: Props): JSX.Element => {
+export const PageCommentNotification = (props: Props): JSX.Element => {
 
   return (
     <>
@@ -22,20 +22,7 @@ export const PageCommentCreatedNotification = (props: Props): JSX.Element => {
   );
 };
 
-export const PageCommentUpdatedNotification = (props: Props): JSX.Element => {
-
-  return (
-    <>
-      <div>
-        <b>{props.actionUsers}</b> comment updated on {props.notification.target.path}
-      </div>
-      <i className="fa fa-comment-o mr-2" />
-      <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-    </>
-  );
-};
-
-export const PageUpdatedNotification = (props: Props): JSX.Element => {
+export const PageUpdateNotification = (props: Props): JSX.Element => {
 
   return (
     <>
