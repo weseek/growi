@@ -1,6 +1,7 @@
 import { InAppNotification } from '../../models/in-app-notification';
 
 const express = require('express');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const inAppNotificationService = crowi.inAppNotificationService;
+  const User = crowi.model('User');
 
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
@@ -27,6 +29,14 @@ module.exports = (crowi) => {
     const requestLimit = limit + 1;
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
+
+    // TODO: serialize actionUsers as well by #80112
+    paginationResult.docs.forEach((doc) => {
+      if (doc.user != null && doc.user instanceof User) {
+        doc.user = serializeUserSecurely(doc.user);
+      }
+    });
+
     return res.apiv3(paginationResult);
 
   });
