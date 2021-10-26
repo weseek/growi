@@ -30,7 +30,7 @@ jobs:
         !startsWith( github.head_ref, 'dependabot/' ))
 
     steps:
-      - uses: amannn/action-semantic-pull-request@v3.4.2
+      - uses: amannn/action-semantic-pull-request@v3.4.4
         with:
           types: |
             feat
