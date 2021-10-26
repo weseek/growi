@@ -111,6 +111,7 @@ class SearchPage extends React.Component {
     if (keyword === '') {
       this.setState({
         searchingKeyword: '',
+        searchedKeyword: '',
         searchedPages: [],
         searchResultMeta: {},
         searchResultCount: 0,
