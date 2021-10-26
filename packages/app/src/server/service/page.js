@@ -797,7 +797,9 @@ class PageService {
           return {
             updateMany: {
               filter: {
-                path: { $regex: new RegExp(`^${parentPathForRegexp}(\\/[^/]+)\\/?$`, 'g') }, // ex. /parent/any_child OR /any_level1
+                // regexr.com/6889f
+                // ex. /parent/any_child OR /any_level1
+                path: { $regex: new RegExp(`^${parentPathForRegexp}(\\/[^/]+)\\/?$`, 'g') },
               },
               update: {
                 parent: parentId,
