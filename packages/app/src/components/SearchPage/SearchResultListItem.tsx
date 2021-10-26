@@ -10,10 +10,12 @@ const logger = loggerFactory('growi:searchResultList');
 type Props ={
   page: {
     _id: string,
-    snippet: string,
     path: string,
     noLink: boolean,
     lastUpdateUser: any
+    elasticSearchResult: {
+      snippet: string,
+    }
   },
   onClickInvoked: (data: string) => void,
 }
@@ -27,6 +29,10 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+
+  // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
+  //         when keyword is not in page content, display revisionBody.
+  // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
 
   return (
     <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
@@ -82,7 +88,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </button> */}
 
             </div>
-            <div className="mt-1">{page.snippet}</div>
+            {/* eslint-disable-next-line react/no-danger */}
+            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
           </div>
         </div>
       </a>

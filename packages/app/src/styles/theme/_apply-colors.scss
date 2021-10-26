@@ -591,6 +591,9 @@ body.pathname-sidebar {
 .search-result {
   .search-result-list {
     .page-list {
+      .highlighted-keyword {
+        background-color: $bgcolor-keyword-highlighted;
+      }
       .page-list-ul {
         > li.nav-item > a.nav-link {
           color: inherit;
