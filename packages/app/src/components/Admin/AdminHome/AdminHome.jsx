@@ -34,15 +34,19 @@ class AdminHome extends React.Component {
 
   render() {
     const { t, adminHomeContainer, adminAppContainer } = this.props;
-    const { isPageSchemaV4Compatible } = adminAppContainer.state;
+    const { isV5Compatible } = adminAppContainer.state;
+
+    let alertStyle = 'alert-info';
+    if (isV5Compatible == null) alertStyle = 'alert-warning';
 
     return (
       <Fragment>
         {
-          !isPageSchemaV4Compatible
+          // not show if true
+          !isV5Compatible
           && (
-            <div className="alert alert-warning">
-              GROWI is running with v4 compatible mode. To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
+            <div className={`alert ${alertStyle}`}>
+              GROWI is running with v4 compatible pages. To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
               <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
                 <i className="fa fa-link ml-1" aria-hidden="true"></i>
                 <strong>Upgrade to v5</strong>
