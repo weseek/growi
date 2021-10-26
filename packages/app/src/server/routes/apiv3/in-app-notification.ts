@@ -42,7 +42,7 @@ module.exports = (crowi) => {
       id: string,
     }
 
-    interface InewPaginationResult {
+    interface IseriarizedPaginationResult {
       docs: Array<IdocType | null>,
       totalDocs: number,
       offset: number,
@@ -56,7 +56,7 @@ module.exports = (crowi) => {
       nextPage: number | null,
     }
 
-    const newPaginationResult: InewPaginationResult = {
+    const seriarizedPaginationResult: IseriarizedPaginationResult = {
       docs: [],
       totalDocs: paginationResult.totalDocs,
       offset: paginationResult.offset,
@@ -83,7 +83,7 @@ module.exports = (crowi) => {
 
       console.log('serializedActionUsers', serializedActionUsers);
 
-      newPaginationResult.docs.push({
+      seriarizedPaginationResult.docs.push({
         status: doc.status,
         _id: doc._id,
         action: doc.action,
@@ -94,14 +94,9 @@ module.exports = (crowi) => {
         actionUsers: serializedActionUsers,
         id: doc.status,
       });
-
-
-      console.log('serializedActionUsers', serializedActionUsers);
-
-      // console.log('newPaginationResult', newPaginationResult);
     });
 
-    return res.apiv3(newPaginationResult);
+    return res.apiv3(seriarizedPaginationResult);
 
   });
 
