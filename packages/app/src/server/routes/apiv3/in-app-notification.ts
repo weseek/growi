@@ -35,7 +35,7 @@ module.exports = (crowi) => {
       _id: string
       action: string,
       target: [],
-      user: [],
+      user: typeof User,
       createdAt: Date,
       targetModel: string,
       actionUsers: Array<typeof User>,
