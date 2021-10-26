@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
@@ -18,7 +18,6 @@ type Props ={
       highlightedPath: string
     }
   },
-  highlightedPath: string,
   onClickInvoked: (data: string) => void,
 }
 
@@ -30,7 +29,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const pageId = `#${page._id}`;
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
-  const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.
