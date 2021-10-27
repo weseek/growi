@@ -680,5 +680,21 @@ module.exports = (crowi) => {
     }
 
   });
+
+  // TODO: use socket conn to show progress
+  router.get('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
+    try {
+      const Page = crowi.model('Page');
+      // TODO: not await but should be dealed as a job
+      crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
+    }
+    catch (err) {
+      logger.error('Error\n', err);
+      return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
+    }
+
+    return res.apiv3({});
+  });
+
   return router;
 };
