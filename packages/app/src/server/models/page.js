@@ -38,7 +38,7 @@ const STATUS_DELETED = 'deleted';
 
 const pageSchema = new mongoose.Schema({
   parent: {
-    type: ObjectId, ref: 'Page', default: null,
+    type: ObjectId, ref: 'Page', index: true, default: null,
   },
   isEmpty: { type: Boolean, default: false },
   path: {

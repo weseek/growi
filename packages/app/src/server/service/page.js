@@ -740,10 +740,13 @@ class PageService {
 
   async v5RecursiveMigration(grant, rootPath = null) {
     const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 3000;
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
-    const randomPagesStream = await Page
+    const total = await Page.countDocuments({ grant, parent: null });
+
+    let baseAggregation = Page
       .aggregate([
         {
           $match: {
@@ -755,23 +758,19 @@ class PageService {
           $project: { // minimize data to fetch
             _id: 1,
             path: 1,
-            pathLength: { $strLenCP: '$path' }, // calculate path length
           },
         },
-        {
-          $sort: { pathLength: -1 }, // get less same parent path
-        },
-      ])
-      .cursor({ batchSize: BATCH_SIZE }) // get stream
-      .exec();
+      ]);
+
+    // limit pages to get
+    if (total > PAGES_LIMIT) {
+      baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
+    }
+
+    const randomPagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
 
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
-
-
-    // determines the frequency of skipping a chunk (when N, chunks will be skipped when count is N * count)
-    const DROPOUT_MULTIPLIER = 2;
-    let count = 0;
 
     let countPages = 0;
 
@@ -779,10 +778,6 @@ class PageService {
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
-        // dropout
-        count++;
-        if (count % DROPOUT_MULTIPLIER !== 0) return callback();
-
         // make list to create empty pages
         const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
         const parentPaths = Array.from(parentPathsSet);
@@ -847,7 +842,7 @@ class PageService {
       .pipe(migratePagesStream);
 
     await streamToPromise(migratePagesStream);
-    if (await Page.exists({ grant, parent: null })) {
+    if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
       await this.v5RecursiveMigration(grant, rootPath);
     }
   }
