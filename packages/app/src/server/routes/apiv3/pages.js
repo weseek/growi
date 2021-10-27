@@ -684,16 +684,6 @@ module.exports = (crowi) => {
   // TODO: handle 'notNow' and 'upgrade' to either set config to false or start/resume migration 80202
   // TODO: use socket conn to show progress
   router.post('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
-    const Page = crowi.model('Page');
-    await Page.insertMany([
-      { path: '/ccccccc' },
-      { path: '/ccccccc/B1' },
-      { path: '/ccccccc/B2' },
-      { path: '/ccccccc/B1/C1' },
-      { path: '/ccccccc/B2/C1' },
-      { path: '/ccccccc/B2/C2/D1' },
-      { path: '/ccccccc/B3/f/f/f/f' },
-    ]);
     try {
       const Page = crowi.model('Page');
       // TODO: not await but should be dealed as a job
