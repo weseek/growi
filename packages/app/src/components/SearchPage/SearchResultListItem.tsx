@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:searchResultList');
 
 type Props ={
   page: ISearchedPage,
-  onClickInvoked?: (dISearchPageta: string) => void,
+  onClickInvoked?: (pageId: string) => void,
 }
 
 
@@ -110,17 +110,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <div className="d-flex mx-2">
                   <PageListMeta page={page} />
                 </div>
-                {/* doropdown icon */}
+                {/* doropdown icon includes page control buttons */}
                 <div className="ml-auto">
                   <PageItemControl page={page} />
                 </div>
               </div>
               <div className="mt-1">{page.snippet}</div>
             </div>
-
             {/* eslint-disable-next-line react/no-danger */}
             <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
-
           </div>
         </a>
       </li>

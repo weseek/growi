@@ -5,7 +5,6 @@ import { IPage } from '../../interfaces/page';
 export type ISearchedPage = IPage & {
   _id: string,
   snippet: string,
-  noLink: boolean,
   lastUpdateUser: any,
   elasticSearchResult: {
     snippet: string,
