@@ -2,12 +2,20 @@ import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
 import { IPage } from '../../interfaces/page';
 
-export type ISearchedPage = IPage & {
+// TOOD: retrieve bookmark count and add it to the following type
+export type ISearchedPage = Omit<IPage, 'revision' | 'tags' | 'creator'> & {
   _id: string,
   snippet: string,
+  revision: string,
+  tags?: string[],
+  creator: string,
   lastUpdateUser: any,
+  seenUsers: string[],
+  liker: string[],
+  commentCount: number,
   elasticSearchResult: {
     snippet: string,
+    matchedPath: string,
   },
 };
 
