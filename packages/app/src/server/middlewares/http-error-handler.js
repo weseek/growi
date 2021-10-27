@@ -1,4 +1,7 @@
 import { HttpError } from 'http-errors';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:middleware:htto-error-handler');
 
 const isHttpError = (val) => {
   if (!val || typeof val !== 'object') {
@@ -20,12 +23,17 @@ module.exports = async(err, req, res, next) => {
   if (isHttpError(err)) {
     const httpError = err;
 
-    return res
-      .status(httpError.status)
-      .send({
-        status: httpError.status,
-        message: httpError.message,
-      });
+    try {
+      return res
+        .status(httpError.status)
+        .send({
+          status: httpError.status,
+          message: httpError.message,
+        });
+    }
+    catch (err) {
+      logger.error('Cannot call res.send() twice:', err);
+    }
   }
 
   next(err);
