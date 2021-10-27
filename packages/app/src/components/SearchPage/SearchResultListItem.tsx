@@ -117,7 +117,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
             </div>
           </div>
-          {/* TODO: adjust snipet position */}
+          {/* TODO: adjust snippet position */}
           <div className="mt-1">{page.snippet}</div>
           {/* eslint-disable-next-line react/no-danger */}
           <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
