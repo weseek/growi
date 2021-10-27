@@ -836,9 +836,13 @@ class PageService {
       .pipe(migratePagesStream);
 
     await streamToPromise(migratePagesStream);
-    if (await Page.exists({ grant, parent: null })) {
-      await this.v5RecursiveMigration(grant, rootPath);
+    if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
+      return this.v5RecursiveMigration(grant, rootPath);
     }
+
+    await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+      'app:isV5Compatible': true,
+    });
   }
 
 }

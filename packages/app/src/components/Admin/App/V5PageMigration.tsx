@@ -13,6 +13,7 @@ const V5PageMigration: FC<any> = (props) => {
   const { t } = useTranslation();
 
   const onConfirm = async() => {
+    setIsV5PageMigrationModalShown(false);
     await adminAppContainer.v5PageMigrationHandler('upgrade');
   };
 

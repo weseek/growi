@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 type V5PageMigrationModalProps = {
   isModalOpen: boolean
-  onConfirm: () => Promise<any>;
+  onConfirm: () => Promise<void>;
   onCancel: () => void;
 };
 

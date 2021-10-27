@@ -688,14 +688,14 @@ module.exports = (crowi) => {
 
     switch (action) {
       case 'notNow':
-        // set config to false
         try {
+          // set notNow
           await crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
             'app:isV5Compatible': false,
           });
-          return res.apiv3({});
         }
         catch (err) {
+          // not throw since this is not important
           logger.error('Error occurred while updating app:isV5Compatible.', err);
         }
         break;
@@ -703,6 +703,7 @@ module.exports = (crowi) => {
       case 'upgrade':
         try {
           const Page = crowi.model('Page');
+          // not await
           crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
         }
         catch (err) {
@@ -713,11 +714,11 @@ module.exports = (crowi) => {
 
       default:
         logger.error(`${action} action is not supported.`);
-        break;
+        return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
     }
 
-    // TODO: determine what to respond
-    return res.apiv3({ status: 'inProgress' });
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    return res.apiv3({ isV5Compatible });
   });
 
   return router;
