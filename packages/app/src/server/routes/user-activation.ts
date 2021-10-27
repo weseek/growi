@@ -2,6 +2,7 @@ import {
   NextFunction, Request, RequestHandler, Response,
 } from 'express';
 import path from 'path';
+import { body, validationResult } from 'express-validator';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 export const form = (req, res): void => {
@@ -154,4 +155,66 @@ export const handleHttpErrosMiddleware = (error: Error & { code: string }, req: 
     return res.render('forgot-password/error', { key: error.code });
   }
   next();
+};
+
+// validation rules for complete registration form
+export const completeRegistrationRules = () => {
+  return [
+    body('username')
+      .matches(/^[\da-zA-Z\-_.]+$/)
+      .withMessage('Username has invalid characters')
+      .not()
+      .isEmpty()
+      .withMessage('Username field is required'),
+    body('name').not().isEmpty().withMessage('Name field is required'),
+    body('password')
+      .matches(/^[\x20-\x7F]*$/)
+      .withMessage('Password has invalid character')
+      .isLength({ min: 6 })
+      .withMessage('Password minimum character should be more than 6 characters')
+      .not()
+      .isEmpty()
+      .withMessage('Password field is required'),
+  ];
+};
+
+// validation rules for registration form when email authentication enabled
+export const registerRules = () => {
+  return [
+    body('registerForm.email')
+      .isEmail()
+      .withMessage('Email format is invalid.')
+      .exists()
+      .withMessage('Email field is required.'),
+  ];
+};
+
+// middleware to validate complete registration form
+export const validateCompleteRegistrationForm = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+
+  req.flash('errors', errors.array());
+  req.flash('inputs', req.body);
+
+  const token = req.body.token;
+  return res.redirect(`/user-activation/${token}`);
+};
+
+// middleware to validate register form if email authentication enabled
+export const validateRegisterForm = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+
+  req.form = { isValid: false };
+  const extractedErrors: string[] = [];
+  errors.array().map(err => extractedErrors.push(err.msg));
+
+  req.flash('registerWarningMessage', extractedErrors);
+
+  res.redirect('back');
 };
