@@ -791,7 +791,12 @@ class PageService {
         const notExistingParentPaths = parentPaths.filter(path => !existingParentPaths.includes(path));
 
         // insertMany empty pages
-        await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
+        try {
+          await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
+        }
+        catch (err) {
+          logger.error('Failed to insert empty pages.', err);
+        }
 
         // find parents again
         const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
@@ -822,7 +827,12 @@ class PageService {
             },
           };
         });
-        await Page.bulkWrite(updateManyOperations);
+        try {
+          await Page.bulkWrite(updateManyOperations);
+        }
+        catch (err) {
+          logger.error('Failed to update page.parent.', err);
+        }
 
         callback();
       },
@@ -840,10 +850,16 @@ class PageService {
       return this.v5RecursiveMigration(grant, rootPath);
     }
 
-    logger.info('Successfully migrated all public pages.');
-    await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-      'app:isV5Compatible': true,
-    });
+    try {
+      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+        'app:isV5Compatible': true,
+      });
+      logger.info('Successfully migrated all public pages.');
+    }
+    catch (err) {
+      // just to know
+      logger.error('Failed to update app:isV5Compatible to true.');
+    }
   }
 
 }
