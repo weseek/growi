@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
-      selectedPage: {},
+      selectedPage: null,
       selectedPages: new Set(),
       excludeUsersHome: true,
       excludeTrash: true,
@@ -127,7 +127,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
-            selectedPage: {},
+            selectedPage: null,
           });
         }
       })
@@ -155,6 +155,7 @@ class SearchPage extends React.Component {
   }
 
   renderSearchResultContent = () => {
+    if (this.state.selectedPage == null) { return null }
     return (
       <SearchResultContent
         appContainer={this.props.appContainer}

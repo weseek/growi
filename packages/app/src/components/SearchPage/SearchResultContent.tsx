@@ -7,17 +7,18 @@ import AppContainer from '../../client/services/AppContainer';
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  selectedPage : any,
+  selectedPage : null | any,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
+  const page = props.selectedPage;
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
   const RevisionLoaderTypeAny: any = RevisionLoader;
-  const renderPage = (page) => {
-    const growiRenderer = props.appContainer.getRenderer('searchresult');
-    let showTags = false;
-    if (page.tags != null && page.tags.length > 0) { showTags = true }
-    return (
+  const growiRenderer = props.appContainer.getRenderer('searchresult');
+  let showTags = false;
+  if (page.tags != null && page.tags.length > 0) { showTags = true }
+  return (
+    <>
       <div key={page._id} className="search-result-page mb-5">
         <h2>
           <a href={page.path} className="text-break">
@@ -37,11 +38,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           highlightKeywords={props.searchingKeyword}
         />
       </div>
-    );
-  };
-  return (
-
-    <div>{Object.keys(props.selectedPage).length !== 0 && renderPage(props.selectedPage)}</div>
+    </>
   );
 };
 
