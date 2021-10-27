@@ -12,7 +12,6 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
-import PaginationWrapper from './PaginationWrapper';
 
 export const specificPathNames = {
   user: '/user',
@@ -35,7 +34,7 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 0,
+      pagingLimit: 3,
       excludeUsersHome: true,
       excludeTrash: true,
     };
@@ -47,8 +46,6 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPageChagned = this.onPageChagned.bind(this);
-    this.getDisplayPages = this.getDisplayPages.bind(this);
-
   }
 
   componentDidMount() {
@@ -56,9 +53,6 @@ class SearchPage extends React.Component {
     if (keyword !== '') {
       this.search({ keyword });
     }
-    this.setState({
-      pagingLimit: 2, // change to an appropriate limit number
-    });
   }
 
   static getQueryByLocation(location) {
@@ -106,6 +100,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
+  onPageChagned = (activePage) => {
+    this.setState({ activePage });
+    // send activePage to the search method as the above setState does not immediately change the activePage state
+    this.search({ keyword: this.state.searchedKeyword, activePage });
+  }
+
   search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
@@ -124,7 +124,14 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-    this.props.appContainer.apiGet('/search', { q: this.createSearchQuery(keyword) })
+    const pagingLimit = this.state.pagingLimit;
+    const activePage = data.activePage || 1;
+    const offset = (activePage * pagingLimit) - pagingLimit;
+    this.props.appContainer.apiGet('/search', {
+      q: this.createSearchQuery(keyword),
+      limit: pagingLimit,
+      offset,
+    })
       .then((res) => {
         this.changeURL(keyword);
         if (res.data.length > 0) {
@@ -132,9 +139,8 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: res.data,
             searchResultMeta: res.meta,
-            searchResultCount: res.totalCount,
+            searchResultCount: res.meta.total,
             selectedPage: res.data[0],
-            activePage: 1,
           });
         }
         else {
@@ -142,9 +148,8 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
-            searchResultCount: res.totalCount,
+            searchResultCount: res.meta.total,
             selectedPage: {},
-            activePage: 1,
           });
         }
       })
@@ -171,21 +176,6 @@ class SearchPage extends React.Component {
     }
   }
 
-  onPageChagned = (selectedPage) => {
-    this.setState({
-      activePage: selectedPage,
-    });
-  }
-
-  getDisplayPages = () => {
-    // return empty array if no pages returned
-    if (this.state.searchResultCount === 0) return [];
-
-    const end = this.state.activePage * this.state.pagingLimit;
-    const start = end - this.state.pagingLimit;
-    return this.state.searchedPages.slice(start, end);
-  }
-
   renderSearchResultContent = () => {
     return (
       <SearchResultContent
@@ -199,25 +189,18 @@ class SearchPage extends React.Component {
 
   renderSearchResultList = () => {
     return (
-      <>
-        <SearchResultList
-          pages={this.getDisplayPages()}
-          deletionMode={false}
-          selectedPage={this.state.selectedPage}
-          selectedPages={this.state.selectedPages}
-          onClickInvoked={this.selectPage}
-          onChangedInvoked={this.toggleCheckBox}
-        >
-        </SearchResultList>
-        <div className="my-4 mx-auto">
-          <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.onPageChagned}
-            totalItemsCount={this.state.searchResultCount}
-            pagingLimit={this.state.pagingLimit}
-          />
-        </div>
-      </>
+      <SearchResultList
+        pages={this.state.searchedPages}
+        deletionMode={false}
+        selectedPage={this.state.selectedPage}
+        selectedPages={this.state.selectedPages}
+        onClickInvoked={this.selectPage}
+        onChangedInvoked={this.toggleCheckBox}
+        activePage={this.state.activePage}
+        onPageChagned={this.onPageChagned}
+        searchResultCount={this.state.searchResultCount}
+        pagingLimit={this.state.pagingLimit}
+      />
     );
   }
 
