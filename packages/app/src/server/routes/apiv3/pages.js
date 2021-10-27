@@ -681,8 +681,9 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO: handle 'notNow' and 'upgrade' to either set config to false or start/resume migration 80202
   // TODO: use socket conn to show progress
-  router.get('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
+  router.post('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
     try {
       const Page = crowi.model('Page');
       // TODO: not await but should be dealed as a job
