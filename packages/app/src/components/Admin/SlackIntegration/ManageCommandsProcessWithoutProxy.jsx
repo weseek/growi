@@ -216,7 +216,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
     }
   };
 
-
   return (
     <div className="py-4 px-5">
       <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
