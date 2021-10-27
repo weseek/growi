@@ -64,7 +64,7 @@ export const reshapeContentsBody = (str: string): string => {
       }
       // ##*username*  HH:mm AM
       copyline = '\n## **'.concat(copyline);
-      copyline = copyline.replace(regexpTime, '**<span class="grw-togetter-time">'.concat(time, '</span>\n'));
+      copyline = copyline.replace(regexpTime, '**<span class="grw-keep-time">'.concat(time, '</span>\n'));
     }
     // Check 3: Is this line a short time(HH:mm)?
     else if (regexpShortTime.test(copyline)) {
@@ -82,7 +82,7 @@ export const reshapeContentsBody = (str: string): string => {
   // remove all blanks
   const blanksRemoved = reshapedArray.filter(line => line !== '');
   // add <div> to the first line & add </div> to the last line
-  blanksRemoved[0] = '\n<div class="grw-togetter">\n'.concat(blanksRemoved[0]);
+  blanksRemoved[0] = '\n<div class="grw-keep">\n'.concat(blanksRemoved[0]);
   blanksRemoved.push('</div>');
   // Add 2 spaces and 1 enter to all lines
   const completedArray = blanksRemoved.map(line => line.concat('  \n'));

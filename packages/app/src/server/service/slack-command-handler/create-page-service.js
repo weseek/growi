@@ -11,7 +11,7 @@ class CreatePageService {
     this.crowi = crowi;
   }
 
-  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody) {
+  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil) {
     const Page = this.crowi.model('Page');
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
 
@@ -25,7 +25,7 @@ class CreatePageService {
 
     // Send a message when page creation is complete
     const growiUri = this.crowi.appService.getSiteUrl();
-    await respond(interactionPayloadAccessor.getResponseUrl(), {
+    await respondUtil.respond({
       text: 'Page has been created',
       blocks: [
         markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`),
