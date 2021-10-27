@@ -840,6 +840,7 @@ class PageService {
       return this.v5RecursiveMigration(grant, rootPath);
     }
 
+    logger.info('Successfully migrated all public pages.');
     await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
       'app:isV5Compatible': true,
     });
