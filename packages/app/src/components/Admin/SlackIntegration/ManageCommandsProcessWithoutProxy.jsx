@@ -191,7 +191,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
     setEditingEventActionsPermission(updatedState);
   }, [eventActionsPermission]);
 
-  const updateChannelsListState = useCallback((e) => {
+  const updateChannelsListState = useCallback((e, permissionType) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
@@ -249,7 +249,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
                 <PermissionSettingForEachCommandComponent
                   key={`${actionName}-component`}
                   commandName={actionName}
-                  editingCommandPermission={editingCommandPermission}
+                  editingCommandPermission={editingEventActionsPermission}
                   onPermissionTypeClicked={updateEventActionsState}
                   onPermissionListChanged={updateChannelsListState}
                 />
