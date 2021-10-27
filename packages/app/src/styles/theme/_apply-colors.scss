@@ -15,8 +15,7 @@ $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 $color-seen-user: #549c79 !default;
-$reload-btn-rc-color: $gray-500;
-$reload-btn-cs-color: $gray-500;
+$color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 
 // override bootstrap variables
@@ -268,11 +267,8 @@ ul.pagination {
   }
 
   .grw-sidebar-content-header {
-    .grw-btn-reload-rc {
-      color: $reload-btn-rc-color;
-    }
-    .grw-btn-reload-cs {
-      color: $reload-btn-cs-color;
+    .grw-btn-reload {
+      color: $color-btn-reload-in-sidebar;
     }
 
     .grw-recent-changes-resize-button {
@@ -591,6 +587,9 @@ body.pathname-sidebar {
 .search-result {
   .search-result-list {
     .page-list {
+      .highlighted-keyword {
+        background-color: $bgcolor-keyword-highlighted;
+      }
       .page-list-ul {
         > li.nav-item > a.nav-link {
           color: inherit;

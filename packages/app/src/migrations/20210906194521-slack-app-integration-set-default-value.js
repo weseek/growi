@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
 import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 

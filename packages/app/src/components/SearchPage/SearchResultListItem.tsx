@@ -2,22 +2,19 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { Page } from './SearchResultList';
+import { ISearchedPage } from './SearchResultList';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type Props ={
-  page: Page,
-  onClickInvoked?: (data: string) => void,
+  page: ISearchedPage,
+  onClickInvoked?: (dISearchPageta: string) => void,
 }
 
-type PageItemProp ={
-  page: Page,
-}
 
-const PageItemOperation: FC<Props> = (props:PageItemProp) => {
+const PageItemControl: FC<Props> = (props: {page: ISearchedPage}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
@@ -115,11 +112,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 </div>
                 {/* doropdown icon */}
                 <div className="ml-auto">
-                  <PageItemOperation page={page} />
+                  <PageItemControl page={page} />
                 </div>
               </div>
               <div className="mt-1">{page.snippet}</div>
             </div>
+
+            {/* eslint-disable-next-line react/no-danger */}
+            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+
           </div>
         </a>
       </li>

@@ -30,6 +30,10 @@ export class RelationsService {
   @Inject()
   relationRepository: RelationRepository;
 
+  async resetAllExpiredAtCommands(): Promise<void> {
+    await this.relationRepository.update({}, { expiredAtCommands: new Date('2000-01-01') });
+  }
+
   private async getSupportedGrowiCommands(relation:Relation):Promise<any> {
     // generate API URL
     const url = new URL('/_api/v3/slack-integration/supported-commands', relation.growiUri);

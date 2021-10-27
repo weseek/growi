@@ -1,19 +1,21 @@
 import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
+import { IPage } from '../../interfaces/page';
 
-export type Page = {
-  _id: string;
-  snippet: string;
-  path: string;
-  revision: string;
-  noLink: boolean;
-  lastUpdateUser: any;
-}
+export type ISearchedPage = IPage & {
+  _id: string,
+  snippet: string,
+  noLink: boolean,
+  lastUpdateUser: any,
+  elasticSearchResult: {
+    snippet: string,
+  },
+};
 
 type Props = {
-  pages: Page[],
+  pages: ISearchedPage[],
   deletionMode: boolean,
-  selectedPages: Page[],
+  selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
 }
 
