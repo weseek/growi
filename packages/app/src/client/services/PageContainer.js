@@ -93,6 +93,8 @@ export default class PageContainer extends Container {
       isHackmdDraftUpdatingInRealtime: false,
       isConflictingOnSave: false,
       isConflictDiffModalOpen: false,
+
+      revisionsOnConflict: {},
     };
 
     // parse creator, lastUpdateUser and revisionAuthor

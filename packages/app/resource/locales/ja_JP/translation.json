@@ -462,7 +462,8 @@
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
-    "resolve_conflict": "衝突を解消する",
+    "reload": "再読み込み",
+    "resolve_conflict": "衝突を解消",
     "resolve_and_save" : "解消し保存する"
   },
   "link_edit": {

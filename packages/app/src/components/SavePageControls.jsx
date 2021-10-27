@@ -44,14 +44,17 @@ class SavePageControls extends React.Component {
 
     try {
       // save
+      console.log('editorContainer.getCurrentOptionsToSave():', editorContainer.getCurrentOptionsToSave());
       await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
     }
     catch (error) {
       logger.error('failed to save', error);
+      console.log(error);
       pageContainer.showErrorToastr(error);
       if (error.code === 'conflict') {
         pageContainer.setState({
           isConflictingOnSave: true,
+          revisionsOnConflict: error.data,
         });
       }
     }

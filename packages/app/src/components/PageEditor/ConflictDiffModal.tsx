@@ -30,7 +30,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
       CodeMirror.MergeView(codeMirrorRef, {
         value: val,
         origLeft: orig,
-        origRight: null,
+        origRight: 'test!',
         connect: 'align',
         lineNumbers: true,
         collapseIdentical: true,
@@ -59,6 +59,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
       </ModalHeader>
       <ModalBody>
         <div ref={(el) => { setCodeMirrorRef(el) }}></div>
+        <div className="bg-danger">body test</div>
       </ModalBody>
       <ModalFooter>
         <button
