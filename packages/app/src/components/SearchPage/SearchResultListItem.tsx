@@ -77,7 +77,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const onClickInvoked = (pageId) => {
     if (props.onClickInvoked != null) {
-      onClickInvoked(pageId);
+      props.onClickInvoked(pageId);
     }
   };
 
@@ -115,11 +115,12 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                   <PageItemControl page={page} />
                 </div>
               </div>
-              <div className="mt-1">{page.snippet}</div>
             </div>
-            {/* eslint-disable-next-line react/no-danger */}
-            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
           </div>
+          {/* TODO: adjust snipet position */}
+          <div className="mt-1">{page.snippet}</div>
+          {/* eslint-disable-next-line react/no-danger */}
+          <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
         </a>
       </li>
     );
