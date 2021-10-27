@@ -19,6 +19,10 @@ const CommandUsageTypes = {
   SINGLE_USE: 'singleUse',
 };
 
+const EventTypes = {
+  UNFURL: 'unfurl',
+};
+
 // A utility function that returns the new state but identical to the previous state
 const getUpdatedChannelsList = (prevState, commandName, value) => {
   // string to array
@@ -266,13 +270,22 @@ const ManageCommandsProcess = ({
     <div className="py-4 px-5">
       <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
-
         <div className="col-8">
           {Object.values(CommandUsageTypes).map((commandUsageType) => {
             return <PermissionSettingsForEachCommandTypeComponent key={commandUsageType} commandUsageType={commandUsageType} />;
           })}
         </div>
       </div>
+
+      <p className="mb-4 font-weight-bold">Events</p>
+      <div className="row d-flex flex-column align-items-center">
+        <div className="col-8">
+          {Object.values(EventTypes).map((EventTypes) => {
+            return <PermissionSettingsForEachCommandTypeComponent key={EventTypes} commandUsageType={EventTypes} />;
+          })}
+        </div>
+      </div>
+
       <div className="row">
         <button
           type="submit"
