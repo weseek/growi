@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { V5PageMigrationModal } from './V5PageMigrationModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 
 const V5PageMigration: FC<any> = (props) => {
@@ -14,7 +15,13 @@ const V5PageMigration: FC<any> = (props) => {
 
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
-    await adminAppContainer.v5PageMigrationHandler('upgrade');
+    try {
+      await adminAppContainer.v5PageMigrationHandler('upgrade');
+      toastSuccess(t('v5_page_migration.successfully_started'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const onNotNowClicked = async() => {
@@ -29,12 +36,10 @@ const V5PageMigration: FC<any> = (props) => {
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
       <p className="card well">
-        GROWI is running with v4 compatible pages.<br />
-        To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
-        <br />
+        {t('v5_page_migration.migration_desc')}
         <span className="text-danger">
           <i className="icon-exclamation icon-fw"></i>
-          Note: You will lose unique constraint from page path.
+          {t('v5_page_migration.migration_note')}
         </span>
       </p>
       <div className="row my-3">

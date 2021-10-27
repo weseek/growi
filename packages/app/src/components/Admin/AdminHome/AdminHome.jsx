@@ -46,10 +46,10 @@ class AdminHome extends React.Component {
           !isV5Compatible
           && (
             <div className={`alert ${alertStyle}`}>
-              GROWI is running with v4 compatible pages. To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
+              {t('v5_page_migration.migration_desc')}
               <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
                 <i className="fa fa-link ml-1" aria-hidden="true"></i>
-                <strong>Upgrade to v5</strong>
+                <strong>{t('v5_page_migration.upgrade_to_v5')}</strong>
               </a>
             </div>
           )

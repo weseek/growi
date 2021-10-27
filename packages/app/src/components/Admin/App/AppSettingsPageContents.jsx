@@ -25,7 +25,7 @@ class AppSettingsPageContents extends React.Component {
           && (
             <div className="row">
               <div className="col-lg-12">
-                <h2 className="admin-setting-header">V5 Page Migration</h2>
+                <h2 className="admin-setting-header">{t('V5 Page Migration')}</h2>
                 <V5PageMigration />
               </div>
             </div>

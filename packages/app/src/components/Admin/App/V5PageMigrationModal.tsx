@@ -25,10 +25,7 @@ export const V5PageMigrationModal: FC<V5PageMigrationModalProps> = (props) => {
         Warning
       </ModalHeader>
       <ModalBody>
-        TODO: tell user
-        that this process may take long,
-        that the admin user is responsible for telling users not to do important interaction until it ends,
-        and that Page schema will no longer have a unique constraint in page path.
+        {t('v5_page_migration.modal_migration_warning')}
       </ModalBody>
       <ModalFooter>
         <button
@@ -43,7 +40,7 @@ export const V5PageMigrationModal: FC<V5PageMigrationModalProps> = (props) => {
           className="btn btn-outline-primary ml-3"
           onClick={props.onConfirm}
         >
-          Start Upgrading
+          {t('v5_page_migration.start_upgrading')}
         </button>
       </ModalFooter>
     </Modal>
