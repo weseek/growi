@@ -449,5 +449,16 @@ export default class AdminAppContainer extends Container {
     return pluginSettingParams;
   }
 
+  // TODO: define data to interact
+  /**
+   * Start v5 page migration
+   * @memberOf AdminAppContainer
+   * @property action takes either 'notNow' or 'upgrade'. 'upgrade' will start or resume migration
+   */
+  async startV5PageMigrationHandler(/* get action */) {
+    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { /* TODO: pass 'notNow' or 'upgrade' */ });
+    const { ok, status } = response.data;
+    return { ok, status };
+  }
 
 }

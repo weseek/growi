@@ -33,8 +33,8 @@ class AdminHome extends React.Component {
   }
 
   render() {
-    const { t, adminHomeContainer, adminAppContainer } = this.props;
-    const { isV5Compatible } = adminAppContainer.state;
+    const { t, adminHomeContainer } = this.props;
+    const { isV5Compatible } = adminHomeContainer.state;
 
     let alertStyle = 'alert-info';
     if (isV5Compatible == null) alertStyle = 'alert-warning';
@@ -115,13 +115,12 @@ class AdminHome extends React.Component {
 
 }
 
-const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer, AdminAppContainer]);
+const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
 
 AdminHome.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AdminHomeWrapper);
