@@ -681,20 +681,43 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO: handle 'notNow' and 'upgrade' to either set config to false or start/resume migration 80202
+  // TODO: add validator for the action property
   // TODO: use socket conn to show progress
   router.post('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
-    try {
-      const Page = crowi.model('Page');
-      // TODO: not await but should be dealed as a job
-      crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
-    }
-    catch (err) {
-      logger.error('Error\n', err);
-      return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
+    const { action } = req.body;
+
+    switch (action) {
+      case 'notNow':
+        // set config to false
+        try {
+          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+            'app:isV5Compatible': false,
+          });
+          return res.apiv3({});
+        }
+        catch (err) {
+          logger.error('Error occurred while updating app:isV5Compatible.', err);
+        }
+        break;
+
+      case 'upgrade':
+        try {
+          const Page = crowi.model('Page');
+          crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
+        }
+        catch (err) {
+          logger.error('Error\n', err);
+          return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
+        }
+        break;
+
+      default:
+        logger.error(`${action} action is not supported.`);
+        break;
     }
 
-    return res.apiv3({});
+    // TODO: determine what to respond
+    return res.apiv3({ status: 'inProgress' });
   });
 
   return router;

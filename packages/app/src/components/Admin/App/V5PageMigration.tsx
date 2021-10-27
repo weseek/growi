@@ -13,7 +13,11 @@ const V5PageMigration: FC<any> = (props) => {
   const { t } = useTranslation();
 
   const onConfirm = async() => {
-    await adminAppContainer.startV5PageMigrationHandler();
+    await adminAppContainer.v5PageMigrationHandler('upgrade');
+  };
+
+  const onNotNowClicked = async() => {
+    await adminAppContainer.v5PageMigrationHandler('notNow');
   };
 
   return (
@@ -36,7 +40,7 @@ const V5PageMigration: FC<any> = (props) => {
         <div className="mx-auto">
           {
             isV5Compatible == null
-            && (<button type="button" className="btn btn-secondary mr-3" onClick={() => { /* TODO: POST to set false 80202 */ }}>Not now</button>)
+            && (<button type="button" className="btn btn-secondary mr-3" onClick={() => onNotNowClicked()}>Not now</button>)
           }
           <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>Upgrade to v5</button>
         </div>
