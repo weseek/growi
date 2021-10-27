@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -234,26 +234,42 @@ const ManageCommandsProcess = ({
     commandUsageType: PropTypes.string,
   };
 
-  const PermissionSettingsForEachCommandTypeComponent = ({ commandUsageType }) => {
-    const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
-    const defaultCommandsName = isCommandBroadcastUse ? defaultSupportedCommandsNameForBroadcastUse : defaultSupportedCommandsNameForSingleUse;
+  const PermissionSettingsForEachCommandTypeComponent = ({ usageType }) => {
+    const menuItems = {
+      broadcastUse: {
+        title: 'Multiple GROWI',
+        description: t('admin:slack_integration.accordion.multiple_growi_command'),
+        defaultCommandsName: defaultSupportedCommandsNameForBroadcastUse,
+      },
+      singleUse: {
+        title: 'Single GROWI',
+        description: t('admin:slack_integration.accordion.single_growi_command'),
+        defaultCommandsName: defaultSupportedCommandsNameForSingleUse,
+      },
+      unfurl: {
+        title: '',
+        description: '',
+        defaultCommandsName: defaultSupportedSlackEventActions,
+      },
+    };
+
+    const currentMenu = menuItems[usageType];
+
     return (
       <>
         <div className="row">
           <div className="col-md-7 offset-md-2">
-            <p className="font-weight-bold mb-1">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p>
+            <p className="font-weight-bold mb-1">{currentMenu.title}</p>
             <p className="text-muted">
-              {isCommandBroadcastUse
-                ? t('admin:slack_integration.accordion.multiple_growi_command')
-                : t('admin:slack_integration.accordion.single_growi_command')}
+              {currentMenu.description}
             </p>
           </div>
         </div>
         <div className="custom-control custom-checkbox">
           <div className="row mb-5 d-block">
-            {defaultCommandsName.map((commandName) => {
+            {currentMenu.defaultCommandsName.map((commandName) => {
               // eslint-disable-next-line max-len
-              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} commandUsageType={commandUsageType} />;
+              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} commandUsageType={usageType} />;
             })}
           </div>
         </div>
@@ -262,7 +278,7 @@ const ManageCommandsProcess = ({
   };
 
   PermissionSettingsForEachCommandTypeComponent.propTypes = {
-    commandUsageType: PropTypes.string,
+    usageType: PropTypes.string,
   };
 
 
@@ -272,7 +288,7 @@ const ManageCommandsProcess = ({
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           {Object.values(CommandUsageTypes).map((commandUsageType) => {
-            return <PermissionSettingsForEachCommandTypeComponent key={commandUsageType} commandUsageType={commandUsageType} />;
+            return <PermissionSettingsForEachCommandTypeComponent key={commandUsageType} usageType={commandUsageType} />;
           })}
         </div>
       </div>
@@ -281,7 +297,7 @@ const ManageCommandsProcess = ({
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           {Object.values(EventTypes).map((EventTypes) => {
-            return <PermissionSettingsForEachCommandTypeComponent key={EventTypes} commandUsageType={EventTypes} />;
+            return <PermissionSettingsForEachCommandTypeComponent key={EventTypes} usageType={EventTypes} />;
           })}
         </div>
       </div>
