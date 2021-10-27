@@ -745,12 +745,6 @@ class PageService {
 
     const randomPagesStream = await Page
       .aggregate([
-        // TODO: randomize somehow sample does not work when the result is under 100?
-        // {
-        //   $sample: {
-        //     size: BATCH_SIZE,
-        //   },
-        // },
         {
           $match: {
             grant,
@@ -761,7 +755,11 @@ class PageService {
           $project: { // minimize data to fetch
             _id: 1,
             path: 1,
+            pathLength: { $strLenCP: '$path' }, // calculate path length
           },
+        },
+        {
+          $sort: { pathLength: -1 }, // get less same parent path
         },
       ])
       .cursor({ batchSize: BATCH_SIZE }) // get stream
@@ -770,10 +768,21 @@ class PageService {
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
 
+
+    // determines the frequency of skipping a chunk (when N, chunks will be skipped when count is N * count)
+    const DROPOUT_MULTIPLIER = 2;
+    let count = 0;
+
+    let countPages = 0;
+
     // migrate all siblings for each page
     const migratePagesStream = new Writable({
       objectMode: true,
       async write(pages, encoding, callback) {
+        // dropout
+        count++;
+        if (count % DROPOUT_MULTIPLIER !== 0) return callback();
+
         // make list to create empty pages
         const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
         const parentPaths = Array.from(parentPathsSet);
@@ -808,7 +817,6 @@ class PageService {
           // modify to adjust for RegExp
           const parentPath = parent.path === '/' ? '' : parent.path;
 
-          // TODO: consider filter to improve the target selection
           return {
             updateMany: {
               filter: {
@@ -822,7 +830,10 @@ class PageService {
             },
           };
         });
-        await Page.bulkWrite(updateManyOperations);
+        const res = await Page.bulkWrite(updateManyOperations);
+
+        countPages += (res.items || []).length;
+        logger.info(`Page migration processing: (count=${countPages}, errors=${res.errors}, took=${res.took}ms)`);
 
         callback();
       },
