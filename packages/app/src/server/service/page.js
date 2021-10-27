@@ -740,7 +740,7 @@ class PageService {
 
   async v5RecursiveMigration(grant, rootPath = null) {
     const BATCH_SIZE = 100;
-    const PAGES_LIMIT = 3000;
+    const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
