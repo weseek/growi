@@ -148,7 +148,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
-            searchResultCount: res.meta.total,
+            searchResultCount: 0,
             selectedPage: {},
           });
         }
