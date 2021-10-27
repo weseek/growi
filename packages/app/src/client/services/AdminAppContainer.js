@@ -462,8 +462,8 @@ export default class AdminAppContainer extends Container {
     }
 
     const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { action });
-    const { status } = response.data;
-    return { status };
+    const { isV5Compatible } = response.data;
+    return { isV5Compatible };
   }
 
 }
