@@ -14,13 +14,11 @@ class SearchResultList extends React.Component {
         //         when keyword is not in page content, display revisionBody.
         // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
           return (
-            <>
-              <SearchResultListItem
-                page={page}
-                onClickInvoked={this.props.onClickInvoked}
-                noLink
-              />
-            </>
+            <SearchResultListItem
+              page={page}
+              onClickInvoked={this.props.onClickInvoked}
+              noLink
+            />
           );
         })}
         <div className="my-4 mx-auto">

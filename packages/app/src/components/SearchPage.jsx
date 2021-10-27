@@ -102,7 +102,7 @@ class SearchPage extends React.Component {
 
   onPageChagned = (activePage) => {
     this.setState({ activePage });
-    // send activePage to the search method as the above setState does not immediately change the activePage state
+    // pass the activePage to the search method as the above setState does not immediately change the state
     this.search({ keyword: this.state.searchedKeyword, activePage });
   }
 
@@ -125,7 +125,7 @@ class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
     const pagingLimit = this.state.pagingLimit;
-    const activePage = data.activePage || 1;
+    const activePage = data.activePage || 1; // has activePage only when pagination number clicked
     const offset = (activePage * pagingLimit) - pagingLimit;
     this.props.appContainer.apiGet('/search', {
       q: this.createSearchQuery(keyword),
