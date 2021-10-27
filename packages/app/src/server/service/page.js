@@ -740,17 +740,14 @@ class PageService {
 
   async v5RecursiveMigration(grant, rootPath = null) {
     const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 3000;
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
-    const randomPagesStream = await Page
+    const total = await Page.countDocuments({ grant, parent: null });
+
+    let baseAggregation = Page
       .aggregate([
-        // TODO: randomize somehow sample does not work when the result is under 100?
-        // {
-        //   $sample: {
-        //     size: BATCH_SIZE,
-        //   },
-        // },
         {
           $match: {
             grant,
@@ -763,12 +760,19 @@ class PageService {
             path: 1,
           },
         },
-      ])
-      .cursor({ batchSize: BATCH_SIZE }) // get stream
-      .exec();
+      ]);
+
+    // limit pages to get
+    if (total > PAGES_LIMIT) {
+      baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
+    }
+
+    const randomPagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
 
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
+
+    let countPages = 0;
 
     // migrate all siblings for each page
     const migratePagesStream = new Writable({
@@ -808,7 +812,6 @@ class PageService {
           // modify to adjust for RegExp
           const parentPath = parent.path === '/' ? '' : parent.path;
 
-          // TODO: consider filter to improve the target selection
           return {
             updateMany: {
               filter: {
@@ -822,7 +825,10 @@ class PageService {
             },
           };
         });
-        await Page.bulkWrite(updateManyOperations);
+        const res = await Page.bulkWrite(updateManyOperations);
+
+        countPages += (res.items || []).length;
+        logger.info(`Page migration processing: (count=${countPages}, errors=${res.errors}, took=${res.took}ms)`);
 
         callback();
       },
@@ -836,7 +842,7 @@ class PageService {
       .pipe(migratePagesStream);
 
     await streamToPromise(migratePagesStream);
-    if (await Page.exists({ grant, parent: null })) {
+    if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
       await this.v5RecursiveMigration(grant, rootPath);
     }
   }
