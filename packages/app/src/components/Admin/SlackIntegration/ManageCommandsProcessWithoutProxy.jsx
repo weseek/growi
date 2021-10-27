@@ -58,15 +58,15 @@ const PermissionSettingForEachCommandComponent = ({
     return null;
   }
 
-  function permissionTypeClickHandler(e, permissionCategory) {
-    if (onPermissionTypeClicked == null) {
+  function permissionTypeClickHandler(e) {
+    if (onPermissionTypeClicked == null || permissionCategory == null) {
       return;
     }
     onPermissionTypeClicked(e, permissionCategory);
   }
 
-  function onPermissionListChangeHandler(e, permissionCategory) {
-    if (onPermissionListChanged == null) {
+  function onPermissionListChangeHandler(e) {
+    if (onPermissionListChanged == null || permissionCategory == null) {
       return;
     }
     onPermissionListChanged(e, permissionCategory);
@@ -133,7 +133,7 @@ const PermissionSettingForEachCommandComponent = ({
           type="textarea"
           name={commandName}
           value={textareaDefaultValue}
-          onChange={e => onPermissionListChangeHandler(e, permissionCategory)}
+          onChange={e => onPermissionListChangeHandler(e)}
         />
         <p className="form-text text-muted small">
           {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -184,13 +184,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
       setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
     }
     else if (permissionCategory === 'event') {
-      setEditingEventActionsPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
+      setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, commandName, value));
     }
   }, []);
 
   const updateChannelsListState = useCallback((e, permissionCategory) => {
     const { target } = e;
     const { name: commandName, value } = target;
+
     // update state
     if (permissionCategory === 'command') {
       setEditingCommandPermission(commandPermissionObj => ({ ...getUpdatedChannelsList(commandPermissionObj, commandName, value) }));
