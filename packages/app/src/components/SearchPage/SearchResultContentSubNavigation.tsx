@@ -5,6 +5,9 @@ import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 // import SubnavButtons from '../Navbar/SubNavButtons';
 
 
+// TODO : change SubNavButtons in a way that they can be used not depending on pageContainer.
+// note: SubNavButtons contains PageManagement and PageReactionsButtons. PageManagement has muliple modals...
+
 import CopyDropdown from '../Page/CopyDropdown';
 
 type PagePathNavProps = {
