@@ -20,7 +20,7 @@ class SearchResultList extends React.Component {
             />
           );
         })}
-        {this.props.searchResultCount > 0 && (
+        {this.props.searchResultCount != null && this.props.searchResultCount > 0 && (
           <div className="my-4 mx-auto">
             <PaginationWrapper
               activePage={this.props.activePage || 1}
