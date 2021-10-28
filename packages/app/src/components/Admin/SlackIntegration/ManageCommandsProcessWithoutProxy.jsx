@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -49,7 +49,7 @@ const getUpdatedPermissionSettings = (commandPermissionObj, commandName, value) 
 };
 
 
-const PermissionSettingForEachCommandComponent = ({
+const SinglePermissionSettingComponent = ({
   commandName, editingCommandPermission, onPermissionTypeClicked, onPermissionListChanged,
 }) => {
   const { t } = useTranslation();
@@ -144,7 +144,7 @@ const PermissionSettingForEachCommandComponent = ({
   );
 };
 
-PermissionSettingForEachCommandComponent.propTypes = {
+SinglePermissionSettingComponent.propTypes = {
   commandName: PropTypes.string,
   editingCommandPermission: PropTypes.object,
   onPermissionTypeClicked: PropTypes.func,
@@ -153,18 +153,10 @@ PermissionSettingForEachCommandComponent.propTypes = {
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
+const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventActionsPermission }) => {
   const { t } = useTranslation();
   const [editingCommandPermission, setEditingCommandPermission] = useState({});
-
-  const updatePermissionsCommandsState = useCallback((e) => {
-    const { target } = e;
-    const { name: commandName, value } = target;
-
-    // update state
-    setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
-  }, []);
-
+  const [editingEventActionsPermission, setEditingEventActionsPermission] = useState({});
 
   useEffect(() => {
     if (commandPermission == null) {
@@ -174,21 +166,43 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     setEditingCommandPermission(updatedState);
   }, [commandPermission]);
 
-  const updateChannelsListState = useCallback((e) => {
+  useEffect(() => {
+    if (eventActionsPermission == null) {
+      return;
+    }
+    const updatedState = { ...eventActionsPermission };
+    setEditingEventActionsPermission(updatedState);
+  }, [eventActionsPermission]);
+
+  const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
-    // update state
-    setEditingCommandPermission((commandPermissionObj) => {
-      return {
-        ...getUpdatedChannelsList(commandPermissionObj, commandName, value),
-      };
-    });
+    setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
+  }, []);
+
+  const updatePermissionsEventsState = useCallback((e) => {
+    const { target } = e;
+    const { name: actionName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, actionName, value));
+  }, []);
+
+  const updateCommandsChannelsListState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    setEditingCommandPermission(commandPermissionObj => ({ ...getUpdatedChannelsList(commandPermissionObj, commandName, value) }));
+  }, []);
+
+  const updateEventsChannelsListState = useCallback((e) => {
+    const { target } = e;
+    const { name: actionName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, actionName, value) }));
   }, []);
 
   const updateCommandsHandler = async(e) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
         commandPermission: editingCommandPermission,
+        eventActionsPermission: editingEventActionsPermission,
       });
       toastSuccess(t('toaster.update_successed', { target: 'the permission for commands' }));
     }
@@ -208,15 +222,33 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
               { defaultCommandsName.map((commandName) => {
                 // eslint-disable-next-line max-len
                 return (
-                  <PermissionSettingForEachCommandComponent
+                  <SinglePermissionSettingComponent
                     key={`${commandName}-component`}
                     commandName={commandName}
                     editingCommandPermission={editingCommandPermission}
                     onPermissionTypeClicked={updatePermissionsCommandsState}
-                    onPermissionListChanged={updateChannelsListState}
+                    onPermissionListChanged={updateCommandsChannelsListState}
                   />
                 );
               })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="mb-4 font-weight-bold">Events</p>
+      <div className="row d-flex flex-column align-items-center">
+        <div className="col-8">
+          <div className="custom-control custom-checkbox">
+            <div className="row mb-5 d-block">
+              { defaultSupportedSlackEventActions.map(actionName => (
+                <SinglePermissionSettingComponent
+                  key={`${actionName}-component`}
+                  commandName={actionName}
+                  editingCommandPermission={editingEventActionsPermission}
+                  onPermissionTypeClicked={updatePermissionsEventsState}
+                  onPermissionListChanged={updateEventsChannelsListState}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -237,6 +269,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 ManageCommandsProcessWithoutProxy.propTypes = {
   apiv3Put: PropTypes.func,
   commandPermission: PropTypes.object,
+  eventActionsPermission: PropTypes.object,
 };
 
 export default ManageCommandsProcessWithoutProxy;
