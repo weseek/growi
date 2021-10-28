@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 type V5PageMigrationModalProps = {
   isModalOpen: boolean
-  onConfirm?: () => Promise<any>;
+  onConfirm?: () => Promise<void>;
   onCancel?: () => void;
 };
 

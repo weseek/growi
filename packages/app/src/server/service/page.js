@@ -740,7 +740,7 @@ class PageService {
 
   async v5RecursiveMigration(grant, rootPath = null) {
     const BATCH_SIZE = 100;
-    const PAGES_LIMIT = 3000;
+    const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -843,8 +843,13 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
     if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
-      await this.v5RecursiveMigration(grant, rootPath);
+      return this.v5RecursiveMigration(grant, rootPath);
     }
+
+    logger.info('Successfully migrated all public pages.');
+    await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+      'app:isV5Compatible': true,
+    });
   }
 
 }

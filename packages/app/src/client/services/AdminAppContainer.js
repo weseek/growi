@@ -165,7 +165,7 @@ export default class AdminAppContainer extends Container {
   /**
    * Change site url
    */
-  changeisV5Compatible(isV5Compatible) {
+  changeIsV5Compatible(isV5Compatible) {
     this.setState({ isV5Compatible });
   }
 
@@ -453,12 +453,12 @@ export default class AdminAppContainer extends Container {
   /**
    * Start v5 page migration
    * @memberOf AdminAppContainer
-   * @property action takes either 'notNow' or 'upgrade'. 'upgrade' will start or resume migration
+   * @property action takes only 'upgrade' for now. 'upgrade' will start or resume migration
    */
-  async startV5PageMigrationHandler(/* get action */) {
-    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { /* TODO: pass 'notNow' or 'upgrade' */ });
-    const { ok, status } = response.data;
-    return { ok, status };
+  async v5PageMigrationHandler(action) {
+    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { action });
+    const { isV5Compatible } = response.data;
+    return { isV5Compatible };
   }
 
 }

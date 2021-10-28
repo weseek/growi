@@ -184,6 +184,9 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+    v5PageMigration: [
+      body('action').isString().withMessage('action is required'),
+    ],
   };
 
   async function createPageAction({
@@ -681,20 +684,30 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO: handle 'notNow' and 'upgrade' to either set config to false or start/resume migration 80202
   // TODO: use socket conn to show progress
-  router.post('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
-    try {
-      const Page = crowi.model('Page');
-      // TODO: not await but should be dealed as a job
-      crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
-    }
-    catch (err) {
-      logger.error('Error\n', err);
-      return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
+    const { action } = req.body;
+
+    switch (action) {
+      case 'upgrade':
+        try {
+          const Page = crowi.model('Page');
+          // not await
+          crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
+        }
+        catch (err) {
+          logger.error('Error\n', err);
+          return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
+        }
+        break;
+
+      default:
+        logger.error(`${action} action is not supported.`);
+        return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
     }
 
-    return res.apiv3({});
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    return res.apiv3({ isV5Compatible });
   });
 
   return router;
