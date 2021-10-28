@@ -17,15 +17,12 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    ports:
-      - 3000:3000
-      - 3001:3001 # for browser-sync
-
     volumes:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules
+      - node_modules_app:/workspace/growi/packages/app/node_modules
+      - node_modules_slackbot-proxy:/workspace/growi/packages/slackbot-proxy/node_modules
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
-      - ../../node_modules:/workspace/node_modules:delegated
 
     tty: true
 
@@ -81,3 +78,5 @@ services:
       - /files/sqlite
 volumes:
   node_modules:
+  node_modules_app:
+  node_modules_slackbot-proxy:
