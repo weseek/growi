@@ -33,16 +33,20 @@ class SearchPage extends React.Component {
       selectedPage: {},
       selectedPages: new Set(),
       searchResultCount: 0,
+      activePage: 1,
+      pagingLimit: 3, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
   componentDidMount() {
@@ -97,13 +101,34 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  search(data) {
+  /**
+   * this method is called when user changes paging number
+   */
+  async onPagingNumberChanged(activePage) {
+    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
+    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
+    this.setState({ activePage }, () => this.search({ keyword: this.state.searchedKeyword }));
+  }
+
+  /**
+   * this method is called when user searches by pressing Enter or using searchbox
+   */
+  async searchHandler(data) {
+    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
+    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
+    this.setState({ activePage: 1 }, () => this.search(data));
+  }
+
+  async search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
         searchingKeyword: '',
+        searchedKeyword: '',
         searchedPages: [],
         searchResultMeta: {},
+        searchResultCount: 0,
+        activePage: 1,
       });
 
       return true;
@@ -112,30 +137,40 @@ class SearchPage extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-    this.props.appContainer.apiGet('/search', { q: this.createSearchQuery(keyword) })
-      .then((res) => {
-        this.changeURL(keyword);
-        if (res.data.length > 0) {
-          this.setState({
-            searchedKeyword: keyword,
-            searchedPages: res.data,
-            searchResultMeta: res.meta,
-            searchResultCount: res.totalCount,
-            selectedPage: res.data[0],
-          });
-        }
-        else {
-          this.setState({
-            searchedKeyword: keyword,
-            searchedPages: [],
-            searchResultMeta: {},
-            selectedPage: {},
-          });
-        }
-      })
-      .catch((err) => {
-        toastError(err);
+    const pagingLimit = this.state.pagingLimit;
+    const offset = (this.state.activePage * pagingLimit) - pagingLimit;
+    try {
+      const res = await this.props.appContainer.apiGet('/search', {
+        q: this.createSearchQuery(keyword),
+        limit: pagingLimit,
+        offset,
       });
+      this.changeURL(keyword);
+      if (res.data.length > 0) {
+        this.setState({
+          searchedKeyword: keyword,
+          searchedPages: res.data,
+          searchResultMeta: res.meta,
+          searchResultCount: res.meta.total,
+          selectedPage: res.data[0],
+          // reset active page if keyword changes, otherwise set the current state
+          activePage: this.state.searchedKeyword === keyword ? this.state.activePage : 1,
+        });
+      }
+      else {
+        this.setState({
+          searchedKeyword: keyword,
+          searchedPages: [],
+          searchResultMeta: {},
+          searchResultCount: 0,
+          selectedPage: {},
+          activePage: 1,
+        });
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   selectPage= (pageId) => {
@@ -175,10 +210,12 @@ class SearchPage extends React.Component {
         selectedPage={this.state.selectedPage}
         selectedPages={this.state.selectedPages}
         searchResultCount={this.state.searchResultCount}
+        activePage={this.state.activePage}
+        pagingLimit={this.state.pagingLimit}
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}
-      >
-      </SearchResultList>
+        onPagingNumberChanged={this.onPagingNumberChanged}
+      />
     );
   }
 
@@ -187,7 +224,7 @@ class SearchPage extends React.Component {
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
-        onSearchInvoked={this.search}
+        onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
       >
