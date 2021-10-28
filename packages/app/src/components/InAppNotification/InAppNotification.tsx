@@ -41,8 +41,15 @@ export const InAppNotification = (props: Props): JSX.Element => {
     if (actionUsers.length < 1) {
       return <></>;
     }
-
-    return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
+    if (actionUsers.length === 1) {
+      return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
+    }
+    return (
+      <>
+        <UserPicture user={actionUsers[0]} size="md" noTooltip />
+        <UserPicture user={actionUsers[1]} size="md" noTooltip />
+      </>
+    );
   };
 
   const componentName = `${notification.targetModel}:${notification.action}`;
