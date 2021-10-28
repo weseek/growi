@@ -435,7 +435,7 @@ export default class PageContainer extends Container {
 
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
-
+    console.log('save():, ', revisionId, pageId, path);
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {

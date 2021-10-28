@@ -839,21 +839,21 @@ module.exports = function(crowi, app) {
       const revisions = {};
 
       revisions.request = {
-        revisionID: '',
+        revisionId: '',
         revisionBody: pageBody,
         createdAt: new Date(),
         userName: req.user.name,
         userImgPath: req.user.imageUrlCached,
       };
       revisions.origin = {
-        revisionID: originRevision._id.toString(),
+        revisionId: originRevision._id.toString(),
         revisionBody: originRevision.body,
         createdAt: originRevision.createdAt,
         userName: originRevision.author.name,
         userImgPath: originRevision.author.imageUrlCached,
       };
       revisions.latest = {
-        revisionID: latestRevision._id.toString(),
+        revisionId: latestRevision._id.toString(),
         revisionBody: latestRevision.body,
         createdAt: latestRevision.createdAt,
         userName: latestRevision.author.name,
