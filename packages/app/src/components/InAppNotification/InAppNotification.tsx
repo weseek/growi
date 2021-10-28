@@ -77,7 +77,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
   return (
     <>
       <div className="dropdown-item d-flex flex-row mb-3">
-        <div className="p-2 d-flex align-items-center">
+        <div className="p-2 mr-2 d-flex align-items-center">
           {renderUserPicture()}
         </div>
         <div className="p-2">
