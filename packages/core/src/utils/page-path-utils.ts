@@ -133,31 +133,3 @@ export const generateEditorPath = (...paths: string[]): string => {
     throw new Error('Invalid path format');
   }
 };
-
-/**
- * Get page title
- * @param {string} path
- * @returns {string}
- */
-export const getPageTitle = (path: string): string => {
-  const name = path;
-
-  // /.../YYYY/MM/DD
-  if (name.match(/^.*?([^/]+\/\d{4}\/\d{2}\/\d{2}\/?)$/)) {
-    return name.replace(/^.*?([^/]+\/\d{4}\/\d{2}\/\d{2}\/?)$/, '$1');
-  }
-
-  // /.../YYYY/MM
-  if (name.match(/^.*?([^/]+\/\d{4}\/\d{2}\/?)$/)) {
-    return name.replace(/^.*?([^/]+\/\d{4}\/\d{2}\/?)$/, '$1');
-  }
-
-  // /.../YYYY
-  if (name.match(/^.*?([^/]+\/\d{4}\/?)$/)) {
-    return name.replace(/^.*?([^/]+\/\d{4}\/?)$/, '$1');
-  }
-
-  // Pick up the end of the page
-  const suffix = name.replace(/.*\/(.+\/?)$/, '$1');
-  return suffix || name;
-};
