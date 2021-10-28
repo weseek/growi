@@ -1,13 +1,15 @@
 import React, { FC, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { V5PageMigrationModal } from './V5PageMigrationModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
+type Props = {
+  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: (action: string) => Promise<void> },
+}
 
-const V5PageMigration: FC<any> = (props) => {
+const V5PageMigration: FC<Props> = (props: Props) => {
   const [isV5PageMigrationModalShown, setIsV5PageMigrationModalShown] = useState(false);
   const { adminAppContainer } = props;
   const { t } = useTranslation();
@@ -46,11 +48,4 @@ const V5PageMigration: FC<any> = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
 export default withUnstatedContainers(V5PageMigration, [AdminAppContainer]);
-
-V5PageMigration.propTypes = {
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};
