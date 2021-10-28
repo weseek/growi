@@ -1,5 +1,5 @@
 import React from 'react';
-import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import { IInAppNotification } from '../../interfaces/in-app-notification';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
