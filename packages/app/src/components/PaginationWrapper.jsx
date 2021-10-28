@@ -63,10 +63,10 @@ const PaginationWrapper = React.memo((props) => {
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem key="painationItemFirst">
-          <PaginationLink first onClick={() => { return changePage != null ? changePage(1) : null }} />
+          <PaginationLink first onClick={() => { return changePage != null && changePage(1) }} />
         </PaginationItem>,
         <PaginationItem key="painationItemPrevious">
-          <PaginationLink previous onClick={() => { return changePage != null ? changePage(activePage - 1) : null }} />
+          <PaginationLink previous onClick={() => { return changePage != null && changePage(activePage - 1) }} />
         </PaginationItem>,
       );
     }
@@ -93,7 +93,7 @@ const PaginationWrapper = React.memo((props) => {
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
-          <PaginationLink onClick={() => { return changePage != null ? changePage(number) : null }}>
+          <PaginationLink onClick={() => { return changePage != null && changePage(number) }}>
             {number}
           </PaginationLink>
         </PaginationItem>,
@@ -112,10 +112,10 @@ const PaginationWrapper = React.memo((props) => {
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">
-          <PaginationLink next onClick={() => { return changePage != null ? changePage(activePage + 1) : null }} />
+          <PaginationLink next onClick={() => { return changePage != null && changePage(activePage + 1) }} />
         </PaginationItem>,
         <PaginationItem key="painationItemLast">
-          <PaginationLink last onClick={() => { return changePage != null ? changePage(totalPage) : null }} />
+          <PaginationLink last onClick={() => { return changePage != null && changePage(totalPage) }} />
         </PaginationItem>,
       );
     }
