@@ -689,19 +689,6 @@ module.exports = (crowi) => {
     const { action } = req.body;
 
     switch (action) {
-      case 'notNow':
-        try {
-          // set notNow
-          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-            'app:isV5Compatible': false,
-          });
-        }
-        catch (err) {
-          // not throw since this is not important
-          logger.error('Error occurred while updating app:isV5Compatible.', err);
-        }
-        break;
-
       case 'upgrade':
         try {
           const Page = crowi.model('Page');
