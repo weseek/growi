@@ -10,7 +10,6 @@ import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 const V5PageMigration: FC<any> = (props) => {
   const [isV5PageMigrationModalShown, setIsV5PageMigrationModalShown] = useState(false);
   const { adminAppContainer } = props;
-  const { isV5Compatible } = adminAppContainer.state;
   const { t } = useTranslation();
 
   const onConfirm = async() => {
@@ -22,11 +21,6 @@ const V5PageMigration: FC<any> = (props) => {
     catch (err) {
       toastError(err);
     }
-  };
-
-  const onNotNowClicked = async() => {
-    // not show toastr
-    await adminAppContainer.v5PageMigrationHandler('notNow');
   };
 
   return (
@@ -45,10 +39,6 @@ const V5PageMigration: FC<any> = (props) => {
       </p>
       <div className="row my-3">
         <div className="mx-auto">
-          {
-            isV5Compatible == null
-            && (<button type="button" className="btn btn-secondary mr-3" onClick={() => onNotNowClicked()}>Not now</button>)
-          }
           <button type="button" className="btn btn-warning" onClick={() => setIsV5PageMigrationModalShown(true)}>Upgrade to v5</button>
         </div>
       </div>

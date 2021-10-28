@@ -184,6 +184,9 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+    v5PageMigration: [
+      body('action').isString().withMessage('action is required'),
+    ],
   };
 
   async function createPageAction({
@@ -681,25 +684,11 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO: add validator for the action property
   // TODO: use socket conn to show progress
-  router.post('/v5-schema-migration', /* accessTokenParser, loginRequired, adminRequired, csrf, */ async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
     const { action } = req.body;
 
     switch (action) {
-      case 'notNow':
-        try {
-          // set notNow
-          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-            'app:isV5Compatible': false,
-          });
-        }
-        catch (err) {
-          // not throw since this is not important
-          logger.error('Error occurred while updating app:isV5Compatible.', err);
-        }
-        break;
-
       case 'upgrade':
         try {
           const Page = crowi.model('Page');
