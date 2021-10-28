@@ -1,20 +1,32 @@
 import React, { FC, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { V5PageMigrationModal } from './V5PageMigrationModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
+type Props = {
+  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: (action: string) => Promise<{ isV5Compatible: boolean }> },
+}
 
-const V5PageMigration: FC<any> = (props) => {
+const V5PageMigration: FC<Props> = (props: Props) => {
   const [isV5PageMigrationModalShown, setIsV5PageMigrationModalShown] = useState(false);
   const { adminAppContainer } = props;
-  const { isV5Compatible } = adminAppContainer.state;
   const { t } = useTranslation();
 
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
-    await adminAppContainer.v5PageMigrationHandler('upgrade');
+    try {
+      const { isV5Compatible } = await adminAppContainer.v5PageMigrationHandler('upgrade');
+      if (isV5Compatible) {
+
+        return toastSuccess(t('admin:v5_page_migration.already_upgraded'));
+      }
+      toastSuccess(t('admin:v5_page_migration.successfully_started'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   return (
@@ -25,12 +37,12 @@ const V5PageMigration: FC<any> = (props) => {
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
       <p className="card well">
-        GROWI is running with v4 compatible pages.<br />
-        To use new features such as Page tree or easy renaming, please migrate page schema to v5.<br />
+        {t('admin:v5_page_migration.migration_desc')}
+        <br />
         <br />
         <span className="text-danger">
           <i className="icon-exclamation icon-fw"></i>
-          Note: You will lose unique constraint from page path.
+          {t('admin:v5_page_migration.migration_note')}
         </span>
       </p>
       <div className="row my-3">
@@ -42,11 +54,4 @@ const V5PageMigration: FC<any> = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
 export default withUnstatedContainers(V5PageMigration, [AdminAppContainer]);
-
-V5PageMigration.propTypes = {
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-};

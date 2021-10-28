@@ -449,7 +449,6 @@ export default class AdminAppContainer extends Container {
     return pluginSettingParams;
   }
 
-  // TODO: define data to interact
   /**
    * Start v5 page migration
    * @memberOf AdminAppContainer

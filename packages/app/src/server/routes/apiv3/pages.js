@@ -690,6 +690,7 @@ module.exports = (crowi) => {
 
     switch (action) {
       case 'upgrade':
+
         try {
           const Page = crowi.model('Page');
           // not await
