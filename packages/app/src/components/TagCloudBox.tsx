@@ -1,16 +1,15 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 
 import { TagCloud } from 'react-tagcloud';
 
-type Tags = {
+type Tag = {
   _id: string,
   name: string,
   count: number,
 }
 
 type Props = {
-  tags:Tags[],
+  tags:Tag[],
   minSize?: number,
   maxSize?: number,
 }
@@ -29,17 +28,11 @@ const TagCloudBox: FC<Props> = (props:Props) => {
         })}
         style={{ cursor: 'pointer' }}
         className="simple-cloud"
-        onClick={(target) => { window.location.href = `/_search?q=tag:${target.value}` }}
+        onClick={(target) => { window.location.href = `/_search?q=tag:${encodeURIComponent(target.value)}` }}
       />
     </>
   );
 
-};
-
-TagCloudBox.propTypes = {
-  tags: PropTypes.array.isRequired,
-  minSize: PropTypes.number,
-  maxSize: PropTypes.number,
 };
 
 export default TagCloudBox;
