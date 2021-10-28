@@ -17,7 +17,6 @@ const V5PageMigration: FC<Props> = (props: Props) => {
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
     try {
-      // もう完了してたらその旨のトースター
       const { isV5Compatible } = await adminAppContainer.v5PageMigrationHandler('upgrade');
       if (isV5Compatible) {
 
