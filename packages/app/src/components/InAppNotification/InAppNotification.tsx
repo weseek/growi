@@ -35,7 +35,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserImage = (): JSX.Element => {
+  const renderUserPicture = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
@@ -68,7 +68,7 @@ export const InAppNotification = (props: Props): JSX.Element => {
     <>
       <div className="dropdown-item d-flex flex-row mb-3">
         <div className="p-2 d-flex align-items-center">
-          {renderUserImage()}
+          {renderUserPicture()}
         </div>
         <div className="p-2">
           {renderInAppNotificationContent()}
