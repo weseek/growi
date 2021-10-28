@@ -45,10 +45,13 @@ export const InAppNotification = (props: Props): JSX.Element => {
       return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
     }
     return (
-      <>
+      <div className="position-relative">
         <UserPicture user={actionUsers[0]} size="md" noTooltip />
-        <UserPicture user={actionUsers[1]} size="md" noTooltip />
-      </>
+        <div className="position-absolute" style={{ top: 10, left: 10 }}>
+          <UserPicture user={actionUsers[1]} size="md" noTooltip />
+        </div>
+
+      </div>
     );
   };
 
