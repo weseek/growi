@@ -45,13 +45,19 @@ class SearchPage extends React.Component {
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
-    this.onPageChagned = this.onPageChagned.bind(this);
+    this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
   componentDidMount() {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
       this.search({ keyword });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.activePage !== prevState.activePage) {
+      this.search({ keyword: this.state.searchedKeyword });
     }
   }
 
@@ -100,13 +106,11 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  onPageChagned = (activePage) => {
+  async onPagingNumberChanged(activePage) {
     this.setState({ activePage });
-    // pass the activePage to the search method as the above setState does not immediately change the state
-    this.search({ keyword: this.state.searchedKeyword, activePage });
   }
 
-  search(data) {
+  async search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
@@ -125,37 +129,37 @@ class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
     const pagingLimit = this.state.pagingLimit;
-    const activePage = data.activePage || 1; // has activePage only when pagination number clicked
-    const offset = (activePage * pagingLimit) - pagingLimit;
-    this.props.appContainer.apiGet('/search', {
-      q: this.createSearchQuery(keyword),
-      limit: pagingLimit,
-      offset,
-    })
-      .then((res) => {
-        this.changeURL(keyword);
-        if (res.data.length > 0) {
-          this.setState({
-            searchedKeyword: keyword,
-            searchedPages: res.data,
-            searchResultMeta: res.meta,
-            searchResultCount: res.meta.total,
-            selectedPage: res.data[0],
-          });
-        }
-        else {
-          this.setState({
-            searchedKeyword: keyword,
-            searchedPages: [],
-            searchResultMeta: {},
-            searchResultCount: 0,
-            selectedPage: {},
-          });
-        }
-      })
-      .catch((err) => {
-        toastError(err);
+    const offset = (this.state.activePage * pagingLimit) - pagingLimit;
+    try {
+      const res = await this.props.appContainer.apiGet('/search', {
+        q: this.createSearchQuery(keyword),
+        limit: pagingLimit,
+        offset,
       });
+      this.changeURL(keyword);
+      if (res.data.length > 0) {
+        this.setState({
+          searchedKeyword: keyword,
+          searchedPages: res.data,
+          searchResultMeta: res.meta,
+          searchResultCount: res.meta.total,
+          selectedPage: res.data[0],
+        });
+      }
+      else {
+        this.setState({
+          searchedKeyword: keyword,
+          searchedPages: [],
+          searchResultMeta: {},
+          searchResultCount: 0,
+          selectedPage: {},
+          activePage: 1,
+        });
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   selectPage= (pageId) => {
@@ -197,7 +201,7 @@ class SearchPage extends React.Component {
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}
         activePage={this.state.activePage}
-        onPageChagned={this.onPageChagned}
+        onPagingNumberChanged={this.onPagingNumberChanged}
         searchResultCount={this.state.searchResultCount}
         pagingLimit={this.state.pagingLimit}
       />
