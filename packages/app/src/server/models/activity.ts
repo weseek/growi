@@ -96,10 +96,6 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
   return activeNotificationUsers;
 };
 
-activitySchema.statics.getActionUsersFromActivities = function(activities) {
-  return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
-};
-
 activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   let targetUsers: Types.ObjectId[] = [];
   try {

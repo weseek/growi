@@ -1,4 +1,5 @@
 import { InAppNotification } from '../../models/in-app-notification';
+import { InAppNotification as IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
@@ -30,34 +31,33 @@ module.exports = (crowi) => {
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
 
-    interface IDoc {
-      status: string,
-      _id: string
-      action: string,
-      target: [],
-      user: typeof User,
-      createdAt: Date,
-      targetModel: string,
-      actionUsers: Array<typeof User>,
-      id: string,
-    }
 
-    interface IPaginationResult {
-      docs: Array<IDoc | null>,
-      totalDocs: number,
-      offset: number,
-      limit: number,
-      totalPages: number,
-      page: number,
-      pagingCounter: number,
-      hasPrevPage: boolean,
-      hasNextPage: boolean,
-      prevPage: number | null,
-      nextPage: number | null,
-    }
+    const getActionUsersFromActivities = function(activities) {
+      return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
+    };
 
-    const seriarizedPaginationResult: IPaginationResult = {
-      docs: [],
+    let docObj: IInAppNotification;
+    const serializedDocs: Array<IInAppNotification> = [];
+
+    paginationResult.docs.forEach((doc, i) => {
+      if (doc.user != null && doc.user instanceof User) {
+        doc.user = serializeUserSecurely(doc.user);
+      }
+
+      docObj = doc.toObject();
+      const actionUsersNew = getActionUsersFromActivities(doc.activities);
+
+      const serializedActionUsers = actionUsersNew.map((actionUser) => {
+        return serializeUserSecurely(actionUser);
+      });
+
+      docObj.actionUsers = serializedActionUsers;
+
+      serializedDocs.push(docObj);
+    });
+
+    const serializedPaginationResult = {
+      docs: serializedDocs,
       totalDocs: paginationResult.totalDocs,
       offset: paginationResult.offset,
       limit: paginationResult.limit,
@@ -70,32 +70,7 @@ module.exports = (crowi) => {
       nextPage: paginationResult.nextPage,
     };
 
-
-    paginationResult.docs.forEach((doc) => {
-      let seriarizedUser;
-      if (doc.user != null && doc.user instanceof User) {
-        seriarizedUser = serializeUserSecurely(doc.user);
-      }
-
-      const serializedActionUsers = doc.actionUsers.map((actionUser) => {
-        return serializeUserSecurely(actionUser);
-      });
-
-      seriarizedPaginationResult.docs.push({
-        status: doc.status,
-        _id: doc._id,
-        action: doc.action,
-        target: doc.target,
-        user: seriarizedUser,
-        createdAt: doc.createdAt,
-        targetModel: doc.targetModel,
-        actionUsers: serializedActionUsers,
-        id: doc.status,
-      });
-    });
-
-    return res.apiv3(seriarizedPaginationResult);
-
+    return res.apiv3(serializedPaginationResult);
   });
 
   router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
