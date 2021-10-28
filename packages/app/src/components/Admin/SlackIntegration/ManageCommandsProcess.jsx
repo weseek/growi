@@ -117,7 +117,7 @@ const ManageCommandsProcess = ({
   };
 
   const PermissionSettingForEachCommandComponent = ({
-    commandName, usageType, onUpdatePermissions, onUpdateChannels,
+    commandName, usageType, onUpdatePermissions, onUpdateChannels, singleCommandDescription, allowedChannelsDescription,
   }) => {
     const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
@@ -137,7 +137,14 @@ const ManageCommandsProcess = ({
     return (
       <div className="my-1 mb-2">
         <div className="row align-items-center mb-3">
-          <p className="col-md-5 text-md-right text-capitalize mb-2"><strong>{commandName}</strong></p>
+          <p className="col-md-5 text-md-right text-capitalize mb-2">
+            <strong>{commandName}</strong>
+            {singleCommandDescription && (
+              <small className="form-text text-muted small">
+                { singleCommandDescription }
+              </small>
+            )}
+          </p>
           <div className="col dropdown">
             <button
               className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
@@ -197,8 +204,7 @@ const ManageCommandsProcess = ({
               onChange={onUpdateChannels}
             />
             <p className="form-text text-muted small">
-              {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-              <br />
+              {allowedChannelsDescription(commandName)}
             </p>
           </div>
         </div>
@@ -209,8 +215,10 @@ const ManageCommandsProcess = ({
   PermissionSettingForEachCommandComponent.propTypes = {
     commandName: PropTypes.string,
     usageType: PropTypes.string,
+    singleCommandDescription: PropTypes.string,
     onUpdatePermissions: PropTypes.func,
     onUpdateChannels: PropTypes.func,
+    allowedChannelsDescription: PropTypes.func,
   };
 
   const PermissionSettingsForEachCommandTypeComponent = ({ usageType }) => {
@@ -272,6 +280,7 @@ const ManageCommandsProcess = ({
         defaultCommandsName: defaultSupportedCommandsNameForBroadcastUse,
         updatePermissionsHandler: handleUpdateBroadcastUsePermissions,
         updateChannelsHandler: handleUpdateBroadcastUseChannels,
+        allowedChannelsDescription: commandName => t('admin:slack_integration.accordion.allowed_channels_description', { commandName }),
       },
       singleUse: {
         title: 'Single GROWI',
@@ -279,13 +288,14 @@ const ManageCommandsProcess = ({
         defaultCommandsName: defaultSupportedCommandsNameForSingleUse,
         updatePermissionsHandler: handleUpdateSingleUsePermissions,
         updateChannelsHandler: handleUpdateSingleUseChannels,
+        allowedChannelsDescription: commandName => t('admin:slack_integration.accordion.allowed_channels_description', { commandName }),
       },
       unfurl: {
-        title: 'Unfurl',
-        description: 'Description',
         defaultCommandsName: defaultSupportedSlackEventActions,
         updatePermissionsHandler: handleUpdateEventsPermissions,
         updateChannelsHandler: handleUpdateEventsChannels,
+        singleCommandDescription: 'unfurl description',
+        allowedChannelsDescription: _commandName => 'unfurl channels desc',
       },
     };
 
@@ -293,14 +303,17 @@ const ManageCommandsProcess = ({
 
     return (
       <>
-        <div className="row">
-          <div className="col-md-7 offset-md-2">
-            <p className="font-weight-bold mb-1">{currentMenu.title}</p>
-            <p className="text-muted">
-              {currentMenu.description}
-            </p>
-          </div>
-        </div>
+        {(currentMenu.title || currentMenu.description)
+          && (
+            <div className="row">
+              <div className="col-md-7 offset-md-2">
+                { currentMenu.title && <p className="font-weight-bold mb-1">{currentMenu.title}</p> }
+                { currentMenu.description && <p className="text-muted">{currentMenu.description}</p> }
+              </div>
+            </div>
+          )
+        }
+
         <div className="custom-control custom-checkbox">
           <div className="row mb-5 d-block">
             {currentMenu.defaultCommandsName.map((commandName) => {
@@ -310,8 +323,10 @@ const ManageCommandsProcess = ({
                   key={`${commandName}-component`}
                   commandName={commandName}
                   usageType={usageType}
+                  singleCommandDescription={currentMenu.singleCommandDescription}
                   onUpdatePermissions={currentMenu.updatePermissionsHandler}
                   onUpdateChannels={currentMenu.updateChannelsHandler}
+                  allowedChannelsDescription={currentMenu.allowedChannelsDescription}
                 />
               );
             })}
