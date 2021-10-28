@@ -49,7 +49,7 @@ const getUpdatedPermissionSettings = (commandPermissionObj, commandName, value) 
 };
 
 
-const PermissionSettingForEachCommandComponent = ({
+const SinglePermissionSettingComponent = ({
   commandName, editingCommandPermission, onPermissionTypeClicked, onPermissionListChanged,
 }) => {
   const { t } = useTranslation();
@@ -144,7 +144,7 @@ const PermissionSettingForEachCommandComponent = ({
   );
 };
 
-PermissionSettingForEachCommandComponent.propTypes = {
+SinglePermissionSettingComponent.propTypes = {
   commandName: PropTypes.string,
   editingCommandPermission: PropTypes.object,
   onPermissionTypeClicked: PropTypes.func,
@@ -182,8 +182,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
 
   const updatePermissionsEventsState = useCallback((e) => {
     const { target } = e;
-    const { name: commandName, value } = target;
-    setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, commandName, value));
+    const { name: actionName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, actionName, value));
   }, []);
 
   const updateCommandsChannelsListState = useCallback((e) => {
@@ -194,8 +194,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
 
   const updateEventsChannelsListState = useCallback((e) => {
     const { target } = e;
-    const { name: commandName, value } = target;
-    setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, commandName, value) }));
+    const { name: actionName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, actionName, value) }));
   }, []);
 
   const updateCommandsHandler = async(e) => {
@@ -222,7 +222,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
               { defaultCommandsName.map((commandName) => {
                 // eslint-disable-next-line max-len
                 return (
-                  <PermissionSettingForEachCommandComponent
+                  <SinglePermissionSettingComponent
                     key={`${commandName}-component`}
                     commandName={commandName}
                     editingCommandPermission={editingCommandPermission}
@@ -241,7 +241,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               { defaultSupportedSlackEventActions.map(actionName => (
-                <PermissionSettingForEachCommandComponent
+                <SinglePermissionSettingComponent
                   key={`${actionName}-component`}
                   commandName={actionName}
                   editingCommandPermission={editingEventActionsPermission}
