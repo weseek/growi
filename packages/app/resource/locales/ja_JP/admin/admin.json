@@ -20,12 +20,13 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "v5_page_migration": {
-    "migration_desc": "公開されているページに古いスキーマのものが存在します。<br/>ページツリーや簡単なリネームなどの新機能を利用するには、全てのページのスキーマをアップグレードしてください。<br/><br />",
+    "migration_desc": "公開されているページに古いスキーマのものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページのスキーマをアップグレードしてください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
     "upgrade_to_v5": "V5 にアップグレード",
-    "modal_migration_warning": "管理者はユーザーに、マイグレーション中はページを作成・変更・削除しないように伝えることを強くお勧めします。<br/><br/>注意: アップグレードが終了するとページパスからユニーク制約が失われます。",
+    "modal_migration_warning": "管理者はユーザーに、マイグレーション中はページを作成・変更・削除しないように伝えることを強くお勧めします。",
     "start_upgrading": "アップグレードを開始",
-    "successfully_started": "正常にマイグレーションが開始されました"
+    "successfully_started": "正常にマイグレーションが開始されました",
+    "already_upgraded": "アップグレードは既に完了しています"
   },
   "app_setting": {
     "site_name": "サイト名",

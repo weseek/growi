@@ -46,10 +46,10 @@ class AdminHome extends React.Component {
           !isV5Compatible
           && (
             <div className={`alert ${alertStyle}`}>
-              {t('v5_page_migration.migration_desc')}
+              {t('admin:v5_page_migration.migration_desc')}
               <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
                 <i className="fa fa-link ml-1" aria-hidden="true"></i>
-                <strong>{t('v5_page_migration.upgrade_to_v5')}</strong>
+                <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
               </a>
             </div>
           )

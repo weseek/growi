@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 type Props = {
-  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: (action: string) => Promise<void> },
+  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: (action: string) => Promise<{ isV5Compatible: boolean }> },
 }
 
 const V5PageMigration: FC<Props> = (props: Props) => {
@@ -17,8 +17,13 @@ const V5PageMigration: FC<Props> = (props: Props) => {
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
     try {
-      await adminAppContainer.v5PageMigrationHandler('upgrade');
-      toastSuccess(t('v5_page_migration.successfully_started'));
+      // もう完了してたらその旨のトースター
+      const { isV5Compatible } = await adminAppContainer.v5PageMigrationHandler('upgrade');
+      if (isV5Compatible) {
+
+        return toastSuccess(t('admin:v5_page_migration.already_upgraded'));
+      }
+      toastSuccess(t('admin:v5_page_migration.successfully_started'));
     }
     catch (err) {
       toastError(err);
@@ -33,10 +38,12 @@ const V5PageMigration: FC<Props> = (props: Props) => {
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
       <p className="card well">
-        {t('v5_page_migration.migration_desc')}
+        {t('admin:v5_page_migration.migration_desc')}
+        <br />
+        <br />
         <span className="text-danger">
           <i className="icon-exclamation icon-fw"></i>
-          {t('v5_page_migration.migration_note')}
+          {t('admin:v5_page_migration.migration_note')}
         </span>
       </p>
       <div className="row my-3">
