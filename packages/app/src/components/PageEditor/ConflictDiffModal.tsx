@@ -27,7 +27,6 @@ type ConflictDiffModalProps = {
   onCancel: (() => void) | null;
   onResolveConflict: (() => void) | null;
   pageContainer: PageContainer;
-  editorContainer: EditorContainer;
 };
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
@@ -69,13 +68,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         {Object.keys(pageContainer.state.revisionsOnConflict || {}).length > 0
           && (
             <div className="row">
-              <h2>{`Selected ${val}`}</h2>
+              <div className="col-12 text-center mt-2 mb-4">
+                <h2>{`Selected revision: ${val}`}</h2>
+              </div>
               <div className="col-4">
                 <h2>Previous Revision</h2>
                 <CodeMirror
                   value={pageContainer.state.revisionsOnConflict?.request.revisionBody}
                   onChange={() => {
-                    console.log('test');
                   }}
                 />
               </div>
@@ -91,11 +91,16 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   value={pageContainer.state.revisionsOnConflict?.latest.revisionBody}
                 />
               </div>
+              <div className="col-12">
+                <h2>Selected Revision</h2>
+                <CodeMirror
+                  value="clicked text"
+                />
+              </div>
             </div>
           )
         }
         {console.log('diff:', pageContainer?.state.revisionsOnConflict)}
-        {console.log(props.editorContainer)}
       </ModalBody>
       <ModalFooter>
         <button
