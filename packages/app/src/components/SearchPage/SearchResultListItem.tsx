@@ -81,56 +81,48 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     }
   };
 
-  const renderPageItem = useMemo(() => {
-    return (
-      <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
-        <a
-          className="d-block pt-3"
-          href={pageId}
-          onClick={() => onClickInvoked(page._id)}
-        >
-          <div className="d-flex">
-            {/* checkbox */}
-            <div className="form-check my-auto mx-2">
-              <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
-            </div>
-            <div className="w-100">
-              {/* page path */}
-              <small className="mb-1">
-                <i className="icon-fw icon-home"></i>
-                {pagePathElem}
-              </small>
-              <div className="d-flex my-1 align-items-center">
-                {/* page title */}
-                <h3 className="mb-0">
-                  <UserPicture user={page.lastUpdateUser} />
-                  <span className="mx-2">{dPagePath.latter}</span>
-                </h3>
-                {/* page meta */}
-                <div className="d-flex mx-2">
-                  <PageListMeta page={page} />
-                </div>
-                {/* doropdown icon includes page control buttons */}
-                <div className="ml-auto">
-                  <PageItemControl page={page} />
-                </div>
+  return (
+    <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
+      <a
+        className="d-block pt-3"
+        href={pageId}
+        onClick={() => onClickInvoked(page._id)}
+      >
+        <div className="d-flex">
+          {/* checkbox */}
+          <div className="form-check my-auto mx-2">
+            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+          </div>
+          <div className="w-100">
+            {/* page path */}
+            <small className="mb-1">
+              <i className="icon-fw icon-home"></i>
+              {pagePathElem}
+            </small>
+            <div className="d-flex my-1 align-items-center">
+              {/* page title */}
+              <h3 className="mb-0">
+                <UserPicture user={page.lastUpdateUser} />
+                <span className="mx-2">{dPagePath.latter}</span>
+              </h3>
+              {/* page meta */}
+              <div className="d-flex mx-2">
+                <PageListMeta page={page} />
+              </div>
+              {/* doropdown icon includes page control buttons */}
+              <div className="ml-auto">
+                <PageItemControl page={page} />
               </div>
             </div>
           </div>
-          {/* TODO: adjust snippet position */}
-          {page.snippet
-            ? <div className="mt-1">page.snippet</div>
-            : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
-          }
-        </a>
-      </li>
-    );
-  }, []);
-
-  return (
-    <>
-      {renderPageItem}
-    </>
+        </div>
+        {/* TODO: adjust snippet position */}
+        {page.snippet
+          ? <div className="mt-1">page.snippet</div>
+          : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+        }
+      </a>
+    </li>
   );
 };
 
