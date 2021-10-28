@@ -23,7 +23,7 @@ class SearchResultList extends React.Component {
         {this.props.searchResultCount != null && this.props.searchResultCount > 0 && (
           <div className="my-4 mx-auto">
             <PaginationWrapper
-              activePage={this.props.activePage || 1}
+              activePage={this.props.activePage}
               changePage={this.props.onPagingNumberChanged}
               totalItemsCount={this.props.searchResultCount || 0}
               pagingLimit={this.props.pagingLimit}
@@ -41,7 +41,7 @@ SearchResultList.propTypes = {
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
   searchResultCount: PropTypes.number,
-  activePage: PropTypes.number,
+  activePage: PropTypes.number.isRequired,
   pagingLimit: PropTypes.number,
   onClickInvoked: PropTypes.func,
   onChangeInvoked: PropTypes.func,

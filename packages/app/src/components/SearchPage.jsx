@@ -34,13 +34,14 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 10, // change to an appropriate limit number
+      pagingLimit: 3, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
@@ -52,12 +53,6 @@ class SearchPage extends React.Component {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
       this.search({ keyword });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.activePage !== prevState.activePage) {
-      this.search({ keyword: this.state.searchedKeyword });
     }
   }
 
@@ -106,8 +101,22 @@ class SearchPage extends React.Component {
     return query;
   }
 
+  /**
+   * this method is called when user changes paging number
+   */
   async onPagingNumberChanged(activePage) {
-    this.setState({ activePage });
+    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
+    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
+    this.setState({ activePage }, () => this.search({ keyword: this.state.searchedKeyword }));
+  }
+
+  /**
+   * this method is called when user searches by pressing Enter or using searchbox
+   */
+  async searchHandler(data) {
+    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
+    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
+    this.setState({ activePage: 1 }, () => this.search(data));
   }
 
   async search(data) {
@@ -144,6 +153,8 @@ class SearchPage extends React.Component {
           searchResultMeta: res.meta,
           searchResultCount: res.meta.total,
           selectedPage: res.data[0],
+          // reset active page if keyword changes, otherwise set the current state
+          activePage: this.state.searchedKeyword === keyword ? this.state.activePage : 1,
         });
       }
       else {
@@ -213,7 +224,7 @@ class SearchPage extends React.Component {
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
-        onSearchInvoked={this.search}
+        onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
       >
