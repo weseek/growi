@@ -50,7 +50,7 @@ const getUpdatedPermissionSettings = (commandPermissionObj, commandName, value) 
 
 
 const PermissionSettingForEachCommandComponent = ({
-  permissionCategory, commandName, editingCommandPermission, onPermissionTypeClicked, onPermissionListChanged,
+  commandName, editingCommandPermission, onPermissionTypeClicked, onPermissionListChanged,
 }) => {
   const { t } = useTranslation();
 
@@ -59,17 +59,17 @@ const PermissionSettingForEachCommandComponent = ({
   }
 
   function permissionTypeClickHandler(e) {
-    if (onPermissionTypeClicked == null || permissionCategory == null) {
+    if (onPermissionTypeClicked == null) {
       return;
     }
-    onPermissionTypeClicked(e, permissionCategory);
+    onPermissionTypeClicked(e);
   }
 
   function onPermissionListChangeHandler(e) {
-    if (onPermissionListChanged == null || permissionCategory == null) {
+    if (onPermissionListChanged == null) {
       return;
     }
-    onPermissionListChanged(e, permissionCategory);
+    onPermissionListChanged(e);
   }
 
   const permission = editingCommandPermission[commandName];
@@ -145,7 +145,6 @@ const PermissionSettingForEachCommandComponent = ({
 };
 
 PermissionSettingForEachCommandComponent.propTypes = {
-  permissionCategory: PropTypes.string,
   commandName: PropTypes.string,
   editingCommandPermission: PropTypes.object,
   onPermissionTypeClicked: PropTypes.func,
@@ -175,31 +174,28 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
     setEditingEventActionsPermission(updatedState);
   }, [eventActionsPermission]);
 
-  const updatePermissionsCommandsState = useCallback((e, permissionCategory) => {
+  const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
-
-    // update state
-    if (permissionCategory === 'command') {
-      setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
-    }
-    else if (permissionCategory === 'event') {
-      setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, commandName, value));
-    }
+    setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
   }, []);
 
-  const updateChannelsListState = useCallback((e, permissionCategory) => {
+  const updatePermissionsEventsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => getUpdatedPermissionSettings(eventActionPermissionObj, commandName, value));
+  }, []);
 
-    // update state
-    if (permissionCategory === 'command') {
-      setEditingCommandPermission(commandPermissionObj => ({ ...getUpdatedChannelsList(commandPermissionObj, commandName, value) }));
-    }
-    else if (permissionCategory === 'event') {
-      setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, commandName, value) }));
-    }
+  const updateCommandsChannelsListState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    setEditingCommandPermission(commandPermissionObj => ({ ...getUpdatedChannelsList(commandPermissionObj, commandName, value) }));
+  }, []);
 
+  const updateEventsChannelsListState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, commandName, value) }));
   }, []);
 
   const updateCommandsHandler = async(e) => {
@@ -227,12 +223,11 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
                 // eslint-disable-next-line max-len
                 return (
                   <PermissionSettingForEachCommandComponent
-                    permissionCategory="command"
                     key={`${commandName}-component`}
                     commandName={commandName}
                     editingCommandPermission={editingCommandPermission}
                     onPermissionTypeClicked={updatePermissionsCommandsState}
-                    onPermissionListChanged={updateChannelsListState}
+                    onPermissionListChanged={updateCommandsChannelsListState}
                   />
                 );
               })}
@@ -247,12 +242,11 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
             <div className="row mb-5 d-block">
               { defaultSupportedSlackEventActions.map(actionName => (
                 <PermissionSettingForEachCommandComponent
-                  permissionCategory="event"
                   key={`${actionName}-component`}
                   commandName={actionName}
                   editingCommandPermission={editingEventActionsPermission}
-                  onPermissionTypeClicked={updatePermissionsCommandsState}
-                  onPermissionListChanged={updateChannelsListState}
+                  onPermissionTypeClicked={updatePermissionsEventsState}
+                  onPermissionListChanged={updateEventsChannelsListState}
                 />
               ))}
             </div>
