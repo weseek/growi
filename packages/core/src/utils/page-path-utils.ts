@@ -1,5 +1,4 @@
 import escapeStringRegexp from 'escape-string-regexp';
-import path from 'path';
 
 /**
  * Whether path is the top page
