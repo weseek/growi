@@ -196,7 +196,10 @@ export const validateCompleteRegistrationForm = (req, res, next) => {
     return next();
   }
 
-  req.flash('errors', errors.array());
+  const extractedErrors: string[] = [];
+  errors.array().map(err => extractedErrors.push(err.msg));
+
+  req.flash('errors', extractedErrors);
   req.flash('inputs', req.body);
 
   const token = req.body.token;

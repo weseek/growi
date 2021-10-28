@@ -7,107 +7,43 @@
 
 
 {#
-  # Remove default contents
-  #}
- {% block html_head_loading_legacy %}
- {% endblock %}
- {% block html_head_loading_app %}
- {% endblock %}
- {% block layout_head_nav %}
- {% endblock %}
- {% block sidebar %}
- {% endblock %}
- {% block head_warn_alert_siteurl_undefined %}
- {% endblock %}
- {% block fixed-controls %}
- {% endblock %}
+# Remove default contents
+#}
+{% block html_head_loading_legacy %}
+{% endblock %}
+{% block html_head_loading_app %}
+{% endblock %}
+{% block layout_head_nav %}
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
+{% block head_warn_alert_siteurl_undefined %}
+{% endblock %}
+{% block fixed-controls %}
+{% endblock %}
 
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+{% endblock %}
 
-
- {% block layout_main %}
+{% block layout_main %}
 
 <div class="main container-fluid">
 
   <div class="row">
 
-    <div class="login-header offset-4 col-sm-4">
+    <div class="login-header mx-auto col-sm-3">
       <div class="logo">{% include 'widget/logo.html' %}</div>
       <h1>GROWI</h1>
 
-      <div id="login-form-errors">
-        {% set message = req.flash('warningMessage') %}
-        {% if message.length %}
-        <div class="alert alert-danger">
-          {{ message }}
-        </div>
-        {% endif %}
-
-        {% set errors = req.flash('errors') %}
-        {% if errors.length > 0 %}
-        <div class="alert alert-danger">
-          <ul>
-          {% for error in errors %}
-            <li>{{ error.msg }}</li>
-          {% endfor %}
-          </ul>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    {% set formInputs = req.flash('inputs')[0] %}
-    {{ formInputs.username }}
-    <div class="login-dialog grw-pt-10px p-b-10 offset-4 col-sm-4" id="login-dialog">
-
-      <form role="form" action="/user-activation/complete-registartion" method="post" id="registration-form">
-        <input type="hidden" name="token" value="{{ userRegistrationOrder.token }}" />
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="icon-envelope"></i></span>
-          </div>
-          <input type="text" class="form-control" disabled value="{{ userRegistrationOrder.email }}">
-        </div>
-        <div class="input-group" id="input-group-username">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="icon-user"></i></span>
-          </div>
-          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="username" value="{{ formInputs.username }}" required>
-        </div>
-        <p class="form-text text-muted">
-          <span id="help-block-username"></span>
-        </p>
-
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="icon-tag"></i></span>
-          </div>
-          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="name" value="{{ formInputs.name }}" required>
-        </div>
-
-
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="icon-lock"></i></span>
-          </div>
-          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="password" required>
-        </div>
-
-        <div class="input-group justify-content-center d-flex mt-5">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <button type="submit" class="btn btn-fill" id="register">
-            <div class="eff"></div>
-            <span class="btn-label"><i class="icon-user-follow"></i></span>
-            <span class="btn-label-text">{{ t('Create') }}</span>
-          </button>
-        </div>
-
-        <div class="input-group mt-5 d-flex justify-content-center">
-          <a href="https://growi.org" class="link-growi-org">
-            <span class="growi">GROWI</span>.<span class="org">ORG
-          </a>
-        </div>
-      </form>
-    </div>
+      <div
+        id="user-activation-form"
+        data-message-errors="{{ req.flash('errors') }}"
+        data-inputs="{{ req.flash('inputs') }}"
+        data-email="{{ userRegistrationOrder.email }}"
+        data-token="{{ userRegistrationOrder.token }}"
+        class="col-sm-12"
+      ></div>
 
   </div>{# /.row #}
 

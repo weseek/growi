@@ -200,7 +200,7 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.handleHttpErrosMiddleware));
   app.post('/user-activation/complete-registartion', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, csrf, userActivation.completeRegistrationRules(), userActivation.validateCompleteRegistrationForm, userActivation.completeRegistrationAction(crowi));
-  app.post('/user-activation/register', applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
+  app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
 
