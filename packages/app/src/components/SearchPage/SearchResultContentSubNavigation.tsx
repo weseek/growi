@@ -1,18 +1,19 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 import { DevidedPagePath } from '@growi/core';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import SubnavButtons from '../Navbar/SubNavButtons';
+// import SubnavButtons from '../Navbar/SubNavButtons';
 
 
 import CopyDropdown from '../Page/CopyDropdown';
 
-// TODO : to tsx
-const PagePathNav = ({
-  // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isCompactMode,
-}) => {
+type PagePathNavProps = {
+  pageId: string,
+  pagePath: string,
+  isCompactMode: boolean,
+}
+const PagePathNav: FC<PagePathNavProps> = (props:PagePathNavProps) => {
+  const { pageId, pagePath, isCompactMode } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
@@ -54,36 +55,32 @@ const PagePathNav = ({
   );
 };
 
-const SearchResultContentSubNavigation = (props) => {
-  // const { pageContaine } = props;
-  // return <PagePathNav pageId={props.pageId} pagePath={props.pagePath} isCompactMode></PagePathNav>;
+type SearchResultContentSubNavigationProps = {
+  pageId: string,
+  pagePath: string,
+  isCompactMode: boolean,
+}
+const SearchResultContentSubNavigation: FC<SearchResultContentSubNavigationProps> = (props:SearchResultContentSubNavigationProps) => {
   return (
     <div className="grw-subnav container-fluid d-flex align-items-center justify-content-between grw-subnav-compact d-print-none">
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         <div className="grw-path-nav-container">
-          {/* {pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
-            <div className="grw-taglabels-container">
-              <TagLabels editorMode={editorMode} />
-            </div>
-          )} */}
+          {/* tags info */}
           <PagePathNav pageId={props.pageId} pagePath={props.pagePath} isCompactMode />
         </div>
       </div>
 
-      {/* Right side */}
+      {/* Right side
       <div className="d-flex">
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             <SubnavButtons isCompactMode />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
-SearchResultContentSubNavigation.propTypes = {
-  pageId: PropTypes.node,
-  pagePath: PropTypes.node,
-};
+
 export default SearchResultContentSubNavigation;
