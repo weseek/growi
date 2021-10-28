@@ -18,27 +18,25 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   let showTags = false;
   if (page.tags != null && page.tags.length > 0) { showTags = true }
   return (
-    <>
-      <div key={page._id} className="search-result-page mb-5">
-        <h2>
-          <a href={page.path} className="text-break">
-            {page.path}
-          </a>
-          {showTags && (
-            <div className="mt-1 small">
-              <i className="tag-icon icon-tag"></i> {page.tags.join(', ')}
-            </div>
-          )}
-        </h2>
-        <RevisionLoaderTypeAny
-          growiRenderer={growiRenderer}
-          pageId={page._id}
-          pagePath={page.path}
-          revisionId={page.revision}
-          highlightKeywords={props.searchingKeyword}
-        />
-      </div>
-    </>
+    <div key={page._id} className="search-result-page mb-5">
+      <h2>
+        <a href={page.path} className="text-break">
+          {page.path}
+        </a>
+        {showTags && (
+          <div className="mt-1 small">
+            <i className="tag-icon icon-tag"></i> {page.tags.join(', ')}
+          </div>
+        )}
+      </h2>
+      <RevisionLoaderTypeAny
+        growiRenderer={growiRenderer}
+        pageId={page._id}
+        pagePath={page.path}
+        revisionId={page.revision}
+        highlightKeywords={props.searchingKeyword}
+      />
+    </div>
   );
 };
 
