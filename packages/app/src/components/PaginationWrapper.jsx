@@ -63,10 +63,10 @@ const PaginationWrapper = React.memo((props) => {
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem key="painationItemFirst">
-          <PaginationLink first onClick={() => { return changePage(1) }} />
+          <PaginationLink first onClick={() => { return changePage != null ? changePage(1) : null }} />
         </PaginationItem>,
         <PaginationItem key="painationItemPrevious">
-          <PaginationLink previous onClick={() => { return changePage(activePage - 1) }} />
+          <PaginationLink previous onClick={() => { return changePage != null ? changePage(activePage - 1) : null }} />
         </PaginationItem>,
       );
     }
@@ -93,7 +93,7 @@ const PaginationWrapper = React.memo((props) => {
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
-          <PaginationLink onClick={() => { return changePage(number) }}>
+          <PaginationLink onClick={() => { return changePage != null ? changePage(number) : null }}>
             {number}
           </PaginationLink>
         </PaginationItem>,
@@ -112,10 +112,10 @@ const PaginationWrapper = React.memo((props) => {
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">
-          <PaginationLink next onClick={() => { return changePage(activePage + 1) }} />
+          <PaginationLink next onClick={() => { return changePage != null ? changePage(activePage + 1) : null }} />
         </PaginationItem>,
         <PaginationItem key="painationItemLast">
-          <PaginationLink last onClick={() => { return changePage(totalPage) }} />
+          <PaginationLink last onClick={() => { return changePage != null ? changePage(totalPage) : null }} />
         </PaginationItem>,
       );
     }
@@ -159,7 +159,7 @@ const PaginationWrapper = React.memo((props) => {
 
 PaginationWrapper.propTypes = {
   activePage: PropTypes.number.isRequired,
-  changePage: PropTypes.func.isRequired,
+  changePage: PropTypes.func,
   totalItemsCount: PropTypes.number.isRequired,
   pagingLimit: PropTypes.number,
   align: PropTypes.string,

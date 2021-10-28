@@ -23,9 +23,9 @@ class SearchResultList extends React.Component {
         {this.props.searchResultCount > 0 && (
           <div className="my-4 mx-auto">
             <PaginationWrapper
-              activePage={this.props.activePage}
+              activePage={this.props.activePage || 1}
               changePage={this.props.onPagingNumberChanged}
-              totalItemsCount={this.props.searchResultCount}
+              totalItemsCount={this.props.searchResultCount || 0}
               pagingLimit={this.props.pagingLimit}
             />
           </div>
