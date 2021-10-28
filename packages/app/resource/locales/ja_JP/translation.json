@@ -606,7 +606,10 @@
       "enable_local": "ID/Password を有効にする",
       "password_reset_by_users": "ユーザーによるパスワード再設定",
       "enable_password_reset_by_users": "ユーザーによるパスワード再設定を有効にする",
-      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。"
+      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。",
+      "email_authentication": "メール認証",
+      "enable_email_authentication": "メール認証を有効にする",
+      "enable_email_authentication_desc": "ID /パスワードの認証メカニズムの設定は、まずSMTPを有効にしてください。"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",

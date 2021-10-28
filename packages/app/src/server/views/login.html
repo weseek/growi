@@ -110,7 +110,7 @@
       {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}
       {% set isRegistrationEnabled = passportService.isLocalStrategySetup && registrationMode != 'Closed' %}
       {% set isPasswordResetEnabled = getConfig('crowi', 'security:passport-local:isPasswordResetEnabled') %}
-
+      {% set isEmailAuthenticationEnabled = getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') %}
       <div
         id="login-form"
         data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
@@ -121,6 +121,7 @@
         data-registration-mode = "{{ registrationMode }}"
         data-registration-white-list = "{{ getConfig('crowi', 'security:registrationWhiteList') }}"
         data-is-password-reset-enabled = "{{ isPasswordResetEnabled }}"
+        data-is-email-authentication-enabled = "{{ isEmailAuthenticationEnabled }}"
         data-is-local-strategy-setup = "{{ passportService.isLocalStrategySetup }}"
         data-is-ldap-strategy-setup = "{{ passportService.isLdapStrategySetup}}"
         data-is-google-auth-enabled = "{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"

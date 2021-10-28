@@ -312,6 +312,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: true,
   },
+  LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isEmailAuthenticationEnabled',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',

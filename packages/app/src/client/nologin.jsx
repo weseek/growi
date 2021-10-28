@@ -11,6 +11,7 @@ import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
+import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 
 const i18n = i18nFactory();
 
@@ -39,6 +40,7 @@ if (loginFormElem) {
   const name = loginFormElem.dataset.name;
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
+  const isEmailAuthenticationEnabled = loginFormElem.dataset.isEmailAuthenticationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
   const isPasswordResetEnabled = loginFormElem.dataset.isPasswordResetEnabled === 'true';
 
@@ -69,6 +71,7 @@ if (loginFormElem) {
           name={name}
           email={email}
           isRegistrationEnabled={isRegistrationEnabled}
+          isEmailAuthenticationEnabled={isEmailAuthenticationEnabled}
           registrationMode={registrationMode}
           registrationWhiteList={registrationWhiteList}
           isPasswordResetEnabled={isPasswordResetEnabled}
@@ -109,5 +112,29 @@ if (passwordResetExecutionFormElem) {
       </Provider>
     </I18nextProvider>,
     passwordResetExecutionFormElem,
+  );
+}
+
+// render UserActivationForm
+const UserActivationForm = document.getElementById('user-activation-form');
+if (UserActivationForm) {
+
+  const messageErrors = UserActivationForm.dataset.messageErrors;
+  const inputs = UserActivationForm.dataset.inputs;
+  const email = UserActivationForm.dataset.email;
+  const token = UserActivationForm.dataset.token;
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[appContainer]}>
+        <CompleteUserRegistrationForm
+          messageErrors={messageErrors}
+          inputs={inputs}
+          email={email}
+          token={token}
+        />
+      </Provider>
+    </I18nextProvider>,
+    UserActivationForm,
   );
 }
