@@ -1,10 +1,8 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { PageCommentInAppNotification } from './PageCommentInAppNotification';
-import { PageUpdateInAppNotification } from './PageUpdateInAppNotification';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-import FormattedDistanceDate from '../FormattedDistanceDate';
+import { PageUpdateNotification, PageCommentNotification } from './NotificationContent';
 
 interface Props {
   notification: IInAppNotification
@@ -55,10 +53,12 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
   const renderInAppNotificationContent = (): JSX.Element => {
     switch (componentName) {
-      case 'Page:COMMENT':
-        return <PageCommentInAppNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      // TODO Is the naming of componentName too subtle?
       case 'Page:UPDATE':
-        return <PageUpdateInAppNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageUpdateNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+      case 'Page:COMMENT_CREATE':
+      case 'Page:COMMENT_UPDATE':
+        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
         return <></>;
     }
@@ -72,13 +72,9 @@ export const InAppNotification = (props: Props): JSX.Element => {
         </div>
         <div className="p-2">
           {renderInAppNotificationContent()}
-          <div>
-            <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-          </div>
         </div>
       </div>
     </>
   );
-
 
 };
