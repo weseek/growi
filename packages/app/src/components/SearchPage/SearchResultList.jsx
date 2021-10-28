@@ -40,12 +40,12 @@ SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
   selectedPages: PropTypes.array.isRequired,
+  searchResultCount: PropTypes.number,
+  activePage: PropTypes.number,
+  pagingLimit: PropTypes.number,
   onClickInvoked: PropTypes.func,
   onChangeInvoked: PropTypes.func,
-  activePage: PropTypes.number,
   onPagingNumberChanged: PropTypes.func,
-  searchResultCount: PropTypes.number,
-  pagingLimit: PropTypes.number,
 };
 
 export default SearchResultList;

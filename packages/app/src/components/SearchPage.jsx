@@ -198,12 +198,12 @@ class SearchPage extends React.Component {
         deletionMode={false}
         selectedPage={this.state.selectedPage}
         selectedPages={this.state.selectedPages}
+        searchResultCount={this.state.searchResultCount}
+        activePage={this.state.activePage}
+        pagingLimit={this.state.pagingLimit}
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}
-        activePage={this.state.activePage}
         onPagingNumberChanged={this.onPagingNumberChanged}
-        searchResultCount={this.state.searchResultCount}
-        pagingLimit={this.state.pagingLimit}
       />
     );
   }
