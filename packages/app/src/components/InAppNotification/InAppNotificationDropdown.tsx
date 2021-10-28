@@ -12,7 +12,6 @@ import SocketIoContainer from '../../client/services/SocketIoContainer';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
-
 type Props = {
   appContainer: AppContainer,
   socketIoContainer: SocketIoContainer,
