@@ -3,7 +3,7 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import { PageCommentInAppNotification } from './PageCommentInAppNotification';
 import { PageUpdateInAppNotification } from './PageUpdateInAppNotification';
-import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import { IInAppNotification } from '../../interfaces/in-app-notification';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {

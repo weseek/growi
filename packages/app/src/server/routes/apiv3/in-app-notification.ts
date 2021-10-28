@@ -1,5 +1,5 @@
 import { InAppNotification } from '../../models/in-app-notification';
-import { InAppNotification as IInAppNotification } from '../../../interfaces/in-app-notification';
+import { IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
