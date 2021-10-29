@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -42,6 +42,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [resolvedRevision, SetResolvedRevision] = useState<string>(INITIAL_TEXT);
   const { t } = useTranslation('');
 
+  const text = useRef<string>('');
   const { pageContainer } = props;
   const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
 
@@ -96,6 +97,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
+                    readOnly: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -127,6 +129,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
+                    readOnly: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -158,6 +161,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
+                    readOnly: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -175,8 +179,17 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <h3 className="font-weight-bold my-2">Selected Revision(Editable)</h3>
                 <CodeMirror
                   value={resolvedRevision}
+                  options={{
+                    mode: 'htmlmixed',
+                    lineNumbers: true,
+                    tabSize: 2,
+                    indentUnit: 2,
+                  }}
                   onChange={(editorqq, dataqq, value) => {
-                    SetResolvedRevision(value);
+                    // SetResolvedRevision(value);
+                    // console.log(value);
+                    text.current = value;
+                    console.log('res:', text.current);
                   }}
                 />
               </div>
