@@ -36,15 +36,12 @@ module.exports = (crowi) => {
       return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
     };
 
-    let docObj: IInAppNotification;
-    const serializedDocs: Array<IInAppNotification> = [];
-
-    paginationResult.docs.forEach((doc, i) => {
+    const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
       if (doc.user != null && doc.user instanceof User) {
         doc.user = serializeUserSecurely(doc.user);
       }
       // To add a new property into mongoose doc, need to change the format of doc to an object
-      docObj = doc.toObject();
+      const docObj: IInAppNotification = doc.toObject();
       const actionUsersNew = getActionUsersFromActivities(doc.activities);
 
       const serializedActionUsers = actionUsersNew.map((actionUser) => {
@@ -52,8 +49,7 @@ module.exports = (crowi) => {
       });
 
       docObj.actionUsers = serializedActionUsers;
-
-      serializedDocs.push(docObj);
+      return docObj;
     });
 
     const serializedPaginationResult = {
