@@ -335,7 +335,6 @@ module.exports = function(crowi) {
 
   pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
-
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
     if (revision != previousRevision) {
