@@ -22,7 +22,7 @@ const PageManagement = (props) => {
   const {
     t, appContainer, pageContainer, isCompactMode,
   } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+  const { path, pageId, revisionId, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -179,6 +179,8 @@ const PageManagement = (props) => {
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           path={path}
+          pageId={pageId}
+          revisionId={revisionId}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal

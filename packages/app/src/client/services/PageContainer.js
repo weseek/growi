@@ -529,7 +529,7 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  deletePage(isRecursively, isCompletely) {
+  deletePage(isRecursively, isCompletely, pageId, revisionId) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // control flag
@@ -539,8 +539,8 @@ export default class PageContainer extends Container {
     return this.appContainer.apiPost('/pages.remove', {
       recursively,
       completely,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
+      page_id: pageId,
+      revision_id: revisionId,
     });
 
   }
