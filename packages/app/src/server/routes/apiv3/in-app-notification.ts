@@ -57,20 +57,8 @@ module.exports = (crowi) => {
     });
 
     const serializedPaginationResult = {
-      // Docs that users are serialized
+      ...paginationResult,
       docs: serializedDocs,
-
-      // Original paginationReault values.
-      totalDocs: paginationResult.totalDocs,
-      offset: paginationResult.offset,
-      limit: paginationResult.limit,
-      totalPages: paginationResult.totalPages,
-      page: paginationResult.page,
-      pagingCounter: paginationResult.pagingCounter,
-      hasPrevPage: paginationResult.hasPrevPage,
-      hasNextPage: paginationResult.hasNextPage,
-      prevPage: paginationResult.prevPage,
-      nextPage: paginationResult.nextPage,
     };
 
     return res.apiv3(serializedPaginationResult);
