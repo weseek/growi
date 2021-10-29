@@ -856,6 +856,17 @@ class PageService {
     }
 
     try {
+      // drop pages.path_1 indexes
+      const conn = mongoose.connection.collection('pages');
+      await conn.dropIndexes('path_1');
+      // then create non-unique indexes
+    }
+    catch (err) {
+      // return not to set app:isV5Compatible to true
+      return logger.error('Failed to drop unique indexes.', err);
+    }
+
+    try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
         'app:isV5Compatible': true,
       });

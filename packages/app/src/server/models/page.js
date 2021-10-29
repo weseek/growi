@@ -71,6 +71,8 @@ const pageSchema = new mongoose.Schema({
 pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
+// ensure v5 clean install compatibility
+pageSchema.index({ path: 1 }, { partialFilterExpression: { parent: null } });
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath
