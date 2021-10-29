@@ -12,8 +12,6 @@ import { toastError } from '../../client/util/apiNotification';
 require('codemirror/addon/lint/css-lint');
 require('codemirror/addon/hint/css-hint');
 require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/css/css');
 require('~/client/util/codemirror/autorefresh.ext');
 
@@ -30,7 +28,7 @@ require('jquery-ui/ui/widgets/resizable');
 
 const DMP = require('diff_match_patch');
 
-const INITIAL_TEXT = 'Please choose revision';
+const INITIAL_TEXT = 'Please select revision';
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
@@ -45,7 +43,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
 
   const { pageContainer } = props;
-  const { request, origin, latest } = pageContainer.state.revisionsOnConflict;
+  const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
 
 
   const onCancel = () => {
@@ -82,9 +80,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               </div>
               <div className="col-4 border border-dark">
                 <h3 className="font-weight-bold my-2">Request Revision</h3>
-                <div className="d-flex">
-                  <p>{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
-                  <img className="border-rounded" src={request.userImgPath} />
+                <div className="d-flex align-items-center my-3">
+                  <div>
+                    <img height="40px" className="rounded-circle" src={request.userImgPath} />
+                  </div>
+                  <div className="ml-3">
+                    <p className="my-0 text-muted">updated by {request.userName}</p>
+                    <p className="my-0 text-muted">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  </div>
                 </div>
                 <CodeMirror
                   value={pageContainer.state.revisionsOnConflict?.request.revisionBody}
@@ -93,8 +96,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
-                    matchBrackets: true,
-                    autoCloseBrackets: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -103,16 +104,21 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => { SetResolvedRevision(pageContainer.state.revisionsOnConflict?.request.revisionBody) }}
                   >
-                    <i className="icon-fw icon-action-redo"></i>
-                    {t('modal_resolve_conflict.resolve_and_save')}
+                    <i className="icon-fw icon-arrow-down-circle"></i>
+                    {t('modal_resolve_conflict.select_revision', { revision: 'request' })}
                   </button>
                 </div>
               </div>
               <div className="col-4 border border-dark">
                 <h3 className="font-weight-bold my-2">Original Revision</h3>
-                <div className="d-flex">
-                  <p>{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
-                  <img className="border-rounded" src={origin.userImgPath} />
+                <div className="d-flex align-items-center my-3">
+                  <div>
+                    <img height="40px" className="rounded-circle" src={origin.userImgPath} />
+                  </div>
+                  <div className="ml-3">
+                    <p className="my-0 text-muted">updated by {origin.userName}</p>
+                    <p className="my-0 text-muted">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  </div>
                 </div>
                 <CodeMirror
                   value={pageContainer.state.revisionsOnConflict?.origin.revisionBody}
@@ -121,8 +127,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
-                    matchBrackets: true,
-                    autoCloseBrackets: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -131,16 +135,21 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => { SetResolvedRevision(pageContainer.state.revisionsOnConflict?.origin.revisionBody) }}
                   >
-                    <i className="icon-fw icon-action-redo"></i>
-                    {t('modal_resolve_conflict.resolve_and_save')}
+                    <i className="icon-fw icon-arrow-down-circle"></i>
+                    {t('modal_resolve_conflict.select_revision', { revision: 'origin' })}
                   </button>
                 </div>
               </div>
               <div className="col-4 border border-dark">
                 <h3 className="font-weight-bold my-2">Latest Revision</h3>
-                <div className="d-flex">
-                  <p>{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
-                  <img className="border-rounded" src={latest.userImgPath} />
+                <div className="d-flex align-items-center my-3">
+                  <div>
+                    <img height="40px" className="rounded-circle" src={latest.userImgPath} />
+                  </div>
+                  <div className="ml-3">
+                    <p className="my-0 text-muted">updated by {latest.userName}</p>
+                    <p className="my-0 text-muted">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  </div>
                 </div>
                 <CodeMirror
                   value={pageContainer.state.revisionsOnConflict?.latest.revisionBody}
@@ -149,8 +158,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     lineNumbers: true,
                     tabSize: 2,
                     indentUnit: 2,
-                    matchBrackets: true,
-                    autoCloseBrackets: true,
                   }}
                 />
                 <div className="text-center my-4">
@@ -159,15 +166,18 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => { SetResolvedRevision(pageContainer.state.revisionsOnConflict?.latest.revisionBody) }}
                   >
-                    <i className="icon-fw icon-action-redo"></i>
-                    {t('modal_resolve_conflict.resolve_and_save')}
+                    <i className="icon-fw icon-arrow-down-circle"></i>
+                    {t('modal_resolve_conflict.select_revision', { revision: 'latest' })}
                   </button>
                 </div>
               </div>
               <div className="col-12 border border-dark">
-                <h3 className="font-weight-bold my-2">Selected Revision</h3>
+                <h3 className="font-weight-bold my-2">Selected Revision(Editable)</h3>
                 <CodeMirror
                   value={resolvedRevision}
+                  onChange={(editorqq, dataqq, value) => {
+                    SetResolvedRevision(value);
+                  }}
                 />
               </div>
             </div>

@@ -443,7 +443,8 @@
     "resolve_conflict_message": "选择页面正文",
     "reload": "重新加载",
     "resolve_conflict": "解决冲突",
-    "resolve_and_save" : "解决冲突并保存"
+    "resolve_and_save" : "解决冲突并保存",
+    "select_revision" : "选择{{revision}}"
   },
   "link_edit": {
     "edit_link": "Edit Link",

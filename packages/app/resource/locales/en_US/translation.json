@@ -465,7 +465,8 @@
     "resolve_conflict_message": "Please select page body",
     "reload": "Reload",
     "resolve_conflict": "Resolve Conflict",
-    "resolve_and_save" : "Resolve and save"
+    "resolve_and_save" : "Resolve and save",
+    "select_revision" : "Select {{revision}}"
   },
   "link_edit": {
     "edit_link": "Edit Link",

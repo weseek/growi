@@ -465,7 +465,8 @@
     "resolve_conflict_message": "ページ本文を選んでください",
     "reload": "再読み込み",
     "resolve_conflict": "衝突を解消",
-    "resolve_and_save" : "解消し保存する"
+    "resolve_and_save" : "解消し保存する",
+    "select_revision" : "{{revision}}にする"
   },
   "link_edit": {
     "edit_link": "リンク編集",
