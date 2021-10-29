@@ -3,7 +3,7 @@ import LinkedPagePath from '../../models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 import CopyDropdown from '../Page/CopyDropdown';
 
-const DevidedPagePath = require('@growi/core');
+const { DevidedPagePath } = require('@growi/core');
 
 
 // TODO : change SubNavButtons in a way that they can be used not depending on pageContainer.
