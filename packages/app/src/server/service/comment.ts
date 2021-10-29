@@ -6,7 +6,6 @@ import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:CommentService');
 
-
 class CommentService {
 
   crowi!: Crowi;
