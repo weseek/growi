@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import LinkedPagePath from '../../models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 import CopyDropdown from '../Page/CopyDropdown';
+import SubNavButton from '../Navbar/SubNavButtons';
 
 const { DevidedPagePath } = require('@growi/core');
 
@@ -63,6 +64,7 @@ type SearchResultContentSubNavigationProps = {
   isCompactMode: boolean,
 }
 const SearchResultContentSubNavigation: FC<SearchResultContentSubNavigationProps> = (props:SearchResultContentSubNavigationProps) => {
+  const SubNavButtonsTypeAny : any = SubNavButton;
   return (
     <div className="grw-subnav container-fluid d-flex align-items-center justify-content-between grw-subnav-compact d-print-none">
       {/* Left side */}
@@ -77,9 +79,7 @@ const SearchResultContentSubNavigation: FC<SearchResultContentSubNavigationProps
       <div className="d-flex">
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            {/*
-              TODO: subnav buttons here
-             */}
+            <SubNavButtonsTypeAny isSearchPageMode></SubNavButtonsTypeAny>
           </div>
         </div>
       </div>
