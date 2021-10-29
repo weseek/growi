@@ -15,4 +15,5 @@ const InAppNotificationSetting: FC<Props> = (props: Props) => {
   );
 };
 
-export const InAppNotificationSettingWrapper = withUnstatedContainers(InAppNotificationSetting, [AppContainer]);
+const InAppNotificationSettingWrapper = withUnstatedContainers(InAppNotificationSetting, [AppContainer]);
+export default InAppNotificationSettingWrapper;
