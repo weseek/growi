@@ -72,7 +72,7 @@ pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
 // TODO: test this after modifying Page.create
-// ensure v5 clean install compatibility
+// ensure v4 compatibility
 pageSchema.index({ path: 1 }, { unique: true, partialFilterExpression: { parent: null } });
 
 /**
