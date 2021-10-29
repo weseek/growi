@@ -868,7 +868,7 @@ class PageService {
 
     // skip index modification if path is unique
     if (pathIndexStatus == null || pathIndexStatus === true) {
-      // drop only when true
+      // drop only when true. this condition is for in case createIndex failed but dropIndex succeeded before
       if (pathIndexStatus) {
         try {
           // drop pages.path_1 indexes
