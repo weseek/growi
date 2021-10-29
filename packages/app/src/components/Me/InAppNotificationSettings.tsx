@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -8,9 +9,11 @@ type Props = {
 };
 
 const InAppNotificationSetting: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <p>InAppNotificationSetting</p>
+      <h2 className="border-bottom my-4">{t('in_app_notification_settings.in_app_notification_settings')}</h2>
     </>
   );
 };
