@@ -1,6 +1,7 @@
 import React from 'react';
 import { PagePathLabel } from '@growi/ui';
-import { InAppNotification as IInAppNotification } from '../../interfaces/in-app-notification';
+import { IInAppNotification } from '../../interfaces/in-app-notification';
+
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {

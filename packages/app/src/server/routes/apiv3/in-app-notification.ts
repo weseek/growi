@@ -1,4 +1,5 @@
 import { InAppNotification } from '../../models/in-app-notification';
+import { IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
@@ -30,15 +31,33 @@ module.exports = (crowi) => {
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
 
-    // TODO: serialize actionUsers as well by #80112
-    paginationResult.docs.forEach((doc) => {
+
+    const getActionUsersFromActivities = function(activities) {
+      return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
+    };
+
+    const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
       if (doc.user != null && doc.user instanceof User) {
         doc.user = serializeUserSecurely(doc.user);
       }
+      // To add a new property into mongoose doc, need to change the format of doc to an object
+      const docObj: IInAppNotification = doc.toObject();
+      const actionUsersNew = getActionUsersFromActivities(doc.activities);
+
+      const serializedActionUsers = actionUsersNew.map((actionUser) => {
+        return serializeUserSecurely(actionUser);
+      });
+
+      docObj.actionUsers = serializedActionUsers;
+      return docObj;
     });
 
-    return res.apiv3(paginationResult);
+    const serializedPaginationResult = {
+      ...paginationResult,
+      docs: serializedDocs,
+    };
 
+    return res.apiv3(serializedPaginationResult);
   });
 
   router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
