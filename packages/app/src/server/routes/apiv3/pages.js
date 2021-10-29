@@ -699,6 +699,7 @@ module.exports = (crowi) => {
           }
         }
         catch (err) {
+          // websocket で通知する
           logger.error('Error\n', err);
           return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
         }

@@ -863,24 +863,33 @@ class PageService {
     }
 
     const collection = mongoose.connection.collection('pages');
-    try {
-      // drop pages.path_1 indexes
-      await collection.dropIndex('path_1');
-      logger.info('Succeeded to drop unique indexes from pages.path.');
-    }
-    catch (err) {
-      // return not to set app:isV5Compatible to true
-      return logger.error('Failed to drop unique indexes from pages.path.', err);
-    }
+    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
+    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0]?.spec?.unique;
 
-    try {
-      // create indexes without
-      await collection.createIndex({ path: 1 }, { unique: false });
-      logger.info('Succeeded to create non-unique indexes on pages.path.');
-    }
-    catch (err) {
-      // return not to set app:isV5Compatible to true
-      return logger.error('Failed to create non-unique indexes on pages.path.', err);
+    // skip index modification if path is unique
+    if (pathIndexStatus == null || pathIndexStatus === true) {
+      // drop only when true
+      if (pathIndexStatus) {
+        try {
+          // drop pages.path_1 indexes
+          await collection.dropIndex('path_1');
+          logger.info('Succeeded to drop unique indexes from pages.path.');
+        }
+        catch (err) {
+          // return not to set app:isV5Compatible to true
+          return logger.error('Failed to drop unique indexes from pages.path.', err);
+        }
+      }
+
+      try {
+        // create indexes without
+        await collection.createIndex({ path: 1 }, { unique: false });
+        logger.info('Succeeded to create non-unique indexes on pages.path.');
+      }
+      catch (err) {
+        // return not to set app:isV5Compatible to true
+        return logger.error('Failed to create non-unique indexes on pages.path.', err);
+      }
     }
 
     try {
