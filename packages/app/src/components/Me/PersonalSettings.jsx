@@ -8,6 +8,7 @@ import UserSettings from './UserSettings';
 import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import ApiSettings from './ApiSettings';
+import InAppNotificationSettings from './InAppNotificationSettings';
 
 const PersonalSettings = (props) => {
 
@@ -38,6 +39,12 @@ const PersonalSettings = (props) => {
         Content: ApiSettings,
         i18n: t('API Settings'),
         index: 3,
+      },
+      in_app_notification_settings: {
+        Icon: () => <i className="icon-fw icon-bell"></i>,
+        Content: InAppNotificationSettings,
+        i18n: t('in_app_notification_settings.in_app_notification_settings'),
+        index: 4,
       },
     };
   }, [t]);

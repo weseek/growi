@@ -258,6 +258,9 @@
       "This tree": "この階層下の子ページのみ"
     }
   },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "アプリ内通知設定"
+  },
   "copy_to_clipboard": {
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",

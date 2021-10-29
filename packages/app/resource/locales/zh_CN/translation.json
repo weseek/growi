@@ -237,6 +237,9 @@
 			"This tree": "当前分支以下内容"
 		}
 	},
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "在应用程序通知设置"
+  },
 	"copy_to_clipboard": {
 		"Copy to clipboard": "复制到剪贴板",
 		"Page path": "页面路径",

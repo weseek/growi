@@ -255,6 +255,9 @@
       "This tree": "Only children of this tree"
     }
   },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "InAppNotification Settings"
+  },
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
