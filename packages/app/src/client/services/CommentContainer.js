@@ -132,11 +132,9 @@ export default class CommentContainer extends Container {
     return this.appContainer.apiPost('/comments.update', {
       commentForm: {
         comment,
-        page_id: pageId,
-        revision_id: revisionId,
         is_markdown: isMarkdown,
+        revision_id: revisionId,
         comment_id: commentId,
-        author,
       },
     })
       .then((res) => {
