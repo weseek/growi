@@ -43,7 +43,7 @@ module.exports = (crowi) => {
       if (doc.user != null && doc.user instanceof User) {
         doc.user = serializeUserSecurely(doc.user);
       }
-
+      // To add a new property into mongoose doc, need to change the format of doc to an object
       docObj = doc.toObject();
       const actionUsersNew = getActionUsersFromActivities(doc.activities);
 
