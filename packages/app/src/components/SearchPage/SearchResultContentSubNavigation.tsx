@@ -2,13 +2,12 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-// import SubnavButtons from '../Navbar/SubNavButtons';
+import CopyDropdown from '../Page/CopyDropdown';
 
 
 // TODO : change SubNavButtons in a way that they can be used not depending on pageContainer.
 // note: SubNavButtons contains PageManagement and PageReactionsButtons. PageManagement has muliple modals...
 
-import CopyDropdown from '../Page/CopyDropdown';
 
 type PagePathNavProps = {
   pageId: string,
@@ -34,8 +33,8 @@ const PagePathNav: FC<PagePathNavProps> = (props:PagePathNavProps) => {
     formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
-
-  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const x = false;
+  const copyDropdownId = `copydropdown${x ? '-subnav-compact' : ''}-${pageId}`;
   const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
 
   return (
@@ -74,14 +73,14 @@ const SearchResultContentSubNavigation: FC<SearchResultContentSubNavigationProps
         </div>
       </div>
 
-      {/* Right side
+      {/* Right side */}
       <div className="d-flex">
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubnavButtons isCompactMode />
+            {/* SUBNAVBUTTON FOR searchPage */}
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
