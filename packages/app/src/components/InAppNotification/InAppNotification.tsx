@@ -35,14 +35,24 @@ export const InAppNotification = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserImage = (): JSX.Element => {
+  const renderUserPicture = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
       return <></>;
     }
+    if (actionUsers.length === 1) {
+      return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
+    }
+    return (
+      <div className="position-relative">
+        <UserPicture user={actionUsers[0]} size="md" noTooltip />
+        <div className="position-absolute" style={{ top: 10, left: 10 }}>
+          <UserPicture user={actionUsers[1]} size="md" noTooltip />
+        </div>
 
-    return <UserPicture user={actionUsers[0]} size="md" noTooltip />;
+      </div>
+    );
   };
 
   const componentName = `${notification.targetModel}:${notification.action}`;
@@ -67,8 +77,8 @@ export const InAppNotification = (props: Props): JSX.Element => {
   return (
     <>
       <div className="dropdown-item d-flex flex-row mb-3">
-        <div className="p-2 d-flex align-items-center">
-          {renderUserImage()}
+        <div className="p-2 mr-2 d-flex align-items-center">
+          {renderUserPicture()}
         </div>
         <div className="p-2">
           {renderInAppNotificationContent()}
@@ -76,5 +86,4 @@ export const InAppNotification = (props: Props): JSX.Element => {
       </div>
     </>
   );
-
 };
