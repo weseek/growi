@@ -855,15 +855,32 @@ class PageService {
       return this.v5RecursiveMigration(grant, rootPath);
     }
 
+    /*
+     * After completed migration
+     */
+    if (grant !== Page.GRANT_PUBLIC) {
+      return;
+    }
+
+    const collection = mongoose.connection.collection('pages');
     try {
       // drop pages.path_1 indexes
-      const conn = mongoose.connection.collection('pages');
-      await conn.dropIndexes('path_1');
-      // then create non-unique indexes
+      await collection.dropIndex('path_1');
+      logger.info('Succeeded to drop unique indexes from pages.path.');
     }
     catch (err) {
       // return not to set app:isV5Compatible to true
-      return logger.error('Failed to drop unique indexes.', err);
+      return logger.error('Failed to drop unique indexes from pages.path.', err);
+    }
+
+    try {
+      // create indexes without
+      await collection.createIndex({ path: 1 }, { unique: false });
+      logger.info('Succeeded to create non-unique indexes on pages.path.');
+    }
+    catch (err) {
+      // return not to set app:isV5Compatible to true
+      return logger.error('Failed to create non-unique indexes on pages.path.', err);
     }
 
     try {

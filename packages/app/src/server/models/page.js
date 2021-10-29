@@ -42,7 +42,7 @@ const pageSchema = new mongoose.Schema({
   },
   isEmpty: { type: Boolean, default: false },
   path: {
-    type: String, required: true, index: true, unique: true,
+    type: String, required: true,
   },
   revision: { type: ObjectId, ref: 'Revision' },
   redirectTo: { type: String, index: true },
@@ -71,8 +71,9 @@ const pageSchema = new mongoose.Schema({
 pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
+// TODO: test this after modifying Page.create
 // ensure v5 clean install compatibility
-pageSchema.index({ path: 1 }, { partialFilterExpression: { parent: null } });
+pageSchema.index({ path: 1 }, { unique: true, partialFilterExpression: { parent: null } });
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath
