@@ -1,10 +1,98 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
 
-## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) - 2021-09-22
+## [v4.4.9](https://github.com/weseek/growi/compare/v4.4.8...v4.4.9) - 2021-10-18
+
+### 💎 Features
+
+- feat: blackboard theme (#4501) @ayaka0417
+- feat: jade-green theme (#4500) @ayaka0417
+- feat: fire-red theme (#4499) @ayaka0417
+- feat: Add user list for like button (#4346) @Mxchaeltrxn
+
+### 🚀 Improvement
+
+- imprv: GROWI slackbot help message (#4488) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Migration update-mail-transmission (#4482) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Localize Copy bug report button (#4436) @AbiFirmandhani-Grune
+
+## [v4.4.8](https://github.com/weseek/growi/compare/v4.4.7...v4.4.8) - 2021-10-08
+
+### 🚀 Improvement
+
+- imprv: Permissions to operate comment (#4466) @yuki-takei
+- imprv: Show modal when enabling Textlint (#4373) @stevenfukase
+- imprv: Slackbot reaction to user (#4442) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Redirected to apiv3 endpoint when guest mode is enabled (#4443) @stevenfukase
+- fix: Unnecessary extra JSON.stringify for configurations for slackbot without proxy (#4467) @hakumizuki
+- fix: Migration for slackbot configurations without proxy (#4465) @hakumizuki
+- fix: Slackbot error/command handling (#4463) @hakumizuki
+- fix(slackbot): Respond bad gateway error & improved help message (#4470) @hakumizuki
+- fix(slackbot): Stop auto-join to channels with middlewarer (#4424) @yuki-takei
+
+## [v4.4.7](https://github.com/weseek/growi/compare/v4.4.6...v4.4.7) - 2021-09-29
+
+### 🚀 Improvement
+
+- imprv: Slackbot search (#4420) @yuki-takei
+- imprv: Omit textlint-rule-en-capitalization (#4403) @yuki-takei
+- imprv: Apply terminus for graceful shutdown (#4398) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: A problem that GROWI server doesn't retrieve connection status from Official bot proxy (#4416) @yuki-takei
+- fix: Dictionary path of kuromoji invalid when uploaded to server (#4381) @stevenfukase
+- fix: Copy correct dotenv file for NO_CDN docker image (#4397) @yuki-takei
+- fix: Stop using ts-node in production (#4411) @yuki-takei
+- fix: SAML setting says 'setup is not yet complete' even if setup properly (#4390) @nakashimaki
+- fix: SidebarSmall button does not keep selection on reload (#4389) @nakashimaki
+- fix: Migrations for updating data for slackbot (#4406) @yuki-takei
+- fix: Migrations do not run in production (#4395) @yuki-takei
+- fix: Migration file for mongodb 3.6 compatibility (#4413) @hakumizuki
+- fix(slackbot): Sync permission when data stored is not enough (#4417) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Install Git LFS when provisioning of devcontainer (#4405) @stevenfukase
+- chore: Add .dockerignore (#4396) @yuki-takei
+
+## [v4.4.6](https://github.com/weseek/growi/compare/v4.4.5...v4.4.6) - 2021-09-24
+
+### 🚀 Improvement
+
+- imprv: Slackbot response flow (#4296) @yuki-takei
+- imprv(slackbot-proxy): Show version on the top page (#4342) @yuto-oweseek
+
+### 🧰 Maintenance
+
+- support(slackbot-proxy): Bump slackbot proxy version independentry (#4385) @yuki-takei
+
+## [v4.4.5](https://github.com/weseek/growi/compare/v4.4.4...v4.4.5) - 2021-09-23
+
+### 🐛 Bug Fixes
+
+- fix: Revert #4347
+- fix: ERROR: Cannot find module 'tslib' on v4.4.4 (#4368) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: bump @promster/express and @promster/server (#4370) @yuki-takei
+- support: Upgrade codemirror to 5.63.0 (#4364) @yuki-takei
+- ci(deps-dev): bump codemirror from 5.48.4 to 5.58.2 (#4363) @dependabot
+
+## [v4.4.4](https://github.com/weseek/growi/compare/v4.4.3...v4.4.4) (Discontinued) - 2021-09-22
 
 ### 💎 Features
 

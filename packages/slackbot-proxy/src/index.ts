@@ -22,6 +22,7 @@ async function bootstrap() {
   }
   catch (er) {
     $log.error(er);
+    process.exit(1);
   }
 }
 
