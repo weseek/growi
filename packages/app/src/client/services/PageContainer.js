@@ -529,7 +529,7 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  deletePage(isRecursively, isCompletely, pageId, revisionId) {
+  deletePage(pageId, revisionId, isRecursively, isCompletely) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // control flag
