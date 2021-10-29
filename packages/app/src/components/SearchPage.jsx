@@ -155,7 +155,6 @@ class SearchPage extends React.Component {
   }
 
   renderSearchResultContent = () => {
-    if (this.state.selectedPage == null) { return null }
     return (
       <SearchResultContent
         appContainer={this.props.appContainer}

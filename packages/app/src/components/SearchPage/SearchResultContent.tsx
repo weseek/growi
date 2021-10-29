@@ -11,6 +11,9 @@ type Props ={
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.selectedPage;
+  if (page == null) {
+    return;
+  }
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
   const RevisionLoaderTypeAny: any = RevisionLoader;
