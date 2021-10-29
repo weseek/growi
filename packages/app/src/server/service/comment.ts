@@ -28,7 +28,6 @@ class CommentService {
     this.initCommentEventListeners();
   }
 
-
   initCommentEventListeners(): void {
     // create
     this.commentEvent.on('create', async(savedComment) => {
@@ -37,7 +36,7 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        await this.createAndSendNotifications(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
+        await this.createAndSendNotifications(savedComment);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -46,11 +45,9 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(updatedComment) => {
+    this.commentEvent.on('update', async() => {
       try {
         this.commentEvent.onUpdate();
-
-        await this.createAndSendNotifications(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -71,7 +68,7 @@ class CommentService {
     });
   }
 
-  private createAndSendNotifications = async function(comment, actionType) {
+  private createAndSendNotifications = async function(comment) {
 
     // Create activity
     const parameters = {
@@ -80,7 +77,7 @@ class CommentService {
       target: comment.page,
       eventModel: ActivityDefine.MODEL_COMMENT,
       event: comment._id,
-      action: actionType,
+      action: ActivityDefine.ACTION_COMMENT,
     };
     const activity = await this.activityService.createByParameters(parameters);
 

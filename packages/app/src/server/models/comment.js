@@ -73,7 +73,7 @@ module.exports = function(crowi) {
       { $set: { comment, isMarkdown } },
     );
 
-    await commentEvent.emit('update', commentData);
+    await commentEvent.emit('update');
 
     return commentData;
   };
