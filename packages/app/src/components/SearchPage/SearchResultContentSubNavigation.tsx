@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { DevidedPagePath } from '@growi/core';
-import LinkedPagePath from '~/models/linked-page-path';
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import LinkedPagePath from '../../models/linked-page-path';
+import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 import CopyDropdown from '../Page/CopyDropdown';
+
+const DevidedPagePath = require('@growi/core');
 
 
 // TODO : change SubNavButtons in a way that they can be used not depending on pageContainer.
@@ -33,8 +34,7 @@ const PagePathNav: FC<PagePathNavProps> = (props:PagePathNavProps) => {
     formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
-  const x = false;
-  const copyDropdownId = `copydropdown${x ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
   const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
 
   return (
@@ -77,7 +77,9 @@ const SearchResultContentSubNavigation: FC<SearchResultContentSubNavigationProps
       <div className="d-flex">
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            {/* SUBNAVBUTTON FOR searchPage */}
+            {/*
+              TODO: subnav buttons here
+             */}
           </div>
         </div>
       </div>
