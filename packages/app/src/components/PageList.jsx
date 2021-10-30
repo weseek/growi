@@ -20,7 +20,7 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
 
-  const { data: pagesListData, error, mutate } = useSWRxPageList(path, activePage);
+  const { data: pagesListData, error } = useSWRxPageList(path, activePage);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
@@ -34,7 +34,7 @@ const PageList = (props) => {
     console.log(error, 'Error occurred in PageList');
   }
 
-  if (!pagesListData?.items) {
+  if (pagesListData == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -45,7 +45,7 @@ const PageList = (props) => {
   }
 
   const liClasses = props.liClasses.join(' ');
-  const pageList = pagesListData?.items.map(page => (
+  const pageList = pagesListData.items.map(page => (
     <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
