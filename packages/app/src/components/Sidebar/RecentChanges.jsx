@@ -202,8 +202,13 @@ class DeprecatedRecentChanges extends React.Component {
     this.reloadData = this.reloadData.bind(this);
   }
 
+  componentWillMount() {
+    this.retrieveSizePreferenceFromLocalStorage();
+  }
 
-const RecentChanges = () => {
+  async componentDidMount() {
+    this.reloadData();
+  }
 
   async reloadData() {
     try {
@@ -216,18 +221,20 @@ const RecentChanges = () => {
     }
   }
 
-  const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-
-  const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
+  retrieveSizePreferenceFromLocalStorage() {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
-      setIsRecentChangesSidebarSmall(true);
+      this.setState({
+        isRecentChangesSidebarSmall: true,
+      });
     }
-  });
+  }
 
-  const changeSizeHandler = useCallback((e) => {
-    setIsRecentChangesSidebarSmall(e.target.checked);
+  changeSizeHandler = (e) => {
+    this.setState({
+      isRecentChangesSidebarSmall: e.target.checked,
+    });
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
-  }, []);
+  }
 
   render() {
     const { t } = this.props;
