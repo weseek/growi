@@ -35,7 +35,8 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
-        await this.createAndSendNotifications(savedComment);
+        const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
+        await this.createAndSendNotifications(activity);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -44,9 +45,10 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async() => {
+    this.commentEvent.on('update', async(updatedComment) => {
       try {
         this.commentEvent.onUpdate();
+        await this.createActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -67,18 +69,20 @@ class CommentService {
     });
   }
 
-  private createAndSendNotifications = async function(comment) {
-
-    // Create activity
+  private createActivity = async function(comment, action) {
     const parameters = {
       user: comment.creator,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: comment.page,
       eventModel: ActivityDefine.MODEL_COMMENT,
       event: comment._id,
-      action: ActivityDefine.ACTION_COMMENT,
+      action,
     };
     const activity = await this.activityService.createByParameters(parameters);
+    return activity;
+  };
+
+  private createAndSendNotifications = async function(activity) {
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];

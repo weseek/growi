@@ -55,17 +55,16 @@ export const InAppNotification = (props: Props): JSX.Element => {
     );
   };
 
-  const componentName = `${notification.targetModel}:${notification.action}`;
-  const propsNew = {
-    actionUsers: getActionUsers(),
-    ...props,
-  };
-
   const renderInAppNotificationContent = (): JSX.Element => {
-    switch (componentName) {
-      case 'Page:UPDATE':
+    const propsNew = {
+      actionUsers: getActionUsers(),
+      ...props,
+    };
+    const action: string = notification.action;
+    switch (action) {
+      case 'PAGE_UPDATE':
         return <PageUpdateNotification {...propsNew} onClick={props.onClick(props.notification)} />;
-      case 'Page:COMMENT':
+      case 'COMMENT_CREATE':
         return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
       default:
         return <></>;
