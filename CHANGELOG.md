@@ -1,8 +1,29 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.9](https://github.com/weseek/growi/compare/v4.4.8...v4.4.9) - 2021-10-18
+
+### 💎 Features
+
+- feat: blackboard theme (#4501) @ayaka0417
+- feat: jade-green theme (#4500) @ayaka0417
+- feat: fire-red theme (#4499) @ayaka0417
+- feat: Add user list for like button (#4346) @Mxchaeltrxn
+
+### 🚀 Improvement
+
+- imprv: GROWI slackbot help message (#4488) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Migration update-mail-transmission (#4482) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Localize Copy bug report button (#4436) @AbiFirmandhani-Grune
 
 ## [v4.4.8](https://github.com/weseek/growi/compare/v4.4.7...v4.4.8) - 2021-10-08
 

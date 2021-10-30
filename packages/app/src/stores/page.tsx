@@ -5,6 +5,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Error> => {
   return useSWR(

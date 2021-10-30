@@ -3,12 +3,13 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation, withTranslation } from 'react-i18next';
 
 import { UserPicture } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -153,21 +154,22 @@ const RecentChanges = () => {
   return (
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="mb-0">{t('Recent Changes')}</h3>
-        {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={() => mutate()}>
+        <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
           <i className="icon icon-reload"></i>
         </button>
-        <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
-          <input
-            id="recentChangesResize"
-            className="custom-control-input"
-            type="checkbox"
-            checked={isRecentChangesSidebarSmall}
-            onChange={changeSizeHandler}
-          />
-          <label className="custom-control-label" htmlFor="recentChangesResize">
-          </label>
+        <div className="d-flex align-items-center">
+          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-1">
+            <input
+              id="recentChangesResize"
+              className="custom-control-input"
+              type="checkbox"
+              checked={isRecentChangesSidebarSmall}
+              onChange={changeSizeHandler}
+            />
+            <label className="custom-control-label" htmlFor="recentChangesResize">
+            </label>
+          </div>
         </div>
       </div>
       <div className="grw-sidebar-content-body grw-recent-changes p-3">
@@ -182,4 +184,86 @@ const RecentChanges = () => {
 
 };
 
-export default RecentChanges;
+// export default RecentChanges;
+
+
+class DeprecatedRecentChanges extends React.Component {
+
+  static propTypes = {
+    t: PropTypes.func.isRequired, // i18next
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isRecentChangesSidebarSmall: false,
+      recentlyUpdatedPages: [],
+    };
+    this.reloadData = this.reloadData.bind(this);
+  }
+
+
+const RecentChanges = () => {
+
+  async reloadData() {
+    try {
+      const { data } = await apiv3Get('/pages/recent');
+      this.setState({ recentlyUpdatedPages: data.pages });
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      toastError(error, 'Error occurred in updating History');
+    }
+  }
+
+  const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
+
+  const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
+    if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
+      setIsRecentChangesSidebarSmall(true);
+    }
+  });
+
+  const changeSizeHandler = useCallback((e) => {
+    setIsRecentChangesSidebarSmall(e.target.checked);
+    window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
+  }, []);
+
+  render() {
+    const { t } = this.props;
+
+    return (
+      <>
+        <div className="grw-sidebar-content-header p-3 d-flex">
+          <h3 className="mb-0">{t('Recent Changes')}</h3>
+          {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
+          <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={this.reloadData}>
+            <i className="icon icon-reload"></i>
+          </button>
+          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
+            <input
+              id="recentChangesResize"
+              className="custom-control-input"
+              type="checkbox"
+              checked={this.state.isRecentChangesSidebarSmall}
+              onChange={this.changeSizeHandler}
+            />
+            <label className="custom-control-label" htmlFor="recentChangesResize">
+            </label>
+          </div>
+        </div>
+        <div className="grw-sidebar-content-body grw-recent-changes p-3">
+          <ul className="list-group list-group-flush">
+            {this.state.recentlyUpdatedPages.map(page => (this.state.isRecentChangesSidebarSmall
+              ? <SmallPageItem key={page._id} page={page} />
+              : <LargePageItem key={page._id} page={page} />))}
+          </ul>
+        </div>
+      </>
+    );
+  }
+
+}
+
+
+export default withTranslation()(DeprecatedRecentChanges);
