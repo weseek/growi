@@ -67,9 +67,6 @@ const PageList = (props) => {
     );
   }
 
-  const totalPages = pagesListData.totalCount ? pagesListData.totalCount : 0;
-  const limit = pagesListData.limit ? pagesListData.limit : Infinity;
-
   return (
     <div className="page-list">
       <ul className="page-list-ul page-list-ul-flat">
@@ -78,8 +75,8 @@ const PageList = (props) => {
       <PaginationWrapper
         activePage={activePage}
         changePage={setPageNumber}
-        totalItemsCount={totalPages}
-        pagingLimit={limit}
+        totalItemsCount={pagesListData.totalCount}
+        pagingLimit={pagesListData.limit}
         align="center"
       />
     </div>
