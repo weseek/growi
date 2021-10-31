@@ -769,7 +769,7 @@ class PageService {
       user: user._id,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: page,
-      action: ActivityDefine.ACTION_UPDATE,
+      action: ActivityDefine.ACTION_PAGE_UPDATE,
     };
     const activity = await activityService.createByParameters(parameters);
 
