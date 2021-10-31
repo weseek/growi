@@ -738,7 +738,21 @@ class PageService {
     }
   }
 
-  async v5RecursiveMigration(grant, rootPath = null) {
+  async v5Migration(grant, rootPath = null) {
+    const socket = this.crowicrowi.socketIoService.getAdminSocket();
+    try {
+      await this._v5RecursiveMigration(grant, rootPath);
+    }
+    catch (err) {
+      logger.error('V5 miration failed.', err);
+      socket.emit('v5MirationFailed', { error: err.message });
+
+      throw err;
+    }
+  }
+
+  // TODO: use websocket to show progress
+  async _v5RecursiveMigration(grant, rootPath) {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -767,7 +781,7 @@ class PageService {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
-    const randomPagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
+    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
 
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
@@ -800,6 +814,7 @@ class PageService {
         }
         catch (err) {
           logger.error('Failed to insert empty pages.', err);
+          throw err;
         }
 
         // find parents again
@@ -837,6 +852,7 @@ class PageService {
         }
         catch (err) {
           logger.error('Failed to update page.parent.', err);
+          throw err;
         }
 
         callback();
@@ -846,11 +862,12 @@ class PageService {
       },
     });
 
-    randomPagesStream
+    pagesStream
       .pipe(batchStream)
       .pipe(migratePagesStream);
 
     await streamToPromise(migratePagesStream);
+
     if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
       return this.v5RecursiveMigration(grant, rootPath);
     }
@@ -876,8 +893,8 @@ class PageService {
           logger.info('Succeeded to drop unique indexes from pages.path.');
         }
         catch (err) {
-          // return not to set app:isV5Compatible to true
-          return logger.error('Failed to drop unique indexes from pages.path.', err);
+          logger.warn('Failed to drop unique indexes from pages.path.', err);
+          throw err;
         }
       }
 
@@ -887,8 +904,8 @@ class PageService {
         logger.info('Succeeded to create non-unique indexes on pages.path.');
       }
       catch (err) {
-        // return not to set app:isV5Compatible to true
-        return logger.error('Failed to create non-unique indexes on pages.path.', err);
+        logger.warn('Failed to create non-unique indexes on pages.path.', err);
+        throw err;
       }
     }
 
@@ -899,8 +916,8 @@ class PageService {
       logger.info('Successfully migrated all public pages.');
     }
     catch (err) {
-      // just to know
-      logger.error('Failed to update app:isV5Compatible to true.');
+      logger.warn('Failed to update app:isV5Compatible to true.');
+      throw err;
     }
   }
 
