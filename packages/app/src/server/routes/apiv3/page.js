@@ -546,8 +546,8 @@ module.exports = (crowi) => {
 
     try {
       const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
-      const subscribing = subscription ? subscription.isSubscribing() : null;
-      return res.apiv3({ subscribing });
+      const isSubscribed = subscription ? subscription.isSubscribing() : null;
+      return res.apiv3({ isSubscribed });
     }
     catch (err) {
       logger.error('Failed to ge subscribe status', err);
