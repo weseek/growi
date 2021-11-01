@@ -3,7 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
-import * as inAppNotification from './in-app-notification';
+import * as allInAppNotifications from './all-in-app-notifications';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -135,9 +135,9 @@ module.exports = function(crowi, app) {
   app.get('/admin/*'                       , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
-  // my in-app-notification
-  app.get('/me/in-app-notification'   , loginRequiredStrictly, inAppNotification.list);
   // external-accounts
+  // my in-app-notification
+  app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
   // my drafts
   app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
