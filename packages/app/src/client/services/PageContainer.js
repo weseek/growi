@@ -547,7 +547,7 @@ export default class PageContainer extends Container {
 
   }
 
-  revertRemove(isRecursively) {
+  revertRemove(isRecursively, pageId = this.state.pageId) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 
     // control flag
@@ -555,7 +555,7 @@ export default class PageContainer extends Container {
 
     return this.appContainer.apiPost('/pages.revertRemove', {
       recursively,
-      page_id: this.state.pageId,
+      page_id: pageId,
     });
   }
 
