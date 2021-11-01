@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '~/utils/logger';
 
+import AllInAppNotificationList from '../components/InAppNotification/AllInAppNotificationList';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
@@ -83,6 +84,7 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
+  'all-in-app-notification-list': <AllInAppNotificationList />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
