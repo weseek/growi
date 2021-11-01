@@ -34,9 +34,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const snippet:string = page.elasticSearchResult.snippet || '';
 
   const sliceSnippet = (snippet: string): string => {
+    // when regex pattern is not matched with less than 300 characters slicedSnippet is null
     const slicedSnippet = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/^.+<\/em>/g);
     return slicedSnippet != null ? slicedSnippet[0] : snippet;
-    // return snippet;
   };
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
