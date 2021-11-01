@@ -39,13 +39,12 @@ type ConflictDiffModalProps = {
 };
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
-  const resolvedRevision = useRef<string>('');
-  const [isUnselected, setIsUnselected] = useState<boolean>(false);
+  const resolvedRevision = useRef<string>(INITIAL_TEXT);
+  const [isRevisionselected, setIsRevisionselected] = useState<boolean>(false);
   const { t } = useTranslation('');
 
   const { pageContainer } = props;
   const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
-
 
   const onCancel = () => {
     if (props.onCancel != null) {
@@ -54,6 +53,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   };
 
   const onResolveConflict = () : void => {
+    // disable button after clicked
+    setIsRevisionselected(false);
     pageContainer.setState({
       revisionId: pageContainer.state.revisionsOnConflict?.latest.revisionId,
     }, async() => {
@@ -105,6 +106,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
+                      setIsRevisionselected(true);
                       resolvedRevision.current = pageContainer.state.revisionsOnConflict?.request.revisionBody;
                     }}
                   >
@@ -139,6 +141,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
+                      setIsRevisionselected(true);
                       resolvedRevision.current = pageContainer.state.revisionsOnConflict?.origin.revisionBody;
                     }}
                   >
@@ -173,6 +176,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
+                      setIsRevisionselected(true);
                       resolvedRevision.current = pageContainer.state.revisionsOnConflict?.latest.revisionBody;
                     }}
                   >
@@ -182,7 +186,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 </div>
               </div>
               <div className="col-12 border border-dark">
-                <h3 className="font-weight-bold my-2">Selected Revision(Editable)</h3>
+                <h3 className="font-weight-bold my-2">{t('selected_editable_revision')}</h3>
                 <CodeMirror
                   value={resolvedRevision.current}
                   options={{
@@ -191,11 +195,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     tabSize: 2,
                     indentUnit: 2,
                   }}
-                  onChange={(editorqq, dataqq, value) => {
-                    // SetResolvedRevision(value);
-                    // console.log(value);
-                    resolvedRevision.current = value;
-                    console.log('res:', resolvedRevision.current);
+                  onChange={(editor, data, allText) => {
+                    resolvedRevision.current = allText;
                   }}
                 />
               </div>
@@ -216,7 +217,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
           type="button"
           className="btn btn-primary ml-3"
           onClick={onResolveConflict}
-          disabled={isUnselected}
+          disabled={!isRevisionselected}
         >
           {t('modal_resolve_conflict.resolve_and_save')}
         </button>

@@ -466,7 +466,9 @@
     "reload": "Reload",
     "resolve_conflict": "Resolve Conflict",
     "resolve_and_save" : "Resolve and save",
-    "select_revision" : "Select {{revision}}"
+    "select_revision" : "Select {{revision}}",
+    "revision_name": "{{revision}}本文",
+    "selected_editable_revision": "Selected Revision(Editable)"
   },
   "link_edit": {
     "edit_link": "Edit Link",

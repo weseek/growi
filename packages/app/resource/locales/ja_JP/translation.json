@@ -466,7 +466,9 @@
     "reload": "再読み込み",
     "resolve_conflict": "衝突を解消",
     "resolve_and_save" : "解消し保存する",
-    "select_revision" : "{{revision}}にする"
+    "select_revision" : "{{revision}}にする",
+    "revision_name": "{{revision}}の本文",
+    "selected_editable_revision": "Selected Revision(Editable)"
   },
   "link_edit": {
     "edit_link": "リンク編集",

@@ -49,7 +49,6 @@ class SavePageControls extends React.Component {
     }
     catch (error) {
       logger.error('failed to save', error);
-      console.log(error);
       pageContainer.showErrorToastr(error);
       if (error.code === 'conflict') {
         pageContainer.setState({

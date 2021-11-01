@@ -113,7 +113,7 @@ class PageStatusAlert extends React.Component {
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
     let getContentsFunc = null;
-
+    console.log('isConflictingOnSave:', isConflictingOnSave);
     // when conflicting on save
     if (isConflictingOnSave) {
       getContentsFunc = this.getContentsForRevisionOutdated;
@@ -136,6 +136,9 @@ class PageStatusAlert extends React.Component {
     }
 
     const [additionalClasses, label, btn] = getContentsFunc();
+
+    console.log('return:', additionalClasses, label, btn);
+    this.props.pageContainer.setState({ isConflictDiffModalOpen: true });
 
     return (
       <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
