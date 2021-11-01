@@ -1068,7 +1068,6 @@ module.exports = function(crowi) {
     /*
      * v4 compatible
      */
-    let parent = parentId;
     if (!isV5Compatible) {
       const isExist = await this.count({ path });
 
@@ -1077,7 +1076,8 @@ module.exports = function(crowi) {
       }
     }
 
-    if (isV5Compatible && parentId == null) {
+    let parent = parentId;
+    if (isV5Compatible && parent == null) {
       // fill parent before saving the page
       parent = await Page._getParentIdAndFillAncestors(path);
     }
