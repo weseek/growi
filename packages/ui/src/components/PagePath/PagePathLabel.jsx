@@ -5,7 +5,7 @@ import { DevidedPagePath } from '@growi/core';
 
 export const PagePathLabel = (props) => {
   const highlightedPath = props.page.elasticSearchResult.highlightedPath;
-  const dPagePath = new DevidedPagePath(highlightedPath, false, false);
+  const dPagePath = new DevidedPagePath(highlightedPath, false, true);
 
   let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
