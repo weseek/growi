@@ -1065,9 +1065,7 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
-    /*
-     * v4 compatible
-     */
+    // for v4 compatibility
     if (!isV5Compatible) {
       const isExist = await this.count({ path });
 
@@ -1078,7 +1076,6 @@ module.exports = function(crowi) {
 
     let parent = parentId;
     if (isV5Compatible && parent == null) {
-      // fill parent before saving the page
       parent = await Page._getParentIdAndFillAncestors(path);
     }
 
