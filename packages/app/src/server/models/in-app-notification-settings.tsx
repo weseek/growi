@@ -31,4 +31,5 @@ const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
   subscribeSettings: subscribeSettingsSchema,
 });
 
-export default getOrCreateModel<InAppNotificationSettingsDocument, InAppNotificationSettingsModel>('EditorSettings', inAppNotificationSettingsSchema);
+// eslint-disable-next-line max-len
+export default getOrCreateModel<InAppNotificationSettingsDocument, InAppNotificationSettingsModel>('InAppNotificationSettings', inAppNotificationSettingsSchema);
