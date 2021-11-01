@@ -4,28 +4,33 @@ import PropTypes from 'prop-types';
 import { DevidedPagePath } from '@growi/core';
 
 export const PagePathLabel = (props) => {
-
-  const dPagePath = new DevidedPagePath(props.page.path, false, true);
+  const highlightedPath = props.page.elasticSearchResult.highlightedPath;
+  const dPagePath = new DevidedPagePath(highlightedPath, false, false);
 
   let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
 
+  const displayPath = (reactElement) => {
+    // eslint-disable-next-line react/no-danger
+    return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
+  };
+
   if (props.isLatterOnly) {
-    return <span className={classNames.join(' ')}>{dPagePath.latter}</span>;
+    return displayPath(<>{dPagePath.latter}</>);
   }
 
   if (props.isFormerOnly) {
     const textElem = dPagePath.isFormerRoot
-      ? <>/</>
+      ? <></>
       : <>{dPagePath.former}</>;
-    return <span className={classNames.join(' ')}>{textElem}</span>;
+    return displayPath(textElem);
   }
 
   const textElem = dPagePath.isRoot
     ? <><strong>/</strong></>
     : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
 
-  return <span className={classNames.join(' ')}>{textElem}</span>;
+  return displayPath(textElem);
 };
 
 PagePathLabel.propTypes = {
