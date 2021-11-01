@@ -690,7 +690,7 @@ module.exports = (crowi) => {
 
     try {
       switch (action) {
-        case 'upgrade':
+        case 'initialMigration':
           if (!isV5Compatible) {
             const Page = crowi.model('Page');
             // this method throws and emit socketIo event when error occurs

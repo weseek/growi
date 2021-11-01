@@ -749,6 +749,38 @@ class PageService {
 
       throw err;
     }
+
+    const Page = this.crowi.model('Page');
+    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
+    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
+    const isUnique = pathIndexStatus?.spec?.unique;
+
+    if (isUnique === false) {
+      return this._setIsV5CompatibleTrue();
+    }
+
+    try {
+      await this._v5ModifyPagePathIndex(isUnique);
+    }
+    catch (err) {
+      logger.error('V5 index modification failed.', err);
+      socket.emit('v5IndexModificationFailed', { error: err.message });
+
+      throw err;
+    }
+  }
+
+  async _setIsV5CompatibleTrue() {
+    try {
+      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+        'app:isV5Compatible': true,
+      });
+      logger.info('Successfully migrated all public pages.');
+    }
+    catch (err) {
+      logger.warn('Failed to update app:isV5Compatible to true.');
+      throw err;
+    }
   }
 
   // TODO: use websocket to show progress
@@ -872,51 +904,31 @@ class PageService {
       return this.v5RecursiveMigration(grant, rootPath);
     }
 
-    /*
-     * After completed migration
-     */
-    if (grant !== Page.GRANT_PUBLIC) {
-      return;
-    }
+  }
 
+  async _v5ModifyPagePathIndex(isUnique) {
     const collection = mongoose.connection.collection('pages');
-    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
-    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0]?.spec?.unique;
+    const Page = this.crowi.model('Page');
 
-    // skip index modification if path is unique
-    if (pathIndexStatus == null || pathIndexStatus === true) {
-      // drop only when true. this condition is for in case createIndex failed but dropIndex succeeded before
-      if (pathIndexStatus) {
-        try {
-          // drop pages.path_1 indexes
-          await collection.dropIndex('path_1');
-          logger.info('Succeeded to drop unique indexes from pages.path.');
-        }
-        catch (err) {
-          logger.warn('Failed to drop unique indexes from pages.path.', err);
-          throw err;
-        }
-      }
-
+    if (isUnique) {
       try {
-        // create indexes without
-        await collection.createIndex({ path: 1 }, { unique: false });
-        logger.info('Succeeded to create non-unique indexes on pages.path.');
+        // drop pages.path_1 indexes
+        await collection.dropIndex('path_1');
+        logger.info('Succeeded to drop unique indexes from pages.path.');
       }
       catch (err) {
-        logger.warn('Failed to create non-unique indexes on pages.path.', err);
+        logger.warn('Failed to drop unique indexes from pages.path.', err);
         throw err;
       }
     }
 
     try {
-      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-        'app:isV5Compatible': true,
-      });
-      logger.info('Successfully migrated all public pages.');
+      // create indexes without
+      await collection.createIndex({ path: 1 }, { unique: false });
+      logger.info('Succeeded to create non-unique indexes on pages.path.');
     }
     catch (err) {
-      logger.warn('Failed to update app:isV5Compatible to true.');
+      logger.warn('Failed to create non-unique indexes on pages.path.', err);
       throw err;
     }
   }
