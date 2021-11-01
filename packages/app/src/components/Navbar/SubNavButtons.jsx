@@ -15,7 +15,7 @@ const PageReactionButtons = ({ pageContainer }) => {
   return (
     <>
       <span>
-        <SubscribeButton pageId={pageContainer.state.pageId} />
+        <SubscribeButton />
       </span>
       {pageContainer.isAbleToShowLikeButton && (
         <span>
