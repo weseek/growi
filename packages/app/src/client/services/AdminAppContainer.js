@@ -452,7 +452,7 @@ export default class AdminAppContainer extends Container {
   /**
    * Start v5 page migration
    * @memberOf AdminAppContainer
-   * @property action takes only 'upgrade' for now. 'upgrade' will start or resume migration
+   * @property action takes only 'initialMigration' for now. 'initialMigration' will start or resume migration
    */
   async v5PageMigrationHandler(action) {
     const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { action });
