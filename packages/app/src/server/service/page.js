@@ -908,7 +908,6 @@ class PageService {
 
   async _v5ModifyPagePathIndex(isUnique) {
     const collection = mongoose.connection.collection('pages');
-    const Page = this.crowi.model('Page');
 
     if (isUnique) {
       try {
