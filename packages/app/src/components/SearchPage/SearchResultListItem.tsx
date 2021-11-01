@@ -7,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
+const MAX_SNIPPET_LENGTH = 300;
+
 type Props ={
   page: {
     _id: string,
@@ -29,6 +31,13 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+  const snippet:string = page.elasticSearchResult.snippet || '';
+
+  const sliceSnippet = (snippet: string): string => {
+    const slicedSnippet = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/^.+<\/em>/g);
+    return slicedSnippet != null ? slicedSnippet[0] : snippet;
+    // return snippet;
+  };
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.
@@ -37,7 +46,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   return (
     <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
       <a
-        className="d-block pt-3"
+        className="d-block h-100 pt-3"
         href={pageId}
         onClick={() => {
           try {
@@ -89,7 +98,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
             </div>
             {/* eslint-disable-next-line react/no-danger */}
-            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+            <div
+              className="mt-1 mb-2"
+              dangerouslySetInnerHTML={{ __html: snippet.length <= MAX_SNIPPET_LENGTH ? snippet : sliceSnippet(snippet) }}
+            >
+            </div>
           </div>
         </div>
       </a>
