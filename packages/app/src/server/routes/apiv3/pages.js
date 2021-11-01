@@ -684,30 +684,29 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO: use socket conn to show progress
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
     const { action } = req.body;
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
-    switch (action) {
-      case 'upgrade':
+    try {
+      switch (action) {
+        case 'initialMigration':
+          if (!isV5Compatible) {
+            const Page = crowi.model('Page');
+            // this method throws and emit socketIo event when error occurs
+            crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+          }
+          break;
 
-        try {
-          const Page = crowi.model('Page');
-          // not await
-          crowi.pageService.v5RecursiveMigration(Page.GRANT_PUBLIC);
-        }
-        catch (err) {
-          logger.error('Error\n', err);
-          return res.apiv3Err(new ErrorV3('Failed to migrate pages. Please try again.', 'v5_migration_failed'), 500);
-        }
-        break;
-
-      default:
-        logger.error(`${action} action is not supported.`);
-        return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
+        default:
+          logger.error(`${action} action is not supported.`);
+          return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
+      }
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     return res.apiv3({ isV5Compatible });
   });
 
