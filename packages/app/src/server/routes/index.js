@@ -136,7 +136,7 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
-  // my in-app-notification
+  // my in-app-notifications
   app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
   // my drafts
