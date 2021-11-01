@@ -344,7 +344,7 @@
       "single_growi_command": "Commands that could be sent to single GROWI instance at a time",
       "allowed_channels_description": "Input allowed channels for \"{{commandName}}\" command. Separate each channel with \",\" . Users can will be able to use \"{{commandName}}\" command from channels written here.",
       "unfurl_description": "Show GROWI page contents when page links have been shared on Slack",
-      "unfurl_allowed_channels_description": "Input allowed channels for \"unfurl\" command. Separate each channel with \",\" . GROWI public page links including public permalinks sent in specified channels will show the content in the message.",
+      "unfurl_allowed_channels_description": "Input allowed channels for \"unfurl\" . Separate each channel with \",\" . GROWI public page links or permanent links sent in specified channels will show the content in the message.",
       "allow_all": "Allow all",
       "deny_all": "Deny all",
       "allow_specified": "Allow specified",
