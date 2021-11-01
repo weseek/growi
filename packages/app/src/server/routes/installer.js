@@ -36,7 +36,7 @@ module.exports = function(crowi) {
     const promises = [];
 
     // create portal page for '/'
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner, lang));
+    await createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner, lang);
 
     // create /Sandbox/*
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
