@@ -5,7 +5,7 @@ const logger = loggerFactory('growi:middleware:csrf');
 module.exports = (crowi) => {
 
   return async(req, res, next) => {
-    const token = req.body._csrf || req.query._csrf || null;
+    const token = req.body._csrf || req.query._csrf || req.csrfToken || null;
     const csrfKey = (req.session && req.session.id) || 'anon';
 
     logger.debug('req.skipCsrfVerify', req.skipCsrfVerify);
