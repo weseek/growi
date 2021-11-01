@@ -15,7 +15,7 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
@@ -98,8 +98,6 @@ const TrashPageAlert = (props) => {
           isOpen={isPageDeleteModalShown}
           onClose={opclosePageDeleteModalHandler}
           path={path}
-          pageId={pageId}
-          revisionId={revisionId}
           isDeleteCompletelyModal
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
