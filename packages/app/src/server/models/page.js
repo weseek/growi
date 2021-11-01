@@ -1,4 +1,5 @@
 import { templateChecker, pagePathUtils } from '@growi/core';
+import { constants } from 'crypto';
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
@@ -961,14 +962,10 @@ module.exports = function(crowi) {
     }
   }
 
-  pageSchema.statics.create = async function(path, body, user, options = {}) {
-    validateCrowi();
-
+  pageSchema.statics._createV4 = async function(path, body, user, options = {}) {
     const Page = this;
     const Revision = crowi.model('Revision');
-    const format = options.format || 'markdown';
-    const redirectTo = options.redirectTo || null;
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const { format = 'markdown', redirectTo, grantUserGroupId } = options;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -1004,6 +1001,149 @@ module.exports = function(crowi) {
     pageEvent.emit('create', savedPage, user);
 
     return savedPage;
+  };
+
+  const generateAncestorPaths = (path, ancestorPaths = []) => {
+    const parentPath = nodePath.dirname(path);
+    ancestorPaths.push(parentPath);
+
+    if (path !== '/') return generateAncestorPaths(parentPath, ancestorPaths);
+
+    return ancestorPaths;
+  };
+
+  pageSchema.statics.createEmptyPagesByPaths = async function(paths) {
+    const Page = this;
+
+    // find existing parents
+    const builder = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
+    const existingPages = await builder
+      .addConditionToListByPathsArray(paths)
+      .query
+      .lean()
+      .exec();
+    const existingPagePaths = existingPages.map(page => page.path);
+
+    // paths to create empty pages
+    const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
+
+    // insertMany empty pages
+    try {
+      await Page.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
+    }
+    catch (err) {
+      logger.error('Failed to insert empty pages.', err);
+      throw err;
+    }
+  };
+
+  pageSchema.statics._getParentIdAndFillAncestors = async function(path) {
+    const Page = this;
+    const parentPath = nodePath.dirname(path);
+
+    const parent = await Page.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
+    if (parent != null) { // fill parents if parent is null
+      return parent._id;
+    }
+
+    const ancestorPaths = generateAncestorPaths(path); // paths of parents need to be created
+
+    // just create ancestors with empty pages
+    await Page.createEmptyPagesByPaths(ancestorPaths);
+
+    // find ancestors
+    const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+    const ancestors = await builder
+      .addConditionToListByPathsArray(ancestorPaths)
+      .query
+      .lean()
+      .exec();
+
+
+    const ancestorsMap = new Map(); // Map<path, _id>
+    ancestors.forEach(page => ancestorsMap.set(page.path, page._id));
+
+    // bulkWrite to update ancestors
+    const nonRootAncestors = ancestors.filter(page => page.path !== '/');
+    const operations = nonRootAncestors.map((page) => {
+      const { path } = page;
+      const parentPath = nodePath.dirname(path);
+      return {
+        updateOne: {
+          filter: {
+            path,
+          },
+          update: {
+            parent: ancestorsMap.get(parentPath),
+          },
+        },
+      };
+    });
+    await Page.bulkWrite(operations);
+
+    const parentId = ancestorsMap.get(parentPath);
+    return parentId;
+  };
+
+  pageSchema.statics._createV5 = async function(path, body, user, options = {}) {
+    const Page = this;
+    const Revision = crowi.model('Revision');
+    const {
+      format = 'markdown', redirectTo, grantUserGroupId, parentId,
+    } = options;
+
+    // sanitize path
+    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
+
+    let grant = options.grant;
+    // force public
+    if (isTopPage(path)) {
+      grant = GRANT_PUBLIC;
+    }
+
+    const page = new Page();
+    page.path = path;
+    page.creator = user;
+    page.lastUpdateUser = user;
+    page.redirectTo = redirectTo;
+    page.status = STATUS_PUBLISHED;
+
+    await validateAppliedScope(user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupId);
+
+    /*
+     * Fill parent before saving the page
+     */
+    page.parent = parentId;
+    if (parentId == null) {
+      page.parent = await Page._getParentIdAndFillAncestors(path);
+    }
+
+    /*
+     * Save page
+     */
+    let savedPage = await page.save();
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    const revision = await pushRevision(savedPage, newRevision, user);
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
+
+    pageEvent.emit('create', savedPage, user);
+
+    return savedPage;
+  };
+
+  pageSchema.statics.create = async function(path, body, user, options = {}) {
+    validateCrowi();
+
+    const Page = this;
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    if (isV5Compatible) {
+      return Page._createV5(path, body, user, options);
+    }
+    return Page._createV4(path, body, user, options);
   };
 
   pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
