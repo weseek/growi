@@ -738,14 +738,14 @@ class PageService {
     }
   }
 
-  async v5Migration(grant, rootPath = null) {
+  async v5InitialMigration(grant) {
     const socket = this.crowicrowi.socketIoService.getAdminSocket();
     try {
-      await this._v5RecursiveMigration(grant, rootPath);
+      await this._v5RecursiveMigration(grant);
     }
     catch (err) {
-      logger.error('V5 miration failed.', err);
-      socket.emit('v5MirationFailed', { error: err.message });
+      logger.error('V5 initial miration failed.', err);
+      socket.emit('v5InitialMirationFailed', { error: err.message });
 
       throw err;
     }
