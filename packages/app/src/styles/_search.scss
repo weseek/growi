@@ -194,6 +194,13 @@
       margin: 0 10px 0 0;
       vertical-align: middle;
     }
+    .page-list {
+      ul {
+        .bg-selected {
+          background-color: #eff5ff;
+        }
+      }
+    }
   }
 
   .search-result-content {

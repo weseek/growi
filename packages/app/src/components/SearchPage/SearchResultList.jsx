@@ -12,6 +12,7 @@ class SearchResultList extends React.Component {
       return (
         <SearchResultListItem
           page={page}
+          selectedPageId={this.props.selectedPage.id}
           onClickInvoked={this.props.onClickInvoked}
           noLink
         />
@@ -24,6 +25,7 @@ class SearchResultList extends React.Component {
 SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
+  selectedPage: PropTypes.object,
   selectedPages: PropTypes.array.isRequired,
   onClickInvoked: PropTypes.func,
   onChangeInvoked: PropTypes.func,
