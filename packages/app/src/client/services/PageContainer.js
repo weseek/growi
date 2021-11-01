@@ -455,7 +455,7 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  async saveAndReload(optionsToSave) {
+  async saveAndReload(optionsToSave, markdownOnConflict) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
@@ -479,6 +479,9 @@ export default class PageContainer extends Container {
       // set option to sync
       options.isSyncRevisionToHackmd = true;
       revisionId = this.state.revisionIdHackmdSynced;
+    }
+    else if (markdownOnConflict != null && markdownOnConflict.length >= 1) {
+      markdown = markdownOnConflict;
     }
     else {
       const pageEditor = this.appContainer.getComponentInstance('PageEditor');

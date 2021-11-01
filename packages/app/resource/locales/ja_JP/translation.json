@@ -467,8 +467,10 @@
     "resolve_conflict": "衝突を解消",
     "resolve_and_save" : "解消し保存する",
     "select_revision" : "{{revision}}にする",
-    "revision_name": "{{revision}}の本文",
-    "selected_editable_revision": "Selected Revision(Editable)"
+    "requested_revision": "送信された本文",
+    "origin_revision": "送信する前の本文",
+    "latest_revision": "最新の本文",
+    "selected_editable_revision": "保存するページ本文(編集可能)"
   },
   "link_edit": {
     "edit_link": "リンク編集",

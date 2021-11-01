@@ -467,7 +467,9 @@
     "resolve_conflict": "Resolve Conflict",
     "resolve_and_save" : "Resolve and save",
     "select_revision" : "Select {{revision}}",
-    "revision_name": "{{revision}}本文",
+    "requested_revision": "requested page body",
+    "origin_revision": "page body before request",
+    "latest_revision": "latest page body",
     "selected_editable_revision": "Selected Revision(Editable)"
   },
   "link_edit": {
