@@ -11,9 +11,9 @@ const apiv3Root = '/_api/v3';
 
 const logger = loggerFactory('growi:apiv3');
 
+// get csrf token from body element
 const body = document.querySelector('body');
-
-const csrfToken = body.dataset.csrftoken;
+const csrfToken = body?.dataset.csrftoken;
 
 
 type ParamWithCsrfKey = {
