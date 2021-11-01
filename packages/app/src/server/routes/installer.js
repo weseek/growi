@@ -44,7 +44,9 @@ module.exports = function(crowi) {
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
 
-    await Page.insertMany();
+    await Page.insertMany(
+      { path: path.join(crowi.localeDir, lang, 'sandbox.md') },
+    );
 
     try {
       await initSearchIndex();
