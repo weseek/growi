@@ -196,8 +196,9 @@
     }
     .page-list {
       ul {
-        .bg-selected {
+        .selected-list-item {
           background-color: #eff5ff;
+          border-left: 3px solid #122c55;
         }
       }
     }
