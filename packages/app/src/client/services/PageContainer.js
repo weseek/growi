@@ -53,7 +53,7 @@ export default class PageContainer extends Container {
       tocHtml: '',
       isLiked: false,
       isBookmarked: false,
-      isSubscribed: false,
+      isSubscribed: null,
       seenUsers: [],
       seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
