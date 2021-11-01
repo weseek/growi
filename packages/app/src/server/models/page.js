@@ -1,5 +1,4 @@
 import { templateChecker, pagePathUtils } from '@growi/core';
-import { listeners } from 'cluster';
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
