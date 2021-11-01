@@ -31,10 +31,6 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
     };
 
-    const body = document.querySelector('body');
-
-    this.csrfToken = body.dataset.csrftoken;
-
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
     const userAgent = window.navigator.userAgent.toLowerCase();

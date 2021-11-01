@@ -5,6 +5,15 @@ import axios from '~/utils/axios';
 const apiv1Root = '/_api';
 
 
+const body = document.querySelector('body');
+
+const csrfToken = body.dataset.csrftoken;
+
+
+type ParamWithCsrfKey = {
+  _csrf: string,
+}
+
 class Apiv1ErrorHandler extends Error {
 
   code;
@@ -38,10 +47,16 @@ export async function apiGet(path: string, params: unknown = {}): Promise<unknow
   return apiRequest('get', path, { params });
 }
 
-export async function apiPost(path: string, params: unknown = {}): Promise<unknown> {
+export async function apiPost(path: string, params: any & ParamWithCsrfKey = {}): Promise<unknown> {
+  if (params._csrf == null) {
+    params._csrf = csrfToken;
+  }
   return apiRequest('post', path, params);
 }
 
-export async function apiDelete(path: string, params: unknown = {}): Promise<unknown> {
+export async function apiDelete(path: string, params: any & ParamWithCsrfKey = {}): Promise<unknown> {
+  if (params._csrf == null) {
+    params._csrf = csrfToken;
+  }
   return apiRequest('delete', path, { data: params });
 }
