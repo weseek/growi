@@ -139,7 +139,9 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
+      const esResult = searchService.formatResult(
+        await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
+      );
 
       // create score map for sorting
       // key: id , value: score
@@ -150,11 +152,13 @@ module.exports = function(crowi, app) {
 
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
-
-      // add tag data to result pages
+      // add tags and elasticSearch data to page
       findResult.pages.map((page) => {
-        const data = esResult.data.find((data) => { return page.id === data._id });
+        const data = esResult.data.find((data) => {
+          return page.id === data._id;
+        });
         page._doc.tags = data._source.tag_names;
+        page._doc.elasticSearchResult = data.elasticSearchResult;
         return page;
       });
 

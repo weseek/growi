@@ -2,6 +2,16 @@ import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+const xss = require('xss');
+
+// options for filtering xss
+const filterXssOptions = {
+  whiteList: {
+    em: ['class'],
+  },
+};
+
+const filterXss = new xss.FilterXSS(filterXssOptions);
 
 class SearchService {
 
@@ -68,6 +78,7 @@ class SearchService {
     pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
     pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
     pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
+    pageEvent.on('addSeenUsers', this.delegator.syncPageUpdated.bind(this.delegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
@@ -146,6 +157,24 @@ class SearchService {
       this.isErrorOccuredOnSearching = true;
       throw err;
     }
+  }
+
+  /**
+   * formatting result
+   */
+  formatResult(esResult) {
+    esResult.data.forEach((data) => {
+      const highlightData = data._highlight;
+      const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+      const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+      data.elasticSearchResult = {
+        snippet: filterXss.process(snippet),
+        // todo: use filter xss.process() for matchedPath;
+        matchedPath: pathMatch,
+      };
+    });
+    return esResult;
   }
 
 }
