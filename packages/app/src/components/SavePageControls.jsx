@@ -44,7 +44,6 @@ class SavePageControls extends React.Component {
 
     try {
       // save
-      console.log('editorContainer.getCurrentOptionsToSave():', editorContainer.getCurrentOptionsToSave());
       await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
     }
     catch (error) {
