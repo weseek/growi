@@ -1,5 +1,5 @@
 import { templateChecker, pagePathUtils } from '@growi/core';
-import { constants } from 'crypto';
+import { listeners } from 'cluster';
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
@@ -962,47 +962,6 @@ module.exports = function(crowi) {
     }
   }
 
-  pageSchema.statics._createV4 = async function(path, body, user, options = {}) {
-    const Page = this;
-    const Revision = crowi.model('Revision');
-    const { format = 'markdown', redirectTo, grantUserGroupId } = options;
-
-    // sanitize path
-    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
-
-    let grant = options.grant;
-    // force public
-    if (isTopPage(path)) {
-      grant = GRANT_PUBLIC;
-    }
-
-    const isExist = await this.count({ path });
-
-    if (isExist) {
-      throw new Error('Cannot create new page to existed path');
-    }
-
-    const page = new Page();
-    page.path = path;
-    page.creator = user;
-    page.lastUpdateUser = user;
-    page.redirectTo = redirectTo;
-    page.status = STATUS_PUBLISHED;
-
-    await validateAppliedScope(user, grant, grantUserGroupId);
-    page.applyScope(user, grant, grantUserGroupId);
-
-    let savedPage = await page.save();
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
-    await savedPage.populateDataToShowRevision();
-
-    pageEvent.emit('create', savedPage, user);
-
-    return savedPage;
-  };
-
   const generateAncestorPaths = (path, ancestorPaths = []) => {
     const parentPath = nodePath.dirname(path);
     ancestorPaths.push(parentPath);
@@ -1085,8 +1044,13 @@ module.exports = function(crowi) {
     return parentId;
   };
 
-  pageSchema.statics._createV5 = async function(path, body, user, options = {}) {
+  pageSchema.statics.create = async function(path, body, user, options = {}) {
+    validateCrowi();
+
     const Page = this;
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
     const Revision = crowi.model('Revision');
     const {
       format = 'markdown', redirectTo, grantUserGroupId, parentId,
@@ -1101,27 +1065,34 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
+    /*
+     * v4 compatible
+     */
+    let parent = parentId;
+    if (!isV5Compatible) {
+      const isExist = await this.count({ path });
+
+      if (isExist) {
+        throw new Error('Cannot create new page to existed path');
+      }
+    }
+
+    if (isV5Compatible && parentId == null) {
+      // fill parent before saving the page
+      parent = await Page._getParentIdAndFillAncestors(path);
+    }
+
     const page = new Page();
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
+    page.parent = parent;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
 
-    /*
-     * Fill parent before saving the page
-     */
-    page.parent = parentId;
-    if (parentId == null) {
-      page.parent = await Page._getParentIdAndFillAncestors(path);
-    }
-
-    /*
-     * Save page
-     */
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
@@ -1131,19 +1102,6 @@ module.exports = function(crowi) {
     pageEvent.emit('create', savedPage, user);
 
     return savedPage;
-  };
-
-  pageSchema.statics.create = async function(path, body, user, options = {}) {
-    validateCrowi();
-
-    const Page = this;
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    if (isV5Compatible) {
-      return Page._createV5(path, body, user, options);
-    }
-    return Page._createV4(path, body, user, options);
   };
 
   pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
