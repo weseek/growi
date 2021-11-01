@@ -4,8 +4,8 @@ import * as pathUtils from '../utils/path-utils';
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 // https://regex101.com/r/WVpPpY/1
 const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
-// https://regex101.com/r/3u1NtT/1
-const PATTERN_PATH_HIGHLIGHTED = /^((.*)(?<!<)[/])(.*)$/;
+// https://regex101.com/r/uCC4aX/1
+const PATTERN_PATH_HIGHLIGHTED = /^((.*)(?<!<)\/)(.*)$/;
 // https://regex101.com/r/4J4JuR/1
 const PATTERN_PATH_WITH_ANY_HTML_TAGS = /<("[^"]*"|'[^']*'|[^'">])*>/g;
 
