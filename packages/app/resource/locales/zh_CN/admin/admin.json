@@ -346,6 +346,8 @@
       "multiple_growi_command": "可以一次发送到多个 GROWI 实例的命令",
       "single_growi_command": "可以一次发送到一个 GROWI 实例的命令",
       "allowed_channels_description": "为 \"{{commandName}}\" 命令输入允许的通道。每个通道之间用 \",\" 隔开。用户可以从这里写入的通道中使用 \"{{commandName}}\"。",
+      "unfurl_description": "在 Slack 中共享 GROWI 链接时显示页面内容",
+      "unfurl_allowed_channels_description": "为 \"unfurl\" 命令输入允许的通道。每个通道之间用 \",\" 隔开。在此处列出的频道上分享 GROWI 的公共永久链接，看看发生了什么。",
       "allow_all": "允许所有",
       "deny_all": "拒绝所有",
       "allow_specified": "允许指定",

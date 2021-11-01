@@ -294,8 +294,8 @@ const ManageCommandsProcess = ({
         defaultCommandsName: defaultSupportedSlackEventActions,
         updatePermissionsHandler: handleUpdateEventsPermissions,
         updateChannelsHandler: handleUpdateEventsChannels,
-        singleCommandDescription: 'unfurl description',
-        allowedChannelsDescription: _commandName => 'unfurl channels desc',
+        singleCommandDescription: t('admin:slack_integration.accordion.unfurl_description'),
+        allowedChannelsDescription: _commandName => t('admin:slack_integration.accordion.unfurl_allowed_channels_description'),
       },
     };
 
