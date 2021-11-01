@@ -1047,9 +1047,6 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Page = this;
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
     const Revision = crowi.model('Revision');
     const {
       format = 'markdown', redirectTo, grantUserGroupId, parentId,
@@ -1064,6 +1061,7 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     // for v4 compatibility
     if (!isV5Compatible) {
       const isExist = await this.count({ path });
