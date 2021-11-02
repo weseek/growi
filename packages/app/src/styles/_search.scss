@@ -196,8 +196,8 @@
     }
     .page-list {
       ul {
-        .selected-list-item {
-          background-color: #eff5ff;
+        .active {
+          background-color: $bgcolor-search-result-item-active;
           border-left: 3px solid #122c55;
         }
       }

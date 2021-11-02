@@ -36,7 +36,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
 
   return (
-    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 ${page._id === selectedPageId ? 'selected-list-item' : ''}`}>
+    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${page._id === selectedPageId ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
