@@ -15,9 +15,9 @@ const AllInAppNotifications: FC<Props> = (props: Props) => {
   const [notifications, setNotifications] = useState([]);
   // const [isLoaded, setIsLoaded] = useState(false);
 
-  // useEffect(() => {
-  //   fetchNotificationStatus();
-  // }, []);
+  useEffect(() => {
+    fetchNotificationList();
+  }, []);
 
 
   /**
