@@ -22,6 +22,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     }
   };
 
+  // TODO: improve view of loading icon by #80669
   const RenderUnLoadedInAppNotification = (): JSX.Element => {
     return (
       <i className="fa fa-spinner"></i>
