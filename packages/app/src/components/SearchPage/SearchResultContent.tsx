@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
-import GrowiSubNavigation from '../Navbar/GrowiSubNavigation';
+import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
 
 type Props ={
   appContainer: AppContainer,
@@ -15,13 +15,13 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
   const RevisionLoaderTypeAny: any = RevisionLoader;
-  const GrowiSubNavigationTypeAny: any = GrowiSubNavigation;
+  const SearchResultContentSubNavigationTypeAny : any = SearchResultContentSubNavigation;
   const growiRenderer = props.appContainer.getRenderer('searchresult');
   let showTags = false;
   if (page.tags != null && page.tags.length > 0) { showTags = true }
   return (
     <div key={page._id} className="search-result-page mb-5">
-      <GrowiSubNavigationTypeAny isSearchPageMode pageId={page._id} path={page.path}></GrowiSubNavigationTypeAny>
+      <SearchResultContentSubNavigationTypeAny isSearchPageMode pageId={page._id} path={page.path}></SearchResultContentSubNavigationTypeAny>
       <RevisionLoaderTypeAny
         growiRenderer={growiRenderer}
         pageId={page._id}

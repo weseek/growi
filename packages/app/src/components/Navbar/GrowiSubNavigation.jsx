@@ -64,10 +64,6 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          {/* TODO : display tags when this component is used in SearchResultContent too.
-              For that, refactor TagLabels such that it can be used while not depending on pageContainer
-              TASK: #80623 https://estoc.weseek.co.jp/redmine/issues/80623
-          */}
           { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />

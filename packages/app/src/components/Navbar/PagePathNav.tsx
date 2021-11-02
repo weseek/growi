@@ -9,7 +9,7 @@ import LinkedPagePath from '../../models/linked-page-path';
 type Props = {
   pageId :string,
   pagePath:string,
-  isEditorMode:string,
+  isEditorMode:boolean,
   isCompactMode:boolean,
 }
 
