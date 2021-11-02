@@ -77,7 +77,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 /* eslint-enable object-curly-newline, object-property-newline */
 
 
-class PageQueryBuilder {
+export class PageQueryBuilder {
 
   constructor(query) {
     this.query = query;
@@ -246,7 +246,7 @@ class PageQueryBuilder {
 
 }
 
-module.exports = function(crowi) {
+export const getPageSchema = (crowi) => {
   let pageEvent;
 
   // init event
