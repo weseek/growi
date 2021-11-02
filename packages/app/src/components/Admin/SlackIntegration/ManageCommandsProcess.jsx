@@ -66,6 +66,148 @@ const getPermissionTypeFromValue = (value) => {
   logger.error('The value type must be boolean or string[]');
 };
 
+const PermissionSettingForEachPermissionTypeComponent = ({
+  keyName, usageType, onUpdatePermissions, onUpdateChannels, singleCommandDescription, allowedChannelsDescription, currentPermissionTypes,
+}) => {
+  const { t } = useTranslation();
+  const hiddenClass = currentPermissionTypes[keyName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+  const permissionMap = {
+    broadcastUse: permissionsForBroadcastUseCommandsState,
+    singleUse: permissionsForSingleUseCommandsState,
+    unfurl: permissionsForEventsState,
+  };
+  const permissionSettings = permissionMap[usageType];
+  const permission = permissionSettings[keyName];
+  if (permission === undefined) logger.error('Must be implemented');
+  const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
+
+  return (
+    <div className="my-1 mb-2">
+      <div className="row align-items-center mb-3">
+        <p className="col-md-5 text-md-right mb-2">
+          <strong className="text-capitalize">{keyName}</strong>
+          {singleCommandDescription && (
+            <small className="form-text text-muted small">
+              { singleCommandDescription }
+            </small>
+          )}
+        </p>
+        <div className="col dropdown">
+          <button
+            className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="true"
+          >
+            <span className="float-left">
+              {currentPermissionTypes[keyName] === PermissionTypes.ALLOW_ALL
+              && t('admin:slack_integration.accordion.allow_all')}
+              {currentPermissionTypes[keyName] === PermissionTypes.DENY_ALL
+              && t('admin:slack_integration.accordion.deny_all')}
+              {currentPermissionTypes[keyName] === PermissionTypes.ALLOW_SPECIFIED
+              && t('admin:slack_integration.accordion.allow_specified')}
+            </span>
+          </button>
+          <div className="dropdown-menu">
+            <button
+              className="dropdown-item"
+              type="button"
+              name={keyName}
+              value={PermissionTypes.ALLOW_ALL}
+              onClick={onUpdatePermissions}
+            >
+              {t('admin:slack_integration.accordion.allow_all_long')}
+            </button>
+            <button
+              className="dropdown-item"
+              type="button"
+              name={keyName}
+              value={PermissionTypes.DENY_ALL}
+              onClick={onUpdatePermissions}
+            >
+              {t('admin:slack_integration.accordion.deny_all_long')}
+            </button>
+            <button
+              className="dropdown-item"
+              type="button"
+              name={keyName}
+              value={PermissionTypes.ALLOW_SPECIFIED}
+              onClick={onUpdatePermissions}
+            >
+              {t('admin:slack_integration.accordion.allow_specified_long')}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className={`row ${hiddenClass}`}>
+        <div className="col-md-7 offset-md-5">
+          <textarea
+            className="form-control"
+            type="textarea"
+            name={keyName}
+            defaultValue={textareaDefaultValue}
+            onChange={onUpdateChannels}
+          />
+          <p className="form-text text-muted small">
+            {allowedChannelsDescription(keyName)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+PermissionSettingForEachPermissionTypeComponent.propTypes = {
+  keyName: PropTypes.string,
+  usageType: PropTypes.string,
+  currentPermissionTypes: PropTypes.object,
+  singleCommandDescription: PropTypes.string,
+  onUpdatePermissions: PropTypes.func,
+  onUpdateChannels: PropTypes.func,
+  allowedChannelsDescription: PropTypes.func,
+};
+
+const PermissionSettingsForEachCommandTypeComponent = ({ currentPermissionTypes, usageType, menuOptions }) => (
+  <>
+    {(menuOptions.title || menuOptions.description)
+      && (
+        <div className="row">
+          <div className="col-md-7 offset-md-2">
+            { menuOptions.title && <p className="font-weight-bold mb-1">{menuOptions.title}</p> }
+            { menuOptions.description && <p className="text-muted">{menuOptions.description}</p> }
+          </div>
+        </div>
+      )
+    }
+
+    <div className="custom-control custom-checkbox">
+      <div className="row mb-5 d-block">
+        {menuOptions.defaultCommandsName.map(keyName => (
+          <PermissionSettingForEachPermissionTypeComponent
+            key={`${keyName}-component`}
+            keyName={keyName}
+            usageType={usageType}
+            currentPermissionTypes={currentPermissionTypes}
+            singleCommandDescription={menuOptions.singleCommandDescription}
+            onUpdatePermissions={menuOptions.updatePermissionsHandler}
+            onUpdateChannels={menuOptions.updateChannelsHandler}
+            allowedChannelsDescription={menuOptions.allowedChannelsDescription}
+          />
+        ))}
+      </div>
+    </div>
+  </>
+);
+
+
+PermissionSettingsForEachCommandTypeComponent.propTypes = {
+  currentPermissionTypes: PropTypes.object,
+  usageType: PropTypes.string,
+  menuOptions: PropTypes.object,
+};
+
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcess = ({
@@ -169,148 +311,6 @@ const ManageCommandsProcess = ({
   };
 
 
-  const PermissionSettingForEachCommandComponent = ({
-    commandName, usageType, onUpdatePermissions, onUpdateChannels, singleCommandDescription, allowedChannelsDescription,
-  }) => {
-    const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
-
-    const permissionMap = {
-      broadcastUse: permissionsForBroadcastUseCommandsState,
-      singleUse: permissionsForSingleUseCommandsState,
-      unfurl: permissionsForEventsState,
-    };
-
-    const permissionSettings = permissionMap[usageType];
-    const permission = permissionSettings[commandName];
-
-    if (permission === undefined) logger.error('Must be implemented');
-
-    const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
-
-    return (
-      <div className="my-1 mb-2">
-        <div className="row align-items-center mb-3">
-          <p className="col-md-5 text-md-right mb-2">
-            <strong className="text-capitalize">{commandName}</strong>
-            {singleCommandDescription && (
-              <small className="form-text text-muted small">
-                { singleCommandDescription }
-              </small>
-            )}
-          </p>
-          <div className="col dropdown">
-            <button
-              className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <span className="float-left">
-                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
-                && t('admin:slack_integration.accordion.allow_all')}
-                {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
-                && t('admin:slack_integration.accordion.deny_all')}
-                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
-                && t('admin:slack_integration.accordion.allow_specified')}
-              </span>
-            </button>
-            <div className="dropdown-menu">
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.ALLOW_ALL}
-                onClick={onUpdatePermissions}
-              >
-                {t('admin:slack_integration.accordion.allow_all_long')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.DENY_ALL}
-                onClick={onUpdatePermissions}
-              >
-                {t('admin:slack_integration.accordion.deny_all_long')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.ALLOW_SPECIFIED}
-                onClick={onUpdatePermissions}
-              >
-                {t('admin:slack_integration.accordion.allow_specified_long')}
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className={`row ${hiddenClass}`}>
-          <div className="col-md-7 offset-md-5">
-            <textarea
-              className="form-control"
-              type="textarea"
-              name={commandName}
-              defaultValue={textareaDefaultValue}
-              onChange={onUpdateChannels}
-            />
-            <p className="form-text text-muted small">
-              {allowedChannelsDescription(commandName)}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  PermissionSettingForEachCommandComponent.propTypes = {
-    commandName: PropTypes.string,
-    usageType: PropTypes.string,
-    singleCommandDescription: PropTypes.string,
-    onUpdatePermissions: PropTypes.func,
-    onUpdateChannels: PropTypes.func,
-    allowedChannelsDescription: PropTypes.func,
-  };
-
-  const PermissionSettingsForEachCommandTypeComponent = ({ usageType, menuOptions }) => (
-    <>
-      {(menuOptions.title || menuOptions.description)
-        && (
-          <div className="row">
-            <div className="col-md-7 offset-md-2">
-              { menuOptions.title && <p className="font-weight-bold mb-1">{menuOptions.title}</p> }
-              { menuOptions.description && <p className="text-muted">{menuOptions.description}</p> }
-            </div>
-          </div>
-        )
-      }
-
-      <div className="custom-control custom-checkbox">
-        <div className="row mb-5 d-block">
-          {menuOptions.defaultCommandsName.map(commandName => (
-            <PermissionSettingForEachCommandComponent
-              key={`${commandName}-component`}
-              commandName={commandName}
-              usageType={usageType}
-              singleCommandDescription={menuOptions.singleCommandDescription}
-              onUpdatePermissions={menuOptions.updatePermissionsHandler}
-              onUpdateChannels={menuOptions.updateChannelsHandler}
-              allowedChannelsDescription={menuOptions.allowedChannelsDescription}
-            />
-          ))}
-        </div>
-      </div>
-    </>
-  );
-
-
-  PermissionSettingsForEachCommandTypeComponent.propTypes = {
-    usageType: PropTypes.string,
-    menuOptions: PropTypes.object,
-  };
-
   const menuItems = {
     broadcastUse: {
       title: 'Multiple GROWI',
@@ -318,7 +318,7 @@ const ManageCommandsProcess = ({
       defaultCommandsName: defaultSupportedCommandsNameForBroadcastUse,
       updatePermissionsHandler: handleUpdateBroadcastUsePermissions,
       updateChannelsHandler: handleUpdateBroadcastUseChannels,
-      allowedChannelsDescription: commandName => t('admin:slack_integration.accordion.allowed_channels_description', { commandName }),
+      allowedChannelsDescription: keyName => t('admin:slack_integration.accordion.allowed_channels_description', { keyName }),
     },
     singleUse: {
       title: 'Single GROWI',
@@ -326,14 +326,14 @@ const ManageCommandsProcess = ({
       defaultCommandsName: defaultSupportedCommandsNameForSingleUse,
       updatePermissionsHandler: handleUpdateSingleUsePermissions,
       updateChannelsHandler: handleUpdateSingleUseChannels,
-      allowedChannelsDescription: commandName => t('admin:slack_integration.accordion.allowed_channels_description', { commandName }),
+      allowedChannelsDescription: keyName => t('admin:slack_integration.accordion.allowed_channels_description', { keyName }),
     },
     unfurl: {
       defaultCommandsName: defaultSupportedSlackEventActions,
       updatePermissionsHandler: handleUpdateEventsPermissions,
       updateChannelsHandler: handleUpdateEventsChannels,
       singleCommandDescription: t('admin:slack_integration.accordion.unfurl_description'),
-      allowedChannelsDescription: _commandName => t('admin:slack_integration.accordion.unfurl_allowed_channels_description'),
+      allowedChannelsDescription: _keyName => t('admin:slack_integration.accordion.unfurl_allowed_channels_description'),
     },
   };
 
@@ -346,6 +346,7 @@ const ManageCommandsProcess = ({
           {Object.values(CommandUsageTypes).map(commandUsageType => (
             <PermissionSettingsForEachCommandTypeComponent
               key={commandUsageType}
+              currentPermissionTypes={currentPermissionTypes}
               usageType={commandUsageType}
               menuOptions={menuItems[commandUsageType]}
             />
@@ -356,11 +357,12 @@ const ManageCommandsProcess = ({
       <p className="mb-4 font-weight-bold">Events</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
-          {Object.values(EventTypes).map(EventTypes => (
+          {Object.values(EventTypes).map(EventType => (
             <PermissionSettingsForEachCommandTypeComponent
-              key={EventTypes}
-              usageType={EventTypes}
-              menuOptions={menuItems[EventTypes]}
+              key={EventType}
+              currentPermissionTypes={currentPermissionTypes}
+              usageType={EventType}
+              menuOptions={menuItems[EventType]}
             />
           ))}
         </div>
