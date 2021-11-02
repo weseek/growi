@@ -68,17 +68,36 @@ const PagePathNav = ({
 
 const GrowiSubNavigation = (props) => {
   const {
-    appContainer, navigationContainer, pageContainer, isCompactMode,
+    appContainer,
+    navigationContainer,
+    isCompactMode,
+    isSearchPageMode,
   } = props;
   const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
-  const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
-  } = pageContainer.state;
+
+  let {
+    isPageExist, isAbleToShowTagLabel, isAbleToShowPageEditorModeManager, isAbleToShowPageAuthors,
+  } = false;
+  let {
+    pageId,
+    path,
+  } = props;
+
+  if (props.pageContainer != null) {
+    ({
+      pageId,
+      path,
+    } = props.pageContainer.state);
+    isPageExist = props.pageContainer.isPageExist;
+    isAbleToShowTagLabel = props.pageContainer.isAbleToShowTagLabel;
+    isAbleToShowPageEditorModeManager = props.pageContainer.isAbleToShowPageEditorModeManager;
+    isAbleToShowPageAuthors = props.pageContainer.isAbleToShowPageAuthors;
+  }
 
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
+  const isTagLabelHidden = editorMode !== ('edit' && !isPageExist);
 
   function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -96,7 +115,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
@@ -113,7 +132,7 @@ const GrowiSubNavigation = (props) => {
             <SubnavButtons isCompactMode={isCompactMode} />
           </div>
           <div className="mt-2">
-            {pageContainer.isAbleToShowPageEditorModeManager && (
+            {isAbleToShowPageEditorModeManager && !isSearchPageMode && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
@@ -125,36 +144,48 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+        { (isAbleToShowPageAuthors && !isCompactMode && isSearchPageMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
-              <AuthorInfo user={creator} date={createdAt} locate="subnav" />
+              <AuthorInfo user={props.pageContainer.state.creator} date={props.pageContainer.state.createdAt} locate="subnav" />
             </li>
             <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="subnav" />
+              <AuthorInfo user={props.pageContainer.state.revisionAuthor} date={props.pageContainer.updatedAt} mode="update" locate="subnav" />
             </li>
           </ul>
-        ) }
+        )}
       </div>
-
     </div>
   );
-
 };
-
-/**
- * Wrapper component for using unstated
- */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
-
 
 GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
+  pageContainer: PropTypes.instanceOf(PageContainer),
   isCompactMode: PropTypes.bool,
+  // Props for searchResultContent
+  pageId: PropTypes.string,
+  path: PropTypes.string,
+  isSearchPageMode: PropTypes.bool,
+};
+
+
+const GrowiSubNavigationWrapper = (props) => {
+  let GrowiSubNavigationUnstatedWrapper = <></>;
+  if (props.isSearchPageMode) {
+    GrowiSubNavigationUnstatedWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer]);
+    return <GrowiSubNavigationUnstatedWrapper isSearchPageMode pageId={props.pageId} path={props.path}></GrowiSubNavigationUnstatedWrapper>;
+  }
+  GrowiSubNavigationUnstatedWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
+  return <GrowiSubNavigationUnstatedWrapper></GrowiSubNavigationUnstatedWrapper>;
+};
+
+GrowiSubNavigationWrapper.propTypes = {
+  isSearchPageMode: PropTypes.bool,
+  pageId: PropTypes.string,
+  path: PropTypes.string,
 };
 
 export default withTranslation()(GrowiSubNavigationWrapper);
