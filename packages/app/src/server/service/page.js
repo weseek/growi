@@ -753,21 +753,22 @@ class PageService {
     const Page = this.crowi.model('Page');
     const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
     const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
-    const isUnique = pathIndexStatus?.spec?.unique;
+    const isPathIndexExists = pathIndexStatus != null;
+    const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
 
-    if (isUnique === false) {
-      return this._setIsV5CompatibleTrue();
+    if (isUnique || !isPathIndexExists) {
+      try {
+        await this._v5NormalizeIndex(isPathIndexExists);
+      }
+      catch (err) {
+        logger.error('V5 index normalization failed.', err);
+        socket.emit('v5IndexNormalizationFailed', { error: err.message });
+
+        throw err;
+      }
     }
 
-    try {
-      await this._v5ModifyPagePathIndex(isUnique);
-    }
-    catch (err) {
-      logger.error('V5 index modification failed.', err);
-      socket.emit('v5IndexModificationFailed', { error: err.message });
-
-      throw err;
-    }
+    await this._setIsV5CompatibleTrue();
   }
 
   async _setIsV5CompatibleTrue() {
@@ -888,10 +889,10 @@ class PageService {
 
   }
 
-  async _v5ModifyPagePathIndex(isUnique) {
+  async _v5NormalizeIndex(isPathIndexExists) {
     const collection = mongoose.connection.collection('pages');
 
-    if (isUnique) {
+    if (isPathIndexExists) {
       try {
         // drop pages.path_1 indexes
         await collection.dropIndex('path_1');
