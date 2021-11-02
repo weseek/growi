@@ -53,7 +53,7 @@ export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, 
   return useStaticSWR('editorMode', editorMode || null, { fallbackData: initialData });
 };
 
-export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, any> => {
+export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
 
   const { cache, mutate } = useSWRConfig();
