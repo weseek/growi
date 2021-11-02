@@ -115,6 +115,10 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
+          {/* TODO : display tags when this component is used in SearchResultContent too.
+              For that, refactor TagLabels such that it can be used while not depending on pageContainer
+              TASK: #80623 https://estoc.weseek.co.jp/redmine/issues/80623
+          */}
           { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
@@ -130,6 +134,9 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             <SubnavButtons isCompactMode={isCompactMode} />
+            {/* TODO: refactor SubNavButtons in a way that it can be used independently from pageContainer
+              TASK : #80481 https://estoc.weseek.co.jp/redmine/issues/80481
+             */}
           </div>
           <div className="mt-2">
             {isAbleToShowPageEditorModeManager && !isSearchPageMode && (
