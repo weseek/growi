@@ -3104,9 +3104,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ldapjs@^1.0.0":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/ldapjs/-/ldapjs-1.0.2.tgz#1152cb17564a1a5445af9956b95fc18d1a811ba6"
+"@types/ldapjs@^1.0.9":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@types/ldapjs/-/ldapjs-1.0.11.tgz#34077176af2b06186bd54e4a38ceb6e852387fa4"
+  integrity sha512-O4D1frY6xy2mQr5WouNPeltMe5EHdmU4FxbLDC6TMDX5HXOuafusGu+7Y9WAoqBaYHZ5hcFa7jfkpggyexfeXQ==
   dependencies:
     "@types/node" "*"
 
@@ -3184,11 +3185,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.7.tgz#1cb61fd0c85cb87e728c43107b5fd82b69bc9ef8"
   integrity sha512-gWL8VUkg8VRaCAUgG9WmhefMqHmMblxe2rVpMF86nZY/+ZysU+BkAp+3cz03AixWDSSz0ks5WX59yAhv/cDwFA==
 
-"@types/node@^7.0.21", "@types/node@^7.0.23":
-  version "7.10.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.10.14.tgz#06fa7319b8131b969a8da4a14c487e6f28abacf7"
-  integrity sha512-29GS75BE8asnTno3yB6ubOJOO0FboExEqNJy4bpz0GSmW/8wPTNL4h9h63c6s1uTrOopCmJYe/4yJLh5r92ZUA==
-
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -3198,12 +3194,6 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
-
-"@types/passport@^0.3.3":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@types/passport/-/passport-0.3.5.tgz#2089c7046d120e8bb92aa4ed86338c9c62ef7853"
-  dependencies:
-    "@types/express" "*"
 
 "@types/prettier@^2.1.5":
   version "2.3.2"
@@ -3664,6 +3654,11 @@ abort-controller@^3.0.0:
   integrity sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==
   dependencies:
     event-target-shim "^5.0.0"
+
+abstract-logging@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/abstract-logging/-/abstract-logging-2.0.1.tgz#6b0c371df212db7129b57d2e7fcf282b8bf1c839"
+  integrity sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==
 
 accepts@~1.3.4:
   version "1.3.4"
@@ -4230,20 +4225,12 @@ asn1.js@^5.4.1:
     minimalistic-assert "^1.0.0"
     safer-buffer "^2.1.0"
 
-asn1@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.3.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
-
-asn1@~0.2.3:
+asn1@^0.2.4, asn1@~0.2.3:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.4.tgz#8d2475dfab553bb33e77b54e59e880bb8ce23136"
   integrity sha512-jxwzQpLQjSmWXgwaCZE9Nz+glAG01yF1QnWgbhGwHI5A6FRIEY6IVqtHhIepHqI7/kyEyQEagBC5mBEFlIYvdg==
   dependencies:
     safer-buffer "~2.1.0"
-
-assert-plus@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-0.1.5.tgz#ee74009413002d84cec7219c6ac811812e723160"
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
@@ -5146,7 +5133,7 @@ bunyan-format@^0.2.1:
     ansistyles "~0.1.1"
     xtend "~2.1.1"
 
-bunyan@^1.8.12, bunyan@^1.8.3:
+bunyan@^1.8.12:
   version "1.8.12"
   resolved "https://registry.yarnpkg.com/bunyan/-/bunyan-1.8.12.tgz#f150f0f6748abdd72aeae84f04403be2ef113797"
   optionalDependencies:
@@ -6975,7 +6962,7 @@ dargs@^7.0.0:
   resolved "https://registry.yarnpkg.com/dargs/-/dargs-7.0.0.tgz#04015c41de0bcb69ec84050f3d9be0caf8d6d5cc"
   integrity sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==
 
-dashdash@^1.12.0, dashdash@^1.14.0:
+dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
   dependencies:
@@ -8759,10 +8746,6 @@ extglob@^2.0.4:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
-
-extsprintf@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.2.0.tgz#5ad946c22f5b32ba7f8cd7426711c6e8a3fc2529"
 
 extsprintf@1.3.0:
   version "1.3.0"
@@ -12447,38 +12430,36 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
-ldap-filter@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/ldap-filter/-/ldap-filter-0.2.2.tgz#f2b842be0b86da3352798505b31ebcae590d77d0"
+ldap-filter@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/ldap-filter/-/ldap-filter-0.3.3.tgz#2b14c68a2a9d4104dbdbc910a1ca85fd189e9797"
+  integrity sha1-KxTGiiqdQQTb28kQocqF/Riel5c=
   dependencies:
-    assert-plus "0.1.5"
+    assert-plus "^1.0.0"
 
-ldapauth-fork@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/ldapauth-fork/-/ldapauth-fork-4.0.2.tgz#f87d55908ba4917cca06d8ed6e173cdd65e908c9"
+ldapauth-fork@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/ldapauth-fork/-/ldapauth-fork-5.0.1.tgz#18779a9c30371c5bbea02e3b6aaadb60819ad29c"
+  integrity sha512-EdELQz8zgPruqV2y88PAuAiZCgTaMjex/kEA2PIcOlPYFt75C9QFt5HGZKVQo8Sf/3Mwnr1AtiThHKcq+pRtEg==
   dependencies:
-    "@types/ldapjs" "^1.0.0"
-    "@types/node" "^7.0.21"
+    "@types/ldapjs" "^1.0.9"
     bcryptjs "^2.4.0"
-    ldapjs "^1.0.1"
-    lru-cache "^4.0.2"
+    ldapjs "^2.2.1"
+    lru-cache "^6.0.0"
 
-ldapjs@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ldapjs/-/ldapjs-1.0.2.tgz#544ff7032b7b83c68f0701328d9297aa694340f9"
-  integrity sha1-VE/3Ayt7g8aPBwEyjZKXqmlDQPk=
+ldapjs@^2.2.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/ldapjs/-/ldapjs-2.3.1.tgz#04136815fb1f21d692ac87fab5961a04d86e8b04"
+  integrity sha512-kf0tHHLrpwKaBAQOhYHXgdeh2PkFuCCxWgLb1MRn67ZQVo787D2pij3mmHVZx193GIdM8xcfi8HF6AIYYnj0fQ==
   dependencies:
-    asn1 "0.2.3"
+    abstract-logging "^2.0.0"
+    asn1 "^0.2.4"
     assert-plus "^1.0.0"
     backoff "^2.5.0"
-    bunyan "^1.8.3"
-    dashdash "^1.14.0"
-    ldap-filter "0.2.2"
+    ldap-filter "^0.3.3"
     once "^1.4.0"
-    vasync "^1.6.4"
+    vasync "^2.2.0"
     verror "^1.8.1"
-  optionalDependencies:
-    dtrace-provider "~0.8"
 
 lerna@^4.0.0:
   version "4.0.0"
@@ -12930,13 +12911,6 @@ lru-cache@^4.0.1, lru-cache@^4.1.3:
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.5.tgz#8bbe50ea85bed59bc9e33dcab8235ee9bcf443cd"
   integrity sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==
-  dependencies:
-    pseudomap "^1.0.2"
-    yallist "^2.1.2"
-
-lru-cache@^4.0.2:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.1.tgz#622e32e82488b49279114a4f9ecf45e7cd6bba55"
   dependencies:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
@@ -15720,13 +15694,12 @@ passport-http@^0.3.0:
   dependencies:
     passport-strategy "1.x.x"
 
-passport-ldapauth@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/passport-ldapauth/-/passport-ldapauth-2.0.0.tgz#42dff004417185d0a4d9f776a3eed8d4731fd689"
+passport-ldapauth@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/passport-ldapauth/-/passport-ldapauth-3.0.1.tgz#1432e8469de18bd46b5b39a46a866b416c1ddded"
+  integrity sha512-TRRx3BHi8GC8MfCT9wmghjde/EGeKjll7zqHRRfGRxXbLcaDce2OftbQrFG7/AWaeFhR6zpZHtBQ/IkINdLVjQ==
   dependencies:
-    "@types/node" "^7.0.23"
-    "@types/passport" "^0.3.3"
-    ldapauth-fork "^4.0.1"
+    ldapauth-fork "^5.0.1"
     passport-strategy "^1.0.0"
 
 passport-local@^1.0.0:
@@ -21865,11 +21838,12 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
-vasync@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/vasync/-/vasync-1.6.4.tgz#dfe93616ad0e7ae801b332a9d88bfc5cdc8e1d1f"
+vasync@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/vasync/-/vasync-2.2.0.tgz#cfde751860a15822db3b132bc59b116a4adaf01b"
+  integrity sha1-z951GGChWCLbOxMrxZsRakra8Bs=
   dependencies:
-    verror "1.6.0"
+    verror "1.10.0"
 
 vendors@^1.0.0:
   version "1.0.1"
@@ -21882,12 +21856,6 @@ verror@1.10.0, verror@^1.8.1:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
-
-verror@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/verror/-/verror-1.6.0.tgz#7d13b27b1facc2e2da90405eb5ea6e5bdd252ea5"
-  dependencies:
-    extsprintf "1.2.0"
 
 vfile-location@^2.0.0:
   version "2.0.6"
