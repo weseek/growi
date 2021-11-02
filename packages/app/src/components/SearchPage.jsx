@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
-      selectedPage: {},
+      selectedPage: null,
       selectedPages: new Set(),
       excludeUsersHome: true,
       excludeTrash: true,
@@ -127,7 +127,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
-            selectedPage: {},
+            selectedPage: null,
           });
         }
       })

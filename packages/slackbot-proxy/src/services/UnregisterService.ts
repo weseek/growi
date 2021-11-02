@@ -50,7 +50,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
     }
 
     const staticSelectElement: MultiStaticSelect = {
-      action_id: 'selectedGrowiUris',
+      action_id: 'unregister:selectedGrowiUris',
       type: 'multi_static_select',
       placeholder: {
         type: 'plain_text',
@@ -106,6 +106,8 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
       case 'unregister:cancel':
         interactionHandledResult.result = await this.handleUnregisterCancelInteraction(interactionPayloadAccessor);
         break;
+      case 'unregister:selectedGrowiUris':
+        break;
       default:
         logger.error('This unregister interaction is not implemented.');
         break;
@@ -122,7 +124,7 @@ export class UnregisterService implements GrowiCommandProcessor, GrowiInteractio
   ):Promise<void> {
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
-    const selectedOptions = interactionPayloadAccessor.getStateValues()?.growiUris?.selectedGrowiUris?.selected_options;
+    const selectedOptions = interactionPayloadAccessor.getStateValues()?.growiUris?.['unregister:selectedGrowiUris']?.selected_options;
     if (!Array.isArray(selectedOptions)) {
       logger.error('Unregisteration failed: Mulformed object was detected\n');
       await respond(responseUrl, {
