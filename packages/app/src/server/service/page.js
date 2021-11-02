@@ -829,30 +829,12 @@ class PageService {
         const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
         const parentPaths = Array.from(parentPathsSet);
 
-        // find existing parents
-        const builder1 = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
-        const existingParents = await builder1
-          .addConditionToListByPathsArray(parentPaths)
-          .query
-          .lean()
-          .exec();
-        const existingParentPaths = existingParents.map(parent => parent.path);
-
-        // paths to create empty pages
-        const notExistingParentPaths = parentPaths.filter(path => !existingParentPaths.includes(path));
-
-        // insertMany empty pages
-        try {
-          await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
-        }
-        catch (err) {
-          logger.error('Failed to insert empty pages.', err);
-          throw err;
-        }
+        // fill parents with empty pages
+        await Page.createEmptyPagesByPaths(parentPaths);
 
         // find parents again
-        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
-        const parents = await builder2
+        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+        const parents = await builder
           .addConditionToListByPathsArray(parentPaths)
           .query
           .lean()

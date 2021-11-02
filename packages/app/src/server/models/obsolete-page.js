@@ -10,8 +10,6 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
@@ -22,11 +20,6 @@ const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-/*
- * define schema
- */
 const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
 const GRANT_SPECIFIED = 3;
@@ -36,44 +29,11 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-const pageSchema = new mongoose.Schema({
-  parent: {
-    type: ObjectId, ref: 'Page', index: true, default: null,
-  },
-  isEmpty: { type: Boolean, default: false },
-  path: {
-    type: String, required: true,
-  },
-  revision: { type: ObjectId, ref: 'Revision' },
-  redirectTo: { type: String, index: true },
-  status: { type: String, default: STATUS_PUBLISHED, index: true },
-  grant: { type: Number, default: GRANT_PUBLIC, index: true },
-  grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
-  creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User' },
-  liker: [{ type: ObjectId, ref: 'User' }],
-  seenUsers: [{ type: ObjectId, ref: 'User' }],
-  commentCount: { type: Number, default: 0 },
-  slackChannels: { type: String },
-  pageIdOnHackmd: String,
-  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
-  hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  deleteUser: { type: ObjectId, ref: 'User' },
-  deletedAt: { type: Date },
-}, {
-  toJSON: { getters: true },
-  toObject: { getters: true },
-});
-// apply plugins
-pageSchema.plugin(mongoosePaginate);
-pageSchema.plugin(uniqueValidator);
-
-// TODO: test this after modifying Page.create
-// ensure v4 compatibility using partial index
-pageSchema.index({ path: 1 }, { unique: true, partialFilterExpression: { parent: null } });
+// schema definition has moved to page.ts
+const pageSchema = {
+  statics: {},
+  methods: {},
+};
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath
@@ -117,7 +77,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 /* eslint-enable object-curly-newline, object-property-newline */
 
 
-class PageQueryBuilder {
+export class PageQueryBuilder {
 
   constructor(query) {
     this.query = query;
@@ -286,7 +246,7 @@ class PageQueryBuilder {
 
 }
 
-module.exports = function(crowi) {
+export const getPageSchema = (crowi) => {
   let pageEvent;
 
   // init event
@@ -966,9 +926,9 @@ module.exports = function(crowi) {
 
     const Page = this;
     const Revision = crowi.model('Revision');
-    const format = options.format || 'markdown';
-    const redirectTo = options.redirectTo || null;
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const {
+      format = 'markdown', redirectTo, grantUserGroupId, parentId,
+    } = options;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -979,10 +939,19 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({ path });
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    // for v4 compatibility
+    if (!isV5Compatible) {
+      const isExist = await this.count({ path });
 
-    if (isExist) {
-      throw new Error('Cannot create new page to existed path');
+      if (isExist) {
+        throw new Error('Cannot create new page to existed path');
+      }
+    }
+
+    let parent = parentId;
+    if (isV5Compatible && parent == null) {
+      parent = await Page.getParentIdAndFillAncestors(path);
     }
 
     const page = new Page();
@@ -991,6 +960,7 @@ module.exports = function(crowi) {
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
+    page.parent = parent;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
@@ -1172,5 +1142,5 @@ module.exports = function(crowi) {
 
   pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
 
-  return mongoose.model('Page', pageSchema);
+  return pageSchema;
 };
