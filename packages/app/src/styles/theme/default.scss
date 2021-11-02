@@ -24,7 +24,6 @@ html[light] {
   $bgcolor-card: $gray-50;
   $bgcolor-blinked-section: rgba($primary, 0.1);
   //$bgcolor-keyword-highlighted: $grw-marker-yellow;
-  $bgcolor-search-result-item-active: $grw-search-result-item-active;
 
   // Font colors
   $color-global: #112744;
@@ -111,6 +110,13 @@ html[light] {
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+    }
+  }
+  // Search result list
+  .page-list {
+    .active {
+      background-color: $grw-search-active-item-bgcolor;
+      border-left: $grw-search-active-item-left-border;
     }
   }
 }
