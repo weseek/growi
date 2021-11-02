@@ -172,7 +172,7 @@ const Sidebar = (props: Props) => {
 
   useEffect(() => {
     // this.hackUIController();
-    setMounted(true);
+    // setMounted(true);
   }, []);
 
   useEffect(() => {
