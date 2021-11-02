@@ -254,7 +254,7 @@ const ManageCommandsProcess = ({
   }, []);
 
 
-  const updateCommandsHandler = async(e) => {
+  const updateSettingsHandler = async(e) => {
     try {
       // TODO: add new attribute 78975
       await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/permissions`, {
@@ -332,6 +332,7 @@ const ManageCommandsProcess = ({
     onUpdateChannels: PropTypes.func,
   };
 
+  // Using i18n in allowedChannelsDescription will cause interpolation error
   const menuMap = {
     broadcastUse: {
       title: 'Multiple GROWI',
@@ -403,7 +404,7 @@ const ManageCommandsProcess = ({
         <button
           type="submit"
           className="btn btn-primary mx-auto"
-          onClick={updateCommandsHandler}
+          onClick={updateSettingsHandler}
         >
           { t('Update') }
         </button>
