@@ -961,11 +961,11 @@ module.exports = function(crowi) {
     }
   }
 
-  const generateAncestorPaths = (path, ancestorPaths = []) => {
+  const collectAncestorPaths = (path, ancestorPaths = []) => {
     const parentPath = nodePath.dirname(path);
     ancestorPaths.push(parentPath);
 
-    if (path !== '/') return generateAncestorPaths(parentPath, ancestorPaths);
+    if (path !== '/') return collectAncestorPaths(parentPath, ancestorPaths);
 
     return ancestorPaths;
   };
@@ -995,7 +995,7 @@ module.exports = function(crowi) {
     }
   };
 
-  pageSchema.statics._getParentIdAndFillAncestors = async function(path) {
+  pageSchema.statics.getParentIdAndFillAncestors = async function(path) {
     const Page = this;
     const parentPath = nodePath.dirname(path);
 
@@ -1004,7 +1004,7 @@ module.exports = function(crowi) {
       return parent._id;
     }
 
-    const ancestorPaths = generateAncestorPaths(path); // paths of parents need to be created
+    const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
     // just create ancestors with empty pages
     await Page.createEmptyPagesByPaths(ancestorPaths);
@@ -1073,7 +1073,7 @@ module.exports = function(crowi) {
 
     let parent = parentId;
     if (isV5Compatible && parent == null) {
-      parent = await Page._getParentIdAndFillAncestors(path);
+      parent = await Page.getParentIdAndFillAncestors(path);
     }
 
     const page = new Page();
