@@ -135,7 +135,9 @@
   }
 
   .grw-sidebar-content-header {
-    min-width: $grw-sidebar-content-min-width + 20px;
+    .grw-btn-reload {
+      font-size: 18px;
+    }
   }
 }
 

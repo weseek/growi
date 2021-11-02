@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const {
-  markdownSectionBlock, divider, respond, respondInChannel, replaceOriginal, deleteOriginal,
+  markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 
@@ -132,22 +132,24 @@ module.exports = (crowi) => {
 
     const actionBlocks = {
       type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Dismiss',
-          },
-          style: 'danger',
-          action_id: 'search:dismissSearchResults',
-        },
-      ],
+      elements: [],
     };
+    // add "Dismiss" button
+    actionBlocks.elements.push(
+      {
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: 'Dismiss',
+        },
+        style: 'danger',
+        action_id: 'search:dismissSearchResults',
+      },
+    );
     // show "Prev" button if previous page exists
     // eslint-disable-next-line yoda
     if (0 < offset) {
-      actionBlocks.elements.unshift(
+      actionBlocks.elements.push(
         {
           type: 'button',
           text: {
@@ -161,7 +163,7 @@ module.exports = (crowi) => {
     }
     // show "Next" button if next page exists
     if (offset + PAGINGLIMIT < resultsTotal) {
-      actionBlocks.elements.unshift(
+      actionBlocks.elements.push(
         {
           type: 'button',
           text: {
@@ -229,27 +231,26 @@ module.exports = (crowi) => {
   }
 
 
-  handler.handleCommand = async function(growiCommand, client, body) {
-    const { responseUrl, growiCommandArgs } = growiCommand;
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+    const { growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);
-    await respond(responseUrl, respondBody);
+    await respondUtil.respond(respondBody);
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
-    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
+  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+    await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor) {
+  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     const { user } = payload;
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const appUrl = crowi.appService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
     const value = interactionPayloadAccessor.firstAction()?.value; // shareSinglePage action must have button action
     if (value == null) {
-      await respond(responseUrl, {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to share the result.'),
@@ -258,13 +259,15 @@ module.exports = (crowi) => {
       return;
     }
 
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
+
     // restore page data from value
-    const { page, href, pathname } = JSON.parse(value);
+    const { page, href, pathname } = parsedValue;
     const { updatedAt, commentCount } = page;
 
     // share
     const now = new Date();
-    return respondInChannel(responseUrl, {
+    return respondUtil.respondInChannel({
       blocks: [
         { type: 'divider' },
         markdownSectionBlock(`${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
@@ -283,12 +286,11 @@ module.exports = (crowi) => {
     });
   };
 
-  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true) {
-    const responseUrl = interactionPayloadAccessor.getResponseUrl();
+  async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true, respondUtil) {
 
     const value = interactionPayloadAccessor.firstAction()?.value;
     if (value == null) {
-      await respond(responseUrl, {
+      await respondUtil.respond({
         text: 'Error occurred',
         blocks: [
           markdownSectionBlock('Failed to show the next results.'),
@@ -296,7 +298,8 @@ module.exports = (crowi) => {
       });
       return;
     }
-    const parsedValue = JSON.parse(value);
+
+    const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
 
     const { growiCommandArgs, offset: offsetNum } = parsedValue;
     const newOffsetNum = isNext
@@ -305,23 +308,19 @@ module.exports = (crowi) => {
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
-    await replaceOriginal(responseUrl, buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
+    await respondUtil.replaceOriginal(buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
-  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor) {
-    return showPrevOrNextResults(interactionPayloadAccessor, false);
+  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
   };
 
-  handler.showNextResults = async function(client, payload, interactionPayloadAccessor) {
-    return showPrevOrNextResults(interactionPayloadAccessor, true);
+  handler.showNextResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
   };
 
-  handler.dismissSearchResults = async function(client, payload) {
-    const { response_url: responseUrl } = payload;
-
-    return deleteOriginal(responseUrl, {
-      delete_original: true,
-    });
+  handler.dismissSearchResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+    return respondUtil.deleteOriginal();
   };
 
   return handler;

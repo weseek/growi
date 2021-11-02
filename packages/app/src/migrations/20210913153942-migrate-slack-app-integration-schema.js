@@ -5,7 +5,7 @@ import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:migrate:update-configs-for-slackbot');
+const logger = loggerFactory('growi:migrate:migrate-slack-app-integration-schema');
 
 // create default data
 const defaultDataForBroadcastUse = {};

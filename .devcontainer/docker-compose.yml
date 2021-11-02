@@ -17,10 +17,6 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    ports:
-      - 3000:3000
-      - 3001:3001 # for browser-sync
-
     volumes:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules

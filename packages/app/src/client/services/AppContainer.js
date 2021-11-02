@@ -1,10 +1,13 @@
 import { Container } from 'unstated';
 
-import urljoin from 'url-join';
-
-import axios from '~/utils/axios';
 import InterceptorManager from '~/services/interceptor-manager';
 
+import {
+  apiDelete, apiGet, apiPost, apiRequest,
+} from '../util/apiv1-client';
+import {
+  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+} from '../util/apiv3-client';
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
@@ -12,10 +15,8 @@ import {
   mediaQueryListForDarkMode,
   applyColorScheme,
 } from '../util/color-scheme';
-import Apiv1ErrorHandler from '../util/apiv1ErrorHandler';
 
 import { i18nFactory } from '../util/i18n';
-import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 /**
  * Service container related to options for Application
@@ -28,9 +29,6 @@ export default class AppContainer extends Container {
 
     this.state = {
       preferDarkModeByMediaQuery: false,
-
-      // stetes for contents
-      recentlyUpdatedPages: [],
     };
 
     const body = document.querySelector('body');
@@ -60,17 +58,21 @@ export default class AppContainer extends Container {
     this.componentInstances = {};
     this.rendererInstances = {};
 
-    this.apiGet = this.apiGet.bind(this);
-    this.apiPost = this.apiPost.bind(this);
-    this.apiDelete = this.apiDelete.bind(this);
-    this.apiRequest = this.apiRequest.bind(this);
+    this.apiGet = apiGet;
+    this.apiPost = apiPost;
+    this.apiDelete = apiDelete;
+    this.apiRequest = apiRequest;
 
-    this.apiv3Root = '/_api/v3';
+    this.apiv3Get = apiv3Get;
+    this.apiv3Post = apiv3Post;
+    this.apiv3Put = apiv3Put;
+    this.apiv3Delete = apiv3Delete;
+
     this.apiv3 = {
-      get: this.apiv3Get.bind(this),
-      post: this.apiv3Post.bind(this),
-      put: this.apiv3Put.bind(this),
-      delete: this.apiv3Delete.bind(this),
+      get: apiv3Get,
+      post: apiv3Post,
+      put: apiv3Put,
+      delete: apiv3Delete,
     };
   }
 
@@ -279,11 +281,6 @@ export default class AppContainer extends Container {
     });
   }
 
-  async retrieveRecentlyUpdated() {
-    const { data } = await this.apiv3Get('/pages/recent');
-    this.setState({ recentlyUpdatedPages: data.pages });
-  }
-
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
@@ -302,80 +299,6 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
-  }
-
-  async apiGet(path, params) {
-    return this.apiRequest('get', path, { params });
-  }
-
-  async apiPost(path, params) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiRequest('post', path, params);
-  }
-
-  async apiDelete(path, params) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiRequest('delete', path, { data: params });
-  }
-
-  async apiRequest(method, path, params) {
-    const res = await axios[method](`/_api${path}`, params);
-    if (res.data.ok) {
-      return res.data;
-    }
-
-    // Return error code if code is exist
-    if (res.data.code != null) {
-      const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
-      throw error;
-    }
-
-    throw new Error(res.data.error);
-  }
-
-  async apiv3Request(method, path, params) {
-    try {
-      const res = await axios[method](urljoin(this.apiv3Root, path), params);
-      return res.data;
-    }
-    catch (err) {
-      const errors = apiv3ErrorHandler(err);
-      throw errors;
-    }
-  }
-
-  async apiv3Get(path, params) {
-    return this.apiv3Request('get', path, { params });
-  }
-
-  async apiv3Post(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('post', path, params);
-  }
-
-  async apiv3Put(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('put', path, params);
-  }
-
-  async apiv3Delete(path, params = {}) {
-    if (!params._csrf) {
-      params._csrf = this.csrfToken;
-    }
-
-    return this.apiv3Request('delete', path, { params });
   }
 
 }
