@@ -273,19 +273,23 @@ const ManageCommandsProcess = ({
   const PermissionSettingsForEachCategoryComponent = ({
     currentPermissionTypes,
     usageType,
-    title,
-    description,
-    defaultCommandsName,
-    singleCommandDescription,
-    allowedChannelsDescription,
-    onUpdatePermissions,
-    onUpdateChannels,
+    menuItem,
   }) => {
     const permissionMap = {
       broadcastUse: permissionsForBroadcastUseCommandsState,
       singleUse: permissionsForSingleUseCommandsState,
       linkSharing: permissionsForEventsState,
     };
+
+    const {
+      title,
+      description,
+      defaultCommandsName,
+      singleCommandDescription,
+      onUpdatePermissions,
+      onUpdateChannels,
+      allowedChannelsDescription,
+    } = menuItem;
 
     return (
       <>
@@ -323,13 +327,7 @@ const ManageCommandsProcess = ({
   PermissionSettingsForEachCategoryComponent.propTypes = {
     currentPermissionTypes: PropTypes.object,
     usageType: PropTypes.string,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    defaultCommandsName: PropTypes.array,
-    singleCommandDescription: PropTypes.string,
-    allowedChannelsDescription: PropTypes.string,
-    onUpdatePermissions: PropTypes.func,
-    onUpdateChannels: PropTypes.func,
+    menuItem: PropTypes.object,
   };
 
   // Using i18n in allowedChannelsDescription will cause interpolation error
@@ -369,13 +367,7 @@ const ManageCommandsProcess = ({
               key={commandUsageType}
               currentPermissionTypes={currentPermissionTypes}
               usageType={commandUsageType}
-              title={menuMap[commandUsageType].title}
-              description={menuMap[commandUsageType].description}
-              defaultCommandsName={menuMap[commandUsageType].defaultCommandsName}
-              singleCommandDescription={menuMap[commandUsageType].singleCommandDescription}
-              onUpdatePermissions={menuMap[commandUsageType].updatePermissionsHandler}
-              onUpdateChannels={menuMap[commandUsageType].updateChannelsHandler}
-              allowedChannelsDescription={menuMap[commandUsageType].allowedChannelsDescription}
+              menuItem={menuMap[commandUsageType]}
             />
           ))}
         </div>
@@ -389,12 +381,7 @@ const ManageCommandsProcess = ({
               key={EventType}
               currentPermissionTypes={currentPermissionTypes}
               usageType={EventType}
-              description={menuMap[EventType].description}
-              defaultCommandsName={menuMap[EventType].defaultCommandsName}
-              singleCommandDescription={menuMap[EventType].singleCommandDescription}
-              onUpdatePermissions={menuMap[EventType].updatePermissionsHandler}
-              onUpdateChannels={menuMap[EventType].updateChannelsHandler}
-              allowedChannelsDescription={menuMap[EventType].allowedChannelsDescription}
+              menuItem={menuMap[EventType]}
             />
           ))}
         </div>
