@@ -1,13 +1,13 @@
 import { Schema, Model, Document } from 'mongoose';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-export interface ISubscribeRule {
+export interface IDefaultSubscribeRule {
   name: string,
   isEnabled: boolean;
 }
 export interface IInAppNotificationSettings {
   userId: Schema.Types.ObjectId;
-  subscribeRules: ISubscribeRule[];
+  defaultSubscribeRules: IDefaultSubscribeRule[];
 }
 
 export interface InAppNotificationSettingsDocument extends IInAppNotificationSettings, Document {}
@@ -15,7 +15,7 @@ export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocu
 
 const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
   userId: { type: String },
-  subscribeRules: [{ name: { type: String }, isEnabled: { type: Boolean } }],
+  defaultSubscribeRules: [{ name: { type: String }, isEnabled: { type: Boolean } }],
 });
 
 // eslint-disable-next-line max-len
