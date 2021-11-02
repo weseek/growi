@@ -24,7 +24,7 @@ html[light] {
   $bgcolor-card: $gray-50;
   $bgcolor-blinked-section: rgba($primary, 0.1);
   //$bgcolor-keyword-highlighted: $grw-marker-yellow;
-  $bgcolor-search-result-item-active: #eff5ff;
+  $bgcolor-search-result-item-active: $grw-search-result-item-active;
 
   // Font colors
   $color-global: #112744;
