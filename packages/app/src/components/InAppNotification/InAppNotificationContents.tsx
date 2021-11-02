@@ -4,8 +4,7 @@ import { IInAppNotification } from '../../interfaces/in-app-notification';
 import { InAppNotification } from './InAppNotification';
 
 type Props = {
-  notifications: any;
-
+  notifications: Array<IInAppNotification>;
 };
 
 const InAppNotificationContents: FC<Props> = (props: Props) => {
@@ -52,17 +51,12 @@ const InAppNotificationContents: FC<Props> = (props: Props) => {
     return <>{notificationList}</>;
   };
 
-  const InAppNotificationContents = (): JSX.Element => {
-    // if (!isLoaded) {
-    //   return <RenderUnLoadedInAppNotification />;
-    // }
-    return <RenderInAppNotificationList />;
-  };
-
-  return (
-    // <>InAppNotificationContents</>
-    <InAppNotificationContents />
-  );
+  // const InAppNotificationContents = (): JSX.Element => {
+  // if (!isLoaded) {
+  //   return <RenderUnLoadedInAppNotification />;
+  // }
+  return <RenderInAppNotificationList />;
+  // };
 };
 
 
