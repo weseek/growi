@@ -51,12 +51,14 @@ const InAppNotificationContents: FC<Props> = (props: Props) => {
     return <>{notificationList}</>;
   };
 
-  // const InAppNotificationContents = (): JSX.Element => {
-  // if (!isLoaded) {
-  //   return <RenderUnLoadedInAppNotification />;
-  // }
-  return <RenderInAppNotificationList />;
-  // };
+  const InAppNotificationContents = (): JSX.Element => {
+    // if (!isLoaded) {
+    //   return <RenderUnLoadedInAppNotification />;
+    // }
+    return <RenderInAppNotificationList />;
+  };
+
+  return <InAppNotificationContents />;
 };
 
 

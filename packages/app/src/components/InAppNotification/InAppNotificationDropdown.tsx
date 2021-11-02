@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import { IInAppNotification } from '../../interfaces/in-app-notification';
 import InAppNotificationContents from './InAppNotificationContents';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
 
@@ -76,7 +75,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
-
   const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
       updateNotificationStatus();
@@ -94,55 +92,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     * TODO: Jump to the page by clicking on the notification by GW-7472
     */
 
-  // const notificationClickHandler = async(notification: Notification) => {
-  //   try {
-  //     // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
-  //     // jump to target page
-  //     // window.location.href = notification.target.path;
-  //   }
-  //   catch (err) {
-  //     logger.error(err);
-  //   }
-  // };
-
-  // const RenderUnLoadedInAppNotification = (): JSX.Element => {
-  //   return (
-  //     <i className="fa fa-spinner"></i>
-  //   );
-  // };
-
-  // const RenderEmptyInAppNotification = (): JSX.Element => {
-  //   return (
-  //     // TODO: apply i18n by #78569
-  //     <>You had no notifications, yet.</>
-  //   );
-  // };
-
-  // TODO: improve renderInAppNotificationList by GW-7535
-  // refer to https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/components/Notification/Notification.tsx
-  // const RenderInAppNotificationList = () => {
-  //   console.log('notificationsHoge', notifications);
-
-
-  //   if (notifications.length === 0) {
-  //     return <RenderEmptyInAppNotification />;
-  //   }
-  //   const notificationList = notifications.map((notification: IInAppNotification) => {
-  //     return (
-  //       <div className="d-flex flex-row" key={notification._id}>
-  //         <InAppNotification notification={notification} onClick={notificationClickHandler} />
-  //       </div>
-  //     );
-  //   });
-  //   return <>{notificationList}</>;
-  // };
-
-  // const InAppNotificationContents = (): JSX.Element => {
-  // if (!isLoaded) {
-  //   return <RenderUnLoadedInAppNotification />;
-  // }
-  //   return <RenderInAppNotificationList />;
-  // };
 
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
 
@@ -154,7 +103,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         </button>
       </DropdownToggle>
       <DropdownMenu className="px-2" right>
-        <InAppNotificationContents notifications={notifications} />
+        <InAppNotificationContents notifications={notifications} isLoaded={isLoaded} />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}
         <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">See All</a>
