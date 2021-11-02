@@ -1,242 +1,326 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
 import {
-  withNavigationUIController,
-  LayoutManager,
-  NavigationProvider,
-  ThemeProvider,
-} from '@atlaskit/navigation-next';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
+  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useCurrentProductNavWidth, useSidebarCollapsed, useSidebarResizeDisabled,
+} from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
 
 import SidebarNav from './Sidebar/SidebarNav';
-import SidebarContents from './Sidebar/SidebarContents';
-import StickyStretchableScroller from './StickyStretchableScroller';
 
-const sidebarDefaultWidth = 320;
+const sidebarMinWidth = 240;
+const sidebarMinimizeWidth = 20;
 
-class Sidebar extends React.Component {
+const GlobalNavigation = () => {
+  const { data: currentContents } = useCurrentSidebarContents();
+  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
-  static propTypes = {
-    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-    navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-    navigationUIController: PropTypes.any.isRequired,
-    isDrawerModeOnInit: PropTypes.bool,
-  };
+  const itemSelectedHandler = useCallback((selectedContents) => {
 
-  componentWillMount() {
-    this.hackUIController();
-  }
+    // already selected
+    if (currentContents === selectedContents) {
+      // toggle collapsed
+      mutateSidebarCollapsed(!isCollapsed);
+    }
+    // switch and expand
+    else {
+      mutateSidebarCollapsed(false);
+    }
+  }, [currentContents, isCollapsed]);
 
-  componentDidUpdate(prevProps, prevState) {
-    this.toggleDrawerMode(this.isDrawerMode);
-  }
+  return <SidebarNav onItemSelected={itemSelectedHandler} />;
+};
+
+// dummy skelton contents
+const GlobalNavigationSkelton = () => {
+  return (
+    <div className="grw-sidebar-nav">
+      <div className="grw-sidebar-nav-primary-container">
+      </div>
+      <div className="grw-sidebar-nav-secondary-container">
+      </div>
+    </div>
+  );
+};
+
+
+const SidebarContents = () => {
+  const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
+
+  const calcViewHeight = useCallback(() => {
+    const scrollTargetElem = document.querySelector('#grw-sidebar-contents-scroll-target');
+    return scrollTargetElem != null
+      ? window.innerHeight - scrollTargetElem?.getBoundingClientRect().top
+      : window.innerHeight;
+  }, []);
+
+  return (
+    <>
+      {/* <StickyStretchableScroller
+        scrollTargetSelector={scrollTargetSelector}
+        contentsElemSelector="#grw-sidebar-content-container"
+        stickyElemSelector=".grw-sidebar"
+        calcViewHeightFunc={calcViewHeight}
+      /> */}
+
+      <div id="grw-sidebar-contents-scroll-target">
+        <div id="grw-sidebar-content-container">
+          {/* TODO: set isSharedUser
+          <SidebarContents
+            isSharedUser={this.props.appContainer.isSharedUser}
+          />
+          */}
+          <SidebarContents />
+        </div>
+      </div>
+
+      <DrawerToggler iconClass="icon-arrow-left" />
+    </>
+  );
+};
+
+// dummy skelton contents
+const SidebarSkeltonContents = () => {
+  return (
+    <div>Skelton Contents!!!</div>
+  );
+};
+
+
+type Props = {
+  productNavWidth: number
+}
+
+const Sidebar = (props: Props) => {
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
+  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth(props.productNavWidth);
+  const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
+  const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
   /**
    * hack and override UIController.storeState
    *
    * Since UIController is an unstated container, setState() in storeState method should be awaited before writing to cache.
    */
-  hackUIController() {
-    const { navigationUIController } = this.props;
+  // hackUIController() {
+  //   const { navigationUIController } = this.props;
 
-    // see: @atlaskit/navigation-next/dist/esm/ui-controller/UIController.js
-    const orgStoreState = navigationUIController.storeState;
-    navigationUIController.storeState = async(state) => {
-      await navigationUIController.setState(state);
-      orgStoreState(state);
-    };
-  }
+  //   // see: @atlaskit/navigation-next/dist/esm/ui-controller/UIController.js
+  //   const orgStoreState = navigationUIController.storeState;
+  //   navigationUIController.storeState = async(state) => {
+  //     await navigationUIController.setState(state);
+  //     orgStoreState(state);
+  //   };
+  // }
 
-  /**
-   * return whether drawer mode or not
-   */
-  get isDrawerMode() {
-    let isDrawerMode = this.props.navigationContainer.state.isDrawerMode;
-    if (isDrawerMode == null) {
-      isDrawerMode = this.props.isDrawerModeOnInit;
-    }
-    return isDrawerMode;
-  }
-
-  toggleDrawerMode(bool) {
-    const { navigationUIController } = this.props;
-
-    const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
+  const toggleDrawerMode = useCallback((bool) => {
+    const isStateModified = isResizeDisabled !== bool;
     if (!isStateModified) {
       return;
     }
 
     // Drawer <-- Dock
     if (bool) {
-      // cache state
-      this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
-      this.sidebarWidthCached = navigationUIController.state.productNavWidth;
+      // // cache state
+      // this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
+      // this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-      // clear transition temporary
-      if (this.sidebarCollapsedCached) {
-        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
-      }
+      // // clear transition temporary
+      // if (this.sidebarCollapsedCached) {
+      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
+      // }
 
-      navigationUIController.disableResize();
-
-      // fix width
-      navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+      // disable resize
+      mutateSidebarResizeDisabled(true);
     }
     // Drawer --> Dock
     else {
-      // clear transition temporary
-      if (this.sidebarCollapsedCached) {
-        this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
-      }
+      // // clear transition temporary
+      // if (this.sidebarCollapsedCached) {
+      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
+      // }
 
-      navigationUIController.enableResize();
+      // enable resize
+      mutateSidebarResizeDisabled(false);
 
-      // restore width
-      if (this.sidebarWidthCached != null) {
-        navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
-      }
+      // // restore width
+      // if (this.sidebarWidthCached != null) {
+      //   navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+      // }
     }
-  }
+  }, [isResizeDisabled]);
 
-  get sidebarElem() {
-    return document.querySelector('.grw-sidebar');
-  }
+  // addCssClassTemporary(className) {
+  //   // clear
+  //   this.sidebarElem.classList.add(className);
 
-  addCssClassTemporary(className) {
-    // clear
-    this.sidebarElem.classList.add(className);
+  //   // restore after 300ms
+  //   setTimeout(() => {
+  //     this.sidebarElem.classList.remove(className);
+  //   }, 300);
+  // }
 
-    // restore after 300ms
-    setTimeout(() => {
-      this.sidebarElem.classList.remove(className);
-    }, 300);
-  }
+  const backdropClickedHandler = useCallback(() => {
+    mutateDrawerOpened(false);
+  }, [mutateDrawerOpened]);
 
-  backdropClickedHandler = () => {
-    const { navigationContainer } = this.props;
-    navigationContainer.toggleDrawer();
-  }
+  const [isMounted, setMounted] = useState(false);
 
-  itemSelectedHandler = (contentsId) => {
-    const { navigationContainer, navigationUIController } = this.props;
-    const { sidebarContentsId } = navigationContainer.state;
+  useEffect(() => {
+    // this.hackUIController();
+    setMounted(true);
+  }, []);
 
-    // already selected
-    if (sidebarContentsId === contentsId) {
-      navigationUIController.toggleCollapse();
+  useEffect(() => {
+    toggleDrawerMode(isDrawerMode);
+  }, [isDrawerMode, toggleDrawerMode]);
+
+  const [isHover, setHover] = useState(false);
+  const [isDragging, setDrag] = useState(false);
+
+  const resizableContainer = useRef<HTMLDivElement>(null);
+  const setContentWidth = useCallback((newWidth) => {
+    if (resizableContainer.current == null) {
+      return;
     }
-    // switch and expand
+    resizableContainer.current.style.width = `${newWidth}px`;
+  }, []);
+
+  const hoverHandler = useCallback((isHover: boolean) => {
+    if (!isCollapsed || isDrawerMode) {
+      return;
+    }
+
+    setHover(isHover);
+
+    if (isHover) {
+      setContentWidth(currentProductNavWidth);
+    }
+    if (!isHover) {
+      setContentWidth(sidebarMinimizeWidth);
+    }
+  }, [isCollapsed, isDrawerMode, currentProductNavWidth]);
+
+  const toggleNavigationBtnClickHandler = useCallback(() => {
+    mutateSidebarCollapsed(!isCollapsed);
+  }, [isCollapsed]);
+
+  useEffect(() => {
+    if (isCollapsed) {
+      setContentWidth(sidebarMinimizeWidth);
+    }
     else {
-      navigationUIController.expand();
+      setContentWidth(currentProductNavWidth);
     }
-  }
+  }, [isCollapsed]);
 
-  calcViewHeight() {
-    const scrollTargetElem = document.querySelector('#grw-sidebar-contents-scroll-target');
-    return window.innerHeight - scrollTargetElem.getBoundingClientRect().top;
-  }
-
-  renderGlobalNavigation = () => (
-    <SidebarNav onItemSelected={this.itemSelectedHandler} />
-  );
-
-  renderSidebarContents = () => {
-    const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
-
-    return (
-      <>
-        <StickyStretchableScroller
-          scrollTargetSelector={scrollTargetSelector}
-          contentsElemSelector="#grw-sidebar-content-container"
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeightFunc={this.calcViewHeight}
-        />
-
-        <div id="grw-sidebar-contents-scroll-target">
-          <div id="grw-sidebar-content-container">
-            <SidebarContents
-              isSharedUser={this.props.appContainer.isSharedUser}
-            />
-          </div>
-        </div>
-
-        <DrawerToggler iconClass="icon-arrow-left" />
-      </>
-    );
-  };
-
-  render() {
-    const { isDrawerOpened } = this.props.navigationContainer.state;
-
-    return (
-      <>
-        <div className={`grw-sidebar d-print-none ${this.isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
-          <ThemeProvider
-            theme={theme => ({
-              ...theme,
-              context: 'product',
-            })}
-          >
-            <LayoutManager
-              globalNavigation={this.renderGlobalNavigation}
-              productNavigation={() => null}
-              containerNavigation={this.renderSidebarContents}
-              experimental_hideNavVisuallyOnCollapse
-              experimental_flyoutOnHover
-              experimental_alternateFlyoutBehaviour
-              experimental_fullWidthFlyout
-              shouldHideGlobalNavShadow
-              showContextualNavigation
-            >
-            </LayoutManager>
-          </ThemeProvider>
-        </div>
-
-        { isDrawerOpened && (
-          <div className="grw-sidebar-backdrop modal-backdrop show" onClick={this.backdropClickedHandler}></div>
-        ) }
-      </>
-    );
-  }
-
-}
-
-
-const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
-
-/**
- * Wrapper component for using unstated
- */
-
-const SidebarWithNavigation = (props) => {
-  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.navigationContainer.state;
-
-  const initUICForDrawerMode = isDrawerModeOnInit
-    // generate initialUIController for Drawer mode
-    ? {
-      isCollapsed: false,
-      isResizeDisabled: true,
-      productNavWidth: sidebarDefaultWidth,
+  const draggableAreaMoveHandler = useCallback((event) => {
+    if (isDragging) {
+      event.preventDefault();
+      const newWidth = event.pageX - 60;
+      if (resizableContainer.current != null) {
+        setContentWidth(newWidth);
+        resizableContainer.current.classList.add('dragging');
+      }
     }
-    // set undefined (should be initialized by cache)
-    : undefined;
+  }, [isDragging]);
+
+  const dragableAreaMouseUpHandler = useCallback(() => {
+    if (resizableContainer.current == null) {
+      return;
+    }
+
+    setDrag(false);
+
+    if (resizableContainer.current.clientWidth < sidebarMinWidth) {
+      // force collapsed
+      mutateSidebarCollapsed(true);
+      mutateProductNavWidth(sidebarMinWidth);
+      // TODO call API and save DB
+    }
+    else {
+      mutateProductNavWidth(resizableContainer.current.clientWidth);
+      // TODO call API and save DB
+    }
+
+    resizableContainer.current.classList.remove('dragging');
+
+    document.removeEventListener('mousemove', draggableAreaMoveHandler);
+    document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+
+  }, [draggableAreaMoveHandler]);
+
+  const dragableAreaClickHandler = useCallback(() => {
+    if (isCollapsed || isDrawerMode) {
+      return;
+    }
+    setDrag(true);
+  }, [isCollapsed, isDrawerMode]);
+
+  useEffect(() => {
+    document.addEventListener('mousemove', draggableAreaMoveHandler);
+    document.addEventListener('mouseup', dragableAreaMouseUpHandler);
+  }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
 
   return (
-    <NavigationProvider initialUIController={initUICForDrawerMode}>
-      <SidebarWithNavigationUIController {...props} isDrawerModeOnInit={isDrawerModeOnInit} />
-    </NavigationProvider>
+    <>
+      <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+        <div className="data-layout-container">
+          <div className="navigation">
+            <div className="grw-navigation-wrap">
+              <div className="grw-global-navigation">
+                { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton></GlobalNavigationSkelton> }
+              </div>
+              <div
+                ref={resizableContainer}
+                className="grw-contextual-navigation"
+                onMouseEnter={() => hoverHandler(true)}
+                onMouseLeave={() => hoverHandler(false)}
+                onMouseMove={draggableAreaMoveHandler}
+                onMouseUp={dragableAreaMouseUpHandler}
+                style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
+              >
+                <div className="grw-contextual-navigation-child">
+                  <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
+                    { isMounted ? <SidebarContents></SidebarContents> : <SidebarSkeltonContents></SidebarSkeltonContents> }
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="grw-navigation-draggable">
+              <div
+                className={`${!isDrawerMode ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
+                onMouseDown={dragableAreaClickHandler}
+              >
+                <div className="grw-navigation-draggable-hitarea-child"></div>
+              </div>
+              <button
+                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                type="button"
+                aria-expanded="true"
+                aria-label="Toggle navigation"
+                disabled={isDrawerMode}
+                onClick={toggleNavigationBtnClickHandler}
+              >
+                <span role="presentation">
+                  <i className="ml-1 fa fa-fw fa-angle-right text-white"></i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      { isDrawerOpened && (
+        <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
+      ) }
+    </>
   );
+
 };
 
-SidebarWithNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-export default withUnstatedContainers(SidebarWithNavigation, [AppContainer, NavigationContainer]);
+export default Sidebar;

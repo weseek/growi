@@ -1,18 +1,13 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
+import { useDrawerOpened } from '~/stores/ui';
 
-import { withTranslation } from 'react-i18next';
+type Props = {
+  iconClass?: string,
+}
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '~/client/services/NavigationContainer';
+const DrawerToggler: FC<Props> = (props: Props) => {
 
-const DrawerToggler = (props) => {
-
-  const { navigationContainer } = props;
-
-  const clickHandler = useCallback(() => {
-    navigationContainer.toggleDrawer();
-  }, [navigationContainer]);
+  const { data: isOpened, mutate } = useDrawerOpened();
 
   const iconClass = props.iconClass || 'icon-menu';
 
@@ -22,7 +17,7 @@ const DrawerToggler = (props) => {
       type="button"
       aria-expanded="false"
       aria-label="Toggle navigation"
-      onClick={clickHandler}
+      onClick={() => mutate(!isOpened)}
     >
       <i className={iconClass}></i>
     </button>
@@ -30,17 +25,4 @@ const DrawerToggler = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const DrawerTogglerWrapper = withUnstatedContainers(DrawerToggler, [NavigationContainer]);
-
-
-DrawerToggler.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  iconClass: PropTypes.string,
-};
-
-export default withTranslation()(DrawerTogglerWrapper);
+export default DrawerToggler;

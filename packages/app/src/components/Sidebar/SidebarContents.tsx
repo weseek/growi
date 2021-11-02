@@ -1,24 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '~/client/services/NavigationContainer';
+import React, { FC } from 'react';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
+import { useCurrentSidebarContents, SidebarContents as SidebarContentType } from '~/stores/ui';
 
-const SidebarContents = (props) => {
-  const { navigationContainer, isSharedUser } = props;
+type Props = {
+  isSharedUser?: boolean,
+};
+
+const SidebarContents: FC<Props> = (props: Props) => {
+
+  const { data: currentSidebarContents } = useCurrentSidebarContents();
+
+  const { isSharedUser } = props;
 
   if (isSharedUser) {
     return null;
   }
 
   let Contents;
-  switch (navigationContainer.state.sidebarContentsId) {
-    case 'recent':
+  switch (currentSidebarContents) {
+    case SidebarContentType.RECENT:
       Contents = RecentChanges;
       break;
     default:
@@ -31,19 +33,9 @@ const SidebarContents = (props) => {
 
 };
 
-SidebarContents.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  isSharedUser: PropTypes.bool,
-};
 
 SidebarContents.defaultProps = {
   isSharedUser: false,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SidebarContentsWrapper = withUnstatedContainers(SidebarContents, [NavigationContainer]);
-
-export default withTranslation()(SidebarContentsWrapper);
+export default SidebarContents;
