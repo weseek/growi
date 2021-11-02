@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     await appService.initDB(language);
 
     // create the root page before creating admin user
-    await createPage(path.join(crowi.localeDir, language, 'welcome.md'), '/', { _id: 'temporary_id' }, language); // no owner
+    await createPage(path.join(crowi.localeDir, language, 'welcome.md'), '/', { _id: 'temporal_id' }, language); // no owner
 
     // create first admin user
     // TODO: with transaction
