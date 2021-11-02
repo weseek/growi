@@ -304,32 +304,29 @@ describe('PageService', () => {
       expect(wrongPage).toBeNull();
     });
 
-    /*
-     * TODO: rewrite test when modify rename function
-     */
-    // test('rename page with different tree with isRecursively [shallower]', async() => {
-    //   // setup
-    //   expect(await Page.findOne({ path: '/level1' })).toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/level2/child' })).not.toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
-    //   expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
+    test('rename page with different tree with isRecursively [shallower]', async() => {
+      // setup
+      expect(await Page.findOne({ path: '/level1' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
 
-    //   // when
-    //   //   rename /level1/level2 --> /level1
-    //   await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
+      // when
+      //   rename /level1/level2 --> /level1
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
 
-    //   // then
-    //   expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
-    //   expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
-    //   // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed
-    //   expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+      // then
+      expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
+      // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
 
-    //   // Check that pages that are not to be renamed have not been renamed
-    //   expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
-    // });
+      // Check that pages that are not to be renamed have not been renamed
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
+    });
   });
 
   describe('rename page', () => {
