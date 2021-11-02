@@ -112,13 +112,6 @@ html[light] {
       @include btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
-  // Search result list
-  .page-list {
-    .active {
-      background-color: $grw-search-active-item-bgcolor;
-      border-left: $grw-search-active-item-left-border;
-    }
-  }
 }
 
 //== Dark Mode

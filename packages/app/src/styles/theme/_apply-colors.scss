@@ -29,6 +29,8 @@ $nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: $color-nav-tabs-link-active;
 $nav-tabs-link-active-bg: $bgcolor-global;
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
+$search-active-item-left-border-color: $primary;
+$search-active-item-bgcolor: lighten($search-active-item-left-border-color, 76%);
 
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -678,5 +680,14 @@ mark.rbt-highlight-text {
 .selecting-bot-type {
   .bot-type-disc {
     width: 20px;
+  }
+}
+
+.search-result {
+  .page-list {
+    .active {
+      background-color: $search-active-item-bgcolor;
+      border-color: $search-active-item-left-border-color;
+    }
   }
 }

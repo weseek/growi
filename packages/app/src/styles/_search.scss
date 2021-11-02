@@ -273,3 +273,11 @@
     }
   }
 }
+
+.search-result {
+  .page-list {
+    .active {
+      border-left: 3px solid transparent;
+    }
+  }
+}

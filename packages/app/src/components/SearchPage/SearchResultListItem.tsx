@@ -17,7 +17,7 @@ type Props ={
       snippet: string,
     }
   },
-  selectedPageId: string,
+  selectedPageId?: string,
   onClickInvoked: (data: string) => void,
 }
 
