@@ -346,6 +346,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
         permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+        permissionsForSlackEventActions={props.permissionsForSlackEventActions}
       />,
     },
     '④': {
@@ -390,6 +391,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
         permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+        permissionsForSlackEventActions={props.permissionsForSlackEventActions}
       />,
     },
     '⑥': {
@@ -443,6 +445,7 @@ WithProxyAccordions.propTypes = {
   tokenGtoP: PropTypes.string,
   permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
   permissionsForSingleUseCommands: PropTypes.object.isRequired,
+  permissionsForSlackEventActions: PropTypes.object.isRequired,
 };
 
 export default WithProxyAccordionsWrapper;
