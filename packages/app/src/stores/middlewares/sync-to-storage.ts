@@ -4,17 +4,18 @@ const generateKeyInStorage = (key: string): string => {
   return `swr-cache-${key}`;
 };
 
-export type IStorageSerializer<Data> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type IStorageSerializer<Data = any> = {
   serialize: (value: Data) => string,
   deserialize: (value: string | null) => Data,
 }
 
-export const createSyncToStorageMiddlware = <Data>(
-  storage: Storage,
-  storageSerializer: IStorageSerializer<Data> = {
-    serialize: JSON.stringify,
-    deserialize: JSON.parse,
-  },
+export const createSyncToStorageMiddlware = (
+    storage: Storage,
+    storageSerializer: IStorageSerializer = {
+      serialize: JSON.stringify,
+      deserialize: JSON.parse,
+    },
 ): Middleware => {
   return (useSWRNext) => {
     return (key, fetcher, config) => {
@@ -23,7 +24,7 @@ export const createSyncToStorageMiddlware = <Data>(
       }
 
       const keyInStorage = generateKeyInStorage(key.toString());
-      let initData;
+      let initData = config.fallbackData;
 
       // retrieve initial data from storage
       const itemInStorage = storage.getItem(keyInStorage);

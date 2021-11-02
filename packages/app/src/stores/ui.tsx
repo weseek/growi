@@ -4,6 +4,7 @@ import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
 import loggerFactory from '~/utils/logger';
 
+import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
 const logger = loggerFactory('growi:stores:ui');
@@ -77,87 +78,40 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
-// export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, any> => {
-//   const isServer = typeof window === 'undefined';
-//   const key = isServer ? null : 'preferDrawerModeByUser';
+export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
+  const key = isServer ? null : 'preferDrawerModeByUser';
 
-//   // FIXME
-//   if (isServer) {
-//     return useStaticSWR(key);
-//   }
+  const initialData = false;
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+};
 
-//   const res = useLocalStorageSyncedSWR<boolean, any>(
-//     key,
-//     {
-//       serialize: value => (value as boolean ? 'true' : 'false'),
-//       deserialize: value => value === 'true',
-//     },
-//   );
+export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
+  const key = isServer ? null : 'preferDrawerModeOnEditByUser';
 
-//   if (!isServer && isPrefered != null) {
-//     res.mutate(isPrefered);
-//   }
+  const initialData = true;
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+};
 
-//   return res;
-// };
+export const useDrawerMode = (): SWRResponse<boolean, Error> => {
+  const key = isServer ? null : 'isDrawerMode';
 
-// export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, any> => {
-//   const isServer = typeof window === 'undefined';
-//   const key = isServer ? null : 'preferDrawerModeOnEditByUser';
+  const { data: editorMode } = useEditorMode();
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
+  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-//   const res = useLocalStorageSyncedSWR<boolean, any>(
-//     key,
-//     {
-//       serialize: value => (value as boolean ? 'true' : 'false'),
-//       deserialize: value => value == null || value === 'true', // default true
-//     },
-//   );
+  // get preference on view or edit
+  const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
-//   if (!isServer && isPrefered != null) {
-//     res.mutate(isPrefered);
-//   }
+  const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
 
-//   return res;
-// };
+  return useStaticSWR(key, isDrawerMode || null);
+};
 
-// export const useDrawerMode = (): SWRResponse<boolean, any> => {
-//   const isServer = typeof window === 'undefined';
-//   const key = isServer ? null : 'isDrawerMode';
-
-//   // FIXME
-//   if (isServer) {
-//     return useStaticSWR(key);
-//   }
-
-//   const { data: editorMode } = useEditorMode();
-//   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
-//   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
-//   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-
-//   // get preference on view or edit
-//   const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
-
-//   const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-
-//   mutate(key, isDrawerMode);
-
-//   return useStaticSWR(key);
-// };
-
-// export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, any> => {
-//   const key = 'isDrawerOpened';
-
-//   if (isOpened == null) {
-//     if (!cache.has(key)) {
-//       mutate(key, false, false);
-//     }
-//   }
-//   else {
-//     mutate(key, isOpened);
-//   }
-
-//   return useStaticSWR(key);
-// };
+export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
+  const initialData = false;
+  return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
+};
 
 
 /** **********************************************************
