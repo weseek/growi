@@ -5,6 +5,7 @@ import { InAppNotification } from './InAppNotification';
 
 type Props = {
   notifications: Array<IInAppNotification>;
+  isLoaded: boolean;
 };
 
 const InAppNotificationContents: FC<Props> = (props: Props) => {
@@ -52,9 +53,9 @@ const InAppNotificationContents: FC<Props> = (props: Props) => {
   };
 
   const InAppNotificationContents = (): JSX.Element => {
-    // if (!isLoaded) {
-    //   return <RenderUnLoadedInAppNotification />;
-    // }
+    if (!props.isLoaded) {
+      return <RenderUnLoadedInAppNotification />;
+    }
     return <RenderInAppNotificationList />;
   };
 

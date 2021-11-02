@@ -103,7 +103,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         </button>
       </DropdownToggle>
       <DropdownMenu className="px-2" right>
-        <InAppNotificationContents notifications={notifications} />
+        <InAppNotificationContents notifications={notifications} isLoaded={isLoaded} />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}
         <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">See All</a>

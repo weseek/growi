@@ -1,9 +1,12 @@
 import React, { FC, useState, useEffect } from 'react';
 
 import AppContainer from '../../client/services/AppContainer';
+import loggerFactory from '~/utils/logger';
 
 import InAppNotificationContents from './InAppNotificationContents';
 import { withUnstatedContainers } from '../UnstatedUtils';
+
+const logger = loggerFactory('growi:ALlInAppnotification');
 
 type Props = {
   appContainer: AppContainer,
@@ -13,31 +16,28 @@ type Props = {
 const AllInAppNotifications: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const [notifications, setNotifications] = useState([]);
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     fetchNotificationList();
   }, []);
 
 
-  /**
-    * TODO: Fetch notification list by GW-7473
-    */
   const fetchNotificationList = async() => {
     const limit = 6;
     try {
       const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
 
       setNotifications(paginationResult.data.docs);
-      // setIsLoaded(true);
+      setIsLoaded(true);
     }
     catch (err) {
-      // logger.error(err);
+      logger.error(err);
     }
   };
 
   return (
-    <InAppNotificationContents notifications={notifications} />
+    <InAppNotificationContents notifications={notifications} isLoaded={isLoaded} />
   );
 };
 
