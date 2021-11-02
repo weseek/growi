@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { DevidedPagePath } from '@growi/core';
 
 export const PagePathLabel = (props) => {
-  const highlightedPath = props.page.elasticSearchResult.highlightedPath;
-  const dPagePath = new DevidedPagePath(highlightedPath, false, true);
+  const dPagePath = new DevidedPagePath(props.path, false, true);
 
   let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
@@ -21,7 +20,7 @@ export const PagePathLabel = (props) => {
 
   if (props.isFormerOnly) {
     const textElem = dPagePath.isFormerRoot
-      ? <></>
+      ? <>/</>
       : <>{dPagePath.former}</>;
     return displayPath(textElem);
   }
@@ -34,10 +33,10 @@ export const PagePathLabel = (props) => {
 };
 
 PagePathLabel.propTypes = {
-  page: PropTypes.object.isRequired,
   isLatterOnly: PropTypes.bool,
   isFormerOnly: PropTypes.bool,
   additionalClassNames: PropTypes.arrayOf(PropTypes.string),
+  path: PropTypes.string.isRequired,
 };
 
 PagePathLabel.defaultProps = {

@@ -15,6 +15,7 @@ type Props ={
     lastUpdateUser: any
     elasticSearchResult: {
       snippet: string,
+      highlightedPath: string,
     }
   },
   onClickInvoked: (data: string) => void,
@@ -28,7 +29,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const pageId = `#${page._id}`;
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
-  const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+  const pagePathElem = <PagePathLabel path={props.page.elasticSearchResult.highlightedPath} isFormerOnly />;
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.
