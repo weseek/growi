@@ -10,8 +10,6 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
@@ -22,11 +20,6 @@ const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-/*
- * define schema
- */
 const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
 const GRANT_SPECIFIED = 3;
@@ -36,44 +29,11 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-const pageSchema = new mongoose.Schema({
-  parent: {
-    type: ObjectId, ref: 'Page', index: true, default: null,
-  },
-  isEmpty: { type: Boolean, default: false },
-  path: {
-    type: String, required: true,
-  },
-  revision: { type: ObjectId, ref: 'Revision' },
-  redirectTo: { type: String, index: true },
-  status: { type: String, default: STATUS_PUBLISHED, index: true },
-  grant: { type: Number, default: GRANT_PUBLIC, index: true },
-  grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
-  creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User' },
-  liker: [{ type: ObjectId, ref: 'User' }],
-  seenUsers: [{ type: ObjectId, ref: 'User' }],
-  commentCount: { type: Number, default: 0 },
-  slackChannels: { type: String },
-  pageIdOnHackmd: String,
-  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
-  hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  deleteUser: { type: ObjectId, ref: 'User' },
-  deletedAt: { type: Date },
-}, {
-  toJSON: { getters: true },
-  toObject: { getters: true },
-});
-// apply plugins
-pageSchema.plugin(mongoosePaginate);
-pageSchema.plugin(uniqueValidator);
-
-// TODO: test this after modifying Page.create
-// ensure v4 compatibility using partial index
-pageSchema.index({ path: 1 }, { unique: true, partialFilterExpression: { parent: null } });
+// schema definition has moved to page.ts
+const pageSchema = {
+  statics: {},
+  methods: {},
+};
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath
@@ -961,88 +921,6 @@ module.exports = function(crowi) {
     }
   }
 
-  const collectAncestorPaths = (path, ancestorPaths = []) => {
-    const parentPath = nodePath.dirname(path);
-    ancestorPaths.push(parentPath);
-
-    if (path !== '/') return collectAncestorPaths(parentPath, ancestorPaths);
-
-    return ancestorPaths;
-  };
-
-  pageSchema.statics.createEmptyPagesByPaths = async function(paths) {
-    const Page = this;
-
-    // find existing parents
-    const builder = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
-    const existingPages = await builder
-      .addConditionToListByPathsArray(paths)
-      .query
-      .lean()
-      .exec();
-    const existingPagePaths = existingPages.map(page => page.path);
-
-    // paths to create empty pages
-    const notExistingPagePaths = paths.filter(path => !existingPagePaths.includes(path));
-
-    // insertMany empty pages
-    try {
-      await Page.insertMany(notExistingPagePaths.map(path => ({ path, isEmpty: true })));
-    }
-    catch (err) {
-      logger.error('Failed to insert empty pages.', err);
-      throw err;
-    }
-  };
-
-  pageSchema.statics.getParentIdAndFillAncestors = async function(path) {
-    const Page = this;
-    const parentPath = nodePath.dirname(path);
-
-    const parent = await Page.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
-    if (parent != null) { // fill parents if parent is null
-      return parent._id;
-    }
-
-    const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
-
-    // just create ancestors with empty pages
-    await Page.createEmptyPagesByPaths(ancestorPaths);
-
-    // find ancestors
-    const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
-    const ancestors = await builder
-      .addConditionToListByPathsArray(ancestorPaths)
-      .query
-      .lean()
-      .exec();
-
-
-    const ancestorsMap = new Map(); // Map<path, _id>
-    ancestors.forEach(page => ancestorsMap.set(page.path, page._id));
-
-    // bulkWrite to update ancestors
-    const nonRootAncestors = ancestors.filter(page => page.path !== '/');
-    const operations = nonRootAncestors.map((page) => {
-      const { path } = page;
-      const parentPath = nodePath.dirname(path);
-      return {
-        updateOne: {
-          filter: {
-            path,
-          },
-          update: {
-            parent: ancestorsMap.get(parentPath),
-          },
-        },
-      };
-    });
-    await Page.bulkWrite(operations);
-
-    const parentId = ancestorsMap.get(parentPath);
-    return parentId;
-  };
-
   pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
@@ -1264,5 +1142,5 @@ module.exports = function(crowi) {
 
   pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
 
-  return mongoose.model('Page', pageSchema);
+  return pageSchema;
 };
