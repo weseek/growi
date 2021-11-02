@@ -6,11 +6,15 @@ import { IInAppNotificationSettings } from '../../interfaces/in-app-notification
 export interface InAppNotificationSettingsDocument extends IInAppNotificationSettings, Document {}
 export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocument>
 
+enum subscribeRules {
+  PAGE_CREATE = 'PAGE_CREATE'
+}
+
 const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
   userId: { type: String },
   defaultSubscribeRules: [
     {
-      name: { type: String },
+      name: { type: String, require: true, enum: subscribeRules },
       isEnabled: { type: Boolean },
     },
   ],
