@@ -29,7 +29,7 @@ const GlobalNavigation = () => {
     else {
       mutateSidebarCollapsed(false);
     }
-  }, [currentContents, isCollapsed]);
+  }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
@@ -152,7 +152,7 @@ const Sidebar = (props: Props) => {
       //   navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
       // }
     }
-  }, [isResizeDisabled]);
+  }, [isResizeDisabled, mutateSidebarResizeDisabled]);
 
   // addCssClassTemporary(className) {
   //   // clear
@@ -203,11 +203,11 @@ const Sidebar = (props: Props) => {
     if (!isHover) {
       setContentWidth(sidebarMinimizeWidth);
     }
-  }, [isCollapsed, isDrawerMode, currentProductNavWidth]);
+  }, [isCollapsed, isDrawerMode, setContentWidth, currentProductNavWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     mutateSidebarCollapsed(!isCollapsed);
-  }, [isCollapsed]);
+  }, [isCollapsed, mutateSidebarCollapsed]);
 
   useEffect(() => {
     if (isCollapsed) {
@@ -216,7 +216,7 @@ const Sidebar = (props: Props) => {
     else {
       setContentWidth(currentProductNavWidth);
     }
-  }, [isCollapsed]);
+  }, [currentProductNavWidth, isCollapsed, setContentWidth]);
 
   const draggableAreaMoveHandler = useCallback((event) => {
     if (isDragging) {
@@ -227,7 +227,7 @@ const Sidebar = (props: Props) => {
         resizableContainer.current.classList.add('dragging');
       }
     }
-  }, [isDragging]);
+  }, [isDragging, setContentWidth]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
     if (resizableContainer.current == null) {
@@ -252,7 +252,7 @@ const Sidebar = (props: Props) => {
     document.removeEventListener('mousemove', draggableAreaMoveHandler);
     document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
 
-  }, [draggableAreaMoveHandler]);
+  }, [draggableAreaMoveHandler, mutateProductNavWidth, mutateSidebarCollapsed]);
 
   const dragableAreaClickHandler = useCallback(() => {
     if (isCollapsed || isDrawerMode) {
