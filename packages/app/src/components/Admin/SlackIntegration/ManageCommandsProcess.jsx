@@ -286,8 +286,8 @@ const ManageCommandsProcess = ({
       description,
       defaultCommandsName,
       singleCommandDescription,
-      onUpdatePermissions,
-      onUpdateChannels,
+      updatePermissionsHandler,
+      updateChannelsHandler,
       allowedChannelsDescription,
     } = menuItem;
 
@@ -312,8 +312,8 @@ const ManageCommandsProcess = ({
                 permissionSettings={permissionMap[usageType]}
                 currentPermissionType={currentPermissionTypes[keyName]}
                 singleCommandDescription={singleCommandDescription}
-                onUpdatePermissions={onUpdatePermissions}
-                onUpdateChannels={onUpdateChannels}
+                onUpdatePermissions={updatePermissionsHandler}
+                onUpdateChannels={updateChannelsHandler}
                 allowedChannelsDescription={allowedChannelsDescription}
               />
             ))}
