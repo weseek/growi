@@ -96,7 +96,7 @@ const GrowiSubNavigation = (props) => {
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = editorMode !== ('edit' && !isPageExist);
+  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
   function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
