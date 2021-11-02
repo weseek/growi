@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 
 import { DevidedPagePath } from '@growi/core';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
@@ -167,7 +166,6 @@ const GrowiSubNavigation = (props) => {
 };
 
 GrowiSubNavigation.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer),
@@ -195,4 +193,4 @@ GrowiSubNavigationWrapper.propTypes = {
   path: PropTypes.string,
 };
 
-export default withTranslation()(GrowiSubNavigationWrapper);
+export default GrowiSubNavigationWrapper;
