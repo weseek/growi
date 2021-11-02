@@ -1,4 +1,4 @@
-import { mutate, SWRResponse } from 'swr';
+import { SWRResponse } from 'swr';
 
 import loggerFactory from '~/utils/logger';
 
@@ -23,53 +23,23 @@ export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContent
  *                      for switching UI
  *********************************************************** */
 
-export const useCurrentSidebarContents = <Data, Error>(sidebarContents?: SidebarContents): SWRResponse<SidebarContents, Error> => {
-  return useStaticSWR('sidebarContents', sidebarContents || null, { fallbackData: SidebarContents.RECENT });
+export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): SWRResponse<SidebarContents, Error> => {
+  const initialData = SidebarContents.RECENT;
+  return useStaticSWR('sidebarContents', sidebarContents || null, { fallbackData: initialData });
 };
 
 
-// export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse<number, any> => {
-//   const key = 'productNavWidth';
-//   const sidebarDefaultWidth = 320;
+export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse<number, Error> => {
+  const initialData = 320;
+  return useStaticSWR('productNavWidth', productNavWidth || null, { fallbackData: initialData });
+};
 
-//   if (productNavWidth == null) {
-//     if (!cache.has(key)) {
-//       mutate(key, sidebarDefaultWidth, false);
-//     }
-//   }
-//   else {
-//     mutate(key, productNavWidth);
-//   }
+export const useSidebarCollapsed = (isCollapsed?: boolean): SWRResponse<boolean, Error> => {
+  const initialData = false;
+  return useStaticSWR('isSidebarCollapsed', isCollapsed || null, { fallbackData: initialData });
+};
 
-//   return useStaticSWR(key);
-// };
-
-// export const useSidebarCollapsed = (isCollapsed?: boolean): SWRResponse<boolean, any> => {
-//   const key = 'isSidebarCollapsed';
-
-//   if (isCollapsed == null) {
-//     if (!cache.has(key)) {
-//       mutate(key, false, false);
-//     }
-//   }
-//   else {
-//     mutate(key, isCollapsed);
-//   }
-
-//   return useStaticSWR(key);
-// };
-
-// export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, any> => {
-//   const key = 'isSidebarResizeDisabled';
-
-//   if (isDisabled == null) {
-//     if (!cache.has(key)) {
-//       mutate(key, false, false);
-//     }
-//   }
-//   else {
-//     mutate(key, isDisabled);
-//   }
-
-//   return useStaticSWR(key);
-// };
+export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
+  const initialData = false;
+  return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
+};
