@@ -1072,7 +1072,7 @@ module.exports = function(crowi) {
     }
 
     let parent = parentId;
-    if (isV5Compatible && parent == null) {
+    if (isV5Compatible && parent == null && path !== '/') {
       parent = await Page._getParentIdAndFillAncestors(path);
     }
 

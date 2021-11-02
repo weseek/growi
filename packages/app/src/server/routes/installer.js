@@ -33,20 +33,15 @@ module.exports = function(crowi) {
   }
 
   async function createInitialPages(owner, lang) {
-    const promises = [];
-
-    // create portal page for '/'
-    await createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner, lang);
-
-    // create /Sandbox/*
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
-
-    await Page.insertMany(
-      { path: path.join(crowi.localeDir, lang, 'sandbox.md') },
-    );
+    /*
+     * Keep in this order to avoid creating the same pages
+     */
+    await createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang);
+    await Promise.all([
+      createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang),
+      createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner, lang),
+      createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang),
+    ]);
 
     try {
       await initSearchIndex();
@@ -75,6 +70,9 @@ module.exports = function(crowi) {
 
     await appService.initDB(language);
 
+    // create the root page before creating admin user
+    await createPage(path.join(crowi.localeDir, language, 'welcome.md'), '/', { _id: 'temporary_id' }, language); // no owner
+
     // create first admin user
     // TODO: with transaction
     let adminUser;
@@ -86,6 +84,14 @@ module.exports = function(crowi) {
       req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
       return res.render('installer');
     }
+    // add owner after creating admin user
+    const Revision = crowi.model('Revision');
+    const rootPage = await Page.findOne({ path: '/' });
+    const rootRevision = await Revision.findOne({ path: '/' });
+    rootPage.creator = adminUser;
+    rootRevision.creator = adminUser;
+    await Promise.all([rootPage.save(), rootRevision.save()]);
+
     // create initial pages
     await createInitialPages(adminUser, language);
 
