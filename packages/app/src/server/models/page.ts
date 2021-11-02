@@ -10,7 +10,7 @@ import nodePath from 'path';
 import { getOrCreateModel } from '@growi/core';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { IPage } from './interfaces/page';
+import { IPage } from '~/interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
 
 const logger = loggerFactory('growi:models:page');
