@@ -3,7 +3,7 @@ import React, { FC, useState, useEffect } from 'react';
 import AppContainer from '../../client/services/AppContainer';
 import loggerFactory from '~/utils/logger';
 
-import InAppNotificationContents from './InAppNotificationContents';
+import InAppNotificationList from './InAppNotificationList';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 const logger = loggerFactory('growi:ALlInAppnotification');
@@ -37,7 +37,7 @@ const AllInAppNotifications: FC<Props> = (props: Props) => {
   };
 
   return (
-    <InAppNotificationContents notifications={notifications} isLoaded={isLoaded} />
+    <InAppNotificationList notifications={notifications} isLoaded={isLoaded} />
   );
 };
 

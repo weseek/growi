@@ -8,7 +8,7 @@ type Props = {
   isLoaded: boolean;
 };
 
-const InAppNotificationContents: FC<Props> = (props: Props) => {
+const InAppNotificationList: FC<Props> = (props: Props) => {
   const { notifications } = props;
 
   const notificationClickHandler = async(notification: Notification) => {
@@ -36,9 +36,6 @@ const InAppNotificationContents: FC<Props> = (props: Props) => {
   };
 
   const RenderInAppNotificationList = () => {
-    console.log('notificationsHoge', notifications);
-
-
     if (notifications.length === 0) {
       return <RenderEmptyInAppNotification />;
     }
@@ -60,4 +57,4 @@ const InAppNotificationContents: FC<Props> = (props: Props) => {
 };
 
 
-export default InAppNotificationContents;
+export default InAppNotificationList;
