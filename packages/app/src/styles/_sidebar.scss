@@ -133,6 +133,12 @@
   .grw-drawer-toggler {
     display: none; // invisible in default
   }
+
+  .grw-sidebar-content-header {
+    .grw-btn-reload {
+      font-size: 18px;
+    }
+  }
 }
 
 // Dock Mode

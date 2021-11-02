@@ -1,6 +1,7 @@
 .lsx .page-list-ul > li > a:not(:hover) {
   text-decoration: none;
 }
+
 .lsx .lsx-page-not-exist {
   opacity: 0.6;
 }
@@ -10,6 +11,10 @@
 }
 
 @keyframes lsx-fadeIn {
-  0% {opacity: .2}
-  100% {opacity: .9}
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.9;
+  }
 }

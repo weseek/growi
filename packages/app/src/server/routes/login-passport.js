@@ -467,17 +467,17 @@ module.exports = function(crowi, app) {
       userInfo.name = `${response[attrMapFirstName]} ${response[attrMapLastName]}`.trim();
     }
 
+    // Attribute-based Login Control
+    if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
+      return loginFailureHandler(req, res, 'Sign in failure due to insufficient privileges.');
+    }
+
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailureHandler(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();
-
-    // Attribute-based Login Control
-    if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
-      return loginFailureHandler(req, res, 'Sign in failure due to insufficient privileges.');
-    }
 
     // login
     req.logIn(user, (err) => {

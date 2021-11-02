@@ -113,16 +113,51 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *            description: boolean for like status
  *
- *      LikeInfo:
- *        description: LikeInfo
+ *      PageInfo:
+ *        description: PageInfo
  *        type: object
+ *        required:
+ *          - isSeen
+ *          - sumOfLikers
+ *          - likerIds
+ *          - sumOfSeenUsers
+ *          - seenUserIds
  *        properties:
- *          sumOfLikers:
- *            type: number
- *            description: how many people liked the page
+ *          isSeen:
+ *            type: boolean
+ *            description: Whether the page has ever been seen
  *          isLiked:
  *            type: boolean
- *            description: Whether the request user liked (will be returned if the user is included in the request)
+ *            description: Whether the page is liked by the logged in user
+ *          sumOfLikers:
+ *            type: number
+ *            description: Number of users who have liked the page
+ *          likerIds:
+ *            type: array
+ *            items:
+ *              type: string
+ *            description: Ids of users who have liked the page
+ *            example: ["5e07345972560e001761fa63"]
+ *          sumOfSeenUsers:
+ *            type: number
+ *            description: Number of users who have seen the page
+ *          seenUserIds:
+ *            type: array
+ *            items:
+ *              type: string
+ *            description: Ids of users who have seen the page
+ *            example: ["5e07345972560e001761fa63"]
+ *
+ *      PageParams:
+ *        description: PageParams
+ *        type: object
+ *        required:
+ *          - pageId
+ *        properties:
+ *          pageId:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -132,6 +167,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting } = crowi.models;
   const { exportService } = crowi;
 
@@ -139,9 +175,6 @@ module.exports = (crowi) => {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
-    ],
-    likeInfo: [
-      query('_id').isMongoId(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -185,7 +218,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool } = req.body;
+    const { pageId, bool: isLiked } = req.body;
 
     let page;
     try {
@@ -193,7 +226,8 @@ module.exports = (crowi) => {
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
-      if (bool) {
+
+      if (isLiked) {
         page = await page.like(req.user);
       }
       else {
@@ -205,63 +239,74 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
-    }
-    catch (err) {
-      logger.error('Like notification failed', err);
-    }
-
     const result = { page };
     result.seenUser = page.seenUsers;
-    return res.apiv3({ result });
+    res.apiv3({ result });
+
+    if (isLiked) {
+      try {
+        // global notification
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
+      }
+      catch (err) {
+        logger.error('Like notification failed', err);
+      }
+    }
   });
 
   /**
    * @swagger
    *
-   *    /page/like-info:
+   *    /page/info:
    *      get:
    *        tags: [Page]
-   *        summary: /page/like-info
-   *        description: Get like info
-   *        operationId: getLikeInfo
-   *        parameters:
-   *          - name: _id
-   *            in: query
-   *            description: page id
-   *            schema:
-   *              type: string
+   *        summary: /page/info
+   *        description: Retrieve current page info
+   *        operationId: getPageInfo
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/PageParams'
    *        responses:
    *          200:
-   *            description: Succeeded to get bookmark info.
+   *            description: Successfully retrieved current page info.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/LikeInfo'
+   *                  $ref: '#/components/schemas/PageInfo'
+   *          500:
+   *            description: Internal server error.
    */
-  router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
-    const pageId = req.query._id;
-
-    const responsesParams = {};
+  router.get(('/info', loginRequired), async(req, res) => {
 
     try {
+      const pageId = req.query._id;
       const page = await Page.findById(pageId);
-      responsesParams.sumOfLikers = page.liker.length;
 
-      // guest user return nothing
-      if (!req.user) {
-        return res.apiv3(responsesParams);
+      const guestUserResponse = {
+        sumOfLikers: page.liker.length,
+        likerIds: page.liker.slice(0, 15),
+        seenUserIds: page.seenUsers.slice(0, 15),
+        sumOfSeenUsers: page.seenUsers.length,
+        isSeen: page.seenUsers.length > 0,
+      };
+
+      {
+        const isGuestUser = !req.user;
+        if (isGuestUser) {
+          return res.apiv3(guestUserResponse);
+        }
       }
 
-      responsesParams.isLiked = page.liker.includes(req.user._id);
-      return res.apiv3(responsesParams);
+      const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
+      return res.apiv3(userResponse);
     }
     catch (err) {
-      logger.error('get-like-count-failed', err);
+      logger.error('get-page-info', err);
       return res.apiv3Err(err, 500);
     }
+
   });
 
   /**

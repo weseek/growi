@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -8,12 +11,15 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 
-const logger = loggerFactory('growi:SlackBotSettings');
+const logger = loggerFactory('growi:cli:SlackIntegration:OfficialBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
+    appContainer, slackAppIntegrations,
+    onClickAddSlackWorkspaceBtn, onPrimaryUpdated,
+    connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -25,17 +31,36 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+  const isPrimaryChangedHandler = useCallback(async(slackIntegrationToChange, newValue) => {
+    // do nothing when turning off
+    if (!newValue) {
+      return;
+    }
+
+    try {
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
+      if (onPrimaryUpdated != null) {
+        onPrimaryUpdated();
+      }
+      toastSuccess(t('toaster.update_successed', { target: 'Primary' }));
+    }
+    catch (err) {
+      toastError(err, 'Failed to change isPrimary');
+      logger.error('Failed to change isPrimary', err);
+    }
+  }, [appContainer.apiv3, t, onPrimaryUpdated]);
+
   const deleteSlackAppIntegrationHandler = async() => {
-    await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+    await appContainer.apiv3.delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
     try {
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
       }
-      toastSuccess(t('toaster.delete_slack_integration_procedure'));
+      toastSuccess(t('admin:slack_integration.toastr.delete_slack_integration_procedure'));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError('Failed to delete');
+      logger.error('Failed to delete', err);
     }
   };
 
@@ -70,7 +95,7 @@ const OfficialBotSettings = (props) => {
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
           const {
-            tokenGtoP, tokenPtoG, _id, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+            tokenGtoP, tokenPtoG, _id, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
           } = slackAppIntegration;
           const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
@@ -79,22 +104,20 @@ const OfficialBotSettings = (props) => {
                 <h2 id={_id || `settings-accordions-${i}`}>
                   {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
                 </h2>
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
-                >
-                  <i className="icon-trash mr-1" />
-                  {t('admin:slack_integration.delete')}
-                </button>
+                <SlackAppIntegrationControl
+                  slackAppIntegration={slackAppIntegration}
+                  onIsPrimaryChanged={isPrimaryChangedHandler}
+                  // set state to open DeleteSlackBotSettingsModal
+                  onDeleteButtonClicked={saiToDelete => setIntegrationIdToDelete(saiToDelete._id)}
+                />
               </div>
               <WithProxyAccordions
-                botType="officialBot"
+                botType={SlackbotType.OFFICIAL}
                 slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
-                supportedCommandsForBroadcastUse={supportedCommandsForBroadcastUse}
-                supportedCommandsForSingleUse={supportedCommandsForSingleUse}
+                permissionsForBroadcastUseCommands={permissionsForBroadcastUseCommands}
+                permissionsForSingleUseCommands={permissionsForSingleUseCommands}
                 onUpdateTokens={onUpdateTokens}
                 onSubmitForm={onSubmitForm}
               />
@@ -133,6 +156,7 @@ OfficialBotSettings.propTypes = {
 
   slackAppIntegrations: PropTypes.array,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  onPrimaryUpdated: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
   onUpdateTokens: PropTypes.func,

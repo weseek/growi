@@ -1,22 +1,5 @@
 # growi-plugin-attachment-refs
 
-[![dependencies status](https://david-dm.org/weseek/growi-plugin-attachment-refs.svg)](https://david-dm.org/weseek/growi-plugin-attachment-refs)
-[![devDependencies Status](https://david-dm.org/weseek/growi-plugin-attachment-refs/dev-status.svg)](https://david-dm.org/weseek/growi-plugin-attachment-refs?type=dev)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
-
-Install
---------
-
-1. install plugin
-
-    ```bash
-    yarn add growi-plugin-attachment-refs
-    yarn add -D react-images@1.0.0 react-motion
-    ```
-
-1. build client app (see official documents)
-
-
 Examples
 -------
 

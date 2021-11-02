@@ -14,6 +14,8 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 RUN mkdir -p /workspace/growi/node_modules
+RUN mkdir -p /workspace/growi/packages/app/node_modules
+RUN mkdir -p /workspace/growi/packages/slackbot-proxy/node_modules
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
@@ -27,15 +29,15 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME /workspace;
 # * any needed dependencies after executing "apt-get update". *
 # * See https://docs.docker.com/engine/reference/builder/#run *
 # *************************************************************
-# ENV DEBIAN_FRONTEND=noninteractive
-# RUN apt-get update \
-#    && apt-get -y install --no-install-recommends <your-package-list-here> \
-#    #
-#    # Clean up
-#    && apt-get autoremove -y \
-#    && apt-get clean -y \
-#    && rm -rf /var/lib/apt/lists/*
-# ENV DEBIAN_FRONTEND=dialog
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+   && apt-get -y install --no-install-recommends git-lfs \
+
+   # Clean up
+   && apt-get autoremove -y \
+   && apt-get clean -y \
+   && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=dialog
 
 # Uncomment to default to non-root user
 # USER $USER_UID

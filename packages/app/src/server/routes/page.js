@@ -1,6 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import UpdatePost from '../models/update-post';
+
 const { isCreatablePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -680,7 +682,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const socketClientId = req.body.socketClientId || undefined;
     const pageTags = req.body.pageTags || undefined;
 
     if (body === null || pagePath === null) {
@@ -696,7 +697,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = { socketClientId };
+    const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -814,7 +815,6 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
-    const socketClientId = req.body.socketClientId || undefined;
     const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null || revisionId === null) {
@@ -833,7 +833,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = { isSyncRevisionToHackmd, socketClientId };
+    const options = { isSyncRevisionToHackmd };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -1118,7 +1118,6 @@ module.exports = function(crowi, app) {
    */
   api.getUpdatePost = function(req, res) {
     const path = req.query.path;
-    const UpdatePost = crowi.model('UpdatePost');
 
     if (!path) {
       return res.json(ApiResponse.error({}));
@@ -1151,14 +1150,13 @@ module.exports = function(crowi, app) {
   api.remove = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const socketClientId = req.body.socketClientId || undefined;
 
     // get completely flag
     const isCompletely = (req.body.completely != null);
     // get recursively flag
     const isRecursively = (req.body.recursively != null);
 
-    const options = { socketClientId };
+    const options = {};
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
@@ -1212,7 +1210,6 @@ module.exports = function(crowi, app) {
    */
   api.revertRemove = async function(req, res, options) {
     const pageId = req.body.page_id;
-    const socketClientId = req.body.socketClientId || undefined;
 
     // get recursively flag
     const isRecursively = (req.body.recursively != null);
@@ -1223,7 +1220,7 @@ module.exports = function(crowi, app) {
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-      page = await crowi.pageService.revertDeletedPage(page, req.user, { socketClientId }, isRecursively);
+      page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
     }
     catch (err) {
       logger.error('Error occured while get setting', err);

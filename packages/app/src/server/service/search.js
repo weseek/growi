@@ -34,26 +34,30 @@ class SearchService {
   }
 
   get isSearchboxEnabled() {
-    return this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
+    const uri = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
+    return uri != null && uri.length > 0;
   }
 
   get isElasticsearchEnabled() {
-    return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
+    const uri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+    return uri != null && uri.length > 0;
   }
 
   generateDelegator() {
     logger.info('Initializing search delegator');
 
     if (this.isSearchboxEnabled) {
-      logger.info('Searchbox is enabled');
       const SearchboxDelegator = require('./search-delegator/searchbox');
+      logger.info('Searchbox is enabled');
       return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
     }
     if (this.isElasticsearchEnabled) {
-      logger.info('Elasticsearch (not Searchbox) is enabled');
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
+      logger.info('Elasticsearch (not Searchbox) is enabled');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
+
+    logger.info('No elasticsearch URI is specified so that full text search is disabled.');
   }
 
   registerUpdateEvent() {

@@ -57,6 +57,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet.": "No users have liked this yet.",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
   "Target page": "Target page",
@@ -255,6 +256,43 @@
       "This tree": "Only children of this tree"
     }
   },
+  "editor_settings": {
+    "editor_settings": "Editor Settings",
+    "common_settings": {
+      "common_settings": "Common Settings",
+      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia.",
+      "max_comma": "Textlint rule is that limit maximum ten(,) count of sentence. Default: 4",
+      "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100",
+      "en_capitalization": "Textlint rule that check capitalization in english text.",
+      "no_unmatched_pair": "Textlint rule that check unmatched pairs like （ and ]",
+      "date_weekday_mismatch": "Textlint rule that found mismatch between date and weekday.",
+      "no_kangxi_radicals": "Textlint rule to prevent using kangxi radicals.",
+      "no_surrogate_pair": "Detects surrogate pairs (D800-DBFF and DC00-DFFF)　in sentences.",
+      "no_zero_width_spaces": "Textlint rule that disallow zero width spaces.",
+      "period_in_list_item": "Textlint rule that check with or without period in list item.",
+      "use_si_units": "Use of units other than SI unit units is prohibited."
+
+      },
+    "japanese_settings": {
+      "japanese_settings": "Japanese Settings",
+      "ja_no_abusage": "Textlint rules to check for common misuse.",
+      "ja_hiragana_keishikimeishi": "Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.",
+      "ja_no_inappropriate_words": "Textlint rules to check for inappropriate expressions",
+      "ja_no_mixed_period": "Textlint rules to check that a paragraph always has a punctuation mark at the end.",
+      "ja_no_redundant_expression": "Textlint rules that prohibits redundant expressions. Redundant expressions are expressions that make sense even if they are omitted from the sentence.",
+      "max_kanji_continuous_len": "Textlint rules that limits the maximum number of consecutive Kanji. Default: 5",
+      "max_ten": "Textlint rule is that limit maximum ten(、) count of sentence.",
+      "no_double_negative_ja": "Textlint rules that detects double negation.",
+      "no_doubled_conjunction": "Textlint rules to check duplicated same conjunctions.",
+      "no_doubled_joshi": "Textlint rules that checks that the same particle appears consecutively in one sentence.",
+      "no_dropping_the_ra": "Textlint rules that detects the word dropping the ra.",
+      "no_hankaku_kana": "Textlint rules that disallow to use Half-width kana.",
+      "prefer_tari_tari": "Textlint rules that checks tari tari.",
+      "ja_unnatural_alphabet": "Detects unnatural alphabets.",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
+      "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
+    }
+  },
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
@@ -417,6 +455,11 @@
       "Post": "Post"
     }
   },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
+    "enable_textlint": "Enable Textlint",
+    "dont_ask_again": "Don't ask again"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",
@@ -438,7 +481,6 @@
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "delete_slack_integration_procedure": "Succeeded to delete the slack integration procedure",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",
@@ -605,7 +647,10 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-      "enable_local": "Enable ID/Password"
+      "enable_local": "Enable ID/Password",
+      "password_reset_by_users": "Password reset by users",
+      "enable_password_reset_by_users": "Enable password reset by users",
+      "password_reset_desc": "when forgot password, users are able to reset it by themselves."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
@@ -846,5 +891,20 @@
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
     "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
     "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
+  },
+  "forgot_password":{
+    "forgot_password": "Forgot Password?",
+    "send": "Send",
+    "return_to_login": "Return to login",
+    "reset_password": "Reset Password",
+    "sign_in_instead": "Sign in instead",
+    "password_reset_request_desc": "You can reset your password here.",
+    "password_reset_excecution_desc": "Enter a new password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm the new password",
+    "email_is_required": "Email is required",
+    "success_to_send_email": "Success to send email",
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
+    "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   }
 }

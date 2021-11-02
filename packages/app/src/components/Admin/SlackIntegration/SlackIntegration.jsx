@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
+import { SlackbotType } from '@growi/slack';
+
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -12,7 +15,7 @@ import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import BotTypeCard from './BotTypeCard';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
-const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
+const botTypes = Object.values(SlackbotType);
 
 const SlackIntegration = (props) => {
 
@@ -24,6 +27,7 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [commandPermission, setCommandPermission] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -37,7 +41,7 @@ const SlackIntegration = (props) => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri, commandPermission,
       } = data.settings;
 
       setErrorMsg(data.errorMsg);
@@ -50,6 +54,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      setCommandPermission(commandPermission);
     }
     catch (err) {
       toastError(err);
@@ -72,7 +77,7 @@ const SlackIntegration = (props) => {
 
   const createSlackIntegrationData = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      await appContainer.apiv3.post('/slack-integration-settings/slack-app-integrations');
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
     }
@@ -125,11 +130,12 @@ const SlackIntegration = (props) => {
   let settingsComponent = null;
 
   switch (currentBotType) {
-    case 'officialBot':
+    case SlackbotType.OFFICIAL:
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onPrimaryUpdated={fetchSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
           onUpdateTokens={fetchSlackIntegrationData}
@@ -137,7 +143,7 @@ const SlackIntegration = (props) => {
         />
       );
       break;
-    case 'customBotWithoutProxy':
+    case SlackbotType.CUSTOM_WITHOUT_PROXY:
       settingsComponent = (
         <CustomBotWithoutProxySettings
           slackBotTokenEnv={slackBotTokenEnv}
@@ -147,15 +153,17 @@ const SlackIntegration = (props) => {
           onTestConnectionInvoked={fetchSlackIntegrationData}
           onUpdatedSecretToken={changeSecretAndToken}
           connectionStatuses={connectionStatuses}
+          commandPermission={commandPermission}
         />
       );
       break;
-    case 'customBotWithProxy':
+    case SlackbotType.CUSTOM_WITH_PROXY:
       settingsComponent = (
         <CustomBotWithProxySettings
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onPrimaryUpdated={fetchSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
           onUpdateTokens={fetchSlackIntegrationData}

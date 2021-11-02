@@ -7,9 +7,12 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
+import { JSHINT } from 'jshint';
+
 import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
+import { createValidator } from '@growi/codemirror-textlint';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -29,6 +32,10 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
+
+// Textlint
+window.JSHINT = JSHINT;
+window.kuromojin = { dicPath: '/static/dict' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
@@ -56,6 +63,8 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
+require('codemirror/addon/lint/lint');
+require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
@@ -144,9 +153,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   init() {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
-    this.cmNoCdnScriptRoot = '/js/cdn';
-    this.cmNoCdnStyleRoot = '/styles/cdn';
-
+    this.cmNoCdnScriptRoot = '/static/js/cdn';
+    this.cmNoCdnStyleRoot = '/static/styles/cdn';
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new PreventMarkdownListInterceptor(),
@@ -162,6 +170,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+
+    this.initializeTextlint();
   }
 
   componentDidMount() {
@@ -185,6 +195,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+  }
+
+  async initializeTextlint() {
+    if (this.props.onInitializeTextlint != null) {
+      await this.props.onInitializeTextlint();
+      // If database has empty array, pass null instead to enable all default rules
+      const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
+      this.textlintValidator = createValidator(rulesForValidator);
+      this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+    }
   }
 
   getCodeMirror() {
@@ -802,6 +822,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="CheckList" />
       </Button>,
       <Button
+        key="nav-item-attachment"
+        color={null}
+        size="sm"
+        title="Attachment"
+        onClick={this.props.onAddAttachmentButtonClicked}
+      >
+        <EditorIcon icon="Attachment" />
+      </Button>,
+      <Button
         key="nav-item-link"
         color={null}
         size="sm"
@@ -851,9 +880,17 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
+    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
-    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
+    const gutters = [];
+    if (this.props.lineNumbers != null) {
+      gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
+    }
+    if (this.props.isTextlintEnabled === true) {
+      gutters.push('CodeMirror-lint-markers');
+    }
 
     return (
       <React.Fragment>
@@ -884,7 +921,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
-            gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
+            gutters,
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
             // continuelist, indentlist
@@ -896,6 +933,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
+            lint,
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
@@ -944,10 +982,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
+  isTextlintEnabled: PropTypes.bool,
+  textlintRules: PropTypes.array,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
+  onAddAttachmentButtonClicked: PropTypes.func,
+  onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
+
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
+  isTextlintEnabled: false,
 };

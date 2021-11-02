@@ -10,6 +10,8 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { DownloadDictModal } from './DownloadDictModal';
 
 
 export const defaultEditorOptions = {
@@ -33,6 +35,8 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      isDownloadDictModalShown: false,
+      isSkipAskingAgainChecked: false,
     };
 
     this.availableThemes = [
@@ -51,6 +55,10 @@ class OptionsSelector extends React.Component {
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
+    this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
+    this.confirmEnableTextlintHandler = this.confirmEnableTextlintHandler.bind(this);
+    this.toggleTextlint = this.toggleTextlint.bind(this);
+    this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
@@ -109,6 +117,41 @@ class OptionsSelector extends React.Component {
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
+  }
+
+  async updateIsTextlintEnabledToDB(newVal) {
+    const { appContainer } = this.props;
+    try {
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  toggleTextlint() {
+    const { editorContainer } = this.props;
+    const newVal = !editorContainer.state.isTextlintEnabled;
+    editorContainer.setState({ isTextlintEnabled: newVal });
+    if (this.state.isSkipAskingAgainChecked) {
+      this.updateIsTextlintEnabledToDB(newVal);
+    }
+  }
+
+  switchTextlintEnabledHandler() {
+    const { editorContainer } = this.props;
+    if (editorContainer.state.isTextlintEnabled === null) {
+      this.setState({ isDownloadDictModalShown: true });
+      return;
+    }
+    this.toggleTextlint();
+  }
+
+  confirmEnableTextlintHandler(isSkipAskingAgainChecked) {
+    this.setState(
+      { isSkipAskingAgainChecked, isDownloadDictModalShown: false },
+      () => this.toggleTextlint(),
+    );
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -207,6 +250,7 @@ class OptionsSelector extends React.Component {
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
+            {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -286,6 +330,26 @@ class OptionsSelector extends React.Component {
     );
   }
 
+  renderIsTextlintEnabledMenuItem() {
+    const isActive = this.props.editorContainer.state.isTextlintEnabled;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.switchTextlintEnabledHandler}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">Textlint</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
   renderIndentSizeSelector() {
     const { appContainer, editorContainer } = this.props;
     const menuItems = this.typicalIndentSizes.map((indent) => {
@@ -318,12 +382,22 @@ class OptionsSelector extends React.Component {
 
   render() {
     return (
-      <div className="d-flex flex-row">
-        <span>{this.renderThemeSelector()}</span>
-        <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
-      </div>
+      <>
+        <div className="d-flex flex-row">
+          <span>{this.renderThemeSelector()}</span>
+          <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
+        </div>
+
+        {!this.state.isSkipAskingAgainChecked && (
+          <DownloadDictModal
+            isModalOpen={this.state.isDownloadDictModalShown}
+            onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
+            onCancel={() => this.setState({ isDownloadDictModalShown: false })}
+          />
+        )}
+      </>
     );
   }
 
