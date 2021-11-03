@@ -739,7 +739,7 @@ class PageService {
   }
 
   async v5InitialMigration(grant) {
-    const socket = this.crowicrowi.socketIoService.getAdminSocket();
+    const socket = this.crowi.socketIoService.getAdminSocket();
     try {
       await this._v5RecursiveMigration(grant);
     }
