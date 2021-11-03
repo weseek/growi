@@ -488,7 +488,6 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.put('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
-
     const query = { userId: req.user.id };
     const defaultSubscribeRules = req.body.defaultSubscribeRules;
 
@@ -496,8 +495,8 @@ module.exports = (crowi) => {
       return res.apiv3Err('no-rules-found');
     }
 
+    const options = { upsert: true, new: true, runValidators: true };
     try {
-      const options = { upsert: true, new: true, runValidators: true };
       const response = await InAppNotificationSettngs.findOneAndUpdate(query, { defaultSubscribeRules }, options);
       return res.apiv3({ response });
     }
@@ -528,8 +527,8 @@ module.exports = (crowi) => {
    *                      description: in-app-notification-settngs
    */
   router.get('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const query = { userId: req.user.id };
     try {
-      const query = { userId: req.user.id };
       const response = await InAppNotificationSettngs.findOne(query);
       return res.apiv3(response);
     }
