@@ -10,13 +10,24 @@ type Props = {
 };
 
 const defaultSubscribeRules = [
-  { name: 'PAGE_CREATE', isEnabled: true },
+  {
+    name: 'PAGE_CREATE',
+    description: 'ページを作成したときに自動的にサブスクライブします。',
+  },
 ];
 
 
 const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
+
+  const isCheckedRule = () => {
+    return;
+  };
+
+  const ruleCheckboxHandler = () => {
+    return;
+  };
 
   const updateSettingsHandler = async() => {
 
@@ -36,6 +47,28 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
   return (
     <>
       <h2 className="border-bottom my-4">{t('in_app_notification_settings.in_app_notification_settings')}</h2>
+
+      <div className="form-group row">
+        <div className="offset-md-3 col-md-6 text-left">
+          {defaultSubscribeRules.map(rule => (
+            <div
+              key={rule.name}
+              className="custom-control custom-switch custom-checkbox-success"
+            >
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id={rule.name}
+                checked={isCheckedRule(rule.name)}
+                onChange={e => ruleCheckboxHandler(e.target.checked, rule.name)}
+              />
+              <label className="custom-control-label" htmlFor={rule.name}>
+                <strong>{rule.name}</strong>
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="row my-3">
         <div className="offset-4 col-5">
