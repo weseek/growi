@@ -4,7 +4,7 @@ import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 
-import InAppNotificationSettngs from '../../models/in-app-notification-settings';
+import InAppNotificationSettings from '../../models/in-app-notification-settings';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -468,25 +468,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /personal-setting/in-app-notification-settngs:
+   *    /personal-setting/in-app-notification-settings:
    *      put:
-   *        tags: [in-app-notification-settngs]
-   *        operationId: putInAppNotificationSettngs
-   *        summary: personal-setting/in-app-notification-settngs
-   *        description: Put InAppNotificationSettngs
+   *        tags: [in-app-notification-settings]
+   *        operationId: putInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Put InAppNotificationSettings
    *        responses:
    *          200:
-   *            description: params of InAppNotificationSettngs
+   *            description: params of InAppNotificationSettings
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    currentUser:
    *                      type: object
-   *                      description: in-app-notification-settngs
+   *                      description: in-app-notification-settings
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const defaultSubscribeRules = req.body.defaultSubscribeRules;
 
@@ -496,7 +496,7 @@ module.exports = (crowi) => {
 
     const options = { upsert: true, new: true, runValidators: true };
     try {
-      const response = await InAppNotificationSettngs.findOneAndUpdate(query, { defaultSubscribeRules }, options);
+      const response = await InAppNotificationSettings.findOneAndUpdate(query, { defaultSubscribeRules }, options);
       return res.apiv3({ response });
     }
     catch (err) {
@@ -508,32 +508,32 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /personal-setting/in-app-notification-settngs:
+   *    /personal-setting/in-app-notification-settings:
    *      get:
-   *        tags: [in-app-notification-settngs]
-   *        operationId: getInAppNotificationSettngs
-   *        summary: personal-setting/in-app-notification-settngs
-   *        description: Get InAppNotificationSettngs
+   *        tags: [in-app-notification-settings]
+   *        operationId: getInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Get InAppNotificationSettings
    *        responses:
    *          200:
-   *            description: params of InAppNotificationSettngs
+   *            description: params of InAppNotificationSettings
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    currentUser:
    *                      type: object
-   *                      description: InAppNotificationSettngs
+   *                      description: InAppNotificationSettings
    */
-  router.get('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const query = { userId: req.user.id };
     try {
-      const response = await InAppNotificationSettngs.findOne(query);
+      const response = await InAppNotificationSettings.findOne(query);
       return res.apiv3(response);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('getting-in-app-notification-settngs-failed');
+      return res.apiv3Err('getting-in-app-notification-settings-failed');
     }
   });
 
