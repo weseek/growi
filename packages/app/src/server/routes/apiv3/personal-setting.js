@@ -4,6 +4,8 @@ import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 
+import InAppNotificationSettngs from '../../models/in-app-notification-settings';
+
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
@@ -457,6 +459,25 @@ module.exports = (crowi) => {
       return res.apiv3Err('disassociate-ldap-account-failed');
     }
 
+  });
+
+  router.put('/in-app-notification-settngs', async(req, res) => {
+    const query = { userId: req.user.id };
+    const defaultSubscribeRules = req.body.defaultSubscribeRules;
+
+    if (defaultSubscribeRules == null) {
+      return res.apiv3Err('no-rules-found');
+    }
+
+    try {
+      const options = { upsert: true, new: true, runValidators: true };
+      const response = await InAppNotificationSettngs.findOneAndUpdate(query, { defaultSubscribeRules }, options);
+      return res.apiv3({ response });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('updating-in-app-notification-settings-failed');
+    }
   });
 
   return router;
