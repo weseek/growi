@@ -9,24 +9,26 @@ type Props = {
   appContainer: AppContainer,
 };
 
+const defaultSubscribeRules = [
+  { name: 'PAGE_CREATE', isEnabled: true },
+];
+
+
 const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
   const updateSettingsHandler = async() => {
 
-    const defaultSubscribeRules = [
-      { name: 'PAGE_CREATE', isEnabled: true },
-    ];
 
     // TODO: 80102
-    try {
-      const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules });
-      console.log(res);
-    }
-    catch (err) {
-      toastError(err);
-    }
+    // try {
+    //   const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules });
+    //   console.log(res);
+    // }
+    // catch (err) {
+    //   toastError(err);
+    // }
 
     return;
   };
