@@ -100,6 +100,10 @@ module.exports = (crowi) => {
       body('providerType').isString().not().isEmpty(),
       body('accountId').isString().not().isEmpty(),
     ],
+    inAppNotificationSettngs: [
+      body('defaultSubscribeRules.*.name').isString(),
+      body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
+    ],
   };
 
   /**
@@ -461,7 +465,8 @@ module.exports = (crowi) => {
 
   });
 
-  router.put('/in-app-notification-settngs', async(req, res) => {
+  router.put('/in-app-notification-settngs', validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
+
     const query = { userId: req.user.id };
     const defaultSubscribeRules = req.body.defaultSubscribeRules;
 
