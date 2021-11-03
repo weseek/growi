@@ -1,4 +1,6 @@
-import React, { FC, useState } from 'react';
+import React, {
+  FC, useState, useEffect, useCallback,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -14,7 +16,7 @@ type SubscribeRule = {
   isEnabled: boolean,
 }
 
-const defaultSubscribeRules = [
+const defaultSubscribeRulesMenuItems = [
   {
     name: 'PAGE_CREATE',
     description: 'ページを作成したときに自動的にサブスクライブします。',
@@ -26,6 +28,26 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
   const [subscribeRules, setSubscribeRules] = useState<SubscribeRule[]>([]);
+
+  const initializeInAppNotificationSettings = useCallback(async() => {
+    const { data } = await appContainer.apiv3Get('/personal-setting/in-app-notification-settings');
+    const retrievedRules: SubscribeRule[] = data?.defaultSubscribeRules;
+
+    if (retrievedRules != null && retrievedRules.length > 0) {
+      setSubscribeRules(retrievedRules);
+    }
+    else {
+      const createRulesFormList = (rule: {name: string}) => (
+        {
+          name: rule.name,
+          isEnabled: false,
+        }
+      );
+      const defaultSubscribeRules = defaultSubscribeRulesMenuItems.map(rule => createRulesFormList(rule));
+      setSubscribeRules(defaultSubscribeRules);
+    }
+
+  }, [appContainer]);
 
   const isCheckedRule = () => {
     return;
@@ -50,11 +72,15 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
     return;
   };
 
+  useEffect(() => {
+    initializeInAppNotificationSettings();
+  }, [initializeInAppNotificationSettings]);
+
   return (
     <>
       <h2 className="border-bottom my-4">{t('in_app_notification_settings.in_app_notification_settings')}</h2>
 
-      <div className="form-group row">
+      {/* <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
           {defaultSubscribeRules.map(rule => (
             <div
@@ -74,7 +100,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="row my-3">
         <div className="offset-4 col-5">
