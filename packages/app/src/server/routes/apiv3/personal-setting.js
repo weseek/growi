@@ -465,7 +465,29 @@ module.exports = (crowi) => {
 
   });
 
-  router.put('/in-app-notification-settngs', validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settngs:
+   *      put:
+   *        tags: [in-app-notification-settngs]
+   *        operationId: putInAppNotificationSettngs
+   *        summary: /in-app-notification-settngs
+   *        description: Put InAppNotificationSettngs
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettngs
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: editor settings
+   */
+
+  // eslint-disable-next-line max-len
+  router.put('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
 
     const query = { userId: req.user.id };
     const defaultSubscribeRules = req.body.defaultSubscribeRules;
