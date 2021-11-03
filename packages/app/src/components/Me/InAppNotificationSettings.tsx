@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -8,6 +8,11 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 type Props = {
   appContainer: AppContainer,
 };
+
+type SubscribeRule = {
+  name: string,
+  isEnabled: boolean,
+}
 
 const defaultSubscribeRules = [
   {
@@ -20,6 +25,7 @@ const defaultSubscribeRules = [
 const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
+  const [subscribeRules, setSubscribeRules] = useState<SubscribeRule[]>([]);
 
   const isCheckedRule = () => {
     return;
