@@ -9,7 +9,7 @@ type Props = {
   appContainer: AppContainer,
 };
 
-const InAppNotificationSetting: FC<Props> = (props: Props) => {
+const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
@@ -23,7 +23,6 @@ const InAppNotificationSetting: FC<Props> = (props: Props) => {
     try {
       const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules });
       console.log(res);
-      toastSuccess('yoyoyo!');
     }
     catch (err) {
       toastError(err);
@@ -51,5 +50,5 @@ const InAppNotificationSetting: FC<Props> = (props: Props) => {
   );
 };
 
-const InAppNotificationSettingWrapper = withUnstatedContainers(InAppNotificationSetting, [AppContainer]);
+const InAppNotificationSettingWrapper = withUnstatedContainers(InAppNotificationSettings, [AppContainer]);
 export default InAppNotificationSettingWrapper;
