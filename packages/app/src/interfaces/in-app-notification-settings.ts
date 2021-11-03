@@ -1,7 +1,10 @@
 import { Schema } from 'mongoose';
 
+export enum subscribeRules {
+  PAGE_CREATE = 'PAGE_CREATE'
+}
 export interface IDefaultSubscribeRule {
-  name: string,
+  name: subscribeRules;
   isEnabled: boolean;
 }
 export interface IInAppNotificationSettings {
