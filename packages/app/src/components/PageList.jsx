@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -8,7 +8,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-import { toastError } from '~/client/util/apiNotification';
 import { useSWRxPageList } from '~/stores/page';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -26,12 +25,12 @@ const PageList = (props) => {
     setActivePage(selectedPageNumber);
   }
 
-
-  // TODO: To be implemented in #79549
   if (error != null) {
-    // toastError(error, 'Error occurred in PageList');
-    // eslint-disable-next-line no-console
-    console.log(error, 'Error occurred in PageList');
+    return (
+      <div className="my-5">
+        <div className="text-danger">{error[0].message}</div>
+      </div>
+    );
   }
 
   if (pagesListData == null) {
