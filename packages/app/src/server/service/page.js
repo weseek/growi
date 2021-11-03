@@ -6,8 +6,8 @@ const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
 const pathlib = require('path');
 
-const logger = loggerFactory('growi:models:page');
-const debug = require('debug')('growi:models:page');
+const logger = loggerFactory('growi:services:page');
+const debug = require('debug')('growi:services:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 

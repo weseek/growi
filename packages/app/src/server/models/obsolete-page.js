@@ -950,7 +950,7 @@ export const getPageSchema = (crowi) => {
     }
 
     let parent = parentId;
-    if (isV5Compatible && parent == null) {
+    if (isV5Compatible && parent == null && !isTopPage(path)) {
       parent = await Page.getParentIdAndFillAncestors(path);
     }
 
