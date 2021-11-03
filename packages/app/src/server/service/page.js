@@ -902,7 +902,7 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
-      return this.v5RecursiveMigration(grant, rootPath);
+      return this._v5RecursiveMigration(grant, rootPath);
     }
 
   }
