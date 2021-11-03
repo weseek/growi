@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import axios from '~/utils/axios';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
-const CompleteUserRegistrationForm = (props) => {
+interface Props {
+  t: any, //  i18next
+  appContainer: AppContainer,
+  messageWarnings?: any,
+  messageErrors?: any,
+  inputs?: any,
+  email: string,
+  token: string,
+}
+
+const CompleteUserRegistrationForm: React.FC<Props & WithTranslation> = (props: Props) => {
 
   const {
     t,
@@ -18,26 +27,19 @@ const CompleteUserRegistrationForm = (props) => {
   } = props;
 
   const [usernameAvailable, setUsernameAvailable] = useState(true);
-  const [typingTimeout, setTypingTimeout] = useState(0);
+  const [checkUsername, setCheckUsername] = useState('');
 
-  const checkUsername = (event) => {
-    const username = event.target.value;
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      axios
+        .get('/_api/check_username', { params: { username: checkUsername } })
+        .then((response) => {
+          setUsernameAvailable(response.data.valid);
+        });
+    }, 500);
 
-    if (typingTimeout) {
-      setTypingTimeout(clearTimeout(typingTimeout));
-    }
-
-    // Wait user to finish type username to prevent too many requests
-    setTypingTimeout(
-      setTimeout(() => {
-        axios
-          .get('/_api/check_username', { params: { username } })
-          .then((response) => {
-            setUsernameAvailable(response.data.valid);
-          });
-      }, 500),
-    );
-  };
+    return () => clearTimeout(delayDebounceFn);
+  }, [checkUsername]);
 
   return (
     <>
@@ -68,7 +70,7 @@ const CompleteUserRegistrationForm = (props) => {
               placeholder={t('User ID')}
               name="username"
               value={inputs.username}
-              onChange={checkUsername.bind(this)}
+              onChange={e => setCheckUsername(e.target.value)}
               required
             />
           </div>
@@ -115,18 +117,5 @@ const CompleteUserRegistrationForm = (props) => {
 };
 
 const CompleteUserRegistrationFormWrapper = withUnstatedContainers(CompleteUserRegistrationForm, [AppContainer]);
-
-CompleteUserRegistrationForm.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  messageWarnings: PropTypes.any,
-  messageErrors: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]),
-  inputs: PropTypes.any,
-  email: PropTypes.any.isRequired,
-  token: PropTypes.any.isRequired,
-};
 
 export default withTranslation()(CompleteUserRegistrationFormWrapper);
