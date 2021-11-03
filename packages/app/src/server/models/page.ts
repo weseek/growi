@@ -7,11 +7,13 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import nodePath from 'path';
 
-import { getOrCreateModel } from '@growi/core';
+import { getOrCreateModel, pagePathUtils } from '@growi/core';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '~/interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
+
+const { isTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 
@@ -80,7 +82,7 @@ const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): strin
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
 
-  if (path !== '/') return collectAncestorPaths(parentPath, ancestorPaths);
+  if (!isTopPage(path)) return collectAncestorPaths(parentPath, ancestorPaths);
 
   return ancestorPaths;
 };
@@ -134,7 +136,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   ancestors.forEach(page => ancestorsMap.set(page.path, page._id));
 
   // bulkWrite to update ancestors
-  const nonRootAncestors = ancestors.filter(page => page.path !== '/');
+  const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
   const operations = nonRootAncestors.map((page) => {
     const { path } = page;
     const parentPath = nodePath.dirname(path);
