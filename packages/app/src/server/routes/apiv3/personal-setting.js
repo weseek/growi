@@ -507,5 +507,37 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settngs:
+   *      get:
+   *        tags: [in-app-notification-settngs]
+   *        operationId: getInAppNotificationSettngs
+   *        summary: /in-app-notification-settngs
+   *        description: Get in-app-notification-settngs
+   *        responses:
+   *          200:
+   *            description: params of in-app-notification-settngs
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: in-app-notification-settngs
+   */
+  router.get('/in-app-notification-settngs', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    try {
+      const query = { userId: req.user.id };
+      const response = await InAppNotificationSettngs.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-in-app-notification-settngs-failed');
+    }
+  });
+
   return router;
 };
