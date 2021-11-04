@@ -200,9 +200,10 @@ class LocalSecuritySettingContents extends React.Component {
                   </label>
                 </div>
                 {!isMailerSetup && (
-                  <p className="form-text text-red small">
-                    {t('security_setting.Local.please_enable_mailer')}
-                  </p>
+                  <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                    <span>{t('security_setting.Local.please_enable_mailer')}</span>
+                    <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
+                  </div>
                 )}
                 <p className="form-text text-muted small">
                   {t('security_setting.Local.enable_email_authentication_desc')}
