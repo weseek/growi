@@ -4,6 +4,8 @@ import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 
+import InAppNotificationSettings from '../../models/in-app-notification-settings';
+
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
@@ -97,6 +99,10 @@ module.exports = (crowi) => {
     disassociateLdap: [
       body('providerType').isString().not().isEmpty(),
       body('accountId').isString().not().isEmpty(),
+    ],
+    inAppNotificationSettings: [
+      body('defaultSubscribeRules.*.name').isString(),
+      body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
   };
 
@@ -457,6 +463,78 @@ module.exports = (crowi) => {
       return res.apiv3Err('disassociate-ldap-account-failed');
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      put:
+   *        tags: [in-app-notification-settings]
+   *        operationId: putInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Put InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: in-app-notification-settings
+   */
+  // eslint-disable-next-line max-len
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+    const query = { userId: req.user.id };
+    const defaultSubscribeRules = req.body.defaultSubscribeRules;
+
+    if (defaultSubscribeRules == null) {
+      return res.apiv3Err('no-rules-found');
+    }
+
+    const options = { upsert: true, new: true, runValidators: true };
+    try {
+      const response = await InAppNotificationSettings.findOneAndUpdate(query, { defaultSubscribeRules }, options);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('updating-in-app-notification-settings-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      get:
+   *        tags: [in-app-notification-settings]
+   *        operationId: getInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Get InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: InAppNotificationSettings
+   */
+  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const query = { userId: req.user.id };
+    try {
+      const response = await InAppNotificationSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-in-app-notification-settings-failed');
+    }
   });
 
   return router;
