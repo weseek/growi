@@ -176,6 +176,9 @@ module.exports = (crowi) => {
       body('pageId').isString(),
       body('bool').isBoolean(),
     ],
+    info: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
       query('revisionId').isString(),
@@ -278,10 +281,10 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get(('/info', loginRequired), async(req, res) => {
+  router.get('/info', loginRequired, async(req, res) => {
+    const { pageId } = req.query;
 
     try {
-      const pageId = req.query._id;
       const page = await Page.findById(pageId);
 
       const guestUserResponse = {
@@ -292,11 +295,9 @@ module.exports = (crowi) => {
         isSeen: page.seenUsers.length > 0,
       };
 
-      {
-        const isGuestUser = !req.user;
-        if (isGuestUser) {
-          return res.apiv3(guestUserResponse);
-        }
+      const isGuestUser = !req.user;
+      if (isGuestUser) {
+        return res.apiv3(guestUserResponse);
       }
 
       const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
