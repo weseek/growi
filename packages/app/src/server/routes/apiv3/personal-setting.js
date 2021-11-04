@@ -497,7 +497,7 @@ module.exports = (crowi) => {
     const options = { upsert: true, new: true, runValidators: true };
     try {
       const response = await InAppNotificationSettings.findOneAndUpdate(query, { defaultSubscribeRules }, options);
-      return res.apiv3({ response });
+      return res.apiv3(response);
     }
     catch (err) {
       logger.error(err);

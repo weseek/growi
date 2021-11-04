@@ -63,8 +63,9 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
 
   const updateSettingsHandler = async() => {
     try {
-      const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules: subscribeRules });
-      console.log(res);
+      const { data } = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules: subscribeRules });
+      setSubscribeRules(data.defaultSubscribeRules);
+      toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings' }));
     }
     catch (err) {
       toastError(err);
