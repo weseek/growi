@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
-import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
-import CopyDropdown from '../Page/CopyDropdown';
+import PagePathHierarchicalLink from './PagePathHierarchicalLink';
+import CopyDropdown from './Page/CopyDropdown';
 
-import LinkedPagePath from '../../models/linked-page-path';
+import LinkedPagePath from '../models/linked-page-path';
 
 
 type Props = {

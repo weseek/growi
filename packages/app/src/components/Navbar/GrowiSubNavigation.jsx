@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-import PagePathNav from './PagePathNav';
 import TagLabels from '../Page/TagLabels';
 import SubnavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
@@ -15,33 +13,16 @@ import PageEditorModeManager from './PageEditorModeManager';
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
+import PagePathNav from '../PagePathNav';
+
 const GrowiSubNavigation = (props) => {
   const {
-    appContainer,
-    navigationContainer,
-    isCompactMode,
-    isSearchPageMode,
+    appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
   const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
-
-  let {
-    isPageExist, isAbleToShowTagLabel, isAbleToShowPageEditorModeManager, isAbleToShowPageAuthors,
-  } = false;
-  let {
-    pageId,
-    path,
-  } = props;
-
-  if (props.pageContainer != null) {
-    ({
-      pageId,
-      path,
-    } = props.pageContainer.state);
-    isPageExist = props.pageContainer.isPageExist;
-    isAbleToShowTagLabel = props.pageContainer.isAbleToShowTagLabel;
-    isAbleToShowPageEditorModeManager = props.pageContainer.isAbleToShowPageEditorModeManager;
-    isAbleToShowPageAuthors = props.pageContainer.isAbleToShowPageAuthors;
-  }
+  const {
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
+  } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
@@ -64,11 +45,11 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          {pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
-          ) }
+          )}
           <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
@@ -79,12 +60,9 @@ const GrowiSubNavigation = (props) => {
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
             <SubnavButtons isCompactMode={isCompactMode} />
-            {/* TODO: refactor SubNavButtons in a way that it can be used independently from pageContainer
-              TASK : #80481 https://estoc.weseek.co.jp/redmine/issues/80481
-             */}
           </div>
           <div className="mt-2">
-            {isAbleToShowPageEditorModeManager && !isSearchPageMode && (
+            {pageContainer.isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
@@ -96,13 +74,13 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (isAbleToShowPageAuthors && !isCompactMode && isSearchPageMode) && (
+        {pageContainer.isAbleToShowPageAuthors && !isCompactMode && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
-              <AuthorInfo user={props.pageContainer.state.creator} date={props.pageContainer.state.createdAt} locate="subnav" />
+              <AuthorInfo user={creator} date={createdAt} locate="subnav" />
             </li>
             <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={props.pageContainer.state.revisionAuthor} date={props.pageContainer.updatedAt} mode="update" locate="subnav" />
+              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="subnav" />
             </li>
           </ul>
         )}
@@ -111,32 +89,17 @@ const GrowiSubNavigation = (props) => {
   );
 };
 
+/**
+ * Wrapper component for using unstated
+ */
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
+
 GrowiSubNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer),
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   isCompactMode: PropTypes.bool,
-  // Props for searchResultContent
-  pageId: PropTypes.string,
-  path: PropTypes.string,
-  isSearchPageMode: PropTypes.bool,
-};
-
-
-const GrowiSubNavigationWrapper = (props) => {
-  let GrowiSubNavigationUnstatedWrapper = <></>;
-  if (props.isSearchPageMode) {
-    GrowiSubNavigationUnstatedWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer]);
-    return <GrowiSubNavigationUnstatedWrapper isSearchPageMode pageId={props.pageId} path={props.path}></GrowiSubNavigationUnstatedWrapper>;
-  }
-  GrowiSubNavigationUnstatedWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
-  return <GrowiSubNavigationUnstatedWrapper></GrowiSubNavigationUnstatedWrapper>;
-};
-
-GrowiSubNavigationWrapper.propTypes = {
-  isSearchPageMode: PropTypes.bool,
-  pageId: PropTypes.string,
-  path: PropTypes.string,
 };
 
 export default GrowiSubNavigationWrapper;

@@ -4,6 +4,7 @@ import PagePathNav from '../Navbar/PagePathNav';
 type Props = {
   pageId: string,
   path: string,
+  isEditorMode: boolean,
   isCompactMode: boolean,
 }
 
@@ -17,6 +18,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       <div className="grw-path-nav-container">
         {/* TODO : refactor TagLabels in a way that it can be used independently from pageContainenr
               TASK: #80623 https://estoc.weseek.co.jp/redmine/issues/80623
+              CONDITION reference : https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
           */}
         {/* {isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
           <div className="grw-taglabels-container">
