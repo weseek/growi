@@ -100,7 +100,7 @@ module.exports = (crowi) => {
       body('providerType').isString().not().isEmpty(),
       body('accountId').isString().not().isEmpty(),
     ],
-    inAppNotificationSettngs: [
+    inAppNotificationSettings: [
       body('defaultSubscribeRules.*.name').isString(),
       body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
@@ -486,7 +486,7 @@ module.exports = (crowi) => {
    *                      description: in-app-notification-settings
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettngs, apiV3FormValidator, async(req, res) => {
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const defaultSubscribeRules = req.body.defaultSubscribeRules;
 
