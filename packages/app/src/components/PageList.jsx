@@ -19,16 +19,17 @@ const PageList = (props) => {
 
   const [activePage, setActivePage] = useState(1);
 
-  const { data: pagesListData, error } = useSWRxPageList(path, activePage);
+  const { data: pagesListData, error: errors } = useSWRxPageList(path, activePage);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
   }
 
-  if (error != null) {
+  if (errors != null) {
     return (
       <div className="my-5">
-        <div className="text-danger">{error[0].message}</div>
+        {/* eslint-disable-next-line react/no-array-index-key */}
+        {errors.map((error, index) => <div key={index} className="text-danger">{error.message}</div>)}
       </div>
     );
   }
