@@ -608,9 +608,10 @@
       "password_reset_by_users": "Password reset by users",
       "enable_password_reset_by_users": "Enable password reset by users",
       "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
-      "email_authentication": "Email authentication",
+      "email_authentication": "Email authentication on user registration",
       "enable_email_authentication": "Enable email authentication",
-      "enable_email_authentication_desc": "Settings for authentication mechanism of ID/Password, please enable SMTP first."
+      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
+      "please_enable_mailer": "Please setup mailer first."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",

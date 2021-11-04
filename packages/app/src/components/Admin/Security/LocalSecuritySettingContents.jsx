@@ -32,7 +32,12 @@ class LocalSecuritySettingContents extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
-    const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
+    const {
+      registrationMode,
+      isPasswordResetEnabled,
+      isEmailAuthenticationEnabled,
+      isMailerSetup,
+    } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
     return (
@@ -186,6 +191,7 @@ class LocalSecuritySettingContents extends React.Component {
                     type="checkbox"
                     className="custom-control-input"
                     id="isEmailAuthenticationEnabled"
+                    disabled={!isMailerSetup}
                     checked={isEmailAuthenticationEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />
@@ -193,6 +199,11 @@ class LocalSecuritySettingContents extends React.Component {
                     {t('security_setting.Local.enable_email_authentication')}
                   </label>
                 </div>
+                {!isMailerSetup && (
+                  <p className="form-text text-red small">
+                    {t('security_setting.Local.please_enable_mailer')}
+                  </p>
+                )}
                 <p className="form-text text-muted small">
                   {t('security_setting.Local.enable_email_authentication_desc')}
                 </p>

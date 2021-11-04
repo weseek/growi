@@ -30,9 +30,15 @@ export default class AdminLocalSecurityContainer extends Container {
 
   async retrieveSecurityData() {
     try {
+      // retrieve basic setting to get isMailerSetup data, validation for email authentication
+      const responseAppSetting = await this.appContainer.apiv3.get('/app-settings/');
+      const { appSettingsParams } = responseAppSetting.data;
+
       const response = await this.appContainer.apiv3.get('/security-setting/');
       const { localSetting } = response.data.securityParams;
+
       this.setState({
+        isMailerSetup: appSettingsParams.isMailerSetup,
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
