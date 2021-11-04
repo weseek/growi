@@ -45,11 +45,11 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          {pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
-          )}
+          ) }
           <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
@@ -74,7 +74,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        {pageContainer.isAbleToShowPageAuthors && !isCompactMode && (
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
@@ -83,7 +83,7 @@ const GrowiSubNavigation = (props) => {
               <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="subnav" />
             </li>
           </ul>
-        )}
+        ) }
       </div>
     </div>
   );
@@ -93,6 +93,7 @@ const GrowiSubNavigation = (props) => {
  * Wrapper component for using unstated
  */
 const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
+
 
 GrowiSubNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

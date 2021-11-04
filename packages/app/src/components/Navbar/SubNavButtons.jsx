@@ -59,6 +59,7 @@ SubnavButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   isCompactMode: PropTypes.bool,
 };
 
