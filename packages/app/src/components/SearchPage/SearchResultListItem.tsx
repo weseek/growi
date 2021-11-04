@@ -7,7 +7,8 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
-const MAX_SNIPPET_LENGTH = 300;
+const MAX_SNIPPET_LENGTH = 150;
+const APPEND_SNIPPET_STRING = '...';
 
 type Props ={
   page: {
@@ -35,8 +36,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const sliceSnippet = (snippet: string): string => {
     // when regex pattern is not matched with less than 300 characters slicedSnippet is null
-    const slicedSnippet = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/^.+<\/em>/g);
-    return slicedSnippet != null ? slicedSnippet[0] : snippet;
+    const slicedAndMatchedSnippet: string[] | null = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/[\s\S]*<\/em>/g);
+    return slicedAndMatchedSnippet == null
+      ? `${snippet.slice(0, MAX_SNIPPET_LENGTH)}${APPEND_SNIPPET_STRING}` : `${slicedAndMatchedSnippet[0]}${APPEND_SNIPPET_STRING}`;
   };
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
@@ -46,7 +48,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   return (
     <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
       <a
-        className="d-block h-100 pt-3"
+        className="d-block pt-3 search-item-height overflow-hidden"
         href={pageId}
         onClick={() => {
           try {
@@ -97,10 +99,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </button> */}
 
             </div>
-            {/* eslint-disable-next-line react/no-danger */}
             <div
               className="mt-1 mb-2"
-              dangerouslySetInnerHTML={{ __html: snippet.length <= MAX_SNIPPET_LENGTH ? snippet : sliceSnippet(snippet) }}
+              dangerouslySetInnerHTML={{ __html: snippet.length <= MAX_SNIPPET_LENGTH ? `${snippet}${APPEND_SNIPPET_STRING}` : sliceSnippet(snippet) }}
             >
             </div>
           </div>
