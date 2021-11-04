@@ -5,7 +5,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
 interface Props {
-  t: any, //  i18next
   appContainer: AppContainer,
   messageErrors?: any,
   inputs?: any,
