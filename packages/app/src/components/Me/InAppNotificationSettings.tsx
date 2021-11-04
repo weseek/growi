@@ -27,14 +27,14 @@ const defaultSubscribeRulesMenuItems = [
 const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
-  const [subscribeRules, setSubscribeRules] = useState<SubscribeRule[]>([]);
+  const [defaultSubscribeRules, setDefaultSubscribeRules] = useState<SubscribeRule[]>([]);
 
   const initializeInAppNotificationSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/in-app-notification-settings');
     const retrievedRules: SubscribeRule[] = data?.defaultSubscribeRules;
 
     if (retrievedRules != null && retrievedRules.length > 0) {
-      setSubscribeRules(retrievedRules);
+      setDefaultSubscribeRules(retrievedRules);
     }
     else {
       const createRulesFormList = (rule: {name: string}) => (
@@ -43,28 +43,28 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
           isEnabled: false,
         }
       );
-      const defaultSubscribeRules = defaultSubscribeRulesMenuItems.map(rule => createRulesFormList(rule));
-      setSubscribeRules(defaultSubscribeRules);
+      const initializedSubscribeRules = defaultSubscribeRulesMenuItems.map(rule => createRulesFormList(rule));
+      setDefaultSubscribeRules(initializedSubscribeRules);
     }
 
   }, [appContainer]);
 
   const isCheckedRule = (ruleName: string) => (
-    subscribeRules.find(stateRule => (
+    defaultSubscribeRules.find(stateRule => (
       stateRule.name === ruleName
     ))?.isEnabled || false
   );
 
   const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
-    setSubscribeRules(prevState => (
+    setDefaultSubscribeRules(prevState => (
       prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
     ));
   };
 
   const updateSettingsHandler = async() => {
     try {
-      const { data } = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules: subscribeRules });
-      setSubscribeRules(data.defaultSubscribeRules);
+      const { data } = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules });
+      setDefaultSubscribeRules(data.defaultSubscribeRules);
       toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings' }));
     }
     catch (err) {
