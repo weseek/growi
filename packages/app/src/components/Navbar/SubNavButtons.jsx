@@ -23,7 +23,7 @@ const SubnavButtons = (props) => {
       <>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            {/* <LikeButtons onClick={} pageId={} sumOfLikers={} isLiked={}/> */}
+            {/* <LikeButtons onClickInvoked={} pageId={} sumOfLikers={} isLiked={}/> */}
           </span>
         )}
         <span>
