@@ -9,10 +9,9 @@ import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
 
-// TODO : once PageReactionButtons and PageMangement can be used while not depending on pageContainer,  add isSearchPageMode to render condition.
 const SubnavButtons = (props) => {
   const {
-    appContainer, navigationContainer, pageContainer, isCompactMode, isSearchPageMode,
+    appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
 
   /* eslint-enable react/prop-types */
@@ -61,7 +60,6 @@ SubnavButtons.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   isCompactMode: PropTypes.bool,
-  isSearchPageMode: PropTypes.bool,
 };
 
 export default SubnavButtonsWrapper;
