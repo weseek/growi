@@ -27,7 +27,7 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, pageId, revisionId, isAbleToDeleteCompletely,
+    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -146,8 +146,6 @@ PageDeleteModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 
   path: PropTypes.string.isRequired,
-  pageId: PropTypes.string.isRequired,
-  revisionId: PropTypes.string.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,
   isAbleToDeleteCompletely: PropTypes.bool,
 };
