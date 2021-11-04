@@ -48,7 +48,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   return (
     <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
       <a
-        className="d-block pt-3 search-item-height overflow-hidden"
+        className="d-block pt-3 searched-item-height"
         href={pageId}
         onClick={() => {
           try {
