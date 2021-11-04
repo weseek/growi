@@ -9,13 +9,13 @@ import LinkedPagePath from '../models/linked-page-path';
 type Props = {
   pageId :string,
   pagePath:string,
-  isEditorMode:boolean,
-  isCompactMode:boolean,
+  isSingleLineMode?:boolean,
+  isCompactMode?:boolean,
 }
 
 const PagePathNav: FC<Props> = (props: Props) => {
   const {
-    pageId, pagePath, isEditorMode, isCompactMode,
+    pageId, pagePath, isSingleLineMode, isCompactMode,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -23,7 +23,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
   let latterLink;
 
   // one line
-  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isSingleLineMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }

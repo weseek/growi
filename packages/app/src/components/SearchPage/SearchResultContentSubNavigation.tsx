@@ -7,13 +7,13 @@ type Props = {
   appContainer:AppContainer
   pageId: string,
   path: string,
-  isEditorMode: boolean,
-  isCompactMode: boolean,
+  isSignleLineMode?: boolean,
+  isCompactMode?: boolean,
 }
 
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
-    appContainer, pageId, path, isCompactMode, isEditorMode,
+    appContainer, pageId, path, isCompactMode, isSignleLineMode,
   } = props;
 
   const { isSharedUser } = appContainer;
@@ -31,7 +31,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
             <TagLabels editorMode={editorMode} />
           </div>
         )} */}
-        <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isEditorMode={isEditorMode} />
+        <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
       </div>
       {/* Right side */}
       <div className="d-flex">
