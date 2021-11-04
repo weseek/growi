@@ -561,31 +561,6 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByPathAndViewer = async function(path, user, userGroups) {
-    if (path == null) {
-      throw new Error('path is required.');
-    }
-
-    const baseQuery = this.findOne({ path });
-
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
-    const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
-
-    return await queryBuilder.query.exec();
-  };
-
-  /**
-   * @param {string} path Page path
-   * @param {User} user User instance
-   * @param {UserGroup[]} userGroups List of UserGroup instances
-   */
   pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups) {
     if (path == null) {
       throw new Error('path is required.');
