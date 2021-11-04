@@ -8,6 +8,7 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './apiv3-response';
+import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -24,7 +25,7 @@ interface AuthorizedRequest extends Request {
 const validator = {
   getPagesAroundTarget: [
     query('id').isMongoId().withMessage('id is required'),
-    query('path').isMongoId().withMessage('path is required'),
+    query('path').isString().withMessage('path is required'),
   ],
 };
 
@@ -59,6 +60,10 @@ export default (crowi: Crowi): Router => {
 
     if (target == null) {
       throw Error('Target must exist.');
+    }
+
+    if (isTopPage(path as string)) {
+      siblings = siblings.filter(page => !isTopPage(page.path));
     }
 
     return res.apiv3({ target, ancestors, pages: siblings });

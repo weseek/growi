@@ -35,7 +35,7 @@ export interface PageDocument extends IPage, Document {}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewerV5(path: string | null, user, userGroups): Promise<IPage[]>
+  findByPathAndViewer(path: string | null, user, userGroups): Promise<IPage[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups): Promise<IPage[]>
   findAncestorsById(path: string): Promise<IPage[]>
 }
@@ -173,7 +173,7 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 };
 
-schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage[]> {
+schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage | IPage[] | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
@@ -190,11 +190,12 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
     throw new Error('path is required.');
   }
 
-  const parentPath = nodePath.dirname(path);
+  const _parentPath = nodePath.dirname(path);
 
   // regexr.com/6889f
   // ex. /parent/any_child OR /any_level1
-  let regexp = new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g');
+  const parentPath = isTopPage(_parentPath) ? '' : _parentPath;
+  let regexp = new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`);
   // ex. / OR /any_level1
   if (isTopPage(path)) regexp = /^\/[^/]*$/g;
 
