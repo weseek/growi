@@ -17,6 +17,8 @@ $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcol
 $color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
+$bordercolor-search-item-left-active: $primary;
+$bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%);
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -29,8 +31,6 @@ $nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: $color-nav-tabs-link-active;
 $nav-tabs-link-active-bg: $bgcolor-global;
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
-$search-active-item-left-border-color: $primary;
-$search-active-item-bgcolor: lighten($search-active-item-left-border-color, 76%);
 
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -606,15 +606,10 @@ body.pathname-sidebar {
           }
         }
       }
-    }
-  }
-}
-
-.search-result {
-  .page-list {
-    .active {
-      background-color: $search-active-item-bgcolor;
-      border-color: $search-active-item-left-border-color;
+      .active {
+        background-color: $bgcolor-search-item-active;
+        border-color: $bordercolor-search-item-left-active;
+      }
     }
   }
 }
