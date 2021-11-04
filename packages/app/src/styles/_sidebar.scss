@@ -22,61 +22,141 @@
   position: sticky;
   top: $grw-navbar-border-width;
 
-  .ak-navigation-resize-button {
+  .grw-navigation-resize-button {
     position: fixed;
 
     // locate to the center of screen
     top: calc(50vh - 20px);
 
-    /*
-     * styles
-     */
-    // unset originalhover color
-    > div:hover {
-      background-color: unset;
-    }
-
-    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    $box-shadow: 0 0 0 0 rgba(96, 96, 96, 0.75);
     @include hexagonize(24px, white, $box-shadow);
 
     // rotate 30deg
     transform: translate(-50%) rotate(30deg);
-    > div,
-    > span svg {
+    > span {
+      top: -2px;
       transform: rotate(-30deg);
+      &::after {
+        // override
+        content: none;
+      }
     }
 
-    // centering icon
-    > span svg {
-      position: relative;
-      z-index: 1;
-      margin-top: -5.5px;
+    // reverse and center icon at the time of collapsed
+    &.collapse-state {
+      > span {
+        left: 2px;
+        transform: rotate(-210deg);
+      }
     }
   }
 
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
-  div[data-layout-container='true'] {
+  .data-layout-container {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 0px);
+    margin-top: 0px;
     // css-teprsg
     > div:nth-of-type(2) {
       padding-left: unset !important;
       margin-left: unset !important;
     }
   }
-  div[data-testid='Navigation'] {
-    // css-xxx-ContainerNavigationMask
-    > div:nth-of-type(1) {
+  .navigation {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 200;
+    &:hover .grw-navigation-resize-button.resizable.normal-state {
+      cursor: pointer;
+      opacity: 1;
     }
-    // css-xxx-Outer
-    > div:nth-of-type(2) {
+    .grw-navigation-wrap {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      overflow: hidden;
+      .grw-contextual-navigation {
+        position: relative;
+        width: 240px;
+        height: 100%;
+        &:not(.dragging) {
+          transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+        }
+        will-change: width;
+        .grw-contextual-navigation-child {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          box-sizing: border-box;
+          width: 100%;
+          min-width: 240px;
+          height: 100%;
+          overflow-x: hidden;
+          color: rgb(66, 82, 110);
+          background-color: rgb(244, 245, 247);
+          transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+          transition-duration: 0.22s;
+          transition-property: boxShadow, transform;
+          animation-duration: 0.22s;
+          animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+          animation-fill-mode: forwards;
+          .grw-contextual-navigation-sub {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            overflow: hidden auto;
+            &.collapsed {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+    .grw-navigation-draggable {
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 100%;
       z-index: 100; // greater than the value of slimScrollBar
-
       width: 0;
       transform: unset; // unset for 'position: fixed' of .ak-navigation-resize-button
-
-      // css-xxx-Shadow
-      > div:first-child {
+      .grw-navigation-draggable-first-child {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: -3px;
+        width: 3px;
+        pointer-events: none;
         background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
+        opacity: 0.5;
+        transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+        transition-duration: 0.22s;
+        transition-property: left, opacity, width;
+      }
+      .resizable.grw-navigation-draggable-hitarea {
+        position: relative;
+        left: -4px;
+        width: 24px;
+        height: 100%;
+        cursor: ew-resize;
+        .grw-navigation-draggable-hitarea-child {
+          position: absolute;
+          left: 3px;
+          width: 2px;
+          height: 100%;
+          background-color: rgb(76, 154, 255);
+          opacity: 0;
+          transition: opacity 200ms ease 0s;
+        }
+        &:hover .grw-navigation-draggable-hitarea-child {
+          opacity: 1;
+        }
       }
     }
   }
@@ -147,10 +227,10 @@
 
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
-  div[data-layout-container='true'] {
+  .data-layout-container {
     max-height: calc(100vh - #{$grw-navbar-border-width});
   }
-  div[data-testid='Navigation'] {
+  .navigation {
     position: unset;
 
     top: $navbar-total-height;
@@ -162,7 +242,7 @@
   z-index: $zindex-fixed + 2;
 
   // override @atlaskit/navigation-next styles
-  div[data-testid='Navigation'] {
+  div.navigation {
     max-width: 80vw;
 
     // apply transition
@@ -171,12 +251,12 @@
   }
 
   &:not(.open) {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transform: translateX(-100%);
     }
   }
   &.open {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transform: translateX(0);
     }
 
@@ -223,14 +303,14 @@
 // supress transition
 .grw-sidebar {
   &.grw-sidebar-supress-transitions-to-drawer {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transition: none !important;
     }
   }
 
   &.grw-sidebar-supress-transitions-to-dock {
-    div[data-testid='Content'],
-    div[data-testid='ContextualNavigation'] {
+    div.content,
+    div.contextual-navigation {
       transition: none !important;
     }
   }
@@ -238,4 +318,41 @@
 
 .grw-sidebar-backdrop.modal-backdrop {
   z-index: $zindex-fixed + 1;
+}
+
+.collapse-state {
+  position: absolute;
+  top: 32px;
+  width: 24px;
+  height: 24px;
+  padding: 0px;
+  color: rgb(107, 119, 140);
+  cursor: pointer;
+  background: 0px center white;
+  border: 0px;
+  border-radius: 50%;
+  outline: 0px;
+  box-shadow: rgb(9 30 66 / 8%) 0px 0px 0px 1px, rgb(9 30 66 / 8%) 0px 2px 4px 1px;
+  opacity: 1;
+  transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
+    transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+  transform: translate(-50%);
+}
+
+.normal-state {
+  position: absolute;
+  top: 32px;
+  width: 24px;
+  height: 24px;
+  padding: 0px;
+  color: rgb(107, 119, 140);
+  /* background: 0px center white; */
+  border: 0px;
+  border-radius: 50%;
+  outline: 0px;
+  box-shadow: rgb(9 30 66 / 8%) 0px 0px 0px 1px, rgb(9 30 66 / 8%) 0px 2px 4px 1px;
+  opacity: 0;
+  transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
+    transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+  transform: translate(-50%);
 }

@@ -217,8 +217,7 @@ ul.pagination {
 }
 
 .grw-sidebar {
-  // override @atlaskit/navigation-next styles
-  .ak-navigation-resize-button {
+  .grw-navigation-resize-button {
     $color-resize-button: $color-global !default;
     $bgcolor-resize-button: white !default;
     $color-resize-button-hover: $color-reversal !default;
@@ -230,12 +229,12 @@ ul.pagination {
       @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
     }
   }
-  div[data-testid='GlobalNavigation'] {
+  div.grw-global-navigation {
     > div {
       background-color: $bgcolor-sidebar;
     }
   }
-  div[data-testid='ContextualNavigation'] {
+  div.grw-contextual-navigation {
     > div {
       color: $color-sidebar-context;
       background-color: $bgcolor-sidebar-context;
