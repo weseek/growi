@@ -2,10 +2,11 @@ import express, {
   NextFunction, Request, RequestHandler, Response, Router,
 } from 'express';
 import Crowi from '../../crowi';
+import { ApiV3Response } from './apiv3-response';
 
 
-const getPagesAroundTarget = (req: Request, res: Response): any => {
-  return res.send('OK');
+const getPagesAroundTarget = (req: Request, res: ApiV3Response): any => {
+  return res.apiV3();
 };
 
 export default (crowi: Crowi): Router => {
