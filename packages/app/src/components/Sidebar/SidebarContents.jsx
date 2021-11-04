@@ -4,35 +4,35 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
+import Tag from './Tag';
 
 const SidebarContents = (props) => {
-  const { navigationContainer, isSharedUser } = props;
+  const { appContainer, navigationContainer, isSharedUser } = props;
 
   if (isSharedUser) {
     return null;
   }
 
   let Contents;
-  switch (navigationContainer.state.sidebarContentsId) {
-    case 'recent':
-      Contents = RecentChanges;
-      break;
-    default:
-      Contents = CustomSidebar;
+  if (navigationContainer.state.sidebarContentsId === 'resent') {
+    return <RecentChanges />;
+  }
+  if (navigationContainer.state.sidebarContentsId === 'tag') {
+    return <Tag appContainer={appContainer} />;
   }
 
-  return (
-    <Contents />
-  );
+  return <CustomSidebar />;
 
 };
 
 SidebarContents.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isSharedUser: PropTypes.bool,
 };
