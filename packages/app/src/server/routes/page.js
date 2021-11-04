@@ -568,9 +568,8 @@ module.exports = function(crowi, app) {
     const query = redirectFrom == null ? '' : `?redirectFrom=${redirectFrom}`;
 
     if (pages.length >= 2) {
-      // TODO: return res.render('layout-growi/select_same_path_page', renderVars);
-      // TODO: put redirectFrom into renderVars
-      return res.send('Two or more pages found.');
+      // WIP
+      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
     }
 
     if (pages.length === 1) {
