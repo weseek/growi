@@ -19,7 +19,7 @@ type SubscribeRule = {
 const defaultSubscribeRulesMenuItems = [
   {
     name: 'PAGE_CREATE',
-    description: 'ページを作成したときに自動的にサブスクライブします。',
+    description: 'in_app_notification_settings.subscribe_rules.page_create',
   },
 ];
 
@@ -77,7 +77,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h2 className="border-bottom my-4">{t('in_app_notification_settings.in_app_notification_settings')}</h2>
+      <h2 className="border-bottom my-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
@@ -96,6 +96,9 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
               <label className="custom-control-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
               </label>
+              <p className="form-text text-muted small">
+                {t(rule.description)}
+              </p>
             </div>
           ))}
         </div>
