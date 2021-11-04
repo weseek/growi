@@ -308,7 +308,7 @@ const Sidebar = (props: Props) => {
                 onClick={toggleNavigationBtnClickHandler}
               >
                 <span role="presentation">
-                  <i className="ml-1 fa fa-fw fa-angle-right text-white"></i>
+                  <i className="ml-1 fa fa-fw fa-angle-left text-white"></i>
                 </span>
               </button>
             </div>
