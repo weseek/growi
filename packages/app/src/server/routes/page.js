@@ -564,12 +564,14 @@ module.exports = function(crowi, app) {
    */
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false);
+    const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
-      // WIP
-      return res.render('layout-growi/select-go-to-page', { pages, query: req.query });
+      // pass only redirectFrom since it is not sure whether the query params are related to the pages
+      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
     }
 
+    // pass all query params
     let query = '';
     Object.entries(req.query).forEach(([key, value], i) => {
       query += i === 0 ? `?${key}=${value}` : `&${key}=${value}`;
