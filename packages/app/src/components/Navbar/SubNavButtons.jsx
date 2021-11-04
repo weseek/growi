@@ -8,6 +8,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
+import { toastError } from '~/client/util/apiNotification';
 
 const SubnavButtons = (props) => {
   const {
@@ -19,11 +20,30 @@ const SubnavButtons = (props) => {
   /* eslint-disable react/prop-types */
   const PageReactionButtons = ({ pageContainer }) => {
 
+    const {
+      state: { likers, sumOfLikers, isLiked },
+    } = pageContainer;
+
+    const toggleLike = () => {
+      const { isGuestUser } = appContainer;
+
+      if (isGuestUser) {
+        return;
+      }
+
+      try {
+        pageContainer.toggleLike();
+      }
+      catch (err) {
+        toastError(err);
+      }
+    };
+
     return (
       <>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            {/* <LikeButtons onClickInvoked={} pageId={} sumOfLikers={} isLiked={}/> */}
+            <LikeButtons onClickInvoked={toggleLike} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
           </span>
         )}
         <span>

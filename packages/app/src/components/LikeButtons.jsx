@@ -10,6 +10,8 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
+// TODO
+// before PR , remove comments
 class LikeButtons extends React.Component {
 
   constructor(props) {
@@ -20,7 +22,7 @@ class LikeButtons extends React.Component {
     };
 
     this.togglePopover = this.togglePopover.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    // this.handleClick = this.handleClick.bind(this);
   }
 
   togglePopover() {
@@ -30,35 +32,42 @@ class LikeButtons extends React.Component {
     }));
   }
 
-  async handleClick() {
-    const { appContainer, pageContainer } = this.props;
-    const { isGuestUser } = appContainer;
+  // async handleClick() {
+  //   const { appContainer, pageContainer } = this.props;
+  //   const { isGuestUser } = appContainer;
 
-    if (isGuestUser) {
-      return;
-    }
+  //   if (isGuestUser) {
+  //     return;
+  //   }
 
-    try {
-      pageContainer.toggleLike();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
+  //   try {
+  //     pageContainer.toggleLike();
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }
 
   render() {
-    const { appContainer, pageContainer, t } = this.props;
-    const { isGuestUser } = appContainer;
     const {
-      state: { likers, sumOfLikers, isLiked },
-    } = pageContainer;
+      appContainer, onClickInvoked, likers, sumOfLikers, isLiked, t,
+    } = this.props;
+    const { isGuestUser } = appContainer;
+    // const {
+    //   state: { likers, sumOfLikers, isLiked },
+    // } = pageContainer;
 
     return (
       <div className="btn-group" role="group" aria-label="Like buttons">
         <button
           type="button"
           id="like-button"
-          onClick={this.handleClick}
+          onClick={() => {
+            if (onClickInvoked == null) {
+              throw Error('onClickInvoked is null');
+            }
+            onClickInvoked();
+          }}
           className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
@@ -89,12 +98,15 @@ class LikeButtons extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer, PageContainer]);
+const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
 
 LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  onClickInvoked: PropTypes.func.isRequired,
+  likers: PropTypes.arrayOf(PropTypes.object),
+  sumOfLikers: PropTypes.number.isRequired,
+  isLiked: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };

@@ -17,7 +17,7 @@ const PageReactionButtons = () => {
   return (
     <>
       <span>
-        {/* <LikeButtons onClickInvoked={} pageId={} sumOfLikers={} isLiked={}></LikeButtons> */}
+        {/* <LikeButtons onClickInvoked={} likers={} sumOfLikers={} isLiked={}></LikeButtons> */}
       </span>
       <span>
         <BookmarkButton></BookmarkButton>
