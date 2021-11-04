@@ -19,7 +19,7 @@ type SubscribeRule = {
 const defaultSubscribeRulesMenuItems = [
   {
     name: 'PAGE_CREATE',
-    description: 'in_app_notification_settings.subscribe_rules.page_create',
+    description: 'in_app_notification_settings.default_subscribe_rules.page_create',
   },
 ];
 

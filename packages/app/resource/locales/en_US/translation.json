@@ -258,7 +258,7 @@
   "in_app_notification_settings": {
     "in_app_notification_settings": "InAppNotification Settings",
     "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
-    "subscribe_rules": {
+    "default_subscribe_rules": {
       "page_create": "Subscribe to the page when you create it."
     }
   },

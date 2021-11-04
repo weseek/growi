@@ -240,7 +240,7 @@
   "in_app_notification_settings": {
     "in_app_notification_settings": "在应用程序通知设置",
     "subscribe_settings": "自动订阅（接收通知）页面的设置",
-    "subscribe_rules": {
+    "default_subscribe_rules": {
       "page_create": "创建页面时订阅页面。"
     }
   },

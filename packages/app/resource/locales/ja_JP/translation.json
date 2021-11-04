@@ -261,7 +261,7 @@
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
-    "subscribe_rules": {
+    "default_subscribe_rules": {
       "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
   },
