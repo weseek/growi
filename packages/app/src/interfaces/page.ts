@@ -3,6 +3,7 @@ import { IRevision } from './revision';
 import { ITag } from './tag';
 
 export type IPage = {
+  _id?: any,
   path: string,
   status: string,
   revision: any & IRevision,

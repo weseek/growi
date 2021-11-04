@@ -35,6 +35,9 @@ export interface PageDocument extends IPage, Document {}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
+  findByPathAndViewerV5(path: string | null, user, userGroups): Promise<IPage[]>
+  findSiblingsByPathAndViewer(path: string | null, user, userGroups): Promise<IPage[]>
+  findAncestorsById(path: string): Promise<IPage[]>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -79,6 +82,8 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
+  if (isTopPage(path)) return [];
+
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
 
@@ -127,6 +132,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   const builder = new PageQueryBuilder(this.find({}, { _id: 1, path: 1 }));
   const ancestors = await builder
     .addConditionToListByPathsArray(ancestorPaths)
+    .addConditionToSortAncestorPages()
     .query
     .lean()
     .exec();
@@ -157,21 +163,64 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   return parentId;
 };
 
-schema.statics.findByPathAndViewerV5 = async function(path: string | null, user, userGroups): Promise<IPage[]> {
-  if (path == null) {
-    throw new Error('path is required.');
-  }
-
+const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups): Promise<void> => {
   let relatedUserGroups = userGroups;
   if (user != null && relatedUserGroups == null) {
     const UserGroupRelation: any = mongoose.model('UserGroupRelation');
     relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
   }
 
-  const queryBuilder = new PageQueryBuilder(this.find({ path }));
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
+};
+
+schema.statics.findByPathAndViewerV5 = async function(path: string | null, user, userGroups): Promise<IPage[]> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const queryBuilder = new PageQueryBuilder(this.find({ path }));
+  await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();
+};
+
+schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<IPage[]> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const parentPath = nodePath.dirname(path);
+
+  // regexr.com/6889f
+  // ex. /parent/any_child OR /any_level1
+  let regexp = new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g');
+  // ex. / OR /any_level1
+  if (isTopPage(path)) regexp = /^\/[^/]*$/g;
+
+  const queryBuilder = new PageQueryBuilder(this.find({ path: regexp }));
+  await addViewerCondition(queryBuilder, user, userGroups);
+
+  return queryBuilder.query.lean().exec();
+};
+
+schema.statics.findAncestorsByPath = async function(path: string): Promise<IPage[]> {
+  const ancestorPaths = collectAncestorPaths(path);
+
+  // Do not populate
+  const queryBuilder = new PageQueryBuilder(this.find());
+  const _ancestors: IPage[] = await queryBuilder
+    .addConditionToListByPathsArray(ancestorPaths)
+    .addConditionToSortAncestorPages()
+    .query
+    .lean()
+    .exec();
+
+  // no same path pages
+  const ancestorsMap: Map<string, IPage> = new Map();
+  _ancestors.forEach(page => ancestorsMap.set(page.path, page));
+  const ancestors = Array.from(ancestorsMap.values());
+
+  return ancestors;
 };
 
 
