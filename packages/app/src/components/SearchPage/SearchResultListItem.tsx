@@ -35,7 +35,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const snippet:string = page.elasticSearchResult.snippet || '';
 
   const sliceSnippet = (snippet: string): string => {
-    // when regex pattern is not matched with less than 300 characters slicedSnippet is null
+    // when regex pattern is not matched with less than MAX_SNIPPET_LENGTH characters slicedSnippet is null
     const slicedAndMatchedSnippet: string[] | null = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/[\s\S]*<\/em>/g);
     return slicedAndMatchedSnippet == null
       ? `${snippet.slice(0, MAX_SNIPPET_LENGTH)}${APPEND_SNIPPET_STRING}` : `${slicedAndMatchedSnippet[0]}${APPEND_SNIPPET_STRING}`;
