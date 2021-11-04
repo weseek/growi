@@ -10,7 +10,6 @@ import { UserPicture } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { toastError } from '~/client/util/apiNotification';
 import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
@@ -127,11 +126,7 @@ SmallPageItem.propTypes = {
 const RecentChanges: FC<void> = () => {
 
   const { t } = useTranslation();
-  const { data: pages, error, mutate } = useSWRxRecentlyUpdated();
-
-  if (error != null) {
-    toastError(error, 'Error occurred in updating History');
-  }
+  const { data: pages, mutate } = useSWRxRecentlyUpdated();
 
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
 
