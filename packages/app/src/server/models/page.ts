@@ -173,12 +173,13 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 };
 
-schema.statics.findByPathAndViewerV5 = async function(path: string | null, user, userGroups): Promise<IPage[]> {
+schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage[]> {
   if (path == null) {
     throw new Error('path is required.');
   }
 
-  const queryBuilder = new PageQueryBuilder(this.find({ path }));
+  const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+  const queryBuilder = new PageQueryBuilder(baseQuery);
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();
