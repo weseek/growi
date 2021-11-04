@@ -1,12 +1,13 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 
-export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage, Error> => {
+export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
   return useSWR(
     ['/page', path],
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
@@ -18,10 +19,10 @@ export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRRespons
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxRecentlyUpdated = (): SWRResponse<IPage[], Error> => {
+export const useSWRxRecentlyUpdated = (): SWRResponse<(IPage & HasObjectId)[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get<{ pages: IPage[] }>(endpoint).then(response => response.data?.pages),
+    endpoint => apiv3Get<{ pages:(IPage & HasObjectId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
 
