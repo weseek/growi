@@ -6,6 +6,17 @@ import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 
+export const useSWRxPage = (path: string, initialData?: IPage): SWRResponse<IPage, Error> => {
+  return useSWR(
+    ['/page', path],
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
+    {
+      fallbackData: initialData,
+    },
+  );
+};
+
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxRecentlyUpdated = (): SWRResponse<IPage[], Error> => {
   return useSWR(
