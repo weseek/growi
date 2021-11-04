@@ -10,8 +10,6 @@ module.exports = {
   entry: {
     dlls: [
       // Libraries
-      '@atlaskit/drawer',
-      '@atlaskit/navigation-next',
       'axios',
       'browser-bunyan', 'bunyan-format',
       'codemirror', 'react-codemirror2',
