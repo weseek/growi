@@ -4,8 +4,6 @@ import * as pathUtils from '../utils/path-utils';
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 // https://regex101.com/r/HJNvMW/1
 const PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/;
-// https://regex101.com/r/4J4JuR/1
-const PATTERN_PATH_WITH_ANY_HTML_TAGS = /<("[^"]*"|'[^']*'|[^'">])*>/g;
 
 export class DevidedPagePath {
 
@@ -34,17 +32,6 @@ export class DevidedPagePath {
         this.latter = matchDate[2];
         return;
       }
-    }
-
-    // highlighted path
-    const regex = new RegExp(PATTERN_PATH_WITH_ANY_HTML_TAGS);
-    // testing whether the html tags exists in the path or not
-    if (regex.test(pagePath)) {
-      const matchDefault = pagePath.match(PATTERN_DEFAULT);
-      this.isFormerRoot = matchDefault[1] === '/';
-      this.former = matchDefault[2];
-      this.latter = matchDefault[3];
-      return;
     }
 
     const matchDefault = pagePath.match(PATTERN_DEFAULT);

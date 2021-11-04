@@ -10,7 +10,7 @@ export const PagePathLabel = (props) => {
   classNames = classNames.concat(props.additionalClassNames);
 
   const displayPath = (reactElement) => {
-    if (props.isPathHighlighted) {
+    if (props.isPathIncludedHtml) {
       // eslint-disable-next-line react/no-danger
       return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
     }
@@ -39,7 +39,7 @@ export const PagePathLabel = (props) => {
 PagePathLabel.propTypes = {
   isLatterOnly: PropTypes.bool,
   isFormerOnly: PropTypes.bool,
-  isPathHighlighted: PropTypes.bool,
+  isPathIncludedHtml: PropTypes.bool,
   additionalClassNames: PropTypes.arrayOf(PropTypes.string),
   path: PropTypes.string.isRequired,
 };
