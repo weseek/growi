@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
+import SelectAllPages from './SelectAllPages';
+import DeleteAllButton from './DeleteAllButton';
 
 type Props = {
   searchingKeyword: string,
@@ -40,6 +42,10 @@ const SearchControl: FC <Props> = (props: Props) => {
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="d-flex my-4">
+        {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
+        <SelectAllPages checked={false} onClickInvoked={() => {}} />
+        {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
+        <DeleteAllButton selectedPages={[]} />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
             {t('Include Subordinated Target Page', { target: '/user' })}
