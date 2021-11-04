@@ -184,6 +184,9 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+    v5PageMigration: [
+      body('action').isString().withMessage('action is required'),
+    ],
   };
 
   async function createPageAction({
@@ -680,5 +683,32 @@ module.exports = (crowi) => {
     }
 
   });
+
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
+    const { action } = req.body;
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    try {
+      switch (action) {
+        case 'initialMigration':
+          if (!isV5Compatible) {
+            const Page = crowi.model('Page');
+            // this method throws and emit socketIo event when error occurs
+            crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+          }
+          break;
+
+        default:
+          logger.error(`${action} action is not supported.`);
+          return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
+      }
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+    }
+
+    return res.apiv3({ isV5Compatible });
+  });
+
   return router;
 };

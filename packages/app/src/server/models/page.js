@@ -37,8 +37,12 @@ const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
 const pageSchema = new mongoose.Schema({
+  parent: {
+    type: ObjectId, ref: 'Page', index: true, default: null,
+  },
+  isEmpty: { type: Boolean, default: false },
   path: {
-    type: String, required: true, index: true, unique: true,
+    type: String, required: true,
   },
   revision: { type: ObjectId, ref: 'Revision' },
   redirectTo: { type: String, index: true },
@@ -67,6 +71,9 @@ const pageSchema = new mongoose.Schema({
 pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
+// TODO: test this after modifying Page.create
+// ensure v4 compatibility using partial index
+pageSchema.index({ path: 1 }, { unique: true, partialFilterExpression: { parent: null } });
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath

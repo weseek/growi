@@ -10,6 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
 import EnvVarsTable from './EnvVarsTable';
@@ -33,9 +34,26 @@ class AdminHome extends React.Component {
 
   render() {
     const { t, adminHomeContainer } = this.props;
+    const { isV5Compatible } = adminHomeContainer.state;
+
+    let alertStyle = 'alert-info';
+    if (isV5Compatible == null) alertStyle = 'alert-warning';
 
     return (
       <Fragment>
+        {
+          // not show if true
+          !isV5Compatible
+          && (
+            <div className={`alert ${alertStyle}`}>
+              {t('admin:v5_page_migration.migration_desc')}
+              <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
+                <i className="fa fa-link ml-1" aria-hidden="true"></i>
+                <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
+              </a>
+            </div>
+          )
+        }
         <p>
           {t('admin:admin_top.wiki_administrator')}
           <br></br>

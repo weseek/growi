@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
+const pathlib = require('path');
 
 const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
@@ -734,6 +735,201 @@ class PageService {
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
+
+  async v5InitialMigration(grant) {
+    const socket = this.crowi.socketIoService.getAdminSocket();
+    try {
+      await this._v5RecursiveMigration(grant);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      socket.emit('v5InitialMirationFailed', { error: err.message });
+
+      throw err;
+    }
+
+    const Page = this.crowi.model('Page');
+    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
+    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
+    const isPathIndexExists = pathIndexStatus != null;
+    const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
+
+    if (isUnique || !isPathIndexExists) {
+      try {
+        await this._v5NormalizeIndex(isPathIndexExists);
+      }
+      catch (err) {
+        logger.error('V5 index normalization failed.', err);
+        socket.emit('v5IndexNormalizationFailed', { error: err.message });
+
+        throw err;
+      }
+    }
+
+    await this._setIsV5CompatibleTrue();
+  }
+
+  async _setIsV5CompatibleTrue() {
+    try {
+      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+        'app:isV5Compatible': true,
+      });
+      logger.info('Successfully migrated all public pages.');
+    }
+    catch (err) {
+      logger.warn('Failed to update app:isV5Compatible to true.');
+      throw err;
+    }
+  }
+
+  // TODO: use websocket to show progress
+  async _v5RecursiveMigration(grant, rootPath) {
+    const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 1000;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const total = await Page.countDocuments({ grant, parent: null });
+
+    let baseAggregation = Page
+      .aggregate([
+        {
+          $match: {
+            grant,
+            parent: null,
+          },
+        },
+        {
+          $project: { // minimize data to fetch
+            _id: 1,
+            path: 1,
+          },
+        },
+      ]);
+
+    // limit pages to get
+    if (total > PAGES_LIMIT) {
+      baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
+    }
+
+    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
+
+    // use batch stream
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    let countPages = 0;
+
+    // migrate all siblings for each page
+    const migratePagesStream = new Writable({
+      objectMode: true,
+      async write(pages, encoding, callback) {
+        // make list to create empty pages
+        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPaths = Array.from(parentPathsSet);
+
+        // find existing parents
+        const builder1 = new PageQueryBuilder(Page.find({}, { _id: 0, path: 1 }));
+        const existingParents = await builder1
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+        const existingParentPaths = existingParents.map(parent => parent.path);
+
+        // paths to create empty pages
+        const notExistingParentPaths = parentPaths.filter(path => !existingParentPaths.includes(path));
+
+        // insertMany empty pages
+        try {
+          await Page.insertMany(notExistingParentPaths.map(path => ({ path, isEmpty: true })));
+        }
+        catch (err) {
+          logger.error('Failed to insert empty pages.', err);
+          throw err;
+        }
+
+        // find parents again
+        const builder2 = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+        const parents = await builder2
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+
+        // bulkWrite to update parent
+        const updateManyOperations = parents.map((parent) => {
+          const parentId = parent._id;
+
+          // modify to adjust for RegExp
+          const parentPath = parent.path === '/' ? '' : parent.path;
+
+          return {
+            updateMany: {
+              filter: {
+                // regexr.com/6889f
+                // ex. /parent/any_child OR /any_level1
+                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+              },
+              update: {
+                parent: parentId,
+              },
+            },
+          };
+        });
+        try {
+          const res = await Page.bulkWrite(updateManyOperations);
+          countPages += (res.items || []).length;
+          logger.info(`Page migration processing: (count=${countPages}, errors=${res.errors}, took=${res.took}ms)`);
+        }
+        catch (err) {
+          logger.error('Failed to update page.parent.', err);
+          throw err;
+        }
+
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+
+    pagesStream
+      .pipe(batchStream)
+      .pipe(migratePagesStream);
+
+    await streamToPromise(migratePagesStream);
+
+    if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
+      return this._v5RecursiveMigration(grant, rootPath);
+    }
+
+  }
+
+  async _v5NormalizeIndex(isPathIndexExists) {
+    const collection = mongoose.connection.collection('pages');
+
+    if (isPathIndexExists) {
+      try {
+        // drop pages.path_1 indexes
+        await collection.dropIndex('path_1');
+        logger.info('Succeeded to drop unique indexes from pages.path.');
+      }
+      catch (err) {
+        logger.warn('Failed to drop unique indexes from pages.path.', err);
+        throw err;
+      }
+    }
+
+    try {
+      // create indexes without
+      await collection.createIndex({ path: 1 }, { unique: false });
+      logger.info('Succeeded to create non-unique indexes on pages.path.');
+    }
+    catch (err) {
+      logger.warn('Failed to create non-unique indexes on pages.path.', err);
+      throw err;
     }
   }
 
