@@ -564,16 +564,16 @@ module.exports = function(crowi, app) {
    */
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false);
-    let query = '';
-    Object.entries(req.query).forEach(([key, value], i) => {
-      query += i === 0 ? `?${key}=${value}` : `&${key}=${value}`;
-    });
 
     if (pages.length >= 2) {
       // WIP
       return res.render('layout-growi/select-go-to-page', { pages, query: req.query });
     }
 
+    let query = '';
+    Object.entries(req.query).forEach(([key, value], i) => {
+      query += i === 0 ? `?${key}=${value}` : `&${key}=${value}`;
+    });
     if (pages.length === 1) {
       return res.safeRedirect(`/${pages[0]._id}${query}`);
     }
