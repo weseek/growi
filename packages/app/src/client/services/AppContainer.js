@@ -31,8 +31,9 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
     };
 
+    // get csrf token from body element
+    // DO NOT REMOVE: uploading attachment data requires appContainer.csrfToken
     const body = document.querySelector('body');
-
     this.csrfToken = body.dataset.csrftoken;
 
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
