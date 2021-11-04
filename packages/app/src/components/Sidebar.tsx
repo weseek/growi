@@ -10,6 +10,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 
 import SidebarNav from './Sidebar/SidebarNav';
+import SidebarContents from './Sidebar/SidebarContents';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -47,7 +48,7 @@ const GlobalNavigationSkelton = () => {
 };
 
 
-const SidebarContents = () => {
+const SidebarContentsWrapper = () => {
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
   const calcViewHeight = useCallback(() => {
@@ -172,7 +173,7 @@ const Sidebar = (props: Props) => {
 
   useEffect(() => {
     // this.hackUIController();
-    // setMounted(true);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -286,7 +287,7 @@ const Sidebar = (props: Props) => {
               >
                 <div className="grw-contextual-navigation-child">
                   <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
-                    { isMounted ? <SidebarContents></SidebarContents> : <SidebarSkeltonContents></SidebarSkeltonContents> }
+                    { isMounted ? <SidebarContentsWrapper></SidebarContentsWrapper> : <SidebarSkeltonContents></SidebarSkeltonContents> }
                   </div>
                 </div>
               </div>
