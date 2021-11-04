@@ -157,10 +157,12 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   return parentId;
 };
 
-schema.statics.findByPathAndViewerV5 = async function(path: string | null, user, userGroups): Promise<IPage[]> {
+schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage[]> {
   if (path == null) {
     throw new Error('path is required.');
   }
+
+  const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
 
   let relatedUserGroups = userGroups;
   if (user != null && relatedUserGroups == null) {
@@ -168,7 +170,7 @@ schema.statics.findByPathAndViewerV5 = async function(path: string | null, user,
     relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
   }
 
-  const queryBuilder = new PageQueryBuilder(this.find({ path }));
+  const queryBuilder = new PageQueryBuilder(baseQuery);
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
   return queryBuilder.query.exec();
