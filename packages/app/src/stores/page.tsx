@@ -6,7 +6,7 @@ import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 
-export const useSWRxPage = (path: string, initialData?: IPage): SWRResponse<IPage, Error> => {
+export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage, Error> => {
   return useSWR(
     ['/page', path],
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),

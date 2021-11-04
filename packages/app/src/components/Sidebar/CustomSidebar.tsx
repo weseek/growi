@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import AppContainer from '~/client/services/AppContainer';
 import loggerFactory from '~/utils/logger';
-import { useSWRxPage } from '~/stores/page';
+import { useSWRxPageByPath } from '~/stores/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionRenderer from '../Page/RevisionRenderer';
@@ -30,7 +30,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
 
   const renderer = appContainer.getRenderer('sidebar');
 
-  const { data: page, mutate } = useSWRxPage('/Sidebar');
+  const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
 
   const isLoading = page === undefined;
   const markdown = page?.revision?.body;
