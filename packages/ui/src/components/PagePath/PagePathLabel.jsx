@@ -10,9 +10,13 @@ export const PagePathLabel = (props) => {
   classNames = classNames.concat(props.additionalClassNames);
 
   const displayPath = (reactElement) => {
-    // eslint-disable-next-line react/no-danger
-    return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
+    if (props.isPathHighlighted) {
+      // eslint-disable-next-line react/no-danger
+      return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
+    }
+    return <span className={classNames.join(' ')}>{reactElement.props.children}</span>;
   };
+
 
   if (props.isLatterOnly) {
     return displayPath(<>{dPagePath.latter}</>);
@@ -35,6 +39,7 @@ export const PagePathLabel = (props) => {
 PagePathLabel.propTypes = {
   isLatterOnly: PropTypes.bool,
   isFormerOnly: PropTypes.bool,
+  isPathHighlighted: PropTypes.bool,
   additionalClassNames: PropTypes.arrayOf(PropTypes.string),
   path: PropTypes.string.isRequired,
 };
