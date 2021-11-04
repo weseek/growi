@@ -18,11 +18,20 @@ type Props ={
     }
   },
   onClickInvoked: (data: string) => void,
+  toggleCheckBox: (page: {
+    _id: string,
+    path: string,
+    noLink: boolean,
+    lastUpdateUser: any
+    elasticSearchResult: {
+      snippet: string,
+    }
+  }) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const { page, onClickInvoked } = props;
+  const { page, onClickInvoked, toggleCheckBox } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -52,7 +61,12 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mx-2">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => { toggleCheckBox(page) }}
+            />
           </div>
           <div className="w-100">
             {/* page path */}
