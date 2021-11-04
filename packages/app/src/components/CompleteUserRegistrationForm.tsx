@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import axios from '~/utils/axios';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -7,19 +7,17 @@ import AppContainer from '~/client/services/AppContainer';
 interface Props {
   t: any, //  i18next
   appContainer: AppContainer,
-  messageWarnings?: any,
   messageErrors?: any,
   inputs?: any,
   email: string,
   token: string,
 }
 
-const CompleteUserRegistrationForm: React.FC<Props & WithTranslation> = (props: Props) => {
+const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
+  const { t } = useTranslation();
   const {
-    t,
     appContainer,
-    messageWarnings,
     messageErrors,
     inputs,
     email,
@@ -116,6 +114,4 @@ const CompleteUserRegistrationForm: React.FC<Props & WithTranslation> = (props: 
 
 };
 
-const CompleteUserRegistrationFormWrapper = withUnstatedContainers(CompleteUserRegistrationForm, [AppContainer]);
-
-export default withTranslation()(CompleteUserRegistrationFormWrapper);
+export default withUnstatedContainers(CompleteUserRegistrationForm, [AppContainer]);
