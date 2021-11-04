@@ -280,10 +280,10 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageForPresentation(req, res, next) {
-    const path = getPathFromRequest(req);
+    const id = req.params.id;
     const { revisionId } = req.query;
 
-    let page = await Page.findByPathAndViewer(path, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user);
 
     if (page == null) {
       next();
