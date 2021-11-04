@@ -1,4 +1,5 @@
 import { pagePathUtils } from '@growi/core';
+import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
 
 import UpdatePost from '../models/update-post';
@@ -333,22 +334,25 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageForGrowiBehavior(req, res, next) {
-    const path = getPathFromRequest(req);
+    const id = req.params.id;
     const revisionId = req.query.revision;
 
-    let page = await Page.findByPathAndViewer(path, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
-      req.isForbidden = await Page.count({ path }) > 0;
+      req.isForbidden = await Page.count({ _id: id }) > 0;
       return next();
     }
+
+    const { path } = page; // this must exist
+
     if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
       return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
-    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
+    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, path);
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -373,7 +377,7 @@ module.exports = function(crowi, app) {
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
 
-    if (isUserPage(page.path)) {
+    if (isUserPage(path)) {
       // change template
       view = 'layout-growi/user_page';
       await addRenderVarsForUserPage(renderVars, page);
@@ -558,16 +562,35 @@ module.exports = function(crowi, app) {
   /**
    * redirector
    */
-  actions.redirector = async function(req, res) {
-    const id = req.params.id;
+  async function redirector(req, res, next, path) {
+    const pages = await Page.findByPathAndViewerV5(path, req.user);
+    const { redirectFrom } = req.query;
+    const query = redirectFrom == null ? '' : `?redirectFrom=${redirectFrom}`;
 
-    const page = await Page.findByIdAndViewer(id, req.user);
-
-    if (page != null) {
-      return res.redirect(encodeURI(page.path));
+    if (pages.length >= 2) {
+      // TODO: return res.render('layout-growi/select_same_path_page', renderVars);
+      // TODO: put redirectFrom into renderVars
+      return res.send('Two or more pages found.');
     }
 
-    return res.redirect('/');
+    if (pages.length === 1) {
+      return res.redirect(`/${pages[0]._id}${query}`);
+    }
+
+    return next(); // to page.notFound
+  }
+
+  actions.redirector = async function(req, res, next) {
+    const path = getPathFromRequest(req);
+
+    return redirector(req, res, next, path);
+  };
+
+  actions.redirectorWithEndOfSlash = async function(req, res, next) {
+    const _path = getPathFromRequest(req);
+    const path = pathUtils.removeTrailingSlash(_path);
+
+    return redirector(req, res, next, path);
   };
 
 

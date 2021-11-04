@@ -139,7 +139,7 @@ module.exports = function(crowi, app) {
   // my drafts
   app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , page.showPage);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
   app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
@@ -196,7 +196,7 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
+  app.get('/*/$'                   , loginRequired , page.redirectorWithEndOfSlash, page.notFound);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.redirector, page.notFound);
 
 };
