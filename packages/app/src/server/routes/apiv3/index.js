@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import pageTree from './page-tree';
+
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -40,6 +42,8 @@ module.exports = (crowi) => {
   router.use('/page', require('./page')(crowi));
   router.use('/pages', require('./pages')(crowi));
   router.use('/revisions', require('./revisions')(crowi));
+
+  router.use('/page-tree', pageTree(crowi));
 
   router.use('/share-links', require('./share-links')(crowi));
 
