@@ -571,7 +571,7 @@ module.exports = function(crowi, app) {
 
     if (pages.length >= 2) {
       // WIP
-      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
+      return res.render('layout-growi/select-go-to-page', { pages, query: req.query });
     }
 
     if (pages.length === 1) {
