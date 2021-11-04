@@ -49,27 +49,26 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
 
   }, [appContainer]);
 
-  const isCheckedRule = () => {
-    return;
-  };
+  const isCheckedRule = (ruleName: string) => (
+    subscribeRules.find(stateRule => (
+      stateRule.name === ruleName
+    ))?.isEnabled || false
+  );
 
-  const ruleCheckboxHandler = () => {
-    return;
+  const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
+    setSubscribeRules(prevState => (
+      prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
+    ));
   };
 
   const updateSettingsHandler = async() => {
-
-
-    // TODO: 80102
-    // try {
-    //   const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules });
-    //   console.log(res);
-    // }
-    // catch (err) {
-    //   toastError(err);
-    // }
-
-    return;
+    try {
+      const res = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { defaultSubscribeRules: subscribeRules });
+      console.log(res);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   useEffect(() => {
@@ -80,9 +79,9 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
     <>
       <h2 className="border-bottom my-4">{t('in_app_notification_settings.in_app_notification_settings')}</h2>
 
-      {/* <div className="form-group row">
+      <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
-          {defaultSubscribeRules.map(rule => (
+          {defaultSubscribeRulesMenuItems.map(rule => (
             <div
               key={rule.name}
               className="custom-control custom-switch custom-checkbox-success"
@@ -100,7 +99,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
             </div>
           ))}
         </div>
-      </div> */}
+      </div>
 
       <div className="row my-3">
         <div className="offset-4 col-5">
