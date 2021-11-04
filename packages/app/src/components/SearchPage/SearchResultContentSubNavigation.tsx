@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import PagePathNav from '../Navbar/PagePathNav';
+import PagePathNav from '../PagePathNav';
 
 type Props = {
   pageId: string,
