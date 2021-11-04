@@ -18,12 +18,11 @@ const SidebarContents = (props) => {
     return null;
   }
 
-  let Contents;
-  if (navigationContainer.state.sidebarContentsId === 'resent') {
+  if (navigationContainer.state.sidebarContentsId === 'recent') {
     return <RecentChanges />;
   }
   if (navigationContainer.state.sidebarContentsId === 'tag') {
-    return <Tag appContainer={appContainer} />;
+    return <Tag appContainer={appContainer} navigationContainer={navigationContainer} />;
   }
 
   return <CustomSidebar />;
