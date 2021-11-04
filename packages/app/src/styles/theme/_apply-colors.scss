@@ -593,22 +593,12 @@ body.pathname-sidebar {
         background-color: $bgcolor-keyword-highlighted;
       }
       .page-list-ul {
-        > li.nav-item > a.nav-link {
-          color: inherit;
-        }
-        a {
-          &.hover {
-            background-color: darken($bgcolor-global, 4%);
-          }
+        .page-list-li {
           &.active {
-            background-color: darken($bgcolor-global, 8%);
-            border-color: theme-color('primary');
+            background-color: $bgcolor-search-item-active;
+            border-color: $bordercolor-search-item-left-active;
           }
         }
-      }
-      .active {
-        background-color: $bgcolor-search-item-active;
-        border-color: $bordercolor-search-item-left-active;
       }
     }
   }
