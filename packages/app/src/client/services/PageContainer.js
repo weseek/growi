@@ -328,10 +328,10 @@ export default class PageContainer extends Container {
     });
   }
 
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
+  async toggleBookmark(pageId = this.state.pageId, isBookmarked = this.state.isBookmarked, updateStatus = this.retrieveBookmarkInfo) {
+    const bool = !isBookmarked;
+    await this.appContainer.apiv3Put('/bookmarks', { pageId, bool });
+    return updateStatus();
   }
 
   async checkAndUpdateImageUrlCached(users) {
