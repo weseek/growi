@@ -1,10 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
-
-export const NONE_CHECKED = 'NONE_CHECKED';
-export const INDETERMINATE = 'INDETERMINATE';
-export const ALL_CHECKED = 'ALL_CHECKED';
+// import checkboxType from '../../interfaces/search';
 
 const logger = loggerFactory('growi:searchResultList');
 
@@ -25,17 +22,13 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
     console.log(`changeCheckboxStateHandler is called. current changebox state is ${checkboxState}`);
     // Todo: determine next checkboxState from one of the following and tell the parent component
     // to change the checkboxState by passing onCheckInvoked function the next checkboxState
-    // - 'NONE_CHECKED'
-    // - 'INDETERMINATE'
-    // - 'ALL_CHECKED'
+    // - NONE_CHECKED
+    // - INDETERMINATE
+    // - ALL_CHECKED
     // https://estoc.weseek.co.jp/redmine/issues/77525
-    try {
-      if (onCheckInvoked == null) { throw new Error('onCheckInvoked is null') }
-      onCheckInvoked('');
-    }
-    catch (error) {
-      logger.error(error);
-    }
+    // use checkboxType by importing from interfaces
+    if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
+    else { onCheckInvoked('') }
   };
 
 
@@ -53,13 +46,8 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
         type="button"
         className="text-danger font-weight-light"
         onClick={() => {
-          try {
-            if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-            onClickInvoked();
-          }
-          catch (error) {
-            logger.error(error);
-          }
+          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
+          else { onClickInvoked() }
         }}
       >
         <i className="icon-trash ml-3"></i>
