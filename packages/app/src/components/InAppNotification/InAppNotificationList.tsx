@@ -5,7 +5,7 @@ import { IInAppNotification } from '../../interfaces/in-app-notification';
 import { InAppNotification } from './InAppNotification';
 
 type Props = {
-  inAppNotificationData: PaginateResult<IInAppNotification>;
+  inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
