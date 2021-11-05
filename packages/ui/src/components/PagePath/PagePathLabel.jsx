@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { DevidedPagePath } from '@growi/core';
@@ -9,13 +9,13 @@ export const PagePathLabel = (props) => {
   let classNames = [''];
   classNames = classNames.concat(props.additionalClassNames);
 
-  const displayPath = (reactElement) => {
+  const displayPath = useMemo((reactElement) => {
     if (props.isPathIncludedHtml) {
       // eslint-disable-next-line react/no-danger
       return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
     }
     return <span className={classNames.join(' ')}>{reactElement.props.children}</span>;
-  };
+  }, [props.isPathIncludedHtml]);
 
 
   if (props.isLatterOnly) {
