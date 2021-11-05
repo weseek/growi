@@ -17,13 +17,13 @@ type Props ={
       snippet: string,
     }
   },
-  selectedPageId?: string,
-  onClickInvoked: (data: string) => void,
+  isSelected: boolean,
+  onClickInvoked?: (data: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const { page, selectedPageId, onClickInvoked } = props;
+  const { page, isSelected, onClickInvoked } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -36,7 +36,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
 
   return (
-    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${page._id === selectedPageId ? 'active' : ''}`}>
+    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}

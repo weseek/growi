@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
-      selectedPage: {},
+      focusedPage: {},
       selectedPages: new Set(),
       excludeUsersHome: true,
       excludeTrash: true,
@@ -119,7 +119,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: res.data,
             searchResultMeta: res.meta,
-            selectedPage: res.data[0],
+            focusedPage: res.data[0],
           });
         }
         else {
@@ -127,7 +127,7 @@ class SearchPage extends React.Component {
             searchedKeyword: keyword,
             searchedPages: [],
             searchResultMeta: {},
-            selectedPage: {},
+            focusedPage: {},
           });
         }
       })
@@ -141,7 +141,7 @@ class SearchPage extends React.Component {
       return page._id === pageId;
     });
     this.setState({
-      selectedPage: this.state.searchedPages[index],
+      focusedPage: this.state.searchedPages[index],
     });
   }
 
@@ -159,7 +159,7 @@ class SearchPage extends React.Component {
       <SearchResultContent
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
-        selectedPage={this.state.selectedPage}
+        focusedPage={this.state.focusedPage}
       >
       </SearchResultContent>
     );
@@ -170,7 +170,7 @@ class SearchPage extends React.Component {
       <SearchResultList
         pages={this.state.searchedPages}
         deletionMode={false}
-        selectedPage={this.state.selectedPage}
+        focusedPage={this.state.focusedPage}
         selectedPages={this.state.selectedPages}
         onClickInvoked={this.selectPage}
         onChangedInvoked={this.toggleCheckBox}

@@ -5,8 +5,9 @@ import SearchResultListItem from './SearchResultListItem';
 class SearchResultList extends React.Component {
 
   render() {
-    const { selectedPage } = this.props;
-    const selectedPageId = selectedPage != null && selectedPage.id != null ? selectedPage.id : '';
+    const { focusedPage } = this.props;
+    const focusedPageId = focusedPage != null && focusedPage.id != null ? focusedPage.id : '';
+    console.log(focusedPageId);
     return this.props.pages.map((page) => {
       // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
       //         when keyword is not in page content, display revisionBody.
@@ -15,8 +16,8 @@ class SearchResultList extends React.Component {
         <SearchResultListItem
           key={page._id}
           page={page}
-          selectedPageId={selectedPageId}
           onClickInvoked={this.props.onClickInvoked}
+          isSelected={page._id === focusedPageId || false}
           noLink
         />
       );
@@ -28,7 +29,7 @@ class SearchResultList extends React.Component {
 SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
-  selectedPage: PropTypes.object,
+  focusedPage: PropTypes.object,
   selectedPages: PropTypes.array.isRequired,
   onClickInvoked: PropTypes.func,
   onChangeInvoked: PropTypes.func,
