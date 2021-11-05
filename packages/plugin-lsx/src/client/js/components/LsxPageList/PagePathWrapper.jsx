@@ -13,7 +13,7 @@ export class PagePathWrapper extends React.Component {
     }
 
     return (
-      <PagePathLabel page={{ path: this.props.pagePath }} isLatterOnly additionalClassNames={classNames} />
+      <PagePathLabel path={this.props.pagePath} isLatterOnly additionalClassNames={classNames} />
     );
   }
 

@@ -15,6 +15,7 @@ type Props ={
     lastUpdateUser: any
     elasticSearchResult: {
       snippet: string,
+      highlightedPath: string,
     }
   },
   onClickInvoked: (data: string) => void,
@@ -27,8 +28,10 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
 
+  const isPathIncludedHtml = props.page.elasticSearchResult.highlightedPath != null;
+
   const dPagePath = new DevidedPagePath(page.path, false, true);
-  const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+  const pagePathElem = <PagePathLabel path={props.page.elasticSearchResult.highlightedPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.

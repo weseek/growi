@@ -2,8 +2,8 @@ import * as pathUtils from '../utils/path-utils';
 
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
-// https://regex101.com/r/WVpPpY/1
-const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
+// https://regex101.com/r/HJNvMW/1
+const PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/;
 
 export class DevidedPagePath {
 
