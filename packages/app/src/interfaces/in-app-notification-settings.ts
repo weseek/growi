@@ -3,11 +3,11 @@ import { Schema } from 'mongoose';
 export enum subscribeRules {
   PAGE_CREATE = 'PAGE_CREATE'
 }
-export interface IDefaultSubscribeRule {
+export interface ISubscribeRule {
   name: subscribeRules;
   isEnabled: boolean;
 }
 export interface IInAppNotificationSettings {
   userId: Schema.Types.ObjectId;
-  defaultSubscribeRules: IDefaultSubscribeRule[];
+  subscribeRules: ISubscribeRule[];
 }

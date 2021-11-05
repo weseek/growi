@@ -8,7 +8,7 @@ export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocu
 
 const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
   userId: { type: String },
-  defaultSubscribeRules: [
+  subscribeRules: [
     {
       name: { type: String, require: true, enum: subscribeRules },
       isEnabled: { type: Boolean },
