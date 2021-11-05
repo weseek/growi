@@ -81,6 +81,7 @@ function Crowi() {
     user: new (require('../events/user'))(this),
     page: new (require('../events/page'))(this),
     bookmark: new (require('../events/bookmark'))(this),
+    comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
   };

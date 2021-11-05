@@ -51,6 +51,24 @@ module.exports = function(crowi) {
     return this.find({ revision: id }).sort({ createdAt: -1 });
   };
 
+
+  /**
+   * @return {object} key: page._id, value: comments
+   */
+  commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
+    const results = await this.aggregate()
+      .match({ page: { $in: pageIds } })
+      .group({ _id: '$page', comments: { $push: '$comment' } });
+
+    // convert to map
+    const idToCommentMap = {};
+    results.forEach((result, i) => {
+      idToCommentMap[result._id] = result.comments;
+    });
+
+    return idToCommentMap;
+  };
+
   commentSchema.statics.countCommentByPageId = function(page) {
     const self = this;
 
