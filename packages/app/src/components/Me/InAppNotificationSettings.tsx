@@ -11,10 +11,18 @@ type SubscribeRule = {
   isEnabled: boolean,
 }
 
+enum SubscribeRuleName {
+  PAGE_CREATE = 'PAGE_CREATE',
+}
+
+enum SubscribeDescription {
+  PAGE_CREATE = 'in_app_notification_settings.default_subscribe_rules.page_create',
+}
+
 const subscribeRulesMenuItems = [
   {
-    name: 'PAGE_CREATE',
-    description: 'in_app_notification_settings.default_subscribe_rules.page_create',
+    name: SubscribeRuleName.PAGE_CREATE,
+    description: SubscribeDescription.PAGE_CREATE,
   },
 ];
 
