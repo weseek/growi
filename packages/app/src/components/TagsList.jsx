@@ -68,26 +68,32 @@ class TagsList extends React.Component {
     const messageForNoTag = this.state.tagData.length ? null : <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
 
     return (
-      <div className="row text-center">
-        <div className="col-12 mb-5 px-5">
-          <TagCloudBox tags={this.state.tagData} minSize={20} />
+      <>
+        <header className="py-0">
+          <h1 className="title text-center mt-5 mb-3 font-weight-bold">{`${t('Tags')}(${this.state.totalTags})`}</h1>
+        </header>
+        <div className="row text-center">
+          <div className="col-12 mb-5 px-5">
+            <TagCloudBox tags={this.state.tagData} minSize={20} />
+          </div>
+          <div className="col-12 tag-list mb-4">
+            <ul className="list-group text-left">
+              {this.generateTagList(this.state.tagData)}
+            </ul>
+            {messageForNoTag}
+          </div>
+          <div className="col-12 tag-list-pagination">
+            <PaginationWrapper
+              activePage={this.state.activePage}
+              changePage={this.handlePage}
+              totalItemsCount={this.state.totalTags}
+              pagingLimit={this.state.pagingLimit}
+              align="center"
+              size="md"
+            />
+          </div>
         </div>
-        <div className="col-12 tag-list">
-          <ul className="list-group text-left">
-            {this.generateTagList(this.state.tagData)}
-          </ul>
-          {messageForNoTag}
-        </div>
-        <div className="tag-list-pagination">
-          <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.handlePage}
-            totalItemsCount={this.state.totalTags}
-            pagingLimit={this.state.pagingLimit}
-            size="sm"
-          />
-        </div>
-      </div>
+      </>
     );
   }
 
