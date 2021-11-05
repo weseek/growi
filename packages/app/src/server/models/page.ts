@@ -220,7 +220,7 @@ schema.statics.findAncestorsByPath = async function(path: string): Promise<PageD
     .exec();
 
   // no same path pages
-  const ancestorsMap: Map<string, PageDocument> = new Map();
+  const ancestorsMap = new Map<string, PageDocument>();
   _ancestors.forEach(page => ancestorsMap.set(page.path, page));
   const ancestors = Array.from(ancestorsMap.values());
 

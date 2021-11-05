@@ -8,7 +8,7 @@ import { PageDocument, PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
-import { ApiV3Response } from './apiv3-response';
+import { ApiV3Response } from './interfaces/apiv3-response';
 
 const { isTopPage } = pagePathUtils;
 
@@ -50,18 +50,19 @@ export default (crowi: Crowi): Router => {
 
     let siblings: PageDocument[];
     let ancestors: PageDocument[];
+    let target: PageDocument;
     try {
       siblings = await Page.findSiblingsByPathAndViewer(path as string, req.user);
       ancestors = await Page.findAncestorsByPath(path as string);
+
+      target = siblings.filter(page => page._id.toString() === id)?.[0];
+      if (target == null) {
+        throw Error('Target must exist.');
+      }
     }
     catch (err) {
       logger.error('Error occurred while finding pages.', err);
       return res.apiv3Err(new ErrorV3('Error occurred while finding pages.'));
-    }
-    const target = siblings.filter(page => page._id.toString() === id)?.[0];
-
-    if (target == null) {
-      throw Error('Target must exist.');
     }
 
     if (isTopPage(path as string)) {
