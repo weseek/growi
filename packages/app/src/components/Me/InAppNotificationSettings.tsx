@@ -23,6 +23,12 @@ const subscribeRulesMenuItems = [
   },
 ];
 
+const isCheckedRule = (ruleName: string, subscribeRules: SubscribeRule[]) => (
+  subscribeRules.find(stateRule => (
+    stateRule.name === ruleName
+  ))?.isEnabled || false
+);
+
 
 const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const { appContainer } = props;
@@ -48,12 +54,6 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
     }
 
   }, [appContainer]);
-
-  const isCheckedRule = (ruleName: string) => (
-    subscribeRules.find(stateRule => (
-      stateRule.name === ruleName
-    ))?.isEnabled || false
-  );
 
   const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
     setSubscribeRules(prevState => (
@@ -91,7 +91,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
                 type="checkbox"
                 className="custom-control-input"
                 id={rule.name}
-                checked={isCheckedRule(rule.name)}
+                checked={isCheckedRule(rule.name, subscribeRules)}
                 onChange={e => ruleCheckboxHandler(e.target.checked, rule.name)}
               />
               <label className="custom-control-label" htmlFor={rule.name}>
