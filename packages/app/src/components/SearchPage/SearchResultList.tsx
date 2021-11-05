@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
 import { IPageHasId } from '../../interfaces/page';
+import PaginationWrapper from '../PaginationWrapper';
 
 // TOOD: retrieve bookmark count and add it to the following type
 export type ISearchedPage = IPageHasId & {
@@ -16,6 +17,10 @@ type Props = {
   deletionMode: boolean,
   selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
+  searchResultCount: number,
+  activePage: number,
+  pagingLimit: number,
+  onPagingNumberChanged: (activePage: number) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
@@ -29,6 +34,17 @@ const SearchResultList: FC<Props> = (props:Props) => {
           />
         );
       })}
+      {props.searchResultCount != null && props.searchResultCount > 0 && (
+        <div className="my-4 mx-auto">
+          <PaginationWrapper
+            activePage={props.activePage}
+            changePage={props.onPagingNumberChanged}
+            totalItemsCount={props.searchResultCount || 0}
+            pagingLimit={props.pagingLimit}
+          />
+        </div>
+      )}
+
     </>
   );
 
