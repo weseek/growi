@@ -10,7 +10,7 @@ import nodePath from 'path';
 import { getOrCreateModel, pagePathUtils } from '@growi/core';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { IPage } from '~/interfaces/page';
+import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
 
 const { isTopPage } = pagePathUtils;
@@ -157,12 +157,34 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   return parentId;
 };
 
+schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage[]> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+
+  let relatedUserGroups = userGroups;
+  if (user != null && relatedUserGroups == null) {
+    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
+    relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+
+  const queryBuilder = new PageQueryBuilder(baseQuery);
+  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
+
+  return queryBuilder.query.exec();
+};
+
+
+/*
+ * Merge obsolete page model methods and define new methods which depend on crowi instance
+ */
 export default (crowi: Crowi): any => {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };
   schema.statics = { ...pageSchema.statics, ...schema.statics };
-
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema);
 };
