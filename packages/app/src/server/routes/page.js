@@ -564,11 +564,11 @@ module.exports = function(crowi, app) {
    */
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false);
+    const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
-      // TODO: return res.render('layout-growi/select_same_path_page', renderVars);
-      // TODO: put redirectFrom into renderVars
-      return res.send('Two or more pages found.');
+      // pass only redirectFrom since it is not sure whether the query params are related to the pages
+      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
     }
 
     const queryParams = new URLSearchParams();
