@@ -38,7 +38,7 @@ export default class AdminLocalSecurityContainer extends Container {
       const { localSetting } = response.data.securityParams;
 
       this.setState({
-        isMailerSetup: appSettingsParams.isMailerSetup,
+        isMailerSetup: appSettingsParams.isMailerSetup, // add isMailerSetup for email authentication condition
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
