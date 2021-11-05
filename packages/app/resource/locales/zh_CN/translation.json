@@ -839,7 +839,7 @@
 		"use_os_settings": "使用操作系统设置"
 	},
 	"search_result": {
-		"result_meta": "在{{total}中找到了{{keyword}。",
+		"result_meta": "搜索结果为 \"{{keyword}}\"",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",
 		"delete": "删除",

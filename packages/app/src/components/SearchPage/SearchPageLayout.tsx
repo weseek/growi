@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type SearchResultMeta = {
   took : number,
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const SearchPageLayout: FC<Props> = (props: Props) => {
+  const { t } = useTranslation('');
   const { SearchResultList, SearchControl, SearchResultContent } = props;
   return (
     <div className="content-main">
@@ -23,7 +25,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
           <nav><SearchControl></SearchControl></nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
             <div className="search-result-meta">
-              <i className="icon-magnifier" /> Found {props.searchResultMeta.total} pages with &quot;{props.searchingKeyword}&quot;
+              <i className="icon-magnifier" /> {t('search_result.result_meta', { keyword: props.searchingKeyword })}
             </div>
           </div>
 
