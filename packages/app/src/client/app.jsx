@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
+import { SWRConfig } from 'swr';
+
 import loggerFactory from '~/utils/logger';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import AllInAppNotifications from '../components/InAppNotification/AllInAppNotifications';
 import ErrorBoundary from '../components/ErrorBoudary';
@@ -158,9 +161,11 @@ Object.keys(componentMappings).forEach((key) => {
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
         <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
+          <SWRConfig value={swrGlobalConfiguration}>
+            <Provider inject={injectableContainers}>
+              {componentMappings[key]}
+            </Provider>
+          </SWRConfig>
         </ErrorBoundary>
       </I18nextProvider>,
       elem,

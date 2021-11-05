@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
+import { getModelSafely } from '@growi/core';
 import loggerFactory from '../../utils/logger';
-import { getModelSafely } from '../util/mongoose-utils';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 

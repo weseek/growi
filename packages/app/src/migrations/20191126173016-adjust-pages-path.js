@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { pathUtils } from '@growi/core';
+import { pathUtils, getMongoUri, mongoOptions } from '@growi/core';
 
-import config from '^/config/migrate';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:adjust-pages-path');
@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:adjust-pages-path');
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const Page = require('~/server/models/page')();
 

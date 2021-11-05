@@ -4,6 +4,9 @@ import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
 
+import EditorSettings from '../../models/editor-settings';
+import InAppNotificationSettings from '../../models/in-app-notification-settings';
+
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
@@ -15,7 +18,7 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: PsersonalSetting
+ *    name: PersonalSetting
  */
 
 /**
@@ -97,6 +100,16 @@ module.exports = (crowi) => {
     disassociateLdap: [
       body('providerType').isString().not().isEmpty(),
       body('accountId').isString().not().isEmpty(),
+    ],
+    editorSettings: [
+      body('textlintSettings.isTextlintEnabled').optional().isBoolean(),
+      body('textlintSettings.textlintRules.*.name').optional().isString(),
+      body('textlintSettings.textlintRules.*.options').optional(),
+      body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
+    ],
+    inAppNotificationSettings: [
+      body('defaultSubscribeRules.*.name').isString(),
+      body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
   };
 
@@ -458,6 +471,161 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/editor-settings:
+   *      put:
+   *        tags: [EditorSetting]
+   *        operationId: putEditorSettings
+   *        summary: /editor-setting
+   *        description: Put editor preferences
+   *        responses:
+   *          200:
+   *            description: params of editor settings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: editor settings
+   */
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+    const query = { userId: req.user.id };
+    const textlintSettings = req.body.textlintSettings;
+    const document = {};
+
+    if (textlintSettings == null) {
+      return res.apiv3Err('no-settings-found');
+    }
+
+    if (textlintSettings.isTextlintEnabled != null) {
+      Object.assign(document, { 'textlintSettings.isTextlintEnabled': textlintSettings.isTextlintEnabled });
+    }
+    if (textlintSettings.textlintRules != null) {
+      Object.assign(document, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
+    }
+
+    // Insert if document does not exist, and return new values
+    // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
+    const options = { upsert: true, new: true };
+    try {
+      const response = await EditorSettings.findOneAndUpdate(query, { $set: document }, options);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('updating-editor-settings-failed');
+    }
+  });
+
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/editor-settings:
+   *      get:
+   *        tags: [EditorSetting]
+   *        operationId: getEditorSettings
+   *        summary: /editor-setting
+   *        description: Get editor preferences
+   *        responses:
+   *          200:
+   *            description: params of editor settings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: editor settings
+   */
+  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    try {
+      const query = { userId: req.user.id };
+      const response = await EditorSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-editor-settings-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      put:
+   *        tags: [in-app-notification-settings]
+   *        operationId: putInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Put InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: in-app-notification-settings
+   */
+  // eslint-disable-next-line max-len
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+    const query = { userId: req.user.id };
+    const defaultSubscribeRules = req.body.defaultSubscribeRules;
+
+    if (defaultSubscribeRules == null) {
+      return res.apiv3Err('no-rules-found');
+    }
+
+    const options = { upsert: true, new: true, runValidators: true };
+    try {
+      const response = await InAppNotificationSettings.findOneAndUpdate(query, { defaultSubscribeRules }, options);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('updating-in-app-notification-settings-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      get:
+   *        tags: [in-app-notification-settings]
+   *        operationId: getInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Get InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: InAppNotificationSettings
+   */
+  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const query = { userId: req.user.id };
+    try {
+      const response = await InAppNotificationSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-in-app-notification-settings-failed');
+    }
+  });
+
 
   return router;
 };
