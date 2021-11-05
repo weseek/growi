@@ -4,6 +4,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
@@ -36,7 +37,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
   const [subscribeRules, setSubscribeRules] = useState<SubscribeRule[]>([]);
 
   const initializeInAppNotificationSettings = useCallback(async() => {
-    const { data } = await appContainer.apiv3Get('/personal-setting/in-app-notification-settings');
+    const { data } = await apiv3Get('/personal-setting/in-app-notification-settings');
     const retrievedRules: SubscribeRule[] = data.subscribeRules;
 
     if (retrievedRules.length > 0) {
@@ -52,8 +53,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
       const initializedSubscribeRules = subscribeRulesMenuItems.map(rule => createRulesFormList(rule));
       setSubscribeRules(initializedSubscribeRules);
     }
-
-  }, [appContainer]);
+  }, []);
 
   const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
     setSubscribeRules(prevState => (
@@ -63,7 +63,7 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
 
   const updateSettingsHandler = async() => {
     try {
-      const { data } = await appContainer.apiv3Put('/personal-setting/in-app-notification-settings', { subscribeRules });
+      const { data } = await apiv3Put('/personal-setting/in-app-notification-settings', { subscribeRules });
       setSubscribeRules(data.subscribeRules);
       toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings' }));
     }
