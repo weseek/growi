@@ -1,14 +1,16 @@
 import express, {
-  NextFunction, Request, RequestHandler, Router,
+  Request, Router,
 } from 'express';
-import { body, query, param } from 'express-validator';
-import { IPage } from '../../../interfaces/page';
+import { pagePathUtils } from '@growi/core';
+import { query } from 'express-validator';
 
+import { IPage } from '../../../interfaces/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './apiv3-response';
-import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
+
+const { isTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
