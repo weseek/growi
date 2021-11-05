@@ -2,9 +2,9 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
+import { getOrCreateModel, getModelSafely } from '@growi/core';
 import loggerFactory from '../../utils/logger';
 
-import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 
 import ActivityDefine from '../util/activityDefine';
 import activityEvent from '../events/activity';

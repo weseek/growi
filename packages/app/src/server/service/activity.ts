@@ -1,6 +1,5 @@
+import { getModelSafely } from '@growi/core';
 import Crowi from '../crowi';
-
-import { getModelSafely } from '../util/mongoose-utils';
 
 
 class ActivityService {

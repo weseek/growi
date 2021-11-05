@@ -2,8 +2,8 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
+import { getOrCreateModel } from '@growi/core';
 import ActivityDefine from '../util/activityDefine';
-import { getOrCreateModel } from '../util/mongoose-utils';
 
 export const STATUS_SUBSCRIBE = 'SUBSCRIBE';
 export const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';

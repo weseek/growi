@@ -41,9 +41,9 @@ some messages...
 some messages...`;
 
       const output = `
-<div class="grw-togetter">
+<div class="grw-keep">
 
-## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>
+## **taichi-m**<span class="grw-keep-time">  12:23 PM</span>
 \u0020\u0020
 some messages...\u0020\u0020
 some messages...\u0020\u0020
@@ -72,9 +72,9 @@ some messages...
 some messages...`;
 
       const output = `
-<div class="grw-togetter">
+<div class="grw-keep">
 
-## **taichi-m**<span class="grw-togetter-time">  12:23</span>
+## **taichi-m**<span class="grw-keep-time">  12:23</span>
 \u0020\u0020
 some messages...\u0020\u0020
 some messages...\u0020\u0020
@@ -99,9 +99,9 @@ taichi-m  12:23 PM
 some messages...`;
 
       const output = `some messages...
-<div class="grw-togetter">
+<div class="grw-keep">
 
-## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>
+## **taichi-m**<span class="grw-keep-time">  12:23 PM</span>
 \u0020\u0020
 some messages...\u0020\u0020
 </div>\u0020\u0020

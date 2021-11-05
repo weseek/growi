@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-import config from '^/config/migrate';
-import { getModelSafely } from '~/server/util/mongoose-utils';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
@@ -9,7 +8,7 @@ const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const Page = getModelSafely('Page') || require('~/server/models/page')();
 

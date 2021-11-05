@@ -4,7 +4,7 @@ import axios from 'axios';
 import { addHours } from 'date-fns';
 
 import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp } from '@growi/slack';
-import { Relation } from '~/entities/relation';
+import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
 import loggerFactory from '~/utils/logger';
@@ -28,10 +28,13 @@ type CheckEachRelationResult = {
 export class RelationsService {
 
   @Inject()
-
   relationRepository: RelationRepository;
 
-  async getSupportedGrowiCommands(relation:Relation):Promise<any> {
+  async resetAllExpiredAtCommands(): Promise<void> {
+    await this.relationRepository.update({}, { expiredAtCommands: new Date('2000-01-01') });
+  }
+
+  private async getSupportedGrowiCommands(relation:Relation):Promise<any> {
     // generate API URL
     const url = new URL('/_api/v3/slack-integration/supported-commands', relation.growiUri);
     return axios.get(url.toString(), {
@@ -42,7 +45,7 @@ export class RelationsService {
     });
   }
 
-  async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
+  private async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
     const res = await this.getSupportedGrowiCommands(relation);
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
     if (relation !== null) {
@@ -54,70 +57,81 @@ export class RelationsService {
     throw Error('No relation exists.');
   }
 
-  async syncRelation(relation:Relation, baseDate:Date):Promise<Relation|null> {
-    if (relation == null) return null;
+  private async syncRelation(relation: Relation): Promise<Relation> {
+    // TODO use assert (relation != null)
 
-    const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
+    const isDataNull = relation.permissionsForBroadcastUseCommands == null || relation.permissionsForBroadcastUseCommands == null;
+    const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(new Date());
+    const isExpired = distanceMillisecondsToExpiredAt < 0;
 
-    if (distanceMillisecondsToExpiredAt < 0) {
-      try {
-        return await this.syncSupportedGrowiCommands(relation);
-      }
-      catch (err) {
-        logger.error(err);
-        return null;
-      }
+    if (isDataNull || isExpired) {
+      return this.syncSupportedGrowiCommands(relation);
     }
 
     // 24 hours
-    if (distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000) {
-      try {
-        this.syncSupportedGrowiCommands(relation);
-      }
-      catch (err) {
-        logger.error(err);
-      }
+    const isLimitUnder24Hours = distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000;
+    if (isLimitUnder24Hours) {
+      this.syncSupportedGrowiCommands(relation);
     }
-
     return relation;
   }
 
-  async isPermissionsForSingleUseCommands(relation:Relation, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
-    if (syncedRelation == null) {
+  private isPermitted(permissionSettings: PermissionSettingsInterface, growiCommandType: string, channelName: string): boolean {
+    // TODO assert (permissionSettings != null)
+
+    const permissionForCommand = permissionSettings[growiCommandType];
+
+    if (permissionForCommand == null) {
       return false;
     }
 
-    const permission = relation.permissionsForSingleUseCommands[growiCommandType];
-
-    if (permission == null) {
-      return false;
+    if (Array.isArray(permissionForCommand)) {
+      return permissionForCommand.includes(channelName);
     }
 
-    if (Array.isArray(permission)) {
-      return permission.includes(channelName);
-    }
-
-    return permission;
+    return permissionForCommand;
   }
 
-  async isPermissionsUseBroadcastCommands(relation:Relation, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
-    if (syncedRelation == null) {
+  async isPermissionsForSingleUseCommands(relation: Relation, growiCommandType: string, channelName: string): Promise<boolean> {
+    // TODO assert (relation != null)
+    if (relation == null) {
       return false;
     }
 
-    const permission = relation.permissionsForBroadcastUseCommands[growiCommandType];
+    let relationToEval = relation;
 
-    if (permission == null) {
+    try {
+      relationToEval = await this.syncRelation(relation);
+    }
+    catch (err) {
+      logger.error('failed to sync', err);
       return false;
     }
 
-    if (Array.isArray(permission)) {
-      return permission.includes(channelName);
+    // TODO assert (relationToEval.permissionsForSingleUseCommands != null) because syncRelation success
+
+    return this.isPermitted(relationToEval.permissionsForSingleUseCommands, growiCommandType, channelName);
+  }
+
+  async isPermissionsUseBroadcastCommands(relation: Relation, growiCommandType: string, channelName: string):Promise<boolean> {
+    // TODO assert (relation != null)
+    if (relation == null) {
+      return false;
     }
 
-    return permission;
+    let relationToEval = relation;
+
+    try {
+      relationToEval = await this.syncRelation(relation);
+    }
+    catch (err) {
+      logger.error('failed to sync', err);
+      return false;
+    }
+
+    // TODO assert (relationToEval.permissionsForSingleUseCommands != null) because syncRelation success
+
+    return this.isPermitted(relationToEval.permissionsForBroadcastUseCommands, growiCommandType, channelName);
   }
 
   async checkPermissionForInteractions(

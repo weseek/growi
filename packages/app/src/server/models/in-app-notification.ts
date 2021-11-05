@@ -3,10 +3,10 @@ import {
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
+import { getOrCreateModel } from '@growi/core';
 import Activity, { ActivityDocument } from './activity';
 import ActivityDefine from '../util/activityDefine';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 
 const logger = loggerFactory('growi:models:inAppNotification');
