@@ -21,11 +21,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { appContainer } = props;
 
   const [count, setCount] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
-  // const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
-  const { data: inAppNotificationData, error, mutate } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
 
   useEffect(() => {
     initializeSocket(props);
@@ -62,22 +60,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
-  /**
-    * TODO: Fetch notification list by GW-7473
-    */
-  const fetchNotificationList = async() => {
-    const limit = 6;
-    try {
-      // const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
-
-      // setNotifications(paginationResult.data.docs);
-      setIsLoaded(true);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  };
-
   const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
       updateNotificationStatus();
@@ -85,10 +67,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
     const newIsOpenState = !isOpen;
     setIsOpen(newIsOpenState);
-
-    if (newIsOpenState === true) {
-      fetchNotificationList();
-    }
   };
 
   /**

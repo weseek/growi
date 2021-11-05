@@ -6,12 +6,10 @@ import { InAppNotification } from './InAppNotification';
 
 type Props = {
   inAppNotificationData: PaginateResult<IInAppNotification>;
-  // isLoaded: boolean;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
   const { inAppNotificationData } = props;
-  // console.log('notifications_InAppNotificationList', notifications);
 
   if (inAppNotificationData == null) {
     return (
@@ -64,10 +62,6 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     return <>{notificationList}</>;
   };
 
-
-  // if (!props.isLoaded) {
-  //   return <RenderUnLoadedInAppNotification />;
-  // }
   return <RenderInAppNotificationList />;
 };
 
