@@ -2,29 +2,30 @@ import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
 
+type Ref<T> = string | T;
+
 export type IPage = {
-  _id?: any,
   path: string,
   status: string,
-  revision: any & IRevision,
-  tags: (any & ITag)[],
-  creator: any & IUser,
+  revision: Ref<IRevision>,
+  tags: Ref<ITag>[],
+  creator: Ref<IUser>,
   createdAt: Date,
   updatedAt: Date,
-  seenUsers: any[],
-  parent: any & IPage,
+  seenUsers: Ref<IUser>[],
+  parent: Ref<IPage>,
   isEmpty: boolean,
   redirectTo: string,
   grant: number,
-  grantedUsers: any,
-  grantedGroup: any,
-  lastUpdateUser: any,
-  liker: any[],
+  grantedUsers: Ref<IUser>[],
+  grantedGroup: Ref<any>,
+  lastUpdateUser: Ref<IUser>,
+  liker: Ref<IUser>[],
   commentCount: number
   slackChannels: string,
   pageIdOnHackmd: string,
-  revisionHackmdSynced: any,
+  revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
-  deleteUser: any,
+  deleteUser: Ref<IUser>,
   deletedAt: Date,
 }

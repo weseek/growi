@@ -35,9 +35,9 @@ export interface PageDocument extends IPage, Document {}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewer(path: string | null, user, userGroups): Promise<IPage[]>
-  findSiblingsByPathAndViewer(path: string | null, user, userGroups): Promise<IPage[]>
-  findAncestorsById(path: string): Promise<IPage[]>
+  findByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
+  findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
+  findAncestorsByPath(path: string): Promise<PageDocument[]>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -115,7 +115,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[]): Promis
   }
 };
 
-schema.statics.getParentIdAndFillAncestors = async function(path: string): Promise<string | null> {
+schema.statics.getParentIdAndFillAncestors = async function(path: string): Promise<Schema.Types.ObjectId> {
   const parentPath = nodePath.dirname(path);
 
   const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
@@ -163,7 +163,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   return parentId;
 };
 
-const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups): Promise<void> => {
+const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
   let relatedUserGroups = userGroups;
   if (user != null && relatedUserGroups == null) {
     const UserGroupRelation: any = mongoose.model('UserGroupRelation');
@@ -173,7 +173,9 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 };
 
-schema.statics.findByPathAndViewer = async function(path: string | null, user, userGroups, useFindOne = true): Promise<IPage | IPage[] | null> {
+schema.statics.findByPathAndViewer = async function(
+    path: string | null, user, userGroups = null, useFindOne = true,
+): Promise<PageDocument | PageDocument[] | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
@@ -185,7 +187,7 @@ schema.statics.findByPathAndViewer = async function(path: string | null, user, u
   return queryBuilder.query.exec();
 };
 
-schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<IPage[]> {
+schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<PageDocument[]> {
   if (path == null) {
     throw new Error('path is required.');
   }
@@ -205,12 +207,12 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
   return queryBuilder.query.lean().exec();
 };
 
-schema.statics.findAncestorsByPath = async function(path: string): Promise<IPage[]> {
+schema.statics.findAncestorsByPath = async function(path: string): Promise<PageDocument[]> {
   const ancestorPaths = collectAncestorPaths(path);
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
-  const _ancestors: IPage[] = await queryBuilder
+  const _ancestors: PageDocument[] = await queryBuilder
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortAncestorPages()
     .query
@@ -218,7 +220,7 @@ schema.statics.findAncestorsByPath = async function(path: string): Promise<IPage
     .exec();
 
   // no same path pages
-  const ancestorsMap: Map<string, IPage> = new Map();
+  const ancestorsMap: Map<string, PageDocument> = new Map();
   _ancestors.forEach(page => ancestorsMap.set(page.path, page));
   const ancestors = Array.from(ancestorsMap.values());
 

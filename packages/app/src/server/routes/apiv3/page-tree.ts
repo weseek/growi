@@ -4,7 +4,7 @@ import express, {
 import { pagePathUtils } from '@growi/core';
 import { query } from 'express-validator';
 
-import { IPage } from '../../../interfaces/page';
+import { PageDocument, PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
@@ -46,13 +46,13 @@ export default (crowi: Crowi): Router => {
   router.get('/pages', accessTokenParser, loginRequiredStrictly, ...validator.getPagesAroundTarget, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { id, path } = req.query;
 
-    const Page = crowi.model('Page');
+    const Page: PageModel = crowi.model('Page');
 
-    let siblings: IPage[];
-    let ancestors: IPage[];
+    let siblings: PageDocument[];
+    let ancestors: PageDocument[];
     try {
-      siblings = await Page.findSiblingsByPathAndViewer(path, req.user);
-      ancestors = await Page.findAncestorsByPath(path);
+      siblings = await Page.findSiblingsByPathAndViewer(path as string, req.user);
+      ancestors = await Page.findAncestorsByPath(path as string);
     }
     catch (err) {
       logger.error('Error occurred while finding pages.', err);
