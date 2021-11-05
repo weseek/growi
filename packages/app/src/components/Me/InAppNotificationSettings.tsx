@@ -54,7 +54,7 @@ const InAppNotificationSettings: FC = () => {
     ));
   };
 
-  const updateSettingsHandler = async() => {
+  const updateSettingsHandler = useCallback(async() => {
     try {
       const { data } = await apiv3Put('/personal-setting/in-app-notification-settings', { subscribeRules });
       setSubscribeRules(data.subscribeRules);
@@ -63,7 +63,7 @@ const InAppNotificationSettings: FC = () => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [subscribeRules, setSubscribeRules, t]);
 
   useEffect(() => {
     initializeInAppNotificationSettings();
