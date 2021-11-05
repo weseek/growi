@@ -1,21 +1,20 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
-// import { CheckboxType } from '../../interfaces/search';
+import { CheckboxType } from '../../interfaces/search';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
-  isChecked: boolean,
-  checkboxState: string,
+  checkboxState: CheckboxType,
   onClickInvoked?: () => void,
-  onCheckInvoked?: (string) => void,
+  onCheckInvoked?: (string:CheckboxType) => void,
 }
 
-const DeleteAllButton:FC<Props> = (props:Props) => {
+const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    isChecked, checkboxState, onClickInvoked, onCheckInvoked,
+    checkboxState, onClickInvoked, onCheckInvoked,
   } = props;
 
   const changeCheckboxStateHandler = () => {
@@ -28,7 +27,7 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
     // https://estoc.weseek.co.jp/redmine/issues/77525
     // use CheckboxType by importing from packages/app/src/interfaces/
     if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
-    else { onCheckInvoked('') }
+    else { onCheckInvoked(CheckboxType.ALL_CHECKED) } // change this to an appropriate value
   };
 
 
@@ -40,7 +39,7 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
         name="check-all-pages"
         className="custom-control custom-checkbox"
         onChange={changeCheckboxStateHandler}
-        checked={isChecked}
+        checked={checkboxState === CheckboxType.INDETERMINATE || checkboxState === CheckboxType.ALL_CHECKED}
       />
       <button
         type="button"
@@ -58,6 +57,6 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
 
 };
 
-DeleteAllButton.propTypes = {
+DeleteSelectedPageGroup.propTypes = {
 };
-export default DeleteAllButton;
+export default DeleteSelectedPageGroup;

@@ -37,8 +37,8 @@ const SearchControl: FC <Props> = (props: Props) => {
     // https://estoc.weseek.co.jp/redmine/issues/77525
   };
 
-  const onCheckAllPagesInvoked = () => {
-    console.log('onCheckAllPagesInvoked is called');
+  const onCheckAllPagesInvoked = (nextCheckboxState:CheckboxType) => {
+    console.log(`onCheckAllPagesInvoked is called with arg ${nextCheckboxState}`);
     // Todo: set the checkboxState, isChecked, and indeterminate value of checkbox element according to the passed argument
     // https://estoc.weseek.co.jp/redmine/issues/77525
 
@@ -59,7 +59,6 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          isChecked={false || false} // Todo: change the left value to appropriate value based on checkboxState
           checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
           onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
