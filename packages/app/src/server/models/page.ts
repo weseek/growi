@@ -35,7 +35,7 @@ export interface PageDocument extends IPage, Document {}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
   findAncestorsByPath(path: string): Promise<PageDocument[]>
 }
