@@ -29,6 +29,9 @@ const validator = {
     query('id').isMongoId().withMessage('id is required'),
     query('path').isString().withMessage('path is required'),
   ],
+  getChildPagesByParentId: [
+    query('id').isMongoId().withMessage('id is required'),
+  ],
 };
 
 /*
@@ -72,7 +75,8 @@ export default (crowi: Crowi): Router => {
     return res.apiv3({ target, ancestors, pages: siblings });
   });
 
-  router.get('/child-pages', accessTokenParser, loginRequiredStrictly, ...validator.getPagesAroundTarget, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  router.get('/child-pages', accessTokenParser, loginRequiredStrictly, ...validator.getChildPagesByParentId, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id } = req.query;
 
     const Page: PageModel = crowi.model('Page');
