@@ -22,7 +22,6 @@
     "src/client",
     "src/components",
     "src/linter-checker",
-    "src/migrations",
     "src/styles",
     "src/styles-hackmd",
     "src/test"

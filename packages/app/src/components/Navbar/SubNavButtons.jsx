@@ -6,36 +6,35 @@ import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';
-import LikeButton from '../LikeButton';
+import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ pageContainer }) => {
-  return (
-    <>
-      <span>
-        <SubscribeButton pageId={pageContainer.state.pageId} />
-      </span>
-      {pageContainer.isAbleToShowLikeButton && (
-        <span>
-          <LikeButton />
-        </span>
-      )}
-      <span>
-        <BookmarkButton />
-      </span>
-
-    </>
-  );
-};
-/* eslint-disable react/prop-types */
-
-
 const SubnavButtons = (props) => {
   const {
-    navigationContainer, pageContainer, isCompactMode,
+    appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
+
+  /* eslint-disable react/prop-types */
+  const PageReactionButtons = ({ pageContainer }) => {
+
+    return (
+      <>
+        <span>
+          <SubscribeButton pageId={pageContainer.state.pageId} />
+        </span>
+        {pageContainer.isAbleToShowLikeButtons && (
+          <span>
+            <LikeButtons />
+          </span>
+        )}
+        <span>
+          <BookmarkButton />
+        </span>
+      </>
+    );
+  };
+  /* eslint-enable react/prop-types */
 
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
@@ -44,8 +43,8 @@ const SubnavButtons = (props) => {
     <>
       {isViewMode && (
         <>
-          { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons pageContainer={pageContainer} /> }
-          { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+          {pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} />}
+          {pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} />}
         </>
       )}
     </>
