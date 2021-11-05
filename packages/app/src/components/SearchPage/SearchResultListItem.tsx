@@ -7,9 +7,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
-const MAX_SNIPPET_LENGTH = 150;
-const APPEND_SNIPPET_STRING = '...';
-
 type Props ={
   page: {
     _id: string,
@@ -32,23 +29,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
-  const snippet:string = page.elasticSearchResult.snippet || '';
-
-  const sliceSnippet = (snippet: string): string => {
-    // when regex pattern is not matched with less than MAX_SNIPPET_LENGTH characters slicedSnippet is null
-    const slicedAndMatchedSnippet: string[] | null = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/[\s\S]*<\/em>/g);
-    return slicedAndMatchedSnippet == null
-      ? `${snippet.slice(0, MAX_SNIPPET_LENGTH)}${APPEND_SNIPPET_STRING}` : `${slicedAndMatchedSnippet[0]}${APPEND_SNIPPET_STRING}`;
-  };
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.
   // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
 
   return (
-    <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
+    <li key={page._id} className="page-list-li search-page-item w-100 border-bottom pr-4">
       <a
-        className="d-block pt-3 searched-item-height"
+        className="d-block pt-3"
         href={pageId}
         onClick={() => {
           try {
@@ -99,10 +88,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </button> */}
 
             </div>
-            <div
-              className="mt-1 mb-2"
-              dangerouslySetInnerHTML={{ __html: snippet.length <= MAX_SNIPPET_LENGTH ? `${snippet}${APPEND_SNIPPET_STRING}` : sliceSnippet(snippet) }}
-            >
+            {/* eslint-disable-next-line react/no-danger */}
+            <div className="my-2 searched-page-snippet" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}>
             </div>
           </div>
         </div>
