@@ -2,6 +2,30 @@
   background-color: #f7f7f7;
 }
 
+.grw-search-form-in-search-result-page {
+  .btn-group-submit-search {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+  }
+
+  input {
+    border-radius: 16rem !important;
+  }
+
+  button {
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
 .search-listpage-icon {
   font-size: 16px;
   color: $gray-400;

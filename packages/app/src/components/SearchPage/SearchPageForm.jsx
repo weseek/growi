@@ -41,29 +41,29 @@ class SearchPageForm extends React.Component {
   render() {
     return (
       // TODO: modify design after other component is created
-      <div className="grw-search-form-in-search-result-page d-flex">
+      <div className="grw-search-form-in-search-result-page d-flex align-items-center">
         <div className="input-group flex-nowrap">
           <SearchForm
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
           />
-        </div>
-        <div className="input-group-append">
-          <button
-            type="button"
-            id="button-addon2"
-            onClick={() => {
-              try {
-                this.search();
-              }
-              catch (error) {
-                logger.error(error);
-              }
-            }}
-          >
-            <i className="icon-magnifier"></i>
-          </button>
+          <div className="btn-group-submit-search">
+            <button
+              className="btn border-0"
+              type="button"
+              onClick={() => {
+                try {
+                  this.search();
+                }
+                catch (error) {
+                  logger.error(error);
+                }
+              }}
+            >
+              <i className="pr-2 icon-magnifier"></i>
+            </button>
+          </div>
         </div>
       </div>
     );
