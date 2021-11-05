@@ -7,10 +7,16 @@ import { IInAppNotification } from '../interfaces/in-app-notification';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxInAppNotifications = <Data, Error>(
   limit: number,
-): SWRResponse<IInAppNotification[], Error> => {
-  const limitNum = limit;
+): SWRResponse<any, Error> => {
   return useSWR(
     '/in-app-notification/list',
-    endpoint => apiv3Get<{ notifications: IInAppNotification[], limitNum: number }>(endpoint).then(response => response.data?.notifications),
+    // endpoint => apiv3Get<{ notifications: IInAppNotification[], limit: number }>(endpoint).then(response => response.data?.notifications),
+    endpoint => apiv3Get(endpoint, { limit }).then((response) => {
+      console.log('responsehoges', response.data);
+
+      return {
+        data: response.data,
+      };
+    }),
   );
 };
