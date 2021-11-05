@@ -3,37 +3,43 @@ import PropTypes from 'prop-types';
 
 import { DevidedPagePath } from '@growi/core';
 
-export const PagePathLabel = (props) => {
-  const dPagePath = new DevidedPagePath(props.path, false, true);
 
-  let classNames = [''];
-  classNames = classNames.concat(props.additionalClassNames);
-
-  const displayPath = useMemo((reactElement) => {
-    if (props.isPathIncludedHtml) {
-      // eslint-disable-next-line react/no-danger
-      return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
+const TextElement = props => (
+  <>
+    { props.isHTML
+      ? <span dangerouslySetInnerHTML={{ __html: props.children }}></span>
+      : <>{props.children}</>
     }
-    return <span className={classNames.join(' ')}>{reactElement.props.children}</span>;
-  }, [classNames, props.isPathIncludedHtml]);
+  </>
+);
 
+export const PagePathLabel = (props) => {
+  const {
+    isLatterOnly, isFormerOnly, isPathIncludedHtml, additionalClassNames, path,
+  } = props;
+
+  const dPagePath = new DevidedPagePath(path, false, true);
+
+  const classNames = ['']
+    .concat(additionalClassNames);
+
+  let textElem;
 
   if (props.isLatterOnly) {
-    return displayPath(<>{dPagePath.latter}</>);
+    textElem = <TextElement isHTML={isPathIncludedHtml}>{dPagePath.latter}</TextElement>;
   }
-
-  if (props.isFormerOnly) {
-    const textElem = dPagePath.isFormerRoot
+  else if (props.isFormerOnly) {
+    textElem = dPagePath.isFormerRoot
       ? <>/</>
-      : <>{dPagePath.former}</>;
-    return displayPath(textElem);
+      : <TextElement isHTML={isPathIncludedHtml}>{dPagePath.former}</TextElement>;
+  }
+  else {
+    textElem = dPagePath.isRoot
+      ? <strong>/</strong>
+      : <TextElement isHTML={isPathIncludedHtml}>{dPagePath.former}/<strong>{dPagePath.latter}</strong></TextElement>;
   }
 
-  const textElem = dPagePath.isRoot
-    ? <><strong>/</strong></>
-    : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
-
-  return displayPath(textElem);
+  return <span className={classNames.join(' ')}>{textElem}</span>;
 };
 
 PagePathLabel.propTypes = {
