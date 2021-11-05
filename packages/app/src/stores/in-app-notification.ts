@@ -11,12 +11,6 @@ export const useSWRxInAppNotifications = <Data, Error>(
   return useSWR(
     '/in-app-notification/list',
     // endpoint => apiv3Get<{ notifications: IInAppNotification[], limit: number }>(endpoint).then(response => response.data?.notifications),
-    endpoint => apiv3Get(endpoint, { limit }).then((response) => {
-      console.log('responsehoges', response.data);
-
-      return {
-        data: response.data,
-      };
-    }),
+    endpoint => apiv3Get(endpoint, { limit }).then(response => response.data),
   );
 };
