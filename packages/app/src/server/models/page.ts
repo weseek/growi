@@ -38,6 +38,7 @@ export interface PageModel extends Model<PageDocument> {
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
   findAncestorsByPath(path: string): Promise<PageDocument[]>
+  findChildrenByParentIdAndViewer(parentId: string, user, userGroups?): Promise<PageDocument[]>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -245,6 +246,16 @@ schema.statics.findAncestorsByPath = async function(path: string): Promise<PageD
   const ancestors = Array.from(ancestorsMap.values());
 
   return ancestors;
+};
+
+/*
+ * Find all children by parent's id
+ */
+schema.statics.findChildrenByParentIdAndViewer = async function(parentId: string, user, userGroups = null): Promise<PageDocument[]> {
+  const queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }));
+  await addViewerCondition(queryBuilder, user, userGroups);
+
+  return queryBuilder.query.lean().exec();
 };
 
 

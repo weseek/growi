@@ -72,5 +72,20 @@ export default (crowi: Crowi): Router => {
     return res.apiv3({ target, ancestors, pages: siblings });
   });
 
+  router.get('/child-pages', accessTokenParser, loginRequiredStrictly, ...validator.getPagesAroundTarget, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const { id } = req.query;
+
+    const Page: PageModel = crowi.model('Page');
+
+    try {
+      const pages = await Page.findChildrenByParentIdAndViewer(id as string, req.user);
+      return res.apiv3({ pages });
+    }
+    catch (err) {
+      logger.error('Error occurred while finding children.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while finding children.'));
+    }
+  });
+
   return router;
 };
