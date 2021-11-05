@@ -15,7 +15,7 @@ export const PagePathLabel = (props) => {
       return <span dangerouslySetInnerHTML={{ __html: reactElement.props.children }}></span>;
     }
     return <span className={classNames.join(' ')}>{reactElement.props.children}</span>;
-  }, [props.isPathIncludedHtml]);
+  }, [classNames, props.isPathIncludedHtml]);
 
 
   if (props.isLatterOnly) {
