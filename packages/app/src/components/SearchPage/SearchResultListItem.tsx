@@ -51,7 +51,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       >
         <div className="d-flex">
           {/* checkbox */}
-          <div className="form-check my-auto mx-2">
+          <div className="form-check my-auto mr-3">
             <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
           </div>
           <div className="w-100">

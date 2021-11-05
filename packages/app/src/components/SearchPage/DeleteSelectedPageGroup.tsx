@@ -37,7 +37,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
-        className="custom-control custom-checkbox"
+        className="custom-control custom-checkbox ml-2"
         onChange={changeCheckboxStateHandler}
         checked={checkboxState === CheckboxType.INDETERMINATE || checkboxState === CheckboxType.ALL_CHECKED}
       />
