@@ -16,7 +16,14 @@ const Tag: FC<Props> = (props:Props) => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={() => {}}>
+        <button
+          type="button"
+          className="btn btn-sm ml-auto grw-btn-reload-rc"
+          onClick={() => {
+            // TODO: consider how to reload tags
+            console.log('reload tag');
+          }}
+        >
           <i className="icon icon-reload"></i>
         </button>
       </div>
@@ -29,10 +36,12 @@ const Tag: FC<Props> = (props:Props) => {
             window.location.href = '/tags';
           }}
         >
-          check all tag
+          {t('Check All tags')}
         </button>
       </div>
-      <TagsList crowi={appContainer} />
+      <div className="grw-container-convertible mb-5 pb-5">
+        <TagsList crowi={appContainer} />
+      </div>
     </>
   );
 

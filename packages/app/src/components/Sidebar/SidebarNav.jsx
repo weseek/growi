@@ -19,7 +19,6 @@ class SidebarNav extends React.Component {
 
   itemSelectedHandler = (contentsId) => {
     const { navigationContainer, onItemSelected } = this.props;
-    console.log(navigationContainer, ' in itemSelectedHandler:', onItemSelected);
     if (onItemSelected != null) {
       onItemSelected(contentsId);
     }
