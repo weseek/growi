@@ -571,13 +571,13 @@ module.exports = function(crowi, app) {
       return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
     }
 
-    const queryParams = new URLSearchParams();
-    Object.entries(req.query).forEach(([key, value], i) => {
-      queryParams.append(key, value);
-    });
-
     if (pages.length === 1) {
-      return res.safeRedirect(`/${pages[0]._id}?${queryParams.toString()}`);
+      const url = new URL('https://dummy.origin');
+      url.pathname = `/${pages[0]._id}`;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
     return next(); // to page.notFound
