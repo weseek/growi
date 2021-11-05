@@ -17,7 +17,10 @@ type Props = {
 
 const SearchPageLayout: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
-  const { SearchResultList, SearchControl, SearchResultContent } = props;
+  const {
+    SearchResultList, SearchControl, SearchResultContent, searchResultMeta, searchingKeyword,
+  } = props;
+
   return (
     <div className="content-main">
       <div className="search-result row" id="search-result">
@@ -25,7 +28,15 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
           <nav><SearchControl></SearchControl></nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
             <div className="search-result-meta">
-              <i className="icon-magnifier" /> {t('search_result.result_meta', { keyword: props.searchingKeyword })}
+              <span
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: t('search_result.result_meta',
+                    { keyword: searchingKeyword }),
+                }}
+              />
+              {/* Todo: replace "1-10" to the appropriate value */}
+              <span className="ml-3">1-10 / {searchResultMeta.total || 0}</span>
             </div>
           </div>
 
