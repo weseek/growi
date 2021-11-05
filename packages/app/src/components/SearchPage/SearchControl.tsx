@@ -2,9 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
-import DeleteSelectedPageGroup, {
-  NONE_CHECKED, // INDETERMINATE, ALL_CHECKED
-} from './DeleteSelectedPageGroup';
+import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
+import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
@@ -61,7 +60,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
           isChecked={false || false} // Todo: change the left value to appropriate value based on checkboxState
-          checkboxState={'' || NONE_CHECKED} // Todo: change the left value to appropriate value
+          checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
           onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
         />

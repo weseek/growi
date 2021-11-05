@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
-// import checkboxType from '../../interfaces/search';
+// import { CheckboxType } from '../../interfaces/search';
 
 const logger = loggerFactory('growi:searchResultList');
 
@@ -26,7 +26,7 @@ const DeleteAllButton:FC<Props> = (props:Props) => {
     // - INDETERMINATE
     // - ALL_CHECKED
     // https://estoc.weseek.co.jp/redmine/issues/77525
-    // use checkboxType by importing from interfaces
+    // use CheckboxType by importing from packages/app/src/interfaces/
     if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
     else { onCheckInvoked('') }
   };
