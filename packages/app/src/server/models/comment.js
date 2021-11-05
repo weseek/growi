@@ -1,5 +1,3 @@
-import { getModelSafely } from '@growi/core';
-
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
