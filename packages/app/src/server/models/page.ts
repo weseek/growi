@@ -35,7 +35,7 @@ export interface PageDocument extends IPage, Document {}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
   findAncestorsByPath(path: string): Promise<PageDocument[]>
 }
@@ -92,6 +92,9 @@ const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): strin
   return ancestorPaths;
 };
 
+/*
+ * Create empty pages if the page in paths didn't exist
+ */
 schema.statics.createEmptyPagesByPaths = async function(paths: string[]): Promise<void> {
   // find existing parents
   const builder = new PageQueryBuilder(this.find({}, { _id: 0, path: 1 }));
@@ -115,6 +118,13 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[]): Promis
   }
 };
 
+/*
+ * Find the pages parent and update if the parent exists.
+ * If not,
+ *   - first   run createEmptyPagesByPaths with ancestor's paths to ensure all the ancestors exist
+ *   - second  update ancestor pages' parent
+ *   - finally return the target's parent page id
+ */
 schema.statics.getParentIdAndFillAncestors = async function(path: string): Promise<Schema.Types.ObjectId> {
   const parentPath = nodePath.dirname(path);
 
@@ -163,6 +173,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   return parentId;
 };
 
+// Utility function to add viewer condition to PageQueryBuilder instance
 const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroups = null): Promise<void> => {
   let relatedUserGroups = userGroups;
   if (user != null && relatedUserGroups == null) {
@@ -173,6 +184,9 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 };
 
+/*
+ * Find a page by path and viewer. Pass false to useFindOne to use findOne method.
+ */
 schema.statics.findByPathAndViewer = async function(
     path: string | null, user, userGroups = null, useFindOne = true,
 ): Promise<PageDocument | PageDocument[] | null> {
@@ -187,6 +201,9 @@ schema.statics.findByPathAndViewer = async function(
   return queryBuilder.query.exec();
 };
 
+/*
+ * Find the siblings including the target page. When top page, it returns /any_level1 pages
+ */
 schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<PageDocument[]> {
   if (path == null) {
     throw new Error('path is required.');
@@ -207,6 +224,9 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
   return queryBuilder.query.lean().exec();
 };
 
+/*
+ * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
+ */
 schema.statics.findAncestorsByPath = async function(path: string): Promise<PageDocument[]> {
   const ancestorPaths = collectAncestorPaths(path);
 
