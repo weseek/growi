@@ -1,34 +1,47 @@
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 
 import { DevidedPagePath } from '@growi/core';
 
 
-const TextElement = props => (
+type TextElemProps = {
+  children?: React.ReactNode
+  isHTML?: boolean,
+}
+
+const TextElement: FC<TextElemProps> = (props: TextElemProps) => (
   <>
     { props.isHTML
-      ? <span dangerouslySetInnerHTML={{ __html: props.children }}></span>
+      // eslint-disable-next-line react/no-danger
+      ? <span dangerouslySetInnerHTML={{ __html: props.children?.toString() || '' }}></span>
       : <>{props.children}</>
     }
   </>
 );
 
-export const PagePathLabel = (props) => {
+
+type Props = {
+  path: string,
+  isLatterOnly?: boolean,
+  isFormerOnly?: boolean,
+  isPathIncludedHtml?: boolean,
+  additionalClassNames?: string[],
+}
+
+export const PagePathLabel: FC<Props> = (props:Props) => {
   const {
     isLatterOnly, isFormerOnly, isPathIncludedHtml, additionalClassNames, path,
   } = props;
 
   const dPagePath = new DevidedPagePath(path, false, true);
 
-  const classNames = ['']
-    .concat(additionalClassNames);
+  const classNames = additionalClassNames || [];
 
   let textElem;
 
-  if (props.isLatterOnly) {
+  if (isLatterOnly) {
     textElem = <TextElement isHTML={isPathIncludedHtml}>{dPagePath.latter}</TextElement>;
   }
-  else if (props.isFormerOnly) {
+  else if (isFormerOnly) {
     textElem = dPagePath.isFormerRoot
       ? <>/</>
       : <TextElement isHTML={isPathIncludedHtml}>{dPagePath.former}</TextElement>;
@@ -40,16 +53,4 @@ export const PagePathLabel = (props) => {
   }
 
   return <span className={classNames.join(' ')}>{textElem}</span>;
-};
-
-PagePathLabel.propTypes = {
-  isLatterOnly: PropTypes.bool,
-  isFormerOnly: PropTypes.bool,
-  isPathIncludedHtml: PropTypes.bool,
-  additionalClassNames: PropTypes.arrayOf(PropTypes.string),
-  path: PropTypes.string.isRequired,
-};
-
-PagePathLabel.defaultProps = {
-  additionalClassNames: [],
 };
