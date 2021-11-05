@@ -1,3 +1,7 @@
+.search-page-nav {
+  background-color: #f7f7f7;
+}
+
 .search-listpage-icon {
   font-size: 16px;
   color: $gray-400;
@@ -158,9 +162,17 @@
 .search-result {
   .search-result-list {
     position: sticky;
-    top: 64px;
+    top: 0px;
     height: 100vh;
     overflow-y: scroll;
+    /* for IE, Edge */
+    -ms-overflow-style: none;
+    /* for Firefox */
+    scrollbar-width: none;
+    /* for chrome and safari */
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .nav.nav-pills {
       > li {

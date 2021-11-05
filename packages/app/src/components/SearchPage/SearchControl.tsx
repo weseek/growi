@@ -30,17 +30,28 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <div className="">
-      <div className="search-page-input sps sps--abv">
-        <SearchPageFormTypeAny
-          keyword={props.searchingKeyword}
-          appContainer={props.appContainer}
-          onSearchFormChanged={props.onSearchInvoked}
-        />
+    <>
+      <div className="search-page-nav row py-3 align-items-center">
+        <div className="col-8">
+          <SearchPageFormTypeAny
+            keyword={props.searchingKeyword}
+            appContainer={props.appContainer}
+            onSearchFormChanged={props.onSearchInvoked}
+          />
+        </div>
+        <div className="col-4">
+          {/* TODO: replace the following button */}
+          <button type="button">related pages</button>
+        </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="d-flex my-4">
-        <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
+      <div className="row py-3 border-bottom border-gray">
+        <div className="col-3">
+          {/* TODO: replace the following button */}
+          <button type="button">delete button</button>
+        </div>
+        <div className="col-5"></div>
+        <div className="col-2 d-flex align-items-center border border-gray">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
             {t('Include Subordinated Target Page', { target: '/user' })}
           </label>
@@ -50,7 +61,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClick={() => onExcludeUsersHome()}
           />
         </div>
-        <div className="d-flex align-items-center border rounded border-gray px-2 mr-3">
+        <div className="col-2 d-flex align-items-center border border-gray">
           <label className="my-0 mr-2" htmlFor="flexCheckChecked">
             {t('Include Subordinated Target Page', { target: '/trash' })}
           </label>
@@ -61,7 +72,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

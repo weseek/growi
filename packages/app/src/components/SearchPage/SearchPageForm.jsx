@@ -51,7 +51,6 @@ class SearchPageForm extends React.Component {
         </div>
         <div className="input-group-append">
           <button
-            className="btn btn-secondary"
             type="button"
             id="button-addon2"
             onClick={() => {
