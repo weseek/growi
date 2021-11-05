@@ -3,14 +3,8 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-type Props = {
-  appContainer: AppContainer,
-};
 
 type SubscribeRule = {
   name: string,
@@ -31,8 +25,7 @@ const isCheckedRule = (ruleName: string, subscribeRules: SubscribeRule[]) => (
 );
 
 
-const InAppNotificationSettings: FC<Props> = (props: Props) => {
-  const { appContainer } = props;
+const InAppNotificationSettings: FC = () => {
   const { t } = useTranslation();
   const [subscribeRules, setSubscribeRules] = useState<SubscribeRule[]>([]);
 
@@ -120,5 +113,4 @@ const InAppNotificationSettings: FC<Props> = (props: Props) => {
   );
 };
 
-const InAppNotificationSettingWrapper = withUnstatedContainers(InAppNotificationSettings, [AppContainer]);
-export default InAppNotificationSettingWrapper;
+export default InAppNotificationSettings;
