@@ -1,15 +1,29 @@
 import React, { FC } from 'react';
 
+import { PaginateResult } from 'mongoose';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
 import { InAppNotification } from './InAppNotification';
 
 type Props = {
-  notifications: Array<IInAppNotification>;
-  isLoaded: boolean;
+  inAppNotificationData: PaginateResult<IInAppNotification>;
+  // isLoaded: boolean;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
-  const { notifications } = props;
+  const { inAppNotificationData } = props;
+  // console.log('notifications_InAppNotificationList', notifications);
+
+  if (inAppNotificationData == null) {
+    return (
+      <div className="wiki">
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      </div>
+    );
+  }
+
+  const notifications = inAppNotificationData.docs;
 
   const notificationClickHandler = async(notification: Notification) => {
     try {
@@ -51,9 +65,9 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
   };
 
 
-  if (!props.isLoaded) {
-    return <RenderUnLoadedInAppNotification />;
-  }
+  // if (!props.isLoaded) {
+  //   return <RenderUnLoadedInAppNotification />;
+  // }
   return <RenderInAppNotificationList />;
 };
 

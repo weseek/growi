@@ -8,6 +8,7 @@ import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
+import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
@@ -21,8 +22,10 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const [count, setCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const limit = 6;
+  const { data: inAppNotificationData, error, mutate } = useSWRxInAppNotifications(limit);
 
   useEffect(() => {
     initializeSocket(props);
@@ -65,9 +68,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const fetchNotificationList = async() => {
     const limit = 6;
     try {
-      const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
+      // const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
 
-      setNotifications(paginationResult.data.docs);
+      // setNotifications(paginationResult.data.docs);
       setIsLoaded(true);
     }
     catch (err) {
@@ -95,6 +98,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
 
+
+  // const notifications = inAppNotificationData.docs;
+
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a">
@@ -103,7 +109,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         </button>
       </DropdownToggle>
       <DropdownMenu className="px-2" right>
-        <InAppNotificationList notifications={notifications} isLoaded={isLoaded} />
+        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         <DropdownItem divider />
         {/* TODO: Able to show all notifications by #79317 */}
         <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">See All</a>

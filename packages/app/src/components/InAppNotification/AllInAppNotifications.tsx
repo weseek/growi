@@ -18,43 +18,43 @@ const AllInAppNotifications: FC<Props> = (props: Props) => {
   const { appContainer } = props;
   // const [notifications, setNotifications] = useState([]);
   const limit = 6;
-  const { data: inAppNotificationdata, error, mutate } = useSWRxInAppNotifications(limit);
   console.log('useSWRxInAppNotification_notifications', inAppNotificationdata);
+  const { data: inAppNotificationData, error, mutate } = useSWRxInAppNotifications(limit);
 
   const [isLoaded, setIsLoaded] = useState(false);
 
 
-  useEffect(() => {
-    fetchNotificationList();
-  }, []);
+  // useEffect(() => {
+  //   fetchNotificationList();
+  // }, []);
 
 
-  const fetchNotificationList = async() => {
-    // const limit = 6;
-    try {
-      // const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
+  // const fetchNotificationList = async() => {
+  // const limit = 6;
+  // try {
+  // const paginationResult = await appContainer.apiv3Get('/in-app-notification/list', { limit });
 
-      // setNotifications(paginationResult.data.docs);
-      setIsLoaded(true);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  };
+  // setNotifications(paginationResult.data.docs);
+  //     setIsLoaded(true);
+  //   }
+  //   catch (err) {
+  //     logger.error(err);
+  //   }
+  // };
 
-  if (inAppNotificationdata == null) {
-    return (
-      <div className="wiki">
-        <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
-      </div>
-    );
-  }
+  // if (inAppNotificationData == null) {
+  //   return (
+  //     <div className="wiki">
+  //       <div className="text-muted text-center">
+  //         <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  const notifications = inAppNotificationdata.docs;
+  // const notifications = inAppNotificationData.docs;
   return (
-    <InAppNotificationList notifications={notifications} isLoaded={isLoaded} />
+    <InAppNotificationList inAppNotificationData={inAppNotificationData} />
   );
 };
 
