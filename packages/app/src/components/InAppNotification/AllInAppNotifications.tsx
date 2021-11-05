@@ -51,7 +51,7 @@ const AllInAppNotifications: FC<Props> = (props: Props) => {
       </div>
     );
   }
-  const notifications = inAppNotificationdata.docs;
+  const notifications = inAppNotificationdata.data.docs;
   console.log('notifications!!', notifications);
 
   return (
