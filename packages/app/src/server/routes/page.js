@@ -571,13 +571,13 @@ module.exports = function(crowi, app) {
       return res.send('Two or more pages found.');
     }
 
-    let query = '';
+    const queryParams = new URLSearchParams();
     Object.entries(req.query).forEach(([key, value], i) => {
-      query += i === 0 ? `?${key}=${value}` : `&${key}=${value}`;
+      queryParams.append(key, value);
     });
 
     if (pages.length === 1) {
-      return res.safeRedirect(`/${pages[0]._id}${query}`);
+      return res.safeRedirect(`/${pages[0]._id}?${queryParams.toString()}`);
     }
 
     return next(); // to page.notFound
