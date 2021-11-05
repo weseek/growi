@@ -31,20 +31,10 @@ const InAppNotificationSettings: FC = () => {
 
   const initializeInAppNotificationSettings = useCallback(async() => {
     const { data } = await apiv3Get('/personal-setting/in-app-notification-settings');
-    const retrievedRules: SubscribeRule[] = data.subscribeRules;
+    const retrievedRules: SubscribeRule[] = data?.subscribeRules;
 
-    if (retrievedRules.length > 0) {
+    if (retrievedRules != null && retrievedRules.length > 0) {
       setSubscribeRules(retrievedRules);
-    }
-    else {
-      const createRulesFormList = (rule: {name: string}) => (
-        {
-          name: rule.name,
-          isEnabled: false,
-        }
-      );
-      const initializedSubscribeRules = subscribeRulesMenuItems.map(rule => createRulesFormList(rule));
-      setSubscribeRules(initializedSubscribeRules);
     }
   }, []);
 
