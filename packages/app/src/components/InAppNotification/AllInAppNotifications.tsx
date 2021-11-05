@@ -12,7 +12,6 @@ type Props = {
 };
 
 const AllInAppNotifications: FC<Props> = (props: Props) => {
-  // const [notifications, setNotifications] = useState([]);
   const limit = 6;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
 
