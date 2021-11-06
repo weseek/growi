@@ -219,6 +219,15 @@ export class PageQueryBuilder {
     return this;
   }
 
+  /*
+   * Add this condition when get any ancestor pages including the target's parent
+   */
+  addConditionToSortAncestorPages() {
+    this.query = this.query.sort('-path');
+
+    return this;
+  }
+
   addConditionToListByPathsArray(paths) {
     this.query = this.query
       .and({
