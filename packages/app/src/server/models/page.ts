@@ -99,14 +99,13 @@ const hasSlash = (str: string): boolean => {
  * Generate RE2 instance for one level lower path
  */
 const generateChildrenRegExp = (path: string): RE2 => {
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  let regexp = new RE2(`^${path}(\\/[^/]+)\\/?$`);
   // https://regex101.com/r/iu1vYF/1
   // ex. / OR /any_level1
-  if (isTopPage(path)) regexp = new RE2(/^\/[^\\/]*$/);
+  if (isTopPage(path)) return new RE2(/^\/[^\\/]*$/);
 
-  return regexp;
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RE2(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /*
