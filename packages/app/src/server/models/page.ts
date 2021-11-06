@@ -38,7 +38,7 @@ export interface PageModel extends Model<PageDocument> {
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
-  findAncestorsByPath(path: string): Promise<PageDocument[]>
+  findAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -83,14 +83,15 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return [];
+  if (isTopPage(path)) return ancestorPaths;
 
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
+  return collectAncestorPaths(parentPath, ancestorPaths);
+};
 
-  if (!isTopPage(path)) return collectAncestorPaths(parentPath, ancestorPaths);
-
-  return ancestorPaths;
+const hasSlash = (str: string): boolean => {
+  return str.includes('/');
 };
 
 /*
@@ -229,7 +230,19 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
 /*
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  */
-schema.statics.findAncestorsByPath = async function(path: string): Promise<PageDocument[]> {
+schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
+  let path;
+  if (!hasSlash(pathOrId)) {
+    const _id = pathOrId;
+    const page = await this.findOne({ _id });
+    if (page == null) throw Error('Page not found.');
+
+    path = page.path;
+  }
+  else {
+    path = pathOrId;
+  }
+
   const ancestorPaths = collectAncestorPaths(path);
 
   // Do not populate
