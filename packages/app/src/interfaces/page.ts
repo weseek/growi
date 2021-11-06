@@ -1,8 +1,8 @@
+import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
 
-type Ref<T> = string | T;
 
 export type IPage = {
   path: string,
