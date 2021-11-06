@@ -39,6 +39,7 @@ export interface PageModel extends Model<PageDocument> {
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
   findAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
+  findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -92,6 +93,19 @@ const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): strin
 
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
+};
+
+/*
+ * Generate RE2 instance for one level lower path
+ */
+const generateChildrenRegExp = (path: string): RE2 => {
+  // https://regex101.com/r/iu1vYF/1
+  // ex. / OR /any_level1
+  if (isTopPage(path)) return new RE2(/^\/[^\\/]*$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RE2(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /*
@@ -214,12 +228,7 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
   const _parentPath = nodePath.dirname(path);
   const parentPath = isTopPage(_parentPath) ? '' : _parentPath;
 
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  let regexp = new RE2(`^${parentPath}(\\/[^/]+)\\/?$`);
-  // https://regex101.com/r/iu1vYF/1
-  // ex. / OR /any_level1
-  if (isTopPage(path)) regexp = new RE2(/^\/[^\\/]*$/);
+  const regexp = generateChildrenRegExp(parentPath);
 
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source, $options: regexp.flags } }));
   await addViewerCondition(queryBuilder, user, userGroups);
@@ -260,6 +269,25 @@ schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promi
   const ancestors = Array.from(ancestorsMap.values());
 
   return ancestors;
+};
+
+/*
+ * Find all children by parent's path or id. Using id should be prioritized
+ */
+schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
+  let queryBuilder: PageQueryBuilder;
+  if (hasSlash(parentPathOrId)) {
+    const path = parentPathOrId;
+    const regexp = generateChildrenRegExp(path);
+    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }));
+  }
+  else {
+    const parentId = parentPathOrId;
+    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }));
+  }
+  await addViewerCondition(queryBuilder, user, userGroups);
+
+  return queryBuilder.query.lean().exec();
 };
 
 
