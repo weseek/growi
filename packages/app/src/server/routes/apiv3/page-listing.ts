@@ -73,6 +73,9 @@ export default (crowi: Crowi): Router => {
     return res.apiv3({ target, siblings });
   });
 
+  /*
+   * In most cases, using path should be prioritized
+   */
   // eslint-disable-next-line max-len
   router.get('/ancestors', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { id, path } = req.query;
@@ -95,14 +98,17 @@ export default (crowi: Crowi): Router => {
     return res.apiv3({ ancestors });
   });
 
+  /*
+   * In most cases, using id should be prioritized
+   */
   // eslint-disable-next-line max-len
-  router.get('/child-pages', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
 
     try {
-      const pages = await Page.findChildrenByParentIdAndViewer((id || path)as string, req.user);
+      const pages = await Page.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
       return res.apiv3({ pages });
     }
     catch (err) {

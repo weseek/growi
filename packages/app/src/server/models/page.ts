@@ -273,16 +273,17 @@ schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promi
 };
 
 /*
- * Find all children by parent's id
+ * Find all children by parent's path or id. Using id should be prioritized
  */
 schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
   let queryBuilder: PageQueryBuilder;
   if (hasSlash(parentPathOrId)) {
     const path = parentPathOrId;
     const regexp = generateChildrenRegExp(path);
-    queryBuilder = new PageQueryBuilder(this.find({ parent: { $regex: regexp } }));
+    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }));
   }
   else {
+    const parentId = parentPathOrId;
     queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }));
   }
   await addViewerCondition(queryBuilder, user, userGroups);
