@@ -6,6 +6,7 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import nodePath from 'path';
+import RE2 from 're2';
 
 import { getOrCreateModel, pagePathUtils } from '@growi/core';
 import loggerFactory from '../../utils/logger';
@@ -210,15 +211,16 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
   }
 
   const _parentPath = nodePath.dirname(path);
-
-  // regexr.com/6889f
-  // ex. /parent/any_child OR /any_level1
   const parentPath = isTopPage(_parentPath) ? '' : _parentPath;
-  let regexp = new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`);
-  // ex. / OR /any_level1
-  if (isTopPage(path)) regexp = /^\/[^/]*$/g;
 
-  const queryBuilder = new PageQueryBuilder(this.find({ path: regexp }));
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  let regexp = new RE2(`^${parentPath}(\\/[^/]+)\\/?$`);
+  // https://regex101.com/r/iu1vYF/1
+  // ex. / OR /any_level1
+  if (isTopPage(path)) regexp = new RE2(/^\/[^\\/]*$/);
+
+  const queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source, $options: regexp.flags } }));
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.lean().exec();
