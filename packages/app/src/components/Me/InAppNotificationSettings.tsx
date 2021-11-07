@@ -34,9 +34,8 @@ const isCheckedRule = (ruleName: string, subscribeRules: SubscribeRule[]) => (
 );
 
 const updateIsEnabled = (subscribeRules: SubscribeRule[], ruleName: string, isChecked: boolean) => {
-  const updateTarget: SubscribeRule = { name: ruleName, isEnabled: isChecked };
-  const removeTarget = [{ name: ruleName }];
-  return pullAllBy(subscribeRules, removeTarget, 'name').concat(updateTarget);
+  const target = [{ name: ruleName, isEnabled: isChecked }];
+  return pullAllBy(subscribeRules, target, 'name').concat(target);
 };
 
 
