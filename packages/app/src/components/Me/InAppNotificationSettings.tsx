@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { pullAllBy } from 'lodash';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
@@ -32,6 +33,12 @@ const isCheckedRule = (ruleName: string, subscribeRules: SubscribeRule[]) => (
   ))?.isEnabled || false
 );
 
+const updateIsEnabled = (subscribeRules: SubscribeRule[], ruleName: string, isChecked: boolean) => {
+  const updateTarget: SubscribeRule = { name: ruleName, isEnabled: isChecked };
+  const removeTarget = [{ name: ruleName }];
+  return pullAllBy(subscribeRules, removeTarget, 'name').concat(updateTarget);
+};
+
 
 const InAppNotificationSettings: FC = () => {
   const { t } = useTranslation();
@@ -46,10 +53,8 @@ const InAppNotificationSettings: FC = () => {
     }
   }, []);
 
-  const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
-    setSubscribeRules(prevState => (
-      prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
-    ));
+  const ruleCheckboxHandler = (ruleName: string, isChecked: boolean) => {
+    setSubscribeRules(prevState => updateIsEnabled(prevState, ruleName, isChecked));
   };
 
   const updateSettingsHandler = useCallback(async() => {
@@ -83,7 +88,7 @@ const InAppNotificationSettings: FC = () => {
                 className="custom-control-input"
                 id={rule.name}
                 checked={isCheckedRule(rule.name, subscribeRules)}
-                onChange={e => ruleCheckboxHandler(e.target.checked, rule.name)}
+                onChange={e => ruleCheckboxHandler(rule.name, e.target.checked)}
               />
               <label className="custom-control-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
