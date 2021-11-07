@@ -52,9 +52,9 @@ const InAppNotificationSettings: FC = () => {
     }
   }, []);
 
-  const ruleCheckboxHandler = (ruleName: string, isChecked: boolean) => {
+  const ruleCheckboxHandler = useCallback((ruleName: string, isChecked: boolean) => {
     setSubscribeRules(prevState => updateIsEnabled(prevState, ruleName, isChecked));
-  };
+  }, []);
 
   const updateSettingsHandler = useCallback(async() => {
     try {
