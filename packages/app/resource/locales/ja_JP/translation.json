@@ -567,7 +567,7 @@
     "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
-    "result_meta": "<span class=\"h5\">\"{{keyword}}\"</span> <span class=\"font-weight-light\">の検索結果</span>",
+    "result_meta": "検索結果：",
     "deletion_mode_btn_lavel": "ページを指定して削除",
     "cancel": "キャンセル",
     "delete": "削除",

@@ -28,13 +28,8 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
           <nav><SearchControl></SearchControl></nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
             <div className="search-result-meta">
-              <span
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: t('search_result.result_meta',
-                    { keyword: searchingKeyword }),
-                }}
-              />
+              <span className="font-weight-light">{t('search_result.result_meta')} </span>
+              <span className="h5">{`"${searchingKeyword}"`}</span>
               {/* Todo: replace "1-10" to the appropriate value */}
               <span className="ml-3">1-10 / {searchResultMeta.total || 0}</span>
             </div>
