@@ -43,13 +43,13 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
       />
       <button
         type="button"
-        className="btn text-danger font-weight-light p-0"
+        className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
           if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
           else { onClickInvoked() }
         }}
       >
-        <i className="icon-trash ml-3"></i>
+        <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}
       </button>
     </>
