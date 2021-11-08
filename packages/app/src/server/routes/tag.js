@@ -215,7 +215,7 @@ module.exports = function(crowi, app) {
   api.list = async function(req, res) {
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
-    const sortOpt = { count: -1 };
+    const sortOpt = { count: -1, _id: -1 };
     const queryOptions = { offset, limit, sortOpt };
     const result = {};
 
