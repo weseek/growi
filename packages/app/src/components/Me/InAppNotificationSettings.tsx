@@ -1,29 +1,22 @@
 import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
 import { pullAllBy } from 'lodash';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { subscribeRuleNames, SubscribeRuleDescriptions } from '~/interfaces/in-app-notification-settings';
 
 type SubscribeRule = {
   name: string,
   isEnabled: boolean,
 }
 
-enum SubscribeRuleName {
-  PAGE_CREATE = 'PAGE_CREATE',
-}
-
-enum SubscribeDescription {
-  PAGE_CREATE = 'in_app_notification_settings.default_subscribe_rules.page_create',
-}
-
 const subscribeRulesMenuItems = [
   {
-    name: SubscribeRuleName.PAGE_CREATE,
-    description: SubscribeDescription.PAGE_CREATE,
+    name: subscribeRuleNames.PAGE_CREATE,
+    description: SubscribeRuleDescriptions.PAGE_CREATE,
   },
 ];
 
