@@ -2,6 +2,8 @@ import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
+import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
+import { subscribeRuleNames } from '~/interfaces/in-app-notification-settings';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -323,7 +325,15 @@ module.exports = (crowi) => {
     // TODO: 80103
     // create subscription
     try {
-      await Subscription.subscribeByPageId(req.user._id, createdPage._id, STATUS_SUBSCRIBE);
+      const query = { userId: req.user.id };
+      const inAppNotificationSettings = await InAppNotificationSettings.findOne(query);
+      if (inAppNotificationSettings) {
+        const targetRuleName = subscribeRuleNames.PAGE_CREATE;
+        const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
+        if (subscribeRule.isEnabled) {
+          await Subscription.subscribeByPageId(req.user._id, createdPage._id, STATUS_SUBSCRIBE);
+        }
+      }
     }
     catch (err) {
       logger.error('Failed to create subscription document', err);
