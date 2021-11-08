@@ -69,15 +69,8 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     setIsOpen(newIsOpenState);
   };
 
-  /**
-    * TODO: Jump to the page by clicking on the notification by GW-7472
-    */
-
-
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
 
-
-  // const notifications = inAppNotificationData.docs;
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
