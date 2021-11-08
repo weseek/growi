@@ -26,6 +26,12 @@ class TagsList extends React.Component {
     await this.getTagList(1);
   }
 
+  async componentDidUpdate() {
+    if (this.props.isOnReload) {
+      await this.getTagList(this.state.activePage);
+    }
+  }
+
   async handlePage(selectedPage) {
     await this.getTagList(selectedPage);
   }
@@ -38,6 +44,7 @@ class TagsList extends React.Component {
     const totalTags = res.totalCount;
     const tagData = res.data;
     const activePage = selectPageNumber;
+
 
     this.setState({
       tagData,
@@ -101,10 +108,12 @@ class TagsList extends React.Component {
 
 TagsList.propTypes = {
   crowi: PropTypes.object.isRequired,
+  isOnReload: PropTypes.bool,
   t: PropTypes.func.isRequired, // i18next
 };
 
 TagsList.defaultProps = {
+  isOnReload: false,
 };
 
 export default withTranslation()(TagsList);

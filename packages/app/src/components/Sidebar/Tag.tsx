@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import TagsList from '../TagsList';
 import AppContainer from '../../client/services/AppContainer';
@@ -11,7 +11,13 @@ type Props = {
 
 const Tag: FC<Props> = (props:Props) => {
   const { t } = useTranslation('');
+  const [isOnReload, setIsOnReload] = useState<boolean>(false);
   const { appContainer, navigationContainer } = props;
+
+  useEffect(() => {
+    setIsOnReload(false);
+  }, [isOnReload]);
+
   return (
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
@@ -20,8 +26,7 @@ const Tag: FC<Props> = (props:Props) => {
           type="button"
           className="btn btn-sm ml-auto grw-btn-reload-rc"
           onClick={() => {
-            // TODO: consider how to reload tags
-            console.log('reload tag');
+            setIsOnReload(true);
           }}
         >
           <i className="icon icon-reload"></i>
@@ -40,7 +45,7 @@ const Tag: FC<Props> = (props:Props) => {
         </button>
       </div>
       <div className="grw-container-convertible mb-5 pb-5">
-        <TagsList crowi={appContainer} />
+        <TagsList crowi={appContainer} isOnReload={isOnReload} />
       </div>
     </>
   );
