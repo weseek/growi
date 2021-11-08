@@ -13,7 +13,7 @@ interface Props {
 }
 
 // const notificationClickHandler = async(notification: IInAppNotification) => {
-const notificationClickHandler = async(pagePath) => {
+const notificationClickHandler = async(pagePath: string) => {
 
   try {
     // TODO: change notification status read by #80904
