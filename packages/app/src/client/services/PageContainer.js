@@ -657,11 +657,16 @@ export default class PageContainer extends Container {
   retrieveMyBookmarkList() {
   }
 
-  async resolveConflict(pageId, revisionId, markdown, optionalParams) {
+  async resolveConflict(pageId, revisionId, markdown, optionsToSave) {
+
+    if (optionsToSave == null) {
+      const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
+      throw new Error(msg);
+    }
 
     const { path } = this.state;
 
-    const params = Object.assign(optionalParams, {
+    const params = Object.assign(optionsToSave, {
       page_id: pageId,
       revision_id: revisionId,
       body: markdown,
