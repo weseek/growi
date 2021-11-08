@@ -45,9 +45,7 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
       return;
     }
     try {
-      const id = pageId;
-      const toggledIsLiked = isLiked;
-      await appContainer.apiv3Put('/page/likes', { pageId: id, bool: toggledIsLiked });
+      await appContainer.apiv3Put('/page/likes', { pageId, bool: isLiked });
     }
     catch (err) {
       toastError(err);
