@@ -1,10 +1,10 @@
 import { Schema } from 'mongoose';
 
-export enum subscribeRules {
+export enum subscribeRuleNames {
   PAGE_CREATE = 'PAGE_CREATE'
 }
 export interface ISubscribeRule {
-  name: subscribeRules;
+  name: subscribeRuleNames;
   isEnabled: boolean;
 }
 export interface IInAppNotificationSettings {
