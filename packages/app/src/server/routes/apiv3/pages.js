@@ -322,7 +322,6 @@ module.exports = (crowi) => {
       }
     }
 
-    // TODO: 80103
     // create subscription
     try {
       const query = { userId: req.user.id };
