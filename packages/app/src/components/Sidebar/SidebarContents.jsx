@@ -8,6 +8,7 @@ import NavigationContainer from '~/client/services/NavigationContainer';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
+import PageTree from './PageTree';
 
 const SidebarContents = (props) => {
   const { navigationContainer, isSharedUser } = props;
@@ -20,6 +21,9 @@ const SidebarContents = (props) => {
   switch (navigationContainer.state.sidebarContentsId) {
     case 'recent':
       Contents = RecentChanges;
+      break;
+    case 'tree':
+      Contents = PageTree;
       break;
     default:
       Contents = CustomSidebar;
