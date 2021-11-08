@@ -1,17 +1,10 @@
 import React, { FC } from 'react';
 
-import AppContainer from '../../client/services/AppContainer';
-
 import InAppNotificationList from './InAppNotificationList';
-import { withUnstatedContainers } from '../UnstatedUtils';
 import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 
-type Props = {
-  appContainer: AppContainer,
 
-};
-
-const AllInAppNotifications: FC<Props> = (props: Props) => {
+const AllInAppNotifications: FC = () => {
   const limit = 6;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
 
@@ -20,9 +13,4 @@ const AllInAppNotifications: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const AllInAppNotificationsWrapper = withUnstatedContainers(AllInAppNotifications, [AppContainer]);
-
-export default AllInAppNotificationsWrapper;
+export default AllInAppNotifications;
