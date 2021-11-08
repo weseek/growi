@@ -12,7 +12,6 @@ interface Props {
   notification: IInAppNotification
 }
 
-// const notificationClickHandler = async(notification: IInAppNotification) => {
 const notificationClickHandler = async(pagePath: string) => {
 
   try {
