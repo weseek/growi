@@ -523,18 +523,6 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  revertRemove(isRecursively, pageId = this.state.pageId) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.revertRemove', {
-      recursively,
-      page_id: pageId,
-    });
-  }
-
   rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata, pageId = this.state.pageId, revisionId = this.state.revisionId, path = this.state.path) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 

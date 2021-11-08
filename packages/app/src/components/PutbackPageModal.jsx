@@ -9,14 +9,17 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
+import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, onClose, pageContainer, path,
+    t, isOpen, onClose, appContainer, pageContainer, path,
   } = props;
+
+  const { pageId } = pageContainer.state;
 
   const [errs, setErrs] = useState(null);
 
@@ -30,7 +33,14 @@ const PutBackPageModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.revertRemove(isPutbackRecursively);
+      // control flag
+      const recursively = isPutbackRecursively ? true : null;
+
+      const response = await appContainer.apiPost('/pages.revertRemove', {
+        recursively,
+        page_id: pageId,
+      });
+
       const putbackPagePath = response.page.path;
       window.location.href = encodeURI(putbackPagePath);
     }
@@ -83,10 +93,11 @@ const PutBackPageModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PutBackPageModalWrapper = withUnstatedContainers(PutBackPageModal, [PageContainer]);
+const PutBackPageModalWrapper = withUnstatedContainers(PutBackPageModal, [AppContainer, PageContainer]);
 
 PutBackPageModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
