@@ -10,18 +10,32 @@ interface Props {
   onClick: () => void
 }
 
+// const notificationClickHandler = async(notification: IInAppNotification) => {
+const notificationClickHandler = async(pagePath) => {
+  console.log('notificationClickHandler');
+
+  try {
+    // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
+    // jump to target page
+    window.location.href = pagePath;
+  }
+  catch (err) {
+    // logger.error(err);
+  }
+};
+
 export const PageCommentNotification = (props: Props): JSX.Element => {
 
   const pagePath = { path: props.notification.target.path };
 
   return (
-    <>
+    <div onClick={() => notificationClickHandler(pagePath.path)}>
       <div>
         <b>{props.actionUsers}</b> commented on  <PagePathLabel page={pagePath} />
       </div>
       <i className="fa fa-comment-o mr-2" />
       <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-    </>
+    </div>
   );
 };
 
@@ -30,12 +44,12 @@ export const PageUpdateNotification = (props: Props): JSX.Element => {
   const pagePath = { path: props.notification.target.path };
 
   return (
-    <>
+    <div onClick={() => notificationClickHandler(pagePath.path)}>
       <div>
         <b>{props.actionUsers}</b> page updated on <PagePathLabel page={pagePath} />
       </div>
       <i className="fa fa-file-o mr-2" />
       <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-    </>
+    </div>
   );
 };
