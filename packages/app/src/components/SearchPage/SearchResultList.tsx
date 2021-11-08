@@ -17,10 +17,10 @@ type Props = {
   deletionMode: boolean,
   selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
-  searchResultCount: number,
+  searchResultCount?: number,
   activePage: number,
-  pagingLimit: number,
-  onPagingNumberChanged: (activePage: number) => void,
+  pagingLimit?: number,
+  onPagingNumberChanged?: (activePage: number) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
@@ -39,7 +39,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
       {props.searchResultCount != null && props.searchResultCount > 0 && (
         <div className="my-4 mx-auto">
           <PagenationWrapperAny
-            activePage={props.activePage}
+            activePage={props.activePage || 1}
             changePage={props.onPagingNumberChanged}
             totalItemsCount={props.searchResultCount || 0}
             pagingLimit={props.pagingLimit}
