@@ -523,24 +523,6 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  // If you want to delete a specific page, give the pageId as an argument.
-  // Otherwise, the current page will be deleted
-  deletePage(isRecursively, isCompletely, pageId = this.state.pageId, revisionId = this.state.revisionId) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const completely = isCompletely ? true : null;
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.remove', {
-      recursively,
-      completely,
-      page_id: pageId,
-      revision_id: revisionId,
-    });
-
-  }
-
   revertRemove(isRecursively, pageId = this.state.pageId) {
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
 

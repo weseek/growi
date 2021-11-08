@@ -8,6 +8,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
@@ -27,8 +28,9 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
+    t, appContainer, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
   } = props;
+  const { pageId, revisionId } = pageContainer.state;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
@@ -50,7 +52,17 @@ const PageDeleteModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      // control flag
+      const completely = isDeleteCompletely ? true : null;
+      const recursively = isDeleteRecursively ? true : null;
+
+      const response = await appContainer.apiPost('/pages.remove', {
+        recursively,
+        completely,
+        page_id: pageId,
+        revision_id: revisionId,
+      });
+
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
     }
@@ -136,10 +148,11 @@ const PageDeleteModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
+const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [AppContainer, PageContainer]);
 
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
