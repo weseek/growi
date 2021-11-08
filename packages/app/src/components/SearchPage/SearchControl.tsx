@@ -8,6 +8,7 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
+  searchResultCount: number,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
@@ -18,6 +19,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
+  const { searchResultCount } = props;
 
   const onExcludeUsersHome = () => {
     if (props.onExcludeUsersHome != null) {
@@ -60,6 +62,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
           checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
+          isCheckboxDisabled={(searchResultCount == null || searchResultCount === 0) || false}
           onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
         />
