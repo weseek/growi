@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "browser-bunyan": "^1.6.3",
-    "stylelint": "^13.2.0",
+    "stylelint": "^14.0.1",
     "stylelint-config-recess-order": "^2.0.1",
     "tsc-alias": "^1.2.9"
   }
