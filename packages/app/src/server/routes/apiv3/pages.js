@@ -326,7 +326,7 @@ module.exports = (crowi) => {
     try {
       const query = { userId: req.user.id };
       const inAppNotificationSettings = await InAppNotificationSettings.findOne(query);
-      if (inAppNotificationSettings) {
+      if (inAppNotificationSettings != null) {
         const targetRuleName = subscribeRuleNames.PAGE_CREATE;
         const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
         if (subscribeRule.isEnabled) {
