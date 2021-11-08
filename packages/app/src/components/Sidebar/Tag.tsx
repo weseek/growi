@@ -2,17 +2,15 @@ import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import TagsList from '../TagsList';
 import AppContainer from '../../client/services/AppContainer';
-import NavigationContainer from '../../client/services/NavigationContainer';
 
 type Props = {
   appContainer: AppContainer,
-  navigationContainer: NavigationContainer,
 };
 
 const Tag: FC<Props> = (props:Props) => {
   const { t } = useTranslation('');
   const [isOnReload, setIsOnReload] = useState<boolean>(false);
-  const { appContainer, navigationContainer } = props;
+  const { appContainer } = props;
 
   useEffect(() => {
     setIsOnReload(false);
@@ -37,7 +35,6 @@ const Tag: FC<Props> = (props:Props) => {
           className="btn btn-primary my-4"
           type="button"
           onClick={() => {
-            navigationContainer.selectSidebarContents('recent');
             window.location.href = '/tags';
           }}
         >
