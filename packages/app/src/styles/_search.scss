@@ -163,7 +163,7 @@
     overflow-y: scroll;
 
     .nav.nav-pills {
-      > li {
+      > .page-list-li {
         > a {
           height: 123px;
           padding: 2px 8px;
@@ -270,14 +270,6 @@
         padding-top: 0 !important;
         border-top: none !important;
       }
-    }
-  }
-}
-
-.search-result {
-  .page-list {
-    .active {
-      border-left: 3px solid transparent;
     }
   }
 }
