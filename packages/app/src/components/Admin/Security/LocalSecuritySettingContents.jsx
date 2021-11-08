@@ -9,14 +9,11 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
-import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 class LocalSecuritySettingContents extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = { isMailerSetup: false };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
@@ -33,27 +30,16 @@ class LocalSecuritySettingContents extends React.Component {
     }
   }
 
-  async retrieveIsMailerSetup() {
-    const { adminAppContainer } = this.props;
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-      this.setState({ isMailerSetup: adminAppContainer.state.isMailerSetup });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  componentDidMount() {
-    this.retrieveIsMailerSetup();
-  }
-
   render() {
-    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
-
-    const isMailerSetup = this.state.isMailerSetup;
+    const {
+      t,
+      adminGeneralSecurityContainer,
+      adminLocalSecurityContainer,
+      appContainer,
+    } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
+    const { isMailerSetup } = appContainer.config;
 
     return (
       <React.Fragment>
@@ -251,14 +237,12 @@ LocalSecuritySettingContents.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContents, [
   AppContainer,
   AdminGeneralSecurityContainer,
   AdminLocalSecurityContainer,
-  AdminAppContainer,
 ]);
 
 export default withTranslation()(LocalSecuritySettingContentsWrapper);
