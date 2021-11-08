@@ -20,13 +20,16 @@ class BookmarkButton extends React.Component {
   async handleClick() {
     const { appContainer, pageContainer } = this.props;
     const { isGuestUser } = appContainer;
+    const { pageId, isBookmarked } = pageContainer.state;
 
     if (isGuestUser) {
       return;
     }
 
     try {
-      pageContainer.toggleBookmark();
+      const bool = !isBookmarked;
+      await this.appContainer.apiv3Put('/bookmarks', { pageId, bool });
+      pageContainer.retrieveBookmarkInfo();
     }
     catch (err) {
       toastError(err);
