@@ -52,7 +52,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest.revisionId,
-        resolvedRevision.current, editorContainer.getCurrentOptionsToSave(),
+        resolvedRevision.current,
+        editorContainer.getCurrentOptionsToSave(),
       );
     }
     catch (error) {
