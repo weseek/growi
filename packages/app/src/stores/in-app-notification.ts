@@ -7,6 +7,7 @@ import { IInAppNotification } from '../interfaces/in-app-notification';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxInAppNotifications = <Data, Error>(
+  // TODO: apply pagination by 80107
   limit: number,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
