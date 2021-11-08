@@ -139,6 +139,21 @@ class CustomizeFunctionSetting extends React.Component {
               </div>
             </div>
 
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6 text-left">
+                <CustomizeFunctionOption
+                  optionId="isSearchScopeChildrenAsDefault"
+                  label={t('admin:customize_setting.function_options.select_search_scope_children_as_default')}
+                  isChecked={adminCustomizeContainer.state.isSearchScopeChildrenAsDefault || false}
+                  onChecked={() => { adminCustomizeContainer.switchIsSearchScopeChildrenAsDefault() }}
+                >
+                  <p className="form-text text-muted">
+                    {t('admin:customize_setting.function_options.select_search_scope_children_as_default_desc')}
+                  </p>
+                </CustomizeFunctionOption>
+              </div>
+            </div>
+
             <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
           </div>
         </div>

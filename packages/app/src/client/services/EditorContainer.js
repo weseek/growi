@@ -36,7 +36,9 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
-      isTextlintEnabled: false,
+
+      // Defaults to null to show modal when not in DB
+      isTextlintEnabled: null,
       textlintRules: [],
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
@@ -204,13 +206,18 @@ export default class EditorContainer extends Container {
    * Retrieve Editor Settings
    */
   async retrieveEditorSettings() {
+    if (this.appContainer.isGuestUser) {
+      return;
+    }
+
     const { data } = await this.appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings == null) {
       return;
     }
 
-    const { isTextlintEnabled = false, textlintRules = [] } = data.textlintSettings;
+    // Defaults to null to show modal when not in DB
+    const { isTextlintEnabled = null, textlintRules = [] } = data.textlintSettings;
 
     this.setState({
       isTextlintEnabled,
