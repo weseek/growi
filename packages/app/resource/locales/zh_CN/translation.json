@@ -236,6 +236,13 @@
 			"All pages": "所有页面",
 			"This tree": "当前分支以下内容"
 		}
+	},
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "在应用程序通知设置",
+    "subscribe_settings": "自动订阅（接收通知）页面的设置",
+    "default_subscribe_rules": {
+      "page_create": "创建页面时订阅页面。"
+    }
   },
   "editor_settings": {
     "editor_settings": "编辑器设置",

@@ -256,6 +256,13 @@
       "This tree": "Only children of this tree"
     }
   },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "In-App Notification Settings",
+    "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
+    "default_subscribe_rules": {
+      "page_create": "Subscribe to the page when you create it."
+    }
+  },
   "editor_settings": {
     "editor_settings": "Editor Settings",
     "common_settings": {
