@@ -151,8 +151,8 @@ export const completeRegistrationAction = (crowi) => {
 // middleware to handle error
 export const handleHttpErrosMiddleware = (error: Error & { code: string }, req: Request, res: Response, next: NextFunction): Promise<RequestHandler> | void => {
   if (error != null) {
-    // TODO: GW7335 - make custom view
-    return res.render('forgot-password/error', { key: error.code });
+    req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
+    return res.redirect('/login#register');
   }
   next();
 };
