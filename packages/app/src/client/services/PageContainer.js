@@ -679,9 +679,13 @@ export default class PageContainer extends Container {
 
     const editorContainer = this.appContainer.getContainer('EditorContainer');
     editorContainer.clearDraft(path);
-    window.location.href = path;
 
     return res;
+  }
+
+  async resolveConflictAndReload(pageId, revisionId, markdown, optionsToSave) {
+    await this.resolveConflict(pageId, revisionId, markdown, optionsToSave);
+    window.location.href = this.state.path;
   }
 
 }

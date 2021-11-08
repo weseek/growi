@@ -54,6 +54,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         latest.revisionId,
         resolvedRevision.current, editorContainer.getCurrentOptionsToSave(),
       );
+      window.location.href = pageContainer.state.path || '/';
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
