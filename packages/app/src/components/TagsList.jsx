@@ -45,7 +45,6 @@ class TagsList extends React.Component {
     const tagData = res.data;
     const activePage = selectPageNumber;
 
-
     this.setState({
       tagData,
       activePage,
