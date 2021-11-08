@@ -6,7 +6,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';
-import LikeButton from '../LikeButton';
+import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
 
 const SubnavButtons = (props) => {
@@ -21,15 +21,14 @@ const SubnavButtons = (props) => {
 
     return (
       <>
-        {pageContainer.isAbleToShowLikeButton && (
+        {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            <LikeButton />
+            <LikeButtons />
           </span>
         )}
         <span>
           <BookmarkButton />
         </span>
-
       </>
     );
   };
@@ -42,8 +41,8 @@ const SubnavButtons = (props) => {
     <>
       {isViewMode && (
         <>
-          { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-          { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+          {pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} />}
+          {pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} />}
         </>
       )}
     </>

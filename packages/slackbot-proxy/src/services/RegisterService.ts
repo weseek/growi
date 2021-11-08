@@ -1,32 +1,59 @@
 import { Inject, Service } from '@tsed/di';
-import { WebClient, LogLevel, Block } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand,
+  WebClient, LogLevel, Block, ConversationsSelect,
+} from '@slack/web-api';
+import {
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
+  respond, GrowiCommandProcessor, GrowiInteractionProcessor,
+  getInteractionIdRegexpFromCommandName, InteractionHandledResult, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
-import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
+import { InstallationRepository } from '~/repositories/installation';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:services:RegisterService');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
+export type RegisterCommandBody = {
+  // eslint-disable-next-line camelcase
+  trigger_id: string,
+  // eslint-disable-next-line camelcase
+  channel_name: string,
+}
+
 @Service()
-export class RegisterService implements GrowiCommandProcessor {
+export class RegisterService implements GrowiCommandProcessor<RegisterCommandBody>, GrowiInteractionProcessor<void> {
 
   @Inject()
   orderRepository: OrderRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+  @Inject()
+  installationRepository: InstallationRepository;
+
+  shouldHandleCommand(growiCommand: GrowiCommand): boolean {
+    return growiCommand.growiCommandType === 'register';
+  }
+
+  async processCommand(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, context: RegisterCommandBody): Promise<void> {
     const { botToken } = authorizeResult;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    const conversationsSelectElement: ConversationsSelect = {
+      action_id: 'conversation',
+      type: 'conversations_select',
+      response_url_enabled: true,
+      default_to_current_conversation: true,
+    };
     await client.views.open({
-      trigger_id: body.trigger_id,
+      trigger_id: context.trigger_id,
       view: {
         type: 'modal',
-        callback_id: 'register',
+        callback_id: 'register:register',
         title: {
           type: 'plain_text',
           text: 'Register Credentials',
@@ -39,9 +66,10 @@ export class RegisterService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: JSON.stringify({ channel: body.channel_name }),
+        private_metadata: JSON.stringify({ channel: context.channel_name }),
 
         blocks: [
+          inputBlock(conversationsSelectElement, 'conversation', 'Channel to which you want to add'),
           inputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           inputSectionBlock('tokenPtoG', 'Access Token Proxy to GROWI', 'contents_input', false, 'jBMZvpk.....'),
           inputSectionBlock('tokenGtoP', 'Access Token GROWI to Proxy', 'contents_input', false, 'sdg15av.....'),
@@ -50,44 +78,73 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async replyToSlack(client: WebClient, channel: string, user: string, text: string, blocks: Array<Block>): Promise<void> {
-    await client.chat.postEphemeral({
-      channel,
-      user,
-      // Recommended including 'text' to provide a fallback when using blocks
-      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-      text,
-      blocks,
-    });
-    return;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleInteraction(interactionPayloadAccessor: InteractionPayloadAccessor): boolean {
+    const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
+    const registerRegexp: RegExp = getInteractionIdRegexpFromCommandName('register');
+    return registerRegexp.test(actionId) || registerRegexp.test(callbackId);
+  }
+
+  async processInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
+  ): Promise<InteractionHandledResult<void>> {
+    const interactionHandledResult: InteractionHandledResult<void> = {
+      isTerminated: false,
+    };
+    if (!this.shouldHandleInteraction(interactionPayloadAccessor)) return interactionHandledResult;
+
+    interactionHandledResult.result = await this.handleRegisterInteraction(authorizeResult, interactionPayload, interactionPayloadAccessor);
+    interactionHandledResult.isTerminated = true;
+
+    return interactionHandledResult as InteractionHandledResult<void>;
+  }
+
+  async handleRegisterInteraction(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult: AuthorizeResult, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor,
+  ): Promise<void> {
+    try {
+      await this.insertOrderRecord(authorizeResult, interactionPayloadAccessor);
+    }
+    catch (err) {
+      if (err instanceof InvalidUrlError) {
+        logger.error('Failed to register:\n', err);
+        await respond(interactionPayloadAccessor.getResponseUrl(), {
+          text: 'Invalid URL',
+          blocks: [
+            markdownSectionBlock('Please enter a valid URL'),
+          ],
+        });
+        return;
+      }
+
+      logger.error('Error occurred while insertOrderRecord:\n', err);
+    }
+
+    await this.notifyServerUriToSlack(interactionPayloadAccessor);
   }
 
   async insertOrderRecord(
-      installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      authorizeResult: AuthorizeResult, interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<void> {
-    const inputValues = payload.view.state.values;
+    const inputValues = interactionPayloadAccessor.getStateValues();
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
-
-    const { channel } = JSON.parse(payload.view.private_metadata);
-
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const url = new URL(growiUrl);
     }
     catch (error) {
-      const invalidErrorMsg = 'Please enter a valid URL';
-      const blocks = [
-        markdownSectionBlock(invalidErrorMsg),
-      ];
-      await this.replyToSlack(client, channel, payload.user.id, 'Invalid URL', blocks);
       throw new InvalidUrlError(growiUrl);
     }
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     this.orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
@@ -96,14 +153,11 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      botToken: string | undefined, payload: any,
+      interactionPayloadAccessor: InteractionPayloadAccessor,
   ): Promise<void> {
 
-    const { channel } = JSON.parse(payload.view.private_metadata);
-
     const serverUri = process.env.SERVER_URI;
-
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+    const responseUrl = interactionPayloadAccessor.getResponseUrl();
 
     const blocks: Block[] = [];
 
@@ -115,7 +169,10 @@ export class RegisterService implements GrowiCommandProcessor {
       blocks.push(markdownSectionBlock('*Test Connection* to complete the registration in your GROWI.'));
       blocks.push(markdownHeaderBlock(':white_large_square: 4. (Opt) Manage GROWI commands'));
       blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-      await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
+      await respond(responseUrl, {
+        text: 'Proxy URL',
+        blocks,
+      });
       return;
 
     }
@@ -131,7 +188,10 @@ export class RegisterService implements GrowiCommandProcessor {
     blocks.push(markdownSectionBlock('And *Test Connection* to complete the registration in your GROWI.'));
     blocks.push(markdownHeaderBlock(':white_large_square: 6. (Opt) Manage GROWI commands'));
     blocks.push(markdownSectionBlock('Modify permission settings if you need.'));
-    await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
+    await respond(responseUrl, {
+      text: 'Proxy URL',
+      blocks,
+    });
     return;
   }
 
