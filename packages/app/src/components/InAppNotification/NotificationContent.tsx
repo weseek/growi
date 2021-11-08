@@ -7,14 +7,13 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 interface Props {
   actionUsers: string
   notification: IInAppNotification
-  onClick: () => void
 }
 
 // const notificationClickHandler = async(notification: IInAppNotification) => {
 const notificationClickHandler = async(pagePath) => {
-  console.log('notificationClickHandler');
 
   try {
+    // TODO: change notification status read by #80904
     // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
     // jump to target page
     window.location.href = pagePath;

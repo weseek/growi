@@ -6,7 +6,6 @@ import { PageUpdateNotification, PageCommentNotification } from './NotificationC
 
 interface Props {
   notification: IInAppNotification
-  // onClick: any
 }
 
 export const InAppNotification = (props: Props): JSX.Element => {
@@ -53,19 +52,6 @@ export const InAppNotification = (props: Props): JSX.Element => {
 
       </div>
     );
-  };
-
-  const notificationClickHandler = async(notification: IInAppNotification) => {
-    console.log('notificationClickHandler');
-
-    try {
-      // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
-      // jump to target page
-      // window.location.href = notification.target.path;
-    }
-    catch (err) {
-      // logger.error(err);
-    }
   };
 
   const renderInAppNotificationContent = (): JSX.Element => {
