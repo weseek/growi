@@ -14,7 +14,6 @@ export type ISearchedPage = IPageHasId & {
 
 type Props = {
   pages: ISearchedPage[],
-  deletionMode: boolean,
   selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
   searchResultCount?: number,
