@@ -49,12 +49,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     // disable button after clicked
     setIsRevisionSelected(false);
     try {
-      await pageContainer.resolveConflict(
+      await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest.revisionId,
         resolvedRevision.current, editorContainer.getCurrentOptionsToSave(),
       );
-      window.location.href = pageContainer.state.path || '/';
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
