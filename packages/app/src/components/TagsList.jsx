@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import PaginationWrapper from './PaginationWrapper';
 import TagCloudBox from './TagCloudBox';
+import { apiGet } from '../client/util/apiv1-client';
 
 class TagsList extends React.Component {
 
@@ -39,7 +40,7 @@ class TagsList extends React.Component {
   async getTagList(selectPageNumber) {
     const limit = this.state.pagingLimit;
     const offset = (selectPageNumber - 1) * limit;
-    const res = await this.props.crowi.apiGet('/tags.list', { limit, offset });
+    const res = await apiGet('/tags.list', { limit, offset });
 
     const totalTags = res.totalCount;
     const tagData = res.data;
@@ -106,7 +107,6 @@ class TagsList extends React.Component {
 }
 
 TagsList.propTypes = {
-  crowi: PropTypes.object.isRequired,
   isOnReload: PropTypes.bool,
   t: PropTypes.func.isRequired, // i18next
 };

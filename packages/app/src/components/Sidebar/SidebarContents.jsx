@@ -18,6 +18,7 @@ const SidebarContents = (props) => {
   }
 
   let Contents;
+
   switch (navigationContainer.state.sidebarContentsId) {
     case 'recent':
       Contents = RecentChanges;
@@ -27,11 +28,10 @@ const SidebarContents = (props) => {
       break;
     default:
       Contents = CustomSidebar;
-
-      return (
-        <Contents />
-      );
   }
+  return (
+    <Contents />
+  );
 };
 
 SidebarContents.propTypes = {

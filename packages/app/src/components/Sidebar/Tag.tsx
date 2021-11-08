@@ -1,16 +1,10 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import TagsList from '../TagsList';
-import AppContainer from '../../client/services/AppContainer';
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const Tag: FC<Props> = (props:Props) => {
+const Tag: FC = () => {
   const { t } = useTranslation('');
   const [isOnReload, setIsOnReload] = useState<boolean>(false);
-  const { appContainer } = props;
 
   useEffect(() => {
     setIsOnReload(false);
@@ -34,15 +28,13 @@ const Tag: FC<Props> = (props:Props) => {
         <button
           className="btn btn-primary my-4"
           type="button"
-          onClick={() => {
-            window.location.href = '/tags';
-          }}
+          onClick={() => { window.location.href = '/tags' }}
         >
           {t('Check All tags')}
         </button>
       </div>
       <div className="grw-container-convertible mb-5 pb-5">
-        <TagsList crowi={appContainer} isOnReload={isOnReload} />
+        <TagsList isOnReload={isOnReload} />
       </div>
     </>
   );
