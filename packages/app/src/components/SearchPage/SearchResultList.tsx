@@ -18,7 +18,7 @@ type Props = {
   selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
   searchResultCount?: number,
-  activePage: number,
+  activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
 }
