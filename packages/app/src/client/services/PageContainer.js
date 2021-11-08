@@ -523,20 +523,6 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata, pageId = this.state.pageId, revisionId = this.state.revisionId, path = this.state.path) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
-      path,
-    });
-  }
-
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
       closeButton: true,

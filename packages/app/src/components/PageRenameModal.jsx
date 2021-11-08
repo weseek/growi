@@ -25,7 +25,7 @@ const PageRenameModal = (props) => {
     t, appContainer, pageContainer,
   } = props;
 
-  const { path } = pageContainer.state;
+  const { path, revisionId, pageId } = pageContainer.state;
 
   const { crowi } = appContainer.config;
 
@@ -112,12 +112,15 @@ const PageRenameModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.rename(
-        pageNameInput,
+      const response = await appContainer.apiv3Put('/pages/rename', {
+        revisionId,
+        pageId,
         isRenameRecursively,
         isRenameRedirect,
         isRenameMetadata,
-      );
+        pageNameInput,
+        path,
+      });
 
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
