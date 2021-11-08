@@ -19,7 +19,7 @@
 
 - support: Use SWR (#4487) @yuki-takei
 - support: Replaced PageList with SWR (#4498) @takayuki-t
-- support: Improve devcontainer (#4510) @yuki-takei* support: refs 79379 79549 Implemented error message handling in pageList (#4585) @takayuki-t
+- support: Improve devcontainer (#4510) @yuki-takei
 - support: Update passport-ldpauth from ^2.0.0 to ^3.0.1 (#4578) @LuqmanHakim-Grune
 - ci(deps): bump validator from 13.6.0 to 13.7.0 (#4588) @dependabot
 - ci(deps-dev): bump stylelint from 13.2.0 to 14.0.1 (#4583) @dependabot
