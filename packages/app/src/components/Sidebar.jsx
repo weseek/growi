@@ -162,7 +162,6 @@ class Sidebar extends React.Component {
           <div id="grw-sidebar-content-container">
             <SidebarContents
               isSharedUser={this.props.appContainer.isSharedUser}
-              navigationContainer={this.props.navigationContainer}
             />
           </div>
         </div>

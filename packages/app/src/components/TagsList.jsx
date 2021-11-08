@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import PaginationWrapper from './PaginationWrapper';
 import TagCloudBox from './TagCloudBox';
 import { apiGet } from '../client/util/apiv1-client';
+import { toastError } from '../client/util/apiNotification';
 
 class TagsList extends React.Component {
 
@@ -40,7 +41,14 @@ class TagsList extends React.Component {
   async getTagList(selectPageNumber) {
     const limit = this.state.pagingLimit;
     const offset = (selectPageNumber - 1) * limit;
-    const res = await apiGet('/tags.list', { limit, offset });
+    let res;
+
+    try {
+      res = await apiGet('/tags.list', { limit, offset });
+    }
+    catch (error) {
+      toastError(error);
+    }
 
     const totalTags = res.totalCount;
     const tagData = res.data;
