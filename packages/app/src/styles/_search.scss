@@ -163,10 +163,10 @@
     overflow-y: scroll;
 
     .nav.nav-pills {
-      > li {
+      > .page-list-li {
         > a {
           height: 123px;
-          padding: 2px 8px;
+          padding: 2px 4px;
           word-break: break-all;
           border-radius: 0;
 
