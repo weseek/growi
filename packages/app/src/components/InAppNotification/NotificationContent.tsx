@@ -1,8 +1,11 @@
 import React from 'react';
 import { PagePathLabel } from '@growi/ui';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
+import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
+
+const logger = loggerFactory('growi:NotificationContent');
 
 interface Props {
   actionUsers: string
@@ -19,7 +22,7 @@ const notificationClickHandler = async(pagePath) => {
     window.location.href = pagePath;
   }
   catch (err) {
-    // logger.error(err);
+    logger.error(err);
   }
 };
 
