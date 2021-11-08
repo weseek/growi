@@ -455,7 +455,7 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  async saveAndReload(optionsToSave, markdownOnConflict) {
+  async saveAndReload(optionsToSave) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
@@ -479,9 +479,6 @@ export default class PageContainer extends Container {
       // set option to sync
       options.isSyncRevisionToHackmd = true;
       revisionId = this.state.revisionIdHackmdSynced;
-    }
-    else if (markdownOnConflict != null && markdownOnConflict.length >= 1) {
-      markdown = markdownOnConflict;
     }
     else {
       const pageEditor = this.appContainer.getComponentInstance('PageEditor');
@@ -658,6 +655,28 @@ export default class PageContainer extends Container {
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
+  }
+
+  async resolveConflict(pageId, revisionId, markdown, optionalParams) {
+
+    const { path } = this.state;
+
+    const params = Object.assign(optionalParams, {
+      page_id: pageId,
+      revision_id: revisionId,
+      body: markdown,
+    });
+
+    const res = await this.appContainer.apiPost('/pages.update', params);
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    editorContainer.clearDraft(path);
+    window.location.href = path;
+
+    return res;
   }
 
 }

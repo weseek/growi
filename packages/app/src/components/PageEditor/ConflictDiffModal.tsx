@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
-import { toastError } from '../../client/util/apiNotification';
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 
@@ -46,20 +45,19 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     }
   };
 
-  const onResolveConflict = () : void => {
+  const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
-    pageContainer.setState({
-      revisionId: pageContainer.state.revisionsOnConflict?.latest.revisionId,
-    }, async() => {
-      try {
-        await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave(), resolvedRevision.current);
-        window.location.href = pageContainer.state.path || '/';
-      }
-      catch (error) {
-        toastError(error);
-      }
-    });
+    try {
+      await pageContainer.resolveConflict(
+        pageContainer.state.pageId,
+        latest.revisionId,
+        resolvedRevision.current, editorContainer.getCurrentOptionsToSave(),
+      );
+    }
+    catch (error) {
+      pageContainer.showErrorToastr(error);
+    }
   };
 
   return (
