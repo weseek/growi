@@ -357,10 +357,6 @@ module.exports = function(crowi) {
   pageSchema.methods.like = function(userData) {
     const self = this;
 
-    console.log('printing out self ----------');
-    console.log(JSON.stringify(self));
-    console.log('printing out userData ---------------');
-    console.log(JSON.stringify(userData));
     return new Promise(((resolve, reject) => {
       const added = self.liker.addToSet(userData._id);
       if (added.length > 0) {
@@ -374,19 +370,14 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('already liked'));
       }
     }));
-    // return self;
   };
 
   pageSchema.methods.unlike = function(userData, callback) {
     const self = this;
 
-    console.log('printing out self ----------');
-    console.log(JSON.stringify(self));
-    console.log('printing out userData ---------------');
-    console.log(JSON.stringify(userData));
     return new Promise(((resolve, reject) => {
       const beforeCount = self.liker.length;
       self.liker.pull(userData._id);
@@ -400,10 +391,9 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('already unliked'));
       }
     }));
-    // return self;
   };
 
   pageSchema.methods.isSeenUser = function(userData) {

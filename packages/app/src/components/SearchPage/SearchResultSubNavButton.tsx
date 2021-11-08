@@ -8,6 +8,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 
 
@@ -45,7 +46,7 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
       return;
     }
     try {
-      await appContainer.apiv3Put('/page/likes', { pageId, bool: isLiked });
+      await apiv3Put('/page/likes', { pageId, bool: isLiked });
     }
     catch (err) {
       toastError(err);

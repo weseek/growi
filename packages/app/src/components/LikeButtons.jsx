@@ -62,11 +62,11 @@ class LikeButtons extends React.Component {
         <button
           type="button"
           id="like-button"
-          onClick={() => {
+          onClick={async() => {
             if (onClickInvoked == null) {
               throw Error('onClickInvoked is null');
             }
-            onClickInvoked();
+            await onClickInvoked();
           }}
           className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
