@@ -6,6 +6,8 @@ import PaginationWrapper from '../PaginationWrapper';
 class SearchResultList extends React.Component {
 
   render() {
+    const { focusedPage } = this.props;
+    const focusedPageId = focusedPage != null && focusedPage.id != null ? focusedPage.id : '';
     return (
       <>
         {this.props.pages.map((page) => {
@@ -14,8 +16,10 @@ class SearchResultList extends React.Component {
         // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
           return (
             <SearchResultListItem
+              key={page._id}
               page={page}
               onClickInvoked={this.props.onClickInvoked}
+              isSelected={page._id === focusedPageId || false}
               noLink
             />
           );
@@ -39,6 +43,7 @@ class SearchResultList extends React.Component {
 SearchResultList.propTypes = {
   pages: PropTypes.array.isRequired,
   deletionMode: PropTypes.bool.isRequired,
+  focusedPage: PropTypes.object,
   selectedPages: PropTypes.array.isRequired,
   searchResultCount: PropTypes.number,
   activePage: PropTypes.number.isRequired,
