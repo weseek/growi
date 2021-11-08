@@ -1,15 +1,16 @@
 import React, { FC } from 'react';
 
-type Props = {
+import InAppNotificationList from './InAppNotificationList';
+import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 
-};
 
-const AllInAppNotifications: FC<Props> = (props: Props) => {
+const AllInAppNotifications: FC = () => {
+  const limit = 6;
+  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
 
   return (
-    <>All In App Notifications</>
+    <InAppNotificationList inAppNotificationData={inAppNotificationData} />
   );
 };
-
 
 export default AllInAppNotifications;
