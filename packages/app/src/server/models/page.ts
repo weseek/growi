@@ -281,7 +281,13 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   // get pages at once
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
   await addViewerCondition(queryBuilder, user, userGroups);
-  const pages: PageDocument[] = await queryBuilder.query.lean().exec();
+  const _pages = await queryBuilder.query.lean().exec();
+  const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
+    if (page.path === path) {
+      page.isTarget = true;
+    }
+    return page;
+  });
 
   // make map
   const pathToChildren: Record<string, PageDocument[]> = {};
