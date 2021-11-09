@@ -15,9 +15,6 @@
       "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": [
     "src/client",
     "src/components",
