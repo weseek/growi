@@ -23,8 +23,6 @@ type Props = {
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const PagenationWrapperAny: any = PaginationWrapper;
   return (
     <>
       {props.pages.map((page) => {
@@ -37,7 +35,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
       })}
       {props.searchResultCount != null && props.searchResultCount > 0 && (
         <div className="my-4 mx-auto">
-          <PagenationWrapperAny
+          <PaginationWrapper
             activePage={props.activePage || 1}
             changePage={props.onPagingNumberChanged}
             totalItemsCount={props.searchResultCount || 0}
