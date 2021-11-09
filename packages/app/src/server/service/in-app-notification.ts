@@ -126,7 +126,7 @@ export default class InAppNotificationService {
     }
   };
 
-  createSubscription = async(userId, pageId, targetRuleName) => {
+  createSubscription = async function(userId: string, pageId: string, targetRuleName: string): Promise<void> {
     const inAppNotificationSettings = await InAppNotificationSettings.findOne({ userId });
     if (inAppNotificationSettings != null) {
       const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
