@@ -23,23 +23,21 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const InAppNotificationList = () => {
-    return (
-      <>
-        {notifications.map((notification: IInAppNotification) => {
-          return (
-            <div className="d-flex flex-row" key={notification._id}>
-              <InAppNotificationElm notification={notification} />
-            </div>
-          );
-        })}
-      </>
-    );
+  const renderInAppNotificationList = () => {
+    const inAppNotificationList = notifications.map((notification: IInAppNotification) => {
+      return (
+        <div className="d-flex flex-row" key={notification._id}>
+          <InAppNotificationElm notification={notification} />
+        </div>
+      );
+    });
+
+    return inAppNotificationList;
   };
 
   return (
     <>
-      {notifications.length === 0 ? <>You had no notifications, yet.</> : <InAppNotificationList />}
+      {notifications.length === 0 ? <>You had no notifications, yet.</> : renderInAppNotificationList()}
     </>
   );
 };
