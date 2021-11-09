@@ -62,7 +62,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  const notificationClickHandler = async(notification: IInAppNotification) => {
+  const notificationClickHandler = async() => {
 
     try {
       // set notification status "STATUS_OPEND"
@@ -101,7 +101,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           {renderUserPicture()}
         </div>
         <div className="p-2">
-          <div onClick={() => notificationClickHandler(notification)}>
+          <div onClick={() => notificationClickHandler()}>
             <div>
               <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
             </div>
