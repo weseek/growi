@@ -76,7 +76,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const renderNotificationMessage = (): JSX.Element => {
     const actionUsers = getActionUsers();
-    const pagePath = notification.target.path;
+    const pagePath = { path: props.notification.target.path };
 
 
     return (
