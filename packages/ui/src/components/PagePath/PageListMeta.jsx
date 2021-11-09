@@ -39,8 +39,13 @@ export class PageListMeta extends React.Component {
     }
 
     let footprintCount;
-    if (true) {
-      footprintCount = <span className="mr-1 footstamp-icon"><FootstampIcon />10</span>;
+    if (page.seenUsers != null && page.seenUsers.length >= 0) {
+      footprintCount = (
+        <>
+          <span className="footstamp-icon"><FootstampIcon /></span>
+          {page.seenUsers.length}
+        </>
+      );
     }
 
     return (
