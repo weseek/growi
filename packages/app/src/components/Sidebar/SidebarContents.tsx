@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
 
+import { SidebarContents as SidebarContentType } from '~/interfaces/ui';
+import { useCurrentSidebarContents } from '~/stores/ui';
+
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
-import { useCurrentSidebarContents, SidebarContents as SidebarContentType } from '~/stores/ui';
 
 type Props = {
 };

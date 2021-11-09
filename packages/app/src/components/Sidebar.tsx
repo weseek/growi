@@ -4,7 +4,9 @@ import React, {
 
 import {
   useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
-  useCurrentProductNavWidth, useSidebarCollapsed, useSidebarResizeDisabled,
+  useCurrentProductNavWidth,
+  useSidebarCollapsed, putSidebarCollapsed,
+  useSidebarResizeDisabled,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
@@ -21,15 +23,17 @@ const GlobalNavigation = () => {
 
   const itemSelectedHandler = useCallback((selectedContents) => {
 
+    let newValue = false;
+
     // already selected
     if (currentContents === selectedContents) {
       // toggle collapsed
-      mutateSidebarCollapsed(!isCollapsed);
+      newValue = !isCollapsed;
     }
-    // switch and expand
-    else {
-      mutateSidebarCollapsed(false);
-    }
+
+    mutateSidebarCollapsed(newValue, false);
+    putSidebarCollapsed(newValue);
+
   }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
@@ -202,7 +206,9 @@ const Sidebar: FC<Props> = (props: Props) => {
   }, [isCollapsed, isDrawerMode, setContentWidth, currentProductNavWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
-    mutateSidebarCollapsed(!isCollapsed);
+    const newValue = !isCollapsed;
+    mutateSidebarCollapsed(newValue, false);
+    putSidebarCollapsed(newValue);
   }, [isCollapsed, mutateSidebarCollapsed]);
 
   useEffect(() => {

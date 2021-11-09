@@ -1,12 +1,20 @@
-import { Key, useSWRConfig, SWRResponse } from 'swr';
+import {
+  useSWRConfig, SWRResponse, Key,
+} from 'swr';
+import useSWRImmutable from 'swr/immutable';
+
+// eslint-disable-next-line no-restricted-imports
+import { AxiosResponse } from 'axios';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { SidebarContents } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -125,9 +133,36 @@ export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse
   return useStaticSWR('productNavWidth', productNavWidth || null, { fallbackData: initialData });
 };
 
-export const useSidebarCollapsed = (isCollapsed?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isSidebarCollapsed', isCollapsed || null, { fallbackData: initialData });
+export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
+  const key = isServer ? null : 'userUISettings';
+
+  return useSWRImmutable(
+    key,
+    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
+  );
+};
+
+export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {
+  const { data } = useSWRxUserUISettings();
+  const key = data === undefined ? null : 'isSidebarCollapsed';
+
+  return useStaticSWR(
+    key,
+    false,
+    {
+      revalidateOnFocus: false,
+      fallbackData: data?.isSidebarCollapsed,
+      use: [sessionStorageMiddleware],
+    },
+  );
+};
+
+export const putSidebarCollapsed = async(isCollapsed: boolean): Promise<AxiosResponse<IUserUISettings>> => {
+  return apiv3Put<IUserUISettings>('/user-ui-settings', {
+    settings: {
+      isSidebarCollapsed: isCollapsed,
+    },
+  });
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {

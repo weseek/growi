@@ -1,6 +1,8 @@
 import React, { FC, useCallback } from 'react';
+
+import { SidebarContents } from '~/interfaces/ui';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
-import { SidebarContents, useCurrentSidebarContents } from '~/stores/ui';
+import { useCurrentSidebarContents } from '~/stores/ui';
 
 
 type PrimaryItemProps = {
