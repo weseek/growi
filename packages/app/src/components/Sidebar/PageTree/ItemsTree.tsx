@@ -9,7 +9,7 @@ import Item from './Item';
  */
 const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
   {
-    path: '/',
+    path: '/A/B',
     isEmpty: false,
     grant: 1,
   },
@@ -19,7 +19,7 @@ const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
     grant: 1,
   },
   {
-    path: '/A/B',
+    path: '/',
     isEmpty: false,
     grant: 1,
   },
@@ -40,16 +40,6 @@ const targetAndSiblings: (Partial<IPage> & {isTarget?: boolean})[] = [
     isEmpty: false,
     grant: 1,
   },
-  {
-    path: '/A/B/C3',
-    isEmpty: false,
-    grant: 1,
-  },
-  {
-    path: '/A/B/C4',
-    isEmpty: false,
-    grant: 1,
-  },
 ];
 
 
@@ -57,18 +47,18 @@ const targetAndSiblings: (Partial<IPage> & {isTarget?: boolean})[] = [
  * Utility to generate node tree and return the root node
  */
 const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[], siblings: Partial<IPage>[]): ItemNode => {
-  const rootPage = ancestors[0];
+  const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
-  const ancestorNodes = ancestors.map((page, i, array): ItemNode => {
-    if (i === array.length - 1) {
+  const ancestorNodes = ancestors.map((page, i): ItemNode => {
+    if (i === 0) {
       const siblingNodes = siblings.map(page => new ItemNode(page));
       return new ItemNode(page, siblingNodes);
     }
     return new ItemNode(page, [], true);
   });
 
-  const rootNode = ancestorNodes.reverse().reduce((child, parent) => {
+  const rootNode = ancestorNodes.reduce((child, parent) => {
     parent.children = [child];
     return parent;
   });
