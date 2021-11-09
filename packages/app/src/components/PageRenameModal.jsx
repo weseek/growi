@@ -14,7 +14,9 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
@@ -22,10 +24,8 @@ import DuplicatedPathsTable from './DuplicatedPathsTable';
 
 const PageRenameModal = (props) => {
   const {
-    t, appContainer, pageContainer,
+    t, appContainer, path, pageId, revisionId,
   } = props;
-
-  const { path, revisionId, pageId } = pageContainer.state;
 
   const { crowi } = appContainer.config;
 
@@ -59,7 +59,7 @@ const PageRenameModal = (props) => {
 
   const updateSubordinatedList = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      const res = await apiv3Get('/pages/subordinated-list', { path });
       const { subordinatedPaths } = res.data;
       setSubordinatedPages(subordinatedPaths);
     }
@@ -67,7 +67,7 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Fail to get subordinated pages'));
     }
-  }, [appContainer, path, t]);
+  }, [path, t]);
 
   useEffect(() => {
     if (props.isOpen) {
@@ -78,7 +78,7 @@ const PageRenameModal = (props) => {
 
   const checkExistPaths = async(newParentPath) => {
     try {
-      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -112,7 +112,7 @@ const PageRenameModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await appContainer.apiv3Put('/pages/rename', {
+      const response = await apiv3Put('/pages/rename', {
         revisionId,
         pageId,
         isRenameRecursively,
@@ -247,17 +247,17 @@ const PageRenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
-
+const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer]);
 
 PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
 };
 

@@ -167,6 +167,8 @@ const PageManagement = (props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
         />
         <PageDuplicateModal
