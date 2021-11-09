@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { UserPicture, PagePathLabel } from '@growi/ui';
-import { IUser } from 'src/interfaces/user';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-// import { PageUpdateNotification, PageCommentNotification } from './NotificationContent';
 import { apiv3Post } from '../../client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
