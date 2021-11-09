@@ -205,10 +205,9 @@ class SearchPage extends React.Component {
   renderSearchResultList = () => {
     return (
       <SearchResultList
-        pages={this.state.searchedPages}
-        deletionMode={false}
+        pages={this.state.searchedPages || []}
         selectedPage={this.state.selectedPage}
-        selectedPages={this.state.selectedPages}
+        selectedPages={this.state.selectedPages || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
