@@ -228,10 +228,10 @@ module.exports = (crowi) => {
       }
 
       if (isLiked) {
-        page = await page.like(req.user);
+        page = await page.unlike(req.user);
       }
       else {
-        page = await page.unlike(req.user);
+        page = await page.like(req.user);
       }
     }
     catch (err) {

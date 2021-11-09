@@ -10,8 +10,6 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
-// TODO
-// before PR , remove comments
 class LikeButtons extends React.Component {
 
   constructor(props) {
@@ -22,7 +20,6 @@ class LikeButtons extends React.Component {
     };
 
     this.togglePopover = this.togglePopover.bind(this);
-    // this.handleClick = this.handleClick.bind(this);
   }
 
   togglePopover() {
@@ -32,30 +29,12 @@ class LikeButtons extends React.Component {
     }));
   }
 
-  // async handleClick() {
-  //   const { appContainer, pageContainer } = this.props;
-  //   const { isGuestUser } = appContainer;
-
-  //   if (isGuestUser) {
-  //     return;
-  //   }
-
-  //   try {
-  //     pageContainer.toggleLike();
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }
 
   render() {
     const {
       appContainer, onClickInvoked, likers, sumOfLikers, isLiked, t,
     } = this.props;
     const { isGuestUser } = appContainer;
-    // const {
-    //   state: { likers, sumOfLikers, isLiked },
-    // } = pageContainer;
 
     return (
       <div className="btn-group" role="group" aria-label="Like buttons">
@@ -102,7 +81,6 @@ const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
 
 LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onClickInvoked: PropTypes.func.isRequired,
   likers: PropTypes.arrayOf(PropTypes.object),
   sumOfLikers: PropTypes.number.isRequired,

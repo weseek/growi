@@ -2,14 +2,13 @@ import React, {
   FC, useState, useEffect,
 } from 'react';
 import AppContainer from '../../client/services/AppContainer';
-import NavigationContainer from '../../client/services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
+import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client'; // '~/client/util/apiv3-client';
+import { toastError } from '../../client/util/apiNotification';
 
 
 type PageReactionButtonsProps = {
@@ -23,7 +22,7 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
   const BookMarkButtonTypeAny: any = BookmarkButton;
 
   const [sumOflikers, setSumOfLikers] = useState(0);
-  const [likers, setLikers] = useState([]);
+  const [likers, setLikers] = useState<string[]>([]);
   const [isLiked, setIsLiked] = useState(true);
 
   // component did mount
@@ -31,7 +30,7 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
     const f = async() => {
       const {
         data: { likerIds, sumOfLikers, isLiked },
-      } = await appContainer.apiv3Get('/page/info', { _id: pageId });
+      } = await apiv3Get('/page/info', { _id: pageId });
 
       setSumOfLikers(sumOfLikers);
       setLikers(likerIds);
@@ -51,6 +50,11 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
     catch (err) {
       toastError(err);
     }
+    setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
+    setLikers(likerIds => (isLiked
+      ? likerIds.filter(id => id !== appContainer.currentUserId)
+      : [...likerIds, appContainer.currentUserId]));
+    setIsLiked(isLiked => !isLiked);
   };
 
   return (

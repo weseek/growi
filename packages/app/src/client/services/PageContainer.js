@@ -294,15 +294,15 @@ export default class PageContainer extends Container {
 
   async toggleLike() {
     {
-      const toggledIsLiked = !this.state.isLiked;
+      const toggledIsLiked = this.state.isLiked;
       await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
 
       await this.setState(state => ({
-        isLiked: toggledIsLiked,
-        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
+        isLiked: !toggledIsLiked,
+        sumOfLikers: toggledIsLiked ? state.sumOfLikers - 1 : state.sumOfLikers + 1,
         likerIds: toggledIsLiked
-          ? [...this.state.likerIds, this.appContainer.currentUserId]
-          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
+          ? state.likerIds.filter(id => id !== this.appContainer.currentUserId)
+          : [...this.state.likerIds, this.appContainer.currentUserId],
       }));
     }
 
