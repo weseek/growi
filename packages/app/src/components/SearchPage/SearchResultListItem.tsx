@@ -8,14 +8,11 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
-type Props ={
+type PageItemControlProps = {
   page: ISearchedPage,
-  isSelected: boolean,
-  onClickInvoked?: (pageId: string) => void,
 }
 
-
-const PageItemControl: FC<Props> = (props: {page: ISearchedPage}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
@@ -66,6 +63,11 @@ const PageItemControl: FC<Props> = (props: {page: ISearchedPage}) => {
 
 };
 
+type Props = {
+  page: ISearchedPage,
+  isSelected: boolean,
+  onClickInvoked?: (pageId: string) => void,
+}
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const { page, isSelected } = props;
