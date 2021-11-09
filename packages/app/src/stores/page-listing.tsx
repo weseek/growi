@@ -1,32 +1,45 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { SiblingsResult, AncestorsResult } from '../interfaces/page-listing-results';
+import { ChildrenResult, TargetAndAncestorsResult, AncestorsChildrenResult } from '../interfaces/page-listing-results';
 
 
-export const useSWRxPageSiblings = (
+export const useSWRxPageAncestorsChildren = (
     path: string,
-): SWRResponse<SiblingsResult, Error> => {
+): SWRResponse<AncestorsChildrenResult, Error> => {
   return useSWR(
-    `/page-listing/siblings?path=${path}`,
+    `/page-listing/ancestors-children?path=${path}`,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
-        targetAndSiblings: response.data.targetAndSiblings,
+        ancestorsChildren: response.data.ancestorsChildren,
+      };
+    }),
+  );
+};
+
+export const useSWRxPageAncestors = (
+    path: string,
+    id: string,
+): SWRResponse<TargetAndAncestorsResult, Error> => {
+  return useSWR(
+    `/page-listing/target-ancestors?path=${path}&id=${id}`,
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return {
+        targetAndAncestors: response.data.targetAndAncestors,
       };
     }),
   );
 };
 
 
-export const useSWRxPageAncestors = (
-    path: string,
-    id: string,
-): SWRResponse<AncestorsResult, Error> => {
+export const useSWRxPageChildren = (
+    path: string | null,
+): SWRResponse<ChildrenResult, Error> => {
   return useSWR(
-    `/page-listing/ancestors?path=${path}&id=${id}`,
+    path ? `/page-listing/children?path=${path}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
-        ancestors: response.data.ancestors,
+        pages: response.data.pages,
       };
     }),
   );

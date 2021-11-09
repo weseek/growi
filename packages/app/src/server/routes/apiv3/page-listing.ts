@@ -45,48 +45,30 @@ export default (crowi: Crowi): Router => {
 
 
   // eslint-disable-next-line max-len
-  router.get('/siblings', accessTokenParser, loginRequiredStrictly, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser, loginRequiredStrictly, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
 
-    let targetAndSiblings: PageDocument[];
-    try {
-      targetAndSiblings = await Page.findSiblingsByPathAndViewer(path as string, req.user);
+    const ancestorsChildren: Record<string, PageDocument[]> = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
 
-      targetAndSiblings = targetAndSiblings.map((page) => {
-        if (page.path === path) {
-          Object.assign(page, { isTarget: true });
-        }
-        return page;
-      });
-    }
-    catch (err) {
-      logger.error('Error occurred while finding pages.', err);
-      return res.apiv3Err(new ErrorV3('Error occurred while finding pages.'));
-    }
-
-    if (isTopPage(path as string)) {
-      targetAndSiblings = targetAndSiblings.filter(page => !isTopPage(page.path));
-    }
-
-    return res.apiv3({ targetAndSiblings });
+    return res.apiv3({ ancestorsChildren });
   });
 
   /*
    * In most cases, using path should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/ancestors', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/target-ancestors', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { id, path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
 
-    let ancestors: PageDocument[];
+    let targetAndAncestors: PageDocument[];
     try {
-      ancestors = await Page.findAncestorsByPathOrId((path || id) as string);
+      targetAndAncestors = await Page.findTargetAndAncestorsByPathOrId((path || id) as string);
 
-      if (ancestors.length === 0 && !isTopPage(path as string)) {
+      if (targetAndAncestors.length === 0 && !isTopPage(path as string)) {
         throw Error('Ancestors must have at least one page.');
       }
     }
@@ -95,7 +77,7 @@ export default (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Error occurred while finding pages.'));
     }
 
-    return res.apiv3({ ancestors });
+    return res.apiv3({ targetAndAncestors });
   });
 
   /*

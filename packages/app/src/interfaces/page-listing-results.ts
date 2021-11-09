@@ -1,10 +1,16 @@
 import { IPage } from './page';
 
-export interface SiblingsResult {
-  targetAndSiblings: Partial<IPage>[]
+export interface ChildrenResult {
+  pages: Partial<IPage>[]
 }
 
 
-export interface AncestorsResult {
-  ancestors: Partial<IPage>[]
+type ParentPath = string;
+export interface AncestorsChildrenResult {
+  ancestorsChildren: Record<ParentPath, Partial<IPage>[]>
+}
+
+
+export interface TargetAndAncestorsResult {
+  targetAndAncestors: Partial<IPage>[]
 }

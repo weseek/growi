@@ -3,23 +3,21 @@ import React, { FC } from 'react';
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageSiblings, useSWRxPageAncestors } from '../../../stores/page-listing';
+import { useSWRxPageAncestors, useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
 
 /*
- * Utility to generate node tree and return the root node
+ * Utility to generate initial node and return
  */
-const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode => {
-  const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
+const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
+  const rootPage = targetAndAncestors[targetAndAncestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
-  const ancestorNodes = ancestors.map((page, i): ItemNode => {
-    // isPartialChildren will be false for the target page
-    const isPartialChildren = i !== 0;
-    return new ItemNode(page, [], isPartialChildren);
+  const nodes = targetAndAncestors.map((page): ItemNode => {
+    return new ItemNode(page, []);
   });
 
   // update children for each node
-  const rootNode = ancestorNodes.reduce((child, parent) => {
+  const rootNode = nodes.reduce((child, parent) => {
     parent.children = [child];
     return parent;
   });
@@ -35,26 +33,45 @@ const ItemsTree: FC = () => {
   const path = '/Sandbox/Bootstrap4';
   const id = '6181188ae38676152e464fc2';
 
+  // initial request
   const { data: ancestorsData, error } = useSWRxPageAncestors(path, id);
 
-  if (error != null) {
+  // secondary request
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(path);
+
+  if (error != null || ancestorsData == null) {
     return null;
   }
 
-  if (ancestorsData == null) {
-    return null;
-  }
-
-  const { ancestors } = ancestorsData;
+  const { targetAndAncestors } = ancestorsData;
 
   // create node tree
-  const rootNode = generateInitialTreeFromAncestors(ancestors);
+  const initialNode = generateInitialNode(targetAndAncestors);
+
+  if (ancestorsChildrenData != null) {
+    // increment initialNode
+    const { ancestorsChildren } = ancestorsChildrenData;
+
+    // flatten ancestors
+    const partialChildren: ItemNode[] = [];
+    let currentNode = initialNode;
+    while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
+      const child = currentNode.children[0];
+      partialChildren.push(child);
+      currentNode = child;
+    }
+
+    // update children
+    partialChildren.forEach((node) => {
+      const childPages = ancestorsChildren[node.page.path as string];
+      node.children = ItemNode.generateNodesFromPages(childPages);
+    });
+  }
 
   const isOpen = true;
-
   return (
     <>
-      <Item key={rootNode.page.path} itemNode={rootNode} isOpen={isOpen} />
+      <Item key={initialNode.page.path} itemNode={initialNode} isOpen={isOpen} />
     </>
   );
 };

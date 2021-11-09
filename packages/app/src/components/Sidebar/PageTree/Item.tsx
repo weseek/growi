@@ -10,9 +10,7 @@ interface ItemProps {
 const Item = memo<ItemProps>((props: ItemProps) => {
   const { itemNode, isOpen = false } = props;
 
-  const { page, children, isPartialChildren } = itemNode;
-
-  // TODO: fetch children if isPartialChildren
+  const { page, children } = itemNode;
 
   if (page == null) {
     return null;
@@ -31,7 +29,7 @@ const Item = memo<ItemProps>((props: ItemProps) => {
       {
         itemNode.hasChildren() && (children as ItemNode[]).map(node => (
           <Item
-            key={node.page.path}
+            key={node.page._id}
             itemNode={node}
             isOpen={false}
           />

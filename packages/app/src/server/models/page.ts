@@ -31,15 +31,16 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export interface PageDocument extends IPage, Document {}
+export interface PageDocument extends Omit<IPage, '_id'>, Document {}
 
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
-  findAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
+  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
+  findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -238,8 +239,9 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
 
 /*
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
+ * The result will include the target as well
  */
-schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -253,6 +255,7 @@ schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promi
   }
 
   const ancestorPaths = collectAncestorPaths(path);
+  ancestorPaths.push(path); // include target
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
@@ -289,6 +292,8 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 
   return queryBuilder.query.lean().exec();
 };
+
+// TODO: implement findAncestorsChildrenByPathAndViewer using lean()
 
 
 /*
