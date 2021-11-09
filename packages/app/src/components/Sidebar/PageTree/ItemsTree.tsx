@@ -71,6 +71,7 @@ const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[], siblings:
  */
 const ItemsTree: FC = () => {
   // TODO: fetch ancestors, siblings using swr
+  if (ancestors == null) return null;
 
   // create node tree
   const rootNode = generateInitialTreeFromAncestors(ancestors, targetAndSiblings);
