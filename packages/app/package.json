@@ -83,7 +83,7 @@
     "cookie-parser": "^1.4.5",
     "csrf": "^3.1.0",
     "date-fns": "^2.23.0",
-    "detect-indent": "^6.0.0",
+    "detect-indent": "^7.0.0",
     "diff": "^5.0.0",
     "elasticsearch": "^16.0.0",
     "entities": "^2.0.0",
