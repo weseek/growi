@@ -23,8 +23,7 @@ interface AuthorizedRequest extends Request {
  * Validators
  */
 const validator = {
-  pageIdAndPathRequired: [
-    query('id').isMongoId().withMessage('id is required'),
+  pagePathRequired: [
     query('path').isString().withMessage('path is required'),
   ],
   pageIdOrPathRequired: oneOf([
@@ -46,20 +45,21 @@ export default (crowi: Crowi): Router => {
 
 
   // eslint-disable-next-line max-len
-  router.get('/siblings', accessTokenParser, loginRequiredStrictly, ...validator.pageIdAndPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
-    const { id, path } = req.query;
+  router.get('/siblings', accessTokenParser, loginRequiredStrictly, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+    const { path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
 
-    let siblings: PageDocument[];
-    let target: PageDocument;
+    let targetAndSiblings: PageDocument[];
     try {
-      siblings = await Page.findSiblingsByPathAndViewer(path as string, req.user);
+      targetAndSiblings = await Page.findSiblingsByPathAndViewer(path as string, req.user);
 
-      target = siblings.filter(page => page._id.toString() === id)?.[0];
-      if (target == null) {
-        throw Error('Target must exist.');
-      }
+      targetAndSiblings = targetAndSiblings.map((page) => {
+        if (page.path === path) {
+          Object.assign(page, { isTarget: true });
+        }
+        return page;
+      });
     }
     catch (err) {
       logger.error('Error occurred while finding pages.', err);
@@ -67,10 +67,10 @@ export default (crowi: Crowi): Router => {
     }
 
     if (isTopPage(path as string)) {
-      siblings = siblings.filter(page => !isTopPage(page.path));
+      targetAndSiblings = targetAndSiblings.filter(page => !isTopPage(page.path));
     }
 
-    return res.apiv3({ target, siblings });
+    return res.apiv3({ targetAndSiblings });
   });
 
   /*
