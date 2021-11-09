@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -25,38 +25,15 @@ const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
   },
 ];
 
-/*
- * Mock data
- */
-const targetAndSiblings: (Partial<IPage> & {isTarget?: boolean})[] = [
-  {
-    path: '/A/B/C',
-    isEmpty: false,
-    grant: 1,
-    isTarget: true,
-  },
-  {
-    path: '/A/B/C2',
-    isEmpty: false,
-    grant: 1,
-  },
-];
-
 
 /*
  * Utility to generate node tree and return the root node
  */
-const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[], siblings: Partial<IPage>[]): ItemNode => {
+const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode => {
   const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
-  const ancestorNodes = ancestors.map((page, i): ItemNode => {
-    if (i === 0) {
-      const siblingNodes = siblings.map(page => new ItemNode(page));
-      return new ItemNode(page, siblingNodes);
-    }
-    return new ItemNode(page, [], true);
-  });
+  const ancestorNodes = ancestors.map((page): ItemNode => new ItemNode(page, [], true));
 
   const rootNode = ancestorNodes.reduce((child, parent) => {
     parent.children = [child];
@@ -74,7 +51,7 @@ const ItemsTree: FC = () => {
   if (ancestors == null) return null;
 
   // create node tree
-  const rootNode = generateInitialTreeFromAncestors(ancestors, targetAndSiblings);
+  const rootNode = generateInitialTreeFromAncestors(ancestors);
 
   const isOpen = true;
 
