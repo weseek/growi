@@ -258,6 +258,10 @@
       "This tree": "この階層下の子ページのみ"
     }
   },
+  "in_app_notification": {
+    "notification_list": "通知一覧",
+    "see_all": "通知一覧を見る"
+  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
