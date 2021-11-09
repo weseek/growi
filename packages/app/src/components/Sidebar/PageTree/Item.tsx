@@ -1,21 +1,47 @@
-import React, { memo, ReactNode } from 'react';
+import React, { memo, useState } from 'react';
 import { IPage } from '../../../interfaces/page';
+import { ItemNode } from './ItemNode';
 
-type Props = {
-  page: IPage
-  isOpen: boolean
-  isTarget: boolean
-  children?: ReactNode
+
+interface ItemProps {
+  itemNode: ItemNode
+  isOpen?: boolean
 }
 
-const Item = memo<Props>((props: Props) => {
-  const { children } = props;
+const Item = memo<ItemProps>((props: ItemProps) => {
+  console.log('??? Item has Rendered ITEM');
+  const { itemNode, isOpen = false } = props;
+
+  const { page, children, isPartialChildren } = itemNode;
+
+  // TODO: fetch data if isPartialChildren
+
+  if (page == null) {
+    return null;
+  }
+
+  // TODO: improve style
+  const style = { margin: '10px', opacity: 1.0 };
+  if (page.isTarget) style.opacity = 0.7;
+
+  /*
+   * Normal render
+   */
   return (
-    <>
-      Item
-      {children}
-    </>
+    <div style={style}>
+      <p>{page.path}</p>
+      {
+        itemNode.hasChildren() && (children as ItemNode[]).map(node => (
+          <Item
+            key={node.page.path}
+            itemNode={node}
+            isOpen={false}
+          />
+        ))
+      }
+    </div>
   );
+
 });
 
 export default Item;

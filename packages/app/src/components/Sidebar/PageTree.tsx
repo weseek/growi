@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 import ItemsTree from './PageTree/ItemsTree';
 
 
-type Props = {
-}
-
-const PageTree:FC<Props> = (props: Props) => {
+const PageTree: FC = () => {
   const { t } = useTranslation();
 
   return (
