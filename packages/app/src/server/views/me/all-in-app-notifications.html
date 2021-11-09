@@ -1,15 +1,13 @@
 {% extends '../layout/layout.html' %}
 
-<!-- TODO: apply i18n by #80104 -->
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('All In-App Notifications')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('in_app_notification.notification_list')) }}{% endblock %}
 
 {% block layout_main %}
 
 {% block content_header_wrapper %}
 <header class="py-3">
   <div class="container-fluid">
-    <!-- TODO: apply i18n by #80104 -->
-    <h1 class="title">All In-App Notifications</h1>
+    <h1 class="title">{{ t('in_app_notification.notification_list') }}</h1>
   </div>
 </header>
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>

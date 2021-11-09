@@ -258,6 +258,17 @@
       "This tree": "この階層下の子ページのみ"
     }
   },
+  "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
+    "see_all": "通知一覧を見る"
+  },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "アプリ内通知設定",
+    "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
+    "default_subscribe_rules": {
+      "page_create": "ページを作成した時にそのページをサブスクライブします。"
+    }
+  },
   "editor_settings": {
     "editor_settings": "エディター設定",
     "common_settings": {

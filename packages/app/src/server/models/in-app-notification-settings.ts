@@ -1,16 +1,16 @@
 import { Schema, Model, Document } from 'mongoose';
 import { getOrCreateModel } from '@growi/core';
 
-import { IInAppNotificationSettings, subscribeRules } from '../../interfaces/in-app-notification-settings';
+import { IInAppNotificationSettings, subscribeRuleNames } from '../../interfaces/in-app-notification-settings';
 
 export interface InAppNotificationSettingsDocument extends IInAppNotificationSettings, Document {}
 export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocument>
 
 const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
   userId: { type: String },
-  defaultSubscribeRules: [
+  subscribeRules: [
     {
-      name: { type: String, require: true, enum: subscribeRules },
+      name: { type: String, require: true, enum: subscribeRuleNames },
       isEnabled: { type: Boolean },
     },
   ],
