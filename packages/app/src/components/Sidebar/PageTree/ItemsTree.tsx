@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -33,28 +33,31 @@ const ItemsTree: FC = () => {
   const path = '/Sandbox/Bootstrap4';
   const id = '6181188ae38676152e464fc2';
 
+  const [initialNode, setInitialNode] = useState<ItemNode | null>(null);
+
   // initial request
   const { data: ancestorsData, error } = useSWRxPageAncestors(path, id);
 
   // secondary request
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(path);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(ancestorsData != null ? path : null);
 
   if (error != null || ancestorsData == null) {
     return null;
   }
 
   const { targetAndAncestors } = ancestorsData;
+  const newInitialNode = generateInitialNode(targetAndAncestors);
 
-  // create node tree
-  const initialNode = generateInitialNode(targetAndAncestors);
-
+  /*
+   * when second SWR resolved
+   */
   if (ancestorsChildrenData != null) {
     // increment initialNode
     const { ancestorsChildren } = ancestorsChildrenData;
 
     // flatten ancestors
     const partialChildren: ItemNode[] = [];
-    let currentNode = initialNode;
+    let currentNode = newInitialNode;
     while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
       const child = currentNode.children[0];
       partialChildren.push(child);
@@ -67,6 +70,10 @@ const ItemsTree: FC = () => {
       node.children = ItemNode.generateNodesFromPages(childPages);
     });
   }
+
+  setInitialNode(newInitialNode); // rerender
+
+  if (initialNode == null) return null;
 
   const isOpen = true;
   return (

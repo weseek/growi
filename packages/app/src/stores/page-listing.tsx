@@ -5,10 +5,10 @@ import { TargetAndAncestorsResult, AncestorsChildrenResult } from '../interfaces
 
 
 export const useSWRxPageAncestorsChildren = (
-    path: string,
+    path: string | null,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   return useSWR(
-    `/page-listing/ancestors-children?path=${path}`,
+    path ? `/page-listing/ancestors-children?path=${path}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
