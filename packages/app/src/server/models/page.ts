@@ -37,7 +37,6 @@ export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
-  findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
@@ -100,9 +99,9 @@ const hasSlash = (str: string): boolean => {
  * Generate RE2 instance for one level lower path
  */
 const generateChildrenRegExp = (path: string): RE2 => {
-  // https://regex101.com/r/iu1vYF/1
-  // ex. / OR /any_level1
-  if (isTopPage(path)) return new RE2(/^\/[^\\/]*$/);
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RE2(/^\/[^/]+$/);
 
   // https://regex101.com/r/mrDJrx/1
   // ex. /parent/any_child OR /any_level1
@@ -218,24 +217,6 @@ schema.statics.findByPathAndViewer = async function(
   return queryBuilder.query.exec();
 };
 
-/*
- * Find the siblings including the target page. When top page, it returns /any_level1 pages
- */
-schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<PageDocument[]> {
-  if (path == null) {
-    throw new Error('path is required.');
-  }
-
-  const _parentPath = nodePath.dirname(path);
-  const parentPath = isTopPage(_parentPath) ? '' : _parentPath;
-
-  const regexp = generateChildrenRegExp(parentPath);
-
-  const queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source, $options: regexp.flags } }));
-  await addViewerCondition(queryBuilder, user, userGroups);
-
-  return queryBuilder.query.lean().exec();
-};
 
 /*
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
@@ -293,7 +274,23 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   return queryBuilder.query.lean().exec();
 };
 
-// TODO: implement findAncestorsChildrenByPathAndViewer using lean()
+schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+  const ancestorPaths = collectAncestorPaths(path);
+  const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path).source)); // cannot use re2
+
+  // get pages at once
+  const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
+  await addViewerCondition(queryBuilder, user, userGroups);
+  const pages: PageDocument[] = await queryBuilder.query.lean().exec();
+
+  // make map
+  const pathToChildren: Record<string, PageDocument[]> = {};
+  ancestorPaths.forEach((path) => {
+    pathToChildren[path] = pages.filter(page => page.path === path);
+  });
+
+  return pathToChildren;
+};
 
 
 /*

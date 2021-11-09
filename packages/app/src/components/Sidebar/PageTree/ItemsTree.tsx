@@ -48,6 +48,10 @@ const ItemsTree: FC = () => {
   const { targetAndAncestors } = ancestorsData;
   const newInitialNode = generateInitialNode(targetAndAncestors);
 
+  if (error2 != null) {
+    return null;
+  }
+
   /*
    * when second SWR resolved
    */
@@ -82,5 +86,10 @@ const ItemsTree: FC = () => {
     </>
   );
 };
+
+/*
+ * ItemsTree wrapper
+ */
+
 
 export default ItemsTree;

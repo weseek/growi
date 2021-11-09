@@ -50,9 +50,15 @@ export default (crowi: Crowi): Router => {
 
     const Page: PageModel = crowi.model('Page');
 
-    const ancestorsChildren: Record<string, PageDocument[]> = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+    try {
+      const ancestorsChildren: Record<string, PageDocument[]> = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+      return res.apiv3({ ancestorsChildren });
+    }
+    catch (err) {
+      logger.error('Failed to get ancestorsChildren.', err);
+      return res.apiv3Err(new ErrorV3('Failed to get ancestorsChildren.'));
+    }
 
-    return res.apiv3({ ancestorsChildren });
   });
 
   /*
