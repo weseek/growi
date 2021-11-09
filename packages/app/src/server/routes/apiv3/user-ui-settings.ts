@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { AllSidebarContents } from '~/interfaces/ui';
+import { AllSidebarContentsType } from '~/interfaces/ui';
 
 import loggerFactory from '~/utils/logger';
 
@@ -19,7 +19,7 @@ module.exports = (crowi) => {
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
     body('settings.isSidebarCollapsed').optional().isBoolean(),
-    body('settings.currentSidebarContents').optional().isIn(AllSidebarContents),
+    body('settings.currentSidebarContents').optional().isIn(AllSidebarContentsType),
     body('settings.currentProductNavWidth').optional().isNumeric(),
   ];
 

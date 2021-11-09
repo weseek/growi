@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { SidebarContents as SidebarContentType } from '~/interfaces/ui';
+import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 import RecentChanges from './RecentChanges';
@@ -15,7 +15,7 @@ const SidebarContents: FC<Props> = (props: Props) => {
 
   let Contents;
   switch (currentSidebarContents) {
-    case SidebarContentType.RECENT:
+    case SidebarContentsType.RECENT:
       Contents = RecentChanges;
       break;
     default:

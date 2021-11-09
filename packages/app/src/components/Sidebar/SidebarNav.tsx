@@ -1,15 +1,15 @@
 import React, { FC, useCallback } from 'react';
 
-import { SidebarContents } from '~/interfaces/ui';
+import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
 import { useCurrentSidebarContents, putUserUISettings } from '~/stores/ui';
 
 
 type PrimaryItemProps = {
-  contents: SidebarContents,
+  contents: SidebarContentsType,
   label: string,
   iconName: string,
-  onItemSelected: (contents: SidebarContents) => void,
+  onItemSelected: (contents: SidebarContentsType) => void,
 }
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
@@ -62,7 +62,7 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
 
 
 type Props = {
-  onItemSelected: (contents: SidebarContents) => void,
+  onItemSelected: (contents: SidebarContentsType) => void,
 }
 
 const SidebarNav: FC<Props> = (props: Props) => {
@@ -78,8 +78,8 @@ const SidebarNav: FC<Props> = (props: Props) => {
   return (
     <div className="grw-sidebar-nav">
       <div className="grw-sidebar-nav-primary-container">
-        {!isSharedUser && <PrimaryItem contents={SidebarContents.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
-        {!isSharedUser && <PrimaryItem contents={SidebarContents.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
+        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
+        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
       </div>

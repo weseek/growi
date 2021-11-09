@@ -1,6 +1,6 @@
-export const SidebarContents = {
+export const SidebarContentsType = {
   CUSTOM: 'custom',
   RECENT: 'recent',
 } as const;
-export const AllSidebarContents = Object.values(SidebarContents);
-export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContents];
+export const AllSidebarContentsType = Object.values(SidebarContentsType);
+export type SidebarContentsType = typeof SidebarContentsType[keyof typeof SidebarContentsType];

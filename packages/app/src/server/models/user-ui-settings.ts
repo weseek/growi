@@ -4,7 +4,7 @@ import {
 
 import { getOrCreateModel } from '@growi/core';
 
-import { SidebarContents as SidebarContentType } from '~/interfaces/ui';
+import { SidebarContentsType } from '~/interfaces/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 
@@ -16,8 +16,8 @@ const schema = new Schema<IUserUISettings>({
   isSidebarCollapsed: { type: Boolean, default: false },
   currentSidebarContents: {
     type: String,
-    enum: SidebarContentType,
-    default: SidebarContentType.RECENT,
+    enum: SidebarContentsType,
+    default: SidebarContentsType.RECENT,
   },
   currentProductNavWidth: { type: Number },
 });

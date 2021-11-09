@@ -8,8 +8,7 @@ import { AxiosResponse } from 'axios';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { SidebarContents } from '~/interfaces/ui';
+import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
@@ -150,10 +149,10 @@ export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useCurrentSidebarContents = (): SWRResponse<SidebarContents, Error> => {
+export const useCurrentSidebarContents = (): SWRResponse<SidebarContentsType, Error> => {
   const { data } = useSWRxUserUISettings();
   const key = data === undefined ? null : 'sidebarContents';
-  const initialData = data?.currentSidebarContents || SidebarContents.RECENT;
+  const initialData = data?.currentSidebarContents || SidebarContentsType.RECENT;
 
   return useStaticSWR(
     key,
