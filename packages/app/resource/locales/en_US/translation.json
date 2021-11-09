@@ -258,7 +258,8 @@
   },
   "in_app_notification": {
     "notification_list": "In-App Notification List",
-    "see_all": "See All"
+    "see_all": "See All",
+    "no_notification": "You don't have any notificatios."
   },
   "in_app_notification_settings": {
     "in_app_notification_settings": "In-App Notification Settings",

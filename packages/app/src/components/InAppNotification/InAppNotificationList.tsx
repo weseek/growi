@@ -1,14 +1,17 @@
 import React, { FC } from 'react';
 
 import { PaginateResult } from 'mongoose';
+import { useTranslation } from 'react-i18next';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
 import InAppNotificationElm from './InAppNotificationElm';
+
 
 type Props = {
   inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const { inAppNotificationData } = props;
 
   if (inAppNotificationData == null) {
@@ -37,7 +40,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   return (
     <>
-      {notifications.length === 0 ? <>You had no notifications, yet.</> : renderInAppNotificationList()}
+      {notifications.length === 0 ? <>{t('in_app_notification.no_notification')}</> : renderInAppNotificationList()}
     </>
   );
 };
