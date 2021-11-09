@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { apiPost } from '../client/util/apiv1-client';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
