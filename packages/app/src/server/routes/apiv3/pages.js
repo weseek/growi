@@ -322,7 +322,7 @@ module.exports = (crowi) => {
 
     // create subscription
     try {
-      await crowi.inAppNotificationSettingsService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
+      await crowi.inAppNotificationService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
     }
     catch (err) {
       logger.error('Failed to create subscription document', err);

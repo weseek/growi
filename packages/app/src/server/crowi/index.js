@@ -69,7 +69,6 @@ function Crowi() {
   this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
-  this.inAppNotificationSettingsService = null;
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
@@ -130,7 +129,6 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
-    this.setupInAppNotificationSettingsService(),
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
@@ -685,13 +683,6 @@ Crowi.prototype.setupInAppNotificationService = async function() {
   const InAppNotificationService = require('../service/in-app-notification');
   if (this.inAppNotificationService == null) {
     this.inAppNotificationService = new InAppNotificationService(this);
-  }
-};
-
-Crowi.prototype.setupInAppNotificationSettingsService = async function() {
-  const InAppNotificationSettingsService = require('../service/in-app-notification-settings');
-  if (this.inAppNotificationSettingsService == null) {
-    this.inAppNotificationSettingsService = new InAppNotificationSettingsService(this);
   }
 };
 

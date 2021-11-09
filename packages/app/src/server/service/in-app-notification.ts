@@ -5,6 +5,8 @@ import {
   InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED,
 } from '~/server/models/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
+import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
+import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
 
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -124,6 +126,15 @@ export default class InAppNotificationService {
     }
   };
 
+  createSubscription = async(userId, pageId, targetRuleName) => {
+    const inAppNotificationSettings = await InAppNotificationSettings.findOne({ userId });
+    if (inAppNotificationSettings != null) {
+      const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
+      if (subscribeRule != null && subscribeRule.isEnabled) {
+        await Subscription.subscribeByPageId(userId, pageId, STATUS_SUBSCRIBE);
+      }
+    }
+  };
 
 }
 
