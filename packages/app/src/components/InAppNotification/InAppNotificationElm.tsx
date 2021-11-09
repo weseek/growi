@@ -8,7 +8,7 @@ interface Props {
   notification: IInAppNotification
 }
 
-export const InAppNotification = (props: Props): JSX.Element => {
+export const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
 

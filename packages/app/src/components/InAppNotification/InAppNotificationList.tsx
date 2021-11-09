@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { PaginateResult } from 'mongoose';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-import { InAppNotification } from './InAppNotification';
+import { InAppNotificationElm } from './InAppNotificationElm';
 
 type Props = {
   inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
@@ -37,7 +37,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
         <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotification notification={notification} />
+          <InAppNotificationElm notification={notification} />
         </div>
       );
     });
