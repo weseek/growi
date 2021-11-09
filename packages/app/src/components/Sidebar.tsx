@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import {
@@ -11,7 +11,6 @@ import DrawerToggler from './Navbar/DrawerToggler';
 
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
-import { useIsSharedUser } from '~/stores/context';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -91,8 +90,7 @@ type Props = {
   productNavWidth: number
 }
 
-const Sidebar = (props: Props) => {
-  const { data: isSharedUser } = useIsSharedUser();
+const Sidebar: FC<Props> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth(props.productNavWidth);
@@ -263,10 +261,6 @@ const Sidebar = (props: Props) => {
     document.addEventListener('mousemove', draggableAreaMoveHandler);
     document.addEventListener('mouseup', dragableAreaMouseUpHandler);
   }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
-
-  if (isSharedUser) {
-    return null;
-  }
 
   return (
     <>
