@@ -13,7 +13,7 @@ type Props ={
   page: ISearchedPage,
   isSelected: boolean,
   onClickInvoked?: (data: string) => void,
-  onChangedInvoked: (page: ISearchedPage) => void,
+  onChangedInvoked?: (page: ISearchedPage) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
@@ -54,7 +54,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={() => { onChangedInvoked(page) }}
+              onClick={() => {
+                try {
+                  if (onChangedInvoked == null) { throw new Error('onChangedInvoked is null') }
+                  onChangedInvoked(page);
+                }
+                catch (error) {
+                  logger.error(error);
+                }
+              }}
             />
           </div>
           <div className="w-100">
