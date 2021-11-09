@@ -16,11 +16,11 @@ interface Props {
 const notificationClickHandler = async(notification: IInAppNotification) => {
 
   try {
-    window.location.href = notification.target.path;
     // set notification status "STATUS_OPEND"
     await apiv3Post('/in-app-notification/open', { id: notification._id });
+
     // jump to target page
-    console.log('path', notification.target.path);
+    window.location.href = notification.target.path;
   }
   catch (err) {
     logger.error(err);
