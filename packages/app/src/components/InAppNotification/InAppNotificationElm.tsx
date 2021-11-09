@@ -79,10 +79,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   const actionUsers = getActionUsers();
   const pagePath = { path: props.notification.target.path };
 
-  const action: string = notification.action;
+  const actionType: string = notification.action;
   let actionMsg: string;
 
-  switch (action) {
+  switch (actionType) {
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
       break;
