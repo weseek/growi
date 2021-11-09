@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { templateChecker, pagePathUtils } from '@growi/core';
+import FootstampIcon from '../../../../app/src/components/FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
@@ -37,12 +38,18 @@ export class PageListMeta extends React.Component {
       locked = <span><i className="icon-lock" /></span>;
     }
 
+    let footprintCount;
+    if (true) {
+      footprintCount = <span className="mr-1 footstamp-icon"><FootstampIcon />10</span>;
+    }
+
     return (
       <span className="page-list-meta">
         {topLabel}
         {templateLabel}
         {commentCount}
         {likerCount}
+        {footprintCount}
         {locked}
       </span>
     );
