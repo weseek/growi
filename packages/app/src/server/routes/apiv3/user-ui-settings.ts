@@ -31,7 +31,7 @@ module.exports = (crowi) => {
       const updatedSettings = await UserUISettings.findOneAndUpdate(
         { user: user._id },
         { user: user._id },
-        { upsert: true },
+        { upsert: true, new: true },
       );
       return res.apiv3(updatedSettings);
     }
@@ -52,12 +52,23 @@ module.exports = (crowi) => {
       currentSidebarContents: settings.currentSidebarContents,
       currentProductNavWidth: settings.currentProductNavWidth,
     };
+    // remove the keys that have null value
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] == null) {
+        delete updateData[key];
+      }
+    });
 
     try {
       const updatedSettings = await UserUISettings.findOneAndUpdate(
         { user: user._id },
-        { user: user._id, ...updateData },
-        { upsert: true },
+        {
+          $set: {
+            user: user._id,
+            ...updateData,
+          },
+        },
+        { upsert: true, new: true },
       );
       return res.apiv3(updatedSettings);
     }
