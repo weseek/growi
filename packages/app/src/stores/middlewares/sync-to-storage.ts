@@ -43,7 +43,7 @@ export const createSyncToStorageMiddlware = (
         mutate: (data, shouldRevalidate) => {
           return swrNext.mutate(data, shouldRevalidate)
             .then((value) => {
-              storage.setItem(generateKeyInStorage(keyInStorage), storageSerializer.serialize(value));
+              storage.setItem(keyInStorage, storageSerializer.serialize(value));
               return value;
             });
         },
