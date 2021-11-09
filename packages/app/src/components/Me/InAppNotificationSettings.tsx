@@ -4,9 +4,9 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 import { pullAllBy } from 'lodash';
-import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client';
-import { toastSuccess, toastError } from '../../client/util/apiNotification';
-import { subscribeRuleNames, SubscribeRuleDescriptions } from '../../interfaces/in-app-notification-settings';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { subscribeRuleNames, SubscribeRuleDescriptions } from '~/interfaces/in-app-notification-settings';
 
 type SubscribeRule = {
   name: string,

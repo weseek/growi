@@ -5,11 +5,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-import { apiv3Get, apiv3Post } from '../../client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
-import SocketIoContainer from '../../client/services/SocketIoContainer';
-import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 

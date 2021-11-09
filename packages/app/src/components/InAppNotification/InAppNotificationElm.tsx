@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { UserPicture, PagePathLabel } from '@growi/ui';
-import { IInAppNotification } from '../../interfaces/in-app-notification';
-import { apiv3Post } from '../../client/util/apiv3-client';
+import { IInAppNotification } from '~/interfaces/in-app-notification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import loggerFactory from '~/utils/logger';
