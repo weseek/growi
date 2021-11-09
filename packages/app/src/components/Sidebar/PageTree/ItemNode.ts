@@ -1,6 +1,6 @@
 import { IPage } from '~/interfaces/page';
 
-type IPageForItem = Partial<IPage> & { isTarget?: boolean };
+type IPageForItem = Partial<IPage> & {isTarget?: boolean};
 
 export class ItemNode {
 
