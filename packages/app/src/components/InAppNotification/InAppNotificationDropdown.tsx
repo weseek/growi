@@ -5,8 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-
-import AppContainer from '../../client/services/AppContainer';
+import { apiv3Get, apiv3Post } from '../../client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '../../client/services/SocketIoContainer';
@@ -15,13 +14,12 @@ import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 type Props = {
-  appContainer: AppContainer,
+
   socketIoContainer: SocketIoContainer,
 };
 
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { appContainer } = props;
 
   const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +40,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const updateNotificationStatus = async() => {
     try {
-      await appContainer.apiv3Post('/in-app-notification/read');
+      await apiv3Post('/in-app-notification/read');
       setCount(0);
     }
     catch (err) {
@@ -52,7 +50,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const fetchNotificationStatus = async() => {
     try {
-      const res = await appContainer.apiv3Get('/in-app-notification/status');
+      const res = await apiv3Get('/in-app-notification/status');
       const { count } = res.data;
       setCount(count);
     }
@@ -92,6 +90,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [AppContainer, SocketIoContainer]);
+const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
 
 export default InAppNotificationDropdownWrapper;
