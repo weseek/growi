@@ -14,7 +14,7 @@ export type UserUISettingsModel = Model<UserUISettingsDocument>
 const schema = new Schema<IUserUISettings>({
   user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   isSidebarCollapsed: { type: Boolean, default: false },
-  selectedSidebarContents: {
+  currentSidebarContents: {
     type: String,
     enum: SidebarContentType,
     default: SidebarContentType.RECENT,

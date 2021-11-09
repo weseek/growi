@@ -3,10 +3,12 @@ import React, {
 } from 'react';
 
 import {
-  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useSidebarCollapsed,
+  useCurrentSidebarContents,
   useCurrentProductNavWidth,
-  useSidebarCollapsed, putSidebarCollapsed,
   useSidebarResizeDisabled,
+  putUserUISettings,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
@@ -32,7 +34,7 @@ const GlobalNavigation = () => {
     }
 
     mutateSidebarCollapsed(newValue, false);
-    putSidebarCollapsed(newValue);
+    putUserUISettings({ isSidebarCollapsed: newValue });
 
   }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
 
@@ -91,13 +93,12 @@ const SidebarSkeltonContents = () => {
 
 
 type Props = {
-  productNavWidth: number
 }
 
 const Sidebar: FC<Props> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth(props.productNavWidth);
+  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
@@ -135,7 +136,7 @@ const Sidebar: FC<Props> = (props: Props) => {
       // }
 
       // disable resize
-      mutateSidebarResizeDisabled(true);
+      mutateSidebarResizeDisabled(true, false);
     }
     // Drawer --> Dock
     else {
@@ -145,7 +146,7 @@ const Sidebar: FC<Props> = (props: Props) => {
       // }
 
       // enable resize
-      mutateSidebarResizeDisabled(false);
+      mutateSidebarResizeDisabled(false, false);
 
       // // restore width
       // if (this.sidebarWidthCached != null) {
@@ -165,7 +166,7 @@ const Sidebar: FC<Props> = (props: Props) => {
   // }
 
   const backdropClickedHandler = useCallback(() => {
-    mutateDrawerOpened(false);
+    mutateDrawerOpened(false, false);
   }, [mutateDrawerOpened]);
 
   const [isMounted, setMounted] = useState(false);
@@ -208,7 +209,7 @@ const Sidebar: FC<Props> = (props: Props) => {
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
     mutateSidebarCollapsed(newValue, false);
-    putSidebarCollapsed(newValue);
+    putUserUISettings({ isSidebarCollapsed: newValue });
   }, [isCollapsed, mutateSidebarCollapsed]);
 
   useEffect(() => {
@@ -240,13 +241,14 @@ const Sidebar: FC<Props> = (props: Props) => {
 
     if (resizableContainer.current.clientWidth < sidebarMinWidth) {
       // force collapsed
-      mutateSidebarCollapsed(true);
-      mutateProductNavWidth(sidebarMinWidth);
-      // TODO call API and save DB
+      mutateSidebarCollapsed(true, false);
+      mutateProductNavWidth(sidebarMinWidth, false);
+      putUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
     }
     else {
-      mutateProductNavWidth(resizableContainer.current.clientWidth);
-      // TODO call API and save DB
+      const newWidth = resizableContainer.current.clientWidth;
+      mutateProductNavWidth(newWidth, false);
+      putUserUISettings({ currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');

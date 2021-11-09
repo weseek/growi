@@ -122,17 +122,6 @@ export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error>
  *                      for switching UI
  *********************************************************** */
 
-export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): SWRResponse<SidebarContents, Error> => {
-  const initialData = SidebarContents.RECENT;
-  return useStaticSWR('sidebarContents', sidebarContents || null, { fallbackData: initialData });
-};
-
-
-export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse<number, Error> => {
-  const initialData = 320;
-  return useStaticSWR('productNavWidth', productNavWidth || null, { fallbackData: initialData });
-};
-
 export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
   const key = isServer ? null : 'userUISettings';
 
@@ -142,27 +131,53 @@ export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => 
   );
 };
 
+export const putUserUISettings = async(settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
+  return apiv3Put<IUserUISettings>('/user-ui-settings', { settings });
+};
+
 export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {
   const { data } = useSWRxUserUISettings();
   const key = data === undefined ? null : 'isSidebarCollapsed';
+  const initialData = data?.isSidebarCollapsed || false;
 
   return useStaticSWR(
     key,
-    false,
+    null,
     {
-      revalidateOnFocus: false,
-      fallbackData: data?.isSidebarCollapsed,
+      fallbackData: initialData,
       use: [sessionStorageMiddleware],
     },
   );
 };
 
-export const putSidebarCollapsed = async(isCollapsed: boolean): Promise<AxiosResponse<IUserUISettings>> => {
-  return apiv3Put<IUserUISettings>('/user-ui-settings', {
-    settings: {
-      isSidebarCollapsed: isCollapsed,
+export const useCurrentSidebarContents = (): SWRResponse<SidebarContents, Error> => {
+  const { data } = useSWRxUserUISettings();
+  const key = data === undefined ? null : 'sidebarContents';
+  const initialData = data?.currentSidebarContents || SidebarContents.RECENT;
+
+  return useStaticSWR(
+    key,
+    null,
+    {
+      fallbackData: initialData,
+      use: [sessionStorageMiddleware],
     },
-  });
+  );
+};
+
+export const useCurrentProductNavWidth = (): SWRResponse<number, Error> => {
+  const { data } = useSWRxUserUISettings();
+  const key = data === undefined ? null : 'productNavWidth';
+  const initialData = data?.currentProductNavWidth || 320;
+
+  return useStaticSWR(
+    key,
+    null,
+    {
+      fallbackData: initialData,
+      use: [sessionStorageMiddleware],
+    },
+  );
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {

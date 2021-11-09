@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 
 import { SidebarContents } from '~/interfaces/ui';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
-import { useCurrentSidebarContents } from '~/stores/ui';
+import { useCurrentSidebarContents, putUserUISettings } from '~/stores/ui';
 
 
 type PrimaryItemProps = {
@@ -28,7 +28,8 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
       onItemSelected(contents);
     }
 
-    mutate(contents);
+    mutate(contents, false);
+    putUserUISettings({ currentSidebarContents: contents });
   }, [contents, mutate, onItemSelected]);
 
   return (

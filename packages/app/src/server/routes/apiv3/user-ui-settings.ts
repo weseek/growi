@@ -19,7 +19,7 @@ module.exports = (crowi) => {
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
     body('settings.isSidebarCollapsed').optional().isBoolean(),
-    body('settings.selectedSidebarContents').optional().isIn(AllSidebarContents),
+    body('settings.currentSidebarContents').optional().isIn(AllSidebarContents),
     body('settings.currentProductNavWidth').optional().isNumeric(),
   ];
 
@@ -49,7 +49,7 @@ module.exports = (crowi) => {
     // extract only necessary params
     const updateData = {
       isSidebarCollapsed: settings.isSidebarCollapsed,
-      selectedSidebarContents: settings.selectedSidebarContents,
+      currentSidebarContents: settings.currentSidebarContents,
       currentProductNavWidth: settings.currentProductNavWidth,
     };
 
