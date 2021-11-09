@@ -5,10 +5,10 @@ import {
   InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
 
-import { IUser } from '~/interfaces/user';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import { ActivityDocument } from '~/server/models/activity';
 
+import { IUser } from '~/interfaces/user';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
