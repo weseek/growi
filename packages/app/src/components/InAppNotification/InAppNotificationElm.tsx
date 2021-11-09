@@ -42,7 +42,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     return actionedUsers;
   };
 
-  const renderUserPicture = (): JSX.Element => {
+  const renderActionUserPictures = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {
@@ -98,7 +98,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     <>
       <div className="dropdown-item d-flex flex-row mb-3">
         <div className="p-2 mr-2 d-flex align-items-center">
-          {renderUserPicture()}
+          {renderActionUserPictures()}
         </div>
         <div className="p-2">
           <div onClick={() => notificationClickHandler()}>
