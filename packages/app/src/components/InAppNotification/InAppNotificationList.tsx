@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { PaginateResult } from 'mongoose';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-import { InAppNotificationElm } from './InAppNotificationElm';
+import InAppNotificationElm from './InAppNotificationElm';
 
 type Props = {
   inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
