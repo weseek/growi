@@ -10,6 +10,8 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
+// TODO : user image not displayed in search page. Fix it.
+// task : https://estoc.weseek.co.jp/redmine/issues/81110
 class LikeButtons extends React.Component {
 
   constructor(props) {
