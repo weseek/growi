@@ -93,22 +93,20 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
 
 
   return (
-    <>
-      <div className="dropdown-item d-flex flex-row mb-3">
-        <div className="p-2 mr-2 d-flex align-items-center">
-          {renderActionUserPictures()}
-        </div>
-        <div className="p-2">
-          <div onClick={() => notificationClickHandler()}>
-            <div>
-              <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
-            </div>
-            <i className="fa fa-file-o mr-2" />
-            <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
+    <div className="dropdown-item d-flex flex-row mb-3">
+      <div className="p-2 mr-2 d-flex align-items-center">
+        {renderActionUserPictures()}
+      </div>
+      <div className="p-2">
+        <div onClick={() => notificationClickHandler()}>
+          <div>
+            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
+          <i className="fa fa-file-o mr-2" />
+          <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
