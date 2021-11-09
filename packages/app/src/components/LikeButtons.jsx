@@ -10,6 +10,8 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
+// TODO : liker image not displayd in search page. Fix it.
+// TASK : https://estoc.weseek.co.jp/redmine/issues/81110
 class LikeButtons extends React.Component {
 
   constructor(props) {
