@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { UserPicture, PagePathLabel } from '@growi/ui';
+import { IUser } from 'src/interfaces/user';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-import { PageUpdateNotification, PageCommentNotification } from './NotificationContent';
+// import { PageUpdateNotification, PageCommentNotification } from './NotificationContent';
 import { apiv3Post } from '../../client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -18,6 +19,7 @@ interface Props {
 const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
+
 
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -74,38 +76,25 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     }
   };
 
-  const renderNotificationMessage = (): JSX.Element => {
-    const actionUsers = getActionUsers();
-    const pagePath = { path: props.notification.target.path };
+  // const renderInAppNotificationContent = (): JSX.Element => {
+  //   const propsNew = {
+  //     actionUsers: getActionUsers(),
+  //     ...props,
+  //   };
+  //   const action: string = notification.action;
+  //   switch (action) {
+  //     case 'PAGE_UPDATE':
+  //       return <PageUpdateNotification {...propsNew} />;
+  //     case 'COMMENT_CREATE':
+  //       return <PageCommentNotification {...propsNew} />;
+  //     default:
+  //       return <></>;
+  //   }
+  // };
 
 
-    return (
-      <div onClick={() => notificationClickHandler(notification)}>
-        <div>
-          <b>{actionUsers}</b> page updated on <PagePathLabel page={pagePath} />
-        </div>
-        <i className="fa fa-file-o mr-2" />
-        <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
-      </div>
-    );
-  };
-
-
-  const renderInAppNotificationContent = (): JSX.Element => {
-    const propsNew = {
-      actionUsers: getActionUsers(),
-      ...props,
-    };
-    const action: string = notification.action;
-    switch (action) {
-      case 'PAGE_UPDATE':
-        return <PageUpdateNotification {...propsNew} />;
-      case 'COMMENT_CREATE':
-        return <PageCommentNotification {...propsNew} />;
-      default:
-        return <></>;
-    }
-  };
+  const actionUsers = getActionUsers();
+  const pagePath = { path: props.notification.target.path };
 
 
   return (
@@ -115,7 +104,13 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           {renderUserPicture()}
         </div>
         <div className="p-2">
-          {renderNotificationMessage()}
+          <div onClick={() => notificationClickHandler(notification)}>
+            <div>
+              <b>{actionUsers}</b> page updated on <PagePathLabel page={pagePath} />
+            </div>
+            <i className="fa fa-file-o mr-2" />
+            <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
+          </div>
         </div>
       </div>
     </>
