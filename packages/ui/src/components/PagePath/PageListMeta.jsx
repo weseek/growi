@@ -38,9 +38,9 @@ export class PageListMeta extends React.Component {
       locked = <span><i className="icon-lock" /></span>;
     }
 
-    let footprintCount;
-    if (page.seenUsers != null && page.seenUsers.length >= 0) {
-      footprintCount = (
+    let seenUserCount;
+    if (page.seenUserCount > 0) {
+      seenUserCount = (
         <>
           <span className="footstamp-icon"><FootstampIcon /></span>
           {page.seenUsers.length}
@@ -54,8 +54,8 @@ export class PageListMeta extends React.Component {
         {templateLabel}
         {commentCount}
         {likerCount}
-        {footprintCount}
         {locked}
+        {seenUserCount}
       </span>
     );
   }
