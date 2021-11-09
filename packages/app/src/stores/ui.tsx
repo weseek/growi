@@ -2,6 +2,7 @@ import { Key, useSWRConfig, SWRResponse } from 'swr';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
+import { SidebarContents } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
@@ -22,12 +23,6 @@ export const EditorMode = {
   HackMD: 'hackmd',
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
-
-export const SidebarContents = {
-  CUSTOM: 'custom',
-  RECENT: 'recent',
-} as const;
-export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContents];
 
 
 /** **********************************************************
