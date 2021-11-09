@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC } from 'react';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -33,7 +33,11 @@ const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode
   const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
-  const ancestorNodes = ancestors.map((page): ItemNode => new ItemNode(page, [], true));
+  const ancestorNodes = ancestors.map((page, i): ItemNode => {
+    // isPartialChildren will be false for the target page
+    const isPartialChildren = i !== 0;
+    return new ItemNode(page, [], isPartialChildren);
+  });
 
   const rootNode = ancestorNodes.reduce((child, parent) => {
     parent.children = [child];

@@ -1,5 +1,4 @@
-import React, { memo, useState } from 'react';
-import { IPage } from '../../../interfaces/page';
+import React, { memo } from 'react';
 import { ItemNode } from './ItemNode';
 
 
@@ -13,7 +12,7 @@ const Item = memo<ItemProps>((props: ItemProps) => {
 
   const { page, children, isPartialChildren } = itemNode;
 
-  // TODO: fetch data if isPartialChildren
+  // TODO: fetch children if isPartialChildren
 
   if (page == null) {
     return null;
