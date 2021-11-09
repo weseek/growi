@@ -5,10 +5,17 @@ import { ITag } from './tag';
 export type IPage = {
   path: string,
   status: string,
-  revision: IRevision,
-  tags: ITag[],
-  creator: IUser,
+  revision: string | IRevision,
+  tags?: ITag[],
+  lastUpdateUser: any,
+  commentCount: number,
+  creator: string | IUser,
+  seenUsers: string[],
+  liker: string[],
   createdAt: Date,
   updatedAt: Date,
-  seenUsers: string[]
-}
+};
+
+export type IPageHasId = IPage & {
+  _id: string,
+};
