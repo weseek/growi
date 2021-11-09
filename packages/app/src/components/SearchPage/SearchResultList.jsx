@@ -19,7 +19,7 @@ class SearchResultList extends React.Component {
               key={page._id}
               page={page}
               onClickInvoked={this.props.onClickInvoked}
-              toggleCheckBox={this.props.toggleCheckBox}
+              onChangedInvoked={this.props.onChangedInvoked}
               isSelected={page._id === focusedPageId || false}
               noLink
             />
@@ -50,7 +50,7 @@ SearchResultList.propTypes = {
   activePage: PropTypes.number.isRequired,
   pagingLimit: PropTypes.number,
   onClickInvoked: PropTypes.func,
-  toggleCheckBox: PropTypes.func.isRequired,
+  onChangedInvoked: PropTypes.func,
   onPagingNumberChanged: PropTypes.func,
 };
 
