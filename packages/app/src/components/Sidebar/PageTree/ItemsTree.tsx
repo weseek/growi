@@ -87,6 +87,7 @@ const ItemsTree: FC = () => {
   const rootNode = generateInitialTreeFromAncestors(ancestors, targetAndSiblings);
 
   const isOpen = true;
+
   return (
     <>
       <Item key={rootNode.page.path} itemNode={rootNode} isOpen={isOpen} />

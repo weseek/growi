@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ItemsTree from './PageTree/ItemsTree';
 
 
-const PageTree: FC = () => {
+const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   return (
@@ -18,6 +18,6 @@ const PageTree: FC = () => {
       </div>
     </>
   );
-};
+});
 
 export default PageTree;

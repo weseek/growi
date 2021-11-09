@@ -9,7 +9,6 @@ interface ItemProps {
 }
 
 const Item = memo<ItemProps>((props: ItemProps) => {
-  console.log('??? Item has Rendered ITEM');
   const { itemNode, isOpen = false } = props;
 
   const { page, children, isPartialChildren } = itemNode;
