@@ -5,22 +5,20 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageSiblings, useSWRxPageAncestors } from '../../../stores/page-listing';
 
-
 /*
  * Utility to generate node tree and return the root node
  */
-const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[], siblings: Partial<IPage>[]): ItemNode => {
-  const rootPage = ancestors[ancestors.length - 1];
+const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode => {
+  const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
   const ancestorNodes = ancestors.map((page, i): ItemNode => {
-    if (i === 0) {
-      const siblingNodes = siblings.map(page => new ItemNode(page));
-      return new ItemNode(page, siblingNodes);
-    }
-    return new ItemNode(page, [], true);
+    // isPartialChildren will be false for the target page
+    const isPartialChildren = i !== 0;
+    return new ItemNode(page, [], isPartialChildren);
   });
 
+  // update children for each node
   const rootNode = ancestorNodes.reduce((child, parent) => {
     parent.children = [child];
     return parent;
@@ -37,22 +35,20 @@ const ItemsTree: FC = () => {
   const path = '/Sandbox/Bootstrap4';
   const id = '6181188ae38676152e464fc2';
 
-  const { data: ancestorsData, error: error1 } = useSWRxPageAncestors(path, id);
-  const { data: siblingsData, error: error2 } = useSWRxPageSiblings(path);
+  const { data: ancestorsData, error } = useSWRxPageAncestors(path, id);
 
-  if (error1 != null || error2 != null) {
+  if (error != null) {
     return null;
   }
 
-  if (ancestorsData == null || siblingsData == null) {
+  if (ancestorsData == null) {
     return null;
   }
 
   const { ancestors } = ancestorsData;
-  const { targetAndSiblings } = siblingsData;
 
   // create node tree
-  const rootNode = generateInitialTreeFromAncestors(ancestors, targetAndSiblings);
+  const rootNode = generateInitialTreeFromAncestors(ancestors);
 
   const isOpen = true;
 
