@@ -1,9 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import { CheckboxType } from '../../interfaces/search';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
   searchingKeyword: string,
@@ -11,9 +15,12 @@ type Props = {
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
+  onClickInvoked?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
+
+  const [checkboxState, setCheckboxState] = useState(CheckboxType.NONE_CHECKED);
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
@@ -38,12 +45,9 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   const onCheckAllPagesInvoked = (nextCheckboxState:CheckboxType) => {
-    console.log(`onCheckAllPagesInvoked is called with arg ${nextCheckboxState}`);
-    // Todo: set the checkboxState, isChecked, and indeterminate value of checkbox element according to the passed argument
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-
-    // setting checkbox to indeterminate is required to use of useRef to access checkbox element.
-    // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
+    setCheckboxState(nextCheckboxState);
+    if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
+    else { props.onClickInvoked() }
   };
 
   return (
@@ -59,7 +63,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
+          checkboxState={checkboxState} // Todo: change the left value to appropriate value
           onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
         />
