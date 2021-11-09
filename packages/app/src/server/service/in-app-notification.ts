@@ -2,8 +2,11 @@ import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
-  InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED,
+  InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
+
+import { IUser } from '~/interfaces/user';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '~/utils/logger';
@@ -109,6 +112,15 @@ export default class InAppNotificationService {
 
     return;
   };
+
+  open = async function(user: IUser & HasObjectId, id: Types.ObjectId): Promise<void> {
+    const query = { _id: id, user: user._id };
+    const parameters = { status: STATUS_OPENED };
+    const options = { new: true };
+
+    await InAppNotification.findOneAndUpdate(query, parameters, options);
+    return;
+  }
 
   getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
     const query = { user, status: STATUS_UNREAD };
