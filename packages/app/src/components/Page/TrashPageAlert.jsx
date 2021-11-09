@@ -92,6 +92,7 @@ const TrashPageAlert = (props) => {
         <PutbackPageModal
           isOpen={isPutbackPageModalShown}
           onClose={closePutbackPageModalHandler}
+          pageId={pageId}
           path={path}
         />
         <PageDeleteModal
