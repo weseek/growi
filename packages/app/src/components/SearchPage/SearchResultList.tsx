@@ -20,16 +20,21 @@ type Props = {
   activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
+  focusedPage?: ISearchedPage,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
+  const { focusedPage } = props;
+  const focusedPageId = focusedPage != null && focusedPage._id != null ? focusedPage._id : '';
   return (
     <>
       {props.pages.map((page) => {
         return (
           <SearchResultListItem
+            key={page._id}
             page={page}
             onClickInvoked={props.onClickInvoked}
+            isSelected={page._id === focusedPageId || false}
           />
         );
       })}
