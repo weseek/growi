@@ -23,17 +23,6 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const notificationClickHandler = async(notification: Notification) => {
-    try {
-      // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
-      // jump to target page
-      // window.location.href = notification.target.path;
-    }
-    catch (err) {
-      // logger.error(err);
-    }
-  };
-
   const RenderEmptyInAppNotification = (): JSX.Element => {
     return (
       // TODO: apply i18n by #78569
@@ -48,7 +37,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
         <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotification notification={notification} onClick={notificationClickHandler} />
+          <InAppNotification notification={notification} />
         </div>
       );
     });

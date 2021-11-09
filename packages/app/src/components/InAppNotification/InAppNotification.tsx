@@ -6,7 +6,6 @@ import { PageUpdateNotification, PageCommentNotification } from './NotificationC
 
 interface Props {
   notification: IInAppNotification
-  onClick: any
 }
 
 export const InAppNotification = (props: Props): JSX.Element => {
@@ -63,9 +62,9 @@ export const InAppNotification = (props: Props): JSX.Element => {
     const action: string = notification.action;
     switch (action) {
       case 'PAGE_UPDATE':
-        return <PageUpdateNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageUpdateNotification {...propsNew} />;
       case 'COMMENT_CREATE':
-        return <PageCommentNotification {...propsNew} onClick={props.onClick(props.notification)} />;
+        return <PageCommentNotification {...propsNew} />;
       default:
         return <></>;
     }
