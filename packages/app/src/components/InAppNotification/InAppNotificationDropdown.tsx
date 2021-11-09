@@ -14,7 +14,6 @@ import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 type Props = {
-
   socketIoContainer: SocketIoContainer,
 };
 

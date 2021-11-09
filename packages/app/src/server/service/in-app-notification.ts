@@ -4,7 +4,6 @@ import Crowi from '../crowi';
 import {
   InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
-
 import { ActivityDocument } from '~/server/models/activity';
 
 import { IUser } from '~/interfaces/user';

@@ -63,7 +63,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   const notificationClickHandler = async() => {
 
     try {
-      // set notification status "STATUS_OPEND"
+      // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
 
       // jump to target page
