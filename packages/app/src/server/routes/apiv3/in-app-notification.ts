@@ -89,7 +89,7 @@ module.exports = (crowi) => {
     const id = req.body.id;
 
     try {
-      const notification = await InAppNotification.open(user, id);
+      const notification = await inAppNotificationService.open(user, id);
       const result = { notification };
       return res.apiv3(result);
     }
