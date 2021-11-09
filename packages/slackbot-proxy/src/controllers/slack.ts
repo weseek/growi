@@ -133,6 +133,7 @@ export class SlackCtrl {
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
+
     // retrieve bot token
     const { botToken } = authorizeResult;
     if (botToken == null) {
