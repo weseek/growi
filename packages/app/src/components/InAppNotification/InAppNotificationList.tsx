@@ -37,7 +37,6 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     const notificationList = notifications.map((notification: IInAppNotification) => {
       return (
         <div className="d-flex flex-row" key={notification._id}>
-          {/* <InAppNotification notification={notification} onClick={notificationClickHandler} /> */}
           <InAppNotification notification={notification} />
         </div>
       );
