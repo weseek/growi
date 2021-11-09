@@ -6,7 +6,8 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
-import PageContainer from '~/client/services/PageContainer';
+import { apiv3Put } from '~/client/util/apiv1-client';
+
 import AppContainer from '~/client/services/AppContainer';
 
 class BookmarkButton extends React.Component {
@@ -18,9 +19,10 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const { appContainer, pageContainer } = this.props;
+    const {
+      appContainer, pageId, isBookmarked, onChangeInvoked,
+    } = this.props;
     const { isGuestUser } = appContainer;
-    const { pageId, isBookmarked } = pageContainer.state;
 
     if (isGuestUser) {
       return;
@@ -28,17 +30,20 @@ class BookmarkButton extends React.Component {
 
     try {
       const bool = !isBookmarked;
-      await this.appContainer.apiv3Put('/bookmarks', { pageId, bool });
-      pageContainer.retrieveBookmarkInfo();
+      await apiv3Put('/bookmarks', { pageId, bool });
+      if (onChangeInvoked != null) {
+        onChangeInvoked();
+      }
     }
     catch (err) {
       toastError(err);
     }
   }
 
-
   render() {
-    const { appContainer, pageContainer, t } = this.props;
+    const {
+      appContainer, t, isBookmarked, sumOfBookmarks,
+    } = this.props;
     const { isGuestUser } = appContainer;
 
     return (
@@ -48,12 +53,14 @@ class BookmarkButton extends React.Component {
           id="bookmark-button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
-          ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>
-          <span className="total-bookmarks">
-            {pageContainer.state.sumOfBookmarks}
-          </span>
+          {sumOfBookmarks && (
+            <span className="total-bookmarks">
+              {sumOfBookmarks}
+            </span>
+          )}
         </button>
 
         {isGuestUser && (
@@ -70,13 +77,15 @@ class BookmarkButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer]);
 
 BookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  pageId: PropTypes.string,
+  pageId: PropTypes.string.isRequired,
+  isBookmarked: PropTypes.bool.isRequired,
+  sumOfBookmarks: PropTypes.number,
+  onChangeInvoked: PropTypes.func,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };

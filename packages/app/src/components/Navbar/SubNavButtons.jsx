@@ -4,10 +4,13 @@ import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
+import loggerFactory from '~/utils/logger';
 
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
+
+const logger = loggerFactory('growi:SubnavButtons');
 
 const SubnavButtons = (props) => {
   const {
@@ -18,6 +21,12 @@ const SubnavButtons = (props) => {
 
   /* eslint-disable react/prop-types */
   const PageReactionButtons = ({ pageContainer }) => {
+    const { pageId, isBookmarked, sumOfBookmarks } = pageContainer.state;
+
+    const onChangeInvoked = () => {
+      if (pageContainer.retrieveBookmarkInfo == null) { logger.error('retrieveBookmarkInfo is null') }
+      else { pageContainer.retrieveBookmarkInfo() }
+    };
 
     return (
       <>
@@ -27,7 +36,12 @@ const SubnavButtons = (props) => {
           </span>
         )}
         <span>
-          <BookmarkButton />
+          <BookmarkButton
+            pageId={pageId}
+            isBookmarked={isBookmarked}
+            sumOfBookmarks={sumOfBookmarks}
+            onChangeInvoked={onChangeInvoked}
+          />
         </span>
       </>
     );
