@@ -1,8 +1,15 @@
 import React from 'react';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture, PagePathLabel } from '@growi/ui';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
 import { PageUpdateNotification, PageCommentNotification } from './NotificationContent';
+import { apiv3Post } from '../../client/util/apiv3-client';
+import FormattedDistanceDate from '../FormattedDistanceDate';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:InAppNotificationElm');
+
 
 interface Props {
   notification: IInAppNotification
@@ -53,6 +60,37 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
+  const notificationClickHandler = async(notification: IInAppNotification) => {
+
+    try {
+      // set notification status "STATUS_OPEND"
+      await apiv3Post('/in-app-notification/open', { id: notification._id });
+
+      // jump to target page
+      window.location.href = notification.target.path;
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  };
+
+  const renderNotificationMessage = (): JSX.Element => {
+    const actionUsers = getActionUsers();
+    const pagePath = notification.target.path;
+
+
+    return (
+      <div onClick={() => notificationClickHandler(notification)}>
+        <div>
+          <b>{actionUsers}</b> page updated on <PagePathLabel page={pagePath} />
+        </div>
+        <i className="fa fa-file-o mr-2" />
+        <FormattedDistanceDate id={props.notification._id} date={props.notification.createdAt} isShowTooltip={false} />
+      </div>
+    );
+  };
+
+
   const renderInAppNotificationContent = (): JSX.Element => {
     const propsNew = {
       actionUsers: getActionUsers(),
@@ -69,6 +107,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     }
   };
 
+
   return (
     <>
       <div className="dropdown-item d-flex flex-row mb-3">
@@ -76,7 +115,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           {renderUserPicture()}
         </div>
         <div className="p-2">
-          {renderInAppNotificationContent()}
+          {renderNotificationMessage()}
         </div>
       </div>
     </>
