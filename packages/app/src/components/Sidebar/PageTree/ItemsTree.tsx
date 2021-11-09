@@ -4,6 +4,9 @@ import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 
+/*
+ * Mock data
+ */
 const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
   {
     path: '/',
@@ -22,6 +25,9 @@ const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
   },
 ];
 
+/*
+ * Mock data
+ */
 const targetAndSiblings: (Partial<IPage> & {isTarget?: boolean})[] = [
   {
     path: '/A/B/C',
@@ -46,6 +52,10 @@ const targetAndSiblings: (Partial<IPage> & {isTarget?: boolean})[] = [
   },
 ];
 
+
+/*
+ * Utility to generate node tree and return the root node
+ */
 const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[], siblings: Partial<IPage>[]): ItemNode => {
   const rootPage = ancestors[0];
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
