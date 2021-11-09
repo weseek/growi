@@ -72,7 +72,7 @@
     "array.prototype.flatmap": "^1.2.2",
     "async-canvas-to-blob": "^1.0.3",
     "aws-sdk": "^2.88.0",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "body-parser": "^1.18.2",
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
