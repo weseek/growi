@@ -34,8 +34,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     const socket = props.socketIoContainer.getSocket();
     socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
       setCount(data.count);
-      // eslint-disable-next-line no-console
-      console.log('socketData', data);
     });
   };
 
@@ -82,7 +80,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       <DropdownMenu className="px-2" right>
         <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         <DropdownItem divider />
-        {/* TODO: Able to show all notifications by #79317 */}
         <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">See All</a>
       </DropdownMenu>
     </Dropdown>
