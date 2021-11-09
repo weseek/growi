@@ -19,6 +19,7 @@ class SearchResultList extends React.Component {
               key={page._id}
               page={page}
               onClickInvoked={this.props.onClickInvoked}
+              onChangedInvoked={this.props.onChangedInvoked}
               isSelected={page._id === focusedPageId || false}
               noLink
             />
@@ -49,7 +50,7 @@ SearchResultList.propTypes = {
   activePage: PropTypes.number.isRequired,
   pagingLimit: PropTypes.number,
   onClickInvoked: PropTypes.func,
-  onChangeInvoked: PropTypes.func,
+  onChangedInvoked: PropTypes.func,
   onPagingNumberChanged: PropTypes.func,
 };
 

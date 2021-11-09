@@ -12,3 +12,12 @@ export type IPage = {
   updatedAt: Date,
   seenUsers: string[]
 }
+
+export type ISearchedPage = IPage & {
+  _id: string,
+  noLink: boolean,
+  lastUpdateUser: any,
+  elasticSearchResult: {
+    snippet: string,
+  }
+}

@@ -5,25 +5,22 @@ import { DevidedPagePath } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
+import { ISearchedPage } from '../../interfaces/page';
+
 const logger = loggerFactory('growi:searchResultList');
 
 type Props ={
-  page: {
-    _id: string,
-    path: string,
-    noLink: boolean,
-    lastUpdateUser: any
-    elasticSearchResult: {
-      snippet: string,
-    }
-  },
+  page: ISearchedPage,
   isSelected: boolean,
   onClickInvoked?: (data: string) => void,
+  onChangedInvoked?: (page: ISearchedPage) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const { page, isSelected, onClickInvoked } = props;
+  const {
+    page, isSelected, onClickInvoked, onChangedInvoked,
+  } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -53,7 +50,20 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mr-3">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => {
+                try {
+                  if (onChangedInvoked == null) { throw new Error('onChangedInvoked is null') }
+                  onChangedInvoked(page);
+                }
+                catch (error) {
+                  logger.error(error);
+                }
+              }}
+            />
           </div>
           <div className="w-100">
             {/* page path */}
