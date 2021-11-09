@@ -39,6 +39,7 @@ const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode
     return new ItemNode(page, [], isPartialChildren);
   });
 
+  // update children for each node
   const rootNode = ancestorNodes.reduce((child, parent) => {
     parent.children = [child];
     return parent;
