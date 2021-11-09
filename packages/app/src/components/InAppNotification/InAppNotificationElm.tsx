@@ -79,18 +79,19 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   const actionUsers = getActionUsers();
   const pagePath = { path: props.notification.target.path };
 
-  const renderInAppNotificationContent = (): string => {
-    const action: string = notification.action;
+  const action: string = notification.action;
+  let actionMsg: string;
 
-    switch (action) {
-      case 'PAGE_UPDATE':
-        return 'updated on';
-      case 'COMMENT_CREATE':
-        return 'commented on';
-      default:
-        return '';
-    }
-  };
+  switch (action) {
+    case 'PAGE_UPDATE':
+      actionMsg = 'updated on';
+      break;
+    case 'COMMENT_CREATE':
+      actionMsg = 'commented on';
+      break;
+    default:
+      actionMsg = '';
+  }
 
 
   return (
@@ -102,7 +103,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         <div className="p-2">
           <div onClick={() => notificationClickHandler(notification)}>
             <div>
-              <b>{actionUsers}</b> {renderInAppNotificationContent()} <PagePathLabel page={pagePath} />
+              <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
             </div>
             <i className="fa fa-file-o mr-2" />
             <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
