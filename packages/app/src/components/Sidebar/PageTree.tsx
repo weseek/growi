@@ -1,12 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import ItemsTree from './PageTree/ItemsTree';
 
-type Props = {
-}
 
-const PageTree:FC<Props> = (props: Props) => {
-
+const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   return (
@@ -14,11 +12,12 @@ const PageTree:FC<Props> = (props: Props) => {
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">{t('Page Tree')}</h3>
       </div>
+
       <div className="grw-sidebar-content-body p-3">
-        TBD
+        <ItemsTree />
       </div>
     </>
   );
-};
+});
 
 export default PageTree;
