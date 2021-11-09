@@ -23,28 +23,25 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const RenderEmptyInAppNotification = (): JSX.Element => {
+  const InAppNotificationList = () => {
     return (
-      // TODO: apply i18n by #78569
-      <>You had no notifications, yet.</>
+      <>
+        {notifications.map((notification: IInAppNotification) => {
+          return (
+            <div className="d-flex flex-row" key={notification._id}>
+              <InAppNotificationElm notification={notification} />
+            </div>
+          );
+        })}
+      </>
     );
   };
 
-  const RenderInAppNotificationList = () => {
-    if (notifications.length === 0) {
-      return <RenderEmptyInAppNotification />;
-    }
-    const notificationList = notifications.map((notification: IInAppNotification) => {
-      return (
-        <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotificationElm notification={notification} />
-        </div>
-      );
-    });
-    return <>{notificationList}</>;
-  };
-
-  return <RenderInAppNotificationList />;
+  return (
+    <>
+      {notifications.length === 0 ? <>You had no notifications, yet.</> : <InAppNotificationList />}
+    </>
+  );
 };
 
 
