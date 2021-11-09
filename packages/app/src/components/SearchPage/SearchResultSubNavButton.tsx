@@ -63,6 +63,13 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
         <LikeButtonsTypeAny onClickInvoked={toggleLike} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsTypeAny>
       </span>
       <span>
+        {/*
+          TODO:
+          once 80335 is done, merge 77543 branch(parent of 80335) into 77524.
+          (pageContainer dependencies in bookmark, delete modal, rename etc are removed)
+          then place BookMarkButton here
+          TASK: https://estoc.weseek.co.jp/redmine/issues/81076
+        */}
         {/* <BookmarkButton></BookmarkButton> */}
       </span>
     </>
@@ -84,10 +91,14 @@ const SearchResultSubNavButton : FC<Props> = (props: Props) => {
     <>
       <PageReactionButtons appContainer={appContainer} pageId={pageId}></PageReactionButtons>
       {/*
-        TODO : https://estoc.weseek.co.jp/redmine/issues/80789
+        TODO :
+        once 80335 is done, merge 77543 branch(parent of 80335) into 77524.
+        (pageContainer dependencies in bookmark, delete modal, rename etc are removed)
+        then place PageManagement here.
+        TASK: https://estoc.weseek.co.jp/redmine/issues/81076
         CONDITION :isAbleToShowPageManagement = !isNotFoundPage && !isTrashPage && !isSharedUser
       */}
-      {/* if (CONDITION) then PageReactionButtons */}
+      {/* if (CONDITION) then PageManagement */}
     </>
   );
 };

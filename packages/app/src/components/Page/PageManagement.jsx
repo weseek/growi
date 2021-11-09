@@ -171,6 +171,10 @@ const PageManagement = (props) => {
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
         />
+        {/*
+         TODO : Refactor CreateTamplateModal in a way that it works while not relying on pageContainer
+         TASK : https://estoc.weseek.co.jp/redmine/issues/80789
+         */}
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
