@@ -6,7 +6,6 @@ import { PageUpdateNotification, PageCommentNotification } from './NotificationC
 
 interface Props {
   notification: IInAppNotification
-  onClick: any
 }
 
 export const InAppNotification = (props: Props): JSX.Element => {
