@@ -8,13 +8,13 @@ import {
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
   useSidebarResizeDisabled,
-  putUserUISettings,
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
 
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
+import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -34,7 +34,7 @@ const GlobalNavigation = () => {
     }
 
     mutateSidebarCollapsed(newValue, false);
-    putUserUISettings({ isSidebarCollapsed: newValue });
+    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
 
   }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
 
@@ -209,7 +209,7 @@ const Sidebar: FC<Props> = (props: Props) => {
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
     mutateSidebarCollapsed(newValue, false);
-    putUserUISettings({ isSidebarCollapsed: newValue });
+    scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
   }, [isCollapsed, mutateSidebarCollapsed]);
 
   useEffect(() => {
@@ -243,12 +243,12 @@ const Sidebar: FC<Props> = (props: Props) => {
       // force collapsed
       mutateSidebarCollapsed(true, false);
       mutateProductNavWidth(sidebarMinWidth, false);
-      putUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
+      scheduleToPutUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
     }
     else {
       const newWidth = resizableContainer.current.clientWidth;
       mutateProductNavWidth(newWidth, false);
-      putUserUISettings({ currentProductNavWidth: newWidth });
+      scheduleToPutUserUISettings({ currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');

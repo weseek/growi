@@ -3,11 +3,9 @@ import {
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-// eslint-disable-next-line no-restricted-imports
-import { AxiosResponse } from 'axios';
-
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -128,10 +126,6 @@ export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => 
     key,
     () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
   );
-};
-
-export const putUserUISettings = async(settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
-  return apiv3Put<IUserUISettings>('/user-ui-settings', { settings });
 };
 
 export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {

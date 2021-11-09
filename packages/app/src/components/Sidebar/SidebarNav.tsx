@@ -1,8 +1,9 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, memo, useCallback } from 'react';
 
 import { SidebarContentsType } from '~/interfaces/ui';
+import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
-import { useCurrentSidebarContents, putUserUISettings } from '~/stores/ui';
+import { useCurrentSidebarContents } from '~/stores/ui';
 
 
 type PrimaryItemProps = {
@@ -29,7 +30,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     }
 
     mutate(contents, false);
-    putUserUISettings({ currentSidebarContents: contents });
+    scheduleToPutUserUISettings({ currentSidebarContents: contents });
   }, [contents, mutate, onItemSelected]);
 
   return (
@@ -50,7 +51,7 @@ type SecondaryItemProps = {
   isBlank?: boolean,
 }
 
-const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
+const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) => {
   const { iconName, href, isBlank } = props;
 
   return (
@@ -58,7 +59,7 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
       <i className="material-icons">{iconName}</i>
     </a>
   );
-};
+});
 
 
 type Props = {
