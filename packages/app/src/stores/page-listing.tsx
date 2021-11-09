@@ -1,7 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { ChildrenResult, TargetAndAncestorsResult, AncestorsChildrenResult } from '../interfaces/page-listing-results';
+import { TargetAndAncestorsResult, AncestorsChildrenResult } from '../interfaces/page-listing-results';
 
 
 export const useSWRxPageAncestorsChildren = (
@@ -31,16 +31,3 @@ export const useSWRxPageAncestors = (
   );
 };
 
-
-export const useSWRxPageChildren = (
-    path: string | null,
-): SWRResponse<ChildrenResult, Error> => {
-  return useSWR(
-    path ? `/page-listing/children?path=${path}` : null,
-    endpoint => apiv3Get(endpoint).then((response) => {
-      return {
-        pages: response.data.pages,
-      };
-    }),
-  );
-};
