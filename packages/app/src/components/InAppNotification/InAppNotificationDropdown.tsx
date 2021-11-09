@@ -2,7 +2,9 @@ import React, { useState, useEffect, FC } from 'react';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
+import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
+
 
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -18,6 +20,7 @@ type Props = {
 };
 
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const { appContainer } = props;
 
   const [count, setCount] = useState(0);
@@ -89,8 +92,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       <DropdownMenu className="px-2" right>
         <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         <DropdownItem divider />
-        {/* TODO: Able to show all notifications by #79317 */}
-        <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">See All</a>
+        <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">{ t('in_app_notification.see_all') }</a>
       </DropdownMenu>
     </Dropdown>
   );
