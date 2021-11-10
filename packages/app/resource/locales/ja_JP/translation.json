@@ -260,7 +260,8 @@
   },
   "in_app_notification": {
     "notification_list": "アプリ内通知一覧",
-    "see_all": "通知一覧を見る"
+    "see_all": "通知一覧を見る",
+    "no_notification": "通知は一つもありません。"
   },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",

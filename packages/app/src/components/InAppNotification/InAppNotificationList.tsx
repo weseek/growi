@@ -1,14 +1,17 @@
 import React, { FC } from 'react';
 
 import { PaginateResult } from 'mongoose';
+import { useTranslation } from 'react-i18next';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
-import { InAppNotification } from './InAppNotification';
+import InAppNotificationElm from './InAppNotificationElm';
+
 
 type Props = {
   inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const { inAppNotificationData } = props;
 
   if (inAppNotificationData == null) {
@@ -23,28 +26,23 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const RenderEmptyInAppNotification = (): JSX.Element => {
-    return (
-      // TODO: apply i18n by #78569
-      <>You had no notifications, yet.</>
-    );
-  };
-
-  const RenderInAppNotificationList = () => {
-    if (notifications.length === 0) {
-      return <RenderEmptyInAppNotification />;
-    }
-    const notificationList = notifications.map((notification: IInAppNotification) => {
+  const renderInAppNotificationList = () => {
+    const inAppNotificationList = notifications.map((notification: IInAppNotification) => {
       return (
         <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotification notification={notification} />
+          <InAppNotificationElm notification={notification} />
         </div>
       );
     });
-    return <>{notificationList}</>;
+
+    return inAppNotificationList;
   };
 
-  return <RenderInAppNotificationList />;
+  return (
+    <>
+      {notifications.length === 0 ? <>{t('in_app_notification.no_notification')}</> : renderInAppNotificationList()}
+    </>
+  );
 };
 
 

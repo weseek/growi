@@ -5,23 +5,20 @@ import {
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-
-import AppContainer from '../../client/services/AppContainer';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
-import SocketIoContainer from '../../client/services/SocketIoContainer';
-import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 type Props = {
-  appContainer: AppContainer,
   socketIoContainer: SocketIoContainer,
 };
 
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { appContainer } = props;
 
   const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,14 +34,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     const socket = props.socketIoContainer.getSocket();
     socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
       setCount(data.count);
-      // eslint-disable-next-line no-console
-      console.log('socketData', data);
     });
   };
 
   const updateNotificationStatus = async() => {
     try {
-      await appContainer.apiv3Post('/in-app-notification/read');
+      await apiv3Post('/in-app-notification/read');
       setCount(0);
     }
     catch (err) {
@@ -54,7 +49,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const fetchNotificationStatus = async() => {
     try {
-      const res = await appContainer.apiv3Get('/in-app-notification/status');
+      const res = await apiv3Get('/in-app-notification/status');
       const { count } = res.data;
       setCount(count);
     }
@@ -72,15 +67,8 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     setIsOpen(newIsOpenState);
   };
 
-  /**
-    * TODO: Jump to the page by clicking on the notification by GW-7472
-    */
-
-
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
 
-
-  // const notifications = inAppNotificationData.docs;
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
@@ -101,6 +89,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [AppContainer, SocketIoContainer]);
+const InAppNotificationDropdownWrapper = withUnstatedContainers(InAppNotificationDropdown, [SocketIoContainer]);
 
 export default InAppNotificationDropdownWrapper;

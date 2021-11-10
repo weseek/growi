@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
-  InAppNotification, InAppNotificationDocument, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
+  InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
 
