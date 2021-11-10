@@ -127,13 +127,16 @@ export default class InAppNotificationService {
   };
 
   createSubscription = async function(userId: Types.ObjectId, pageId: string, targetRuleName: string): Promise<void> {
-    const inAppNotificationSettings = await InAppNotificationSettings.findOne({ userId });
+    const query = { userId };
+    const inAppNotificationSettings = await InAppNotificationSettings.findOne(query);
     if (inAppNotificationSettings != null) {
       const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
       if (subscribeRule != null && subscribeRule.isEnabled) {
         await Subscription.subscribeByPageId(userId, pageId, STATUS_SUBSCRIBE);
       }
     }
+
+    return;
   };
 
 }
