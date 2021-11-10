@@ -112,6 +112,52 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          bool:
  *            type: boolean
  *            description: boolean for like status
+ *
+ *      PageInfo:
+ *        description: PageInfo
+ *        type: object
+ *        required:
+ *          - isSeen
+ *          - sumOfLikers
+ *          - likerIds
+ *          - sumOfSeenUsers
+ *          - seenUserIds
+ *        properties:
+ *          isSeen:
+ *            type: boolean
+ *            description: Whether the page has ever been seen
+ *          isLiked:
+ *            type: boolean
+ *            description: Whether the page is liked by the logged in user
+ *          sumOfLikers:
+ *            type: number
+ *            description: Number of users who have liked the page
+ *          likerIds:
+ *            type: array
+ *            items:
+ *              type: string
+ *            description: Ids of users who have liked the page
+ *            example: ["5e07345972560e001761fa63"]
+ *          sumOfSeenUsers:
+ *            type: number
+ *            description: Number of users who have seen the page
+ *          seenUserIds:
+ *            type: array
+ *            items:
+ *              type: string
+ *            description: Ids of users who have seen the page
+ *            example: ["5e07345972560e001761fa63"]
+ *
+ *      PageParams:
+ *        description: PageParams
+ *        type: object
+ *        required:
+ *          - pageId
+ *        properties:
+ *          pageId:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -129,6 +175,9 @@ module.exports = (crowi) => {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    info: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -208,10 +257,34 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get(('/info', loginRequired), async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /page/info:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/info
+   *        description: Retrieve current page info
+   *        operationId: getPageInfo
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/PageParams'
+   *        responses:
+   *          200:
+   *            description: Successfully retrieved current page info.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/PageInfo'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/info', loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
 
     try {
-      const pageId = req.query._id;
       const page = await Page.findById(pageId);
 
       const guestUserResponse = {
@@ -222,11 +295,9 @@ module.exports = (crowi) => {
         isSeen: page.seenUsers.length > 0,
       };
 
-      {
-        const isGuestUser = !req.user;
-        if (isGuestUser) {
-          return res.apiv3(guestUserResponse);
-        }
+      const isGuestUser = !req.user;
+      if (isGuestUser) {
+        return res.apiv3(guestUserResponse);
       }
 
       const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
