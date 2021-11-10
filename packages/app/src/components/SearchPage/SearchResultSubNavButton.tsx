@@ -39,18 +39,16 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
     f();
   }, []);
 
-  const onChnageInvoked = () => {
+  const onChangeInvoked = () => {
     setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
-    setLikers(likerIds => (isLiked
-      ? likerIds.filter(id => id !== appContainer.currentUserId)
-      : [...likerIds, appContainer.currentUserId]));
+    setLikers(likerIds => (isLiked ? likerIds.filter(id => id !== appContainer.currentUserId) : [...likerIds, appContainer.currentUserId]));
     setIsLiked(isLiked => !isLiked);
   };
   return (
     <>
       <span>
         <LikeButtonsTypeAny
-          onChangeInvoked={onChnageInvoked}
+          onChangeInvoked={onChangeInvoked}
           pageId={pageId}
           likers={likers}
           sumOfLikers={sumOflikers}
