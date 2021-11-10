@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
-import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client';
+import { apiv3Get } from '../../client/util/apiv3-client';
 
 
 type PageReactionButtonsProps = {
