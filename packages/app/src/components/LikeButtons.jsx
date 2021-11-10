@@ -8,7 +8,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
@@ -22,6 +22,7 @@ class LikeButtons extends React.Component {
     };
 
     this.togglePopover = this.togglePopover.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   togglePopover() {
@@ -31,10 +32,31 @@ class LikeButtons extends React.Component {
     }));
   }
 
+  async handleClick() {
+    const {
+      appContainer, pageId, isLiked, onChnageInvoked,
+    } = this.props;
+    const { isGuestUser } = appContainer;
+    if (isGuestUser) {
+      return;
+    }
+    try {
+      await apiv3Put('/page/likes', { pageId, bool: isLiked });
+      if (onChnageInvoked !== null) {
+        onChnageInvoked();
+      }
+      else {
+        return new Error('onChangeInvoked is null');
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   render() {
     const {
-      appContainer, onClickInvoked, likers, sumOfLikers, isLiked, t,
+      appContainer, likers, sumOfLikers, isLiked, t,
     } = this.props;
     const { isGuestUser } = appContainer;
 
@@ -43,12 +65,7 @@ class LikeButtons extends React.Component {
         <button
           type="button"
           id="like-button"
-          onClick={async() => {
-            if (onClickInvoked == null) {
-              throw Error('onClickInvoked is null');
-            }
-            await onClickInvoked();
-          }}
+          onClick={async() => { await this.handleClick() }}
           className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
@@ -83,12 +100,13 @@ const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
 
 LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onClickInvoked: PropTypes.func.isRequired,
+  onChnageInvoked: PropTypes.func,
+  pageId: PropTypes.string.isRequired,
   likers: PropTypes.arrayOf(PropTypes.object),
   sumOfLikers: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  size: PropTypes.string,
+  // size: PropTypes.string,
 };
 
 export default withTranslation()(LikeButtonsWrapper);

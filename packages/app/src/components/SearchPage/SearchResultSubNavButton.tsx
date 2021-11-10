@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
-import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client'; // '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client';
 import { toastError } from '../../client/util/apiNotification';
 
 
@@ -39,28 +39,24 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
     f();
   }, []);
 
-  const toggleLike = async() => {
-    const { isGuestUser } = appContainer;
-    if (isGuestUser) {
-      return;
-    }
-    try {
-      await apiv3Put('/page/likes', { pageId, bool: isLiked });
-    }
-    catch (err) {
-      toastError(err);
-    }
+  const onChnageInvoked = () => {
     setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
     setLikers(likerIds => (isLiked
       ? likerIds.filter(id => id !== appContainer.currentUserId)
       : [...likerIds, appContainer.currentUserId]));
     setIsLiked(isLiked => !isLiked);
   };
-
   return (
     <>
       <span>
-        <LikeButtonsTypeAny onClickInvoked={toggleLike} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsTypeAny>
+        <LikeButtonsTypeAny
+          onChangeInvoked={onChnageInvoked}
+          pageId={pageId}
+          likers={likers}
+          sumOfLikers={sumOflikers}
+          isLiked={isLiked}
+        >
+        </LikeButtonsTypeAny>
       </span>
       <span>
         {/*

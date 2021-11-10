@@ -8,8 +8,9 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
-import { toastError } from '~/client/util/apiNotification';
+import loggerFactory from '~/utils/logger';
 
+const logger = loggerFactory('growi:SubnavButtons');
 const SubnavButtons = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
@@ -21,21 +22,17 @@ const SubnavButtons = (props) => {
   const PageReactionButtons = ({ pageContainer }) => {
 
     const {
-      state: { likers, sumOfLikers, isLiked },
+      state: {
+        pageId, likers, sumOfLikers, isLiked,
+      },
     } = pageContainer;
 
-    const toggleLike = () => {
-      const { isGuestUser } = appContainer;
-
-      if (isGuestUser) {
-        return;
+    const onChangeInvoked = async() => {
+      if (pageContainer.retrieveLikersAndSeenUsers == null) {
+        logger.error('retrieveBookmarkInfo is null');
       }
-
-      try {
-        pageContainer.toggleLike();
-      }
-      catch (err) {
-        toastError(err);
+      else {
+        await pageContainer.retrieveLikersAndSeenUsers();
       }
     };
 
@@ -43,7 +40,7 @@ const SubnavButtons = (props) => {
       <>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            <LikeButtons onClickInvoked={toggleLike} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
+            <LikeButtons onChangeInvoked={async() => { await onChangeInvoked() }} pageId={pageId} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
           </span>
         )}
         <span>
@@ -53,7 +50,6 @@ const SubnavButtons = (props) => {
     );
   };
   /* eslint-enable react/prop-types */
-
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
 
