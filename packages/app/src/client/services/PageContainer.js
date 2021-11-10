@@ -309,6 +309,17 @@ export default class PageContainer extends Container {
   //   await this.retrieveLikersAndSeenUsers();
   // }
 
+  async setStateAfterLike() {
+    const toggledIsLiked = this.state.isLiked;
+    await this.setState(state => ({
+      isLiked: !toggledIsLiked,
+      sumOfLikers: toggledIsLiked ? state.sumOfLikers - 1 : state.sumOfLikers + 1,
+      likerIds: toggledIsLiked
+        ? state.likerIds.filter(id => id !== this.appContainer.currentUserId)
+        : [...this.state.likerIds, this.appContainer.currentUserId],
+    }));
+  }
+
   async retrieveLikersAndSeenUsers() {
     const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
 
