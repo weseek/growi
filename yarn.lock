@@ -13783,10 +13783,10 @@ mongoose-valid8@>=1.6.18:
     lodash ">=4.17.15"
     validator ">=13.0.0"
 
-mongoose@5.13.9:
-  version "5.13.9"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.13.9.tgz#4421a13566daea8fcc80149734c76e5641f477ce"
-  integrity sha512-JbLw5ie0LJxm7V9LoNxRY//6cyFJf0cOpON2TWUWvF9pabil6ArfECL3xHV2N+mwwO4gXiIa+c0pwTzDUVTgqw==
+mongoose@=5.13.10:
+  version "5.13.10"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.13.10.tgz#42d66245a084902cc7ee7fb932cb87f09d2a94fe"
+  integrity sha512-h1tkPu/3grQjdWjoIA3uUNWvDFDcaNGwcmBLEkK9t/kzKq4L4fB2EoA/VLjQ7WGTL/pDKH6OElBTK7x/QPRvbg==
   dependencies:
     "@types/bson" "1.x || 4.0.x"
     "@types/mongodb" "^3.5.27"
