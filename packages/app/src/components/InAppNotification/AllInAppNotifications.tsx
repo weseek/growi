@@ -10,7 +10,6 @@ const AllInAppNotifications: FC = () => {
   const [activePage, setActivePage] = useState(1);
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, activePage);
 
-
   if (inAppNotificationData == null) {
     return (
       <div className="wiki">
