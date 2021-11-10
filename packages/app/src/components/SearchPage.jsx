@@ -191,6 +191,17 @@ class SearchPage extends React.Component {
     }
   }
 
+  toggleAllCheckBox = () => {
+    console.log(this.state.selectedPages.size);
+    if (this.state.selectedPages.size === this.state.searchedPages.length) {
+      this.state.selectedPages.clear();
+      return;
+    }
+    this.state.searchedPages.forEach((page) => {
+      this.state.selectedPages.add(page);
+    });
+  };
+
   renderSearchResultContent = () => {
     return (
       <SearchResultContent
@@ -226,6 +237,7 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
+        onClickInvoked={this.toggleAllCheckBox}
       >
       </SearchControl>
     );
