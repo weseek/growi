@@ -1,6 +1,7 @@
-import { IPage } from '~/interfaces/page';
+import { IPage } from '../../../interfaces/page';
+import { HasObjectId } from '../../../interfaces/has-object-id';
 
-type IPageForItem = Partial<IPage> & {isTarget?: boolean};
+type IPageForItem = Partial<IPage & {isTarget?: boolean} & HasObjectId>;
 
 export class ItemNode {
 

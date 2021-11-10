@@ -1,5 +1,4 @@
 import express, { Request, Router } from 'express';
-import { pagePathUtils } from '@growi/core';
 import { query, oneOf } from 'express-validator';
 
 import { PageDocument, PageModel } from '../../models/page';
@@ -7,8 +6,6 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
-
-const { isTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -59,31 +56,6 @@ export default (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Failed to get ancestorsChildren.'));
     }
 
-  });
-
-  /*
-   * In most cases, using path should be prioritized
-   */
-  // eslint-disable-next-line max-len
-  router.get('/target-ancestors', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
-    const { id, path } = req.query;
-
-    const Page: PageModel = crowi.model('Page');
-
-    let targetAndAncestors: PageDocument[];
-    try {
-      targetAndAncestors = await Page.findTargetAndAncestorsByPathOrId((path || id) as string);
-
-      if (targetAndAncestors.length === 0 && !isTopPage(path as string)) {
-        throw Error('Ancestors must have at least one page.');
-      }
-    }
-    catch (err) {
-      logger.error('Error occurred while finding pages.', err);
-      return res.apiv3Err(new ErrorV3('Error occurred while finding pages.'));
-    }
-
-    return res.apiv3({ targetAndAncestors });
   });
 
   /*

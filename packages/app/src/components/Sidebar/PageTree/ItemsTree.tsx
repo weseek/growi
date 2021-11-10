@@ -1,10 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestors, useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
+import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
+import { useTargetAndAncestors } from '../../../stores/context';
 
 const { isTopPage } = pagePathUtils;
 
@@ -52,46 +53,44 @@ const id = '6181188ae38676152e464fc2';
  * ItemsTree
  */
 const ItemsTree: FC = () => {
-  const [initialNode, setInitialNode] = useState<ItemNode | null>(null);
+  // TODO: get from props
+  const path = '/Sandbox/Bootstrap4';
 
-  // initial request this is important
-  const { data: ancestorsChildrenData, error } = useSWRxPageAncestorsChildren(path);
-  // secondary request
-  const { data: ancestorsData, error: error2 } = useSWRxPageAncestors(path, id);
+  const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(targetAndAncestors != null ? path : null);
 
   if (error != null || error2 != null) {
     return null;
   }
 
-  if (ancestorsData == null) {
+  if (targetAndAncestors == null) {
     return null;
   }
 
-  /*
-   * When initial request is taking long
-   */
-  if (ancestorsChildrenData == null) {
-    const { targetAndAncestors } = ancestorsData;
-    const newInitialNode = generateInitialNode(targetAndAncestors);
-    setInitialNode(newInitialNode); // rerender
-  }
+  const initialNode = generateInitialNode(targetAndAncestors);
 
   /*
-   * When initial request finishes
+   * When swr request finishes
    */
   if (ancestorsChildrenData != null) {
     // increment initialNode
-    const { targetAndAncestors } = ancestorsData;
     const { ancestorsChildren } = ancestorsChildrenData;
-    const ancestors = targetAndAncestors.filter(page => page.path !== path);
 
-    const newInitialNode = generateInitialNodeWithChildren(ancestors, ancestorsChildren);
-    setInitialNode(newInitialNode); // rerender
-  }
+    // flatten ancestors
+    const partialChildren: ItemNode[] = [];
+    let currentNode = initialNode;
+    while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
+      const child = currentNode.children[0];
+      partialChildren.push(child);
+      currentNode = child;
+    }
 
-  if (initialNode == null) {
-    return null;
+    // update children
+    partialChildren.forEach((node) => {
+      const childPages = ancestorsChildren[node.page.path as string];
+      node.children = ItemNode.generateNodesFromPages(childPages);
+    });
   }
 
   const isOpen = true;
