@@ -31,6 +31,9 @@ const SubnavButtons = (props) => {
       if (pageContainer.retrieveLikersAndSeenUsers == null) {
         logger.error('retrieveBookmarkInfo is null');
       }
+      else if (pageContainer.updateStateAfterLike == null) {
+        logger.error('updateStateAfterLike is null');
+      }
       else {
         pageContainer.retrieveLikersAndSeenUsers();
         pageContainer.updateStateAfterLike();

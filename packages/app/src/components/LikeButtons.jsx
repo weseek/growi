@@ -8,7 +8,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
-import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
+import { apiv3Put } from '../client/util/apiv3-client';
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
@@ -37,9 +37,11 @@ class LikeButtons extends React.Component {
       appContainer, pageId, isLiked, onChangeInvoked,
     } = this.props;
     const { isGuestUser } = appContainer;
+
     if (isGuestUser) {
       return;
     }
+
     try {
       const toggleLike = !isLiked;
       await apiv3Put('/page/likes', { pageId, bool: toggleLike });
@@ -103,7 +105,7 @@ LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onChangeInvoked: PropTypes.func,
   pageId: PropTypes.string.isRequired,
-  likers: PropTypes.arrayOf(PropTypes.object),
+  likers: PropTypes.arrayOf(PropTypes.object).isRequired,
   sumOfLikers: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
