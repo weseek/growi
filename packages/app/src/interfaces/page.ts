@@ -5,7 +5,6 @@ import { ITag } from './tag';
 
 
 export type IPage = {
-  _id?: string,
   path: string,
   status: string,
   revision: Ref<IRevision>,

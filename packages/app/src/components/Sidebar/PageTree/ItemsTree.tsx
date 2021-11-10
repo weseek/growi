@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestors, useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
+import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
+import { useTargetAndAncestors } from '../../../stores/context';
 
 /*
  * Utility to generate initial node and return
@@ -31,22 +32,22 @@ const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => 
 const ItemsTree: FC = () => {
   // TODO: get from props
   const path = '/Sandbox/Bootstrap4';
-  const id = '6181188ae38676152e464fc2';
-
-  const [initialNode, setInitialNode] = useState<ItemNode | null>(null);
 
   // initial request
-  const { data: ancestorsData, error } = useSWRxPageAncestors(path, id);
+  const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
   // secondary request
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(ancestorsData != null ? path : null);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(targetAndAncestors != null ? path : null);
 
-  if (error != null || ancestorsData == null) {
+  if (error != null || error2 != null) {
     return null;
   }
 
-  const { targetAndAncestors } = ancestorsData;
-  const newInitialNode = generateInitialNode(targetAndAncestors);
+  if (targetAndAncestors == null) {
+    return null;
+  }
+
+  const initialNode = generateInitialNode(targetAndAncestors);
 
   /*
    * when second SWR resolved
@@ -57,7 +58,7 @@ const ItemsTree: FC = () => {
 
     // flatten ancestors
     const partialChildren: ItemNode[] = [];
-    let currentNode = newInitialNode;
+    let currentNode = initialNode;
     while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
       const child = currentNode.children[0];
       partialChildren.push(child);
@@ -70,10 +71,6 @@ const ItemsTree: FC = () => {
       node.children = ItemNode.generateNodesFromPages(childPages);
     });
   }
-
-  setInitialNode(newInitialNode); // rerender
-
-  if (initialNode == null) return null;
 
   const isOpen = true;
   return (

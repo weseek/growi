@@ -228,6 +228,12 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionToMinimizeDataForRendering() {
+    this.query = this.query.select('_id path isEmpty grant');
+
+    return this;
+  }
+
   addConditionToListByPathsArray(paths) {
     this.query = this.query
       .and({

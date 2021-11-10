@@ -31,7 +31,7 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export interface PageDocument extends Omit<IPage, '_id'>, Document {}
+export interface PageDocument extends IPage, Document {}
 
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
@@ -246,7 +246,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
     const page = await this.findOne({ _id });
-    if (page == null) throw Error('Page not found.');
+    if (page == null) throw new Error('Page not found.');
 
     path = page.path;
   }
@@ -261,6 +261,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   const queryBuilder = new PageQueryBuilder(this.find());
   const _ancestors: PageDocument[] = await queryBuilder
     .addConditionToListByPathsArray(ancestorPaths)
+    .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
     .query
     .lean()

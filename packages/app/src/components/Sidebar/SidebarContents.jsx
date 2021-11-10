@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '~/client/services/NavigationContainer';
+import { useTargetAndAncestors } from '../../stores/context';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
@@ -12,6 +13,12 @@ import PageTree from './PageTree';
 
 const SidebarContents = (props) => {
   const { navigationContainer, isSharedUser } = props;
+
+  const pageContainer = navigationContainer.getPageContainer();
+
+  const { targetAndAncestors } = pageContainer.state;
+
+  useTargetAndAncestors(targetAndAncestors);
 
   if (isSharedUser) {
     return null;
