@@ -34,7 +34,7 @@ class LikeButtons extends React.Component {
 
   async handleClick() {
     const {
-      appContainer, pageId, isLiked, onChnageInvoked,
+      appContainer, pageId, isLiked, onChangeInvoked,
     } = this.props;
     const { isGuestUser } = appContainer;
     if (isGuestUser) {
@@ -42,8 +42,8 @@ class LikeButtons extends React.Component {
     }
     try {
       await apiv3Put('/page/likes', { pageId, bool: isLiked });
-      if (onChnageInvoked !== null) {
-        onChnageInvoked();
+      if (onChangeInvoked !== null) {
+        onChangeInvoked();
       }
       else {
         return new Error('onChangeInvoked is null');
@@ -100,7 +100,7 @@ const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
 
 LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onChnageInvoked: PropTypes.func,
+  onChangeInvoked: PropTypes.func,
   pageId: PropTypes.string.isRequired,
   likers: PropTypes.arrayOf(PropTypes.object),
   sumOfLikers: PropTypes.number.isRequired,

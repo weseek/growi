@@ -27,12 +27,12 @@ const SubnavButtons = (props) => {
       },
     } = pageContainer;
 
-    const onChangeInvoked = async() => {
+    const onChangeInvoked = () => {
       if (pageContainer.retrieveLikersAndSeenUsers == null) {
         logger.error('retrieveBookmarkInfo is null');
       }
       else {
-        await pageContainer.retrieveLikersAndSeenUsers();
+        pageContainer.retrieveLikersAndSeenUsers();
       }
     };
 
@@ -40,7 +40,7 @@ const SubnavButtons = (props) => {
       <>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            <LikeButtons onChangeInvoked={async() => { await onChangeInvoked() }} pageId={pageId} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
+            <LikeButtons onChangeInvoked={onChangeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
           </span>
         )}
         <span>
