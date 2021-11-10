@@ -14,7 +14,9 @@ export type ISearchedPage = IPageHasId & {
 
 type Props = {
   pages: ISearchedPage[],
-  selectedPages: ISearchedPage[],
+  selectedPages: ISearchedPage[] & {
+    has: (page: ISearchedPage) => boolean,
+  },
   onClickInvoked?: (pageId: string) => void,
   onChangedInvoked?: (page: ISearchedPage) => void,
   searchResultCount?: number,
@@ -25,11 +27,13 @@ type Props = {
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedPage } = props;
+  const { focusedPage, selectedPages } = props;
+
   const focusedPageId = focusedPage != null && focusedPage._id != null ? focusedPage._id : '';
   return (
     <>
       {props.pages.map((page) => {
+        const isChecked = selectedPages.has(page);
         return (
           <SearchResultListItem
             key={page._id}
@@ -37,6 +41,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             onClickInvoked={props.onClickInvoked}
             onChangedInvoked={props.onChangedInvoked}
             isSelected={page._id === focusedPageId || false}
+            isChecked={isChecked}
           />
         );
       })}
