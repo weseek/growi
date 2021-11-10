@@ -37,19 +37,19 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
-        className="custom-control custom-checkbox ml-1"
+        className="custom-control custom-checkbox ml-1 align-self-center"
         onChange={changeCheckboxStateHandler}
         checked={checkboxState === CheckboxType.INDETERMINATE || checkboxState === CheckboxType.ALL_CHECKED}
       />
       <button
         type="button"
-        className="text-danger font-weight-light"
+        className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
           if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
           else { onClickInvoked() }
         }}
       >
-        <i className="icon-trash ml-3"></i>
+        <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}
       </button>
     </>
