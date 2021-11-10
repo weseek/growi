@@ -10,7 +10,6 @@ export const useSWRxInAppNotifications = <Data, Error>(
   limit: number,
   page: number,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
-  // const limitNum = limit;
   return useSWR(
     `/in-app-notification/list?limit=${limit}&page=${page}`,
     endpoint => apiv3Get(endpoint).then(response => response.data),
