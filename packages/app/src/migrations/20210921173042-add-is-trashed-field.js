@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '@growi/core';
+import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:add-column-is-trashed');
@@ -21,7 +21,7 @@ const updateIsPageTrashed = async(db, updateIdList) => {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    mongoose.connect(config.mongoUri, config.mongodb.options);
 
     let updateDeletedPageIds = [];
 
@@ -51,7 +51,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    mongoose.connect(config.mongoUri, config.mongodb.options);
 
     try {
       await db.collection('pagetagrelations').updateMany(
