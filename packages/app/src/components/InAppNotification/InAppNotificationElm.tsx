@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture, PagePathLabel } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
@@ -60,13 +60,13 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  const notificationClickHandler = async() => {
+  const notificationClickHandler = useCallback(() => {
     // set notification status "OPEND"
     apiv3Post('/in-app-notification/open', { id: notification._id });
 
     // jump to target page
     window.location.href = notification.target.path;
-  };
+  }, []);
 
   const actionUsers = getActionUsers();
   const pagePath = { path: props.notification.target.path };
