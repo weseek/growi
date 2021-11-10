@@ -1,18 +1,21 @@
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  FC, memo, useCallback, useMemo,
+} from 'react';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-/**
- *
- * @author Mikitaka Itizawa <itizawa@weseek.co.jp>
- *
- * @export
- * @class PaginationWrapper
- * @extends {React.Component}
- */
 
-const PaginationWrapper = React.memo((props) => {
+type Props = {
+  activePage: number,
+  changePage?: (number) => void,
+  totalItemsCount: number,
+  pagingLimit?: number,
+  align?: string,
+  size?: string,
+};
+
+
+const PaginationWrapper: FC<Props> = memo((props: Props) => {
   const {
     activePage, changePage, totalItemsCount, pagingLimit, align,
   } = props;
@@ -59,7 +62,7 @@ const PaginationWrapper = React.memo((props) => {
    * this function set << & <
    */
   const generateFirstPrev = useCallback(() => {
-    const paginationItems = [];
+    const paginationItems: JSX.Element[] = [];
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem key="painationItemFirst">
@@ -89,7 +92,7 @@ const PaginationWrapper = React.memo((props) => {
    * this function set  numbers
    */
   const generatePaginations = useCallback(() => {
-    const paginationItems = [];
+    const paginationItems: JSX.Element[] = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
@@ -108,7 +111,7 @@ const PaginationWrapper = React.memo((props) => {
    * this function set > & >>
    */
   const generateNextLast = useCallback(() => {
-    const paginationItems = [];
+    const paginationItems: JSX.Element[] = [];
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">
@@ -133,7 +136,7 @@ const PaginationWrapper = React.memo((props) => {
   }, [activePage, changePage, totalPage]);
 
   const getListClassName = useMemo(() => {
-    const listClassNames = [];
+    const listClassNames: string[] = [];
 
     if (align === 'center') {
       listClassNames.push('justify-content-center');
@@ -156,15 +159,6 @@ const PaginationWrapper = React.memo((props) => {
   );
 
 });
-
-PaginationWrapper.propTypes = {
-  activePage: PropTypes.number.isRequired,
-  changePage: PropTypes.func,
-  totalItemsCount: PropTypes.number.isRequired,
-  pagingLimit: PropTypes.number,
-  align: PropTypes.string,
-  size: PropTypes.string,
-};
 
 PaginationWrapper.defaultProps = {
   align: 'left',
