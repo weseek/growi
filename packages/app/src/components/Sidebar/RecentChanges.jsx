@@ -7,6 +7,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 
 import { UserPicture } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+import { FootstampIcon } from '../FootstampIcon';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -15,8 +16,6 @@ import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
-
-import FootstampIcon from '../FootstampIcon';
 
 
 import FormattedDistanceDate from '../FormattedDistanceDate';

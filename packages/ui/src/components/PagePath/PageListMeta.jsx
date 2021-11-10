@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { templateChecker, pagePathUtils } from '@growi/core';
-import FootstampIcon from '../../../../app/src/components/FootstampIcon';
+import { FootstampIcon } from '@growi/app';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
