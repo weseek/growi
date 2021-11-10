@@ -92,7 +92,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         {renderActionUserPictures()}
       </div>
       <div className="p-2">
-        <div onClick={() => notificationClickHandler()}>
+        <div onClick={notificationClickHandler}>
           <div>
             <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
