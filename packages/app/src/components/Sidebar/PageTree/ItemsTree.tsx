@@ -3,44 +3,22 @@ import React, { FC } from 'react';
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
+import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
+import { useTargetAndAncestors } from '../../../stores/context';
 
 /*
- * Mock data
+ * Utility to generate initial node and return
  */
-const ancestors: (Partial<IPage> & {isTarget?: boolean})[] = [
-  {
-    path: '/A/B',
-    isEmpty: false,
-    grant: 1,
-  },
-  {
-    path: '/A',
-    isEmpty: false,
-    grant: 1,
-  },
-  {
-    path: '/',
-    isEmpty: false,
-    grant: 1,
-  },
-];
-
-
-/*
- * Utility to generate node tree and return the root node
- */
-const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode => {
-  const rootPage = ancestors[ancestors.length - 1]; // the last item is the root
+const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
+  const rootPage = targetAndAncestors[targetAndAncestors.length - 1]; // the last item is the root
   if (rootPage?.path !== '/') throw Error('/ not exist in ancestors');
 
-  const ancestorNodes = ancestors.map((page, i): ItemNode => {
-    // isPartialChildren will be false for the target page
-    const isPartialChildren = i !== 0;
-    return new ItemNode(page, [], isPartialChildren);
+  const nodes = targetAndAncestors.map((page): ItemNode => {
+    return new ItemNode(page, []);
   });
 
   // update children for each node
-  const rootNode = ancestorNodes.reduce((child, parent) => {
+  const rootNode = nodes.reduce((child, parent) => {
     parent.children = [child];
     return parent;
   });
@@ -52,17 +30,52 @@ const generateInitialTreeFromAncestors = (ancestors: Partial<IPage>[]): ItemNode
  * ItemsTree
  */
 const ItemsTree: FC = () => {
-  // TODO: fetch ancestors using swr
-  if (ancestors == null) return null;
+  // TODO: get from props
+  const path = '/Sandbox/Bootstrap4';
 
-  // create node tree
-  const rootNode = generateInitialTreeFromAncestors(ancestors);
+  // initial request
+  const { data: targetAndAncestors, error } = useTargetAndAncestors();
+
+  // secondary request
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(targetAndAncestors != null ? path : null);
+
+  if (error != null || error2 != null) {
+    return null;
+  }
+
+  if (targetAndAncestors == null) {
+    return null;
+  }
+
+  const initialNode = generateInitialNode(targetAndAncestors);
+
+  /*
+   * when second SWR resolved
+   */
+  if (ancestorsChildrenData != null) {
+    // increment initialNode
+    const { ancestorsChildren } = ancestorsChildrenData;
+
+    // flatten ancestors
+    const partialChildren: ItemNode[] = [];
+    let currentNode = initialNode;
+    while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
+      const child = currentNode.children[0];
+      partialChildren.push(child);
+      currentNode = child;
+    }
+
+    // update children
+    partialChildren.forEach((node) => {
+      const childPages = ancestorsChildren[node.page.path as string];
+      node.children = ItemNode.generateNodesFromPages(childPages);
+    });
+  }
 
   const isOpen = true;
-
   return (
     <>
-      <Item key={rootNode.page.path} itemNode={rootNode} isOpen={isOpen} />
+      <Item key={initialNode.page.path} itemNode={initialNode} isOpen={isOpen} />
     </>
   );
 };

@@ -4,7 +4,7 @@ import loggerFactory from '~/utils/logger';
 
 import UpdatePost from '../models/update-post';
 
-const { isCreatablePage } = pagePathUtils;
+const { isCreatablePage, isTopPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -264,6 +264,16 @@ module.exports = function(crowi, app) {
     renderVars.pages = result.pages;
   }
 
+  async function addRenderVarsForPageTree(renderVars, path) {
+    const targetAndAncestors = await Page.findTargetAndAncestorsByPathOrId(path);
+
+    if (targetAndAncestors.length === 0 && !isTopPage(path)) {
+      throw new Error('Ancestors must have at least one page.');
+    }
+
+    renderVars.targetAndAncestors = targetAndAncestors;
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -329,6 +339,8 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForDescendants(renderVars, portalPath, req.user, offset, limit);
 
+    await addRenderVarsForPageTree(renderVars, portalPath);
+
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
@@ -382,6 +394,8 @@ module.exports = function(crowi, app) {
       view = 'layout-growi/user_page';
       await addRenderVarsForUserPage(renderVars, page);
     }
+
+    await addRenderVarsForPageTree(renderVars, path);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);

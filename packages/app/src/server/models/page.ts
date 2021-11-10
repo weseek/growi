@@ -38,8 +38,9 @@ export interface PageModel extends Model<PageDocument> {
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
   findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
-  findAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
+  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
+  findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -238,13 +239,14 @@ schema.statics.findSiblingsByPathAndViewer = async function(path: string | null,
 
 /*
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
+ * The result will include the target as well
  */
-schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
     const page = await this.findOne({ _id });
-    if (page == null) throw Error('Page not found.');
+    if (page == null) throw new Error('Page not found.');
 
     path = page.path;
   }
@@ -253,11 +255,13 @@ schema.statics.findAncestorsByPathOrId = async function(pathOrId: string): Promi
   }
 
   const ancestorPaths = collectAncestorPaths(path);
+  ancestorPaths.push(path); // include target
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
   const _ancestors: PageDocument[] = await queryBuilder
     .addConditionToListByPathsArray(ancestorPaths)
+    .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
     .query
     .lean()
@@ -289,6 +293,8 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 
   return queryBuilder.query.lean().exec();
 };
+
+// TODO: implement findAncestorsChildrenByPathAndViewer using lean()
 
 
 /*
