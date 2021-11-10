@@ -61,17 +61,11 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   };
 
   const notificationClickHandler = async() => {
+    // set notification status "OPEND"
+    apiv3Post('/in-app-notification/open', { id: notification._id });
 
-    try {
-      // set notification status "OPEND"
-      await apiv3Post('/in-app-notification/open', { id: notification._id });
-
-      // jump to target page
-      window.location.href = notification.target.path;
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    // jump to target page
+    window.location.href = notification.target.path;
   };
 
   const actionUsers = getActionUsers();
