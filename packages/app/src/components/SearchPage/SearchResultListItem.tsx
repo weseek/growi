@@ -20,6 +20,9 @@ type Props ={
   onClickInvoked: (data: string) => void,
 }
 
+const MAX_SNIPPET_LENGTH = 180;
+const APPEND_SNIPPET_STRING = '...';
+
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const { page, onClickInvoked } = props;
@@ -29,6 +32,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+  const snippet = page.elasticSearchResult.snippet;
+
+  const sliceSnippet = (snippet: string): string => {
+    // when regex pattern is not matched with less than 300 characters slicedSnippet is null
+    console.log('snippet', snippet);
+    const slicedAndMatchedSnippet: string[] | null = snippet.slice(0, MAX_SNIPPET_LENGTH).match(/[\s\S]*<\/em>[^(<em)]*/g);
+    return slicedAndMatchedSnippet == null
+      ? `${snippet.slice(0, MAX_SNIPPET_LENGTH)}${APPEND_SNIPPET_STRING}` : `${slicedAndMatchedSnippet[0]}${APPEND_SNIPPET_STRING}`;
+  };
 
   // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
   //         when keyword is not in page content, display revisionBody.
@@ -88,8 +100,10 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </button> */}
 
             </div>
-            {/* eslint-disable-next-line react/no-danger */}
-            <div className="my-2 searched-page-snippet" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}>
+            <div
+              className="mt-1 mb-2"
+              dangerouslySetInnerHTML={{ __html: snippet.length <= MAX_SNIPPET_LENGTH ? snippet : sliceSnippet(snippet) }}
+            >
             </div>
           </div>
         </div>

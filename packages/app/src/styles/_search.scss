@@ -246,15 +246,7 @@
 }
 
 .search-page-item {
-  height: 130px;
-}
-
-.searched-page-snippet {
-  // multi-Line truncation
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  height: 160px;
 }
 
 @include media-breakpoint-down(sm) {
