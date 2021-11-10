@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+﻿import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
@@ -66,11 +66,15 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 type Props = {
   page: ISearchedPage,
   isSelected: boolean,
+  onChangedInvoked?: (page: ISearchedPage) => void,
   onClickInvoked?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-  const { page, isSelected } = props;
+
+  const {
+    page, isSelected, onClickInvoked, onChangedInvoked,
+  } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -78,23 +82,38 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickInvoked = (pageId) => {
-    if (props.onClickInvoked != null) {
-      props.onClickInvoked(pageId);
-    }
-  };
-
   return (
     <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => onClickInvoked(page._id)}
+        onClick={() => {
+          try {
+            if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
+            onClickInvoked(page._id);
+          }
+          catch (error) {
+            logger.error(error);
+          }
+        }}
       >
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mr-3">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => {
+                try {
+                  if (onChangedInvoked == null) { throw new Error('onChangedInvoked is null') }
+                  onChangedInvoked(page);
+                }
+                catch (error) {
+                  logger.error(error);
+                }
+              }}
+            />
           </div>
           <div className="w-100">
             {/* page path */}

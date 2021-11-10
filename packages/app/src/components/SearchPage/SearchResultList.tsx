@@ -16,6 +16,7 @@ type Props = {
   pages: ISearchedPage[],
   selectedPages: ISearchedPage[],
   onClickInvoked?: (pageId: string) => void,
+  onChangedInvoked?: (page: ISearchedPage) => void,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
@@ -34,6 +35,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             key={page._id}
             page={page}
             onClickInvoked={props.onClickInvoked}
+            onChangedInvoked={props.onChangedInvoked}
             isSelected={page._id === focusedPageId || false}
           />
         );
