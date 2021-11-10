@@ -203,7 +203,6 @@ class SearchPage extends React.Component {
   }
 
   renderSearchResultList = () => {
-    console.log(this.state.selectedPages);
     return (
       <SearchResultList
         pages={this.state.searchedPages || []}
