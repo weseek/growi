@@ -106,7 +106,6 @@ LikeButtons.propTypes = {
   sumOfLikers: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  // size: PropTypes.string,
 };
 
 export default withTranslation()(LikeButtonsWrapper);

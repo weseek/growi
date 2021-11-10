@@ -51,6 +51,7 @@ const SubnavButtons = (props) => {
     );
   };
   /* eslint-enable react/prop-types */
+
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
 
