@@ -279,7 +279,7 @@ export default class PageContainer extends Container {
         data: {
           likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
         },
-      } = await this.appContainer.apiv3Get('/page/info', { _id: this.state.pageId });
+      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
 
       await this.setState({
         sumOfLikers,
