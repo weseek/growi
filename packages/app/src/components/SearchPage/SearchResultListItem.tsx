@@ -1,26 +1,79 @@
 import React, { FC } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+import { ISearchedPage } from './SearchResultList';
 
 import loggerFactory from '~/utils/logger';
 
-import { ISearchedPage } from '../../interfaces/page';
-
 const logger = loggerFactory('growi:searchResultList');
 
-type Props ={
+type PageItemControlProps = {
+  page: ISearchedPage,
+}
+
+const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
+
+  const { page } = props;
+  const { t } = useTranslation('');
+
+  return (
+    <>
+      <button
+        type="button"
+        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        data-toggle="dropdown"
+      >
+        <i className="fa fa-ellipsis-v text-muted"></i>
+      </button>
+      <div className="dropdown-menu dropdown-menu-right">
+
+        {/* TODO: if there is the following button in XD add it here
+        <button
+          type="button"
+          className="btn btn-link p-0"
+          value={page.path}
+          onClick={(e) => {
+            window.location.href = e.currentTarget.value;
+          }}
+        >
+          <i className="icon-login" />
+        </button>
+        */}
+
+        {/*
+          TODO: add function to the following buttons like using modal or others
+          ref: https://estoc.weseek.co.jp/redmine/issues/79026
+        */}
+        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+          <i className="icon-fw icon-fire"></i>{t('Delete')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+          <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+          <i className="icon-fw icon-docs"></i>{t('Duplicate')}
+        </button>
+        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+          <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
+        </button>
+      </div>
+    </>
+  );
+
+};
+
+type Props = {
   page: ISearchedPage,
   isSelected: boolean,
-  isChecked: boolean,
-  onClickInvoked?: (data: string) => void,
   onChangedInvoked?: (page: ISearchedPage) => void,
+  onClickInvoked?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const {
-    page, isSelected, onClickInvoked, onChangedInvoked, isChecked,
+    page, isSelected, onClickInvoked, onChangedInvoked,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -29,9 +82,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  // TODO : send cetain  length of body (revisionBody) from elastisearch by adding some settings to the query and
-  //         when keyword is not in page content, display revisionBody.
-  // TASK : https://estoc.weseek.co.jp/redmine/issues/79606
 
   return (
     <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
@@ -64,7 +114,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                   logger.error(error);
                 }
               }}
-              checked={isChecked}
             />
           </div>
           <div className="w-100">
@@ -83,30 +132,21 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               <div className="d-flex mx-2">
                 <PageListMeta page={page} />
               </div>
-              {/* doropdown icon */}
+              {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <i className="fa fa-ellipsis-v text-muted"></i>
+                <PageItemControl page={page} />
               </div>
-
-              {/* Todo: add the following icon into dropdown menu */}
-              {/* <button
-                type="button"
-                className="btn btn-link p-0"
-                value={page.path}
-                onClick={(e) => {
-                  window.location.href = e.currentTarget.value;
-                }}
-              >
-                <i className="icon-login" />
-              </button> */}
-
             </div>
-            {/* eslint-disable-next-line react/no-danger */}
-            <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
           </div>
         </div>
+        {/* TODO: adjust snippet position */}
+        {page.snippet
+          ? <div className="mt-1">page.snippet</div>
+          : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+        }
       </a>
     </li>
   );
 };
+
 export default SearchResultListItem;
