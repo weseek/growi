@@ -1,4 +1,4 @@
-﻿import { IUser } from './user';
+import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
 
