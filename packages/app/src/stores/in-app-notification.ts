@@ -7,11 +7,12 @@ import { IInAppNotification } from '../interfaces/in-app-notification';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxInAppNotifications = <Data, Error>(
-  // TODO: apply pagination by 80107
   limit: number,
+  page: number,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
+  // const limitNum = limit;
   return useSWR(
-    '/in-app-notification/list',
-    endpoint => apiv3Get(endpoint, { limit }).then(response => response.data),
+    `/in-app-notification/list?limit=${limit}&page=${page}`,
+    endpoint => apiv3Get(endpoint).then(response => response.data),
   );
 };

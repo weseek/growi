@@ -8,7 +8,7 @@ import PaginationWrapper from '../PaginationWrapper';
 const AllInAppNotifications: FC = () => {
   const limit = 6;
   const [activePage, setActivePage] = useState(1);
-  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, activePage);
 
 
   if (inAppNotificationData == null) {
@@ -21,9 +21,9 @@ const AllInAppNotifications: FC = () => {
     );
   }
 
-  function setPageNumber(selectedPageNumber): void {
+  const setPageNumber = (selectedPageNumber): void => {
     setActivePage(selectedPageNumber);
-  }
+  };
 
   return (
     <>

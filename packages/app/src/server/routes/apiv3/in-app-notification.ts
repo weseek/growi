@@ -17,19 +17,17 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
 
-    let limit = 10;
-    if (req.query.limit) {
-      limit = parseInt(req.query.limit, 10);
-    }
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
 
-    let offset = 0;
-    if (req.query.offset) {
-      offset = parseInt(req.query.offset, 10);
-    }
+    const queryOptions = {
+      offset,
+      limit,
+    };
 
-    const requestLimit = limit + 1;
 
-    const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, requestLimit, offset);
+    const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
 
 
     const getActionUsersFromActivities = function(activities) {
