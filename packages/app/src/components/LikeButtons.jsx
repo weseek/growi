@@ -41,7 +41,8 @@ class LikeButtons extends React.Component {
       return;
     }
     try {
-      await apiv3Put('/page/likes', { pageId, bool: isLiked });
+      const toggleLike = !isLiked;
+      await apiv3Put('/page/likes', { pageId, bool: toggleLike });
       if (onChangeInvoked !== null) {
         onChangeInvoked();
       }

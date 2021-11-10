@@ -292,16 +292,16 @@ export default class PageContainer extends Container {
     await this.retrieveLikersAndSeenUsers();
   }
 
-  // this method is used only when like happend in search page but not in normal page view.
-  // search page holds state that is not depending on pageContainer
+  // this method is used only when like happend in normal page but not in search page.
+  // noraml page view use the states based on pageContainer but search page holds its own state in SearchResultSunNavButton.
   async updateStateAfterLike() {
-    const toggledIsLiked = this.state.isLiked;
+    const toggledIsLiked = !this.state.isLiked;
     await this.setState(state => ({
-      isLiked: !toggledIsLiked,
-      sumOfLikers: toggledIsLiked ? state.sumOfLikers - 1 : state.sumOfLikers + 1,
+      isLiked: toggledIsLiked,
+      sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
       likerIds: toggledIsLiked
-        ? state.likerIds.filter(id => id !== this.appContainer.currentUserId)
-        : [...this.state.likerIds, this.appContainer.currentUserId],
+        ? [...this.state.likerIds, this.appContainer.currentUserId]
+        : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
     }));
   }
 
