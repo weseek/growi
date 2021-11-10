@@ -4,11 +4,9 @@ import React, {
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
 import { apiv3Get, apiv3Put } from '../../client/util/apiv3-client';
-import { toastError } from '../../client/util/apiNotification';
 
 
 type PageReactionButtonsProps = {
@@ -19,7 +17,6 @@ type PageReactionButtonsProps = {
 const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageReactionButtonsProps) => {
   const { appContainer, pageId } = props;
   const LikeButtonsTypeAny : any = LikeButtons;
-  const BookMarkButtonTypeAny: any = BookmarkButton;
 
   const [sumOflikers, setSumOfLikers] = useState(0);
   const [likers, setLikers] = useState<string[]>([]);
