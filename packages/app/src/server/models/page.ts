@@ -84,6 +84,14 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
+  if (isTopPage(path)) return ['/'];
+
+  const parentPath = nodePath.dirname(path);
+  ancestorPaths.push(parentPath);
+  return collectAncestorPaths(parentPath, ancestorPaths);
+};
+
+const collectAncestorPathsExcludingTop = (path: string, ancestorPaths: string[] = []): string[] => {
   if (isTopPage(path)) return ancestorPaths;
 
   const parentPath = nodePath.dirname(path);
@@ -98,7 +106,7 @@ const hasSlash = (str: string): boolean => {
 /*
  * Generate RE2 instance for one level lower path
  */
-const generateChildrenRegExp = (path: string): RE2 => {
+const generateChildrenRE2 = (path: string): RE2 => {
   // https://regex101.com/r/laJGzj/1
   // ex. /any_level1
   if (isTopPage(path)) return new RE2(/^\/[^/]+$/);
@@ -106,6 +114,19 @@ const generateChildrenRegExp = (path: string): RE2 => {
   // https://regex101.com/r/mrDJrx/1
   // ex. /parent/any_child OR /any_level1
   return new RE2(`^${path}(\\/[^/]+)\\/?$`);
+};
+
+/*
+ * Generate RegExp instance for one level lower path
+ */
+const generateChildrenRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /*
@@ -149,7 +170,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
     return parent._id;
   }
 
-  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPathsExcludingTop(path); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);
@@ -235,7 +256,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
     path = pathOrId;
   }
 
-  const ancestorPaths = collectAncestorPaths(path);
+  const ancestorPaths = collectAncestorPathsExcludingTop(path);
   ancestorPaths.push(path); // include target
 
   // Do not populate
@@ -263,7 +284,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   let queryBuilder: PageQueryBuilder;
   if (hasSlash(parentPathOrId)) {
     const path = parentPathOrId;
-    const regexp = generateChildrenRegExp(path);
+    const regexp = generateChildrenRE2(path);
     queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }));
   }
   else {
@@ -277,7 +298,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 
 schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
   const ancestorPaths = collectAncestorPaths(path);
-  const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path).source)); // cannot use re2
+  const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
   // get pages at once
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
@@ -293,7 +314,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   // make map
   const pathToChildren: Record<string, PageDocument[]> = {};
   ancestorPaths.forEach((path) => {
-    pathToChildren[path] = pages.filter(page => page.path === path);
+    pathToChildren[path] = pages.filter(page => nodePath.dirname(page.path) === path);
   });
 
   return pathToChildren;

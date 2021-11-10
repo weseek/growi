@@ -14,7 +14,7 @@ const { isTopPage } = pagePathUtils;
  */
 const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
   const rootPage = targetAndAncestors[targetAndAncestors.length - 1]; // the last item is the root
-  if (!isTopPage(rootPage?.path as string)) throw Error('/ not exist in ancestors');
+  if (!isTopPage(rootPage?.path as string)) throw new Error('/ not exist in ancestors');
 
   const nodes = targetAndAncestors.map((page): ItemNode => {
     return new ItemNode(page, []);
@@ -29,32 +29,12 @@ const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => 
   return rootNode;
 };
 
-const generateInitialNodeWithChildren = (ancestors: Partial<IPage>[], ancestorsChildren: Record<string, Partial<IPage>[]>): ItemNode => {
-  // create nodes
-  const nodes = ancestors.map((page): ItemNode => {
-    const children = ancestorsChildren[page.path as string].map(page => new ItemNode(page, []));
-    return new ItemNode(page, children);
-  });
-
-  // update children for each node
-  const rootNode = nodes.reduce((child, parent) => {
-    parent.children = [child];
-    return parent;
-  });
-
-  return rootNode;
-};
-
-// TODO: get from props
-const path = '/Sandbox/Bootstrap4';
-const id = '6181188ae38676152e464fc2';
-
 /*
  * ItemsTree
  */
 const ItemsTree: FC = () => {
   // TODO: get from props
-  const path = '/Sandbox/Bootstrap4';
+  const path = '/';
 
   const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
@@ -78,16 +58,22 @@ const ItemsTree: FC = () => {
     const { ancestorsChildren } = ancestorsChildrenData;
 
     // flatten ancestors
-    const partialChildren: ItemNode[] = [];
-    let currentNode = initialNode;
-    while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
-      const child = currentNode.children[0];
-      partialChildren.push(child);
-      currentNode = child;
+    let ancestors: ItemNode[] = [];
+
+    if (initialNode.children.length === 0) { // when showing top page
+      ancestors = [initialNode];
+    }
+    else {
+      let currentNode = initialNode;
+      while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
+        ancestors.push(currentNode);
+        const child = currentNode.children[0];
+        currentNode = child;
+      }
     }
 
     // update children
-    partialChildren.forEach((node) => {
+    ancestors.forEach((node) => {
       const childPages = ancestorsChildren[node.page.path as string];
       node.children = ItemNode.generateNodesFromPages(childPages);
     });
