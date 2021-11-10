@@ -59,9 +59,9 @@ class PageStatusAlert extends React.Component {
         {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
       </>,
       <>
-        <button type="button" onClick={() => { window.location.href = pageContainer.state.path }} className="btn btn-outline-white mr-4">
+        <button type="button" onClick={() => this.refreshPage()} className="btn btn-outline-white mr-4">
           <i className="icon-fw icon-reload mr-1"></i>
-          {t('modal_resolve_conflict.reload')}
+          {t('Load latest')}
         </button>
         <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
           <i className="fa fa-fw fa-file-text-o mr-1"></i>

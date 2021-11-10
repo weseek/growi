@@ -4,6 +4,8 @@ import { Container } from 'unstated';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
+
+import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
 import { toastError } from '../util/apiNotification';
 
@@ -672,10 +674,7 @@ export default class PageContainer extends Container {
       body: markdown,
     });
 
-    const res = await this.appContainer.apiPost('/pages.update', params);
-    if (!res.ok) {
-      throw new Error(res.error);
-    }
+    const res = await apiPost('/pages.update', params);
 
     const editorContainer = this.appContainer.getContainer('EditorContainer');
     editorContainer.clearDraft(path);
