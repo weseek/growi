@@ -51,6 +51,7 @@
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
     "escape-string-regexp": "5.0.0 or above exports only ESM",
+    "mongoose": "5.13.13 causes an error like 't.versions.node is undefined' about 'browser.umd.js' on browser",
     "string-width": "5.0.0 or above exports only ESM."
   },
   "dependencies": {
