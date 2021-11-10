@@ -192,14 +192,15 @@ class SearchPage extends React.Component {
   }
 
   toggleAllCheckBox = () => {
-    console.log(this.state.selectedPages.size);
     if (this.state.selectedPages.size === this.state.searchedPages.length) {
       this.state.selectedPages.clear();
+      this.forceUpdate();
       return;
     }
     this.state.searchedPages.forEach((page) => {
       this.state.selectedPages.add(page);
     });
+    this.forceUpdate();
   };
 
   renderSearchResultContent = () => {
