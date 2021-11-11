@@ -455,10 +455,18 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />
-                    <div className="form-text text-muted small mt-2">
-                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
-                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
-                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                    <div className="mt-2">
+                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help1') }} />
+                      <p>
+                        <a data-toggle="collapse" href="#ablchelp" role="button" aria-expanded="false" aria-controls="ablchelp">
+                          <i className="icon-question icon-fw"></i> Help
+                        </a>
+                      </p>
+                      <div id="ablchelp" className="collapse card card-body text-muted small">
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help2') }} />
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                      </div>
                     </div>
                   </td>
                   <td>
