@@ -72,9 +72,7 @@ type Props = {
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
-  const {
-    page, isSelected, onClickInvoked, onChangedInvoked,
-  } = props;
+  const { page, isSelected } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -87,10 +85,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => {
-          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-          else { onClickInvoked(page._id) }
-        }}
+        onClick={() => { if (props.onClickInvoked != null) { props.onClickInvoked(page._id) } }}
       >
         <div className="d-flex">
           {/* checkbox */}
@@ -99,10 +94,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={() => {
-                if (onChangedInvoked == null) { logger.error('onChangedInvoked is null') }
-                else { onChangedInvoked(page) }
-              }}
+              onClick={() => { if (props.onChangedInvoked != null) { props.onChangedInvoked(page) } }}
             />
           </div>
           <div className="w-100">
