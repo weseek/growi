@@ -67,7 +67,16 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage,
         <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
           <i className="icon-fw icon-docs"></i>{t('Duplicate')}
         </button>
-        <button className="dropdown-item" type="button" onClick={onClickPageRenameBtnInvoked}>
+        <button
+          className="dropdown-item"
+          type="button"
+          onClick={() => {
+            if (onClickPageRenameBtnInvoked != null) {
+              console.log('onClickPageRenameBtnInvoked is invoked');
+              onClickPageRenameBtnInvoked();
+            }
+          }}
+        >
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
       </div>
@@ -129,7 +138,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={page} />
+                <PageItemControl
+                  page={page}
+                  onClickControlDropdown={props.onClickControlDropdown}
+                  onClickPageRenameBtnInvoked={props.onClickPageRenameBtnInvoked}
+                />
               </div>
             </div>
             <div className="my-2">
