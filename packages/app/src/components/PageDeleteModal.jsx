@@ -7,8 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -27,7 +26,7 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
+    t, isOpen, onClose, isDeleteCompletelyModal, pageId, revisionId, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -50,7 +49,18 @@ const PageDeleteModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      // control flag
+      // If is it not true, Request value must be `null`.
+      const recursively = isDeleteRecursively ? true : null;
+      const completely = isDeleteCompletely ? true : null;
+
+      const response = await apiPost('/pages.remove', {
+        page_id: pageId,
+        revision_id: revisionId,
+        recursively,
+        completely,
+      });
+
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
     }
@@ -133,18 +143,14 @@ const PageDeleteModal = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
-
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,
   isAbleToDeleteCompletely: PropTypes.bool,
@@ -154,4 +160,4 @@ PageDeleteModal.defaultProps = {
   isDeleteCompletelyModal: false,
 };
 
-export default withTranslation()(PageDeleteModalWrapper);
+export default withTranslation()(PageDeleteModal);

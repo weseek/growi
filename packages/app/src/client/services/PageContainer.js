@@ -277,7 +277,7 @@ export default class PageContainer extends Container {
         data: {
           likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
         },
-      } = await this.appContainer.apiv3Get('/page/info', { _id: this.state.pageId });
+      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
 
       await this.setState({
         sumOfLikers,
@@ -326,12 +326,6 @@ export default class PageContainer extends Container {
       sumOfBookmarks: response.data.sumOfBookmarks,
       isBookmarked: response.data.isBookmarked,
     });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
@@ -527,49 +521,6 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return res;
-  }
-
-  deletePage(isRecursively, isCompletely) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const completely = isCompletely ? true : null;
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.remove', {
-      recursively,
-      completely,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
-    });
-
-  }
-
-  revertRemove(isRecursively) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.revertRemove', {
-      recursively,
-      page_id: this.state.pageId,
-    });
-  }
-
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId, path } = this.state;
-
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
-      path,
-    });
   }
 
   showSuccessToastr() {
