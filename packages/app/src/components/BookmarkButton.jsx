@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv1-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import AppContainer from '~/client/services/AppContainer';
 
