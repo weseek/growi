@@ -2,6 +2,7 @@ import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
+import { HasObjectId } from './has-object-id';
 
 
 export type IPage = {
@@ -29,3 +30,5 @@ export type IPage = {
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
+
+export type IPageForItem = Partial<IPage & {isTarget?: boolean} & HasObjectId>;

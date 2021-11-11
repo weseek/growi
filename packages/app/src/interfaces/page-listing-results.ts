@@ -1,10 +1,13 @@
-import { IPage } from './page';
-import { HasObjectId } from './has-object-id';
+import { IPageForItem } from './page';
 
 
 type ParentPath = string;
 export interface AncestorsChildrenResult {
-  ancestorsChildren: Record<ParentPath, Partial<IPage & HasObjectId>[]>
+  ancestorsChildren: Record<ParentPath, Partial<IPageForItem>[]>
 }
 
-export type TargetAndAncestors = Partial<IPage & HasObjectId>[];
+export type TargetAndAncestors = Partial<IPageForItem>[];
+
+export interface ChildrenResult {
+  children: Partial<IPageForItem>[]
+}
