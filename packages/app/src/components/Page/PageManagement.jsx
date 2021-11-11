@@ -172,6 +172,7 @@ const PageManagement = (props) => {
           onClose={closePageDuplicateModalHandler}
         />
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
