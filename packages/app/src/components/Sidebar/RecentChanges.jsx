@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 
 import { useTranslation, withTranslation } from 'react-i18next';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { FootstampIcon } from '../FootstampIcon';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { apiv3Get } from '~/client/util/apiv3-client';

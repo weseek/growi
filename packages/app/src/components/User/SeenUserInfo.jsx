@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import {
   Button, Popover, PopoverBody,
 } from 'reactstrap';
-import { FootstampIcon } from '../FootstampIcon';
+import { FootstampIcon } from '@growi/ui';
 import UserPictureList from './UserPictureList';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
