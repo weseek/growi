@@ -33,11 +33,15 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {}
 
+type TargetAndAncestorsResult = {
+  targetAndAncestors: PageDocument[]
+  rootPage: PageDocument
+}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
-  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
+  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
 }
@@ -236,7 +240,7 @@ schema.statics.findByPathAndViewer = async function(
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -254,7 +258,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
-  const _ancestors: PageDocument[] = await queryBuilder
+  const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
@@ -264,10 +268,11 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // no same path pages
   const ancestorsMap = new Map<string, PageDocument>();
-  _ancestors.forEach(page => ancestorsMap.set(page.path, page));
-  const ancestors = Array.from(ancestorsMap.values());
+  _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
+  const targetAndAncestors = Array.from(ancestorsMap.values());
+  const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
 
-  return ancestors;
+  return { targetAndAncestors, rootPage };
 };
 
 /*

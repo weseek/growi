@@ -14,5 +14,6 @@ export const useSWRxPageAncestorsChildren = (
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
+    { revalidateOnFocus: false },
   );
 };
