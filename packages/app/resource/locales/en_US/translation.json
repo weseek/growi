@@ -462,8 +462,14 @@
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",
+    "resolve_conflict_message": "Please select page body",
     "resolve_conflict": "Resolve Conflict",
-    "resolve_and_save" : "Resolve and save"
+    "resolve_and_save" : "Resolve and save",
+    "select_revision" : "Select {{revision}}",
+    "requested_revision": "requested page body",
+    "origin_revision": "page body before request",
+    "latest_revision": "latest page body",
+    "selected_editable_revision": "Selected Revision(Editable)"
   },
   "link_edit": {
     "edit_link": "Edit Link",

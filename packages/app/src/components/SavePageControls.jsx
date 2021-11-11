@@ -52,6 +52,7 @@ class SavePageControls extends React.Component {
       if (error.code === 'conflict') {
         pageContainer.setState({
           isConflictingOnSave: true,
+          revisionsOnConflict: error.data,
         });
       }
     }

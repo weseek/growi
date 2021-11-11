@@ -59,9 +59,9 @@ class PageStatusAlert extends React.Component {
         {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
       </>,
       <>
-        <button type="button" onClick={() => { }} className="btn btn-outline-white mr-4">
+        <button type="button" onClick={() => this.refreshPage()} className="btn btn-outline-white mr-4">
           <i className="icon-fw icon-reload mr-1"></i>
-          Reload
+          {t('Load latest')}
         </button>
         <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
           <i className="fa fa-fw fa-file-text-o mr-1"></i>
@@ -113,7 +113,6 @@ class PageStatusAlert extends React.Component {
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
     let getContentsFunc = null;
-
     // when conflicting on save
     if (isConflictingOnSave) {
       getContentsFunc = this.getContentsForRevisionOutdated;
