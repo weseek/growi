@@ -22,7 +22,6 @@ type Props ={
   onClickInvoked: (data: string) => void,
 }
 
-
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const { page, onClickInvoked } = props;
