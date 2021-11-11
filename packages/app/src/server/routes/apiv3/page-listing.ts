@@ -48,7 +48,7 @@ export default (crowi: Crowi): Router => {
     const Page: PageModel = crowi.model('Page');
 
     try {
-      const ancestorsChildren: Record<string, PageDocument[]> = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+      const ancestorsChildren = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
     }
     catch (err) {

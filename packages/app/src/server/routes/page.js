@@ -265,13 +265,13 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForPageTree(renderVars, path) {
-    const targetAndAncestors = await Page.findTargetAndAncestorsByPathOrId(path);
+    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(path);
 
     if (targetAndAncestors.length === 0 && !isTopPage(path)) {
       throw new Error('Ancestors must have at least one page.');
     }
 
-    renderVars.targetAndAncestors = targetAndAncestors;
+    renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
   }
 
   function replacePlaceholdersOfTemplate(template, req) {

@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { pagePathUtils } from '@growi/core';
 
 import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -8,15 +7,11 @@ import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
 import { useTargetAndAncestors } from '../../../stores/context';
 import { HasObjectId } from '../../../interfaces/has-object-id';
 
-const { isTopPage } = pagePathUtils;
 
 /*
  * Utility to generate initial node
  */
 const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
-  const rootPage = targetAndAncestors[targetAndAncestors.length - 1]; // the last item is the root
-  if (!isTopPage(rootPage?.path as string)) throw new Error('/ not exist in ancestors');
-
   const nodes = targetAndAncestors.map((page): ItemNode => {
     return new ItemNode(page, []);
   });
@@ -32,9 +27,6 @@ const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[])
 
 const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPage & HasObjectId>[]>, rootNode: ItemNode): ItemNode => {
   const paths = Object.keys(ancestorsChildren);
-
-  const rootPath = paths[paths.length - 1]; // the last item is the root
-  if (!isTopPage(rootPath)) throw new Error('rootPath must be "/"');
 
   let currentNode = rootNode;
   paths.reverse().forEach((path) => {
@@ -58,7 +50,7 @@ const ItemsTree: FC = () => {
   // TODO: get from static SWR
   const path = '/Sandbox/Mathematics';
 
-  const { data: targetAndAncestors, error } = useTargetAndAncestors();
+  const { data, error } = useTargetAndAncestors();
 
   const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(path);
 
@@ -66,9 +58,11 @@ const ItemsTree: FC = () => {
     return null;
   }
 
-  if (targetAndAncestors == null) {
+  if (data == null) {
     return null;
   }
+
+  const { targetAndAncestors, rootPage } = data;
 
   let initialNode: ItemNode;
 
@@ -85,7 +79,6 @@ const ItemsTree: FC = () => {
   else {
     const { ancestorsChildren } = ancestorsChildrenData;
 
-    const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
     const rootNode = new ItemNode(rootPage);
 
     initialNode = generateInitialNodeAfterResponse(ancestorsChildren, rootNode);
