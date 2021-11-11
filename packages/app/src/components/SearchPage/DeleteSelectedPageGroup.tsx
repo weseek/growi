@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
+import loggerFactory from '../../utils/logger/index';
 import { CheckboxType } from '../../interfaces/search';
 
 const logger = loggerFactory('growi:searchResultList');
@@ -11,11 +11,13 @@ type Props = {
   onCheckInvoked?: (string:CheckboxType) => void,
 }
 
+
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
     checkboxState, onClickInvoked, onCheckInvoked,
   } = props;
+  const checkRef = useRef<HTMLInputElement>(null);
 
   const changeCheckboxStateHandler = () => {
     console.log(`changeCheckboxStateHandler is called. current changebox state is ${checkboxState}`);
@@ -30,6 +32,16 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     else { onCheckInvoked(CheckboxType.ALL_CHECKED) } // change this to an appropriate value
   };
 
+  /**
+   * change checkbox attributes
+   */
+  useEffect(() => {
+    if (checkRef.current != null) {
+      checkRef.current.indeterminate = checkboxState === CheckboxType.INDETERMINATE;
+      // also set checkbox to cheked when checkboxState is INDETERMINATE
+      checkRef.current.checked = checkboxState !== CheckboxType.NONE_CHECKED;
+    }
+  }, [props.checkboxState]);
 
   return (
     <>
@@ -39,7 +51,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
         onChange={changeCheckboxStateHandler}
-        checked={checkboxState === CheckboxType.INDETERMINATE || checkboxState === CheckboxType.ALL_CHECKED}
+        checked={checkboxState !== CheckboxType.NONE_CHECKED}
+        ref={checkRef}
       />
       <button
         type="button"
