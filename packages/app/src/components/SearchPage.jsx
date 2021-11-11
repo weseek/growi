@@ -15,6 +15,11 @@ import SearchControl from './SearchPage/SearchControl';
 
 import { CheckboxType } from '../interfaces/search';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:searchResultList');
+
+
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
@@ -227,6 +232,30 @@ class SearchPage extends React.Component {
     }
     this.updateCheckboxState();
   };
+
+  deleteSelectedPages() {
+    Promise.all(Array.from(this.state.selectedPages).map((page) => {
+      return new Promise((resolve, reject) => {
+        const pageId = page._id;
+        const revisionId = page.revision._id;
+
+        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: true })
+          .then((res) => {
+            if (res.ok) {
+              this.state.selectedPages.delete(page);
+              return resolve();
+            }
+
+            return reject();
+
+          })
+          .catch((err) => {
+            logger.error(err.message); // eslint-disable-line no-console
+            return reject();
+          });
+      });
+    }));
+  }
 
   renderSearchResultContent = () => {
     return (
