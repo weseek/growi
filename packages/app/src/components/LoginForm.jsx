@@ -171,7 +171,7 @@ class LoginForm extends React.Component {
             {t('page_register.notice.restricted_defail')}
           </p>
         )}
-        { (!isMailerSetup && isEmailAuthenticationEnabled) === true && (
+        { (!isMailerSetup && isEmailAuthenticationEnabled === true) && (
           <p className="alert alert-danger">
             <span>{t('security_setting.Local.please_enable_mailer')}</span>
           </p>
@@ -249,7 +249,7 @@ class LoginForm extends React.Component {
 
           <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-            <button type="submit" className="btn btn-fill rounded-0" id="register">
+            <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled === true)}>
               <div className="eff"></div>
               <span className="btn-label">
                 <i className="icon-user-follow"></i>

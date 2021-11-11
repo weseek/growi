@@ -51,6 +51,10 @@
   background-color: rgba(lighten(black, 15%), 0.5);
   border: none;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   .btn-label {
     position: relative;
     z-index: 1;
