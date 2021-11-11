@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
@@ -11,16 +11,17 @@ const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
   searchingKeyword: string,
+  checkboxState: CheckboxType,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
   onClickInvoked?: () => void,
+  onClickAllSelectButton?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
 
-  const [checkboxState, setCheckboxState] = useState(CheckboxType.NONE_CHECKED);
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
@@ -44,8 +45,7 @@ const SearchControl: FC <Props> = (props: Props) => {
     // https://estoc.weseek.co.jp/redmine/issues/77525
   };
 
-  const onCheckAllPagesInvoked = (nextCheckboxState:CheckboxType) => {
-    setCheckboxState(nextCheckboxState);
+  const onCheckAllPagesInvoked = () => {
     if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
     else { props.onClickInvoked() }
   };
@@ -63,7 +63,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          checkboxState={checkboxState} // Todo: change the left value to appropriate value
+          checkboxState={props.checkboxState}
           onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
         />

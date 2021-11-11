@@ -8,7 +8,7 @@ const logger = loggerFactory('growi:searchResultList');
 type Props = {
   checkboxState: CheckboxType,
   onClickInvoked?: () => void,
-  onCheckInvoked?: (nextCheckboxState:string) => void,
+  onCheckInvoked?: () => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
@@ -17,20 +17,6 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     checkboxState, onClickInvoked, onCheckInvoked,
   } = props;
 
-  const changeCheckboxStateHandler = () => {
-    let nextCheckboxState!: string;
-    switch (checkboxState) {
-      case CheckboxType.ALL_CHECKED:
-        nextCheckboxState = CheckboxType.NONE_CHECKED;
-        break;
-      case CheckboxType.INDETERMINATE || CheckboxType.NONE_CHECKED:
-        nextCheckboxState = CheckboxType.ALL_CHECKED;
-        break;
-    }
-
-    if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
-    else { onCheckInvoked(nextCheckboxState) }
-  };
 
 
   return (
@@ -40,7 +26,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
-        onChange={changeCheckboxStateHandler}
+        onClick={onCheckInvoked}
         checked={checkboxState !== CheckboxType.NONE_CHECKED}
       />
       <button
