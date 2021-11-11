@@ -1,4 +1,4 @@
-// This is the root component for #search-page
+﻿// This is the root component for #search-page
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -12,6 +12,8 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+
+import { CheckboxType } from '../interfaces/search';
 
 export const specificPathNames = {
   user: '/user',
@@ -37,6 +39,7 @@ class SearchPage extends React.Component {
       pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      checkboxState: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -182,6 +185,22 @@ class SearchPage extends React.Component {
     });
   }
 
+  getCheckboxType = (selectedPagesCount) => {
+    switch (selectedPagesCount) {
+      case 0:
+        return CheckboxType.NONE_CHECKED;
+      case this.state.searchedPages.length:
+        return CheckboxType.ALL_CHECKED;
+      default:
+        return CheckboxType.INDETERMINATE;
+    }
+  }
+
+  updateCheckboxState = () => {
+    const currentCheckboxState = this.getCheckboxType(this.state.selectedPages.size);
+    this.setState({ checkboxState: currentCheckboxState });
+  }
+
   toggleCheckBox = (page) => {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
@@ -189,6 +208,7 @@ class SearchPage extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
+    this.updateCheckboxState();
   }
 
   toggleAllCheckBox = () => {
@@ -203,6 +223,7 @@ class SearchPage extends React.Component {
     });
     // Force a render to tell React that the State has been changed by the Set class method
     this.forceUpdate();
+    this.updateCheckboxState();
   };
 
   renderSearchResultContent = () => {
@@ -241,6 +262,7 @@ class SearchPage extends React.Component {
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
+        checkboxState={this.state.checkboxState}
       >
       </SearchControl>
     );
