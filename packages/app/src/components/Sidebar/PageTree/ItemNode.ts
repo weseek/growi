@@ -4,7 +4,7 @@ export class ItemNode {
 
   page: IPageForItem;
 
-  children?: ItemNode[];
+  children: ItemNode[];
 
   constructor(page: IPageForItem, children: ItemNode[] = []) {
     this.page = page;
