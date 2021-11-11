@@ -78,11 +78,11 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   switch (actionType) {
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
-      actionIcon = 'fa-file-o';
+      actionIcon = 'ti-file';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
-      actionIcon = 'fa-comment-o';
+      actionIcon = 'icon-bubble';
       break;
     default:
       actionMsg = '';
@@ -100,7 +100,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           <div>
             <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
-          <i className={`fa ${actionIcon} mr-2`} />
+          <i className={`${actionIcon} mr-2`} />
           <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
         </div>
       </div>
