@@ -51,7 +51,6 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
         onChange={changeCheckboxStateHandler}
-        checked={checkboxState !== CheckboxType.NONE_CHECKED}
         ref={checkRef}
       />
       <button
