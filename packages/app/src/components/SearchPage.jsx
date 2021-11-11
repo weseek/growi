@@ -185,8 +185,8 @@ class SearchPage extends React.Component {
     });
   }
 
-  getCheckboxType = () => {
-    switch (this.state.selectedPages.size) {
+  getCheckboxType = (selectedPagesCount) => {
+    switch (selectedPagesCount) {
       case 0:
         return CheckboxType.NONE_CHECKED;
       case this.state.searchedPages.length:
@@ -197,7 +197,7 @@ class SearchPage extends React.Component {
   }
 
   updateCheckboxState = () => {
-    const currentCheckboxState = this.getCheckboxType;
+    const currentCheckboxState = this.getCheckboxType(this.state.selectedPages.size);
     console.log(currentCheckboxState);
     this.setState({ checkboxState: currentCheckboxState });
   }

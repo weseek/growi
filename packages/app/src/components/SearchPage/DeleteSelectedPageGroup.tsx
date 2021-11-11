@@ -18,8 +18,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   } = props;
 
   const onCheckAllPages = () => {
-    if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
-    else { props.onClickInvoked() }
+    if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
+    else { onCheckInvoked() }
   };
 
   return (
