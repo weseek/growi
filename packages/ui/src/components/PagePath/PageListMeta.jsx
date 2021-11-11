@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { templateChecker, pagePathUtils } from '@growi/core';
+import { FootstampIcon } from '../SearchPage/FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
@@ -37,10 +38,21 @@ export class PageListMeta extends React.Component {
       locked = <span><i className="icon-lock" /></span>;
     }
 
+    let seenUserCount;
+    if (page.seenUserCount > 0) {
+      seenUserCount = (
+        <span>
+          <i className="footstamp-icon"><FootstampIcon /></i>
+          {page.seenUsers.length}
+        </span>
+      );
+    }
+
     return (
       <span className="page-list-meta">
         {topLabel}
         {templateLabel}
+        {seenUserCount}
         {commentCount}
         {likerCount}
         {locked}
