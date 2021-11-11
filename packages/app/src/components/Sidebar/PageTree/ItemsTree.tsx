@@ -6,13 +6,14 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
 import { useTargetAndAncestors } from '../../../stores/context';
+import { HasObjectId } from '../../../interfaces/has-object-id';
 
 const { isTopPage } = pagePathUtils;
 
 /*
- * Utility to generate initial node and return
+ * Utility to generate initial node
  */
-const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
+const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
   const rootPage = targetAndAncestors[targetAndAncestors.length - 1]; // the last item is the root
   if (!isTopPage(rootPage?.path as string)) throw new Error('/ not exist in ancestors');
 
@@ -29,12 +30,33 @@ const generateInitialNode = (targetAndAncestors: Partial<IPage>[]): ItemNode => 
   return rootNode;
 };
 
+const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPage & HasObjectId>[]>, rootNode: ItemNode): ItemNode => {
+  const paths = Object.keys(ancestorsChildren);
+
+  const rootPath = paths[paths.length - 1]; // the last item is the root
+  if (!isTopPage(rootPath)) throw new Error('rootPath must be "/"');
+
+  let currentNode = rootNode;
+  paths.reverse().forEach((path) => {
+    const childPages = ancestorsChildren[path];
+    currentNode.children = ItemNode.generateNodesFromPages(childPages);
+
+    const nextNode = currentNode.children.filter((node) => {
+      return paths.includes(node.page.path);
+    })[0];
+    currentNode = nextNode;
+  });
+
+  return rootNode;
+};
+
+
 /*
  * ItemsTree
  */
 const ItemsTree: FC = () => {
-  // TODO: get from props
-  const path = '/';
+  // TODO: get from static SWR
+  const path = '/Sandbox/Mathematics';
 
   const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
@@ -48,35 +70,25 @@ const ItemsTree: FC = () => {
     return null;
   }
 
-  const initialNode = generateInitialNode(targetAndAncestors);
+  let initialNode: ItemNode;
+
+  /*
+   * Before swr response comes back
+   */
+  if (ancestorsChildrenData == null) {
+    initialNode = generateInitialNodeBeforeResponse(targetAndAncestors);
+  }
 
   /*
    * When swr request finishes
    */
-  if (ancestorsChildrenData != null) {
-    // increment initialNode
+  else {
     const { ancestorsChildren } = ancestorsChildrenData;
 
-    // flatten ancestors
-    let ancestors: ItemNode[] = [];
+    const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
+    const rootNode = new ItemNode(rootPage);
 
-    if (initialNode.children.length === 0) { // when showing top page
-      ancestors = [initialNode];
-    }
-    else {
-      let currentNode = initialNode;
-      while (currentNode.hasChildren() && currentNode?.children?.[0] != null) {
-        ancestors.push(currentNode);
-        const child = currentNode.children[0];
-        currentNode = child;
-      }
-    }
-
-    // update children
-    ancestors.forEach((node) => {
-      const childPages = ancestorsChildren[node.page.path as string];
-      node.children = ItemNode.generateNodesFromPages(childPages);
-    });
+    initialNode = generateInitialNodeAfterResponse(ancestorsChildren, rootNode);
   }
 
   const isOpen = true;
@@ -86,10 +98,6 @@ const ItemsTree: FC = () => {
     </>
   );
 };
-
-/*
- * ItemsTree wrapper
- */
 
 
 export default ItemsTree;

@@ -84,20 +84,15 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return ['/'];
+  if (isTopPage(path)) {
+    return ancestorPaths;
+  }
 
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
   return collectAncestorPaths(parentPath, ancestorPaths);
 };
 
-const collectAncestorPathsExcludingTop = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return ancestorPaths;
-
-  const parentPath = nodePath.dirname(path);
-  ancestorPaths.push(parentPath);
-  return collectAncestorPaths(parentPath, ancestorPaths);
-};
 
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
@@ -170,7 +165,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
     return parent._id;
   }
 
-  const ancestorPaths = collectAncestorPathsExcludingTop(path); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);
@@ -256,7 +251,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
     path = pathOrId;
   }
 
-  const ancestorPaths = collectAncestorPathsExcludingTop(path);
+  const ancestorPaths = collectAncestorPaths(path);
   ancestorPaths.push(path); // include target
 
   // Do not populate
@@ -297,13 +292,17 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 };
 
 schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
-  const ancestorPaths = collectAncestorPaths(path);
+  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path);
   const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
   // get pages at once
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
   await addViewerCondition(queryBuilder, user, userGroups);
-  const _pages = await queryBuilder.query.lean().exec();
+  const _pages = await queryBuilder
+    .addConditionToMinimizeDataForRendering()
+    .query
+    .lean()
+    .exec();
   const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
     if (page.path === path) {
       page.isTarget = true;
