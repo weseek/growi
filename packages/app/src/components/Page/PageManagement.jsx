@@ -176,6 +176,7 @@ const PageManagement = (props) => {
          TASK : https://estoc.weseek.co.jp/redmine/issues/80789
          */}
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
