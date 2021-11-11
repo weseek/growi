@@ -214,7 +214,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
 
   return (
     <div className="py-4 px-5">
-      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
+      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.growi_commands')}</p>
       <div className="row d-flex flex-column align-items-center">
         <div className="col-8">
           <div className="custom-control custom-checkbox">

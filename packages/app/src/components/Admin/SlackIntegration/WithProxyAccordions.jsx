@@ -340,7 +340,7 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'manage_commands',
+      title: 'manage_permission',
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
@@ -385,7 +385,7 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
-      title: 'manage_commands',
+      title: 'manage_permission',
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
