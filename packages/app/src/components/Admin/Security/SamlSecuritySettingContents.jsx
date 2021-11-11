@@ -112,7 +112,7 @@ class SamlSecurityManagementContents extends React.Component {
               Basic Settings
             </h3>
 
-            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className={`table settings-table ${useOnlyEnvVars && 'use-only-env-vars'}`}>
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
@@ -222,7 +222,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping
             </h3>
 
-            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className="table settings-table">
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
@@ -428,7 +428,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
             </p>
 
-            <table className={`table settings-table ${useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className="table settings-table">
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
