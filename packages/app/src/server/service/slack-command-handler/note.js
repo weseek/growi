@@ -15,12 +15,12 @@ module.exports = (crowi) => {
   const conversationsSelectElement = {
     action_id: 'conversation',
     type: 'conversations_select',
-    response_url_enabled: true,
     default_to_current_conversation: true,
   };
 
   handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await respondUtil.respond({
+      text: 'Take a note on GROWI',
       blocks: [
         markdownHeaderBlock('Take a note on GROWI'),
         inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
@@ -33,6 +33,10 @@ module.exports = (crowi) => {
 
       ],
     });
+  };
+
+  handler.cancel = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
+    await respondUtil.deleteOriginal();
   };
 
   handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
