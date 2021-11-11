@@ -3,6 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import toastr from 'toastr';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -12,6 +13,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import DeletePageListModal from './SearchPage/DeletePageListModal';
 
 import { CheckboxType } from '../interfaces/search';
 
@@ -45,6 +47,9 @@ class SearchPage extends React.Component {
       excludeUsersHome: true,
       excludeTrash: true,
       checkboxState: CheckboxType.NONE_CHECKED,
+      isDeleteConfirmModalShown: false,
+      errorMessageForDeleting: '',
+      isDeleteCompletely: false,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -55,6 +60,9 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
+    this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
 
   componentDidMount() {
@@ -231,13 +239,26 @@ class SearchPage extends React.Component {
     this.updateCheckboxState();
   };
 
-  deleteSelectedPages() {
+  showDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({ isDeleteConfirmModalShown: false });
+  }
+
+  toggleDeleteCompletely() {
+    this.setState({ isDeleteCompletely: true });
+  }
+
+  async deleteSelectedPages() {
+    const deleteCompletely = this.state.isDeleteCompletely;
     Promise.all(Array.from(this.state.selectedPages).map((page) => {
       return new Promise((resolve, reject) => {
         const pageId = page._id;
         const revisionId = page.revision._id;
 
-        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: true })
+        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
           .then((res) => {
             if (res.ok) {
               this.state.selectedPages.delete(page);
@@ -248,11 +269,25 @@ class SearchPage extends React.Component {
 
           })
           .catch((err) => {
-            logger.error(err.message); // eslint-disable-line no-console
+            logger.error(err.message);
+            this.setState({ errorMessageForDeleting: err.message });
             return reject();
           });
       });
-    }));
+    }))
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        toastr.error(err, 'Error occured', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '3000',
+        });
+      });
   }
 
   renderSearchResultContent = () => {
@@ -292,7 +327,7 @@ class SearchPage extends React.Component {
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
         checkboxState={this.state.checkboxState}
-        onClickDeleteButton={this.deleteSelectedPages}
+        onClickDeleteButton={this.showDeleteConfirmModal}
       >
       </SearchControl>
     );
@@ -309,6 +344,15 @@ class SearchPage extends React.Component {
           searchingKeyword={this.state.searchedKeyword}
         >
         </SearchPageLayout>
+        <DeletePageListModal
+          isShown={this.state.isDeleteConfirmModalShown}
+          pages={Array.from(this.state.selectedPages)}
+          errorMessage={this.state.errorMessageForDeleting}
+          cancel={this.closeDeleteConfirmModal}
+          confirmedToDelete={this.deleteSelectedPages}
+          isDeleteCompletely={this.state.isDeleteCompletely}
+          toggleDeleteCompletely={this.toggleDeleteCompletely}
+        />
       </div>
     );
   }
