@@ -1,8 +1,7 @@
 import React, { useCallback, useState, FC } from 'react';
 
 import { ItemNode } from './ItemNode';
-import { ChildrenResult } from '../../../interfaces/page-listing-results';
-import { apiv3Get } from '../../../client/util/apiv3-client';
+import { useSWRxPageChildren } from '../../../stores/page-listing';
 
 
 interface ItemProps {
@@ -11,32 +10,31 @@ interface ItemProps {
 }
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
-  const { itemNode, isOpen = false } = props;
+  const { itemNode, isOpen: _isOpen = false } = props;
 
   const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
+
+  const [isOpen, setIsOpen] = useState(_isOpen);
+
+  const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
 
   const onClickLoadChildren = useCallback(async() => {
-    const endpoint = `/page-listing/children?id=${page._id}`;
-    try {
-      const data = await apiv3Get<ChildrenResult>(endpoint).then((response) => {
-        return {
-          children: response.data.children,
-        };
-      });
+    setIsOpen(!isOpen);
+  }, [isOpen]);
 
-      const { children } = data;
-      setCurrentChildren(ItemNode.generateNodesFromPages(children));
-    }
-    catch (err) {
-      // TODO: toastErr or something
-    }
-  }, [page]);
+  /*
+   * When swr fetch succeeded
+   */
+  if (isOpen && error == null && data != null) {
+    const { children } = data;
+    itemNode.children = ItemNode.generateNodesFromPages(children);
+  }
 
   // make sure itemNode.children and currentChildren are synced
   if (children.length > currentChildren.length) {
