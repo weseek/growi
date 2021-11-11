@@ -74,7 +74,7 @@ type Props = {
 const SearchResultListItem: FC<Props> = (props:Props) => {
 
   const {
-    // todo: refactoring variable name to clear what changed - onClickInvoked, onChangedInvoked
+    // todo: refactoring variable name to clear what changed
     page, isSelected, onClickInvoked, onChangedInvoked, isChecked,
   } = props;
 
