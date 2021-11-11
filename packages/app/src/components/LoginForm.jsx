@@ -157,10 +157,8 @@ class LoginForm extends React.Component {
     } = this.props;
 
     const { isMailerSetup } = appContainer.config;
-    const allowEmailAuthentication = (isEmailAuthenticationEnabled === true && isMailerSetup === true);
-
     let registerAction = '/register';
-    if (allowEmailAuthentication === true) {
+    if (isEmailAuthenticationEnabled === true) {
       registerAction = '/user-activation/register';
     }
 
@@ -173,9 +171,15 @@ class LoginForm extends React.Component {
             {t('page_register.notice.restricted_defail')}
           </p>
         )}
+        { (!isMailerSetup && isEmailAuthenticationEnabled) === true && (
+          <p className="alert alert-danger">
+            <span>{t('security_setting.Local.please_enable_mailer')}</span>
+          </p>
+        )}
+
         <form role="form" action={registerAction} method="post" id="register-form">
 
-          {allowEmailAuthentication === false && (
+          {isEmailAuthenticationEnabled === false && (
             <div>
               <div className="input-group" id="input-group-username">
                 <div className="input-group-prepend">
@@ -230,7 +234,7 @@ class LoginForm extends React.Component {
             </>
           )}
 
-          {allowEmailAuthentication === false && (
+          {isEmailAuthenticationEnabled === false && (
             <div>
               <div className="input-group">
                 <div className="input-group-prepend">
