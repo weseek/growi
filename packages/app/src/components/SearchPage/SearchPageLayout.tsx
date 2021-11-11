@@ -19,7 +19,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   return (
     <div className="content-main">
       <div className="search-result row" id="search-result">
-        <div className="col-lg-6  page-list border boder-gray search-result-list pr-0" id="search-result-list">
+        <div className="col-lg-6  page-list border boder-gray search-result-list px-0" id="search-result-list">
 
           <nav><SearchControl></SearchControl></nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
@@ -33,9 +33,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
           </div>
         </div>
         <div className="col-lg-6 d-none d-lg-block search-result-content">
-          <div className="row">
-            <SearchResultContent></SearchResultContent>
-          </div>
+          <SearchResultContent></SearchResultContent>
         </div>
       </div>
     </div>

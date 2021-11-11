@@ -48,22 +48,22 @@ const SearchControl: FC <Props> = (props: Props) => {
 
   return (
     <>
-      <div className="search-page-nav row py-3 align-items-center">
-        <div className="col-8">
+      <div className="search-page-nav d-flex py-3 align-items-center">
+        <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
             keyword={props.searchingKeyword}
             appContainer={props.appContainer}
             onSearchFormChanged={props.onSearchInvoked}
           />
         </div>
-        <div className="col-4">
+        <div className="mr-4">
           {/* TODO: replace the following button */}
           <button type="button">related pages</button>
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="row py-3 border-bottom border-gray">
-        <div className="col-3">
+      <div className="d-flex align-items-cente py-3 border-bottom border-gray">
+        <div className="d-flex mr-auto ml-3">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
             checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
@@ -71,26 +71,27 @@ const SearchControl: FC <Props> = (props: Props) => {
             onCheckInvoked={onCheckAllPagesInvoked}
           />
         </div>
-        <div className="col-5"></div>
-        <div className="col-2 d-flex align-items-center border border-gray">
-          <label className="my-0 mr-2" htmlFor="flexCheckDefault">
-            {t('Include Subordinated Target Page', { target: '/user' })}
-          </label>
-          <input
-            type="checkbox"
-            id="flexCheckDefault"
-            onClick={() => onExcludeUsersHome()}
-          />
-        </div>
-        <div className="col-2 d-flex align-items-center border border-gray">
-          <label className="my-0 mr-2" htmlFor="flexCheckChecked">
-            {t('Include Subordinated Target Page', { target: '/trash' })}
-          </label>
-          <input
-            type="checkbox"
-            id="flexCheckChecked"
-            onClick={() => onExcludeTrash()}
-          />
+        <div className="d-flex align-items-center mr-3">
+          <div className="border border-gray px-3 py-2 mr-3">
+            <label className="my-0 mr-2" htmlFor="flexCheckDefault">
+              {t('Include Subordinated Target Page', { target: '/user' })}
+            </label>
+            <input
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => onExcludeUsersHome()}
+            />
+          </div>
+          <div className="border border-gray px-3 py-2">
+            <label className="my-0 mr-2" htmlFor="flexCheckChecked">
+              {t('Include Subordinated Target Page', { target: '/trash' })}
+            </label>
+            <input
+              type="checkbox"
+              id="flexCheckChecked"
+              onClick={() => onExcludeTrash()}
+            />
+          </div>
         </div>
       </div>
     </>

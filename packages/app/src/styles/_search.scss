@@ -2,33 +2,18 @@
   background-color: #f7f7f7;
 }
 
-.grw-search-form-in-search-result-page {
-  .btn-group-submit-search {
-    position: absolute;
-    top: 1px;
-    right: 0;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-  }
+.search-group-submit-button {
+  position: absolute;
+  top: 0;
+  right: 0;
 
-  input {
-    border-radius: 16rem !important;
-  }
+  z-index: 3;
 
-  button {
-    &:focus {
-      box-shadow: none !important;
-    }
-  }
-}
-
-.search-listpage-icon {
-  font-size: 16px;
-  color: $gray-400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
 }
 
 .search-listpage-clear {
@@ -130,18 +115,29 @@
   }
 
   .btn-group-submit-search {
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    z-index: 3;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+    @extend .search-group-submit-button;
   }
+}
+
+.grw-search-form-in-search-result-page {
+  .btn-group-submit-search {
+    @extend .search-group-submit-button;
+  }
+
+  input {
+    border-radius: 16rem !important;
+  }
+
+  button {
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+.search-listpage-icon {
+  font-size: 16px;
+  color: $gray-400;
 }
 
 // layout
@@ -189,6 +185,7 @@
     top: 0px;
     height: 100vh;
     overflow-y: scroll;
+    // TODO: remove vendere prefix css
     /* for IE, Edge */
     -ms-overflow-style: none;
     /* for Firefox */
