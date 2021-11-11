@@ -7,10 +7,10 @@ import SearchResultContentSubNavigation from './SearchResultContentSubNavigation
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  selectedPage : null | any,
+  focusedPage : any,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
-  const page = props.selectedPage;
+  const page = props.focusedPage;
   if (page == null) return null;
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
