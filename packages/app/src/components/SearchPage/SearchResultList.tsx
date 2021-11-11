@@ -39,6 +39,18 @@ const SearchResultList: FC<Props> = (props:Props) => {
     setIsPageRenameModalShown(true);
   }
 
+  // TODO: Change the process that runs after the rename process is complete.
+  function redirectToRenamedPage(page, options) {
+    const { isRenameRedirect = false } = options;
+    const url = new URL(page.path, 'https://dummy');
+    url.searchParams.append('renamedFrom', controlTargetPage.path);
+    if (isRenameRedirect) {
+      url.searchParams.append('withRedirect', 'true');
+    }
+
+    window.location.href = `${url.pathname}${url.search}`;
+  }
+
   function renderModals() {
 
     return (
@@ -46,6 +58,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={() => { setIsPageRenameModalShown(false) }}
+          onRenameCompleted={redirectToRenamedPage}
           pageId={controlTargetPage._id}
           revisionId={controlTargetPage.revision}
           path={controlTargetPage.path}

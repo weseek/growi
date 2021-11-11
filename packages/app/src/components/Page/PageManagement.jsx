@@ -157,6 +157,17 @@ const PageManagement = (props) => {
     );
   }
 
+  function redirectToRenamedPage(page, options) {
+    const { isRenameRedirect = false } = options;
+    const url = new URL(page.path, 'https://dummy');
+    url.searchParams.append('renamedFrom', path);
+    if (isRenameRedirect) {
+      url.searchParams.append('withRedirect', true);
+    }
+
+    window.location.href = `${url.pathname}${url.search}`;
+  }
+
   function renderModals() {
     if (currentUser == null) {
       return null;
@@ -167,6 +178,7 @@ const PageManagement = (props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
+          onRenameCompleted={redirectToRenamedPage}
           pageId={pageId}
           revisionId={revisionId}
           path={path}

@@ -128,14 +128,15 @@ const PageRenameModal = (props) => {
         path,
       });
 
-      const { page } = response.data;
-      const url = new URL(page.path, 'https://dummy');
-      url.searchParams.append('renamedFrom', path);
-      if (isRenameRedirect) {
-        url.searchParams.append('withRedirect', true);
+      if (props.onRenameCompleted != null) {
+        const { page } = response.data;
+        const options = {
+          isRecursively: isRenameRecursively,
+          isRenameRedirect,
+          isRemainMetadata,
+        };
+        props.onRenameCompleted(page, options);
       }
-
-      window.location.href = `${url.pathname}${url.search}`;
     }
     catch (err) {
       setErrs(err);
@@ -265,6 +266,7 @@ PageRenameModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onRenameCompleted: PropTypes.func.isRequired,
 
   pageId: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
