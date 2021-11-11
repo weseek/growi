@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+﻿import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
@@ -17,7 +17,6 @@ type Props = {
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
   onClickInvoked?: () => void,
-  onClickAllSelectButton?: () => void,
   onClickDeleteButton?: () => void,
 }
 
@@ -38,11 +37,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     if (props.onExcludeTrash != null) {
       props.onExcludeTrash();
     }
-  };
-
-  const onCheckAllPagesInvoked = () => {
-    if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
-    else { props.onClickInvoked() }
   };
 
   return (

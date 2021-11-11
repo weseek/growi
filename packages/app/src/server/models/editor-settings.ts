@@ -32,7 +32,7 @@ const textlintSettingsSchema = new Schema<ITextlintSettings>({
   },
 });
 
-const editorSettingsSchema = new Schema<IEditorSettings>({
+const editorSettingsSchema = new Schema<EditorSettingsDocument, EditorSettingsModel>({
   userId: { type: String },
   textlintSettings: textlintSettingsSchema,
 });

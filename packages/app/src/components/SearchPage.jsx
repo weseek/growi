@@ -1,4 +1,4 @@
-// This is the root component for #search-page
+﻿// This is the root component for #search-page
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -41,7 +41,7 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 3, // change to an appropriate limit number
+      pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
       checkboxState: CheckboxType.NONE_CHECKED,
@@ -55,7 +55,6 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
-    this.onClickAllSelectButton = this.onClickAllSelectButton.bind(this);
   }
 
   componentDidMount() {
@@ -83,10 +82,6 @@ class SearchPage extends React.Component {
 
   onExcludeTrash() {
     this.setState({ excludeTrash: !this.state.excludeTrash });
-  }
-
-  onClickAllSelectButton(nextCheckboxState) {
-    this.setState({ checkboxState: nextCheckboxState });
   }
 
   changeURL(keyword, refreshHash) {
@@ -195,19 +190,19 @@ class SearchPage extends React.Component {
     });
   }
 
-  updateCheckboxState = () => {
-    let currentCheckboxState;
-    switch (this.state.selectedPages.size) {
+  getCheckboxType = (selectedPagesCount) => {
+    switch (selectedPagesCount) {
       case 0:
-        currentCheckboxState = CheckboxType.NONE_CHECKED;
-        break;
+        return CheckboxType.NONE_CHECKED;
       case this.state.searchedPages.length:
-        currentCheckboxState = CheckboxType.ALL_CHECKED;
-        break;
+        return CheckboxType.ALL_CHECKED;
       default:
-        currentCheckboxState = CheckboxType.INDETERMINATE;
-        break;
+        return CheckboxType.INDETERMINATE;
     }
+  }
+
+  updateCheckboxState = () => {
+    const currentCheckboxState = this.getCheckboxType(this.state.selectedPages.size);
     this.setState({ checkboxState: currentCheckboxState });
   }
 
@@ -224,12 +219,15 @@ class SearchPage extends React.Component {
   toggleAllCheckBox = () => {
     if (this.state.selectedPages.size === this.state.searchedPages.length) {
       this.state.selectedPages.clear();
+      // Force a render to tell React that the State has been changed by the Set class method
+      this.forceUpdate();
+      return;
     }
-    else {
-      this.state.searchedPages.forEach((page) => {
-        this.state.selectedPages.add(page);
-      });
-    }
+    this.state.searchedPages.forEach((page) => {
+      this.state.selectedPages.add(page);
+    });
+    // Force a render to tell React that the State has been changed by the Set class method
+    this.forceUpdate();
     this.updateCheckboxState();
   };
 
@@ -294,7 +292,6 @@ class SearchPage extends React.Component {
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
         checkboxState={this.state.checkboxState}
-        onClickAllSelectButton={this.onClickAllSelectButton}
         onClickDeleteButton={this.deleteSelectedPages}
       >
       </SearchControl>
