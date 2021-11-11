@@ -33,12 +33,15 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {}
 
+type TargetAndAncestorsResult = {
+  targetAndAncestors: PageDocument[]
+  rootPage: PageDocument
+}
 export interface PageModel extends Model<PageDocument> {
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
-  findSiblingsByPathAndViewer(path: string | null, user, userGroups?): Promise<PageDocument[]>
-  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<PageDocument[]>
+  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
 }
@@ -92,6 +95,7 @@ const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): strin
   return collectAncestorPaths(parentPath, ancestorPaths);
 };
 
+
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
 };
@@ -99,14 +103,27 @@ const hasSlash = (str: string): boolean => {
 /*
  * Generate RE2 instance for one level lower path
  */
-const generateChildrenRegExp = (path: string): RE2 => {
-  // https://regex101.com/r/iu1vYF/1
-  // ex. / OR /any_level1
-  if (isTopPage(path)) return new RE2(/^\/[^\\/]*$/);
+const generateChildrenRE2 = (path: string): RE2 => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RE2(/^\/[^/]+$/);
 
   // https://regex101.com/r/mrDJrx/1
   // ex. /parent/any_child OR /any_level1
   return new RE2(`^${path}(\\/[^/]+)\\/?$`);
+};
+
+/*
+ * Generate RegExp instance for one level lower path
+ */
+const generateChildrenRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /*
@@ -218,30 +235,12 @@ schema.statics.findByPathAndViewer = async function(
   return queryBuilder.query.exec();
 };
 
-/*
- * Find the siblings including the target page. When top page, it returns /any_level1 pages
- */
-schema.statics.findSiblingsByPathAndViewer = async function(path: string | null, user, userGroups): Promise<PageDocument[]> {
-  if (path == null) {
-    throw new Error('path is required.');
-  }
-
-  const _parentPath = nodePath.dirname(path);
-  const parentPath = isTopPage(_parentPath) ? '' : _parentPath;
-
-  const regexp = generateChildrenRegExp(parentPath);
-
-  const queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source, $options: regexp.flags } }));
-  await addViewerCondition(queryBuilder, user, userGroups);
-
-  return queryBuilder.query.lean().exec();
-};
 
 /*
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<PageDocument[]> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -259,7 +258,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
-  const _ancestors: PageDocument[] = await queryBuilder
+  const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
@@ -269,10 +268,11 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // no same path pages
   const ancestorsMap = new Map<string, PageDocument>();
-  _ancestors.forEach(page => ancestorsMap.set(page.path, page));
-  const ancestors = Array.from(ancestorsMap.values());
+  _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
+  const targetAndAncestors = Array.from(ancestorsMap.values());
+  const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
 
-  return ancestors;
+  return { targetAndAncestors, rootPage };
 };
 
 /*
@@ -282,7 +282,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   let queryBuilder: PageQueryBuilder;
   if (hasSlash(parentPathOrId)) {
     const path = parentPathOrId;
-    const regexp = generateChildrenRegExp(path);
+    const regexp = generateChildrenRE2(path);
     queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }));
   }
   else {
@@ -294,7 +294,34 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   return queryBuilder.query.lean().exec();
 };
 
-// TODO: implement findAncestorsChildrenByPathAndViewer using lean()
+schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
+  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path);
+  const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+
+  // get pages at once
+  const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
+  await addViewerCondition(queryBuilder, user, userGroups);
+  const _pages = await queryBuilder
+    .addConditionToMinimizeDataForRendering()
+    .query
+    .lean()
+    .exec();
+  // mark target
+  const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
+    if (page.path === path) {
+      page.isTarget = true;
+    }
+    return page;
+  });
+
+  // make map
+  const pathToChildren: Record<string, PageDocument[]> = {};
+  ancestorPaths.forEach((path) => {
+    pathToChildren[path] = pages.filter(page => nodePath.dirname(page.path) === path);
+  });
+
+  return pathToChildren;
+};
 
 
 /*

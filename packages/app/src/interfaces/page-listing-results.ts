@@ -7,4 +7,7 @@ export interface AncestorsChildrenResult {
   ancestorsChildren: Record<ParentPath, Partial<IPage & HasObjectId>[]>
 }
 
-export type TargetAndAncestors = Partial<IPage & HasObjectId>[];
+export type TargetAndAncestors = {
+  targetAndAncestors: Partial<IPage & HasObjectId>[]
+  rootPage: Partial<IPage & HasObjectId>,
+}

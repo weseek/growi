@@ -1,27 +1,26 @@
-import useSWR, {
-  Key, SWRResponse, mutate, useSWRConfig,
+import {
+  Key, SWRConfiguration, SWRResponse, mutate,
 } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { Fetcher } from 'swr/dist/types';
 
 
-export const useStaticSWR = <Data, Error>(
-  key: Key,
-  updateData?: Data | Fetcher<Data>,
-  initialData?: Data | Fetcher<Data>,
-): SWRResponse<Data, Error> => {
-  const { cache } = useSWRConfig();
+export function useStaticSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
+export function useStaticSWR<Data, Error>(key: Key, data: Data | Fetcher<Data> | null): SWRResponse<Data, Error>;
+export function useStaticSWR<Data, Error>(key: Key, data: Data | Fetcher<Data> | null,
+  configuration: SWRConfiguration<Data, Error> | undefined): SWRResponse<Data, Error>;
 
-  if (updateData == null) {
-    if (cache.get(key) == null && initialData != null) {
-      mutate(key, initialData, false);
-    }
-  }
-  else {
-    mutate(key, updateData);
+export function useStaticSWR<Data, Error>(
+    ...args: readonly [Key]
+    | readonly [Key, Data | Fetcher<Data> | null]
+    | readonly [Key, Data | Fetcher<Data> | null, SWRConfiguration<Data, Error> | undefined]
+): SWRResponse<Data, Error> {
+  const [key, fetcher, configuration] = args;
+
+  const fetcherFixed = fetcher || configuration?.fetcher;
+  if (fetcherFixed != null) {
+    mutate(key, fetcherFixed);
   }
 
-  return useSWR(key, null, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
-};
+  return useSWRImmutable(key, null, configuration);
+}
