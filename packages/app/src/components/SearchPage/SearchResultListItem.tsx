@@ -1,4 +1,7 @@
 import React, { FC } from 'react';
+
+import Clamp from 'react-multiline-clamp';
+
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
@@ -85,7 +88,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
   return (
-    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
@@ -139,13 +142,19 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <PageItemControl page={page} />
               </div>
             </div>
+            <div className="my-2">
+              <Clamp
+                lines={2}
+              >
+                {page.snippet
+                  ? <div className="mt-1">page.snippet</div>
+                  : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+                }
+              </Clamp>
+            </div>
           </div>
         </div>
         {/* TODO: adjust snippet position */}
-        {page.snippet
-          ? <div className="mt-1">page.snippet</div>
-          : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
-        }
       </a>
     </li>
   );
