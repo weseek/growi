@@ -17214,6 +17214,11 @@ react-motion@^0.5.0, react-motion@^0.5.2:
     prop-types "^15.5.8"
     raf "^3.1.0"
 
+react-multiline-clamp@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-multiline-clamp/-/react-multiline-clamp-2.0.0.tgz#913a2092368ef1b52c1c79364d506ba4af27e019"
+  integrity sha512-iPm3HxFD6LO63lE5ZnThiqs+6A3c+LW3WbsEM0oa0iNTa0qN4SKx/LK/6ZToSmXundEcQXBFVNzKDvgmExawTw==
+
 react-node-resolver@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"

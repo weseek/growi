@@ -92,15 +92,12 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </button> */}
 
             </div>
-            <div
-              className="mt-1 mb-2"
-            >
+            <div className="my-2">
               <Clamp
                 lines={2}
               >
                 {/* eslint-disable-next-line react/no-danger */}
-                <div dangerouslySetInnerHTML={{ __html: snippet }}>
-                </div>
+                <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
               </Clamp>
             </div>
           </div>
