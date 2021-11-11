@@ -62,7 +62,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="d-flex align-items-cente py-3 border-bottom border-gray">
+      <div className="d-flex align-items-center py-3 border-bottom border-gray">
         <div className="d-flex mr-auto ml-3">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
