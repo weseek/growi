@@ -76,9 +76,9 @@ const PageRenameModal = (props) => {
   }, [props.isOpen, updateSubordinatedList]);
 
 
-  const checkExistPaths = async(newParentPath) => {
+  const checkExistPaths = async(newParentPath, fromPath) => {
     try {
-      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get('/page/exist-paths', { fromPath, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -94,10 +94,16 @@ const PageRenameModal = (props) => {
   );
 
   useEffect(() => {
+    setPageNameInput(path);
+  }, [path]);
+
+  useEffect(() => {
     if (pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+      checkExistPathsDebounce(pageNameInput, path, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  // "path" must not be checked.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
