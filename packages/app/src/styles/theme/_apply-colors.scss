@@ -19,7 +19,7 @@ $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 $bordercolor-search-item-left-active: $primary;
 $bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%);
-$svg-fill-color: #3f474e;
+$color-pagelist-meta: $gray-500 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -602,8 +602,12 @@ body.pathname-sidebar {
         }
       }
       .page-list-meta {
+        color: $color-pagelist-meta;
         svg {
-          fill: $svg-fill-color;
+          fill: $color-pagelist-meta;
+        }
+        > span {
+          margin-right: 10px;
         }
       }
     }
