@@ -88,13 +88,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
         className="d-block pt-3"
         href={pageId}
         onClick={() => {
-          try {
-            if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-            onClickInvoked(page._id);
-          }
-          catch (error) {
-            logger.error(error);
-          }
+          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
+          else { onClickInvoked(page._id) }
         }}
       >
         <div className="d-flex">
@@ -105,13 +100,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               type="checkbox"
               id="flexCheckDefault"
               onClick={() => {
-                try {
-                  if (onChangedInvoked == null) { throw new Error('onChangedInvoked is null') }
-                  onChangedInvoked(page);
-                }
-                catch (error) {
-                  logger.error(error);
-                }
+                if (onChangedInvoked == null) { logger.error('onChangedInvoked is null') }
+                else { onChangedInvoked(page) }
               }}
             />
           </div>
