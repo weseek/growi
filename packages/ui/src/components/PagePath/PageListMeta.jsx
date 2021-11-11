@@ -42,7 +42,7 @@ export class PageListMeta extends React.Component {
     if (page.seenUserCount > 0) {
       seenUserCount = (
         <span>
-          <span className="footstamp-icon"><FootstampIcon /></span>
+          <i className="footstamp-icon"><FootstampIcon /></i>
           {page.seenUsers.length}
         </span>
       );
