@@ -1,4 +1,4 @@
-﻿// This is the root component for #search-page
+// This is the root component for #search-page
 
 import React from 'react';
 import PropTypes from 'prop-types';
