@@ -174,6 +174,8 @@ const PageManagement = (props) => {
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          pageId={pageId}
+          path={path}
         />
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
