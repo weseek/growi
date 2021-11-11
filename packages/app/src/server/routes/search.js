@@ -158,6 +158,7 @@ module.exports = function(crowi, app) {
           return page.id === data._id;
         });
         page._doc.tags = data._source.tag_names;
+        page._doc.bookmarkCount = data._source.bookmark_count || 0;
         page._doc.elasticSearchResult = data.elasticSearchResult;
         return page;
       });
@@ -169,7 +170,7 @@ module.exports = function(crowi, app) {
           if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
             page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
           }
-          page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
+          // page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
           return page;
         })
         .sort((page1, page2) => {

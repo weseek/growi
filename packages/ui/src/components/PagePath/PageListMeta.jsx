@@ -37,6 +37,12 @@ export class PageListMeta extends React.Component {
       locked = <span><i className="icon-lock" /></span>;
     }
 
+    let bookmarkCount;
+    if (page.bookmarkCount.length > 0) {
+      bookmarkCount = <span><i className="icon-star" />{page.bookmarkCount}</span>;
+    }
+
+
     return (
       <span className="page-list-meta">
         {topLabel}
@@ -44,6 +50,7 @@ export class PageListMeta extends React.Component {
         {commentCount}
         {likerCount}
         {locked}
+        {bookmarkCount}
       </span>
     );
   }
