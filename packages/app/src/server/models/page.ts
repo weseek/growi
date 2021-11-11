@@ -84,9 +84,7 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) {
-    return ancestorPaths;
-  }
+  if (isTopPage(path)) return ancestorPaths;
 
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
@@ -303,6 +301,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
     .query
     .lean()
     .exec();
+  // mark target
   const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
     if (page.path === path) {
       page.isTarget = true;
