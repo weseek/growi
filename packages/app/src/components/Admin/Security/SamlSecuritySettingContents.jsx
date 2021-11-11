@@ -238,7 +238,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
@@ -266,7 +265,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapUsername}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
@@ -292,7 +290,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
@@ -318,7 +315,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
@@ -349,7 +345,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      readOnly={useOnlyEnvVars}
                       defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
@@ -453,7 +448,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       type="text"
                       defaultValue={adminSamlSecurityContainer.state.samlABLCRule || ''}
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
-                      readOnly={useOnlyEnvVars}
                     />
                     <div className="mt-2">
                       <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help1') }} />
