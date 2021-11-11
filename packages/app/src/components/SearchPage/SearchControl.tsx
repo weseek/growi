@@ -53,7 +53,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
           checkboxState={props.checkboxState}
-          onCheckInvoked={onCheckAllPagesInvoked}
+          onCheckInvoked={props.onClickInvoked}
           onClickDeleteButton={props.onClickDeleteButton}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
