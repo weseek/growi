@@ -69,7 +69,7 @@ export default (crowi: Crowi): Router => {
 
     try {
       const pages = await Page.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
-      return res.apiv3({ pages });
+      return res.apiv3({ children: pages });
     }
     catch (err) {
       logger.error('Error occurred while finding children.', err);

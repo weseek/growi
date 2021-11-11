@@ -1,7 +1,8 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState, FC } from 'react';
 
 import { ItemNode } from './ItemNode';
-import { useSWRxPageChildren } from '../../../stores/page-listing';
+import { ChildrenResult } from '../../../interfaces/page-listing-results';
+import { apiv3Get } from '../../../client/util/apiv3-client';
 
 
 interface ItemProps {
@@ -9,41 +10,47 @@ interface ItemProps {
   isOpen?: boolean
 }
 
-const Item = (props: ItemProps) => {
+const Item: FC<ItemProps> = (props: ItemProps) => {
   const { itemNode, isOpen = false } = props;
 
   const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
 
-  const [shouldFetch, setShouldFetch] = useState(false);
-  const { data, error } = useSWRxPageChildren(shouldFetch ? page._id : null);
-
   const hasChildren = useCallback((): boolean => {
-    return currentChildren != null && currentChildren?.length > 0;
+    return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
 
-  const onClickLoadChildren = useCallback(() => {
-    setShouldFetch(true);
-  }, []);
+  const onClickLoadChildren = useCallback(async() => {
+    const endpoint = `/page-listing/children?id=${page._id}`;
+    try {
+      const data = await apiv3Get<ChildrenResult>(endpoint).then((response) => {
+        return {
+          children: response.data.children,
+        };
+      });
 
-  if (error == null && data != null) {
-    const { children } = data;
-    setCurrentChildren(ItemNode.generateNodesFromPages(children));
-  }
+      const { children } = data;
+      setCurrentChildren(ItemNode.generateNodesFromPages(children));
+    }
+    catch (err) {
+      // TODO: toastErr or something
+    }
+  }, [page]);
 
-  if (page == null) {
-    return null;
+
+  // make sure itemNode.children and currentChildren are synced
+  if (children.length > currentChildren.length) {
+    setCurrentChildren(children);
   }
 
   // TODO: improve style
   const style = { margin: '10px', opacity: 1.0 };
   if (page.isTarget) style.opacity = 0.7;
 
-  console.log('すべて', hasChildren(), currentChildren, itemNode);
   return (
     <div style={style}>
-      <p>{page.path} <button type="button" onClick={onClickLoadChildren}>Load</button></p>
+      <p><button type="button" className="btn btn-light p-1" onClick={onClickLoadChildren}>Load</button>  {page.path}</p>
       {
         hasChildren() && currentChildren.map(node => (
           <Item

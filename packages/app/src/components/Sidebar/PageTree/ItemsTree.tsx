@@ -56,7 +56,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
  */
 const ItemsTree: FC = () => {
   // TODO: get from static SWR
-  const path = '/Sandbox/Mathematics';
+  const path = '/Sandbox';
 
   const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
