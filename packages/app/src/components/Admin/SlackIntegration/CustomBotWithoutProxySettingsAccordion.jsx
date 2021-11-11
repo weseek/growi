@@ -125,7 +125,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.manage_commands')}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.manage_permission')}</>}
       >
         <ManageCommandsProcessWithoutProxy
           commandPermission={commandPermission}

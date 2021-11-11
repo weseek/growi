@@ -262,7 +262,7 @@ module.exports = (crowi) => {
       // default event actions permission value
       const eventActionsPermission = {};
       defaultSupportedSlackEventActions.forEach((action) => {
-        eventActionsPermission[action] = true;
+        eventActionsPermission[action] = false;
       });
 
       const params = {
