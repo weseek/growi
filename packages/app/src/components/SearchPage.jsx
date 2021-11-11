@@ -198,7 +198,6 @@ class SearchPage extends React.Component {
 
   updateCheckboxState = () => {
     const currentCheckboxState = this.getCheckboxType(this.state.selectedPages.size);
-    console.log(currentCheckboxState);
     this.setState({ checkboxState: currentCheckboxState });
   }
 
