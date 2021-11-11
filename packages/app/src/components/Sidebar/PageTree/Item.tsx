@@ -40,7 +40,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   // make sure itemNode.children and currentChildren are synced
-  if (children.length > currentChildren.length) {
+  if (children?.length > currentChildren?.length) {
     setCurrentChildren(children);
   }
 
@@ -52,7 +52,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     <div style={style}>
       <p><button type="button" className="btn btn-light p-1" onClick={onClickLoadChildren}>Load</button>  {page.path}</p>
       {
-        hasChildren() && currentChildren.map(node => (
+        hasChildren() && currentChildren?.map(node => (
           <Item
             key={node.page._id}
             itemNode={node}
