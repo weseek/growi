@@ -146,7 +146,7 @@ export const completeRegistrationAction = (crowi) => {
 };
 
 // middleware to handle error
-export const handleHttpErrosMiddleware = (err, req, res, next) => {
+export const tokenErrorHandlerMiddeware = (err, req, res, next) => {
   if (err != null) {
     req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
     return res.redirect('/login#register');
