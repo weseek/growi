@@ -1,21 +1,64 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { ISearchedPage } from './SearchResultList';
+import PageRenameModal from '../PageRenameModal';
 
 import loggerFactory from '~/utils/logger';
+import { IRevisionHasId } from '~/interfaces/revision';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
-  page: ISearchedPage,
+  page: {
+    revision: IRevisionHasId
+  } & ISearchedPage,
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
+
+  const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
+
+  function openPageRenameModalHandler() {
+    setIsPageRenameModalShown(true);
+  }
+
+  function closePageRenameModalHandler() {
+    setIsPageRenameModalShown(false);
+  }
+
+  function renderModals() {
+
+    return (
+      <>
+        <PageRenameModal
+          isOpen={isPageRenameModalShown}
+          onClose={closePageRenameModalHandler}
+          pageId={page._id}
+          revisionId={page.revision._id}
+          path={page.path}
+        />
+        {/* <PageDuplicateModal
+          isOpen={isPageDuplicateModalShown}
+          onClose={closePageDuplicateModalHandler}
+          pageId={pageId}
+          path={path}
+        /> */}
+        {/* <PageDeleteModal
+          isOpen={isPageDeleteModalShown}
+          onClose={closePageDeleteModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
+          path={path}
+          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        /> */}
+      </>
+    );
+  }
 
   return (
     <>
@@ -54,17 +97,20 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
         <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
           <i className="icon-fw icon-docs"></i>{t('Duplicate')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+        <button className="dropdown-item" type="button" onClick={() => openPageRenameModalHandler()}>
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
       </div>
+      { renderModals() }
     </>
   );
 
 };
 
 type Props = {
-  page: ISearchedPage,
+  page: ISearchedPage & {
+    revision: IRevisionHasId
+  },
   isSelected: boolean,
   onClickInvoked?: (pageId: string) => void,
 }
