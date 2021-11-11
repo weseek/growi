@@ -810,16 +810,16 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const { field, term } = luceneRule;
-    const unescapeField = this.literalUnescape(field);
-    if (unescapeField === '<implicit>') {
+    const unescapedField = this.literalUnescape(field);
+    if (unescapedField === '<implicit>') {
       return attributes[term] != null;
     }
 
-    if (attributes[unescapeField] == null) {
+    if (attributes[unescapedField] == null) {
       return false;
     }
 
-    return attributes[unescapeField].includes(term);
+    return attributes[unescapedField].includes(term);
   }
 
   /**
