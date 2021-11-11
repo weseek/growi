@@ -684,7 +684,7 @@ export default class PageContainer extends Container {
 
   async resolveConflictAndReload(pageId, revisionId, markdown, optionsToSave) {
     await this.resolveConflict(pageId, revisionId, markdown, optionsToSave);
-    window.location.href = this.state.path;
+    window.location.reload();
   }
 
 }
