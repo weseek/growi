@@ -20,7 +20,7 @@ export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const isLoading = currentUser === undefined || currentPagePath === undefined;
 
   const key = isLoading ? null : 'isSharedUser';
-  const value = !isLoading && currentUser == null && pagePathUtils.isSharedPage(currentPagePath);
+  const value = !isLoading && currentUser == null && pagePathUtils.isSharedPage(currentPagePath as string);
 
   return useStaticSWR(key, value);
 };

@@ -1,4 +1,4 @@
-import { Breakpoint } from '~/interfaces/breakpoints';
+import { Breakpoint } from '../interfaces/breakpoints';
 
 
 export const addBreakpointListener = (
