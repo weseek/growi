@@ -37,7 +37,7 @@ const PageRenameModal = (props) => {
   const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
-  const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
+  const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
   const [subordinatedError] = useState(null);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
@@ -53,8 +53,8 @@ const PageRenameModal = (props) => {
     SetIsRenameRedirect(!isRenameRedirect);
   }
 
-  function changeIsRenameMetadataHandler() {
-    SetIsRenameMetadata(!isRenameMetadata);
+  function changeIsRemainMetadataHandler() {
+    SetIsRemainMetadata(!isRemainMetadata);
   }
 
   const updateSubordinatedList = useCallback(async() => {
@@ -115,10 +115,10 @@ const PageRenameModal = (props) => {
       const response = await apiv3Put('/pages/rename', {
         revisionId,
         pageId,
-        isRenameRecursively,
+        isRecursively: isRenameRecursively,
         isRenameRedirect,
-        isRenameMetadata,
-        pageNameInput,
+        isRemainMetadata,
+        newPagePath: pageNameInput,
         path,
       });
 
@@ -218,12 +218,12 @@ const PageRenameModal = (props) => {
           <input
             className="custom-control-input"
             name="remain_metadata"
-            id="cbRenameMetadata"
+            id="cbRemainMetadata"
             type="checkbox"
-            checked={isRenameMetadata}
-            onChange={changeIsRenameMetadataHandler}
+            checked={isRemainMetadata}
+            onChange={changeIsRemainMetadataHandler}
           />
-          <label className="custom-control-label" htmlFor="cbRenameMetadata">
+          <label className="custom-control-label" htmlFor="cbRemainMetadata">
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
