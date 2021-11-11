@@ -448,22 +448,29 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     { t('security_setting.form_item_name.ABLCRule') }
                   </th>
                   <td>
-                    <input
+                    <textarea
                       className="form-control"
                       type="text"
                       defaultValue={adminSamlSecurityContainer.state.samlABLCRule || ''}
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />
-                    <p className="form-text text-muted">
-                      <small>
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example') }} />
-                      </small>
-                    </p>
+                    <div className="mt-2">
+                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help1') }} />
+                      <p>
+                        <a data-toggle="collapse" href="#ablchelp" role="button" aria-expanded="false" aria-controls="ablchelp">
+                          <i className="icon-question icon-fw"></i> Help
+                        </a>
+                      </p>
+                      <div id="ablchelp" className="collapse card card-body text-muted small">
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help2') }} />
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
+                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                      </div>
+                    </div>
                   </td>
                   <td>
-                    <input
+                    <textarea
                       className="form-control"
                       type="text"
                       value={adminSamlSecurityContainer.state.envABLCRule || ''}
