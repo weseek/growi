@@ -84,9 +84,7 @@ schema.plugin(uniqueValidator);
  * Methods
  */
 const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) {
-    return ancestorPaths;
-  }
+  if (isTopPage(path)) return ancestorPaths;
 
   const parentPath = nodePath.dirname(path);
   ancestorPaths.push(parentPath);
