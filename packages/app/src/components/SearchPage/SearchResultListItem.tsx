@@ -71,7 +71,6 @@ type Props = {
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-
   const { page, isSelected } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
