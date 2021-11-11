@@ -247,7 +247,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };

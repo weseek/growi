@@ -1,12 +1,10 @@
 import mongoose, {
-  Model, Document, ConnectionOptions, Schema,
+  Model, Document, Schema,
 } from 'mongoose';
 
 export const initMongooseGlobalSettings = (): void => {
-  // supress deprecation warnings
-  // see: https://mongoosejs.com/docs/deprecations.html
-  mongoose.set('useFindAndModify', false);
-  mongoose.set('useCreateIndex', true);
+  // No More Deprecation Warning Options
+  // see: https://mongoosejs.com/docs/migrating_to_6.html#the-aspromise-method-for-connections
 };
 
 export const getMongoUri = (): string => {
@@ -35,7 +33,7 @@ export const getOrCreateModel = <Interface, Method>(modelName: string, schema: S
 
 // supress deprecation warnings
 // see: https://mongoosejs.com/docs/deprecations.html
-export const mongoOptions: ConnectionOptions = {
+export const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };

@@ -434,8 +434,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
-      .execPopulate();
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
@@ -443,7 +442,7 @@ module.exports = function(crowi) {
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    return this.populate('revision').execPopulate();
+    return this.populate('revision');
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
