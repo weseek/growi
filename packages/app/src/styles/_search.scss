@@ -245,6 +245,10 @@
   }
 }
 
+.search-page-item {
+  height: 130px;
+}
+
 @include media-breakpoint-down(sm) {
   .grw-search-table {
     th {

@@ -36,7 +36,7 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 3, // change to an appropriate limit number
+      pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
       checkboxState: CheckboxType.NONE_CHECKED,
