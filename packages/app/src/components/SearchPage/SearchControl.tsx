@@ -18,6 +18,7 @@ type Props = {
   onExcludeTrash?: () => void,
   onClickInvoked?: () => void,
   onClickAllSelectButton?: () => void,
+  onClickDeleteButton?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -39,12 +40,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
-  const onDeleteSelectedPageHandler = () => {
-    console.log('onDeleteSelectedPageHandler is called');
-    // TODO: implement this function to delete selected pages.
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-  };
-
   const onCheckAllPagesInvoked = () => {
     if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
     else { props.onClickInvoked() }
@@ -64,8 +59,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
           checkboxState={props.checkboxState}
-          onClickInvoked={onDeleteSelectedPageHandler}
           onCheckInvoked={onCheckAllPagesInvoked}
+          onClickDeleteButton={props.onClickDeleteButton}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">

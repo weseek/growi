@@ -7,14 +7,14 @@ const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
   checkboxState: CheckboxType,
-  onClickInvoked?: () => void,
+  onClickDeleteButton?: () => void,
   onCheckInvoked?: () => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    checkboxState, onClickInvoked, onCheckInvoked,
+    checkboxState, onCheckInvoked, onClickDeleteButton,
   } = props;
 
   return (
@@ -33,8 +33,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
-          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-          else { onClickInvoked() }
+          if (onClickDeleteButton == null) { logger.error('onClickDeleteButton is null') }
+          else { onClickDeleteButton() }
         }}
       >
         <i className="icon-trash"></i>

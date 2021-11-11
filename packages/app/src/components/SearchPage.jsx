@@ -295,6 +295,7 @@ class SearchPage extends React.Component {
         onClickInvoked={this.toggleAllCheckBox}
         checkboxState={this.state.checkboxState}
         onClickAllSelectButton={this.onClickAllSelectButton}
+        onClickDeleteButton={this.deleteSelectedPages}
       >
       </SearchControl>
     );
