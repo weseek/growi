@@ -8,13 +8,11 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
-type Props ={
+type PageItemControlProps = {
   page: ISearchedPage,
-  onClickInvoked?: (pageId: string) => void,
 }
 
-
-const PageItemControl: FC<Props> = (props: {page: ISearchedPage}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
@@ -65,9 +63,14 @@ const PageItemControl: FC<Props> = (props: {page: ISearchedPage}) => {
 
 };
 
+type Props = {
+  page: ISearchedPage,
+  isSelected: boolean,
+  onClickInvoked?: (pageId: string) => void,
+}
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-  const { page } = props;
+  const { page, isSelected } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -82,7 +85,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   };
 
   return (
-    <li key={page._id} className="page-list-li w-100 border-bottom pr-4">
+    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
@@ -90,7 +93,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       >
         <div className="d-flex">
           {/* checkbox */}
-          <div className="form-check my-auto mx-2">
+          <div className="form-check my-auto mr-3">
             <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
           </div>
           <div className="w-100">

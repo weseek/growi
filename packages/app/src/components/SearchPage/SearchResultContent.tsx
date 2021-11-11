@@ -7,7 +7,7 @@ import AppContainer from '../../client/services/AppContainer';
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  selectedPage : any,
+  focusedPage : any,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
   // Temporaly workaround for lint error
@@ -39,7 +39,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       </div>
     );
   };
-  const content = renderPage(props.selectedPage);
+  const content = renderPage(props.focusedPage);
   return (
 
     <div>{content}</div>
