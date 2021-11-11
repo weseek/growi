@@ -38,7 +38,7 @@ export class PageListMeta extends React.Component {
     }
 
     let bookmarkCount;
-    if (page.bookmarkCount.length > 0) {
+    if (page.bookmarkCount > 0) {
       bookmarkCount = <span><i className="icon-star" />{page.bookmarkCount}</span>;
     }
 
