@@ -50,6 +50,7 @@ module.exports = (crowi) => {
       throw new SlackCommandHandlerError('All parameters are required.');
     }
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
+    await respondUtil.deleteOriginal();
   };
 
   return handler;
