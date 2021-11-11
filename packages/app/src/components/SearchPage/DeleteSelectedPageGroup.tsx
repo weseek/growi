@@ -17,6 +17,11 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     checkboxState, onClickInvoked, onCheckInvoked,
   } = props;
 
+  const onCheckAllPages = () => {
+    if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
+    else { props.onClickInvoked() }
+  };
+
   return (
     <>
       {/** todo: implement the design for CheckboxType = INDETERMINATE */}
@@ -26,7 +31,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
-        onClick={onCheckInvoked}
+        onClick={onCheckAllPages}
         checked={checkboxState !== CheckboxType.NONE_CHECKED}
       />
       <button

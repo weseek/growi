@@ -50,7 +50,6 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
-    this.onClickAllSelectButton = this.onClickAllSelectButton.bind(this);
   }
 
   componentDidMount() {
@@ -78,10 +77,6 @@ class SearchPage extends React.Component {
 
   onExcludeTrash() {
     this.setState({ excludeTrash: !this.state.excludeTrash });
-  }
-
-  onClickAllSelectButton(nextCheckboxState) {
-    this.setState({ checkboxState: nextCheckboxState });
   }
 
   changeURL(keyword, refreshHash) {
@@ -190,19 +185,20 @@ class SearchPage extends React.Component {
     });
   }
 
-  updateCheckboxState = () => {
-    let currentCheckboxState;
+  getCheckboxType = () => {
     switch (this.state.selectedPages.size) {
       case 0:
-        currentCheckboxState = CheckboxType.NONE_CHECKED;
-        break;
+        return CheckboxType.NONE_CHECKED;
       case this.state.searchedPages.length:
-        currentCheckboxState = CheckboxType.ALL_CHECKED;
-        break;
+        return CheckboxType.ALL_CHECKED;
       default:
-        currentCheckboxState = CheckboxType.INDETERMINATE;
-        break;
+        return CheckboxType.INDETERMINATE;
     }
+  }
+
+  updateCheckboxState = () => {
+    const currentCheckboxState = this.getCheckboxType;
+    console.log(currentCheckboxState);
     this.setState({ checkboxState: currentCheckboxState });
   }
 
@@ -265,7 +261,6 @@ class SearchPage extends React.Component {
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
         checkboxState={this.state.checkboxState}
-        onClickAllSelectButton={this.onClickAllSelectButton}
       >
       </SearchControl>
     );

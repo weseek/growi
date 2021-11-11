@@ -35,7 +35,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             key={page._id}
             page={page}
             onClickInvoked={props.onClickInvoked}
-            onChangedInvoked={props.onChangedInvoked}
+            onClickCheckboxInvoked={props.onChangedInvoked}
             isSelected={page._id === focusedPageId || false}
           />
         );

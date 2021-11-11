@@ -17,7 +17,6 @@ type Props = {
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
   onClickInvoked?: () => void,
-  onClickAllSelectButton?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -45,11 +44,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     // https://estoc.weseek.co.jp/redmine/issues/77525
   };
 
-  const onCheckAllPagesInvoked = () => {
-    if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
-    else { props.onClickInvoked() }
-  };
-
   return (
     <div className="">
       <div className="search-page-input sps sps--abv">
@@ -65,7 +59,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <DeleteSelectedPageGroup
           checkboxState={props.checkboxState}
           onClickInvoked={onDeleteSelectedPageHandler}
-          onCheckInvoked={onCheckAllPagesInvoked}
+          onCheckInvoked={props.onClickInvoked}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
