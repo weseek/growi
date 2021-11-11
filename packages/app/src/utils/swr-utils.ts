@@ -2,7 +2,7 @@ import { SWRConfiguration } from 'swr';
 
 
 export const swrGlobalConfiguration: SWRConfiguration = {
-  fetcher: null,
+  fetcher: undefined,
   revalidateOnFocus: false,
   errorRetryCount: 1,
 };

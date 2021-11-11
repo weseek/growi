@@ -42,7 +42,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
     currentNode.children = ItemNode.generateNodesFromPages(childPages);
 
     const nextNode = currentNode.children.filter((node) => {
-      return paths.includes(node.page.path);
+      return paths.includes(node.page.path as string);
     })[0];
     currentNode = nextNode;
   });
@@ -60,7 +60,7 @@ const ItemsTree: FC = () => {
 
   const { data: targetAndAncestors, error } = useTargetAndAncestors();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(targetAndAncestors != null ? path : null);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(path);
 
   if (error != null || error2 != null) {
     return null;
