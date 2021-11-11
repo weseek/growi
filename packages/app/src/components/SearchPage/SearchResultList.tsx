@@ -30,11 +30,9 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [controlTargetPage, setControlTargetPage] = useState(focusedPage || {
-    _id: null,
-    path: null,
-    revision: {
-      _id: null,
-    },
+    _id: '',
+    path: '',
+    revision: '',
   });
 
   function openPageRenameModalHandler() {
@@ -49,7 +47,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
           isOpen={isPageRenameModalShown}
           onClose={() => { setIsPageRenameModalShown(false) }}
           pageId={controlTargetPage._id}
-          revisionId={controlTargetPage.revision._id}
+          revisionId={controlTargetPage.revision}
           path={controlTargetPage.path}
         />
         {/* <PageDuplicateModal

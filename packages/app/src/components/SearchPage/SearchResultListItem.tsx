@@ -5,21 +5,16 @@ import { DevidedPagePath } from '@growi/core';
 import { ISearchedPage } from './SearchResultList';
 
 import loggerFactory from '~/utils/logger';
-import { IRevisionHasId } from '~/interfaces/revision';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
-  page: {
-    revision: IRevisionHasId
-  } & ISearchedPage,
+  page: ISearchedPage,
   onClickControlDropdown?: (page: ISearchedPage) => void,
   onClickPageRenameBtnInvoked?: () => void,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: {page: {
-    revision: IRevisionHasId
-  } & ISearchedPage,
+const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage,
   onClickControlDropdown?: (page: ISearchedPage) => void,
   onClickPageRenameBtnInvoked?: () => void}) => {
 
@@ -79,9 +74,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: {
 };
 
 type Props = {
-  page: ISearchedPage & {
-    revision: IRevisionHasId
-  },
+  page: ISearchedPage,
   isSelected: boolean,
   onClickInvoked?: (pageId: string) => void,
   onClickControlDropdown?: (page: ISearchedPage) => void,
