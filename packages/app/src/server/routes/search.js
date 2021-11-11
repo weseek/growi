@@ -170,7 +170,6 @@ module.exports = function(crowi, app) {
           if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
             page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
           }
-          // page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
           return page;
         })
         .sort((page1, page2) => {
