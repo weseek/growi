@@ -13,6 +13,8 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
+import { CheckboxType } from '../interfaces/search';
+
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
@@ -37,6 +39,7 @@ class SearchPage extends React.Component {
       pagingLimit: 3, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      checkboxState: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -47,6 +50,7 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
+    this.onClickAllSelectButton = this.onClickAllSelectButton.bind(this);
   }
 
   componentDidMount() {
@@ -74,6 +78,10 @@ class SearchPage extends React.Component {
 
   onExcludeTrash() {
     this.setState({ excludeTrash: !this.state.excludeTrash });
+  }
+
+  onClickAllSelectButton(nextCheckboxState) {
+    this.setState({ checkboxState: nextCheckboxState });
   }
 
   changeURL(keyword, refreshHash) {
@@ -182,6 +190,22 @@ class SearchPage extends React.Component {
     });
   }
 
+  updateCheckboxState = () => {
+    let currentCheckboxState;
+    switch (this.state.selectedPages.size) {
+      case 0:
+        currentCheckboxState = CheckboxType.NONE_CHECKED;
+        break;
+      case this.state.searchedPages.length:
+        currentCheckboxState = CheckboxType.ALL_CHECKED;
+        break;
+      default:
+        currentCheckboxState = CheckboxType.INDETERMINATE;
+        break;
+    }
+    this.setState({ checkboxState: currentCheckboxState });
+  }
+
   toggleCheckBox = (page) => {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
@@ -189,17 +213,19 @@ class SearchPage extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
+    this.updateCheckboxState();
   }
 
   toggleAllCheckBox = () => {
-    console.log(this.state.selectedPages.size);
     if (this.state.selectedPages.size === this.state.searchedPages.length) {
       this.state.selectedPages.clear();
-      return;
     }
-    this.state.searchedPages.forEach((page) => {
-      this.state.selectedPages.add(page);
-    });
+    else {
+      this.state.searchedPages.forEach((page) => {
+        this.state.selectedPages.add(page);
+      });
+    }
+    this.updateCheckboxState();
   };
 
   renderSearchResultContent = () => {
@@ -238,6 +264,8 @@ class SearchPage extends React.Component {
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
+        checkboxState={this.state.checkboxState}
+        onClickAllSelectButton={this.onClickAllSelectButton}
       >
       </SearchControl>
     );
