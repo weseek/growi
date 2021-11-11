@@ -188,8 +188,12 @@ const PageDuplicateModal = (props) => {
             )}
           </div>
           <div>
-            {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-            {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            {isDuplicateRecursively && (
+              <ComparePathsTable subordinatedPages={subordinatedPages} path={path} newPagePath={pageNameInput} />
+            )}
+            {isDuplicateRecursively && existingPaths.length !== 0 && (
+              <DuplicatePathsTable existingPaths={existingPaths} path={path} oldPagePath={pageNameInput} />
+            )}
           </div>
         </div>
 

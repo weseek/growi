@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '~/client/services/PageContainer';
 
 const { convertToNewAffiliationPath } = pagePathUtils;
 
 function DuplicatedPathsTable(props) {
   const {
-    pageContainer, oldPagePath, existingPaths, t,
+    path, oldPagePath, existingPaths, t,
   } = props;
-  const { path } = pageContainer.state;
 
   return (
     <table className="table table-bordered grw-duplicated-paths-table">
@@ -44,18 +40,12 @@ function DuplicatedPathsTable(props) {
   );
 }
 
-
-/**
- * Wrapper component for using unstated
- */
-const PageDuplicateModallWrapper = withUnstatedContainers(DuplicatedPathsTable, [PageContainer]);
-
 DuplicatedPathsTable.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   existingPaths: PropTypes.array.isRequired,
+  path: PropTypes.string.isRequired,
   oldPagePath: PropTypes.string.isRequired,
 };
 
 
-export default withTranslation()(PageDuplicateModallWrapper);
+export default withTranslation()(DuplicatedPathsTable);

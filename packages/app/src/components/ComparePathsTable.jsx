@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '~/client/services/PageContainer';
 
 const { convertToNewAffiliationPath } = pagePathUtils;
 
 function ComparePathsTable(props) {
   const {
-    subordinatedPages, pageContainer, newPagePath, t,
+    subordinatedPages, path, newPagePath, t,
   } = props;
-  const { path } = pageContainer.state;
 
   return (
     <table className="table table-bordered grw-compare-paths-table">
@@ -44,19 +40,13 @@ function ComparePathsTable(props) {
   );
 }
 
-
-/**
- * Wrapper component for using unstated
- */
-const PageDuplicateModallWrapper = withUnstatedContainers(ComparePathsTable, [PageContainer]);
-
 ComparePathsTable.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   subordinatedPages: PropTypes.array.isRequired,
+  path: PropTypes.string.isRequired,
   newPagePath: PropTypes.string.isRequired,
 };
 
 
-export default withTranslation()(PageDuplicateModallWrapper);
+export default withTranslation()(ComparePathsTable);
