@@ -301,6 +301,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
     .query
     .lean()
     .exec();
+  // mark target
   const pages = _pages.map((page: PageDocument & {isTarget?: boolean}) => {
     if (page.path === path) {
       page.isTarget = true;
