@@ -38,8 +38,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   useEffect(() => {
     if (checkRef.current != null) {
       checkRef.current.indeterminate = checkboxState === CheckboxType.INDETERMINATE;
-      // also set checkbox to cheked when checkboxState is INDETERMINATE
-      checkRef.current.checked = checkboxState !== CheckboxType.NONE_CHECKED;
+      checkRef.current.checked = checkboxState === CheckboxType.ALL_CHECKED;
     }
   }, [props.checkboxState]);
 
