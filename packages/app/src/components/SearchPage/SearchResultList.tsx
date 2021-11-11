@@ -14,9 +14,7 @@ export type ISearchedPage = IPageHasId & {
 
 type Props = {
   pages: ISearchedPage[],
-  selectedPages: ISearchedPage[] & {
-    has: (page: ISearchedPage) => boolean,
-  },
+  selectedPages: Set<ISearchedPage>
   onClickInvoked?: (pageId: string) => void,
   onChangedInvoked?: (page: ISearchedPage) => void,
   searchResultCount?: number,
