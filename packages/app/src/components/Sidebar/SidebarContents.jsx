@@ -8,6 +8,7 @@ import NavigationContainer from '~/client/services/NavigationContainer';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
+import Tag from './Tag';
 
 const SidebarContents = (props) => {
   const { navigationContainer, isSharedUser } = props;
@@ -17,18 +18,20 @@ const SidebarContents = (props) => {
   }
 
   let Contents;
+
   switch (navigationContainer.state.sidebarContentsId) {
     case 'recent':
       Contents = RecentChanges;
       break;
+    case 'tag':
+      Contents = Tag;
+      break;
     default:
       Contents = CustomSidebar;
   }
-
   return (
     <Contents />
   );
-
 };
 
 SidebarContents.propTypes = {
