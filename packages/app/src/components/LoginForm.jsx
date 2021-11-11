@@ -156,8 +156,11 @@ class LoginForm extends React.Component {
       registrationWhiteList,
     } = this.props;
 
+    const { isMailerSetup } = appContainer.config;
+    const allowEmailAuthentication = (isEmailAuthenticationEnabled === true && isMailerSetup === true);
+
     let registerAction = '/register';
-    if (isEmailAuthenticationEnabled === true) {
+    if (allowEmailAuthentication === true) {
       registerAction = '/user-activation/register';
     }
 
@@ -172,7 +175,7 @@ class LoginForm extends React.Component {
         )}
         <form role="form" action={registerAction} method="post" id="register-form">
 
-          {isEmailAuthenticationEnabled === false && (
+          {allowEmailAuthentication === false && (
             <div>
               <div className="input-group" id="input-group-username">
                 <div className="input-group-prepend">
@@ -227,7 +230,7 @@ class LoginForm extends React.Component {
             </>
           )}
 
-          {isEmailAuthenticationEnabled === false && (
+          {allowEmailAuthentication === false && (
             <div>
               <div className="input-group">
                 <div className="input-group-prepend">
@@ -273,7 +276,6 @@ class LoginForm extends React.Component {
       isLdapStrategySetup,
       isRegistrationEnabled,
       isPasswordResetEnabled,
-      isEmailAuthenticationEnabled,
       objOfIsExternalAuthEnableds,
     } = this.props;
 

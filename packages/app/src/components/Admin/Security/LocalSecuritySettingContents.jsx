@@ -52,6 +52,17 @@ class LocalSecuritySettingContents extends React.Component {
         )}
         <h2 className="alert-anchor border-bottom">{t('security_setting.Local.name')}</h2>
 
+        {!isMailerSetup && (
+          <div className="row">
+            <div className="col-12">
+              <div className="alert alert-danger">
+                <span>{t('security_setting.Local.please_enable_mailer')}</span>
+                <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
+              </div>
+            </div>
+          </div>
+        )}
+
         {adminLocalSecurityContainer.state.useOnlyEnvVars && (
           <p
             className="alert alert-info"
@@ -192,7 +203,6 @@ class LocalSecuritySettingContents extends React.Component {
                     type="checkbox"
                     className="custom-control-input"
                     id="isEmailAuthenticationEnabled"
-                    disabled={!isMailerSetup}
                     checked={isEmailAuthenticationEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />

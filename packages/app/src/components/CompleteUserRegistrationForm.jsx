@@ -30,7 +30,7 @@ const CompleteUserRegistrationForm = (props) => {
       </div>
       <div id="register-dialog">
 
-        <form role="form" action="/user-activation/complete-registartion" method="post" id="registration-form">
+        <form role="form" action="/user-activation/complete-registration" method="post" id="registration-form">
           <input type="hidden" name="token" value={token} />
           <div className="input-group">
             <div className="input-group-prepend">
