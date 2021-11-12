@@ -2,9 +2,11 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
+
 import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+import { SubscribeStatuses } from '~/interfaces/in-app-notification-settings';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { useSWRxSubscribeButton } from '../stores/page';
 
@@ -22,35 +24,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { appContainer, pageId } = props;
-  const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
+  // const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
   const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
   console.log('subscriptionData', subscriptionData);
-
-  if (subscriptionData == null) {
-    console.log('hoge');
-  }
-
-
-  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
-
-  const handleClick = async() => {
-    if (appContainer.isGuestUser) {
-      return;
-    }
-
-    try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
-      if (res) {
-        const { subscription } = res.data;
-        setIsSubscribing(subscription.status === 'SUBSCRIBE');
-        mutate();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
 
   const fetchSubscriptionStatus = useCallback(async() => {
     if (appContainer.isGuestUser) {
@@ -61,10 +37,10 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       const res = await appContainer.apiv3Get('page/subscribe', { pageId });
       const { subscribing } = res.data;
       if (subscribing == null) {
-        setIsSubscribing(null);
+        // setIsSubscribing(null);
       }
       else {
-        setIsSubscribing(subscribing);
+        // setIsSubscribing(subscribing);
       }
     }
     catch (err) {
@@ -75,6 +51,35 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   useEffect(() => {
     fetchSubscriptionStatus();
   }, [fetchSubscriptionStatus]);
+
+  if (subscriptionData == null) {
+    return <></>;
+  }
+
+  const isSubscribing = subscriptionData.status === SubscribeStatuses.STATUS_SUBSCRIBE;
+
+  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
+
+  const handleClick = async() => {
+    if (appContainer.isGuestUser) {
+      return;
+    }
+
+    try {
+      console.log('subscriptionData_handleclick', subscriptionData.status);
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
+      if (res) {
+        console.log('res.data', res.data);
+        mutate();
+        const { subscription } = res.data;
+        // setIsSubscribing(subscription.status === 'SUBSCRIBE');
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
   return (
     <>
