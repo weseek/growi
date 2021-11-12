@@ -1,12 +1,11 @@
 import React, {
-  FC, useState, useEffect,
+  FC,
 } from 'react';
 import AppContainer from '../../client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageReactionButtons from '../PageReactionButtons';
 import PageManagement from '../Page/PageManagement';
-import { apiv3Get } from '../../client/util/apiv3-client';
 
 
 type Props = {
@@ -33,7 +32,7 @@ const SearchResultSubNavButton : FC<Props> = (props: Props) => {
         TASK: https://estoc.weseek.co.jp/redmine/issues/81076
         CONDITION :isAbleToShowPageManagement = !isNotFoundPage && !isTrashPage && !isSharedUser
       */}
-      {/* if (CONDITION) then PageManagement */}
+      {/* if (CONDITION) then <PageManagement isCompactMode> */}
     </>
   );
 };
