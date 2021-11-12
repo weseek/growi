@@ -1,6 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
 import LikeButtons from './LikeButtons';
-import BookmarkButton from './BookmarkButton';
 import { apiv3Get } from '../client/util/apiv3-client';
 
 
@@ -24,7 +23,6 @@ const PageReactionButtons : React.FC<Props> = (props: Props) => {
       const {
         data: { likerIds, sumOfLikers, isLiked },
       } = await apiv3Get('/page/info', { pageId });
-
       setSumOfLikers(sumOfLikers);
       setLikers(likerIds);
       setIsLiked(isLiked);
@@ -32,7 +30,7 @@ const PageReactionButtons : React.FC<Props> = (props: Props) => {
     f();
   }, []);
 
-  const onChangeInvoked = () => {
+  const likeInvoked = () => {
     setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
     setLikers(likerIds => (isLiked ? likerIds.filter(id => id !== currentUserId) : [...likerIds, currentUserId]));
     setIsLiked(isLiked => !isLiked);
@@ -41,7 +39,7 @@ const PageReactionButtons : React.FC<Props> = (props: Props) => {
   return (
     <>
       <span>
-        <LikeButtonsTypeAny onChangeInvoked={onChangeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsTypeAny>
+        <LikeButtonsTypeAny onChangeInvoked={likeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsTypeAny>
       </span>
       <span>
         {/*
