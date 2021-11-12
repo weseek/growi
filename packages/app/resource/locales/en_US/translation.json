@@ -184,6 +184,7 @@
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
   "page_register": {
+    "send_email": "Send Email",
     "notice": {
       "restricted": "Admin approval required.",
       "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."

@@ -157,8 +157,10 @@ class LoginForm extends React.Component {
     } = this.props;
 
     let registerAction = '/register';
+    let submitText = t('Sign up');
     if (isEmailAuthenticationEnabled === true) {
       registerAction = '/user-activation/register';
+      submitText = t('page_register.send_email');
     }
 
     return (
@@ -247,7 +249,7 @@ class LoginForm extends React.Component {
               <span className="btn-label">
                 <i className="icon-user-follow"></i>
               </span>
-              <span className="btn-label-text">{t('Sign up')}</span>
+              <span className="btn-label-text">{submitText}</span>
             </button>
           </div>
         </form>

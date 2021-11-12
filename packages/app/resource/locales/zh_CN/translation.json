@@ -185,6 +185,7 @@
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
 	},
 	"page_register": {
+    "send_email": "发电子邮件",
 		"notice": {
 			"restricted": "需要管理员批准。",
 			"restricted_defail": "一旦管理员批准您的注册，您就可以访问此wiki。"

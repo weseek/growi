@@ -187,6 +187,7 @@
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
   "page_register": {
+    "send_email": "メールを送る",
     "notice": {
       "restricted": "この Wiki への新規登録は制限されています。",
       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。"
