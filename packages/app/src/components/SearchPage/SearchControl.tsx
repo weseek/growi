@@ -5,10 +5,6 @@ import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import { CheckboxType } from '../../interfaces/search';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:searchResultList');
-
 type Props = {
   searchingKeyword: string,
   checkboxState: CheckboxType,

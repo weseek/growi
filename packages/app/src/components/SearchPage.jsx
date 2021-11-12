@@ -185,20 +185,20 @@ class SearchPage extends React.Component {
     });
   }
 
-  getCheckboxType = (selectedPagesCount) => {
-    switch (selectedPagesCount) {
-      case 0:
-        return CheckboxType.NONE_CHECKED;
-      case this.state.searchedPages.length:
-        return CheckboxType.ALL_CHECKED;
-      default:
-        return CheckboxType.INDETERMINATE;
-    }
-  }
-
   updateCheckboxState = () => {
-    const currentCheckboxState = this.getCheckboxType(this.state.selectedPages.size);
-    this.setState({ checkboxState: currentCheckboxState });
+    function getCheckboxType(selectedPagesCount, searchedPagesCount) {
+      switch (selectedPagesCount) {
+        case 0:
+          return CheckboxType.NONE_CHECKED;
+        case searchedPagesCount:
+          return CheckboxType.ALL_CHECKED;
+        default:
+          return CheckboxType.INDETERMINATE;
+      }
+    }
+    this.setState({
+      checkboxState: getCheckboxType(this.state.selectedPages.size, this.state.searchedPages.length),
+    });
   }
 
   toggleCheckBox = (page) => {
