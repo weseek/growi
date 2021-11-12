@@ -82,8 +82,7 @@ export default class InAppNotificationService {
   }
 
   getLatestNotificationsByUser = async(userId, queryOptions) => {
-    const { offset } = queryOptions;
-    const limit = queryOptions.limit || 10;
+    const { offset, limit } = queryOptions;
 
     try {
       const paginationResult = await InAppNotification.paginate(
