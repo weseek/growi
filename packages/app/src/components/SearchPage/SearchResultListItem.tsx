@@ -1,15 +1,18 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pagePathUtils } from '@growi/core';
 import { ISearchedPage } from './SearchResultList';
+import PageDeleteModal from '../PageDeleteModal';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
+
+const { isTrashPage } = pagePathUtils;
 
 type PageItemControlProps = {
   page: ISearchedPage,
@@ -19,6 +22,11 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 
   const { page } = props;
   const { t } = useTranslation('');
+  const [isPageDeleteModalShown, SetIsPageDeleteModalShown] = useState<boolean>(false);
+
+  const onClosePageDeleteModal = (): void => {
+    SetIsPageDeleteModalShown(false);
+  };
 
   return (
     <>
@@ -48,7 +56,11 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+        <button
+          className="dropdown-item text-danger"
+          type="button"
+          onClick={() => SetIsPageDeleteModalShown(true)}
+        >
           <i className="icon-fw icon-fire"></i>{t('Delete')}
         </button>
         <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
@@ -60,6 +72,15 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
         <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
+        <PageDeleteModal
+          isOpen={isPageDeleteModalShown}
+          onClose={onClosePageDeleteModal}
+          pageId={page._id}
+          revisionId={page.revision}
+          path={page.path}
+          isDeleteCompletelyModal={isTrashPage(page.path)}
+          isAbleToDeleteCompletely={isTrashPage(page.path)}
+        />
       </div>
     </>
   );
