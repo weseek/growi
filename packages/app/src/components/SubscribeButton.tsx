@@ -41,7 +41,6 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      console.log('subscriptionData_handleclick', subscriptionData.status);
       const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
       if (res) {
         mutate();
