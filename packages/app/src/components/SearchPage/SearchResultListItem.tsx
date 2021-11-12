@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+﻿import React, { FC } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
@@ -75,7 +75,6 @@ type Props = {
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-
   const {
     // todo: refactoring variable name to clear what changed
     page, isSelected, onClickInvoked, onClickCheckboxInvoked, isChecked,
@@ -87,20 +86,22 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
+  const onClickSearchedResultItem = () => {
+    if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
+    onClickInvoked(page._id);
+  };
+
+  const onClickCheckbox = () => {
+    if (onClickCheckboxInvoked == null) { throw new Error('onClickCheckboxInvoked is null') }
+    onClickCheckboxInvoked(page);
+  };
+
   return (
     <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => {
-          try {
-            if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-            onClickInvoked(page._id);
-          }
-          catch (error) {
-            logger.error(error);
-          }
-        }}
+        onClick={onClickSearchedResultItem}
       >
         <div className="d-flex">
           {/* checkbox */}
@@ -109,16 +110,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={() => {
-                try {
-                  if (onClickCheckboxInvoked == null) { throw new Error('onClickCheckboxInvoked is null') }
-                  onClickCheckboxInvoked(page);
-                }
-                catch (error) {
-                  logger.error(error);
-                }
-              }}
-              checked={isChecked}
+              onClick={onClickCheckbox}
             />
           </div>
           <div className="w-100">

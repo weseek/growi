@@ -5,10 +5,6 @@ import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import { CheckboxType } from '../../interfaces/search';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:searchResultList');
-
 type Props = {
   searchingKeyword: string,
   checkboxState: CheckboxType,
@@ -20,7 +16,6 @@ type Props = {
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
-
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
