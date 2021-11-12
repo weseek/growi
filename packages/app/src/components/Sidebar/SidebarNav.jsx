@@ -66,6 +66,7 @@ class SidebarNav extends React.Component {
         <div className="grw-sidebar-nav-primary-container">
           {!isSharedUser && <PrimaryItem id="custom" label="Custom Sidebar" iconName="code" />}
           {!isSharedUser && <PrimaryItem id="recent" label="Recent Changes" iconName="update" />}
+          {!isSharedUser && <PrimaryItem id="tree" label="Page Tree" iconName="format_list_bulleted" />}
           {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
           {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
         </div>

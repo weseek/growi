@@ -1,9 +1,10 @@
 import { pagePathUtils } from '@growi/core';
+import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
 
 import UpdatePost from '../models/update-post';
 
-const { isCreatablePage } = pagePathUtils;
+const { isCreatablePage, isTopPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -263,6 +264,16 @@ module.exports = function(crowi, app) {
     renderVars.pages = result.pages;
   }
 
+  async function addRenderVarsForPageTree(renderVars, path) {
+    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(path);
+
+    if (targetAndAncestors.length === 0 && !isTopPage(path)) {
+      throw new Error('Ancestors must have at least one page.');
+    }
+
+    renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -279,10 +290,10 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageForPresentation(req, res, next) {
-    const path = getPathFromRequest(req);
+    const id = req.params.id;
     const { revisionId } = req.query;
 
-    let page = await Page.findByPathAndViewer(path, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user);
 
     if (page == null) {
       next();
@@ -328,27 +339,32 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForDescendants(renderVars, portalPath, req.user, offset, limit);
 
+    await addRenderVarsForPageTree(renderVars, portalPath);
+
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
 
   async function showPageForGrowiBehavior(req, res, next) {
-    const path = getPathFromRequest(req);
+    const id = req.params.id;
     const revisionId = req.query.revision;
 
-    let page = await Page.findByPathAndViewer(path, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
-      req.isForbidden = await Page.count({ path }) > 0;
+      req.isForbidden = await Page.count({ _id: id }) > 0;
       return next();
     }
+
+    const { path } = page; // this must exist
+
     if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
       return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
     }
 
-    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
+    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, path);
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -373,11 +389,13 @@ module.exports = function(crowi, app) {
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
 
-    if (isUserPage(page.path)) {
+    if (isUserPage(path)) {
       // change template
       view = 'layout-growi/user_page';
       await addRenderVarsForUserPage(renderVars, page);
     }
+
+    await addRenderVarsForPageTree(renderVars, path);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
@@ -558,16 +576,38 @@ module.exports = function(crowi, app) {
   /**
    * redirector
    */
-  actions.redirector = async function(req, res) {
-    const id = req.params.id;
+  async function redirector(req, res, next, path) {
+    const pages = await Page.findByPathAndViewer(path, req.user, null, false);
+    const { redirectFrom } = req.query;
 
-    const page = await Page.findByIdAndViewer(id, req.user);
-
-    if (page != null) {
-      return res.redirect(encodeURI(page.path));
+    if (pages.length >= 2) {
+      // pass only redirectFrom since it is not sure whether the query params are related to the pages
+      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
     }
 
-    return res.redirect('/');
+    if (pages.length === 1) {
+      const url = new URL('https://dummy.origin');
+      url.pathname = `/${pages[0]._id}`;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
+    }
+
+    return next(); // to page.notFound
+  }
+
+  actions.redirector = async function(req, res, next) {
+    const path = getPathFromRequest(req);
+
+    return redirector(req, res, next, path);
+  };
+
+  actions.redirectorWithEndOfSlash = async function(req, res, next) {
+    const _path = getPathFromRequest(req);
+    const path = pathUtils.removeTrailingSlash(_path);
+
+    return redirector(req, res, next, path);
   };
 
 
