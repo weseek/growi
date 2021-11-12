@@ -30,7 +30,7 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
     f();
   }, []);
 
-  const likeInvoked = () => {
+  const likeInvoked = async() => {
     setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
     setLikers(likerIds => (isLiked ? likerIds.filter(id => id !== currentUserId) : [...likerIds, currentUserId]));
     setIsLiked(isLiked => !isLiked);

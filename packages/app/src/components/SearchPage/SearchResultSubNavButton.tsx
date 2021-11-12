@@ -8,21 +8,27 @@ import PageReactionButtons from '../PageReactionButtons';
 import PageManagement from '../Page/PageManagement';
 
 
-type Props = {
+type PageReactionButtonsProps = {
+  pageId: string,
+  currentUserId: string,
+}
+const PageReactionButtonsWrapper: FC<PageReactionButtonsProps> = (props: PageReactionButtonsProps) => {
+  return <PageReactionButtons {...props}></PageReactionButtons>;
+};
+
+
+type SearchResultSubNavButtonProps = {
   appContainer: AppContainer,
   isCompactMode: boolean,
 
   pageId: string,
 }
+const SearchResultSubNavButton: FC<SearchResultSubNavButtonProps> = (props: SearchResultSubNavButtonProps) => {
+  const { appContainer, isCompactMode, pageId } = props;
 
-const SearchResultSubNavButton : FC<Props> = (props: Props) => {
-  const {
-    appContainer, isCompactMode, pageId,
-  } = props;
-  const PageReactionButtonsTypeAny : any = PageReactionButtons;
   return (
     <>
-      <PageReactionButtonsTypeAny pageId={pageId} currentUserId={appContainer.currentUserId}></PageReactionButtonsTypeAny>
+      <PageReactionButtonsWrapper pageId={pageId} currentUserId={appContainer.currentUserId}></PageReactionButtonsWrapper>
       {/*
         TODO :
         once 80335 is done, merge 77543 branch(parent of 80335) into 77524.
