@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import axios from '~/utils/axios';
+import axios from '../utils/axios';
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import AppContainer from '../client/services/AppContainer';
 
 interface Props {
   appContainer: AppContainer,
@@ -73,7 +73,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
           </div>
           {!usernameAvailable && (
             <p className="form-text text-red">
-              <span id="help-block-username"><i className="icon-fw icon-ban"></i>このユーザーIDは利用できません。</span>
+              <span id="help-block-username"><i className="icon-fw icon-ban"></i>{t('unavaliable_user_id')}</span>
             </p>
           )}
 
