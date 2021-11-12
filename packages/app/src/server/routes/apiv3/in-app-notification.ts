@@ -17,9 +17,12 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const user = req.user;
 
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
+    const limit = parseInt(req.query.limit) || 10;
+
+    let offset = 0;
+    if (req.query.offset) {
+      offset = parseInt(req.query.offset, 10);
+    }
 
     const queryOptions = {
       offset,
