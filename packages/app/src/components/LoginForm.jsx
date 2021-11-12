@@ -158,7 +158,7 @@ class LoginForm extends React.Component {
 
     const { isMailerSetup } = appContainer.config;
     let registerAction = '/register';
-    if (isEmailAuthenticationEnabled === true) {
+    if (isEmailAuthenticationEnabled) {
       registerAction = '/user-activation/register';
     }
 
@@ -171,7 +171,7 @@ class LoginForm extends React.Component {
             {t('page_register.notice.restricted_defail')}
           </p>
         )}
-        { (!isMailerSetup && isEmailAuthenticationEnabled === true) && (
+        { (!isMailerSetup && isEmailAuthenticationEnabled) && (
           <p className="alert alert-danger">
             <span>{t('security_setting.Local.please_enable_mailer')}</span>
           </p>
@@ -179,7 +179,7 @@ class LoginForm extends React.Component {
 
         <form role="form" action={registerAction} method="post" id="register-form">
 
-          {isEmailAuthenticationEnabled === false && (
+          {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
                 <div className="input-group-prepend">
@@ -234,7 +234,7 @@ class LoginForm extends React.Component {
             </>
           )}
 
-          {isEmailAuthenticationEnabled === false && (
+          {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
                 <div className="input-group-prepend">
@@ -249,7 +249,7 @@ class LoginForm extends React.Component {
 
           <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-            <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled === true)}>
+            <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}>
               <div className="eff"></div>
               <span className="btn-label">
                 <i className="icon-user-follow"></i>
