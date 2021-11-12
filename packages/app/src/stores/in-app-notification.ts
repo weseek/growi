@@ -8,7 +8,7 @@ import { IInAppNotification } from '../interfaces/in-app-notification';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxInAppNotifications = <Data, Error>(
   limit: number,
-  offset: number,
+  offset?: number,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
     `/in-app-notification/list?limit=${limit}&offset=${offset}`,
