@@ -36,10 +36,17 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     );
   }
 
-  let isSubscribing = false;
+  let isSubscribing;
 
-  if (subscriptionData.status) {
-    isSubscribing = true;
+  switch (subscriptionData.status) {
+    case true:
+      isSubscribing = true;
+      break;
+    case false:
+      isSubscribing = false;
+      break;
+    default:
+      isSubscribing = null;
   }
 
   const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
