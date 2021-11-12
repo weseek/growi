@@ -79,7 +79,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
           revisionId={page.revision}
           path={page.path}
           isDeleteCompletelyModal={isTrashPage(page.path)}
-          isAbleToDeleteCompletely={isTrashPage(page.path)}
+          isAbleToDeleteCompletely
         />
       </div>
     </>
