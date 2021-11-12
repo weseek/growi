@@ -23,7 +23,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
 
   const { appContainer, pageId } = props;
   const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
-  const { data: subscriptionData } = useSWRxSubscribeButton(pageId);
+  const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
   console.log('subscriptionData', subscriptionData);
 
   if (subscriptionData == null) {
