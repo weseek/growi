@@ -36,21 +36,21 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     );
   }
 
-  let isSubscribing;
+  let isSubscribed;
 
   switch (subscriptionData.status) {
     case true:
-      isSubscribing = true;
+      isSubscribed = true;
       break;
     case false:
-      isSubscribing = false;
+      isSubscribed = false;
       break;
     default:
-      isSubscribing = null;
+      isSubscribed = null;
   }
 
-  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
+  const buttonClass = `${isSubscribed ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribed || isSubscribed == null ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -58,7 +58,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribed });
       if (res) {
         mutate();
       }
