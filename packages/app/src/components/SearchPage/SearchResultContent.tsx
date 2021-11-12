@@ -7,7 +7,7 @@ import SearchResultContentSubNavigation from './SearchResultContentSubNavigation
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  focusedPage : any,
+  focusedPage : null | any,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.focusedPage;

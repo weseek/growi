@@ -27,7 +27,7 @@ const PageReactionButtons : React.FC<PageReactionButtonsProps> = (props: PageRea
     const f = async() => {
       const {
         data: { likerIds, sumOfLikers, isLiked },
-      } = await apiv3Get('/page/info', { _id: pageId });
+      } = await apiv3Get('/page/info', { pageId });
 
       setSumOfLikers(sumOfLikers);
       setLikers(likerIds);
