@@ -69,6 +69,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 type Props = {
   page: ISearchedPage,
   isSelected: boolean,
+  onChangedInvoked?: (page: ISearchedPage) => void,
   onClickInvoked?: (pageId: string) => void,
 }
 
@@ -81,23 +82,22 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickInvoked = (pageId) => {
-    if (props.onClickInvoked != null) {
-      props.onClickInvoked(pageId);
-    }
-  };
-
   return (
     <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => onClickInvoked(page._id)}
+        onClick={() => { if (props.onClickInvoked != null) { props.onClickInvoked(page._id) } }}
       >
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mr-3">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => { if (props.onChangedInvoked != null) { props.onChangedInvoked(page) } }}
+            />
           </div>
           <div className="w-100">
             {/* page path */}
