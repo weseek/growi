@@ -8,7 +8,7 @@ type Props = {
   currentUserId: string,
 }
 
-const PageReactionButtons : React.FC<Props> = (props: Props) => {
+const PageReactionButtons : FC<Props> = (props: Props) => {
   const { pageId, currentUserId } = props;
   const LikeButtonsTypeAny: any = LikeButtons;
 

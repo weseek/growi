@@ -34,6 +34,9 @@ class BookmarkButton extends React.Component {
       if (onChangeInvoked != null) {
         onChangeInvoked();
       }
+      else {
+        throw new Error('onChangeInvoked is null');
+      }
     }
     catch (err) {
       toastError(err);
