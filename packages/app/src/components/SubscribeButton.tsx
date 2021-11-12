@@ -2,9 +2,12 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
+import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { useSWRxSubscribeButton } from '../stores/page';
+
 
 import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
@@ -12,7 +15,7 @@ import PageContainer from '~/client/services/PageContainer';
 
 type Props = {
   appContainer: AppContainer,
-  pageId: string,
+  pageId: Types.ObjectId,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
@@ -20,6 +23,13 @@ const SubscribeButton: FC<Props> = (props: Props) => {
 
   const { appContainer, pageId } = props;
   const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
+  const { data: subscriptionData } = useSWRxSubscribeButton(pageId);
+  console.log('subscriptionData', subscriptionData);
+
+  if (subscriptionData == null) {
+    console.log('hoge');
+  }
+
 
   const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
   const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
