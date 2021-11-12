@@ -14,7 +14,7 @@ const FormattedDistanceDate = (props) => {
   const dateFormatted = format(date, 'yyyy/MM/dd HH:mm');
 
   const diff = Math.abs(differenceInSeconds(date, baseDate));
-  if (diff > props.differenceForAvoidingFormat) {
+  if (!props.isNotShowDate && diff > props.differenceForAvoidingFormat) {
     return <>{dateFormatted}</>;
   }
 
@@ -35,10 +35,12 @@ FormattedDistanceDate.propTypes = {
   // the number(sec) from 'baseDate' to avoid format
   differenceForAvoidingFormat: PropTypes.number,
   isShowTooltip: PropTypes.bool,
+  isNotShowDate: PropTypes.bool,
 };
 FormattedDistanceDate.defaultProps = {
   differenceForAvoidingFormat: 86400 * 3,
   isShowTooltip: true,
+  isNotShowDate: false,
 };
 
 export default FormattedDistanceDate;
