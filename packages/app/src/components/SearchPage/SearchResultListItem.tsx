@@ -111,6 +111,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               type="checkbox"
               id="flexCheckDefault"
               onClick={onClickCheckbox}
+              checked={isChecked}
             />
           </div>
           <div className="w-100">
