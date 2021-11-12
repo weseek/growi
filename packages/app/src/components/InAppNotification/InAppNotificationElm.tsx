@@ -104,8 +104,8 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           <FormattedDistanceDate
             id={notification._id}
             date={notification.createdAt}
-            differenceForAvoidingFormat={notification.createdAt}
             isShowTooltip={false}
+            isEnabledShowDate={false}
           />
         </div>
       </div>
