@@ -56,7 +56,11 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     return <></>;
   }
 
-  const isSubscribing = subscriptionData.status === SubscribeStatuses.STATUS_SUBSCRIBE;
+  let isSubscribing;
+
+  if (subscriptionData.status) {
+    isSubscribing = true;
+  }
 
   const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
   const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
