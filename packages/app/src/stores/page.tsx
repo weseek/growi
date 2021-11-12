@@ -1,6 +1,9 @@
 import useSWR, { SWRResponse } from 'swr';
 
+import { Types } from 'mongoose';
+
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { SubscribeStatuses } from '~/interfaces/in-app-notification-settings';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
@@ -27,6 +30,22 @@ export const useSWRxPageList = (
         items: response.data.pages,
         totalCount: response.data.totalCount,
         limit: response.data.limit,
+      };
+    }),
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxSubscribeButton = <Data, Error>(
+  pageId: Types.ObjectId,
+
+): SWRResponse<{status: SubscribeStatuses}, Error> => {
+  return useSWR(
+    'page/subscribe',
+    endpoint => apiv3Get(endpoint, { pageId }).then((response) => {
+      console.log(response);
+      return {
+        status: response.data.status,
       };
     }),
   );
