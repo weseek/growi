@@ -23,7 +23,17 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
 
   if (subscriptionData == null) {
-    return <></>;
+    // render default subscribe icon
+    return (
+      <>
+        <button
+          type="button"
+          className="btn btn-subscribe border-0"
+        >
+          <i className="fa fa-eye"></i>
+        </button>
+      </>
+    );
   }
 
   let isSubscribing;
