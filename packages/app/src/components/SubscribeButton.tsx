@@ -44,6 +44,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       if (res) {
         const { subscription } = res.data;
         setIsSubscribing(subscription.status === 'SUBSCRIBE');
+        mutate();
       }
     }
     catch (err) {
