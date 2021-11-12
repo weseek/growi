@@ -1,12 +1,9 @@
-import React, {
-  FC, useState, useCallback, useEffect,
-} from 'react';
+import React, { FC } from 'react';
 
 
 import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import { SubscribeStatuses } from '~/interfaces/in-app-notification-settings';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { useSWRxSubscribeButton } from '../stores/page';
 
@@ -22,35 +19,8 @@ type Props = {
 
 const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-
   const { appContainer, pageId } = props;
-  // const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
   const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
-  console.log('subscriptionData', subscriptionData);
-
-  const fetchSubscriptionStatus = useCallback(async() => {
-    if (appContainer.isGuestUser) {
-      return;
-    }
-
-    try {
-      const res = await appContainer.apiv3Get('page/subscribe', { pageId });
-      const { subscribing } = res.data;
-      if (subscribing == null) {
-        // setIsSubscribing(null);
-      }
-      else {
-        // setIsSubscribing(subscribing);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer, pageId]);
-
-  useEffect(() => {
-    fetchSubscriptionStatus();
-  }, [fetchSubscriptionStatus]);
 
   if (subscriptionData == null) {
     return <></>;
@@ -74,10 +44,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       console.log('subscriptionData_handleclick', subscriptionData.status);
       const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
       if (res) {
-        console.log('res.data', res.data);
         mutate();
-        const { subscription } = res.data;
-        // setIsSubscribing(subscription.status === 'SUBSCRIBE');
       }
     }
     catch (err) {
