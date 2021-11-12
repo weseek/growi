@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
@@ -10,7 +10,7 @@ import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
-const SubnavButtons = (props) => {
+const SubnavButtons = React.memo((props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
@@ -49,7 +49,7 @@ const SubnavButtons = (props) => {
       )}
     </>
   );
-};
+});
 
 /**
  * Wrapper component for using unstated
