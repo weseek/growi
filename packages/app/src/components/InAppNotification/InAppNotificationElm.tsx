@@ -78,7 +78,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   switch (actionType) {
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
-      actionIcon = 'ti-file';
+      actionIcon = 'ti-agenda';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
