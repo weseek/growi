@@ -50,6 +50,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -170,6 +171,13 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
+
+/*
+ * FC for extracting context from DOM
+ */
+ReactDOM.render(
+  <ContextExtractor />,
+);
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();
