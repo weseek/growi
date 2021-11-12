@@ -177,10 +177,6 @@ const PageManagement = (props) => {
           pageId={pageId}
           path={path}
         />
-        {/*
-         TODO : Refactor CreateTamplateModal in a way that it works while not relying on pageContainer
-         TASK : https://estoc.weseek.co.jp/redmine/issues/80789
-         */}
         <CreateTemplateModal
           path={path}
           isOpen={isPageTemplateModalShown}

@@ -19,7 +19,6 @@ const SearchResultSubNavButton : FC<Props> = (props: Props) => {
   const {
     appContainer, isCompactMode, pageId,
   } = props;
-  if (pageId == null) return;
   const PageReactionButtonsTypeAny : any = PageReactionButtons;
   return (
     <>
