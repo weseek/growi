@@ -5,6 +5,8 @@ import {
   InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
+import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
+import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
 
 import { IUser } from '~/interfaces/user';
 import { HasObjectId } from '~/interfaces/has-object-id';
@@ -137,6 +139,18 @@ export default class InAppNotificationService {
     }
   };
 
+  createSubscription = async function(userId: Types.ObjectId, pageId: Types.ObjectId, targetRuleName: string): Promise<void> {
+    const query = { userId };
+    const inAppNotificationSettings = await InAppNotificationSettings.findOne(query);
+    if (inAppNotificationSettings != null) {
+      const subscribeRule = inAppNotificationSettings.subscribeRules.find(subscribeRule => subscribeRule.name === targetRuleName);
+      if (subscribeRule != null && subscribeRule.isEnabled) {
+        await Subscription.subscribeByPageId(userId, pageId, STATUS_SUBSCRIBE);
+      }
+    }
+
+    return;
+  };
 
 }
 

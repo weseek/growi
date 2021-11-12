@@ -7,7 +7,7 @@ export interface InAppNotificationSettingsDocument extends IInAppNotificationSet
 export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocument>
 
 const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
-  userId: { type: String },
+  userId: { type: Schema.Types.ObjectId },
   subscribeRules: [
     {
       name: { type: String, require: true, enum: subscribeRuleNames },
