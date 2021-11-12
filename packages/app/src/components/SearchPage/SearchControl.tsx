@@ -72,25 +72,27 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
         <div className="d-flex align-items-center mr-3">
-          <div className="border border-gray px-3 py-2 mr-3">
-            <label className="my-0 mr-2" htmlFor="flexCheckDefault">
+          <div className="border border-gray mr-3">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
+              <input
+                className="mr-2"
+                type="checkbox"
+                id="flexCheckDefault"
+                onClick={() => onExcludeUsersHome()}
+              />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
-            <input
-              type="checkbox"
-              id="flexCheckDefault"
-              onClick={() => onExcludeUsersHome()}
-            />
           </div>
-          <div className="border border-gray px-3 py-2">
-            <label className="my-0 mr-2" htmlFor="flexCheckChecked">
+          <div className="border border-gray">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckChecked">
+              <input
+                className="mr-2"
+                type="checkbox"
+                id="flexCheckChecked"
+                onClick={() => onExcludeTrash()}
+              />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
-            <input
-              type="checkbox"
-              id="flexCheckChecked"
-              onClick={() => onExcludeTrash()}
-            />
           </div>
         </div>
       </div>

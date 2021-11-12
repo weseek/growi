@@ -122,20 +122,11 @@
     @extend .search-group-submit-button;
   }
 
-  input {
-    border-radius: 16rem !important;
-  }
-
   button {
     &:focus {
       box-shadow: none !important;
     }
   }
-}
-
-.search-listpage-icon {
-  font-size: 16px;
-  color: $gray-400;
 }
 
 // layout
@@ -183,15 +174,6 @@
     top: 0px;
     height: 100vh;
     overflow-y: scroll;
-    // TODO: remove vendere prefix css
-    /* for IE, Edge */
-    -ms-overflow-style: none;
-    /* for Firefox */
-    scrollbar-width: none;
-    /* for chrome and safari */
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
     .nav.nav-pills {
       > .page-list-li {
