@@ -74,7 +74,6 @@ type Props = {
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-
   const {
     page, isSelected, onClickInvoked, onClickCheckboxInvoked,
   } = props;

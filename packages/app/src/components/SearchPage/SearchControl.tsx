@@ -16,7 +16,6 @@ type Props = {
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
-
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
