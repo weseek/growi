@@ -84,10 +84,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => {
-          if (props.onClickInvoked == null) { logger.error('onClickInvoked is null') }
-          else { props.onClickInvoked(page._id) }
-        }}
+        onClick={() => { if (props.onClickInvoked != null) { props.onClickInvoked(page._id) } }}
       >
         <div className="d-flex">
           {/* checkbox */}
@@ -96,10 +93,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={() => {
-                if (props.onChangedInvoked == null) { logger.error('onClickInvoked is null') }
-                else { props.onChangedInvoked(page) }
-              }}
+              onClick={() => { if (props.onChangedInvoked != null) { props.onChangedInvoked(page) } }}
             />
           </div>
           <div className="w-100">
