@@ -216,14 +216,15 @@ class SearchPage extends React.Component {
       this.state.selectedPages.clear();
       // Force a render to tell React that the State has been changed by the Set class method
       this.forceUpdate();
-      return;
     }
-    this.state.searchedPages.forEach((page) => {
-      this.state.selectedPages.add(page);
-    });
+    else {
+      this.state.searchedPages.forEach((page) => {
+        this.state.selectedPages.add(page);
+      });
+    }
     // Force a render to tell React that the State has been changed by the Set class method
-    this.forceUpdate();
     this.updateCheckboxState();
+    this.forceUpdate();
   };
 
   renderSearchResultContent = () => {
