@@ -36,7 +36,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     );
   }
 
-  let isSubscribing;
+  let isSubscribing = false;
 
   if (subscriptionData.status) {
     isSubscribing = true;
