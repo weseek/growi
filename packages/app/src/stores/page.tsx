@@ -45,7 +45,7 @@ export const useSWRxSubscribeButton = <Data, Error>(
     endpoint => apiv3Get(endpoint, { pageId }).then((response) => {
       console.log(response);
       return {
-        status: response.data.status,
+        status: response.data.subscribing,
       };
     }),
   );
