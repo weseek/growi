@@ -163,6 +163,16 @@ module.exports = function(crowi, app) {
         return page;
       });
 
+      findResult.pages.map((page) => {
+        const data = esResult.data.find((data) => {
+          return page.id === data._id;
+        });
+
+        page.bookmarkCount = data._source.bookmark_count || 0;
+        page.elasticSearchResult = data.elasticSearchResult;
+        return page;
+      });
+      console.log('findResult', findResult);
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
       result.data = findResult.pages
@@ -180,7 +190,7 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-
+    console.log('result', result);
     return res.json(ApiResponse.success(result));
   };
 

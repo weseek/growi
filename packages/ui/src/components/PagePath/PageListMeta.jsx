@@ -38,8 +38,8 @@ export class PageListMeta extends React.Component {
     }
 
     let bookmarkCount;
-    if (page.bookmarkCount > 0) {
-      bookmarkCount = <span><i className="icon-star" />{page.bookmarkCount}</span>;
+    if (this.props.bookmarkCount > 0) {
+      bookmarkCount = <span><i className="icon-star" />{this.props.bookmarkCount}</span>;
     }
 
 
@@ -59,6 +59,7 @@ export class PageListMeta extends React.Component {
 
 PageListMeta.propTypes = {
   page: PropTypes.object.isRequired,
+  bookmarkCount: PropTypes.number,
 };
 
 PageListMeta.defaultProps = {
