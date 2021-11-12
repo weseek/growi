@@ -32,7 +32,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
 
 
   return (
-    <>
+    <div className="d-flex align-items-center">
       <input
         id="check-all-pages"
         type="checkbox"
@@ -43,7 +43,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
       />
       <button
         type="button"
-        className="btn text-danger font-weight-light p-0 ml-3"
+        className="btn text-danger font-weight-light p-0 ml-2"
         onClick={() => {
           if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
           else { onClickInvoked() }
@@ -52,7 +52,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}
       </button>
-    </>
+    </div>
   );
 
 };
