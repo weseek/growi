@@ -73,16 +73,20 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const actionType: string = notification.action;
   let actionMsg: string;
+  let actionIcon: string;
 
   switch (actionType) {
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
+      actionIcon = 'ti-agenda';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
+      actionIcon = 'icon-bubble';
       break;
     default:
       actionMsg = '';
+      actionIcon = '';
   }
 
 
@@ -96,7 +100,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           <div>
             <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
-          <i className="fa fa-file-o mr-2" />
+          <i className={`${actionIcon} mr-2`} />
           <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} />
         </div>
       </div>
