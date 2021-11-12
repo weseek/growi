@@ -4,11 +4,12 @@ import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
+import loggerFactory from '~/utils/logger';
 
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
 import PageManagement from '../Page/PageManagement';
-import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:SubnavButtons');
 const SubnavButtons = (props) => {
@@ -20,35 +21,40 @@ const SubnavButtons = (props) => {
 
   /* eslint-disable react/prop-types */
   const PageReactionButtons = ({ pageContainer }) => {
-
     const {
       state: {
-        pageId, likers, sumOfLikers, isLiked,
+        pageId, likers, sumOfLikers, isLiked, isBookmarked, sumOfBookmarks,
       },
     } = pageContainer;
 
     const onChangeInvoked = () => {
-      if (pageContainer.retrieveLikersAndSeenUsers == null) {
-        logger.error('retrieveBookmarkInfo is null');
-      }
-      else if (pageContainer.updateStateAfterLike == null) {
-        logger.error('updateStateAfterLike is null');
-      }
-      else {
-        pageContainer.retrieveLikersAndSeenUsers();
-        pageContainer.updateStateAfterLike();
-      }
+      if (pageContainer.retrieveBookmarkInfo == null) { logger.error('retrieveBookmarkInfo is null') }
+      else { pageContainer.retrieveBookmarkInfo() }
+    };
+
+    const likeInvoked = () => {
+      pageContainer.retrieveLikersAndSeenUsers();
+      pageContainer.updateStateAfterLike();
+    };
+
+    const bookmarkInvoked = () => {
+      pageContainer.retrieveBookmarkInfo();
     };
 
     return (
       <>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            <LikeButtons onChangeInvoked={onChangeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
+            <LikeButtons onChangeInvoked={likeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOfLikers} isLiked={isLiked} />
           </span>
         )}
         <span>
-          <BookmarkButton />
+          <BookmarkButton
+            pageId={pageId}
+            isBookmarked={isBookmarked}
+            sumOfBookmarks={sumOfBookmarks}
+            onChangeInvoked={bookmarkInvoked}
+          />
         </span>
       </>
     );

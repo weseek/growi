@@ -7,15 +7,13 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {
-    t, isOpen, onClose, pageContainer, path,
+    t, isOpen, onClose, pageId, path,
   } = props;
 
   const [errs, setErrs] = useState(null);
@@ -30,7 +28,15 @@ const PutBackPageModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.revertRemove(isPutbackRecursively);
+      // control flag
+      // If is it not true, Request value must be `null`.
+      const recursively = isPutbackRecursively ? true : null;
+
+      const response = await apiPost('/pages.revertRemove', {
+        page_id: pageId,
+        recursively,
+      });
+
       const putbackPagePath = response.page.path;
       window.location.href = encodeURI(putbackPagePath);
     }
@@ -80,20 +86,15 @@ const PutBackPageModal = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PutBackPageModalWrapper = withUnstatedContainers(PutBackPageModal, [PageContainer]);
-
 PutBackPageModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 
+  pageId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
 };
 
 
-export default withTranslation()(PutBackPageModalWrapper);
+export default withTranslation()(PutBackPageModal);

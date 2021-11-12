@@ -22,7 +22,9 @@ const PageManagement = (props) => {
   const {
     t, appContainer, pageContainer, isCompactMode,
   } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+  const {
+    pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
+  } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -165,23 +167,30 @@ const PageManagement = (props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
         />
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          pageId={pageId}
+          path={path}
         />
         {/*
          TODO : Refactor CreateTamplateModal in a way that it works while not relying on pageContainer
          TASK : https://estoc.weseek.co.jp/redmine/issues/80789
          */}
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
