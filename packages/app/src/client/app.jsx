@@ -131,6 +131,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
@@ -171,13 +172,6 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
-
-/*
- * FC for extracting context from DOM
- */
-ReactDOM.render(
-  <ContextExtractor />,
-);
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();
