@@ -2,10 +2,10 @@ import mongoose, {
   Model, Document, Schema,
 } from 'mongoose';
 
-export const initMongooseGlobalSettings = (): void => {
-  // No More Deprecation Warning Options
-  // see: https://mongoosejs.com/docs/migrating_to_6.html#the-aspromise-method-for-connections
-};
+// No More Deprecation Warning Options
+// Removed useFindAndModify and useCreateIndex option
+// see: https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
+export const initMongooseGlobalSettings = (): void => {};
 
 export const getMongoUri = (): string => {
   const { env } = process;
@@ -32,8 +32,8 @@ export const getOrCreateModel = <Interface, Method>(modelName: string, schema: S
 };
 
 // supress deprecation warnings
-// see: https://mongoosejs.com/docs/deprecations.html
+// useNewUrlParser no longer necessary
+// see: https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
 export const mongoOptions = {
-  useNewUrlParser: true,
   useUnifiedTopology: true,
 };

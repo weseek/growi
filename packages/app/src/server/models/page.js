@@ -728,7 +728,7 @@ module.exports = function(crowi) {
 
     // find
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.exec('find');
+    const pages = await builder.query.clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -771,7 +771,7 @@ module.exports = function(crowi) {
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
+    const pages = await builder.query.lean().clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
