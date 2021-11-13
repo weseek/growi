@@ -4,8 +4,8 @@ import { pagePathUtils } from '@growi/core';
 import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  usePageId, usePageIdOnHackmd, usePageUser, usePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor,
+  usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -15,6 +15,11 @@ const jsonNull = 'null';
 const ContextExtractor: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
+
+  /*
+   * App Context from DOM
+   */
+  const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
 
   /*
    * Page Context from DOM
@@ -49,6 +54,7 @@ const ContextExtractor: FC = () => {
   /*
    * use static swr
    */
+  useCurrentUser(currentUser);
   useCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
@@ -65,7 +71,7 @@ const ContextExtractor: FC = () => {
   usePageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
-  usePath(path);
+  useCurrentPagePath(path);
   useRevisionCreatedAt(revisionCreatedAt);
   useRevisionId(revisionId);
   useRevisionIdHackmdSynced(revisionIdHackmdSynced);
@@ -78,7 +84,6 @@ const ContextExtractor: FC = () => {
 
   return (
     <div>
-      なに
       {/* Render nothing */}
     </div>
   );

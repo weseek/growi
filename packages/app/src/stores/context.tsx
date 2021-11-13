@@ -3,12 +3,16 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
+export const useCurrentUser = (initialData?: any): SWRResponse<Nullable<any>, any> => {
+  return useStaticSWR<Nullable<any>, Error>('currentUser', initialData);
+};
+
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionId', initialData || null);
 };
 
-export const usePath = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('path', initialData || null);
+export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('currentPagePath', initialData || null);
 };
 
 export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
