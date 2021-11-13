@@ -1,9 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { Types } from 'mongoose';
-
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { SubscribeStatuses } from '~/interfaces/in-app-notification-settings';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
