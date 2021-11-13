@@ -50,6 +50,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -130,6 +131,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
