@@ -1,9 +1,10 @@
-import { Types } from 'mongoose';
+import { Types, PaginateResult } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
   InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
 } from '~/server/models/in-app-notification';
+import { IInAppNotification } from '../../interfaces/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
@@ -81,9 +82,8 @@ export default class InAppNotificationService {
     return;
   }
 
-  getLatestNotificationsByUser = async(userId, queryOptions) => {
-    const { limit } = queryOptions;
-    const offset = queryOptions.offset || 0;
+  getLatestNotificationsByUser = async(userId: Types.ObjectId, queryOptions: {offset: number, limit: number}): Promise<PaginateResult<IInAppNotification>> => {
+    const { limit, offset } = queryOptions;
 
     try {
       const paginationResult = await InAppNotification.paginate(
