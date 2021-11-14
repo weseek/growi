@@ -11,7 +11,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
   offset?: number,
 ): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
-    `/in-app-notification/list?limit=${limit}&offset=${offset}`,
-    endpoint => apiv3Get(endpoint).then(response => response.data),
+    ['/in-app-notification/list', limit, offset],
+    endpoint => apiv3Get(endpoint, { limit, offset }).then(response => response.data),
   );
 };
