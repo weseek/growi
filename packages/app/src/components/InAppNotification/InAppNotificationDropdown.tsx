@@ -23,7 +23,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
-  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
 
   useEffect(() => {
     initializeSocket(props);
@@ -59,16 +59,18 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   const toggleDropdownHandler = () => {
-    if (isOpen === false && count > 0) {
+    if (!isOpen && count > 0) {
       updateNotificationStatus();
     }
 
     const newIsOpenState = !isOpen;
+    if (newIsOpenState) {
+      mutate();
+    }
     setIsOpen(newIsOpenState);
   };
 
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
-
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
