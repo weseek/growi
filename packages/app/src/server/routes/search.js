@@ -189,7 +189,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    console.log(JSON.stringify(result, null, 2));
     return res.json(ApiResponse.success(result));
   };
 

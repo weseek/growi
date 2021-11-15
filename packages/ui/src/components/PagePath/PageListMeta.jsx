@@ -8,38 +8,38 @@ const { checkTemplatePath } = templateChecker;
 export class PageListMeta extends React.Component {
 
   render() {
-    const { page } = this.props;
+    const { pageData, pageMeta } = this.props;
 
     // top check
     let topLabel;
-    if (isTopPage(page.path)) {
+    if (isTopPage(pageData.path)) {
       topLabel = <span className="badge badge-info">TOP</span>;
     }
 
     // template check
     let templateLabel;
-    if (checkTemplatePath(page.path)) {
+    if (checkTemplatePath(pageData.path)) {
       templateLabel = <span className="badge badge-info">TMPL</span>;
     }
 
     let commentCount;
-    if (page.commentCount > 0) {
-      commentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
+    if (pageData.commentCount > 0) {
+      commentCount = <span><i className="icon-bubble" />{pageData.commentCount}</span>;
     }
 
     let likerCount;
-    if (page.liker.length > 0) {
-      likerCount = <span><i className="icon-like" />{page.liker.length}</span>;
+    if (pageData.liker.length > 0) {
+      likerCount = <span><i className="icon-like" />{pageData.liker.length}</span>;
     }
 
     let locked;
-    if (page.grant !== 1) {
+    if (pageData.grant !== 1) {
       locked = <span><i className="icon-lock" /></span>;
     }
 
     let bookmarkCount;
-    if (this.props.bookmarkCount > 0) {
-      bookmarkCount = <span><i className="icon-star" />{this.props.bookmarkCount}</span>;
+    if (pageMeta.bookmarkCount > 0) {
+      bookmarkCount = <span><i className="icon-star" />{pageMeta.bookmarkCount}</span>;
     }
 
 
@@ -58,8 +58,8 @@ export class PageListMeta extends React.Component {
 }
 
 PageListMeta.propTypes = {
-  page: PropTypes.object.isRequired,
-  bookmarkCount: PropTypes.number,
+  pageData: PropTypes.object.isRequired,
+  pageMeta: PropTypes.object.isRequired,
 };
 
 PageListMeta.defaultProps = {

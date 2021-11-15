@@ -16,9 +16,8 @@ type Props = {
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  console.log(props);
   const { focusedPage } = props;
-  const focusedPageId = (focusedPage !== undefined && focusedPage.pageData !== undefined ? focusedPage.pageData._id : '';
+  const focusedPageId = (focusedPage !== undefined && focusedPage.pageData !== undefined) ? focusedPage.pageData._id : '';
   return (
     <>
       {props.pages.map((page) => {
