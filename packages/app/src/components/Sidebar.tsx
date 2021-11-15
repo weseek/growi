@@ -102,6 +102,11 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
+  const [isHover, setHover] = useState(false);
+  const [isDragging, setDrag] = useState(false);
+  const [isMounted, setMounted] = useState(false);
+
+  const isResizableByDrag = !isDrawerMode && (!isCollapsed || isHover);
   /**
    * hack and override UIController.storeState
    *
@@ -169,8 +174,6 @@ const Sidebar: FC<Props> = (props: Props) => {
     mutateDrawerOpened(false, false);
   }, [mutateDrawerOpened]);
 
-  const [isMounted, setMounted] = useState(false);
-
   useEffect(() => {
     // this.hackUIController();
     setMounted(true);
@@ -180,9 +183,6 @@ const Sidebar: FC<Props> = (props: Props) => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
-  const [isHover, setHover] = useState(false);
-  const [isDragging, setDrag] = useState(false);
-
   const resizableContainer = useRef<HTMLDivElement>(null);
   const setContentWidth = useCallback((newWidth) => {
     if (resizableContainer.current == null) {
@@ -191,20 +191,23 @@ const Sidebar: FC<Props> = (props: Props) => {
     resizableContainer.current.style.width = `${newWidth}px`;
   }, []);
 
-  const hoverHandler = useCallback((isHover: boolean) => {
-    if (!isCollapsed || isDrawerMode) {
+  const hoverOnResizableContainerHandler = useCallback(() => {
+    if (!isCollapsed || isDrawerMode || isDragging) {
       return;
     }
 
-    setHover(isHover);
+    setHover(true);
+    setContentWidth(currentProductNavWidth);
+  }, [isCollapsed, isDrawerMode, isDragging, setContentWidth, currentProductNavWidth]);
 
-    if (isHover) {
-      setContentWidth(currentProductNavWidth);
+  const hoverOutHandler = useCallback(() => {
+    if (!isCollapsed || isDrawerMode || isDragging) {
+      return;
     }
-    if (!isHover) {
-      setContentWidth(sidebarMinimizeWidth);
-    }
-  }, [isCollapsed, isDrawerMode, setContentWidth, currentProductNavWidth]);
+
+    setHover(false);
+    setContentWidth(sidebarMinimizeWidth);
+  }, [isCollapsed, isDragging, isDrawerMode, setContentWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
@@ -221,16 +224,15 @@ const Sidebar: FC<Props> = (props: Props) => {
     }
   }, [currentProductNavWidth, isCollapsed, setContentWidth]);
 
-  const draggableAreaMoveHandler = useCallback((event) => {
-    if (isDragging) {
-      event.preventDefault();
-      const newWidth = event.pageX - 60;
-      if (resizableContainer.current != null) {
-        setContentWidth(newWidth);
-        resizableContainer.current.classList.add('dragging');
-      }
+  const draggableAreaMoveHandler = useCallback((event: MouseEvent) => {
+    event.preventDefault();
+
+    const newWidth = event.pageX - 60;
+    if (resizableContainer.current != null) {
+      setContentWidth(newWidth);
+      resizableContainer.current.classList.add('dragging');
     }
-  }, [isDragging, setContentWidth]);
+  }, [setContentWidth]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
     if (resizableContainer.current == null) {
@@ -241,7 +243,7 @@ const Sidebar: FC<Props> = (props: Props) => {
 
     if (resizableContainer.current.clientWidth < sidebarMinWidth) {
       // force collapsed
-      mutateSidebarCollapsed(true, false);
+      mutateSidebarCollapsed(true);
       mutateProductNavWidth(sidebarMinWidth, false);
       scheduleToPutUserUISettings({ isSidebarCollapsed: true, currentProductNavWidth: sidebarMinWidth });
     }
@@ -253,28 +255,34 @@ const Sidebar: FC<Props> = (props: Props) => {
 
     resizableContainer.current.classList.remove('dragging');
 
-    document.removeEventListener('mousemove', draggableAreaMoveHandler);
-    document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+  }, [mutateProductNavWidth, mutateSidebarCollapsed]);
 
-  }, [draggableAreaMoveHandler, mutateProductNavWidth, mutateSidebarCollapsed]);
-
-  const dragableAreaClickHandler = useCallback(() => {
-    if (isCollapsed || isDrawerMode) {
+  const dragableAreaMouseDownHandler = useCallback((event: MouseEvent) => {
+    if (!isResizableByDrag) {
       return;
     }
-    setDrag(true);
-  }, [isCollapsed, isDrawerMode]);
 
-  useEffect(() => {
+    event.preventDefault();
+
+    setDrag(true);
+
+    const removeEventListeners = () => {
+      document.removeEventListener('mousemove', draggableAreaMoveHandler);
+      document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+      document.removeEventListener('mouseup', removeEventListeners);
+    };
+
     document.addEventListener('mousemove', draggableAreaMoveHandler);
     document.addEventListener('mouseup', dragableAreaMouseUpHandler);
-  }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
+    document.addEventListener('mouseup', removeEventListeners);
+
+  }, [dragableAreaMouseUpHandler, draggableAreaMoveHandler, isResizableByDrag]);
 
   return (
     <>
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
-          <div className="navigation">
+          <div className="navigation" onMouseLeave={hoverOutHandler}>
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
                 { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton></GlobalNavigationSkelton> }
@@ -282,10 +290,7 @@ const Sidebar: FC<Props> = (props: Props) => {
               <div
                 ref={resizableContainer}
                 className="grw-contextual-navigation"
-                onMouseEnter={() => hoverHandler(true)}
-                onMouseLeave={() => hoverHandler(false)}
-                onMouseMove={draggableAreaMoveHandler}
-                onMouseUp={dragableAreaMouseUpHandler}
+                onMouseEnter={hoverOnResizableContainerHandler}
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
                 <div className="grw-contextual-navigation-child">
@@ -297,22 +302,24 @@ const Sidebar: FC<Props> = (props: Props) => {
             </div>
             <div className="grw-navigation-draggable">
               <div
-                className={`${!isDrawerMode ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
-                onMouseDown={dragableAreaClickHandler}
+                className={`${isResizableByDrag ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
+                onMouseDown={dragableAreaMouseDownHandler}
               >
                 <div className="grw-navigation-draggable-hitarea-child"></div>
               </div>
               <button
-                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
                 aria-expanded="true"
                 aria-label="Toggle navigation"
                 disabled={isDrawerMode}
                 onClick={toggleNavigationBtnClickHandler}
               >
-                <span role="presentation">
-                  <i className="ml-1 fa fa-fw fa-angle-left text-white"></i>
+                <span className="background" role="presentation"></span>
+                <span className="icon-container" role="presentation">
+                  <i className="fa fa-fw fa-angle-left text-white" role="presentation"></i>
                 </span>
+                <span className="hitarea" role="presentation"></span>
               </button>
             </div>
           </div>
