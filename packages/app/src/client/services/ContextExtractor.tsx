@@ -7,7 +7,9 @@ import {
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
-import { useDrawerMode } from '~/stores/ui';
+import {
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+} from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -59,7 +61,11 @@ const ContextExtractor: FC = () => {
   useCurrentUser(currentUser);
 
   // Navigation
-  useDrawerMode();
+  useEditorMode();
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
+  useDrawerMode(); // this must be called at last
 
   // Page
   useCreatedAt(createdAt);
