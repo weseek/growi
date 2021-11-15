@@ -5,17 +5,18 @@ import Clamp from 'react-multiline-clamp';
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { ISearchedPage } from './SearchResultList';
+import { IPageSearchResultData } from '../../interfaces/search';
+
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
-  page: ISearchedPage,
+  page: IPageSearchResultData,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageSearchResultData}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
