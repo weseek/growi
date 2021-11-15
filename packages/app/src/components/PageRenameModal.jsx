@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -24,9 +24,8 @@ import DuplicatedPathsTable from './DuplicatedPathsTable';
 
 const PageRenameModal = (props) => {
   const {
-    appContainer, path, pageId, revisionId,
+    t, appContainer, path, pageId, revisionId,
   } = props;
-  const { t } = useTranslation('');
 
   const { crowi } = appContainer.config;
 
@@ -76,20 +75,23 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
-  const checkExistPathsDebounce = useCallback(() => {
-    const checkExistPaths = async(newParentPath, fromPath) => {
-      try {
-        const res = await apiv3Get('/page/exist-paths', { fromPath, toPath: newParentPath });
-        const { existPaths } = res.data;
-        setExistingPaths(existPaths);
-      }
-      catch (err) {
-        setErrs(err);
-        toastError(t('modal_rename.label.Fail to get exist path'));
-      }
-    };
-    debounce(1000, false, checkExistPaths);
-  }, [t]);
+
+  const checkExistPaths = async(newParentPath, fromPath) => {
+    try {
+      const res = await apiv3Get('/page/exist-paths', { fromPath, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
 
   useEffect(() => {
     setPageNameInput(path);
@@ -97,7 +99,7 @@ const PageRenameModal = (props) => {
 
   useEffect(() => {
     if (pageNameInput !== path) {
-      checkExistPathsDebounce();
+      checkExistPathsDebounce(pageNameInput, path, subordinatedPages);
     }
   // "path" must not be checked.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -259,6 +261,7 @@ const PageRenameModal = (props) => {
 const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer]);
 
 PageRenameModal.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
@@ -270,4 +273,4 @@ PageRenameModal.propTypes = {
   path: PropTypes.string.isRequired,
 };
 
-export default PageRenameModalWrapper;
+export default withTranslation()(PageRenameModalWrapper);
