@@ -8,7 +8,7 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
 } from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
