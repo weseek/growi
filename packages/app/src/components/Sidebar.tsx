@@ -310,9 +310,11 @@ const Sidebar: FC<Props> = (props: Props) => {
                 disabled={isDrawerMode}
                 onClick={toggleNavigationBtnClickHandler}
               >
-                <span role="presentation">
-                  <i className="ml-1 fa fa-fw fa-angle-left text-white"></i>
+                <span className="background" role="presentation"></span>
+                <span className="icon-container" role="presentation">
+                  <i className="fa fa-fw fa-angle-left text-white" role="presentation"></i>
                 </span>
+                <span className="hitarea" role="presentation"></span>
               </button>
             </div>
           </div>

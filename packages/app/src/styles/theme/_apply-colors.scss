@@ -223,11 +223,7 @@ ul.pagination {
     $color-resize-button-hover: $color-reversal !default;
     $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
 
-    @include override-hexagon-color($color-resize-button, $bgcolor-resize-button);
-
-    &:hover {
-      @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
-    }
+    // TODO fill color
   }
   div.grw-global-navigation {
     > div {
