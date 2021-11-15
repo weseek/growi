@@ -154,7 +154,7 @@
         transition-duration: 0.22s;
         transition-property: left, opacity, width;
       }
-      .resizable.grw-navigation-draggable-hitarea {
+      .grw-navigation-draggable-hitarea {
         position: relative;
         left: -4px;
         width: 24px;
@@ -177,7 +177,6 @@
   }
 
   .grw-sidebar-nav {
-    min-width: 62px;
     height: 100vh;
 
     .btn {

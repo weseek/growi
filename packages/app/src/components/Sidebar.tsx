@@ -107,7 +107,7 @@ const Sidebar: FC<Props> = (props: Props) => {
   const [isDragging, setDrag] = useState(false);
   const [isMounted, setMounted] = useState(false);
 
-  const isResizableByDrag = !isDrawerMode && (!isCollapsed || isHover);
+  const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
   /**
    * hack and override UIController.storeState
    *
@@ -302,12 +302,14 @@ const Sidebar: FC<Props> = (props: Props) => {
               </div>
             </div>
             <div className="grw-navigation-draggable">
-              <div
-                className={`${isResizableByDrag ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
-                onMouseDown={dragableAreaMouseDownHandler}
-              >
-                <div className="grw-navigation-draggable-hitarea-child"></div>
-              </div>
+              { isResizableByDrag && (
+                <div
+                  className="grw-navigation-draggable-hitarea"
+                  onMouseDown={dragableAreaMouseDownHandler}
+                >
+                  <div className="grw-navigation-draggable-hitarea-child"></div>
+                </div>
+              ) }
               <button
                 className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
