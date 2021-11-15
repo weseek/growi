@@ -1,8 +1,18 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.12](https://github.com/weseek/growi/compare/v4.4.11...v4.4.12) - 2021-11-15
+
+### 🐛 Bug Fixes
+
+- fix: Cannot use HackMD (#4667)
+
+### 🧰 Maintenance
+
+- ci(deps): Downgrade passport to 0.4.0 (#4669) @mudana-grune
 
 ## [v4.4.11](https://github.com/weseek/growi/compare/v4.4.10...v4.4.11) - 2021-11-12
 
