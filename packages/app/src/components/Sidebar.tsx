@@ -250,8 +250,9 @@ const Sidebar: FC<Props> = (props: Props) => {
     }
     else {
       const newWidth = resizableContainer.current.clientWidth;
+      mutateSidebarCollapsed(false);
       mutateProductNavWidth(newWidth, false);
-      scheduleToPutUserUISettings({ currentProductNavWidth: newWidth });
+      scheduleToPutUserUISettings({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');
