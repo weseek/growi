@@ -15,6 +15,7 @@ import DrawerToggler from './Navbar/DrawerToggler';
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
+import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -315,9 +316,8 @@ const Sidebar: FC<Props> = (props: Props) => {
                 disabled={isDrawerMode}
                 onClick={toggleNavigationBtnClickHandler}
               >
-                <span className="background" role="presentation"></span>
-                <span className="icon-container" role="presentation">
-                  <i className="fa fa-fw fa-angle-left text-white" role="presentation"></i>
+                <span className="hexagon-container" role="presentation">
+                  <NavigationResizeHexagon />
                 </span>
                 <span className="hitarea" role="presentation"></span>
               </button>
