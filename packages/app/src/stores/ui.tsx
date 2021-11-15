@@ -94,11 +94,16 @@ export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRRespon
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   const key = isServer ? null : 'isDrawerMode';
+  const { localStorage } = window;
 
   const { data: editorMode } = useEditorMode();
-  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
-  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser(localStorage?.preferDrawerModeByUser === 'true');
+  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser(
+    localStorage.preferDrawerModeOnEditByUser == null || localStorage?.preferDrawerModeOnEditByUser === 'true',
+  );
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+
+  console.log('useDrawerMode hook called:', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser);
 
   // get preference on view or edit
   const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;

@@ -1,9 +1,9 @@
 import React, {
-  FC, useCallback, useEffect, useRef, useState,
+  FC, useCallback, useEffect, useRef, useState, memo,
 } from 'react';
 
 import {
-  useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
   useCurrentSidebarContents,
   useCurrentProductNavWidth,
@@ -95,12 +95,14 @@ const SidebarSkeltonContents = () => {
 type Props = {
 }
 
-const Sidebar: FC<Props> = (props: Props) => {
+const Sidebar: FC<Props> = memo((props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
+
+  console.log('Sidebar Component has rendered: ', isDrawerMode, isDrawerOpened);
 
   /**
    * hack and override UIController.storeState
@@ -325,6 +327,6 @@ const Sidebar: FC<Props> = (props: Props) => {
     </>
   );
 
-};
+});
 
 export default Sidebar;

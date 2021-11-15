@@ -9,6 +9,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
+import { useDrawerMode } from '~/stores/ui';
 
 import {
   isUserPreferenceExists,
@@ -34,6 +35,8 @@ const PersonalDropdown = (props) => {
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
+  const { mutate } = useDrawerMode();
+
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
 
@@ -47,7 +50,8 @@ const PersonalDropdown = (props) => {
   };
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreference(bool);
+    // navigationContainer.setDrawerModePreference(bool);
+    mutate(bool);
   };
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
