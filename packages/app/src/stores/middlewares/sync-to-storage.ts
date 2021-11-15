@@ -44,7 +44,6 @@ export const createSyncToStorageMiddlware = (
           return swrNext.mutate(data, shouldRevalidate)
             .then((value) => {
               storage.setItem(keyInStorage, storageSerializer.serialize(value));
-              console.log('すと', keyInStorage);
               return value;
             });
         },
