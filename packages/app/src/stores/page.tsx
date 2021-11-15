@@ -39,7 +39,7 @@ export const useSWRxSubscribeButton = <Data, Error>(
 
 ): SWRResponse<{status: boolean | null}, Error> => {
   return useSWR(
-    '/page/subscribe',
+    ['/page/subscribe', pageId],
     endpoint => apiv3Get(endpoint, { pageId }).then((response) => {
       return {
         status: response.data.subscribing,
