@@ -48,9 +48,6 @@ class LikeButtons extends React.Component {
       if (onChangeInvoked !== null) {
         await onChangeInvoked();
       }
-      else {
-        return new Error('onChangeInvoked is null');
-      }
     }
     catch (err) {
       toastError(err);
