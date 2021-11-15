@@ -6,6 +6,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageReactionButtons from '../PageReactionButtons';
 import PageManagement from '../Page/PageManagement';
+import { useSWRPageInfo } from '../../stores/page';
 
 
 type SearchResultSubNavButtonProps = {
@@ -16,10 +17,19 @@ type SearchResultSubNavButtonProps = {
 }
 const SearchResultSubNavButton: FC<SearchResultSubNavButtonProps> = (props: SearchResultSubNavButtonProps) => {
   const { appContainer, isCompactMode, pageId } = props;
-
+  const { data: pageInfo, error: pageInfoError } = useSWRPageInfo(pageId);
   return (
     <>
-      <PageReactionButtons pageId={pageId} currentUserId={appContainer.currentUserId}></PageReactionButtons>
+      {pageInfo != null && !pageInfoError && (
+        <PageReactionButtons
+          pageId={pageId}
+          currentUserId={appContainer.currentUserId}
+          likerSum={pageInfo.sumOfLikers}
+          likerIds={pageInfo.likerIds}
+          isAlreadyLiked={pageInfo.isLiked}
+        >
+        </PageReactionButtons>
+      )}
       {/*
         TODO :
         once 80335 is done, merge 77543 branch(parent of 80335) into 77524.

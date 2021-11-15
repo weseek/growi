@@ -6,6 +6,9 @@ import { apiv3Get } from '../client/util/apiv3-client';
 type Props = {
   pageId: string,
   currentUserId: string,
+  likerSum: number,
+  likerIds: string[],
+  isAlreadyLiked: boolean,
 }
 
 const LikeButtonsWrapper = (props) => {

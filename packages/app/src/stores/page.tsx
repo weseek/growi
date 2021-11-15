@@ -31,3 +31,28 @@ export const useSWRxPageList = (
     }),
   );
 };
+
+
+type pageInfo = {
+  sumOfLikers: number,
+  likerIds:string[],
+  seenUserIds: string[],
+  sumOfSeenUsers: number,
+  isSeen: boolean,
+  isLiked:boolean,
+}
+export const useSWRPageInfo = (pageId: string) : SWRResponse<pageInfo, Error> => {
+  return useSWR(
+    `page/info?pageId=${pageId}`,
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return {
+        sumOfLikers: response.data.sumOfLikers,
+        likerIds: response.data.likerIds,
+        seenUserIds: response.data.seenUserIds,
+        sumOfSeenUsers: response.data.sumOfSeenUsers,
+        isSeen: response.data.isSeen,
+        isLiked: response.data?.isLiked,
+      };
+    }),
+  );
+};
