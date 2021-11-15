@@ -65,7 +65,6 @@ const ContextExtractor: FC = () => {
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
-  useDrawerMode(); // this must be called at last
 
   // Page
   useCreatedAt(createdAt);
