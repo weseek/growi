@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
-import { useDrawerMode } from '~/stores/ui';
+import { usePreferDrawerModeByUser, useDrawerMode } from '~/stores/ui';
 
 import {
   isUserPreferenceExists,
@@ -35,7 +35,8 @@ const PersonalDropdown = (props) => {
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
-  const { mutate } = useDrawerMode();
+  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  const { mutate: mutateDrawerMode } = useDrawerMode();
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
@@ -49,10 +50,10 @@ const PersonalDropdown = (props) => {
     window.location.href = '/logout';
   };
 
-  const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    // navigationContainer.setDrawerModePreference(bool);
-    mutate(bool);
-  };
+  const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
+    mutatePreferDrawerMode(bool);
+    mutateDrawerMode();
+  }, [mutatePreferDrawerMode, mutateDrawerMode]);
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
     navigationContainer.setDrawerModePreferenceOnEdit(bool);
@@ -148,7 +149,7 @@ const PersonalDropdown = (props) => {
                   id="swSidebarMode"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={!preferDrawerModeByUser}
+                  checked={!isPreferDrawerMode}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
