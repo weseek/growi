@@ -35,6 +35,16 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
+export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
+  const key = isServer ? null : 'userUISettings';
+
+  return useSWRImmutable(
+    key,
+    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
+  );
+};
+
+
 export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   const key = isServer ? null : 'isMobile';
 
@@ -49,11 +59,13 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   return useStaticSWR(key, null, configuration);
 };
 
+
 const EDITOR_MODE = 'editorMode';
 export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
   const initialData = EditorMode.View;
   return useStaticSWR(EDITOR_MODE, editorMode || null, { fallbackData: initialData });
 };
+
 
 const IS_DEVICE_SMALLER_THAN_MD: Key = isServer ? null : 'isDeviceSmallerThanMd';
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
@@ -79,6 +91,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(IS_DEVICE_SMALLER_THAN_MD);
 };
 
+
 const PREFER_DRAWER_MODE_BY_USER = isServer ? null : 'preferDrawerModeByUser';
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
   const initialData = localStorage?.preferDrawerModeByUser === 'true';
@@ -86,12 +99,14 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boo
   return useStaticSWR(PREFER_DRAWER_MODE_BY_USER, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
 
+
 const PREFER_DRAWER_MODE_ON_EDIT_BY_USER = isServer ? null : 'preferDrawerModeOnEditByUser';
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
   const initialData = localStorage?.preferDrawerModeOnEditByUser == null || localStorage?.preferDrawerModeOnEditByUser === 'true';
 
   return useStaticSWR(PREFER_DRAWER_MODE_ON_EDIT_BY_USER, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
+
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDrawerMode';
@@ -122,25 +137,12 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   return useSWR(key, calcDrawerMode, { fallback: calcDrawerMode });
 };
 
+
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
 };
 
-
-/** **********************************************************
- *                          SWR Hooks
- *                      for switching UI
- *********************************************************** */
-
-export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
-  const key = isServer ? null : 'userUISettings';
-
-  return useSWRImmutable(
-    key,
-    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
-  );
-};
 
 export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {
   const { data } = useSWRxUserUISettings();

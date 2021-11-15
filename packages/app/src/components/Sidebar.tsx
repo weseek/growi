@@ -102,6 +102,8 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
+  console.log('Sidebar is rendered', isDrawerMode);
+
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
   const [isMounted, setMounted] = useState(false);
