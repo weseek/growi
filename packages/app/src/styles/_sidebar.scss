@@ -43,9 +43,13 @@
     }
     .hitarea {
       @extend .rounded-pill;
-      width: $size;
-      height: $size;
-      background-color: red;
+
+      $size-hitarea: $size * 2.5;
+      position: absolute;
+      top: ($size - $size-hitarea) / 2;
+      left: ($size - $size-hitarea) / 2;
+      width: $size-hitarea;
+      height: $size-hitarea;
     }
 
     // reverse and center icon at the time of collapsed
