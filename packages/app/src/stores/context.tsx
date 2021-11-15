@@ -7,8 +7,8 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
-export const useCurrentUser = (initialData?: IUser): SWRResponse<Nullable<IUser>, any> => {
-  return useStaticSWR<Nullable<any>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: IUser): SWRResponse<Nullable<IUser>, Error> => {
+  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData || null);
 };
 
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
