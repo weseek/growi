@@ -10,7 +10,7 @@ import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
-const SubnavButtons = (props) => {
+const SubnavButtons = React.memo((props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
@@ -49,7 +49,7 @@ const SubnavButtons = (props) => {
       )}
     </>
   );
-};
+});
 
 /**
  * Wrapper component for using unstated

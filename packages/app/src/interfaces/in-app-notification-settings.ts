@@ -7,6 +7,7 @@ export enum subscribeRuleNames {
 export enum SubscribeRuleDescriptions {
   PAGE_CREATE = 'in_app_notification_settings.default_subscribe_rules.page_create',
 }
+
 export interface ISubscribeRule {
   name: subscribeRuleNames;
   isEnabled: boolean;

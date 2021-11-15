@@ -1,10 +1,12 @@
-import React, {
-  FC, useState, useCallback, useEffect,
-} from 'react';
+import React, { FC } from 'react';
 
+
+import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { useSWRxSubscribeButton } from '../stores/page';
+
 
 import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
@@ -12,17 +14,29 @@ import PageContainer from '~/client/services/PageContainer';
 
 type Props = {
   appContainer: AppContainer,
-  pageId: string,
+  pageId: Types.ObjectId,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-
   const { appContainer, pageId } = props;
-  const [isSubscribing, setIsSubscribing] = useState<boolean | null>(null);
+  const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
 
-  const buttonClass = `${isSubscribing ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribing || isSubscribing == null ? 'fa fa-eye' : 'fa fa-eye-slash';
+  let isSubscribed;
+
+  switch (subscriptionData?.status) {
+    case true:
+      isSubscribed = true;
+      break;
+    case false:
+      isSubscribed = false;
+      break;
+    default:
+      isSubscribed = null;
+  }
+
+  const buttonClass = `${isSubscribed ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribed || isSubscribed == null ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
     if (appContainer.isGuestUser) {
@@ -30,40 +44,15 @@ const SubscribeButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribing });
+      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribed });
       if (res) {
-        const { subscription } = res.data;
-        setIsSubscribing(subscription.status === 'SUBSCRIBE');
+        mutate();
       }
     }
     catch (err) {
       toastError(err);
     }
   };
-
-  const fetchSubscriptionStatus = useCallback(async() => {
-    if (appContainer.isGuestUser) {
-      return;
-    }
-
-    try {
-      const res = await appContainer.apiv3Get('page/subscribe', { pageId });
-      const { subscribing } = res.data;
-      if (subscribing == null) {
-        setIsSubscribing(null);
-      }
-      else {
-        setIsSubscribing(subscribing);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer, pageId]);
-
-  useEffect(() => {
-    fetchSubscriptionStatus();
-  }, [fetchSubscriptionStatus]);
 
   return (
     <>
