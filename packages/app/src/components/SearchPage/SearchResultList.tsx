@@ -67,13 +67,15 @@ const SearchResultList: FC<Props> = (props:Props) => {
           revisionId={controlTargetPage.revision}
           path={controlTargetPage.path}
         />
-        {/* <PageDuplicateModal
+        {/* TODO: call page duplicate modal
+        <PageDuplicateModalWrapper
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
           pageId={pageId}
           path={path}
         /> */}
-        {/* <PageDeleteModal
+        {/* TODO: call page delete modal
+        <PageDeleteModalWrapper
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           pageId={pageId}
