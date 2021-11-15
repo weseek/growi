@@ -303,7 +303,7 @@ const Sidebar: FC<Props> = (props: Props) => {
                 <div className="grw-navigation-draggable-hitarea-child"></div>
               </div>
               <button
-                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
                 aria-expanded="true"
                 aria-label="Toggle navigation"
