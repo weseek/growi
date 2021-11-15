@@ -191,20 +191,23 @@ const Sidebar: FC<Props> = (props: Props) => {
     resizableContainer.current.style.width = `${newWidth}px`;
   }, []);
 
-  const hoverHandler = useCallback((isHover: boolean) => {
+  const hoverOnResizableContainerHandler = useCallback(() => {
     if (!isCollapsed || isDrawerMode) {
       return;
     }
 
-    setHover(isHover);
-
-    if (isHover) {
-      setContentWidth(currentProductNavWidth);
-    }
-    if (!isHover) {
-      setContentWidth(sidebarMinimizeWidth);
-    }
+    setHover(true);
+    setContentWidth(currentProductNavWidth);
   }, [isCollapsed, isDrawerMode, setContentWidth, currentProductNavWidth]);
+
+  const hoverOutHandler = useCallback(() => {
+    if (!isCollapsed || isDrawerMode) {
+      return;
+    }
+
+    setHover(false);
+    setContentWidth(sidebarMinimizeWidth);
+  }, [isCollapsed, isDrawerMode, setContentWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     const newValue = !isCollapsed;
@@ -268,6 +271,11 @@ const Sidebar: FC<Props> = (props: Props) => {
   useEffect(() => {
     document.addEventListener('mousemove', draggableAreaMoveHandler);
     document.addEventListener('mouseup', dragableAreaMouseUpHandler);
+    // cleanup
+    return function cleanup() {
+      document.removeEventListener('mousemove', draggableAreaMoveHandler);
+      document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+    };
   }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
 
   return (
@@ -275,15 +283,14 @@ const Sidebar: FC<Props> = (props: Props) => {
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
           <div className="navigation">
-            <div className="grw-navigation-wrap">
+            <div className="grw-navigation-wrap" onMouseLeave={hoverOutHandler}>
               <div className="grw-global-navigation">
                 { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton></GlobalNavigationSkelton> }
               </div>
               <div
                 ref={resizableContainer}
                 className="grw-contextual-navigation"
-                onMouseEnter={() => hoverHandler(true)}
-                onMouseLeave={() => hoverHandler(false)}
+                onMouseEnter={hoverOnResizableContainerHandler}
                 onMouseMove={draggableAreaMoveHandler}
                 onMouseUp={dragableAreaMouseUpHandler}
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
