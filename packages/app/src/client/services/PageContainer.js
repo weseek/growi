@@ -4,6 +4,8 @@ import { Container } from 'unstated';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
+
+import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
 import { toastError } from '../util/apiNotification';
 
@@ -91,6 +93,10 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+      isConflictingOnSave: false,
+      isConflictDiffModalOpen: false,
+
+      revisionsOnConflict: {},
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
@@ -431,7 +437,6 @@ export default class PageContainer extends Container {
 
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
-
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {
@@ -652,6 +657,34 @@ export default class PageContainer extends Container {
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
+  }
+
+  async resolveConflict(pageId, revisionId, markdown, optionsToSave) {
+
+    if (optionsToSave == null) {
+      const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
+      throw new Error(msg);
+    }
+
+    const { path } = this.state;
+
+    const params = Object.assign(optionsToSave, {
+      page_id: pageId,
+      revision_id: revisionId,
+      body: markdown,
+    });
+
+    const res = await apiPost('/pages.update', params);
+
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    editorContainer.clearDraft(path);
+
+    return res;
+  }
+
+  async resolveConflictAndReload(pageId, revisionId, markdown, optionsToSave) {
+    await this.resolveConflict(pageId, revisionId, markdown, optionsToSave);
+    window.location.reload();
   }
 
 }
