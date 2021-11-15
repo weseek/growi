@@ -115,7 +115,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
-                <PageListMeta pageData={pageData} pageMeta={pageMeta} />
+                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
