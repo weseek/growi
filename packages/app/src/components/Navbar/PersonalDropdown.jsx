@@ -1,4 +1,4 @@
-import React, { useState, memo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
-import { usePreferDrawerModeByUser, useDrawerMode } from '~/stores/ui';
+import { usePreferDrawerModeByUser } from '~/stores/ui';
 
 import {
   isUserPreferenceExists,
@@ -36,7 +36,6 @@ const PersonalDropdown = (props) => {
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
   const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
-  const { mutate: mutateDrawerMode } = useDrawerMode();
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
@@ -52,8 +51,7 @@ const PersonalDropdown = (props) => {
 
   const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
     mutatePreferDrawerMode(bool);
-    mutateDrawerMode();
-  }, [mutatePreferDrawerMode, mutateDrawerMode]);
+  }, [mutatePreferDrawerMode]);
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
     navigationContainer.setDrawerModePreferenceOnEdit(bool);
