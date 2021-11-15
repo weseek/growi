@@ -4,10 +4,13 @@ import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
 
+// TODO : set focusedPage type to ?IPageSearchResultData once #80214 is merged
+// PR: https://github.com/weseek/growi/pull/4649
+
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  focusedPage : null | any,
+  focusedPage: null | any,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.focusedPage;

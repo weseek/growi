@@ -8,9 +8,12 @@ type Props = {
   currentUserId: string,
 }
 
+const LikeButtonsWrapper = (props) => {
+  return <LikeButtons {...props}></LikeButtons>;
+};
+
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const { pageId, currentUserId } = props;
-  const LikeButtonsTypeAny: any = LikeButtons;
 
 
   const [sumOflikers, setSumOfLikers] = useState(0);
@@ -39,7 +42,7 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
   return (
     <>
       <span>
-        <LikeButtonsTypeAny onChangeInvoked={likeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsTypeAny>
+        <LikeButtonsWrapper onChangeInvoked={likeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsWrapper>
       </span>
       <span>
         {/*

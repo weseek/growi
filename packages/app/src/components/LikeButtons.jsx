@@ -68,7 +68,7 @@ class LikeButtons extends React.Component {
         <button
           type="button"
           id="like-button"
-          onClick={async() => { await this.handleClick() }}
+          onClick={this.handleClick}
           className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >

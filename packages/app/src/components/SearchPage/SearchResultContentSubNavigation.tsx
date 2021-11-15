@@ -12,11 +12,14 @@ type Props = {
   isCompactMode?: boolean,
 }
 
+const SearchResultSubNavButtonWrapper = (props) => {
+  return <SearchResultSubNavButton {...props}></SearchResultSubNavButton>;
+};
+
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
     appContainer, pageId, path, isCompactMode, isSignleLineMode,
   } = props;
-  const SearchResultSubNavButtonTypeAny: any = SearchResultSubNavButton;
   const { isSharedUser } = appContainer;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
@@ -36,7 +39,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        <SearchResultSubNavButtonTypeAny pageId={pageId} isCompactMode={isCompactMode}></SearchResultSubNavButtonTypeAny>
+        <SearchResultSubNavButtonWrapper pageId={pageId} isCompactMode={isCompactMode}></SearchResultSubNavButtonWrapper>
       </div>
     </div>
   );
