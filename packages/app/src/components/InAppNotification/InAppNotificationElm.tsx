@@ -101,7 +101,12 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
             <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
           <i className={`${actionIcon} mr-2`} />
-          <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} isNotShowDate />
+          <FormattedDistanceDate
+            id={notification._id}
+            date={notification.createdAt}
+            isShowTooltip={false}
+            differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
+          />
         </div>
       </div>
     </div>
