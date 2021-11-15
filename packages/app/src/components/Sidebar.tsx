@@ -257,7 +257,7 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   }, [mutateProductNavWidth, mutateSidebarCollapsed]);
 
-  const dragableAreaMouseDownHandler = useCallback((event: MouseEvent) => {
+  const dragableAreaMouseDownHandler = useCallback((event: React.MouseEvent) => {
     if (!isResizableByDrag) {
       return;
     }
