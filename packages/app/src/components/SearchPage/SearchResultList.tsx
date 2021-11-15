@@ -13,6 +13,10 @@ export type ISearchedPage = IPageHasId & {
   },
 };
 
+const PageRenameModalWrapper = (props) => {
+  return <PageRenameModal {...props}></PageRenameModal>;
+};
+
 type Props = {
   pages: ISearchedPage[],
   selectedPages: ISearchedPage[],
@@ -55,7 +59,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
     return (
       <>
-        <PageRenameModal
+        <PageRenameModalWrapper
           isOpen={isPageRenameModalShown}
           onClose={() => { setIsPageRenameModalShown(false) }}
           onRenameCompleted={redirectToRenamedPage}
