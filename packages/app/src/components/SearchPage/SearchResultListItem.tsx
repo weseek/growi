@@ -1,4 +1,4 @@
-﻿import React, { FC } from 'react';
+import React, { FC } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
@@ -6,10 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { ISearchedPage } from './SearchResultList';
-
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
   page: ISearchedPage,
