@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { IInAppNotification, PaginateResult } from '../../interfaces/in-app-notification';
+import { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import InAppNotificationElm from './InAppNotificationElm';
 
 
@@ -26,7 +27,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
   const notifications = inAppNotificationData.docs;
 
   const renderInAppNotificationList = () => {
-    const inAppNotificationList = notifications.map((notification: IInAppNotification) => {
+    const inAppNotificationList = notifications.map((notification: IInAppNotification & HasObjectId) => {
       return (
         <div className="d-flex flex-row" key={notification._id}>
           <InAppNotificationElm notification={notification} />

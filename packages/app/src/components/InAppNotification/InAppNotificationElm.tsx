@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import { UserPicture, PagePathLabel } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
+import { HasObjectId } from '~/interfaces/has-object-id';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
@@ -11,7 +12,7 @@ const logger = loggerFactory('growi:InAppNotificationElm');
 
 
 interface Props {
-  notification: IInAppNotification
+  notification: IInAppNotification & HasObjectId
 }
 
 const InAppNotificationElm = (props: Props): JSX.Element => {
