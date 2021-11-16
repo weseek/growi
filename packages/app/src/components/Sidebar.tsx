@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import {
-  useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
   useCurrentSidebarContents,
   useCurrentProductNavWidth,

@@ -1,5 +1,5 @@
-import {
-  useSWRConfig, SWRResponse, Key,
+import useSWR, {
+  useSWRConfig, SWRResponse, Key, Fetcher, Middleware, mutate, SWRConfig,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -35,6 +35,16 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
+export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
+  const key = isServer ? null : 'userUISettings';
+
+  return useSWRImmutable(
+    key,
+    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
+  );
+};
+
+
 export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   const key = isServer ? null : 'isMobile';
 
@@ -49,9 +59,31 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   return useStaticSWR(key, null, configuration);
 };
 
+// drawer mode keys
+const IS_DRAWER_MODE: Key = 'isDrawerMode';
+
+export const mutateDrawerMode: Middleware = (useSWRNext) => {
+  return (...args) => {
+    const { mutate } = useSWRConfig();
+    const swrNext = useSWRNext(...args);
+    return {
+      ...swrNext,
+      mutate: (data, shouldRevalidate) => {
+        return swrNext.mutate(data, shouldRevalidate)
+          .then((value) => {
+            mutate(IS_DRAWER_MODE); // mutate isDrawerMode
+            return value;
+          });
+      },
+    };
+  };
+};
+
 export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
+  const key: Key = 'editorMode';
   const initialData = EditorMode.View;
-  return useStaticSWR('editorMode', editorMode || null, { fallbackData: initialData });
+
+  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [mutateDrawerMode] });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
@@ -75,57 +107,55 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
     }
   }
 
-  return useStaticSWR(key);
+  return useStaticSWR(key, null, { use: [mutateDrawerMode] });
 };
 
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const key = isServer ? null : 'preferDrawerModeByUser';
+  const key: Key = isServer ? null : 'preferDrawerModeByUser';
+  const initialData = localStorage?.preferDrawerModeByUser === 'true';
 
-  const initialData = false;
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
 
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const key = isServer ? null : 'preferDrawerModeOnEditByUser';
+  const key: Key = isServer ? null : 'preferDrawerModeOnEditByUser';
+  const initialData = localStorage?.preferDrawerModeOnEditByUser == null || localStorage?.preferDrawerModeOnEditByUser === 'true';
 
-  const initialData = true;
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const key = isServer ? null : 'isDrawerMode';
-
   const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  // get preference on view or edit
-  const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+  const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
 
-  const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
+  const calcDrawerMode: Fetcher<boolean> = (
+      key: Key, editorMode: EditorMode, preferDrawerModeByUser: boolean, preferDrawerModeOnEditByUser: boolean, isDeviceSmallerThanMd: boolean,
+  ): boolean => {
 
-  return useStaticSWR(key, isDrawerMode || null);
+    // get preference on view or edit
+    const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+
+    return isDeviceSmallerThanMd || preferDrawerMode;
+  };
+
+  return useSWR(
+    condition ? [IS_DRAWER_MODE, editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    calcDrawerMode,
+    {
+      fallback: calcDrawerMode,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
-};
-
-
-/** **********************************************************
- *                          SWR Hooks
- *                      for switching UI
- *********************************************************** */
-
-export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
-  const key = isServer ? null : 'userUISettings';
-
-  return useSWRImmutable(
-    key,
-    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
-  );
 };
 
 export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {

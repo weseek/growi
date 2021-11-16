@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
+import { usePreferDrawerModeByUser } from '~/stores/ui';
 
 import {
   isUserPreferenceExists,
@@ -34,6 +35,8 @@ const PersonalDropdown = (props) => {
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
 
+  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
 
@@ -46,9 +49,9 @@ const PersonalDropdown = (props) => {
     window.location.href = '/logout';
   };
 
-  const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreference(bool);
-  };
+  const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
+    mutatePreferDrawerMode(bool);
+  }, [mutatePreferDrawerMode]);
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
     navigationContainer.setDrawerModePreferenceOnEdit(bool);
@@ -144,7 +147,7 @@ const PersonalDropdown = (props) => {
                   id="swSidebarMode"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={!preferDrawerModeByUser}
+                  checked={!isPreferDrawerMode}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
