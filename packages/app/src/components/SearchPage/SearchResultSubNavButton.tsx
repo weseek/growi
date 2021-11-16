@@ -20,7 +20,7 @@ const SearchResultSubNavButton: FC<SearchResultSubNavButtonProps> = (props: Sear
   const { data: pageInfo, error: pageInfoError } = useSWRPageInfo(pageId);
   return (
     <>
-      {pageInfo != null && !pageInfoError && (
+      {pageInfo != null && (
         <PageReactionButtons
           pageId={pageId}
           currentUserId={appContainer.currentUserId}

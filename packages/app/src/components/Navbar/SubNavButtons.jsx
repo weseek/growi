@@ -17,12 +17,20 @@ const SubnavButtons = (props) => {
   const { pageId } = pageContainer.state;
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
-
+  const { sumOfLikers, likerIds, isLiked } = pageContainer.state;
   return (
     <>
       {isViewMode && (
         <>
-          {pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons pageId={pageId} currentUserId={appContainer.currentUserId} />}
+          {pageContainer.isAbleToShowPageReactionButtons && (
+            <PageReactionButtons
+              pageId={pageId}
+              currentUserId={appContainer.state.currentUserId}
+              likerSum={sumOfLikers}
+              likerIds={likerIds}
+              isAlreadyLiked={isLiked}
+            />
+          )}
           {pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} />}
         </>
       )}

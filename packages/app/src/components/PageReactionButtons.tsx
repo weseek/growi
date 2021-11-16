@@ -16,25 +16,19 @@ const LikeButtonsWrapper = (props) => {
 };
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
-  const { pageId, currentUserId } = props;
+  const {
+    pageId, currentUserId, likerSum, likerIds, isAlreadyLiked,
+  } = props;
+  const [sumOflikers, setSumOfLikers] = useState(likerSum);
+  const [likers, setLikers] = useState<string[]>(likerIds);
+  const [isLiked, setIsLiked] = useState(isAlreadyLiked);
 
-
-  const [sumOflikers, setSumOfLikers] = useState(0);
-  const [likers, setLikers] = useState<string[]>([]);
-  const [isLiked, setIsLiked] = useState(true);
-
-  // component did mount
   useEffect(() => {
-    const f = async() => {
-      const {
-        data: { likerIds, sumOfLikers, isLiked },
-      } = await apiv3Get('/page/info', { pageId });
-      setSumOfLikers(sumOfLikers);
-      setLikers(likerIds);
-      setIsLiked(isLiked);
-    };
-    f();
-  }, []);
+    setSumOfLikers(likerSum);
+    setLikers(likerIds);
+    setIsLiked(isAlreadyLiked);
+  }, [props]);
+
 
   const likeInvoked = async() => {
     setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
