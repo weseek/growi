@@ -87,13 +87,13 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
   const onClickSearchedResultItem = () => {
-    if (onClickInvoked == null) { throw new Error('onClickInvoked is null') }
-    onClickInvoked(page._id);
+    if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
+    else onClickInvoked(page._id);
   };
 
   const onClickCheckbox = () => {
-    if (onClickCheckboxInvoked == null) { throw new Error('onClickCheckboxInvoked is null') }
-    onClickCheckboxInvoked(page);
+    if (onClickCheckboxInvoked == null) { logger.error('onClickCheckboxInvoked is null') }
+    else onClickCheckboxInvoked(page);
   };
 
   return (

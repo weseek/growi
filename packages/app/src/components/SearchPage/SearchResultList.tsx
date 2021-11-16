@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+﻿import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
 import { IPageHasId } from '../../interfaces/page';
 import PaginationWrapper from '../PaginationWrapper';
@@ -30,7 +30,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
   return (
     <>
-      {props.pages.map((page) => {
+      {Array.isArray(props.pages) && props.pages.map((page) => {
         const isChecked = selectedPages.has(page);
         return (
           <SearchResultListItem
