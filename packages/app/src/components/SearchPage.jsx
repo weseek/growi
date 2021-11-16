@@ -12,6 +12,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import { apiv3Get } from '../client/util/apiv3-client';
 
 export const specificPathNames = {
   user: '/user',
@@ -34,9 +35,10 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 10, // change to an appropriate limit number
+      pagingLimit: 0,
       excludeUsersHome: true,
       excludeTrash: true,
+      initialPagingLimit: 0,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -47,12 +49,18 @@ class SearchPage extends React.Component {
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
+    this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
   }
 
   componentDidMount() {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
       this.search({ keyword });
+    }
+    if (this.state.initialPagingLimit === 0) {
+      apiv3Get('/customize-setting').then((res) => {
+        this.setState({ initialPagingLimit: res.data.customizeParams.pageLimitationL });
+      });
     }
   }
 
@@ -117,6 +125,13 @@ class SearchPage extends React.Component {
     // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
     // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
     this.setState({ activePage: 1 }, () => this.search(data));
+  }
+
+  /**
+   * change number of pages to display per page and execute search method after.
+   */
+  async onPagingLimitChanged(limit) {
+    this.setState({ pagingLimit: limit }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
   async search(data) {
@@ -240,6 +255,8 @@ class SearchPage extends React.Component {
           SearchResultContent={this.renderSearchResultContent}
           searchResultMeta={this.state.searchResultMeta}
           searchingKeyword={this.state.searchedKeyword}
+          onPagingLimitChanged={this.onPagingLimitChanged}
+          initialPagingLimit={this.state.initialPagingLimit}
         >
         </SearchPageLayout>
       </div>

@@ -12,7 +12,9 @@ type Props = {
   SearchResultList: React.FunctionComponent,
   SearchResultContent: React.FunctionComponent,
   searchResultMeta: SearchResultMeta,
-  searchingKeyword: string
+  searchingKeyword: string,
+  initialPagingLimit: number,
+  onPagingLimitChanged: (limit: number) => void
 }
 
 const SearchPageLayout: FC<Props> = (props: Props) => {
@@ -32,9 +34,9 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
               <div className="input-group-prepend">
                 <label className="input-group-text text-secondary" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
               </div>
-              <select className="custom-select" id="inputGroupSelect01">
+              <select className="custom-select" id="inputGroupSelect01" onChange={(e) => { props.onPagingLimitChanged(Number(e.target.value)) }}>
                 {[20, 50, 100, 200].map((limit) => {
-                  return <option selected={limit === 50} value={limit}>{limit}{t('search_result.page_number_unit')}</option>;
+                  return <option selected={limit === props.initialPagingLimit} value={limit}>{limit}{t('search_result.page_number_unit')}</option>;
                 })}
               </select>
             </div>
