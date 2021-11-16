@@ -256,6 +256,8 @@
   z-index: $zindex-fixed + 2;
 
   .data-layout-container {
+    position: fixed;
+    top: 0;
     width: 0;
   }
   div.navigation {
