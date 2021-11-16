@@ -21,6 +21,8 @@ module.exports = (crowi) => {
     body('settings.isSidebarCollapsed').optional().isBoolean(),
     body('settings.currentSidebarContents').optional().isIn(AllSidebarContentsType),
     body('settings.currentProductNavWidth').optional().isNumeric(),
+    body('settings.preferDrawerModeByUser').optional().isBoolean(),
+    body('settings.preferDrawerModeOnEditByUser').optional().isBoolean(),
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,6 +53,8 @@ module.exports = (crowi) => {
       isSidebarCollapsed: settings.isSidebarCollapsed,
       currentSidebarContents: settings.currentSidebarContents,
       currentProductNavWidth: settings.currentProductNavWidth,
+      preferDrawerModeByUser: settings.preferDrawerModeByUser,
+      preferDrawerModeOnEditByUser: settings.preferDrawerModeOnEditByUser,
     };
     // remove the keys that have null value
     Object.keys(updateData).forEach((key) => {
