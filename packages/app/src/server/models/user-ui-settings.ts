@@ -20,6 +20,8 @@ const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
     default: SidebarContentsType.RECENT,
   },
   currentProductNavWidth: { type: Number },
+  preferDrawerModeByUser: { type: Boolean, default: false },
+  preferDrawerModeOnEditByUser: { type: Boolean, default: false },
 });
 
 

@@ -7,4 +7,6 @@ export interface IUserUISettings {
   isSidebarCollapsed: boolean,
   currentSidebarContents: SidebarContentsType,
   currentProductNavWidth: number,
+  preferDrawerModeByUser: boolean,
+  preferDrawerModeOnEditByUser: boolean,
 }

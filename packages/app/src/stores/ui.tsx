@@ -1,5 +1,5 @@
 import useSWR, {
-  useSWRConfig, SWRResponse, Key, Fetcher, Middleware, mutate, SWRConfig,
+  useSWRConfig, SWRResponse, Key, Fetcher, Middleware,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -111,15 +111,17 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
 };
 
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'preferDrawerModeByUser';
-  const initialData = localStorage?.preferDrawerModeByUser === 'true';
+  const { data } = useSWRxUserUISettings();
+  const key: Key = data === undefined ? null : 'preferDrawerModeByUser';
+  const initialData = data?.preferDrawerModeByUser;
 
   return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
 
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const key: Key = isServer ? null : 'preferDrawerModeOnEditByUser';
-  const initialData = localStorage?.preferDrawerModeOnEditByUser == null || localStorage?.preferDrawerModeOnEditByUser === 'true';
+  const { data } = useSWRxUserUISettings();
+  const key: Key = data === undefined ? null : 'preferDrawerModeOnEditByUser';
+  const initialData = data?.preferDrawerModeOnEditByUser;
 
   return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
