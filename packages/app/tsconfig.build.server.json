@@ -19,6 +19,7 @@
     "src/client",
     "src/components",
     "src/linter-checker",
+    "src/stores",
     "src/styles",
     "src/styles-hackmd",
     "src/test"
