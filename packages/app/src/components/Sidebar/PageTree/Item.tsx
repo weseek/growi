@@ -47,7 +47,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <div style={style}>
-      <p><button type="button" className="btn btn-light p-1" onClick={onClickLoadChildren}>Load</button>  {page.path}</p>
+      <div>
+        <button type="button" className="btn btn-light p-1" onClick={onClickLoadChildren}>Load</button>
+        <a href={page._id}>
+          <p>{page.path}</p>
+        </a>
+      </div>
       {
         hasChildren() && currentChildren.map(node => (
           <Item
