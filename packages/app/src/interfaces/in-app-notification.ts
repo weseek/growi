@@ -9,3 +9,22 @@ export interface IInAppNotification {
   actionUsers: any[] /* Need to set "User[]" as a type" */
   createdAt: string
 }
+
+/*
+* Note:
+* Need to use mongoose PaginateResult as a type after upgrading mongoose v6.0.0.
+* Until then, use the original "PaginateResult".
+*/
+export interface PaginateResult<T> {
+  docs: T[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  offset: number;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
+}

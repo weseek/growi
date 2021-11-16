@@ -1,10 +1,11 @@
-import { Types, PaginateResult } from 'mongoose';
+import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
   InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
+import { PaginateResult } from '../../interfaces/in-app-notification';
 
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
@@ -90,7 +91,9 @@ export default class InAppNotificationService {
     const { limit, offset } = queryOptions;
 
     try {
-      const paginationResult = await InAppNotification.paginate(
+      // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const paginationResult = await (InAppNotification as any).paginate(
         { user: userId },
         {
           sort: { createdAt: -1 },

@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 
-import { PaginateResult } from 'mongoose';
 import { useTranslation } from 'react-i18next';
-import { IInAppNotification } from '../../interfaces/in-app-notification';
+import { IInAppNotification, PaginateResult } from '../../interfaces/in-app-notification';
 import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
-  inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
+  inAppNotificationData?: PaginateResult<IInAppNotification>;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {

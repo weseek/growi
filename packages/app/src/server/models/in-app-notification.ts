@@ -1,5 +1,5 @@
 import {
-  Types, Document, PaginateModel, Schema, /* , Query */
+  Types, Document, Schema, Model,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
@@ -24,7 +24,7 @@ export interface InAppNotificationDocument extends Document {
 }
 
 
-export interface InAppNotificationModel extends PaginateModel<InAppNotificationDocument> {
+export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number)
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
   open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>

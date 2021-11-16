@@ -6,7 +6,7 @@ import { IInAppNotificationSettings, subscribeRuleNames } from '../../interfaces
 export interface InAppNotificationSettingsDocument extends IInAppNotificationSettings, Document {}
 export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocument>
 
-const inAppNotificationSettingsSchema = new Schema<IInAppNotificationSettings>({
+const inAppNotificationSettingsSchema = new Schema<InAppNotificationSettingsDocument, InAppNotificationSettingsModel>({
   userId: { type: Schema.Types.ObjectId },
   subscribeRules: [
     {
