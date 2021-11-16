@@ -5,6 +5,7 @@ import {
   InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
+import { PaginateResult } from '../../interfaces/in-app-notification';
 
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
@@ -86,9 +87,7 @@ export default class InAppNotificationService {
   getLatestNotificationsByUser = async(
       userId: Types.ObjectId,
       queryOptions: {offset: number, limit: number},
-  // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): Promise<any> => {
+  ): Promise<PaginateResult<InAppNotificationDocument>> => {
     const { limit, offset } = queryOptions;
 
     try {

@@ -13,9 +13,9 @@ export interface IInAppNotification {
 /*
 * Note:
 * Need to use mongoose PaginateResult as a type after upgrading mongoose v6.0.0.
-* Until then, use the original "PagenateResult".
+* Until then, use the original "PaginateResult".
 */
-export interface PagenateResult<T> {
+export interface PaginateResult<T> {
   docs: T[];
   hasNextPage: boolean;
   hasPrevPage: boolean;
