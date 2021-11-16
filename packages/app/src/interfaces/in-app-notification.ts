@@ -12,6 +12,13 @@ export interface IInAppNotification {
   createdAt: Date
 }
 
+export enum InAppNotificationStatuses {
+  STATUS_UNREAD = 'UNREAD',
+  STATUS_UNOPENED = 'UNOPENED',
+  STATUS_OPENED = 'OPENED',
+}
+
+
 /*
 * Note:
 * Need to use mongoose PaginateResult as a type after upgrading mongoose v6.0.0.
