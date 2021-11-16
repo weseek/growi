@@ -1,10 +1,11 @@
 import { IUser } from './user';
+import { IPage } from './page';
 
 export interface IInAppNotification {
   _id: string
   user: string
   targetModel: 'Page'
-  target: any /* Need to set "Page" as a type" */
+  target: IPage
   action: 'COMMENT' | 'LIKE'
   status: string
   actionUsers: IUser[]
