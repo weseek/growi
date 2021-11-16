@@ -214,16 +214,14 @@ class SearchPage extends React.Component {
   toggleAllCheckBox = () => {
     if (this.state.selectedPages.size === this.state.searchedPages.length) {
       this.state.selectedPages.clear();
-      // Force a render to tell React that the State has been changed by the Set class method
-      this.forceUpdate();
     }
     else {
       this.state.searchedPages.forEach((page) => {
         this.state.selectedPages.add(page);
       });
     }
-    // Force a render to tell React that the State has been changed by the Set class method
     this.updateCheckboxState();
+    // Force a render to tell React that the State has been changed by the Set class method
     this.forceUpdate();
   };
 
