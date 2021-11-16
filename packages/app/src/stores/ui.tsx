@@ -60,10 +60,6 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 };
 
 // drawer mode keys
-const EDITOR_MODE: Key = 'editorMode';
-const IS_DEVICE_SMALLER_THAN_MD: Key = isServer ? null : 'isDeviceSmallerThanMd';
-const PREFER_DRAWER_MODE_BY_USER: Key = isServer ? null : 'preferDrawerModeByUser';
-const PREFER_DRAWER_MODE_ON_EDIT_BY_USER: Key = isServer ? null : 'preferDrawerModeOnEditByUser';
 const IS_DRAWER_MODE: Key = 'isDrawerMode';
 
 export const mutateDrawerMode: Middleware = (useSWRNext) => {
@@ -84,11 +80,14 @@ export const mutateDrawerMode: Middleware = (useSWRNext) => {
 };
 
 export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
+  const key: Key = 'editorMode';
   const initialData = EditorMode.View;
-  return useStaticSWR(EDITOR_MODE, editorMode || null, { fallbackData: initialData, use: [mutateDrawerMode] });
+
+  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [mutateDrawerMode] });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
+  const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
 
   const { cache, mutate } = useSWRConfig();
 
@@ -96,51 +95,46 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
     const mdOrAvobeHandler = function(this: MediaQueryList): void {
       // sm -> md: matches will be true
       // md -> sm: matches will be false
-      mutate(IS_DEVICE_SMALLER_THAN_MD, !this.matches);
+      mutate(key, !this.matches);
     };
     const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
     // initialize
-    if (cache.get(IS_DEVICE_SMALLER_THAN_MD) == null) {
+    if (cache.get(key) == null) {
       document.addEventListener('DOMContentLoaded', () => {
-        mutate(IS_DEVICE_SMALLER_THAN_MD, !mql.matches);
+        mutate(key, !mql.matches);
       });
     }
   }
 
-  return useStaticSWR(IS_DEVICE_SMALLER_THAN_MD, null, { use: [mutateDrawerMode] });
+  return useStaticSWR(key, null, { use: [mutateDrawerMode] });
 };
 
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
+  const key: Key = isServer ? null : 'preferDrawerModeByUser';
   const initialData = localStorage?.preferDrawerModeByUser === 'true';
 
-  return useStaticSWR(PREFER_DRAWER_MODE_BY_USER, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
 
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
+  const key: Key = isServer ? null : 'preferDrawerModeOnEditByUser';
   const initialData = localStorage?.preferDrawerModeOnEditByUser == null || localStorage?.preferDrawerModeOnEditByUser === 'true';
 
-  return useStaticSWR(PREFER_DRAWER_MODE_ON_EDIT_BY_USER, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { cache } = useSWRConfig();
+  const { data: editorMode } = useEditorMode();
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
+  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  const { data: initEditorMode } = useEditorMode();
-  const { data: initPreferDrawerModeByUser } = usePreferDrawerModeByUser();
-  const { data: initPreferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
-  const { data: initIsDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
 
-  const calcDrawerMode: Fetcher<boolean> = (): boolean => {
-    const _editorMode = cache.get(EDITOR_MODE);
-    const _preferDrawerModeByUser = cache.get(PREFER_DRAWER_MODE_BY_USER);
-    const _preferDrawerModeOnEditByUser = cache.get(PREFER_DRAWER_MODE_ON_EDIT_BY_USER);
-    const _isDeviceSmallerThanMd = cache.get(IS_DEVICE_SMALLER_THAN_MD);
-
-    const editorMode = _editorMode != null ? _editorMode : initEditorMode;
-    const preferDrawerModeByUser = _preferDrawerModeByUser != null ? _preferDrawerModeByUser : initPreferDrawerModeByUser;
-    const preferDrawerModeOnEditByUser = _preferDrawerModeOnEditByUser != null ? _preferDrawerModeOnEditByUser : initPreferDrawerModeOnEditByUser;
-    const isDeviceSmallerThanMd = _isDeviceSmallerThanMd != null ? _isDeviceSmallerThanMd : initIsDeviceSmallerThanMd;
+  const calcDrawerMode: Fetcher<boolean> = (
+      key: Key, editorMode: EditorMode, preferDrawerModeByUser: boolean, preferDrawerModeOnEditByUser: boolean, isDeviceSmallerThanMd: boolean,
+  ): boolean => {
 
     // get preference on view or edit
     const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
@@ -148,7 +142,15 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
-  return useSWR(IS_DRAWER_MODE, calcDrawerMode, { fallback: calcDrawerMode });
+  return useSWR(
+    condition ? [IS_DRAWER_MODE, editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    calcDrawerMode,
+    {
+      fallback: calcDrawerMode,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
