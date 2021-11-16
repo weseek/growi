@@ -31,7 +31,7 @@ export interface PaginateResult<T> {
 }
 
 /*
-* In App Notification settings
+* In App Notification Settings
 */
 
 export enum subscribeRuleNames {
