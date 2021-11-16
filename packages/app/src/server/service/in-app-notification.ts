@@ -2,10 +2,10 @@ import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
-  InAppNotification, STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED,
+  InAppNotification,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
-import { PaginateResult } from '../../interfaces/in-app-notification';
+import { PaginateResult, InAppNotificationStatuses } from '../../interfaces/in-app-notification';
 
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
@@ -15,6 +15,8 @@ import { IUser } from '~/interfaces/user';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
+const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 const logger = loggerFactory('growi:service:inAppNotification');
 

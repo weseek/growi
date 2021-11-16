@@ -7,10 +7,9 @@ import { getOrCreateModel } from '@growi/core';
 import { ActivityDocument } from './activity';
 import ActivityDefine from '../util/activityDefine';
 
-export const STATUS_UNREAD = 'UNREAD';
-export const STATUS_UNOPENED = 'UNOPENED';
-export const STATUS_OPENED = 'OPENED';
-const STATUSES = [STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED];
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+
+const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 export interface InAppNotificationDocument extends Document {
   _id: Types.ObjectId
@@ -66,7 +65,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   status: {
     type: String,
     default: STATUS_UNREAD,
-    enum: STATUSES,
+    enum: [STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED],
     index: true,
     require: true,
   },

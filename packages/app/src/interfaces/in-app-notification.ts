@@ -1,14 +1,21 @@
 import { Types } from 'mongoose';
+import { IUser } from './user';
+import { IPage } from './page';
+
+export enum InAppNotificationStatuses {
+  STATUS_UNREAD = 'UNREAD',
+  STATUS_UNOPENED = 'UNOPENED',
+  STATUS_OPENED = 'OPENED',
+}
 
 export interface IInAppNotification {
-  _id: string
-  user: string
+  user: IUser
   targetModel: 'Page'
-  target: any /* Need to set "Page" as a type" */
+  target: IPage
   action: 'COMMENT' | 'LIKE'
-  status: string
-  actionUsers: any[] /* Need to set "User[]" as a type" */
-  createdAt: string
+  status: InAppNotificationStatuses
+  actionUsers: IUser[]
+  createdAt: Date
 }
 
 /*
