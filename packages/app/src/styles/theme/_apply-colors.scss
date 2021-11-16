@@ -223,7 +223,22 @@ ul.pagination {
     $color-resize-button-hover: $color-reversal !default;
     $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
 
-    // TODO fill color
+    .hexagon-container svg {
+      .background {
+        fill: $bgcolor-resize-button;
+      }
+      .icon {
+        fill: $color-resize-button;
+      }
+    }
+    &:hover .hexagon-container svg {
+      .background {
+        fill: $bgcolor-resize-button-hover;
+      }
+      .icon {
+        fill: $color-resize-button-hover;
+      }
+    }
   }
   div.grw-global-navigation {
     > div {

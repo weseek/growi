@@ -15,6 +15,7 @@ import DrawerToggler from './Navbar/DrawerToggler';
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
+import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -106,7 +107,7 @@ const Sidebar: FC<Props> = (props: Props) => {
   const [isDragging, setDrag] = useState(false);
   const [isMounted, setMounted] = useState(false);
 
-  const isResizableByDrag = !isDrawerMode && (!isCollapsed || isHover);
+  const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
   /**
    * hack and override UIController.storeState
    *
@@ -249,15 +250,16 @@ const Sidebar: FC<Props> = (props: Props) => {
     }
     else {
       const newWidth = resizableContainer.current.clientWidth;
+      mutateSidebarCollapsed(false);
       mutateProductNavWidth(newWidth, false);
-      scheduleToPutUserUISettings({ currentProductNavWidth: newWidth });
+      scheduleToPutUserUISettings({ isSidebarCollapsed: false, currentProductNavWidth: newWidth });
     }
 
     resizableContainer.current.classList.remove('dragging');
 
   }, [mutateProductNavWidth, mutateSidebarCollapsed]);
 
-  const dragableAreaMouseDownHandler = useCallback((event: MouseEvent) => {
+  const dragableAreaMouseDownHandler = useCallback((event: React.MouseEvent) => {
     if (!isResizableByDrag) {
       return;
     }
@@ -301,12 +303,14 @@ const Sidebar: FC<Props> = (props: Props) => {
               </div>
             </div>
             <div className="grw-navigation-draggable">
-              <div
-                className={`${isResizableByDrag ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
-                onMouseDown={dragableAreaMouseDownHandler}
-              >
-                <div className="grw-navigation-draggable-hitarea-child"></div>
-              </div>
+              { isResizableByDrag && (
+                <div
+                  className="grw-navigation-draggable-hitarea"
+                  onMouseDown={dragableAreaMouseDownHandler}
+                >
+                  <div className="grw-navigation-draggable-hitarea-child"></div>
+                </div>
+              ) }
               <button
                 className={`grw-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${isCollapsed ? 'collapsed' : ''} `}
                 type="button"
@@ -315,9 +319,8 @@ const Sidebar: FC<Props> = (props: Props) => {
                 disabled={isDrawerMode}
                 onClick={toggleNavigationBtnClickHandler}
               >
-                <span className="background" role="presentation"></span>
-                <span className="icon-container" role="presentation">
-                  <i className="fa fa-fw fa-angle-left text-white" role="presentation"></i>
+                <span className="hexagon-container" role="presentation">
+                  <NavigationResizeHexagon />
                 </span>
                 <span className="hitarea" role="presentation"></span>
               </button>
