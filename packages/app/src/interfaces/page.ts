@@ -1,11 +1,11 @@
 import { IUser } from './user';
-import { IRevision, IRevisionHasId } from './revision';
+import { IRevision } from './revision';
 import { ITag } from './tag';
 
 export type IPage = {
   path: string,
   status: string,
-  revision: string | IRevision | IRevisionHasId,
+  revision: string | IRevision,
   tags?: ITag[],
   lastUpdateUser: any,
   commentCount: number,
@@ -18,5 +18,4 @@ export type IPage = {
 
 export type IPageHasId = IPage & {
   _id: string,
-  revision: IRevisionHasId,
 };

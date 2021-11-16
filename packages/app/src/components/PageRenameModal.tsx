@@ -200,12 +200,8 @@ const PageRenameModal = (props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && (
-            <ComparePathsTable subordinatedPages={subordinatedPages} path={path} newPagePath={pageNameInput} />
-          )}
-          {isRenameRecursively && existingPaths.length !== 0 && (
-            <DuplicatedPathsTable existingPaths={existingPaths} path={path} oldPagePath={pageNameInput} />
-          )}
+          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} path={path} newPagePath={pageNameInput} />}
+          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} path={path} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">

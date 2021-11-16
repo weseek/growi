@@ -7,7 +7,3 @@ export type IRevision = {
   createdAt: Date,
   updatedAt: Date,
 }
-
-export type IRevisionHasId = IRevision & {
-  _id: string,
-};
