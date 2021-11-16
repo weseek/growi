@@ -1,4 +1,4 @@
-import { Types, PaginateResult } from 'mongoose';
+import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
 import Crowi from '../crowi';
 import {
@@ -86,11 +86,15 @@ export default class InAppNotificationService {
   getLatestNotificationsByUser = async(
       userId: Types.ObjectId,
       queryOptions: {offset: number, limit: number},
-  ): Promise<PaginateResult<InAppNotificationDocument>> => {
+  // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<any> => {
     const { limit, offset } = queryOptions;
 
     try {
-      const paginationResult = await InAppNotification.paginate(
+      // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const paginationResult = await (InAppNotification as any).paginate(
         { user: userId },
         {
           sort: { createdAt: -1 },

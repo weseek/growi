@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
 
-import { PaginateResult } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { IInAppNotification } from '../../interfaces/in-app-notification';
 import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
-  inAppNotificationData: PaginateResult<IInAppNotification> | undefined;
+  // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  inAppNotificationData: any;
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
