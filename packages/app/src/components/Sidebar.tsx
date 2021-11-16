@@ -16,6 +16,7 @@ import DrawerToggler from './Navbar/DrawerToggler';
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
+import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -67,12 +68,12 @@ const SidebarContentsWrapper = () => {
 
   return (
     <>
-      {/* <StickyStretchableScroller
+      <StickyStretchableScroller
         scrollTargetSelector={scrollTargetSelector}
         contentsElemSelector="#grw-sidebar-content-container"
         stickyElemSelector=".grw-sidebar"
         calcViewHeightFunc={calcViewHeight}
-      /> */}
+      />
 
       <div id="grw-sidebar-contents-scroll-target">
         <div id="grw-sidebar-content-container">
