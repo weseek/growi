@@ -2,22 +2,21 @@ import { Types } from 'mongoose';
 import { IUser } from './user';
 import { IPage } from './page';
 
-export interface IInAppNotification {
-  user: IUser
-  targetModel: 'Page'
-  target: IPage
-  action: 'COMMENT' | 'LIKE'
-  status: string
-  actionUsers: IUser[]
-  createdAt: Date
-}
-
 export enum InAppNotificationStatuses {
   STATUS_UNREAD = 'UNREAD',
   STATUS_UNOPENED = 'UNOPENED',
   STATUS_OPENED = 'OPENED',
 }
 
+export interface IInAppNotification {
+  user: IUser
+  targetModel: 'Page'
+  target: IPage
+  action: 'COMMENT' | 'LIKE'
+  status: InAppNotificationStatuses
+  actionUsers: IUser[]
+  createdAt: Date
+}
 
 /*
 * Note:
