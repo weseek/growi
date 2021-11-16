@@ -1,4 +1,5 @@
-// refer types https://github.com/crowi/crowi/blob/eecf2bc821098d2516b58104fe88fae81497d3ea/client/types/crowi.d.ts
+import { Types } from 'mongoose';
+
 export interface IInAppNotification {
   _id: string
   user: string
@@ -27,4 +28,25 @@ export interface PaginateResult<T> {
   prevPage: number | null;
   totalDocs: number;
   totalPages: number;
+}
+
+/*
+* In App Notification Settings
+*/
+
+export enum subscribeRuleNames {
+  PAGE_CREATE = 'PAGE_CREATE'
+}
+
+export enum SubscribeRuleDescriptions {
+  PAGE_CREATE = 'in_app_notification_settings.default_subscribe_rules.page_create',
+}
+
+export interface ISubscribeRule {
+  name: subscribeRuleNames;
+  isEnabled: boolean;
+}
+export interface IInAppNotificationSettings {
+  userId: Types.ObjectId;
+  subscribeRules: ISubscribeRule[];
 }
