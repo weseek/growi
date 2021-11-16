@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { Collapse } from 'reactstrap';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
@@ -14,6 +16,10 @@ class SamlSecurityManagementContents extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      isHelpOpened: false,
+    };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
@@ -450,16 +456,39 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                     />
                     <div className="mt-2">
-                      <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help1') }} />
                       <p>
-                        <a data-toggle="collapse" href="#ablchelp" role="button" aria-expanded="false" aria-controls="ablchelp">
-                          <i className="icon-question icon-fw"></i> Help
-                        </a>
+                        See&nbsp;
+                        <a
+                          href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html"
+                          target="_blank"
+                          rel="noreferer noreferrer"
+                        >
+                          Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
+                        </a>.
                       </p>
-                      <div id="ablchelp" className="collapse card card-body text-muted small">
-                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help2') }} />
-                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
-                        <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                      <div className="accordion" id="accordionExample">
+                        <div className="card">
+                          <div className="card-header p-1">
+                            <h2 className="mb-0">
+                              <button
+                                className="btn btn-link btn-block text-left"
+                                type="button"
+                                onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
+                                aria-expanded="true"
+                                aria-controls="ablchelp"
+                              >
+                                <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                              </button>
+                            </h2>
+                          </div>
+                          <Collapse isOpen={this.state.isHelpOpened}>
+                            <div className="card-body">
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                            </div>
+                          </Collapse>
+                        </div>
                       </div>
                     </div>
                   </td>
