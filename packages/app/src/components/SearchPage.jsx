@@ -19,7 +19,7 @@ import { CheckboxType } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:searchResultList');
+const logger = loggerFactory('growi:searchPage');
 
 
 export const specificPathNames = {
