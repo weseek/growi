@@ -11,6 +11,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { useDrawerMode } from '~/stores/ui';
 
 import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
@@ -67,10 +68,12 @@ const PagePathNav = ({
 };
 
 const GrowiSubNavigation = (props) => {
+  const { data: isDrawerMode } = useDrawerMode();
+
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
