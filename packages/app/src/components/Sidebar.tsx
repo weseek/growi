@@ -2,6 +2,7 @@ import React, {
   FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import {
   useDrawerMode, useDrawerOpened,
   useSidebarCollapsed,
@@ -14,7 +15,6 @@ import DrawerToggler from './Navbar/DrawerToggler';
 
 import SidebarNav from './Sidebar/SidebarNav';
 import SidebarContents from './Sidebar/SidebarContents';
-import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 
 const sidebarMinWidth = 240;
