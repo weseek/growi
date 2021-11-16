@@ -1,4 +1,4 @@
-﻿import React, { FC } from 'react';
+import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
 import { IPageHasId } from '../../interfaces/page';
 import PaginationWrapper from '../PaginationWrapper';
