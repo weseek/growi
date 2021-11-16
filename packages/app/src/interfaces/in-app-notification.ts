@@ -3,13 +3,13 @@ import { IUser } from './user';
 import { IPage } from './page';
 
 export interface IInAppNotification {
-  user: string
+  user: IUser
   targetModel: 'Page'
   target: IPage
   action: 'COMMENT' | 'LIKE'
   status: string
   actionUsers: IUser[]
-  createdAt: string
+  createdAt: Date
 }
 
 /*
