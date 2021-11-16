@@ -1,7 +1,7 @@
 import { Schema, Model, Document } from 'mongoose';
 import { getOrCreateModel } from '@growi/core';
 
-import { IInAppNotificationSettings, subscribeRuleNames } from '../../interfaces/in-app-notification-settings';
+import { IInAppNotificationSettings, subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 export interface InAppNotificationSettingsDocument extends IInAppNotificationSettings, Document {}
 export type InAppNotificationSettingsModel = Model<InAppNotificationSettingsDocument>
