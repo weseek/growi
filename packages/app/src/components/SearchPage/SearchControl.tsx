@@ -52,7 +52,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          onClickInvoked={onDeleteSelectedPageHandler}
+          onClickDeleteButton={onDeleteSelectedPageHandler}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           selectedPagesCount={props.selectedPagesCount}
           displayPageCount={props.displayPageCount}
