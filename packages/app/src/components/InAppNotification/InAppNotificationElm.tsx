@@ -90,6 +90,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
       <div className="p-2 mr-2 d-flex align-items-center">
+        <span className="grw-unread-notification rounded-circle mr-3"></span>
         {renderActionUserPictures()}
       </div>
       <div className="p-2">
