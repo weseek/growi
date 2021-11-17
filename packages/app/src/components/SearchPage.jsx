@@ -241,7 +241,7 @@ class SearchPage extends React.Component {
         onExcludeTrash={this.onExcludeTrash}
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectedPagesCount={this.state.selectedPagesIdList.size}
-        searchedPagesCount={this.state.searchedPages.length}
+        displayPageCount={this.state.searchedPages.length}
       >
       </SearchControl>
     );
