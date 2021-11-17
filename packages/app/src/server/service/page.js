@@ -617,7 +617,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({
