@@ -84,11 +84,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickSearchedResultItem = () => {
-    if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-    else onClickInvoked(page._id);
-  };
-
   const onClickCheckbox = () => {
     if (onClickCheckboxInvoked == null) { logger.error('onClickCheckboxInvoked is null') }
     else onClickCheckboxInvoked(page);
@@ -99,7 +94,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={onClickSearchedResultItem}
+        onClick={() => {
+          if (onClickInvoked != null) {
+            onClickInvoked(page._id);
+          }
+        }}
       >
         <div className="d-flex">
           {/* checkbox */}
