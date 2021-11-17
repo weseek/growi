@@ -56,14 +56,7 @@ const pageSchema = new mongoose.Schema({
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   hasConflictRevision: { type: Boolean, default: false },
-  conflictRevisions: {
-    type: {
-      request: { ObjectId, ref: 'Conflict' },
-      origin: { ObjectId, ref: 'Conflict' },
-      latest: { ObjectId, ref: 'Conflict' },
-    },
-    default: null,
-  },
+  conflictRevisions: { type: ObjectId, ref: 'Conflict', default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   deleteUser: { type: ObjectId, ref: 'User' },

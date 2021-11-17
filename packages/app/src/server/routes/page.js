@@ -2,6 +2,7 @@ import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import UpdatePost from '../models/update-post';
+import Conflict from '../models/conflict';
 
 const { isCreatablePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
@@ -367,6 +368,14 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
 
     console.log('page content is rendered here');
+    await Conflict.create({
+      path: '/',
+      revisions: {
+        request: {},
+        origin: {},
+        latest: {},
+      },
+    });
 
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
