@@ -47,7 +47,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
-          if (onClickInvoked != null) {
+          if (onClickInvoked == null) {
             onClickInvoked();
           }
         }}
