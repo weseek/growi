@@ -49,15 +49,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     if (hasChildren()) setIsOpen(true);
   }, []);
 
-  // make sure itemNode.children and currentChildren are synced
+  /*
+   * Make sure itemNode.children and currentChildren are synced
+   */
   useEffect(() => {
     if (children.length > currentChildren.length) {
       markTarget(children, targetId);
       setCurrentChildren(children);
     }
-    /*
-     * When swr fetch succeeded
-     */
+  }, []);
+
+  /*
+   * When swr fetch succeeded
+   */
+  useEffect(() => {
     if (isOpen && error == null && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
       markTarget(newChildren, targetId);
