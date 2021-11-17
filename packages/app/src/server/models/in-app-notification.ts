@@ -65,7 +65,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   status: {
     type: String,
     default: STATUS_UNREAD,
-    enum: [STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED],
+    enum: InAppNotificationStatuses,
     index: true,
     require: true,
   },
