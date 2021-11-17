@@ -62,20 +62,23 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 // drawer mode keys
 const IS_DRAWER_MODE: Key = 'isDrawerMode';
 
-export const mutateDrawerMode: Middleware = (useSWRNext) => {
+
+const mutateDrawerMode: Middleware = (useSWRNext) => {
   return (...args) => {
-    const { mutate } = useSWRConfig();
-    const swrNext = useSWRNext(...args);
-    return {
-      ...swrNext,
-      mutate: (data, shouldRevalidate) => {
-        return swrNext.mutate(data, shouldRevalidate)
-          .then((value) => {
-            mutate(IS_DRAWER_MODE); // mutate isDrawerMode
-            return value;
-          });
-      },
-    };
+    return useSWRNext(...args);
+    // -- TODO: https://redmine.weseek.co.jp/issues/81817
+    // const { mutate } = useSWRConfig();
+    // const swrNext = useSWRNext(...args);
+    // return {
+    //   ...swrNext,
+    //   mutate: (data, shouldRevalidate) => {
+    //     return swrNext.mutate(data, shouldRevalidate)
+    //       .then((value) => {
+    //         mutate(IS_DRAWER_MODE); // mutate isDrawerMode
+    //         return value;
+    //       });
+    //   },
+    // };
   };
 };
 
