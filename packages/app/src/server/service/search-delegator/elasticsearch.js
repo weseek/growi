@@ -604,7 +604,7 @@ class ElasticsearchDelegator {
   }
 
   createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -660,7 +660,7 @@ class ElasticsearchDelegator {
         multi_match: {
           query: parsedKeywords.match.join(' '),
           type: 'most_fields',
-          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
         },
       };
       query.body.query.bool.must.push(q);
@@ -670,7 +670,7 @@ class ElasticsearchDelegator {
       const q = {
         multi_match: {
           query: parsedKeywords.not_match.join(' '),
-          fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
+          fields: ['path.ja', 'path.en', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
           operator: 'or',
         },
       };
@@ -682,12 +682,13 @@ class ElasticsearchDelegator {
       parsedKeywords.phrase.forEach((phrase) => {
         phraseQueries.push({
           multi_match: {
-            query: phrase, // each phrase is quoteted words
+            query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
+              'comments',
             ],
           },
         });
