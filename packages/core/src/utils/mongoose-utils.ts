@@ -1,7 +1,11 @@
 import mongoose, {
-  Model, Document, Schema,
+  Model, Document, Schema, ConnectOptions,
 } from 'mongoose';
 
+// suppress DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version
+type ConnectionOptionsExtend = {
+  useUnifiedTopology: boolean
+}
 // No More Deprecation Warning Options
 // Removed useFindAndModify and useCreateIndex option
 // see: https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
@@ -34,6 +38,6 @@ export const getOrCreateModel = <Interface, Method>(modelName: string, schema: S
 // supress deprecation warnings
 // useNewUrlParser no longer necessary
 // see: https://mongoosejs.com/docs/migrating_to_6.html#no-more-deprecation-warning-options
-export const mongoOptions = {
+export const mongoOptions: ConnectOptions & ConnectionOptionsExtend = {
   useUnifiedTopology: true,
 };
