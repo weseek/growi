@@ -39,7 +39,6 @@ class SearchPage extends React.Component {
       pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
-      checkboxState: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -185,22 +184,6 @@ class SearchPage extends React.Component {
     });
   }
 
-  updateCheckboxState = () => {
-    function getCheckboxType(selectedPagesCount, searchedPagesCount) {
-      switch (selectedPagesCount) {
-        case 0:
-          return CheckboxType.NONE_CHECKED;
-        case searchedPagesCount:
-          return CheckboxType.ALL_CHECKED;
-        default:
-          return CheckboxType.INDETERMINATE;
-      }
-    }
-    this.setState({
-      checkboxState: getCheckboxType(this.state.selectedPages.size, this.state.searchedPages.length),
-    });
-  }
-
   toggleCheckBox = (page) => {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
@@ -208,7 +191,6 @@ class SearchPage extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
-    this.updateCheckboxState();
   }
 
   toggleAllCheckBox = () => {
@@ -220,7 +202,6 @@ class SearchPage extends React.Component {
         this.state.selectedPages.add(page);
       });
     }
-    this.updateCheckboxState();
   };
 
   renderSearchResultContent = () => {
@@ -258,8 +239,9 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
-        onClickInvoked={this.toggleAllCheckBox}
-        checkboxState={this.state.checkboxState}
+        onClickAllPageCheckbox={this.toggleAllCheckBox}
+        selectedPagesCount={this.state.selectedPages.size}
+        searchedPagesCount={this.state.searchedPages.length}
       >
       </SearchControl>
     );

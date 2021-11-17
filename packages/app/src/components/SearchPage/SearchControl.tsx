@@ -9,10 +9,12 @@ type Props = {
   searchingKeyword: string,
   checkboxState: CheckboxType,
   appContainer: AppContainer,
+  selectedPagesCount: number,
+  searchedPagesCount: number,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
-  onClickInvoked?: () => void,
+  onClickAllPageCheckbox?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -54,7 +56,9 @@ const SearchControl: FC <Props> = (props: Props) => {
         <DeleteSelectedPageGroup
           checkboxState={props.checkboxState}
           onClickInvoked={onDeleteSelectedPageHandler}
-          onCheckInvoked={props.onClickInvoked}
+          onClickAllPageCheckbox={props.onClickAllPageCheckbox}
+          selectedPagesCount={props.selectedPagesCount}
+          searchedPagesCount={props.searchedPagesCount}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
