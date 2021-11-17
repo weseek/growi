@@ -70,7 +70,7 @@ type Props = {
   page: ISearchedPage,
   isSelected: boolean,
   isChecked: boolean,
-  onClickCheckboxInvoked?: (page: ISearchedPage) => void,
+  onClickCheckboxInvoked?: (page: string) => void,
   onClickInvoked?: (pageId: string) => void,
 }
 
@@ -106,7 +106,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               id="flexCheckDefault"
               onClick={() => {
                 if (onClickCheckboxInvoked != null) {
-                  onClickCheckboxInvoked(page);
+                  onClickCheckboxInvoked(page._id);
                 }
               }}
               checked={isChecked}
