@@ -23,7 +23,7 @@ type Props = {
 const SearchResultList: FC<Props> = (props:Props) => {
   const { focusedPage } = props;
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
-  const [controlTargetPage, setControlTargetPage] = useState(focusedPage || {
+  const [controlTargetPage, setControlTargetPage] = useState(focusedPage?.pageData || {
     _id: '',
     path: '',
     revision: '',
