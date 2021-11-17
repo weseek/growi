@@ -1,9 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
 import { CheckboxType } from '../../interfaces/search';
-
-const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
   selectedPagesCount: number,
@@ -50,8 +47,9 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
-          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-          else { onClickInvoked() }
+          if (onClickInvoked == null) {
+            onClickInvoked();
+          }
         }}
       >
         <i className="icon-trash"></i>
