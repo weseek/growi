@@ -71,13 +71,13 @@ type Props = {
   isSelected: boolean,
   isChecked: boolean,
   onClickCheckboxInvoked?: (page: string) => void,
-  onClickInvoked?: (pageId: string) => void,
+  onClickSearchResultItem?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page, isSelected, onClickInvoked, onClickCheckboxInvoked, isChecked,
+    page, isSelected, onClickSearchResultItem, onClickCheckboxInvoked, isChecked,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -92,8 +92,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
         className="d-block pt-3"
         href={pageId}
         onClick={() => {
-          if (onClickInvoked != null) {
-            onClickInvoked(page._id);
+          if (onClickSearchResultItem != null) {
+            onClickSearchResultItem(page._id);
           }
         }}
       >

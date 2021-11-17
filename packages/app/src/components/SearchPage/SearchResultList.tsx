@@ -15,8 +15,8 @@ export type ISearchedPage = IPageHasId & {
 type Props = {
   pages: ISearchedPage[],
   selectedPagesIdList: Set<string>
-  onClickInvoked?: (pageId: string) => void,
-  onChangedInvoked?: (page: string) => void,
+  onClickSearchResultItem?: (pageId: string) => void,
+  onClickCheckboxInvoked?: (page: string) => void,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
@@ -36,8 +36,8 @@ const SearchResultList: FC<Props> = (props:Props) => {
           <SearchResultListItem
             key={page._id}
             page={page}
-            onClickInvoked={props.onClickInvoked}
-            onClickCheckboxInvoked={props.onChangedInvoked}
+            onClickSearchResultItem={props.onClickSearchResultItem}
+            onClickCheckboxInvoked={props.onClickCheckboxInvoked}
             isSelected={page._id === focusedPageId || false}
             isChecked={isChecked}
           />

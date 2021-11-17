@@ -183,12 +183,15 @@ class SearchPage extends React.Component {
   }
 
   toggleCheckBox = (pageId) => {
-    if (this.state.selectedPagesIdList.has(pageId)) {
-      this.state.selectedPagesIdList.delete(pageId);
+    const { selectedPagesIdList } = this.state;
+
+    if (selectedPagesIdList.has(pageId)) {
+      selectedPagesIdList.delete(pageId);
     }
     else {
-      this.state.selectedPagesIdList.add(pageId);
+      selectedPagesIdList.add(pageId);
     }
+    this.setState({ selectedPagesIdList });
   }
 
   toggleAllCheckBox = () => {
@@ -225,7 +228,7 @@ class SearchPage extends React.Component {
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
         onClickInvoked={this.selectPage}
-        onChangedInvoked={this.toggleCheckBox}
+        onClickCheckboxInvoked={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
       />
     );
