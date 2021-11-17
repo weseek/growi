@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { FC, memo } from 'react';
 import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import NavigationContainer from '~/client/services/NavigationContainer';
 import AppContainer from '~/client/services/AppContainer';
+import { IUser } from '~/interfaces/user';
 import { usePageCreateModalOpened } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -15,9 +16,14 @@ import GrowiLogo from '../Icons/GrowiLogo';
 import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
 
-const NavbarRight = React.memo(({ currentUser }) => {
+type NavbarRightProps = {
+  currentUser: IUser,
+}
+const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { t } = useTranslation();
   const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+
+  const { currentUser } = props;
 
   // render login button
   if (currentUser == null) {
@@ -44,8 +50,12 @@ const NavbarRight = React.memo(({ currentUser }) => {
   );
 });
 
+type ConfidentialProps = {
+  confidential?: string,
+}
+const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
+  const { confidential } = props;
 
-const Confidential = React.memo(({ confidential }) => {
   if (confidential == null) {
     return null;
   }
