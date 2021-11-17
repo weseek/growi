@@ -68,22 +68,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // TODO: improve style
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
-  if (isOpen) opacityStyle.opacity = 0.5;
 
   const buttonClass = isOpen ? 'rotate' : '';
 
   return (
-    <div style={{ margin: '10px' }}>
-      <div style={opacityStyle}>
+    <div className="grw-pagetree-item-wrapper">
+      <div style={opacityStyle} className="grw-pagetree-item">
         <button
           type="button"
-          className={`grw-page-tree-button d-inline-block mr-1 ${buttonClass}`}
+          className={`grw-pagetree-button d-inline-block mr-1 ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
           <i className="fa fa-caret-right"></i>
         </button>
         <a href={page._id} className="d-inline-block">
-          <p>{nodePath.basename(page.path as string) || '/'}</p>
+          <p className="grw-pagetree-title">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
       </div>
       {

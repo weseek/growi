@@ -1,9 +1,32 @@
-// TODO: improve styles
-.grw-page-tree {
-  .grw-page-tree-button {
-    // animation: transform 3s ease-out;
-    &.rotate {
-      transform: rotate(90deg);
+.grw-pagetree {
+  .grw-pagetree-item-wrapper {
+    margin-top: 10px;
+    margin-left: 10px;
+
+    .grw-pagetree-item {
+      // display: flex;
+      // padding: 5px;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      .grw-pagetree-button {
+        &.rotate {
+          transform: rotate(90deg);
+        }
+      }
+
+      .grw-pagetree-title {
+        font-size: medium;
+      }
+
+      .grw-pagetree-controll {
+        display: none;
+        &:hover {
+          display: inline-block;
+        }
+      }
     }
   }
 }
