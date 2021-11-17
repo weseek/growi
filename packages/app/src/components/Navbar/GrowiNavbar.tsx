@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { usePageCreateModalOpened } from '~/stores/ui';
+import { useIsDeviceSmallerThanMd, usePageCreateModalOpened } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -80,10 +79,11 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
 
 const GrowiNavbar = (props) => {
 
-  const { appContainer, navigationContainer } = props;
+  const { appContainer } = props;
   const { currentUser } = appContainer;
   const { crowi, isSearchServiceConfigured } = appContainer.config;
-  const { isDeviceSmallerThanMd } = navigationContainer.state;
+
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   return (
     <>
@@ -118,12 +118,11 @@ const GrowiNavbar = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer, NavigationContainer]);
+const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
 
 
 GrowiNavbar.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default GrowiNavbarWrapper;

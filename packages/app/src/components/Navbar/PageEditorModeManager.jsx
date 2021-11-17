@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 /* eslint-disable react/prop-types */
 const PageEditorModeButtonWrapper = React.memo(({
@@ -37,8 +39,10 @@ const PageEditorModeButtonWrapper = React.memo(({
 function PageEditorModeManager(props) {
   const {
     t, appContainer,
-    editorMode, onPageEditorModeButtonClicked, isBtnDisabled, isDeviceSmallerThanMd,
+    editorMode, onPageEditorModeButtonClicked, isBtnDisabled,
   } = props;
+
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const isAdmin = appContainer.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
@@ -116,12 +120,10 @@ PageEditorModeManager.propTypes = {
   onPageEditorModeButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
   editorMode: PropTypes.string,
-  isDeviceSmallerThanMd: PropTypes.bool,
 };
 
 PageEditorModeManager.defaultProps = {
   isBtnDisabled: false,
-  isDeviceSmallerThanMd: false,
 };
 
 /**

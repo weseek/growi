@@ -6,6 +6,8 @@ import { Collapse, Button } from 'reactstrap';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import AppContainer from '~/client/services/AppContainer';
+import { useDrawerOpened, useIsDeviceSmallerThanMd } from '~/stores/ui';
+
 import SlackNotification from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -24,12 +26,19 @@ const EditorNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { editorMode } = navigationContainer.state;
+
+  const { mutate: mutateDrawerOpened } = useDrawerOpened();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
   const renderDrawerButton = () => (
-    <button type="button" className="btn btn-outline-secondary border-0" onClick={() => navigationContainer.toggleDrawer()}>
+    <button
+      type="button"
+      className="btn btn-outline-secondary border-0"
+      onClick={() => mutateDrawerOpened(true)}
+    >
       <i className="icon-menu"></i>
     </button>
   );
