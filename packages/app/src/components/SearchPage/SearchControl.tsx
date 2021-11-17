@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
-import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
-  checkboxState: CheckboxType,
   appContainer: AppContainer,
+  selectedPagesCount: number,
+  searchedPagesCount: number,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
-  onClickInvoked?: () => void,
+  onClickSelectAllCheckbox?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -52,9 +52,10 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          checkboxState={props.checkboxState}
           onClickInvoked={onDeleteSelectedPageHandler}
-          onCheckInvoked={props.onClickInvoked}
+          onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
+          selectedPagesCount={props.selectedPagesCount}
+          searchedPagesCount={props.searchedPagesCount}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">

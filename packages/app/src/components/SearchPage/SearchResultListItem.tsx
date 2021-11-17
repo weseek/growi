@@ -86,22 +86,16 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickSearchedResultItem = () => {
-    if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-    else onClickInvoked(page._id);
-  };
-
-  const onClickCheckbox = () => {
-    if (onClickCheckboxInvoked == null) { logger.error('onClickCheckboxInvoked is null') }
-    else onClickCheckboxInvoked(page);
-  };
-
   return (
     <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={onClickSearchedResultItem}
+        onClick={() => {
+          if (onClickInvoked != null) {
+            onClickInvoked(page._id);
+          }
+        }}
       >
         <div className="d-flex">
           {/* checkbox */}
@@ -110,7 +104,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={onClickCheckbox}
+              onClick={() => {
+                if (onClickCheckboxInvoked != null) {
+                  onClickCheckboxInvoked(page);
+                }
+              }}
               checked={isChecked}
             />
           </div>
