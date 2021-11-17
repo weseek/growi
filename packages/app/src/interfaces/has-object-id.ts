@@ -1,3 +1,3 @@
-export interface HasObjectId {
+export type HasObjectId = {
   _id: string,
-}
+};

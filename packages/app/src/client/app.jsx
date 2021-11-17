@@ -50,6 +50,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -130,6 +131,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
@@ -153,23 +155,42 @@ if (pageContainer.state.path != null) {
   });
 }
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <SWRConfig value={swrGlobalConfiguration}>
-            <Provider inject={injectableContainers}>
-              {componentMappings[key]}
-            </Provider>
-          </SWRConfig>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <SWRConfig value={swrGlobalConfiguration}>
+              <Provider inject={injectableContainers}>
+                {componentMappings[key]}
+              </Provider>
+            </SWRConfig>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('page-context');
+ReactDOM.render(
+  <I18nextProvider i18n={i18n}>
+    <ErrorBoundary>
+      <SWRConfig value={swrGlobalConfiguration}>
+        <Provider inject={injectableContainers}>
+          {componentMappings['page-context']}
+        </Provider>
+      </SWRConfig>
+    </ErrorBoundary>
+  </I18nextProvider>,
+  elem,
+  renderMainComponents,
+);
+
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();
