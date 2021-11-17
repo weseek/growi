@@ -1,7 +1,10 @@
 // TODO: improve styles
-.grw-page-tree {
-  .grw-page-tree-button {
+.grw-pagetree {
+  .grw-pagetree-button {
     // animation: transform 3s ease-out;
+  }
+
+  .grw-pagetree-button {
     &.rotate {
       transform: rotate(90deg);
     }
