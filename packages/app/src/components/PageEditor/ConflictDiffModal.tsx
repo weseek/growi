@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
+import { apiv3Get } from '../../client/util/apiv3-client';
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
@@ -33,11 +34,18 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
 
   const { pageContainer, editorContainer } = props;
-  const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
-  console.log('test');
-  useEffect(() => {
-    console.log('useeffecty called!');
-  }, []);
+
+  const getConflictedRevision = async() => {
+    try {
+      const res = await apiv3Get('/page/conflict-revisions', { pagePath: pageContainer.state.path });
+      return res.data || { request: {}, origin: {}, latest: {} };
+    }
+    catch (err) {
+      pageContainer.showErrorToastr(err);
+    }
+  };
+
+  const { request, origin, latest } = pageContainer.state.revisionsOnConflict || getConflictedRevision();
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',

@@ -864,6 +864,13 @@ module.exports = function(crowi, app) {
         userName: latestRevision.author.name,
         userImgPath: latestRevision.author.imageUrlCached,
       };
+
+      await Conflict.findOneAndUpdate(
+        { path: page.path },
+        { $set: { revisions } },
+        { upsert: true },
+      );
+
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', revisions));
     }
 

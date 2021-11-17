@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import Conflict from '../../models/conflict';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -178,6 +179,9 @@ module.exports = (crowi) => {
     ],
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    conflict: [
+      query('pagePath').isString(),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -419,6 +423,22 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get exist path', err);
+      return res.apiv3Err(err, 500);
+    }
+
+  });
+
+  /**
+   * return conflicted revisions on page
+   */
+  router.get('/conflict-revisions', loginRequired, validator.conflict, apiV3FormValidator, async(req, res) => {
+    const { pagePath } = req.query;
+
+    try {
+      const conflictedRevisions = (await Conflict.findOne({ path: pagePath })).revisions;
+      return res.apiv3(conflictedRevisions);
+    }
+    catch (err) {
       return res.apiv3Err(err, 500);
     }
 
