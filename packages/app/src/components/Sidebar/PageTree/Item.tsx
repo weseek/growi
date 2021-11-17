@@ -70,10 +70,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   if (page.isTarget) opacityStyle.opacity = 0.7;
   if (isOpen) opacityStyle.opacity = 0.5;
 
+  const buttonClass = isOpen ? 'rotate' : '';
+
   return (
     <div style={{ margin: '10px' }}>
       <div style={opacityStyle}>
-        <button type="button" className="d-inline-block btn btn-light p-1 mr-1" onClick={onClickLoadChildren}>Load</button>
+        <button
+          type="button"
+          className={`grw-page-tree-button d-inline-block mr-1 ${buttonClass}`}
+          onClick={onClickLoadChildren}
+        >
+          <i className="fa fa-caret-right"></i>
+        </button>
         <a href={page._id} className="d-inline-block">
           <p>{nodePath.basename(page.path as string) || '/'}</p>
         </a>
