@@ -84,11 +84,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickCheckbox = () => {
-    if (onClickCheckboxInvoked == null) { logger.error('onClickCheckboxInvoked is null') }
-    else onClickCheckboxInvoked(page);
-  };
-
   return (
     <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
@@ -107,7 +102,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={onClickCheckbox}
+              onClick={() => {
+                if (onClickCheckboxInvoked != null) {
+                  onClickCheckboxInvoked(page);
+                }
+              }}
             />
           </div>
           <div className="w-100">
