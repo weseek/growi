@@ -1,12 +1,16 @@
 import { SWRResponse } from 'swr';
+import { pagePathUtils } from '@growi/core';
+
+import { IUser } from '../interfaces/user';
+
 import { useStaticSWR } from './use-static-swr';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 type Nullable<T> = T | null;
 
-export const useCurrentUser = (initialData?: any): SWRResponse<Nullable<any>, any> => {
-  return useStaticSWR<Nullable<any>, Error>('currentUser', initialData);
+export const useCurrentUser = (initialData?: IUser): SWRResponse<Nullable<IUser>, Error> => {
+  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData || null);
 };
 
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -15,6 +19,18 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
 
 export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('currentPagePath', initialData || null);
+};
+
+export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser } = useCurrentUser();
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const isLoading = currentUser === undefined || currentPagePath === undefined;
+
+  const key = isLoading ? null : 'isSharedUser';
+  const value = !isLoading && currentUser == null && pagePathUtils.isSharedPage(currentPagePath as string);
+
+  return useStaticSWR(key, value);
 };
 
 export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
