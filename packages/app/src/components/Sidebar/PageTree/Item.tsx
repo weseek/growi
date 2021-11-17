@@ -1,4 +1,7 @@
-import React, { useCallback, useState, FC } from 'react';
+import React, {
+  useCallback, useState, FC, useEffect,
+} from 'react';
+import nodePath from 'path';
 
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
@@ -28,33 +31,35 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  /*
-   * When swr fetch succeeded
-   */
-  if (isOpen && error == null && data != null) {
-    const { children } = data;
-    itemNode.children = ItemNode.generateNodesFromPages(children);
-  }
-
   // make sure itemNode.children and currentChildren are synced
-  if (children.length > currentChildren.length) {
-    setCurrentChildren(children);
-  }
+  useEffect(() => {
+    if (children.length > currentChildren.length) {
+      setCurrentChildren(children);
+    }
+    /*
+     * When swr fetch succeeded
+     */
+    if (isOpen && error == null && data != null) {
+      const newChildren = data.children;
+      setCurrentChildren(ItemNode.generateNodesFromPages(newChildren));
+    }
+  }, [data]);
 
   // TODO: improve style
-  const style = { margin: '10px', opacity: 1.0 };
-  if (page.isTarget) style.opacity = 0.7;
+  const opacityStyle = { opacity: 1.0 };
+  if (page.isTarget) opacityStyle.opacity = 0.7;
+  else if (isOpen) opacityStyle.opacity = 0.5;
 
   return (
-    <div style={style}>
-      <div>
-        <button type="button" className="btn btn-light p-1" onClick={onClickLoadChildren}>Load</button>
-        <a href={page._id}>
-          <p>{page.path}</p>
+    <div style={{ margin: '10px' }}>
+      <div style={opacityStyle}>
+        <button type="button" className="d-inline-block btn btn-light p-1 mr-1" onClick={onClickLoadChildren}>Load</button>
+        <a href={page._id} className="d-inline-block">
+          <p>{nodePath.basename(page.path as string) || '/'}</p>
         </a>
       </div>
       {
-        hasChildren() && currentChildren.map(node => (
+        isOpen && hasChildren() && currentChildren.map(node => (
           <Item
             key={node.page._id}
             itemNode={node}
