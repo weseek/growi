@@ -5,7 +5,7 @@ import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
 import {
   useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
@@ -53,6 +53,7 @@ const ContextExtractor: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
+  const targetAndAncestors = JSON.parse(mainContent?.getAttribute('data-target-and-ancestors') || jsonNull);
 
   /*
    * use static swr
@@ -93,6 +94,7 @@ const ContextExtractor: FC = () => {
   useUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
+  useTargetAndAncestors(targetAndAncestors);
 
   return (
     <div>

@@ -81,7 +81,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
       <div className="grw-sidebar-nav-primary-container">
         {!isSharedUser && <PrimaryItem contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
         {!isSharedUser && <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
-        {!isSharedUser && <PrimaryItem id="tree" label="Page Tree" iconName="format_list_bulleted" />}
+        {!isSharedUser && <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />}
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
       </div>
