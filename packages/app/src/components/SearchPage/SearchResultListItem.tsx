@@ -70,6 +70,8 @@ type Props = {
   page: ISearchedPage,
   isSelected: boolean,
   onClickCheckboxInvoked?: (page: ISearchedPage) => void,
+  // todo: fix name
+  // refs: https://estoc.weseek.co.jp/redmine/issues/81100
   onClickInvoked?: (pageId: string) => void,
 }
 
