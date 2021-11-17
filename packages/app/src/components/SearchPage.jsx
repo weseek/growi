@@ -192,16 +192,16 @@ class SearchPage extends React.Component {
   }
 
   toggleAllCheckBox = () => {
-    if (this.state.selectedPagesIdList.size === this.state.searchedPages.length) {
-      this.state.selectedPagesIdList.clear();
+    const { selectedPagesIdList, searchedPages } = this.state;
+    if (selectedPagesIdList.size === searchedPages.length) {
+      selectedPagesIdList.clear();
     }
     else {
-      this.state.searchedPages.forEach((page) => {
-        this.state.selectedPagesIdList.add(page._id);
+      searchedPages.forEach((page) => {
+        selectedPagesIdList.add(page._id);
       });
     }
-    // Force a render to tell React that the State has been changed by the Set class method
-    this.forceUpdate();
+    this.setState({ selectedPagesIdList });
   };
 
   renderSearchResultContent = () => {
