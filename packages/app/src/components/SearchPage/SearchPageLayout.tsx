@@ -19,7 +19,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   return (
     <div className="content-main">
       <div className="search-result d-flex" id="search-result">
-        <div className="page-list search-result-list pr-0" id="search-result-list">
+        <div className="w-50 flex-grow-1 page-list search-result-list pr-0" id="search-result-list">
           <nav><SearchControl></SearchControl></nav>
           <div className="d-flex align-items-start justify-content-between mt-1">
             <div className="search-result-meta">
