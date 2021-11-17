@@ -13,8 +13,6 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
-import { CheckboxType } from '../interfaces/search';
-
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
