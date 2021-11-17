@@ -12,7 +12,7 @@ import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond, supportedGrowiCommands,
+  respond, supportedGrowiCommands, IChannel,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -29,7 +29,7 @@ import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-gro
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
-import { RelationsService, Channel } from '~/services/RelationsService';
+import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
@@ -227,7 +227,7 @@ export class SlackCtrl {
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
-    const channel: Channel = {
+    const channel: IChannel = {
       id: body.channel_id,
       name: body.channel_name,
     };
@@ -354,7 +354,7 @@ export class SlackCtrl {
     // const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     // const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
 
-    const channel: Channel = interactionPayload.channel;
+    const channel: IChannel = interactionPayload.channel;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
 
     const {
