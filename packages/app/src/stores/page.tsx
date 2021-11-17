@@ -36,6 +36,9 @@ export const useSWRxPageList = (
 export const useSWRxConflictedRevision = (pagePath: string): SWRResponse<IConflictedRevisions, Error> => {
   return useSWR(
     `/page/conflict-revisions?pagePath=${pagePath}`,
-    endpoint => apiv3Get<{ revisions: IConflictedRevisions }>(endpoint).then(response => response.data.revisions),
+    endpoint => apiv3Get<{ revisions: IConflictedRevisions }>(endpoint).then((response) => {
+      console.log('response.data.revisions', response);
+      return response.data.revisions;
+    }),
   );
 };

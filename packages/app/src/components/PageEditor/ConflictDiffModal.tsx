@@ -1,11 +1,11 @@
 import React, {
-  useState, useRef, FC,
+  useState, useRef, FC, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { format } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 // TODO: consider whether to use codemirrorEditor
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
@@ -34,20 +34,26 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const resolvedRevision = useRef<string | null>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  const [request, setRequest] = useState<IRevisionOnConflict | null>(null);
+  const [origin, setOrigin] = useState<IRevisionOnConflict | null>(null);
+  const [latest, setLatest] = useState<IRevisionOnConflict | null>(null);
 
   const { pageContainer, editorContainer } = props;
-
-
   const { data: revisions } = useSWRxConflictedRevision(pageContainer.state.path || '');
-  let request: IRevisionOnConflict | null = null;
-  let origin: IRevisionOnConflict | null = null;
-  let latest: IRevisionOnConflict | null = null;
-  if (revisions != null) {
-    request = revisions.request;
-    origin = revisions.origin;
-    latest = revisions.latest;
-  }
 
+  useEffect(() => {
+    if (revisions != null) {
+      pageContainer.setState({ revisionsOnConflict: revisions });
+      setRequest(revisions.request);
+      setOrigin(revisions.origin);
+      setLatest(revisions.latest);
+    }
+  }, [revisions, pageContainer]);
+
+  // const { origin, latest } = pageContainer.state.revisionsOnConflict || { origin: {}, latest: {} };
+
+
+  console.log(revisions);
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',
@@ -85,7 +91,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
-        {Object.keys(pageContainer.state.revisionsOnConflict || {}).length > 0 && request != null && latest != null && origin != null
+        {console.log('pageContainer.state.revisionsOnConflict :!', pageContainer.state.revisionsOnConflict)}
+        { request != null
           && (
             <div className="row mx-2">
               <div className="col-12 text-center mt-2 mb-4">
@@ -95,15 +102,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
                 <div className="d-flex align-items-center my-3">
                   <div>
-                    <img height="40px" className="rounded-circle" src={request.userImgPath} />
+                    <img height="40px" className="rounded-circle" src={request?.userImgPath} />
                   </div>
                   <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {request.userName}</p>
-                    <p className="my-0">{format(request.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">updated by {request?.userName}</p>
+                    <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
-                  value={request.revisionBody}
+                  value={request?.revisionBody}
                   options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
@@ -124,15 +131,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <h3 className="font-weight-bold my-2">{t('origin_revision')}</h3>
                 <div className="d-flex align-items-center my-3">
                   <div>
-                    <img height="40px" className="rounded-circle" src={origin.userImgPath} />
+                    <img height="40px" className="rounded-circle" src={origin?.userImgPath} />
                   </div>
                   <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {origin.userName}</p>
-                    <p className="my-0">{format(origin.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">updated by {origin?.userName}</p>
+                    <p className="my-0">{format(parseISO(origin?.createdAt || '20210221'), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
-                  value={origin.revisionBody}
+                  value={origin?.revisionBody}
                   options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
@@ -153,15 +160,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
                 <div className="d-flex align-items-center my-3">
                   <div>
-                    <img height="40px" className="rounded-circle" src={latest.userImgPath} />
+                    <img height="40px" className="rounded-circle" src={latest?.userImgPath} />
                   </div>
                   <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {latest.userName}</p>
-                    <p className="my-0">{format(latest.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">updated by {latest?.userName}</p>
+                    <p className="my-0">{format(parseISO(latest?.createdAt || '20210521'), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
-                  value={latest.revisionBody}
+                  value={latest?.revisionBody}
                   options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">

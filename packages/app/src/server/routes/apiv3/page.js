@@ -435,7 +435,8 @@ module.exports = (crowi) => {
     const { pagePath } = req.query;
 
     try {
-      const conflictedRevisions = (await Conflict.findOne({ path: pagePath })).revisions;
+      const conflictedRevisions = (await Conflict.findOne({ path: pagePath }));
+      console.log('conflictedRevisions:', conflictedRevisions);
       return res.apiv3(conflictedRevisions);
     }
     catch (err) {
