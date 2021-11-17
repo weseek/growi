@@ -4,4 +4,4 @@
 
 
 // Foreign key field
-export type Ref<T> = string | T;
+export type Ref<T> = T & string;
