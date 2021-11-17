@@ -73,7 +73,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
 
   return (
-    <Dropdown className="notification-wrapper grw-in-app-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
+    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a">
         <button type="button" className="nav-link border-0 bg-transparent waves-effect waves-light">
           <i className="icon-bell mr-2" /> {badge}
