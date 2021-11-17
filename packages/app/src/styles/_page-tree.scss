@@ -2,11 +2,15 @@
   .grw-pagetree-item-wrapper {
     margin-top: 10px;
     margin-left: 10px;
+  }
 
+  .grw-pagetree-item-wrapper {
     .grw-pagetree-item {
       // display: flex;
       // padding: 5px;
+    }
 
+    .grw-pagetree-item {
       &:hover {
         opacity: 0.7;
       }
