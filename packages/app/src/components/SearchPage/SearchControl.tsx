@@ -8,7 +8,7 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   selectedPagesCount: number,
-  searchedPagesCount: number,
+  displayPageCount: number,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
@@ -55,7 +55,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           onClickInvoked={onDeleteSelectedPageHandler}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           selectedPagesCount={props.selectedPagesCount}
-          searchedPagesCount={props.searchedPagesCount}
+          displayPageCount={props.displayPageCount}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">
