@@ -34,12 +34,8 @@ export default class NavigationContainer extends Container {
       sidebarContentsId: localStorage.sidebarContentsId || 'recent',
 
       isScrollTop: true,
-
-      isPageCreateModalShown: false,
     };
 
-    this.openPageCreateModal = this.openPageCreateModal.bind(this);
-    this.closePageCreateModal = this.closePageCreateModal.bind(this);
     this.setEditorMode = this.setEditorMode.bind(this);
     this.initDeviceSize();
     this.initScrollEvent();
@@ -193,18 +189,6 @@ export default class NavigationContainer extends Container {
   selectSidebarContents(contentsId) {
     window.localStorage.setItem('sidebarContentsId', contentsId);
     this.setState({ sidebarContentsId: contentsId });
-  }
-
-  openPageCreateModal() {
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to create a new page.');
-      return;
-    }
-    this.setState({ isPageCreateModalShown: true });
-  }
-
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
   }
 
   /**

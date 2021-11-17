@@ -212,3 +212,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   const initialData = false;
   return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
 };
+
+export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
+  const initialData = false;
+  return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
+};
