@@ -5,6 +5,7 @@ import nodePath from 'path';
 
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
+import { usePageId } from '../../../stores/context';
 
 
 interface ItemProps {
@@ -12,15 +13,27 @@ interface ItemProps {
   isOpen?: boolean
 }
 
+// Utility to mark target
+const markTarget = (children: ItemNode[], targetId: string): void => {
+  children.forEach((node) => {
+    if (node.page._id === targetId) {
+      node.page.isTarget = true;
+    }
+    return node;
+  });
+
+  return;
+};
+
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { itemNode, isOpen: _isOpen = false } = props;
 
   const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
-
   const [isOpen, setIsOpen] = useState(_isOpen);
 
+  const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasChildren = useCallback((): boolean => {
@@ -31,24 +44,31 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
+  // didMount
+  useEffect(() => {
+    if (hasChildren()) setIsOpen(true);
+  }, []);
+
   // make sure itemNode.children and currentChildren are synced
   useEffect(() => {
     if (children.length > currentChildren.length) {
+      markTarget(children, targetId);
       setCurrentChildren(children);
     }
     /*
      * When swr fetch succeeded
      */
     if (isOpen && error == null && data != null) {
-      const newChildren = data.children;
-      setCurrentChildren(ItemNode.generateNodesFromPages(newChildren));
+      const newChildren = ItemNode.generateNodesFromPages(data.children);
+      markTarget(newChildren, targetId);
+      setCurrentChildren(newChildren);
     }
   }, [data]);
 
   // TODO: improve style
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
-  else if (isOpen) opacityStyle.opacity = 0.5;
+  if (isOpen) opacityStyle.opacity = 0.5;
 
   return (
     <div style={{ margin: '10px' }}>
