@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchResults: [],
       searchResultMeta: {},
-      focusedPage: {},
+      focusedSearchResultData: {},
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
@@ -152,7 +152,7 @@ class SearchPage extends React.Component {
           searchResults: res.data,
           searchResultMeta: res.meta,
           searchResultCount: res.meta.total,
-          focusedPage: res.data[0],
+          focusedSearchResultData: res.data[0],
           // reset active page if keyword changes, otherwise set the current state
           activePage: this.state.searchedKeyword === keyword ? this.state.activePage : 1,
         });
@@ -163,7 +163,7 @@ class SearchPage extends React.Component {
           searchResults: [],
           searchResultMeta: {},
           searchResultCount: 0,
-          focusedPage: {},
+          focusedSearchResultData: {},
           activePage: 1,
         });
       }
@@ -178,7 +178,7 @@ class SearchPage extends React.Component {
       return pageData._id === pageId;
     });
     this.setState({
-      focusedPage: this.state.searchResults[index],
+      focusedSearchResultData: this.state.searchResults[index],
     });
   }
 
@@ -196,7 +196,7 @@ class SearchPage extends React.Component {
       <SearchResultContent
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
-        focusedPage={this.state.focusedPage}
+        focusedSearchResultData={this.state.focusedSearchResultData}
       >
       </SearchResultContent>
     );
@@ -206,7 +206,7 @@ class SearchPage extends React.Component {
     return (
       <SearchResultList
         pages={this.state.searchResults || []}
-        focusedPage={this.state.focusedPage}
+        focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPages={this.state.selectedPages || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
