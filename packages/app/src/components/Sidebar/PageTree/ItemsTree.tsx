@@ -51,7 +51,7 @@ const ItemsTree: FC = () => {
 
   const { data, error } = useTargetAndAncestors();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath == null ? null : currentPath);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath || null);
 
   if (error != null || error2 != null) {
     return null;
