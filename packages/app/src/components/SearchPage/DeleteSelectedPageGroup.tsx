@@ -6,7 +6,6 @@ import { CheckboxType } from '../../interfaces/search';
 const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
-  checkboxState: CheckboxType,
   selectedPagesCount: number,
   searchedPagesCount: number,
   onClickInvoked?: () => void,
