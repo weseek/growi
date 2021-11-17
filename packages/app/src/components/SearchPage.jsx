@@ -31,7 +31,7 @@ class SearchPage extends React.Component {
       searchedPages: [],
       searchResultMeta: {},
       focusedPage: {},
-      selectedPages: new Set(),
+      selectedPagesIdList: new Set(),
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: 10, // change to an appropriate limit number
@@ -182,22 +182,22 @@ class SearchPage extends React.Component {
     });
   }
 
-  toggleCheckBox = (page) => {
-    if (this.state.selectedPages.has(page)) {
-      this.state.selectedPages.delete(page);
+  toggleCheckBox = (pageId) => {
+    if (this.state.selectedPagesIdList.has(pageId)) {
+      this.state.selectedPagesIdList.delete(pageId);
     }
     else {
-      this.state.selectedPages.add(page);
+      this.state.selectedPagesIdList.add(pageId);
     }
   }
 
   toggleAllCheckBox = () => {
-    if (this.state.selectedPages.size === this.state.searchedPages.length) {
-      this.state.selectedPages.clear();
+    if (this.state.selectedPagesIdList.size === this.state.searchedPages.length) {
+      this.state.selectedPagesIdList.clear();
     }
     else {
       this.state.searchedPages.forEach((page) => {
-        this.state.selectedPages.add(page);
+        this.state.selectedPagesIdList.add(page._id);
       });
     }
     // Force a render to tell React that the State has been changed by the Set class method
@@ -220,7 +220,7 @@ class SearchPage extends React.Component {
       <SearchResultList
         pages={this.state.searchedPages || []}
         focusedPage={this.state.focusedPage}
-        selectedPages={this.state.selectedPages || []}
+        selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
@@ -240,7 +240,7 @@ class SearchPage extends React.Component {
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
-        selectedPagesCount={this.state.selectedPages.size}
+        selectedPagesCount={this.state.selectedPagesIdList.size}
         searchedPagesCount={this.state.searchedPages.length}
       >
       </SearchControl>
