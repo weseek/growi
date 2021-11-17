@@ -10,13 +10,13 @@ type Props = {
   selectedPagesCount: number,
   searchedPagesCount: number,
   onClickInvoked?: () => void,
-  onClickAllPageCheckbox?: () => void,
+  onClickSelectAllCheckbox?: () => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    onClickInvoked, onClickAllPageCheckbox, selectedPagesCount, searchedPagesCount,
+    onClickInvoked, onClickSelectAllCheckbox, selectedPagesCount, searchedPagesCount,
   } = props;
 
   const checkboxType = useMemo(() => {
@@ -41,8 +41,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
         onClick={() => {
-          if (onClickAllPageCheckbox != null) {
-            onClickAllPageCheckbox();
+          if (onClickSelectAllCheckbox != null) {
+            onClickSelectAllCheckbox();
           }
         }}
         checked={checkboxType !== CheckboxType.NONE_CHECKED}

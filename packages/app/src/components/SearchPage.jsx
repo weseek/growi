@@ -237,7 +237,7 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
-        onClickAllPageCheckbox={this.toggleAllCheckBox}
+        onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectedPagesCount={this.state.selectedPages.size}
         searchedPagesCount={this.state.searchedPages.length}
       >

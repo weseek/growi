@@ -14,7 +14,7 @@ type Props = {
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
-  onClickAllPageCheckbox?: () => void,
+  onClickSelectAllCheckbox?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -56,7 +56,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <DeleteSelectedPageGroup
           checkboxState={props.checkboxState}
           onClickInvoked={onDeleteSelectedPageHandler}
-          onClickAllPageCheckbox={props.onClickAllPageCheckbox}
+          onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           selectedPagesCount={props.selectedPagesCount}
           searchedPagesCount={props.searchedPagesCount}
         />
