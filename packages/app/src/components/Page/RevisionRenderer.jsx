@@ -8,7 +8,7 @@ import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
 
-class RevisionRenderer extends React.PureComponent {
+class LegacyRevisionRenderer extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -117,12 +117,7 @@ class RevisionRenderer extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, NavigationContainer]);
-
-RevisionRenderer.propTypes = {
+LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
@@ -131,4 +126,22 @@ RevisionRenderer.propTypes = {
   additionalClassName: PropTypes.string,
 };
 
-export default RevisionRendererWrapper;
+/**
+ * Wrapper component for using unstated
+ */
+const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer, NavigationContainer]);
+
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const RevisionRenderer = (props) => {
+  return <LegacyRevisionRendererWrapper {...props} />;
+};
+
+RevisionRenderer.propTypes = {
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  markdown: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.string,
+  additionalClassName: PropTypes.string,
+};
+
+export default RevisionRenderer;
