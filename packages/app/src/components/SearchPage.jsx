@@ -28,7 +28,7 @@ class SearchPage extends React.Component {
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
-      searchedPages: [],
+      searchResults: [],
       searchResultMeta: {},
       focusedPage: {},
       selectedPages: new Set(),
@@ -125,7 +125,7 @@ class SearchPage extends React.Component {
       this.setState({
         searchingKeyword: '',
         searchedKeyword: '',
-        searchedPages: [],
+        searchResults: [],
         searchResultMeta: {},
         searchResultCount: 0,
         activePage: 1,
@@ -149,7 +149,7 @@ class SearchPage extends React.Component {
       if (res.data.length > 0) {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: res.data,
+          searchResults: res.data,
           searchResultMeta: res.meta,
           searchResultCount: res.meta.total,
           focusedPage: res.data[0],
@@ -160,7 +160,7 @@ class SearchPage extends React.Component {
       else {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: [],
+          searchResults: [],
           searchResultMeta: {},
           searchResultCount: 0,
           focusedPage: {},
@@ -174,11 +174,11 @@ class SearchPage extends React.Component {
   }
 
   selectPage= (pageId) => {
-    const index = this.state.searchedPages.findIndex((page) => {
-      return page._id === pageId;
+    const index = this.state.searchResults.findIndex(({ pageData }) => {
+      return pageData._id === pageId;
     });
     this.setState({
-      focusedPage: this.state.searchedPages[index],
+      focusedPage: this.state.searchResults[index],
     });
   }
 
@@ -205,7 +205,7 @@ class SearchPage extends React.Component {
   renderSearchResultList = () => {
     return (
       <SearchResultList
-        pages={this.state.searchedPages || []}
+        pages={this.state.searchResults || []}
         focusedPage={this.state.focusedPage}
         selectedPages={this.state.selectedPages || []}
         searchResultCount={this.state.searchResultCount}
