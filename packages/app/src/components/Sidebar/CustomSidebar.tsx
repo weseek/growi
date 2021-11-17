@@ -6,6 +6,7 @@ import { useSWRxPageByPath } from '~/stores/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import RevisionRenderer from '../Page/RevisionRenderer';
+import { IRevision } from '~/interfaces/revision';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -33,7 +34,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
 
   const isLoading = page === undefined;
-  const markdown = page?.revision?.body;
+  const markdown = (page?.revision as IRevision)?.body;
 
   return (
     <>
