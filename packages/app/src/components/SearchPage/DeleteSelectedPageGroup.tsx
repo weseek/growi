@@ -5,14 +5,14 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   selectedPagesCount: number,
   displayPageCount: number,
-  onClickInvoked?: () => void,
+  onClickDeleteButton?: () => void,
   onClickSelectAllCheckbox?: () => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    onClickInvoked, onClickSelectAllCheckbox, selectedPagesCount, displayPageCount,
+    onClickDeleteButton, onClickSelectAllCheckbox, selectedPagesCount, displayPageCount,
   } = props;
 
   const checkboxType = useMemo(() => {
@@ -46,8 +46,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
         onClick={() => {
-          if (onClickInvoked != null) {
-            onClickInvoked();
+          if (onClickDeleteButton != null) {
+            onClickDeleteButton();
           }
         }}
       >
