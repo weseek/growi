@@ -682,12 +682,13 @@ class ElasticsearchDelegator {
       parsedKeywords.phrase.forEach((phrase) => {
         phraseQueries.push({
           multi_match: {
-            query: phrase, // each phrase is quoteted words
+            query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
+              'comments',
             ],
           },
         });
