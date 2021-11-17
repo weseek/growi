@@ -1,4 +1,6 @@
-import React, { useState, useRef, FC } from 'react';
+import React, {
+  useState, useEffect, useRef, FC,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -32,6 +34,10 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
   const { pageContainer, editorContainer } = props;
   const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
+  console.log('test');
+  useEffect(() => {
+    console.log('useeffecty called!');
+  }, []);
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',

@@ -204,6 +204,7 @@ module.exports = function(crowi, app) {
   function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.revision = page.revision;
+    renderVars.hasConflictRevision = page.hasConflictRevision;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
@@ -368,14 +369,6 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
 
     console.log('page content is rendered here');
-    await Conflict.create({
-      path: '/',
-      revisions: {
-        request: {},
-        origin: {},
-        latest: {},
-      },
-    });
 
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
