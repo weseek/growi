@@ -1,17 +1,19 @@
 import React, {
-  useState, useEffect, useRef, FC,
+  useState, useRef, FC,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 // TODO: consider whether to use codemirrorEditor
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
-import { apiv3Get } from '../../client/util/apiv3-client';
+import { useSWRxConflictedRevision } from '~/stores/page';
+import { IRevisionOnConflict } from '../../interfaces/revision';
+
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
@@ -30,22 +32,22 @@ type ConflictDiffModalProps = {
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
-  const resolvedRevision = useRef<string>('');
+  const resolvedRevision = useRef<string | null>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
 
   const { pageContainer, editorContainer } = props;
 
-  const getConflictedRevision = async() => {
-    try {
-      const res = await apiv3Get('/page/conflict-revisions', { pagePath: pageContainer.state.path });
-      return res.data || { request: {}, origin: {}, latest: {} };
-    }
-    catch (err) {
-      pageContainer.showErrorToastr(err);
-    }
-  };
 
-  const { request, origin, latest } = pageContainer.state.revisionsOnConflict || getConflictedRevision();
+  const { data: revisions } = useSWRxConflictedRevision(pageContainer.state.path || '');
+  let request: IRevisionOnConflict | null = null;
+  let origin: IRevisionOnConflict | null = null;
+  let latest: IRevisionOnConflict | null = null;
+  if (revisions != null) {
+    request = revisions.request;
+    origin = revisions.origin;
+    latest = revisions.latest;
+  }
+
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',
@@ -67,7 +69,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     try {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
-        latest.revisionId,
+        latest?.revisionId,
         resolvedRevision.current,
         editorContainer.getCurrentOptionsToSave(),
       );
@@ -83,7 +85,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
-        {Object.keys(pageContainer.state.revisionsOnConflict || {}).length > 0
+        {Object.keys(pageContainer.state.revisionsOnConflict || {}).length > 0 && request != null && latest != null && origin != null
           && (
             <div className="row mx-2">
               <div className="col-12 text-center mt-2 mb-4">
@@ -97,7 +99,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {request.userName}</p>
-                    <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(request.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -110,7 +112,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => {
                       setIsRevisionSelected(true);
-                      resolvedRevision.current = request.revisionBody;
+                      resolvedRevision.current = request?.revisionBody || '';
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>
@@ -126,7 +128,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {origin.userName}</p>
-                    <p className="my-0">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(origin.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -139,7 +141,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => {
                       setIsRevisionSelected(true);
-                      resolvedRevision.current = origin.revisionBody;
+                      resolvedRevision.current = origin?.revisionBody || '';
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>
@@ -155,7 +157,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {latest.userName}</p>
-                    <p className="my-0">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(latest.createdAt, 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -168,7 +170,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => {
                       setIsRevisionSelected(true);
-                      resolvedRevision.current = latest.revisionBody;
+                      resolvedRevision.current = latest?.revisionBody || '';
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>

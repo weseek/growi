@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { IUser } from './user';
 
 export type IRevision = {
@@ -6,4 +7,18 @@ export type IRevision = {
   hasDiffToPrev: boolean;
   createdAt: Date,
   updatedAt: Date,
+}
+
+export type IRevisionOnConflict = {
+  revisionId: Types.ObjectId;
+  revisionBody: string,
+  userName: string,
+  userImgPath: string,
+  createdAt: Date;
+}
+
+export type IConflictedRevisions = {
+  request: IRevisionOnConflict,
+  origin: IRevisionOnConflict,
+  latest: IRevisionOnConflict,
 }

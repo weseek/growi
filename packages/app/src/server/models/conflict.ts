@@ -1,14 +1,7 @@
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 import { getOrCreateModel } from '@growi/core';
-
-interface IRevisionOnConflict {
-  revisionId: Types.ObjectId;
-  revisionBody: string,
-  userName: string,
-  userImgPath: string,
-  createdAt: Date;
-}
+import { IRevisionOnConflict } from '~/interfaces/revision';
 
 type IConflict = {
   path: string;
