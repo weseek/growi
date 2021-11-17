@@ -4,7 +4,7 @@ import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
-import { useTargetAndAncestors } from '../../../stores/context';
+import { useTargetAndAncestors, useCurrentPagePath } from '../../../stores/context';
 import { HasObjectId } from '../../../interfaces/has-object-id';
 
 
@@ -47,12 +47,11 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
  * ItemsTree
  */
 const ItemsTree: FC = () => {
-  // TODO: get from static SWR
-  const path = '/Sandbox';
+  const { data: currentPath } = useCurrentPagePath();
 
   const { data, error } = useTargetAndAncestors();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(path);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath || null);
 
   if (error != null || error2 != null) {
     return null;
