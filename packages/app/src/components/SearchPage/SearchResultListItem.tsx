@@ -69,13 +69,15 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 type Props = {
   page: ISearchedPage,
   isSelected: boolean,
+  isChecked: boolean,
   onClickCheckboxInvoked?: (page: ISearchedPage) => void,
   onClickInvoked?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const {
-    page, isSelected, onClickInvoked, onClickCheckboxInvoked,
+    // todo: refactoring variable name to clear what changed
+    page, isSelected, onClickInvoked, onClickCheckboxInvoked, isChecked,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -108,6 +110,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               type="checkbox"
               id="flexCheckDefault"
               onClick={onClickCheckbox}
+              checked={isChecked}
             />
           </div>
           <div className="w-100">

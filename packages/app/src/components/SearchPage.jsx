@@ -1,4 +1,4 @@
-// This is the root component for #search-page
+﻿// This is the root component for #search-page
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -200,6 +200,8 @@ class SearchPage extends React.Component {
         this.state.selectedPages.add(page);
       });
     }
+    // Force a render to tell React that the State has been changed by the Set class method
+    this.forceUpdate();
   };
 
   renderSearchResultContent = () => {
