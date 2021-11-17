@@ -16,7 +16,7 @@ type Props = {
   pages: ISearchedPage[],
   selectedPagesIdList: Set<string>
   onClickSearchResultItem?: (pageId: string) => void,
-  onClickCheckboxInvoked?: (page: string) => void,
+  onClickCheckbox?: (page: string) => void,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
@@ -37,7 +37,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             key={page._id}
             page={page}
             onClickSearchResultItem={props.onClickSearchResultItem}
-            onClickCheckboxInvoked={props.onClickCheckboxInvoked}
+            onClickCheckbox={props.onClickCheckbox}
             isSelected={page._id === focusedPageId || false}
             isChecked={isChecked}
           />

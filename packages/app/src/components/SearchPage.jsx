@@ -227,8 +227,8 @@ class SearchPage extends React.Component {
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
-        onClickInvoked={this.selectPage}
-        onClickCheckboxInvoked={this.toggleCheckBox}
+        onClickSearchResultItem={this.selectPage}
+        onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
       />
     );
