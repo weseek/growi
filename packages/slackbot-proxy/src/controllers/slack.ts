@@ -29,7 +29,7 @@ import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-gro
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
-import { RelationsService } from '~/services/RelationsService';
+import { RelationsService, Channel } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
@@ -227,16 +227,21 @@ export class SlackCtrl {
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
+    const channel: Channel = {
+      id: body.channel_id,
+      name: body.channel_name,
+    };
+
     // check permission
     await Promise.all(relations.map(async(relation) => {
       const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
-        relation, growiCommand.growiCommandType, body.channel_name,
+        relation, growiCommand.growiCommandType, channel,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
         isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
-          relation, growiCommand.growiCommandType, body.channel_name,
+          relation, growiCommand.growiCommandType, channel,
         );
       }
 
@@ -344,10 +349,14 @@ export class SlackCtrl {
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
 
-    const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
+    // PrivateMetaDatas are no longer used after removal of modal from slash commands
+    // const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
+    // const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
+    // const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
 
-    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    const channel: Channel = interactionPayload.channel;
+    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
+
     const {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     } = permission;
