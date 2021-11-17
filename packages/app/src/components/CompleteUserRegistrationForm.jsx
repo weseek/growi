@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 
 const logger = loggerFactory('growi:completeUserRegistration');
@@ -20,26 +19,6 @@ const CompleteUserRegistrationForm = (props) => {
     token,
   } = props;
 
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [disableForm, setDisableForm] = useState(false);
-
-  async function submitRegistration() {
-    setDisableForm(true);
-    try {
-      const res = await appContainer.apiv3.post('/complete-registration', {
-        username, name, password, token,
-      });
-      toastSuccess('Registration succeed');
-      window.location = '/login';
-    }
-    catch (err) {
-      toastError(err, 'Registration failed');
-      setDisableForm(false);
-    }
-  }
-
   return (
     <>
       <div id="register-form-errors">
@@ -51,7 +30,7 @@ const CompleteUserRegistrationForm = (props) => {
       </div>
       <div id="register-dialog">
 
-        <fieldset id="registration-form" disabled={disableForm}>
+        <form role="form" action="/user-activation/complete-registration" method="post" id="registration-form">
           <input type="hidden" name="token" value={token} />
           <div className="input-group">
             <div className="input-group-prepend">
@@ -63,15 +42,7 @@ const CompleteUserRegistrationForm = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text"><i className="icon-user"></i></span>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('User ID')}
-              name="username"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-            />
+            <input type="text" className="form-control" placeholder={t('User ID')} name="username" value={inputs.username} required />
           </div>
           <p className="form-text text-red">
             <span id="help-block-username"></span>
@@ -81,35 +52,19 @@ const CompleteUserRegistrationForm = (props) => {
             <div className="input-group-prepend">
               <span className="input-group-text"><i className="icon-tag"></i></span>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('Name')}
-              name="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-            />
+            <input type="text" className="form-control" placeholder={t('Name')} name="name" value={inputs.name} required />
           </div>
 
           <div className="input-group">
             <div className="input-group-prepend">
               <span className="input-group-text"><i className="icon-lock"></i></span>
             </div>
-            <input
-              type="password"
-              className="form-control"
-              placeholder={t('Password')}
-              name="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
+            <input type="password" className="form-control" placeholder={t('Password')} name="password" required />
           </div>
 
           <div className="input-group justify-content-center d-flex mt-5">
             <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-            <button type="button" onClick={submitRegistration} className="btn btn-fill" id="register">
+            <button type="submit" className="btn btn-fill" id="register">
               <div className="eff"></div>
               <span className="btn-label"><i className="icon-user-follow"></i></span>
               <span className="btn-label-text">{t('Create')}</span>
@@ -122,7 +77,7 @@ const CompleteUserRegistrationForm = (props) => {
             </a>
           </div>
 
-        </fieldset>
+        </form>
       </div>
     </>
   );
