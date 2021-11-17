@@ -14,13 +14,13 @@ import { IPageHasId } from '~/interfaces/page';
 const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
-  onClickControlDropdown?: (page: ISearchedPage) => void,
+  onClickControlDropdown?: (page: IPageHasId) => void,
   onClickPageRenameBtnInvoked?: () => void,
   page: IPageHasId,
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId,
-  onClickControlDropdown?: (page: ISearchedPage) => void,
+  onClickControlDropdown?: (page: IPageHasId) => void,
   onClickPageRenameBtnInvoked?: () => void}) => {
 
   const { page, onClickControlDropdown, onClickPageRenameBtnInvoked } = props;
@@ -91,7 +91,7 @@ type Props = {
   page: IPageSearchResultData,
   isSelected: boolean,
   onClickInvoked?: (pageId: string) => void,
-  onClickControlDropdown?: (page: ISearchedPage) => void,
+  onClickControlDropdown?: (page: IPageHasId) => void,
   onClickPageRenameBtnInvoked?: () => void,
 }
 
