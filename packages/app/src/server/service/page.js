@@ -29,9 +29,7 @@ class PageService {
 
   initPageEvent() {
     // create
-    this.pageEvent.on('create', async(page, user) => {
-      this.pageEvent.onCreate();
-    });
+    this.pageEvent.on('create', this.pageEvent.onCreate);
 
     // update
     this.pageEvent.on('update', async(page, user) => {
@@ -140,6 +138,8 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
+    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('create', renamedPage, user);
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
