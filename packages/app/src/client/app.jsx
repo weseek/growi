@@ -118,6 +118,8 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
+
+  'growi-context-extractor': <ContextExtractor />, // use static swr
 });
 
 // additional definitions if data exists
@@ -131,7 +133,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
@@ -176,13 +177,13 @@ const renderMainComponents = () => {
 };
 
 // extract context before rendering main components
-const elem = document.getElementById('page-context');
+const elem = document.getElementById('growi-context-extractor');
 ReactDOM.render(
   <I18nextProvider i18n={i18n}>
     <ErrorBoundary>
       <SWRConfig value={swrGlobalConfiguration}>
         <Provider inject={injectableContainers}>
-          {componentMappings['page-context']}
+          {componentMappings['growi-context-extractor']}
         </Provider>
       </SWRConfig>
     </ErrorBoundary>
