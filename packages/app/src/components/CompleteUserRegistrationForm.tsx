@@ -30,12 +30,11 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   const [disableForm, setDisableForm] = useState(false);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      axios
-        .get('/_api/check_username', { params: { username: checkUsername } })
-        .then((response) => {
-          setUsernameAvailable(response.data.valid);
-        });
+    const delayDebounceFn = setTimeout(async() => {
+      const res = await appContainer.apiGet('/check_username', { username: checkUsername });
+      if (res.ok) {
+        setUsernameAvailable(res.valid);
+      }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
