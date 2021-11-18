@@ -18,13 +18,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:isEnabled',
   'security:passport-saml:entryPoint',
   'security:passport-saml:issuer',
-  'security:passport-saml:attrMapId',
-  'security:passport-saml:attrMapUsername',
-  'security:passport-saml:attrMapMail',
-  'security:passport-saml:attrMapFirstName',
-  'security:passport-saml:attrMapLastName',
   'security:passport-saml:cert',
-  'security:passport-saml:ABLCRule',
 ];
 
 const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
