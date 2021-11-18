@@ -43,7 +43,7 @@ class SearchPage extends React.Component {
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
-    this.searchHandler = this.searchHandler.bind(this);
+    this.onSearchInvoked = this.onSearchInvoked.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
@@ -121,7 +121,7 @@ class SearchPage extends React.Component {
   /**
    * this method is called when user searches by pressing Enter or using searchbox
    */
-  async searchHandler(data) {
+  async onSearchInvoked(data) {
     // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
     // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
     this.setState({ activePage: 1 }, () => this.search(data));
@@ -238,7 +238,7 @@ class SearchPage extends React.Component {
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
-        onSearchInvoked={this.searchHandler}
+        onSearchInvoked={this.onSearchInvoked}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
       >
