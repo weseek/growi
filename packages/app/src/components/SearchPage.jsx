@@ -253,8 +253,6 @@ class SearchPage extends React.Component {
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
-        selectedPagesCount={this.state.selectedPages.size}
-        displayPageCount={this.state.searchedPages.length}
         selectAllCheckboxType={this.state.selectAllCheckboxType}
       >
       </SearchControl>
