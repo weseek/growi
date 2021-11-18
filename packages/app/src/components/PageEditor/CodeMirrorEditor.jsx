@@ -109,6 +109,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
+      isConflictMode: this.props.isConflict,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -882,7 +883,17 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
+    let placeholder;
+
+    if (this.state.isGfmMode) {
+      placeholder = 'Input with Markdown..';
+    }
+    else if (this.state.isConflictMode) {
+      placeholder = 'Please select revision body..';
+    }
+    else {
+      placeholder = 'Input with Plain Text..';
+    }
 
     const gutters = [];
     if (this.props.lineNumbers != null) {
@@ -919,6 +930,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             placeholder,
             matchBrackets: true,
             matchTags: { bothTags: true },
+            readOnly: (this.props.readOnly || false),
             // folding
             foldGutter: this.props.lineNumbers,
             gutters,
