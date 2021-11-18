@@ -37,13 +37,24 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
       }
     });
 
+    // rename
+    this.pageEvent.on('rename', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // TODO 81841
 
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
@@ -129,6 +140,7 @@ class PageService {
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', renamedPage, user);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
@@ -760,7 +772,7 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user) {
+  createAndSendNotifications = async function(page, user, action) {
 
     const { activityService, inAppNotificationService } = this.crowi;
 
@@ -769,7 +781,7 @@ class PageService {
       user: user._id,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: page,
-      action: ActivityDefine.ACTION_PAGE_UPDATE,
+      action,
     };
     const activity = await activityService.createByParameters(parameters);
 
