@@ -31,7 +31,6 @@ class PageService {
     // create
     this.pageEvent.on('create', async(page, user) => {
       this.pageEvent.onCreate();
-      console.log('ページが作成されました');
     });
 
     // update
@@ -48,8 +47,7 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, renamedPage, user) => {
-      console.log('ページがリネームされました');
+    this.pageEvent.on('rename', async(page, user) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
       }
@@ -140,9 +138,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    // this.pageEvent.emit('delete', page, user);
-    // this.pageEvent.emit('create', renamedPage, user);
-    this.pageEvent.emit('rename', page, renamedPage, user);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
