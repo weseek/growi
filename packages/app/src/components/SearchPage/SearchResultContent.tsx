@@ -17,9 +17,6 @@ const SearchResultContentSubNavigationWrapper = (props) => {
   return <SearchResultContentSubNavigation {...props}></SearchResultContentSubNavigation>;
 };
 
-const RevisionLoaderWrapper = (props) => {
-  return <RevisionLoader {...props}></RevisionLoader>;
-};
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.focusedPage;
   if (page == null) return null;
@@ -29,7 +26,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   return (
     <div key={page._id} className="search-result-page mb-5">
       <SearchResultContentSubNavigationWrapper pageId={page._id} path={page.path}></SearchResultContentSubNavigationWrapper>
-      <RevisionLoaderWrapper
+      <RevisionLoader
         growiRenderer={growiRenderer}
         pageId={page._id}
         pagePath={page.path}

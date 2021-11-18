@@ -18,7 +18,7 @@ type SubNavButtonsProps= {
   isCompactMode?: boolean,
   pageId: string,
 }
-const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
+const SubNavButtons: FC = (props: SubNavButtonsProps) => {
   const {
     appContainer, navigationContainer, isCompactMode, pageId,
   } = props;
@@ -26,7 +26,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const isViewMode = editorMode === 'view';
   const { data: pageInfo, error: pageInfoError, mutate: mutatePageInfo } = useSWRPageInfo(pageId);
 
-  const onLikeClicked = useCallback(async(isLiked) => {
+  const likeClickhandler = useCallback(async() => {
     const { isGuestUser } = appContainer;
 
     if (isGuestUser) {
@@ -34,13 +34,14 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     }
 
     try {
-      await apiv3Put('/page/likes', { pageId, bool: !isLiked });
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await apiv3Put('/page/likes', { pageId, bool: !pageInfo!.isLiked });
       mutatePageInfo();
     }
     catch (err) {
       toastError(err);
     }
-  }, []);
+  }, [pageInfo]);
 
 
   if (pageInfoError != null || pageInfo == null) {
@@ -56,9 +57,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
           sumOfLikers={sumOfLikers}
           likerIds={likerIds}
           isLiked={isLiked}
-          onLikeClicked={() => {
-            onLikeClicked(isLiked);
-          }}
+          onLikeClicked={likeClickhandler}
         >
         </PageReactionButtons>
       )}

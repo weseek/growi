@@ -10,7 +10,7 @@ import AppContainer from '~/client/services/AppContainer';
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
-class LikeButtons extends React.Component {
+class LegacyLikeButtons extends React.Component {
 
   constructor(props) {
     super(props);
@@ -80,9 +80,9 @@ class LikeButtons extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
+const LegacyLikeButtonsWrapper = withUnstatedContainers(LegacyLikeButtons, [AppContainer]);
 
-LikeButtons.propTypes = {
+LegacyLikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onChangeInvoked: PropTypes.func,
   pageId: PropTypes.string.isRequired,
@@ -92,5 +92,8 @@ LikeButtons.propTypes = {
   onLikeClicked: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
+const LikeButtons = (props) => {
+  return <LegacyLikeButtonsWrapper {...props}></LegacyLikeButtonsWrapper>;
+};
 
-export default withTranslation()(LikeButtonsWrapper);
+export default withTranslation()(LikeButtons);
