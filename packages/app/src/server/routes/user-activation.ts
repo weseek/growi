@@ -1,6 +1,3 @@
-import {
-  NextFunction, Request, RequestHandler, Response,
-} from 'express';
 import path from 'path';
 import { body, validationResult } from 'express-validator';
 import UserRegistrationOrder from '../models/user-registration-order';
@@ -53,10 +50,10 @@ export const registerAction = (crowi) => {
 };
 
 // middleware to handle error
-export const handleHttpErrosMiddleware = (error: Error & { code: string }, req: Request, res: Response, next: NextFunction): Promise<RequestHandler> | void => {
-  if (error != null) {
-    // TODO: GW7335 - make custom view
-    return res.render('forgot-password/error', { key: error.code });
+export const tokenErrorHandlerMiddeware = (err, req, res, next) => {
+  if (err != null) {
+    req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
+    return res.redirect('/login#register');
   }
   next();
 };

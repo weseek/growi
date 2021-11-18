@@ -198,7 +198,7 @@ module.exports = function(crowi, app) {
 
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
-    .use(userActivation.handleHttpErrosMiddleware));
+    .use(userActivation.tokenErrorHandlerMiddeware));
   app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
