@@ -40,7 +40,7 @@ class PageService {
       this.pageEvent.onUpdate();
 
       try {
-        await this.createAndSendNotifications(page, user);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
       }
       catch (err) {
         logger.error(err);
@@ -50,9 +50,13 @@ class PageService {
     // rename
     this.pageEvent.on('rename', async(page, renamedPage, user) => {
       console.log('ページがリネームされました');
-      console.log(page, renamedPage, user);
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     });
-
 
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
@@ -770,7 +774,7 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user) {
+  createAndSendNotifications = async function(page, user, action) {
 
     const { activityService, inAppNotificationService } = this.crowi;
 
@@ -779,7 +783,7 @@ class PageService {
       user: user._id,
       targetModel: ActivityDefine.MODEL_PAGE,
       target: page,
-      action: ActivityDefine.ACTION_PAGE_UPDATE,
+      action,
     };
     const activity = await activityService.createByParameters(parameters);
 
