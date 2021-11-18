@@ -6,8 +6,6 @@
 
   .grw-pagetree-item-wrapper {
     .grw-pagetree-item {
-      // display: flex;
-      // padding: 5px;
     }
 
     .grw-pagetree-item {
@@ -16,6 +14,8 @@
       }
 
       .grw-pagetree-button {
+        background-color: transparent;
+
         &.rotate {
           transform: rotate(90deg);
         }
@@ -25,8 +25,7 @@
         font-size: medium;
       }
 
-      .grw-pagetree-controll {
-        display: none;
+      .grw-pagetree-control {
         &:hover {
           display: inline-block;
         }

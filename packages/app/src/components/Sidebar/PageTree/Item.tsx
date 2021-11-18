@@ -78,17 +78,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <div className="grw-pagetree-item-wrapper">
-      <div style={opacityStyle} className="grw-pagetree-item">
+      <div style={opacityStyle} className="grw-pagetree-item row">
         <button
           type="button"
-          className={`grw-pagetree-button d-inline-block mr-1 ${buttonClass}`}
+          className={`grw-pagetree-button col-1 btn mr-1 align-middle ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
-          <i className="fa fa-caret-right"></i>
+          <i className="icon-control-play"></i>
         </button>
-        <a href={page._id} className="d-inline-block">
-          <p className="grw-pagetree-title">{nodePath.basename(page.path as string) || '/'}</p>
+        <a href={page._id} className="grw-pagetree-title col">
+          <p className="my-auto">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
+        <div className="grw-pagetree-control col-3 align-middle">
+          Control
+        </div>
       </div>
       {
         isOpen && hasChildren() && currentChildren.map(node => (
