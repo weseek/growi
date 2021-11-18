@@ -367,9 +367,6 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToShowRevision();
-
-    console.log('page content is rendered here');
-
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 

@@ -92,12 +92,10 @@ export default class PageContainer extends Container {
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
-      isConflictingOnSave: mainContent.getAttribute('data-page-has-conflicted') || false,
-      // isConflictingOnSave: false,
       isHackmdDraftUpdatingInRealtime: false,
-      // isConflictingOnSave: true,
-      isConflictDiffModalOpen: false,
 
+      isConflictingOnSave: mainContent.getAttribute('data-page-has-conflicted') || false,
+      isConflictDiffModalOpen: false,
       revisionsOnConflict: {},
     };
 
