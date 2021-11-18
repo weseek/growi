@@ -18,7 +18,7 @@ type SubNavButtonsProps= {
   isCompactMode?: boolean,
   pageId: string,
 }
-const SubNavButtons: FC = (props: SubNavButtonsProps) => {
+const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
     appContainer, navigationContainer, isCompactMode, pageId,
   } = props;
