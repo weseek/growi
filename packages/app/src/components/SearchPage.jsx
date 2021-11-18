@@ -6,13 +6,12 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastError } from '~/client/util/apiNotification';
 import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
-import { apiv3Get } from '../client/util/apiv3-client';
 
 export const specificPathNames = {
   user: '/user',
@@ -38,7 +37,6 @@ class SearchPage extends React.Component {
       pagingLimit: 0,
       excludeUsersHome: true,
       excludeTrash: true,
-      initialPagingLimit: 0,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -56,11 +54,6 @@ class SearchPage extends React.Component {
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
       this.search({ keyword });
-    }
-    if (this.state.initialPagingLimit === 0) {
-      apiv3Get('/customize-setting').then((res) => {
-        this.setState({ initialPagingLimit: res.data.customizeParams.pageLimitationL });
-      });
     }
   }
 
@@ -256,7 +249,7 @@ class SearchPage extends React.Component {
           searchResultMeta={this.state.searchResultMeta}
           searchingKeyword={this.state.searchedKeyword}
           onPagingLimitChanged={this.onPagingLimitChanged}
-          initialPagingLimit={this.state.initialPagingLimit}
+          initialPagingLimit={this.props.adminCustomizeContainer.state.pageLimitationL || 50}
         >
         </SearchPageLayout>
       </div>
@@ -268,12 +261,12 @@ class SearchPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
+const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer, AdminCustomizeContainer]);
 
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
   query: PropTypes.object,
 };
 SearchPage.defaultProps = {
