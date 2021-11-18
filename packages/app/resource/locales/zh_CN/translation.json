@@ -843,7 +843,8 @@
 		"unable_to_use_this_user": "无法使用此用户。",
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
-		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
+		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
+    "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",
