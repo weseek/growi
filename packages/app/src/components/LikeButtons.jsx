@@ -6,9 +6,7 @@ import { withTranslation } from 'react-i18next';
 import UserPictureList from './User/UserPictureList';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
-import { apiv3Put } from '../client/util/apiv3-client';
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
