@@ -17,11 +17,11 @@ type Props = {
   activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
-  focusedPage?: IPageSearchResultData,
+  focusedSearchResultData?: IPageSearchResultData,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedPage } = props;
+  const { focusedSearchResultData } = props;
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [controlTargetPage, setControlTargetPage] = useState(focusedPage?.pageData || {
     _id: '',
@@ -77,7 +77,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
     );
   }
 
-  const focusedPageId = (focusedPage !== undefined && focusedPage.pageData !== undefined) ? focusedPage.pageData._id : '';
+  const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <>
       {props.pages.map((page) => {
