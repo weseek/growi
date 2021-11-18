@@ -79,7 +79,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       break;
     case 'PAGE_RENAME':
       actionMsg = 'renamed';
-      actionIcon = 'ti-agenda';
+      actionIcon = 'icon-action-redo';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
