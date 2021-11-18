@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, FC, useEffect,
+  useState, useRef, FC,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -34,18 +34,12 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const resolvedRevision = useRef<string | null>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
-  /*
-  const [request, setRequest] = useState<IRevisionOnConflict | null>(null);
-  const [origin, setOrigin] = useState<IRevisionOnConflict | null>(null);
-  const [latest, setLatest] = useState<IRevisionOnConflict | null>(null);
-  */
 
   const { pageContainer, editorContainer } = props;
   const { data: revisions } = useSWRxConflictedRevision(pageContainer.state.path || '');
-  console.log('pageContainer.state.path', pageContainer.state.path);
-  let request:IRevisionOnConflict|null = null;
-  let origin:IRevisionOnConflict|null = null;
-  let latest:IRevisionOnConflict|null = null;
+  let request: IRevisionOnConflict | null = null;
+  let origin: IRevisionOnConflict | null = null;
+  let latest: IRevisionOnConflict | null = null;
 
   if (revisions != null) {
     request = revisions.request;
@@ -57,18 +51,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     origin = pageContainer.state.revisionsOnConflict.origin;
     latest = pageContainer.state.revisionsOnConflict.latest;
   }
-
-  /*
-  useEffect(() => {
-    if (revisions != null) {
-      pageContainer.setState({ revisionsOnConflict: revisions });
-      setRequest(revisions.request);
-      setOrigin(revisions.origin);
-      setLatest(revisions.latest);
-    }
-  }, [revisions, pageContainer]);
-  */
-  // const { origin, latest } = pageContainer.state.revisionsOnConflict || { origin: {}, latest: {} };
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',
@@ -88,7 +70,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     // disable button after clicked
     setIsRevisionSelected(false);
     try {
-      console.log('revisionId inonResolveConflict', latest?.revisionId);
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest?.revisionId,
@@ -107,8 +88,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
-        {console.log('pageContainer.state.revisionsOnConflict :!', pageContainer.state.revisionsOnConflict)}
-        { request != null
+        { request != null && origin != null && latest != null
           && (
             <div className="row mx-2">
               <div className="col-12 text-center mt-2 mb-4">
@@ -122,7 +102,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {request?.userName}</p>
-                    <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(parseISO(request.createdAt.toString()), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -151,7 +131,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {origin?.userName}</p>
-                    <p className="my-0">{format(parseISO(origin?.createdAt || '20210221'), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(parseISO(origin.createdAt.toString()), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -180,7 +160,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {latest?.userName}</p>
-                    <p className="my-0">{format(parseISO(latest?.createdAt || '20210521'), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{format(parseISO(latest.createdAt.toString()), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
                 <CodeMirror

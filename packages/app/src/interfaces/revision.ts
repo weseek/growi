@@ -17,7 +17,7 @@ export type IRevisionOnConflict = {
   createdAt: Date;
 }
 
-export type IConflictedRevisions = {
+export type IConflictRevisions = {
   request: IRevisionOnConflict,
   origin: IRevisionOnConflict,
   latest: IRevisionOnConflict,

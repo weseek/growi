@@ -4,7 +4,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { IConflictedRevisions } from '~/interfaces/revision';
+import { IConflictRevisions } from '~/interfaces/revision';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,11 +33,10 @@ export const useSWRxPageList = (
   );
 };
 
-export const useSWRxConflictedRevision = (pagePath: string): SWRResponse<IConflictedRevisions, Error> => {
+export const useSWRxConflictedRevision = (pagePath: string): SWRResponse<IConflictRevisions, Error> => {
   return useSWR(
     `/page/conflict-revisions?pagePath=${pagePath}`,
-    endpoint => apiv3Get<{ revisions: IConflictedRevisions }>(endpoint).then((response) => {
-      console.log('response is', response);
+    endpoint => apiv3Get<{ revisions: IConflictRevisions }>(endpoint).then((response) => {
       return response.data.revisions;
     }),
   );
