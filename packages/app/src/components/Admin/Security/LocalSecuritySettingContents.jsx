@@ -31,9 +31,15 @@ class LocalSecuritySettingContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
+    const {
+      t,
+      adminGeneralSecurityContainer,
+      adminLocalSecurityContainer,
+      appContainer,
+    } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
+    const { isMailerSetup } = appContainer.config;
 
     return (
       <React.Fragment>
@@ -45,6 +51,17 @@ class LocalSecuritySettingContents extends React.Component {
           </div>
         )}
         <h2 className="alert-anchor border-bottom">{t('security_setting.Local.name')}</h2>
+
+        {!isMailerSetup && (
+          <div className="row">
+            <div className="col-12">
+              <div className="alert alert-danger">
+                <span>{t('security_setting.Local.need_complete_mail_setting_warning')}</span>
+                <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
+              </div>
+            </div>
+          </div>
+        )}
 
         {adminLocalSecurityContainer.state.useOnlyEnvVars && (
           <p
@@ -193,6 +210,12 @@ class LocalSecuritySettingContents extends React.Component {
                     {t('security_setting.Local.enable_email_authentication')}
                   </label>
                 </div>
+                {!isMailerSetup && (
+                  <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                    <span>{t('security_setting.Local.please_enable_mailer')}</span>
+                    <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
+                  </div>
+                )}
                 <p className="form-text text-muted small">
                   {t('security_setting.Local.enable_email_authentication_desc')}
                 </p>

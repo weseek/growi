@@ -1,6 +1,6 @@
 import path from 'path';
 import { body, validationResult } from 'express-validator';
-import UserRegistrationOrder from '~/server/models/user-registration-order';
+import UserRegistrationOrder from '../models/user-registration-order';
 
 export const form = (req, res): void => {
   const { userRegistrationOrder } = req;
