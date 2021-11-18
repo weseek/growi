@@ -299,6 +299,12 @@ module.exports = function(crowi, app) {
       next();
     }
 
+    if (page.isEmpty) {
+      req.isEmpty = true;
+      req.pagePath = page.path;
+      return next();
+    }
+
     const renderVars = {};
 
     // populate
@@ -355,6 +361,13 @@ module.exports = function(crowi, app) {
       // check the page is forbidden or just does not exist.
       req.isForbidden = await Page.count({ _id: id }) > 0;
       return next();
+    }
+
+    // empty page
+    if (page.isEmpty) {
+      req.isEmpty = true;
+      req.pagePath = page.path;
+      return next(); // to page.notFound
     }
 
     const { path } = page; // this must exist
@@ -503,7 +516,7 @@ module.exports = function(crowi, app) {
   /* eslint-enable no-else-return */
 
   actions.notFound = async function(req, res) {
-    const path = getPathFromRequest(req);
+    const path = req.pagePath || getPathFromRequest(req);
 
     let view;
     const renderVars = { path };
@@ -586,6 +599,10 @@ module.exports = function(crowi, app) {
     }
 
     if (pages.length === 1) {
+      if (pages[0].isEmpty) {
+        return next();
+      }
+
       const url = new URL('https://dummy.origin');
       url.pathname = `/${pages[0]._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {

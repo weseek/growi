@@ -939,12 +939,24 @@ export const getPageSchema = (crowi) => {
       }
     }
 
+    /*
+     * update empty page if exists, if not, create a new page
+     */
+    let page;
+    const emptyPage = await Page.findOne({ path, isEmpty: true });
+    if (emptyPage != null) {
+      page = emptyPage;
+      page.isEmpty = false;
+    }
+    else {
+      page = new Page();
+    }
+
     let parent = parentId;
     if (isV5Compatible && parent == null && !isTopPage(path)) {
       parent = await Page.getParentIdAndFillAncestors(path);
     }
 
-    const page = new Page();
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
