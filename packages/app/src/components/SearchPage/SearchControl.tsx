@@ -71,7 +71,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             onCheckInvoked={onCheckAllPagesInvoked}
           />
         </div>
-        <div className="d-flex align-items-center mr-3">
+        <div className="d-none d-lg-flex align-items-center mr-3">
           <div className="border border-gray mr-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
               <input
