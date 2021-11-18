@@ -34,13 +34,31 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const resolvedRevision = useRef<string | null>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  /*
   const [request, setRequest] = useState<IRevisionOnConflict | null>(null);
   const [origin, setOrigin] = useState<IRevisionOnConflict | null>(null);
   const [latest, setLatest] = useState<IRevisionOnConflict | null>(null);
+  */
 
   const { pageContainer, editorContainer } = props;
   const { data: revisions } = useSWRxConflictedRevision(pageContainer.state.path || '');
+  console.log('pageContainer.state.path', pageContainer.state.path);
+  let request:IRevisionOnConflict|null = null;
+  let origin:IRevisionOnConflict|null = null;
+  let latest:IRevisionOnConflict|null = null;
 
+  if (revisions != null) {
+    request = revisions.request;
+    origin = revisions.origin;
+    latest = revisions.latest;
+  }
+  else if (pageContainer.state.revisionsOnConflict != null) {
+    request = pageContainer.state.revisionsOnConflict.request;
+    origin = pageContainer.state.revisionsOnConflict.origin;
+    latest = pageContainer.state.revisionsOnConflict.latest;
+  }
+
+  /*
   useEffect(() => {
     if (revisions != null) {
       pageContainer.setState({ revisionsOnConflict: revisions });
@@ -49,11 +67,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
       setLatest(revisions.latest);
     }
   }, [revisions, pageContainer]);
-
+  */
   // const { origin, latest } = pageContainer.state.revisionsOnConflict || { origin: {}, latest: {} };
-
-
-  console.log(revisions);
 
   const codeMirrorRevisionOption = {
     mode: 'htmlmixed',
@@ -73,6 +88,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     // disable button after clicked
     setIsRevisionSelected(false);
     try {
+      console.log('revisionId inonResolveConflict', latest?.revisionId);
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest?.revisionId,

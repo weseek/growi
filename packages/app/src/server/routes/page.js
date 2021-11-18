@@ -887,6 +887,11 @@ module.exports = function(crowi, app) {
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+      const conflict = await Conflict.remove({ path: page.path });
+      page.hasConflictRevision = false;
+      page.conflictRevisions = null;
+      await page.save();
+      console.log('conflict:', conflict);
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
