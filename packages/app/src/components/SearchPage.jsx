@@ -220,8 +220,10 @@ class SearchPage extends React.Component {
         selectedPagesIdList.add(page._id);
       });
     }
-    this.setState({ selectedPagesIdList });
-    this.setState({ selectAllCheckboxType: nextSelectAllCheckboxType });
+    this.setState({
+      selectedPagesIdList,
+      selectAllCheckboxType: nextSelectAllCheckboxType,
+    });
   };
 
   renderSearchResultContent = () => {
