@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
+import FilterOptionModal from './FilterOptionModal';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
+
+  const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
@@ -46,6 +49,25 @@ const SearchControl: FC <Props> = (props: Props) => {
     // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
   };
 
+  const openPageRenameModalHandler = () => {
+    setIsFileterOptionModalShown(true);
+  };
+
+  const closePageRenameModalHandler = () => {
+    setIsFileterOptionModalShown(false);
+  };
+
+  const rednerModal = () => {
+    return (
+      <FilterOptionModal
+        isOpen={isFileterOptionModalShown || false}
+        onClose={closePageRenameModalHandler}
+        onExcludeUsersHome={onExcludeUsersHome}
+        onExcludeTrash={onExcludeTrash}
+      />
+    );
+  };
+
   return (
     <>
       <div className="search-page-nav d-flex py-3 align-items-center">
@@ -70,6 +92,15 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClickInvoked={onDeleteSelectedPageHandler}
             onCheckInvoked={onCheckAllPagesInvoked}
           />
+        </div>
+        {/** filter option */}
+        <div className="d-lg-none mr-4">
+          <button
+            type="button"
+            onClick={openPageRenameModalHandler}
+          >
+            <i className="icon-equalizer"></i>
+          </button>
         </div>
         <div className="d-none d-lg-flex align-items-center mr-3">
           <div className="border border-gray mr-3">
@@ -96,6 +127,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
+      {rednerModal()}
     </>
   );
 };
