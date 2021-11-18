@@ -2,6 +2,7 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ItemsTree from './PageTree/ItemsTree';
+import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
 
 
 const PageTree: FC = memo(() => {
@@ -9,12 +10,13 @@ const PageTree: FC = memo(() => {
 
   return (
     <>
-      <div className="grw-sidebar-content-header p-3 d-flex">
+      <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Page Tree')}</h3>
       </div>
 
-      <div className="grw-sidebar-content-body p-3">
+      <div className="grw-sidebar-content-body d-flex flex-column justify-content-between">
         <ItemsTree />
+        <PrivateLegacyPages />
       </div>
     </>
   );
