@@ -929,14 +929,9 @@ export const getPageSchema = (crowi) => {
       grant = GRANT_PUBLIC;
     }
 
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    // for v4 compatibility
-    if (!isV5Compatible) {
-      const isExist = await this.count({ path });
-
-      if (isExist) {
-        throw new Error('Cannot create new page to existed path');
-      }
+    const isExist = await this.count({ path });
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
     }
 
     /*
@@ -951,6 +946,8 @@ export const getPageSchema = (crowi) => {
     else {
       page = new Page();
     }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
     let parent = parentId;
     if (isV5Compatible && parent == null && !isTopPage(path)) {
