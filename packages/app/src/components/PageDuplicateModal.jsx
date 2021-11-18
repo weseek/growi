@@ -36,9 +36,10 @@ const PageDuplicateModal = (props) => {
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [existingPaths, setExistingPaths] = useState([]);
 
-  const checkExistPaths = async(newParentPath) => {
+  const checkExistPaths = async(newParentPath, oldParentPath) => {
+    console.log(oldParentPath, newParentPath);
     try {
-      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: oldParentPath, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -59,7 +60,7 @@ const PageDuplicateModal = (props) => {
 
   useEffect(() => {
     if (pageNameInput !== path) {
-      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+      checkExistPathsDebounce(pageNameInput, path, subordinatedPages);
     }
   // "path" must not be checked.
   // eslint-disable-next-line react-hooks/exhaustive-deps
