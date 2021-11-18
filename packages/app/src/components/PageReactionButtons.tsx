@@ -1,14 +1,13 @@
 import React, { FC, useState, useEffect } from 'react';
 import LikeButtons from './LikeButtons';
-import { apiv3Get } from '../client/util/apiv3-client';
 
 
 type Props = {
   pageId: string,
-  currentUserId: string,
-  likerSum: number,
+  sumOfLikers: number,
   likerIds: string[],
-  isAlreadyLiked: boolean,
+  isLiked: boolean,
+  onLikeClicked: (isLiked : boolean)=>void,
 }
 
 const LikeButtonsWrapper = (props) => {
@@ -17,29 +16,14 @@ const LikeButtonsWrapper = (props) => {
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    pageId, currentUserId, likerSum, likerIds, isAlreadyLiked,
+    pageId, sumOfLikers, likerIds, isLiked, onLikeClicked,
   } = props;
-  const [sumOflikers, setSumOfLikers] = useState(likerSum);
-  const [likers, setLikers] = useState<string[]>(likerIds);
-  const [isLiked, setIsLiked] = useState(isAlreadyLiked);
 
-  useEffect(() => {
-    setSumOfLikers(likerSum);
-    setLikers(likerIds);
-    setIsLiked(isAlreadyLiked);
-  }, [props]);
-
-
-  const likeInvoked = async() => {
-    setSumOfLikers(sumOflikers => (isLiked ? sumOflikers - 1 : sumOflikers + 1));
-    setLikers(likerIds => (isLiked ? likerIds.filter(id => id !== currentUserId) : [...likerIds, currentUserId]));
-    setIsLiked(isLiked => !isLiked);
-  };
 
   return (
     <>
       <span>
-        <LikeButtonsWrapper onChangeInvoked={likeInvoked} pageId={pageId} likers={likers} sumOfLikers={sumOflikers} isLiked={isLiked}></LikeButtonsWrapper>
+        <LikeButtonsWrapper onLikeClicked={onLikeClicked} pageId={pageId} likerIds={likerIds} sumOfLikers={sumOfLikers} isLiked={isLiked}></LikeButtonsWrapper>
       </span>
       <span>
         {/*

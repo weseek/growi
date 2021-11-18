@@ -32,31 +32,17 @@ class LikeButtons extends React.Component {
     }));
   }
 
-  async handleClick() {
-    const {
-      appContainer, pageId, isLiked, onChangeInvoked,
-    } = this.props;
-    const { isGuestUser } = appContainer;
 
-    if (isGuestUser) {
+  handleClick() {
+    if (this.props.onLikeClicked == null) {
       return;
     }
-
-    try {
-      const toggleLike = !isLiked;
-      await apiv3Put('/page/likes', { pageId, bool: toggleLike });
-      if (onChangeInvoked !== null) {
-        await onChangeInvoked();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.props.onLikeClicked();
   }
 
   render() {
     const {
-      appContainer, likers, sumOfLikers, isLiked, t,
+      appContainer, likerIds, sumOfLikers, isLiked, t,
     } = this.props;
     const { isGuestUser } = appContainer;
 
@@ -83,7 +69,7 @@ class LikeButtons extends React.Component {
         <Popover placement="bottom" isOpen={this.state.isPopoverOpen} target="po-total-likes" toggle={this.togglePopover} trigger="legacy">
           <PopoverBody className="seen-user-popover">
             <div className="px-2 text-right user-list-content text-truncate text-muted">
-              {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet.')}
+              {likerIds.length ? <UserPictureList users={likerIds} /> : t('No users have liked this yet.')}
             </div>
           </PopoverBody>
         </Popover>
@@ -102,9 +88,10 @@ LikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onChangeInvoked: PropTypes.func,
   pageId: PropTypes.string.isRequired,
-  likers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  likerIds: PropTypes.arrayOf(PropTypes.object).isRequired,
   sumOfLikers: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
+  onLikeClicked: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
 
