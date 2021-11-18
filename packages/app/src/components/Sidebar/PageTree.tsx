@@ -14,7 +14,7 @@ const PageTree: FC = memo(() => {
         <h3 className="mb-0">{t('Page Tree')}</h3>
       </div>
 
-      <div className="grw-sidebar-content-body d-flex flex-column justify-content-between">
+      <div className="grw-sidebar-content-body">
         <ItemsTree />
         <PrivateLegacyPages />
       </div>
