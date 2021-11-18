@@ -869,7 +869,6 @@ module.exports = function(crowi, app) {
       );
 
       await page.switchConflictField(conflictRevision._id);
-      await page.save();
 
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', revisions));
     }
