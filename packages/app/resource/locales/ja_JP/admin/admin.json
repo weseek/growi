@@ -11,7 +11,13 @@
     "installed_version": "インストールされているバージョン",
     "list_of_env_vars": "サーバー側で設定されている環境変数一覧",
     "env_var_priority": "セキュリティに関する環境変数を除き、データベースの値が優先的に取得されます。",
-    "about_security": "セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。"
+    "about_security": "セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。",
+    "copy_prefilled_host_information": {
+      "default": "上記のホスト情報をコピー",
+      "done": "クリップボードにコピーしました！"
+    },
+    "bug_report": "バグを報告する",
+    "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "app_setting": {
     "site_name": "サイト名",
