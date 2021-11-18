@@ -13,6 +13,8 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
+import { CheckboxType } from '../interfaces/search';
+
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
@@ -37,6 +39,7 @@ class SearchPage extends React.Component {
       pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      selectAllCheckboxType: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -191,13 +194,26 @@ class SearchPage extends React.Component {
     else {
       selectedPagesIdList.add(pageId);
     }
-    this.setState({ selectedPagesIdList });
+    const getNextSelectAllCheckboxType = () => {
+      switch (this.state.selectedPages.size) {
+        case 0:
+          return CheckboxType.NONE_CHECKED;
+        case this.state.searchedPages.length:
+          return CheckboxType.ALL_CHECKED;
+        default:
+          return CheckboxType.INDETERMINATE;
+      }
+    };
+    this.setState({
+      selectedPagesIdList,
+      selectAllCheckboxType: getNextSelectAllCheckboxType(),
+    });
   }
 
-  toggleAllCheckBox = () => {
+  toggleAllCheckBox = (nextSelectAllCheckboxType) => {
     const { selectedPagesIdList, searchedPages } = this.state;
-    if (selectedPagesIdList.size === searchedPages.length) {
-      selectedPagesIdList.clear();
+    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
+      this.state.selectedPages.clear();
     }
     else {
       searchedPages.forEach((page) => {
@@ -205,6 +221,7 @@ class SearchPage extends React.Component {
       });
     }
     this.setState({ selectedPagesIdList });
+    this.setState({ selectAllCheckboxType: nextSelectAllCheckboxType });
   };
 
   renderSearchResultContent = () => {
@@ -245,6 +262,7 @@ class SearchPage extends React.Component {
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectedPagesCount={this.state.selectedPagesIdList.size}
         displayPageCount={this.state.searchedPages.length}
+        selectAllCheckboxType={this.state.selectAllCheckboxType}
       >
       </SearchControl>
     );

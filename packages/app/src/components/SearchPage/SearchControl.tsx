@@ -3,16 +3,18 @@ import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
+import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   selectedPagesCount: number,
   displayPageCount: number,
+  selectAllCheckboxType: CheckboxType,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
-  onClickSelectAllCheckbox?: () => void,
+  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -52,6 +54,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
+          selectAllCheckboxType={props.selectAllCheckboxType}
           onClickDeleteButton={onDeleteSelectedPageHandler}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           selectedPagesCount={props.selectedPagesCount}
