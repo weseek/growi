@@ -348,12 +348,6 @@ export class SlackCtrl {
     }
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
-
-    // PrivateMetaDatas are no longer used after removal of modal from slash commands
-    // const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
-    // const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-    // const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
-
     const channel: IChannel = interactionPayload.channel;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
 

@@ -70,12 +70,11 @@ export class InteractionPayloadAccessor implements IInteractionPayloadAccessor {
   }
 
   getChannel(): IChannel | null {
-    // PrivateMetaDatas are no longer used after removal of modal from slash commands
     // private_metadata should have the channelName parameter when view_submission
-    // const privateMetadata = this.getViewPrivateMetaData();
-    // if (privateMetadata != null && privateMetadata.channelName != null) {
-    //   return privateMetadata.channelName;
-    // }
+    const privateMetadata = this.getViewPrivateMetaData();
+    if (privateMetadata != null && privateMetadata.channelName != null) {
+      throw new Error('PrivateMetaDatas are not implemented after removal of modal from slash commands. Use payload instead.');
+    }
     const channel = this.payload.channel;
     if (channel != null) {
       return channel;
