@@ -440,6 +440,12 @@ module.exports = function(crowi) {
       .execPopulate();
   };
 
+  pageSchema.methods.switchConflictField = async function(pageId) {
+    this.conflictRevisions = pageId;
+    this.hasConflictRevision = pageId != null;
+    await this.save();
+  };
+
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
     this.latestRevision = this.revision;
     if (revisionId != null) {

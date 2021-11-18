@@ -842,21 +842,21 @@ module.exports = function(crowi, app) {
 
       revisions.request = {
         revisionId: '',
-        revisionBody: pageBody,
+        revisionBody: xss.process(pageBody),
         createdAt: new Date(),
         userName: req.user.name,
         userImgPath: req.user.imageUrlCached,
       };
       revisions.origin = {
         revisionId: originRevision._id.toString(),
-        revisionBody: originRevision.body,
+        revisionBody: xss.process(originRevision.body),
         createdAt: originRevision.createdAt,
         userName: originRevision.author.name,
         userImgPath: originRevision.author.imageUrlCached,
       };
       revisions.latest = {
         revisionId: latestRevision._id.toString(),
-        revisionBody: latestRevision.body,
+        revisionBody: xss.process(latestRevision.body),
         createdAt: latestRevision.createdAt,
         userName: latestRevision.author.name,
         userImgPath: latestRevision.author.imageUrlCached,
@@ -867,9 +867,8 @@ module.exports = function(crowi, app) {
         { $set: { revisions } },
         { new: true, upsert: true },
       );
-      console.log('conflictRevision', conflictRevision);
-      page.hasConflictRevision = true;
-      page.conflictRevisions = conflictRevision._id;
+
+      await page.switchConflictField(conflictRevision._id);
       await page.save();
 
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', revisions));
@@ -884,11 +883,10 @@ module.exports = function(crowi, app) {
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
-      const conflict = await Conflict.remove({ path: page.path });
-      page.hasConflictRevision = false;
-      page.conflictRevisions = null;
-      await page.save();
-      console.log('conflict:', conflict);
+
+      await Conflict.remove({ path: page.path });
+      await page.switchConflictField();
+
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
