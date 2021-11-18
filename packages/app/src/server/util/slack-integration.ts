@@ -23,10 +23,17 @@ export const checkPermission = (
       isPermitted = true;
       return;
     }
-    if (Array.isArray(permission) && (permission.includes(fromChannel.name) || permission.includes(fromChannel.id))) {
+
+    if (Array.isArray(permission) && permission.includes(fromChannel.id)) {
       isPermitted = true;
       return;
     }
+
+    if (Array.isArray(permission) && permission.includes(fromChannel.name)) {
+      isPermitted = true;
+      return;
+    }
+
   });
 
   return isPermitted;
