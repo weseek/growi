@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastError } from '~/client/util/apiNotification';
 import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
