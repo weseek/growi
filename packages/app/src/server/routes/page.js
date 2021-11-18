@@ -300,7 +300,6 @@ module.exports = function(crowi, app) {
     }
 
     if (page.isEmpty) {
-      req.isEmpty = true;
       req.pagePath = page.path;
       return next();
     }
@@ -365,7 +364,6 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      req.isEmpty = true;
       req.pagePath = page.path;
       return next(); // to page.notFound
     }
