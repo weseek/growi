@@ -114,8 +114,15 @@ const PageDuplicateModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
-      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+      const response = await appContainer.apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+
+      if (props.onDuplicateCompleted != null) {
+        const { page } = response.data;
+        const options = {
+          isRecursively: isDuplicateRecursively,
+        };
+        props.onDuplicateCompleted(page, options);
+      }
     }
     catch (err) {
       setErrs(err);
@@ -233,6 +240,7 @@ PageDuplicateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onDuplicateCompleted: PropTypes.func,
 
   pageId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,

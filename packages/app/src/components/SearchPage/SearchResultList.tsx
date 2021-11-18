@@ -59,6 +59,10 @@ const SearchResultList: FC<Props> = (props:Props) => {
     window.location.href = `${url.pathname}${url.search}`;
   }
 
+  function redirectToDuplicatedPage(page, options) {
+    window.location.href = encodeURI(`${page.path}?duplicated=${controlTargetPage.path}`);
+  }
+
   function renderModals() {
 
     return (
@@ -74,6 +78,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         <PageDuplicateModalWrapper
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          onDuplicateCompleted={redirectToDuplicatedPage}
           pageId={controlTargetPage._id}
           path={controlTargetPage.path}
         />

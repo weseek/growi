@@ -168,6 +168,10 @@ const PageManagement = (props) => {
     window.location.href = `${url.pathname}${url.search}`;
   }
 
+  function redirectToDuplicatedPage(page, options) {
+    window.location.href = encodeURI(`${page.path}?duplicated=${path}`);
+  }
+
   function renderModals() {
     if (currentUser == null) {
       return null;
@@ -186,6 +190,7 @@ const PageManagement = (props) => {
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          onDuplicateCompleted={redirectToDuplicatedPage}
           pageId={pageId}
           path={path}
         />
