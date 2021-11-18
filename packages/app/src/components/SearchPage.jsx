@@ -106,8 +106,6 @@ class SearchPage extends React.Component {
    * this method is called when user changes paging number
    */
   async onPagingNumberChanged(activePage) {
-    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
-    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
     this.setState({ activePage }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
@@ -115,8 +113,6 @@ class SearchPage extends React.Component {
    * this method is called when user searches by pressing Enter or using searchbox
    */
   async onSearchInvoked(data) {
-    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
-    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
     this.setState({ activePage: 1 }, () => this.search(data));
   }
 
