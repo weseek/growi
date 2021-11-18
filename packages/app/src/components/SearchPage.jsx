@@ -13,6 +13,8 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
+import { CheckboxType } from '../interfaces/search';
+
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
@@ -37,6 +39,7 @@ class SearchPage extends React.Component {
       pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      selectAllCheckboxType: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -189,10 +192,21 @@ class SearchPage extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
+    const getNextSelectAllCheckboxType = () => {
+      switch (this.state.selectedPages.size) {
+        case 0:
+          return CheckboxType.NONE_CHECKED;
+        case this.state.searchedPages.length:
+          return CheckboxType.ALL_CHECKED;
+        default:
+          return CheckboxType.INDETERMINATE;
+      }
+    };
+    this.setState({ selectAllCheckboxType: getNextSelectAllCheckboxType() });
   }
 
-  toggleAllCheckBox = () => {
-    if (this.state.selectedPages.size === this.state.searchedPages.length) {
+  toggleAllCheckBox = (nextSelectAllCheckboxType) => {
+    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
       this.state.selectedPages.clear();
     }
     else {
@@ -200,6 +214,7 @@ class SearchPage extends React.Component {
         this.state.selectedPages.add(page);
       });
     }
+    this.setState({ selectAllCheckboxType: nextSelectAllCheckboxType });
   };
 
   renderSearchResultContent = () => {
@@ -240,6 +255,7 @@ class SearchPage extends React.Component {
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectedPagesCount={this.state.selectedPages.size}
         displayPageCount={this.state.searchedPages.length}
+        selectAllCheckboxType={this.state.selectAllCheckboxType}
       >
       </SearchControl>
     );
