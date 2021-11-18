@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
+import CodeMirrorEditor from './CodeMirrorEditor';
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
@@ -86,9 +87,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
-                <CodeMirror
+                <CodeMirrorEditor
+                  indentSize={editorContainer.state.indentSize}
+                  editorOptions={editorContainer.state.editorOptions}
+                  isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                  textlintRules={editorContainer.state.textlintRules}
                   value={request.revisionBody}
-                  options={codeMirrorRevisionOption}
+                  isConflictMode
+                  readOnly
+                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
@@ -115,9 +122,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
-                <CodeMirror
+                <CodeMirrorEditor
+                  indentSize={editorContainer.state.indentSize}
+                  editorOptions={editorContainer.state.editorOptions}
+                  isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                  textlintRules={editorContainer.state.textlintRules}
                   value={origin.revisionBody}
-                  options={codeMirrorRevisionOption}
+                  isConflictMode
+                  readOnly
+                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
@@ -144,9 +157,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
-                <CodeMirror
+                <CodeMirrorEditor
+                  indentSize={editorContainer.state.indentSize}
+                  editorOptions={editorContainer.state.editorOptions}
+                  isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                  textlintRules={editorContainer.state.textlintRules}
                   value={latest.revisionBody}
-                  options={codeMirrorRevisionOption}
+                  isConflictMode
+                  readOnly
+                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
@@ -164,6 +183,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               </div>
               <div className="col-12 border border-dark">
                 <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+                {/*
                 <CodeMirror
                   value={resolvedRevision.current}
                   options={{
@@ -177,6 +197,15 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     if (pageBody === '') setIsRevisionSelected(false);
                     resolvedRevision.current = pageBody;
                   }}
+                />
+                */}
+                <CodeMirrorEditor
+                  indentSize={editorContainer.state.indentSize}
+                  editorOptions={editorContainer.state.editorOptions}
+                  isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                  textlintRules={editorContainer.state.textlintRules}
+                  value={latest.revisionBody}
+                  // options={codeMirrorRevisionOption}
                 />
               </div>
             </div>

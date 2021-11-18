@@ -625,11 +625,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderCheatsheetModalButton() {
-    return (
-      <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
-        <i className="icon-question" /> Markdown
-      </button>
-    );
+    const isMarkDownButtonHidden = this.props.isConflictMode && this.props.readOnly;
+    if (!isMarkDownButtonHidden) {
+      return (
+        <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+          <i className="icon-question" /> Markdown
+        </button>
+      );
+    }
   }
 
   renderCheatsheetOverlay() {
