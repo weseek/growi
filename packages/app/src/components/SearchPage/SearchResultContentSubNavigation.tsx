@@ -12,9 +12,6 @@ type Props = {
   isCompactMode?: boolean,
 }
 
-const SubNavButtonsWrapper = (props) => {
-  return <SubNavButtons {...props}></SubNavButtons>;
-};
 
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
@@ -39,7 +36,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        <SubNavButtonsWrapper isCompactMode={isCompactMode} pageId={pageId}></SubNavButtonsWrapper>
+        <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons>
       </div>
     </div>
   );
@@ -49,7 +46,10 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SearchResultContentSubNavigationWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
+const SearchResultContentSubNavigationUnstatedWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
 
-
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when using in other tsx components.
+const SearchResultContentSubNavigationWrapper = (props) => {
+  return <SearchResultContentSubNavigationUnstatedWrapper {...props}></SearchResultContentSubNavigationUnstatedWrapper>;
+};
 export default SearchResultContentSubNavigationWrapper;

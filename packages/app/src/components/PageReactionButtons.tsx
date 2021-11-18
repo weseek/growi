@@ -10,9 +10,6 @@ type Props = {
   onLikeClicked: (isLiked : boolean)=>void,
 }
 
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtons {...props}></LikeButtons>;
-};
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
@@ -23,7 +20,7 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
   return (
     <>
       <span>
-        <LikeButtonsWrapper onLikeClicked={onLikeClicked} pageId={pageId} likerIds={likerIds} sumOfLikers={sumOfLikers} isLiked={isLiked}></LikeButtonsWrapper>
+        <LikeButtons onLikeClicked={onLikeClicked} pageId={pageId} likerIds={likerIds} sumOfLikers={sumOfLikers} isLiked={isLiked}></LikeButtons>
       </span>
       <span>
         {/*

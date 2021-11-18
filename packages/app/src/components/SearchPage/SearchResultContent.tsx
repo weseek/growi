@@ -13,9 +13,6 @@ type Props ={
   focusedPage: null | any,
 }
 
-const SearchResultContentSubNavigationWrapper = (props) => {
-  return <SearchResultContentSubNavigation {...props}></SearchResultContentSubNavigation>;
-};
 
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.focusedPage;
@@ -25,7 +22,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   if (page.tags != null && page.tags.length > 0) { showTags = true }
   return (
     <div key={page._id} className="search-result-page mb-5">
-      <SearchResultContentSubNavigationWrapper pageId={page._id} path={page.path}></SearchResultContentSubNavigationWrapper>
+      <SearchResultContentSubNavigation pageId={page._id} path={page.path}></SearchResultContentSubNavigation>
       <RevisionLoader
         growiRenderer={growiRenderer}
         pageId={page._id}
