@@ -45,6 +45,11 @@ const TrashPageAlert = (props) => {
     setIsPageDeleteModalShown(false);
   }
 
+  function redirectToDeletedPage(page, options) {
+    const trashPagePath = page.path;
+    window.location.href = encodeURI(trashPagePath);
+  }
+
   function renderEmptyButton() {
     return (
       <button
@@ -98,6 +103,7 @@ const TrashPageAlert = (props) => {
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={opclosePageDeleteModalHandler}
+          onDeleteCompleted={redirectToDeletedPage}
           pageId={pageId}
           revisionId={revisionId}
           path={path}

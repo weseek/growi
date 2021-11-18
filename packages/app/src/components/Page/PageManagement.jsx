@@ -168,6 +168,11 @@ const PageManagement = (props) => {
     window.location.href = `${url.pathname}${url.search}`;
   }
 
+  function redirectToDeletedPage(page, options) {
+    const trashPagePath = page.path;
+    window.location.href = encodeURI(trashPagePath);
+  }
+
   function renderModals() {
     if (currentUser == null) {
       return null;
@@ -196,6 +201,7 @@ const PageManagement = (props) => {
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
+          onDeleteCompleted={redirectToDeletedPage}
           pageId={pageId}
           revisionId={revisionId}
           path={path}

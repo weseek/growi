@@ -61,8 +61,15 @@ const PageDeleteModal = (props) => {
         completely,
       });
 
-      const trashPagePath = response.page.path;
-      window.location.href = encodeURI(trashPagePath);
+      if (props.onDeleteCompleted != null) {
+        const { page } = response;
+        const options = {
+          isRecursively: recursively,
+          isCompletely: completely,
+        };
+        props.onDeleteCompleted(page, options);
+      }
+
     }
     catch (err) {
       setErrs(err);
@@ -148,6 +155,7 @@ PageDeleteModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onDeleteCompleted: PropTypes.func,
 
   pageId: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,

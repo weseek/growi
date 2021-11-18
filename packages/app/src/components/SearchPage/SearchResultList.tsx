@@ -3,10 +3,15 @@ import SearchResultListItem from './SearchResultListItem';
 import PaginationWrapper from '../PaginationWrapper';
 import PageRenameModal from '../PageRenameModal';
 import { IPageSearchResultData } from '../../interfaces/search';
+import PageDeleteModal from '../PageDeleteModal';
 
 
 const PageRenameModalWrapper = (props) => {
   return <PageRenameModal {...props}></PageRenameModal>;
+};
+
+const PageDeleteModalWrapper = (props) => {
+  return <PageDeleteModal {...props}></PageDeleteModal>;
 };
 
 type Props = {
@@ -23,6 +28,7 @@ type Props = {
 const SearchResultList: FC<Props> = (props:Props) => {
   const { focusedSearchResultData } = props;
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
+  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [controlTargetPage, setControlTargetPage] = useState(focusedSearchResultData?.pageData || {
     _id: '',
     path: '',
@@ -31,6 +37,14 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
+  }
+
+  function openPageDeleteModalHandler() {
+    setIsPageDeleteModalShown(true);
+  }
+
+  function closePageDeleteModalHandler() {
+    setIsPageDeleteModalShown(false);
   }
 
   // TODO: Change the process that runs after the rename process is complete.
@@ -45,8 +59,12 @@ const SearchResultList: FC<Props> = (props:Props) => {
     window.location.href = `${url.pathname}${url.search}`;
   }
 
-  function renderModals() {
+  function redirectToDeletedPage(page, options) {
+    const trashPagePath = page.path;
+    window.location.href = encodeURI(trashPagePath);
+  }
 
+  function renderModals() {
     return (
       <>
         <PageRenameModalWrapper
@@ -64,15 +82,15 @@ const SearchResultList: FC<Props> = (props:Props) => {
           pageId={pageId}
           path={path}
         /> */}
-        {/* TODO: call page delete modal
+        {/* TODO: Enable delete completely */}
         <PageDeleteModalWrapper
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        /> */}
+          onDeleteCompleted={redirectToDeletedPage}
+          pageId={controlTargetPage._id}
+          revisionId={controlTargetPage.revision}
+          path={controlTargetPage.path}
+        />
       </>
     );
   }
@@ -88,6 +106,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             onClickInvoked={props.onClickInvoked}
             onClickControlDropdown={setControlTargetPage}
             onClickPageRenameBtnInvoked={openPageRenameModalHandler}
+            onClickPageDeleteBtnInvoked={openPageDeleteModalHandler}
             isSelected={page.pageData._id === focusedPageId || false}
           />
         );

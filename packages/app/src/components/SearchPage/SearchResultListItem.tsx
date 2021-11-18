@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { IPageSearchResultData } from '../../interfaces/search';
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 import loggerFactory from '~/utils/logger';
@@ -16,15 +17,21 @@ const logger = loggerFactory('growi:searchResultList');
 type PageItemControlProps = {
   onClickControlDropdown?: (page: IPageHasId) => void,
   onClickPageRenameBtnInvoked?: () => void,
+  onClickPageDeleteBtnInvoked?: () => void,
   page: IPageHasId,
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId,
   onClickControlDropdown?: (page: IPageHasId) => void,
-  onClickPageRenameBtnInvoked?: () => void}) => {
+  onClickPageRenameBtnInvoked?: () => void,
+  onClickPageDeleteBtnInvoked?: () => void,
+}) => {
 
-  const { page, onClickControlDropdown, onClickPageRenameBtnInvoked } = props;
+  const {
+    page, onClickControlDropdown, onClickPageRenameBtnInvoked, onClickPageDeleteBtnInvoked,
+  } = props;
   const { t } = useTranslation('');
+  const isTrash = isTrashPage(page.path);
 
   const onClickDropdown = () => {
     if (onClickControlDropdown == null) { logger.error('onClickControlDropdown is null') }
@@ -60,10 +67,20 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId,
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+        <button
+          className="dropdown-item text-danger"
+          type="button"
+          disabled={isTrash}
+          onClick={() => {
+            if (!isTrash && onClickPageDeleteBtnInvoked != null) {
+              console.log('onClickPageDeleteBtnInvoked is invoked');
+              onClickPageDeleteBtnInvoked();
+            }
+          }}
+        >
           <i className="icon-fw icon-fire"></i>{t('Delete')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button className="dropdown-item" type="button" onClick={() => console.log('add  modal show')}>
           <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
         </button>
         <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
@@ -93,6 +110,7 @@ type Props = {
   onClickInvoked?: (pageId: string) => void,
   onClickControlDropdown?: (page: IPageHasId) => void,
   onClickPageRenameBtnInvoked?: () => void,
+  onClickPageDeleteBtnInvoked?: () => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
@@ -144,6 +162,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                   page={pageData}
                   onClickControlDropdown={props.onClickControlDropdown}
                   onClickPageRenameBtnInvoked={props.onClickPageRenameBtnInvoked}
+                  onClickPageDeleteBtnInvoked={props.onClickPageDeleteBtnInvoked}
                 />
               </div>
             </div>
