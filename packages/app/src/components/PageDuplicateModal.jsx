@@ -50,14 +50,20 @@ const PageDuplicateModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, false, checkExistPaths), [],
   );
+
+  useEffect(() => {
+    setPageNameInput(path);
+  }, [path]);
 
   useEffect(() => {
     if (pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  // "path" must not be checked.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput for PagePathAutoComplete

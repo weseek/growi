@@ -2,8 +2,13 @@ import React, { FC, useState } from 'react';
 import SearchResultListItem from './SearchResultListItem';
 import PaginationWrapper from '../PaginationWrapper';
 import PageRenameModal from '../PageRenameModal';
+import PageDuplicateModal from '../PageDuplicateModal';
 import { IPageSearchResultData } from '../../interfaces/search';
 
+
+const PageDuplicateModalWrapper = (props) => {
+  return <PageDuplicateModal {...props}></PageDuplicateModal>;
+};
 
 const PageRenameModalWrapper = (props) => {
   return <PageRenameModal {...props}></PageRenameModal>;
@@ -22,12 +27,21 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const { focusedSearchResultData } = props;
+  const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [controlTargetPage, setControlTargetPage] = useState(focusedSearchResultData?.pageData || {
     _id: '',
     path: '',
     revision: '',
   });
+
+  function openPageDuplicateModalHandler() {
+    setIsPageDuplicateModalShown(true);
+  }
+
+  function closePageDuplicateModalHandler() {
+    setIsPageDuplicateModalShown(false);
+  }
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -57,13 +71,12 @@ const SearchResultList: FC<Props> = (props:Props) => {
           revisionId={controlTargetPage.revision}
           path={controlTargetPage.path}
         />
-        {/* TODO: call page duplicate modal
         <PageDuplicateModalWrapper
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
-          pageId={pageId}
-          path={path}
-        /> */}
+          pageId={controlTargetPage._id}
+          path={controlTargetPage.path}
+        />
         {/* TODO: call page delete modal
         <PageDeleteModalWrapper
           isOpen={isPageDeleteModalShown}
@@ -87,6 +100,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             page={page}
             onClickInvoked={props.onClickInvoked}
             onClickControlDropdown={setControlTargetPage}
+            onClickPageDuplicateBtnInvoked={openPageDuplicateModalHandler}
             onClickPageRenameBtnInvoked={openPageRenameModalHandler}
             isSelected={page.pageData._id === focusedPageId || false}
           />

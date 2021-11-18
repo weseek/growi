@@ -15,15 +15,19 @@ const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
   onClickControlDropdown?: (page: IPageHasId) => void,
+  onClickPageDuplicateBtnInvoked?: () => void,
   onClickPageRenameBtnInvoked?: () => void,
   page: IPageHasId,
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId,
   onClickControlDropdown?: (page: IPageHasId) => void,
+  onClickPageDuplicateBtnInvoked?: () => void,
   onClickPageRenameBtnInvoked?: () => void}) => {
 
-  const { page, onClickControlDropdown, onClickPageRenameBtnInvoked } = props;
+  const {
+    page, onClickControlDropdown, onClickPageDuplicateBtnInvoked, onClickPageRenameBtnInvoked,
+  } = props;
   const { t } = useTranslation('');
 
   const onClickDropdown = () => {
@@ -66,7 +70,16 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId,
         <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
           <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button
+          className="dropdown-item"
+          type="button"
+          onClick={() => {
+            if (onClickPageDuplicateBtnInvoked != null) {
+              console.log('onClickPageDuplicateBtnInvoked is invoked');
+              onClickPageDuplicateBtnInvoked();
+            }
+          }}
+        >
           <i className="icon-fw icon-docs"></i>{t('Duplicate')}
         </button>
         <button
@@ -92,6 +105,7 @@ type Props = {
   isSelected: boolean,
   onClickInvoked?: (pageId: string) => void,
   onClickControlDropdown?: (page: IPageHasId) => void,
+  onClickPageDuplicateBtnInvoked?: () => void,
   onClickPageRenameBtnInvoked?: () => void,
 }
 
@@ -143,6 +157,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <PageItemControl
                   page={pageData}
                   onClickControlDropdown={props.onClickControlDropdown}
+                  onClickPageDuplicateBtnInvoked={props.onClickPageDuplicateBtnInvoked}
                   onClickPageRenameBtnInvoked={props.onClickPageRenameBtnInvoked}
                 />
               </div>
