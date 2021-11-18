@@ -249,7 +249,7 @@ class SearchPage extends React.Component {
           searchResultMeta={this.state.searchResultMeta}
           searchingKeyword={this.state.searchedKeyword}
           onPagingLimitChanged={this.onPagingLimitChanged}
-          initialPagingLimit={this.props.adminCustomizeContainer.state.pageLimitationL || 50}
+          initialPagingLimit={this.props.appContainer.config.pageLimitationL || 50}
         >
         </SearchPageLayout>
       </div>
@@ -261,12 +261,11 @@ class SearchPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer, AdminCustomizeContainer]);
+const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
 
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
   query: PropTypes.object,
 };
 SearchPage.defaultProps = {
