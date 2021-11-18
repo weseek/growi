@@ -1,30 +1,28 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   selectedPagesCount: number,
   displayPageCount: number,
+  selectAllCheckboxType: CheckboxType,
   onClickDeleteButton?: () => void,
-  onClickSelectAllCheckbox?: () => void,
+  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    onClickDeleteButton, onClickSelectAllCheckbox, selectedPagesCount, displayPageCount,
+    onClickDeleteButton, onClickSelectAllCheckbox, selectAllCheckboxType,
   } = props;
 
-  const checkboxType = useMemo(() => {
-    switch (selectedPagesCount) {
-      case 0:
-        return CheckboxType.NONE_CHECKED;
-      case displayPageCount:
-        return CheckboxType.ALL_CHECKED;
-      default:
-        return CheckboxType.INDETERMINATE;
+  const onClickCheckbox = () => {
+    if (onClickSelectAllCheckbox != null) {
+      const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
+      onClickSelectAllCheckbox(next);
     }
-  }, [selectedPagesCount, displayPageCount]);
+
+  };
 
   return (
     <>
@@ -35,12 +33,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
-        onClick={() => {
-          if (onClickSelectAllCheckbox != null) {
-            onClickSelectAllCheckbox();
-          }
-        }}
-        checked={checkboxType !== CheckboxType.NONE_CHECKED}
+        onClick={onClickCheckbox}
+        checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}
       />
       <button
         type="button"
