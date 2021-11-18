@@ -6,10 +6,6 @@
 
   .grw-pagetree-item-wrapper {
     .grw-pagetree-item {
-      transition-duration: 0.3s;
-    }
-
-    .grw-pagetree-item {
       &:hover {
         opacity: 0.7;
       }

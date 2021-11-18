@@ -78,18 +78,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <div className="grw-pagetree-item-wrapper">
-      <div style={opacityStyle} className="grw-pagetree-item row align-items-center">
+      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
         <button
           type="button"
-          className={`grw-pagetree-button col-1 btn ${buttonClass}`}
+          className={`grw-pagetree-button btn ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
           <i className="icon-control-play"></i>
         </button>
-        <a href={page._id} className="col">
+        <a href={page._id} className="d-block flex-grow-1">
           <p className="grw-pagetree-title">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
-        <div className="grw-pagetree-control col-2">
+        <div className="grw-pagetree-control">
           Ctrl
         </div>
       </div>
