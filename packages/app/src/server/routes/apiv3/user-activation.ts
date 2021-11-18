@@ -126,7 +126,7 @@ export const completeRegistrationAction = (crowi) => {
             sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
           }
 
-          req.flash('successMessage', req.t('message.successfully_send_email_auth', { email }));
+          req.flash('successMessage', req.t('message.successfully_created', { username }));
           res.apiv3({ status: 'ok' });
         });
       }

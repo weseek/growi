@@ -37,13 +37,24 @@ async function makeRegistrationEmailToken(email, crowi) {
 }
 
 export const registerAction = (crowi) => {
+  const User = crowi.model('User');
+
   return async function(req, res) {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
+    const isRegisterableEmail = await User.isRegisterableEmail(email);
+
+    if (!isRegisterableEmail) {
+      req.body.registerForm.email = email;
+      req.flash('registerWarningMessage', req.t('message.email_address_is_already_registered'));
+      req.flash('email', email);
+
+      return res.redirect('/login#register');
+    }
 
     makeRegistrationEmailToken(email, crowi);
 
-    req.flash('successMessage', req.t('message.successfully_created', { username: email }));
+    req.flash('successMessage', req.t('message.successfully_send_email_auth', { email }));
 
     return res.redirect('/login');
   };

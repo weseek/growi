@@ -116,7 +116,7 @@
         data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
         data-username ="{{ req.body.registerForm.username }}"
         data-name ="{{ req.body.registerForm.name }}"
-        data-email ="{{ req.body.registerForm.email }}"
+        data-email ="{{ req.body.registerForm.email || req.flash('email') }}"
         data-is-registration-enabled="{{ isRegistrationEnabled }}"
         data-registration-mode = "{{ registrationMode }}"
         data-registration-white-list = "{{ getConfig('crowi', 'security:registrationWhiteList') }}"
