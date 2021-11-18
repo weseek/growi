@@ -29,7 +29,10 @@ class PageService {
 
   initPageEvent() {
     // create
-    this.pageEvent.on('create', this.pageEvent.onCreate);
+    this.pageEvent.on('create', async(page, user) => {
+      this.pageEvent.onCreate();
+      console.log('ページが作成されました');
+    });
 
     // update
     this.pageEvent.on('update', async(page, user) => {
@@ -42,6 +45,12 @@ class PageService {
       catch (err) {
         logger.error(err);
       }
+    });
+
+    // rename
+    this.pageEvent.on('rename', async(page, renamedPage, user) => {
+      console.log('ページがリネームされました');
+      console.log(page, renamedPage, user);
     });
 
 
@@ -127,8 +136,9 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', renamedPage, user);
+    // this.pageEvent.emit('delete', page, user);
+    // this.pageEvent.emit('create', renamedPage, user);
+    this.pageEvent.emit('rename', page, renamedPage, user);
 
     return renamedPage;
   }
