@@ -8,6 +8,7 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
+  searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
@@ -20,6 +21,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
+  const { searchResultCount } = props;
 
   const onExcludeUsersHome = () => {
     if (props.onExcludeUsersHome != null) {
@@ -52,6 +54,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
+          isSelectAllCheckboxDisabled={searchResultCount === 0}
           selectAllCheckboxType={props.selectAllCheckboxType}
           onClickDeleteButton={onDeleteSelectedPageHandler}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}

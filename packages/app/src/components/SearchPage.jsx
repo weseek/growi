@@ -251,6 +251,7 @@ class SearchPage extends React.Component {
     return (
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
+        searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
