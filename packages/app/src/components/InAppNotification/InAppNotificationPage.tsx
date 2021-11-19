@@ -20,15 +20,14 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const limit = appContainer.config.pageLimitationXL;
   const [activePage, setActivePage] = useState(1);
   const offset = (activePage - 1) * limit;
-  const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
+  const { data: allNotificationData } = useSWRxInAppNotifications(limit, offset);
 
-
-  const [activeUnopenedNotificationPage, setActiveUnopenedPage] = useState(1);
+  const [activeUnopenedNotificationPage, setActiveUnopenedNotificationPage] = useState(1);
   const unopenedNotificationOffset = (activeUnopenedNotificationPage - 1) * limit;
-  const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, unopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+
   const { t } = useTranslation();
 
-  if (inAppNotificationData == null || unopendNotificationData == null) {
+  if (allNotificationData == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -44,19 +43,19 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   };
 
   const setUnopenedPageNumber = (selectedPageNumber): void => {
-    setActiveUnopenedPage(selectedPageNumber);
+    setActiveUnopenedNotificationPage(selectedPageNumber);
   };
 
   // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
     return (
       <>
-        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+        <InAppNotificationList inAppNotificationData={allNotificationData} />
         <PaginationWrapper
           activePage={activePage}
           changePage={setPageNumber}
-          totalItemsCount={inAppNotificationData.totalDocs}
-          pagingLimit={inAppNotificationData.limit}
+          totalItemsCount={allNotificationData.totalDocs}
+          pagingLimit={allNotificationData.limit}
           align="center"
           size="sm"
         />
@@ -66,6 +65,18 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
+    const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, unopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+
+    if (unopendNotificationData == null) {
+      return (
+        <div className="wiki">
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <>
         <div className="mb-2 d-flex justify-content-end">
