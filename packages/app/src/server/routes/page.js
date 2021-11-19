@@ -168,7 +168,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
   }
 
   function isUserPage(path) {
@@ -290,7 +290,7 @@ module.exports = function(crowi, app) {
   }
 
   async function _notFound(req, res) {
-    const path = req.pagePath || getPathFromRequest(req);
+    const path = getPathFromRequest(req);
 
     let view;
     const renderVars = { path };
