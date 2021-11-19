@@ -79,6 +79,10 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
   let actionIcon: string;
 
   switch (actionType) {
+    case 'PAGE_LIKE':
+      actionMsg = 'likes on';
+      actionIcon = 'icon-like';
+      break;
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
       actionIcon = 'ti-agenda';
