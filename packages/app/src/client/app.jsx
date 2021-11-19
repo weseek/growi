@@ -177,19 +177,25 @@ const renderMainComponents = () => {
 
 // extract context before rendering main components
 const elem = document.getElementById('page-context');
-ReactDOM.render(
-  <I18nextProvider i18n={i18n}>
-    <ErrorBoundary>
-      <SWRConfig value={swrGlobalConfiguration}>
-        <Provider inject={injectableContainers}>
-          {componentMappings['page-context']}
-        </Provider>
-      </SWRConfig>
-    </ErrorBoundary>
-  </I18nextProvider>,
-  elem,
-  renderMainComponents,
-);
+
+if (elem != null) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <ErrorBoundary>
+        <SWRConfig value={swrGlobalConfiguration}>
+          <Provider inject={injectableContainers}>
+            {componentMappings['page-context']}
+          </Provider>
+        </SWRConfig>
+      </ErrorBoundary>
+    </I18nextProvider>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 
 // initialize scrollpos-styler
