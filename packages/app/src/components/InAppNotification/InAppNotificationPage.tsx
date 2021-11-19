@@ -31,9 +31,38 @@ const InAppNotificationPage: FC = () => {
     setOffset(offset);
   };
 
+  // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
     return (
       <>
+        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={inAppNotificationData.totalDocs}
+          pagingLimit={inAppNotificationData.limit}
+          align="center"
+          size="sm"
+        />
+      </>
+    );
+  };
+
+  // commonize notification lists by 81953
+  const UnopenedInAppNotificationList = () => {
+    return (
+      <>
+        <div className="mb-2 d-flex justify-content-end">
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            // TODO: set "UNOPENED" notification status "OPEND" by 81951
+            // onClick={}
+          >
+            {t('in_app_notification.mark_all_as_read')}
+          </button>
+        </div>
+        {/*  TODO: show only unopened notifications by 81945 */}
         <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         <PaginationWrapper
           activePage={activePage}
@@ -57,7 +86,7 @@ const InAppNotificationPage: FC = () => {
     // TODO: show unopend notification list by 81945
     external_accounts: {
       Icon: () => <></>,
-      Content: AllInAppNotificationList,
+      Content: UnopenedInAppNotificationList,
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
