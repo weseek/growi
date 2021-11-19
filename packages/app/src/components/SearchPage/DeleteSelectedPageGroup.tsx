@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
-  isCheckboxDisabled: boolean,
+  isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
   onClickDeleteButton?: () => void,
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
@@ -31,7 +31,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
-        disabled={props.isCheckboxDisabled}
+        disabled={props.isSelectAllCheckboxDisabled}
         onClick={onClickCheckbox}
         checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}
       />
