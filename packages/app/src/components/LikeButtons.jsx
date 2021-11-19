@@ -6,13 +6,11 @@ import { withTranslation } from 'react-i18next';
 import UserPictureList from './User/UserPictureList';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
-import { apiv3Put } from '../client/util/apiv3-client';
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
-class LikeButtons extends React.Component {
+class LegacyLikeButtons extends React.Component {
 
   constructor(props) {
     super(props);
@@ -32,31 +30,17 @@ class LikeButtons extends React.Component {
     }));
   }
 
-  async handleClick() {
-    const {
-      appContainer, pageId, isLiked, onChangeInvoked,
-    } = this.props;
-    const { isGuestUser } = appContainer;
 
-    if (isGuestUser) {
+  handleClick() {
+    if (this.props.onLikeClicked == null) {
       return;
     }
-
-    try {
-      const toggleLike = !isLiked;
-      await apiv3Put('/page/likes', { pageId, bool: toggleLike });
-      if (onChangeInvoked !== null) {
-        await onChangeInvoked();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.props.onLikeClicked();
   }
 
   render() {
     const {
-      appContainer, likers, sumOfLikers, isLiked, t,
+      appContainer, likerIds, sumOfLikers, isLiked, t,
     } = this.props;
     const { isGuestUser } = appContainer;
 
@@ -83,7 +67,7 @@ class LikeButtons extends React.Component {
         <Popover placement="bottom" isOpen={this.state.isPopoverOpen} target="po-total-likes" toggle={this.togglePopover} trigger="legacy">
           <PopoverBody className="seen-user-popover">
             <div className="px-2 text-right user-list-content text-truncate text-muted">
-              {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet.')}
+              {likerIds.length ? <UserPictureList users={likerIds} /> : t('No users have liked this yet.')}
             </div>
           </PopoverBody>
         </Popover>
@@ -96,16 +80,20 @@ class LikeButtons extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonsWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
+const LegacyLikeButtonsWrapper = withUnstatedContainers(LegacyLikeButtons, [AppContainer]);
 
-LikeButtons.propTypes = {
+LegacyLikeButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onChangeInvoked: PropTypes.func,
   pageId: PropTypes.string.isRequired,
-  likers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  likerIds: PropTypes.arrayOf(PropTypes.object).isRequired,
   sumOfLikers: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
+  onLikeClicked: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
+const LikeButtons = (props) => {
+  return <LegacyLikeButtonsWrapper {...props}></LegacyLikeButtonsWrapper>;
+};
 
-export default withTranslation()(LikeButtonsWrapper);
+export default withTranslation()(LikeButtons);

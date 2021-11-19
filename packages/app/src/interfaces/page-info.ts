@@ -1,4 +1,4 @@
-export type IpageInfo = {
+export type IPageInfo = {
   sumOfLikers: number;
   likerIds: string[];
   seenUserIds: string[];
