@@ -883,7 +883,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const isMarkDownButtonHidden = this.props.isConflictMode && this.props.readOnly;
+    const isMarkDownButtonHidden = this.props.isConflictMode;
 
     let placeholder;
 
