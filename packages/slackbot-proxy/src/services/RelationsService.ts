@@ -86,12 +86,21 @@ export class RelationsService {
       return false;
     }
 
-    const fromChannelIdOrName = channel.id || channel.name;
     if (Array.isArray(permissionForCommand)) {
-      return (permissionForCommand.includes(fromChannelIdOrName));
-    }
+      if (permissionForCommand.includes(channel.name)) {
+        return true;
+      }
 
-    return permissionForCommand;
+      if (channel.id == null) {
+        return false;
+      }
+
+      if (permissionForCommand.includes(channel.id)) {
+        return true;
+      }
+    }
+    return permissionForCommand as boolean;
+
   }
 
   async isPermissionsForSingleUseCommands(relation: Relation, growiCommandType: string, channel: IChannelOptionalId): Promise<boolean> {
@@ -199,10 +208,18 @@ export class RelationsService {
       }
 
       // check permission at channel level
-      const fromChannelIdOrName = channel.id || channel.name;
-      if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(fromChannelIdOrName)) {
-        allowedRelation = relation;
-        return;
+      if (Array.isArray(permissionForInteractions)) {
+        if (permissionForInteractions.includes(channel.name)) {
+          allowedRelation = relation;
+          return;
+        }
+
+        if (channel.id == null) return;
+
+        if (permissionForInteractions.includes(channel.id)) {
+          allowedRelation = relation;
+          return;
+        }
       }
 
       disallowedGrowiUrl = relation.growiUri;
