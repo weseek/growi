@@ -31,6 +31,7 @@ const InAppNotificationPage: FC = () => {
     setOffset(offset);
   };
 
+  // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
     return (
       <>
@@ -47,6 +48,7 @@ const InAppNotificationPage: FC = () => {
     );
   };
 
+  // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
     return (
       <>
