@@ -81,6 +81,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionMsg = 'renamed';
       actionIcon = 'icon-action-redo';
       break;
+    case 'PAGE_DELETE':
+      actionMsg = 'deleted';
+      actionIcon = 'icon-trash';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
