@@ -625,14 +625,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderCheatsheetModalButton() {
-    const isMarkDownButtonHidden = this.props.isConflictMode && this.props.readOnly;
-    if (!isMarkDownButtonHidden) {
-      return (
-        <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
-          <i className="icon-question" /> Markdown
-        </button>
-      );
-    }
+    return (
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+        <i className="icon-question" /> Markdown
+      </button>
+    );
   }
 
   renderCheatsheetOverlay() {
@@ -886,6 +883,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
+    const isMarkDownButtonHidden = this.props.isConflictMode && this.props.readOnly;
+
     let placeholder;
 
     if (this.state.isGfmMode) {
@@ -969,7 +968,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderLoadingKeymapOverlay() }
 
-        { this.renderCheatsheetOverlay() }
+        { !isMarkDownButtonHidden && this.renderCheatsheetOverlay() }
 
         <GridEditModal
           ref={this.gridEditModal}
