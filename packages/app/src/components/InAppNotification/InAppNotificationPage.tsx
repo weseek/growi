@@ -53,13 +53,13 @@ const InAppNotificationPage: FC = () => {
     user_infomation: {
       Icon: () => <i className="icon-fw icon-user"></i>,
       Content: AllInAppNotificationList,
-      i18n: t('User Information'),
+      i18n: t('in_app_notification.all'),
       index: 0,
     },
     external_accounts: {
       Icon: () => <i className="icon-fw icon-share-alt"></i>,
       Content: PasswordSettings,
-      i18n: t('admin:user_management.external_accounts'),
+      i18n: t('in_app_notification.unopend'),
       index: 1,
     },
   };
