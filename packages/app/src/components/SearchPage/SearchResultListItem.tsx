@@ -70,7 +70,7 @@ type Props = {
   page: ISearchedPage,
   isSelected: boolean,
   isChecked: boolean,
-  onClickCheckbox?: (page: string) => void,
+  onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
 }
 

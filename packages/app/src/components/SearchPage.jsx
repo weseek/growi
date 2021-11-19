@@ -194,7 +194,7 @@ class SearchPage extends React.Component {
     else {
       selectedPagesIdList.add(pageId);
     }
-    switch (this.state.selectedPages.size) {
+    switch (selectedPagesIdList.size) {
       case 0:
         return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
       case this.state.searchedPages.length:
@@ -207,7 +207,7 @@ class SearchPage extends React.Component {
   toggleAllCheckBox = (nextSelectAllCheckboxType) => {
     const { selectedPagesIdList, searchedPages } = this.state;
     if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
-      this.state.selectedPages.clear();
+      selectedPagesIdList.clear();
     }
     else {
       searchedPages.forEach((page) => {

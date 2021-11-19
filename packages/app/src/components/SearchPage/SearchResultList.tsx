@@ -16,7 +16,7 @@ type Props = {
   pages: ISearchedPage[],
   selectedPagesIdList: Set<string>
   onClickSearchResultItem?: (pageId: string) => void,
-  onClickCheckbox?: (page: string) => void,
+  onClickCheckbox?: (pageId: string) => void,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
