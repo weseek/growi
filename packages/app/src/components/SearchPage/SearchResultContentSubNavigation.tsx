@@ -6,6 +6,7 @@ import TagLabels from '../Page/TagLabels';
 import { toastSuccess, toastError } from '../../client/util/apiNotification';
 import { apiPost } from '../../client/util/apiv1-client';
 import { useSWRTagsInfo } from '../../stores/page';
+import SubNavButtons from '../Navbar/SubNavButtons';
 
 type Props = {
   appContainer:AppContainer
@@ -51,11 +52,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        {/* TODO: refactor SubNavButtons in a way that it can be used independently from pageContainer
-              TASK : #80481 https://estoc.weseek.co.jp/redmine/issues/80481
-              CONDITION reference: https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-        */}
-        {/* <SubnavButtons isCompactMode={isCompactMode} /> */}
+        <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons>
       </div>
     </div>
   );
@@ -65,7 +62,10 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SearchResultContentSubNavigationWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
+const SearchResultContentSubNavigationUnstatedWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
 
-
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
+const SearchResultContentSubNavigationWrapper = (props) => {
+  return <SearchResultContentSubNavigationUnstatedWrapper {...props}></SearchResultContentSubNavigationUnstatedWrapper>;
+};
 export default SearchResultContentSubNavigationWrapper;

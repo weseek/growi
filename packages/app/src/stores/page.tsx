@@ -1,12 +1,18 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
+<<<<<<< HEAD
 import { apiGet } from '../client/util/apiv1-client';
 
 import { IPage } from '../interfaces/page';
 import { IPagingResult } from '../interfaces/paging-result';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
+=======
+>>>>>>> feat/77524-search-result-conent-page
 
+import { IPage } from '../interfaces/page';
+import { IPagingResult } from '../interfaces/paging-result';
+import { IPageInfo } from '../interfaces/page-info';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Error> => {
@@ -34,6 +40,18 @@ export const useSWRxPageList = (
   );
 };
 
+export const useSWRPageInfo = (pageId: string): SWRResponse<IPageInfo, Error> => {
+  return useSWR(`/page/info?pageId=${pageId}`, endpoint => apiv3Get(endpoint).then((response) => {
+    return {
+      sumOfLikers: response.data.sumOfLikers,
+      likerIds: response.data.likerIds,
+      seenUserIds: response.data.seenUserIds,
+      sumOfSeenUsers: response.data.sumOfSeenUsers,
+      isSeen: response.data.isSeen,
+      isLiked: response.data?.isLiked,
+    };
+  }));
+};
 
 export const useSWRTagsInfo = (pageId: string): SWRResponse<IPageTagsInfo, Error> => {
   // apiGet():Promise<unknown>

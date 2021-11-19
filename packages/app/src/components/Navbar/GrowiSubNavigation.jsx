@@ -8,7 +8,7 @@ import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 
 import TagLabels from '../Page/TagLabels';
-import SubnavButtons from './SubNavButtons';
+import SubNavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
@@ -84,7 +84,7 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubnavButtons isCompactMode={isCompactMode} />
+            <SubNavButtons isCompactMode={isCompactMode} pageId={pageId} />
           </div>
           <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (

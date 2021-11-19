@@ -178,6 +178,7 @@ const PageManagement = (props) => {
           path={path}
         />
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />

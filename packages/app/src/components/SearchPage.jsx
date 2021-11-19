@@ -30,11 +30,11 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
-      focusedPage: {},
+      focusedPage: null,
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 3, // change to an appropriate limit number
+      pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
     };
@@ -163,7 +163,7 @@ class SearchPage extends React.Component {
           searchedPages: [],
           searchResultMeta: {},
           searchResultCount: 0,
-          focusedPage: {},
+          focusedPage: null,
           activePage: 1,
         });
       }
