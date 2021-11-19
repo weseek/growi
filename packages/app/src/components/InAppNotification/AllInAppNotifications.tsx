@@ -17,24 +17,6 @@ const AllInAppNotifications: FC = () => {
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
   const { t } = useTranslation();
 
-
-  const navTabMapping = useMemo(() => {
-    return {
-      user_infomation: {
-        Icon: () => <i className="icon-fw icon-user"></i>,
-        Content: UserSettings,
-        i18n: t('User Information'),
-        index: 0,
-      },
-      external_accounts: {
-        Icon: () => <i className="icon-fw icon-share-alt"></i>,
-        Content: PasswordSettings,
-        i18n: t('admin:user_management.external_accounts'),
-        index: 1,
-      },
-    };
-  }, [t]);
-
   if (inAppNotificationData == null) {
     return (
       <div className="wiki">
@@ -52,9 +34,41 @@ const AllInAppNotifications: FC = () => {
     setOffset(offset);
   };
 
+  const InAppNotificationListContent = () => {
+    return (
+      <>
+        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={inAppNotificationData.totalDocs}
+          pagingLimit={inAppNotificationData.limit}
+          align="center"
+          size="sm"
+        />
+      </>
+    );
+  };
+
+  const navTabMapping = {
+    user_infomation: {
+      Icon: () => <i className="icon-fw icon-user"></i>,
+      Content: InAppNotificationListContent,
+      i18n: t('User Information'),
+      index: 0,
+    },
+    external_accounts: {
+      Icon: () => <i className="icon-fw icon-share-alt"></i>,
+      Content: PasswordSettings,
+      i18n: t('admin:user_management.external_accounts'),
+      index: 1,
+    },
+  };
+
   return (
     <>
       <CustomNavAndContents navTabMapping={navTabMapping} />
+      {/* <InAppNotificationListContent /> */}
       {/* <InAppNotificationList inAppNotificationData={inAppNotificationData} />
       <PaginationWrapper
         activePage={activePage}
