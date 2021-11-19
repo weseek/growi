@@ -33,7 +33,7 @@ class SearchPage extends React.Component {
       searchedPages: [],
       searchResultMeta: {},
       focusedPage: {},
-      selectedPages: new Set(),
+      selectedPagesIdList: new Set(),
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: 10, // change to an appropriate limit number
@@ -185,14 +185,16 @@ class SearchPage extends React.Component {
     });
   }
 
-  toggleCheckBox = (page) => {
-    if (this.state.selectedPages.has(page)) {
-      this.state.selectedPages.delete(page);
+  toggleCheckBox = (pageId) => {
+    const { selectedPagesIdList } = this.state;
+
+    if (selectedPagesIdList.has(pageId)) {
+      selectedPagesIdList.delete(pageId);
     }
     else {
-      this.state.selectedPages.add(page);
+      selectedPagesIdList.add(pageId);
     }
-    switch (this.state.selectedPages.size) {
+    switch (selectedPagesIdList.size) {
       case 0:
         return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
       case this.state.searchedPages.length:
@@ -203,15 +205,19 @@ class SearchPage extends React.Component {
   }
 
   toggleAllCheckBox = (nextSelectAllCheckboxType) => {
+    const { selectedPagesIdList, searchedPages } = this.state;
     if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
-      this.state.selectedPages.clear();
+      selectedPagesIdList.clear();
     }
     else {
-      this.state.searchedPages.forEach((page) => {
-        this.state.selectedPages.add(page);
+      searchedPages.forEach((page) => {
+        selectedPagesIdList.add(page._id);
       });
     }
-    this.setState({ selectAllCheckboxType: nextSelectAllCheckboxType });
+    this.setState({
+      selectedPagesIdList,
+      selectAllCheckboxType: nextSelectAllCheckboxType,
+    });
   };
 
   renderSearchResultContent = () => {
@@ -230,12 +236,12 @@ class SearchPage extends React.Component {
       <SearchResultList
         pages={this.state.searchedPages || []}
         focusedPage={this.state.focusedPage}
-        selectedPages={this.state.selectedPages || []}
+        selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
-        onClickInvoked={this.selectPage}
-        onChangedInvoked={this.toggleCheckBox}
+        onClickSearchResultItem={this.selectPage}
+        onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
       />
     );
