@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
@@ -22,10 +22,8 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   } = props;
 
   const { data: tagInfoData, error: tagInfoError, mutate: mutateTagInfo } = useSWRTagsInfo(pageId);
-  if (tagInfoError != null || tagInfoData == null) {
-    return <></>;
-  }
-  const tagsUpdatedHandler = async(newTags) => {
+
+  const tagsUpdatedHandler = useCallback(async(newTags) => {
     try {
       await apiPost('/tags.update', { pageId, tags: newTags });
       toastSuccess('updated tags successfully');
@@ -34,8 +32,11 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  };
+  }, [pageId, mutateTagInfo]);
 
+  if (tagInfoError != null || tagInfoData == null) {
+    return <></>;
+  }
   const { isSharedUser } = appContainer;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
