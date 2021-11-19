@@ -48,7 +48,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
  */
 const SearchResultContentSubNavigationUnstatedWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
 
-// wrapping tsx component returned by withUnstatedContainers to avoid type error when using in other tsx components.
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
 const SearchResultContentSubNavigationWrapper = (props) => {
   return <SearchResultContentSubNavigationUnstatedWrapper {...props}></SearchResultContentSubNavigationUnstatedWrapper>;
 };

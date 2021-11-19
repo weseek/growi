@@ -79,7 +79,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
  */
 const SubNavButtonsUnstatedWrapper = withUnstatedContainers(SubNavButtons, [AppContainer, NavigationContainer]);
 
-// wrapping tsx component returned by withUnstatedContainers to avoid type error when using in other tsx components.
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
 const SubNavButtonsWrapper = (props) => {
   return <SubNavButtonsUnstatedWrapper {...props}></SubNavButtonsUnstatedWrapper>;
 };
