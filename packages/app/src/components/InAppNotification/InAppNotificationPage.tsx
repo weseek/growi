@@ -9,8 +9,8 @@ import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
 const InAppNotificationPage: FC = () => {
   const [activePage, setActivePage] = useState(1);
-  const [offset, setOffset] = useState(0);
   const limit = 10;
+  const offset = (activePage - 1) * limit;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
   const { t } = useTranslation();
 
@@ -27,8 +27,6 @@ const InAppNotificationPage: FC = () => {
 
   const setPageNumber = (selectedPageNumber): void => {
     setActivePage(selectedPageNumber);
-    const offset = (selectedPageNumber - 1) * limit;
-    setOffset(offset);
   };
 
   // commonize notification lists by 81953
