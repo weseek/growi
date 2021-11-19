@@ -19,8 +19,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { appContainer } = props;
   const limit = appContainer.config.pageLimitationXL;
   const [activePageOfAllNotificationCat, setActivePage] = useState(1);
-  const offset = (activePageOfAllNotificationCat - 1) * limit;
-  const { data: allNotificationData } = useSWRxInAppNotifications(limit, offset);
+  const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
+  const { data: allNotificationData } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
 
   const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
   const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
