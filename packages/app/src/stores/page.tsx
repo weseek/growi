@@ -1,17 +1,11 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-<<<<<<< HEAD
 import { apiGet } from '../client/util/apiv1-client';
 
 import { IPage } from '../interfaces/page';
 import { IPagingResult } from '../interfaces/paging-result';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
-=======
->>>>>>> feat/77524-search-result-conent-page
-
-import { IPage } from '../interfaces/page';
-import { IPagingResult } from '../interfaces/paging-result';
 import { IPageInfo } from '../interfaces/page-info';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
