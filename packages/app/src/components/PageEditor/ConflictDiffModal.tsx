@@ -1,21 +1,15 @@
-import React, { useState, useRef, FC } from 'react';
+import React, { useState, FC } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-// TODO: consider whether to use codemirrorEditor
-import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
 import CodeMirrorEditor from './CodeMirrorEditor';
 
-require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
-
-// avoid typescript type error
-const CodeMirror:any = CodeMirrorAny;
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
@@ -28,24 +22,20 @@ type ConflictDiffModalProps = {
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
-  const resolvedRevision = useRef<string>('');
+  const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
 
   const { pageContainer, editorContainer } = props;
   const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
 
-  const codeMirrorRevisionOption = {
-    mode: 'htmlmixed',
-    lineNumbers: true,
-    tabSize: 2,
-    indentUnit: 2,
-    readOnly: true,
-  };
-
   const onCancel = () => {
     if (props.onCancel != null) {
       props.onCancel();
     }
+  };
+
+  const onChangeSelectedRevision = (value) => {
+    setResolvedRevision(value);
   };
 
   const onResolveConflict = async() : Promise<void> => {
@@ -55,7 +45,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest.revisionId,
-        resolvedRevision.current,
+        resolvedRevision,
         editorContainer.getCurrentOptionsToSave(),
       );
     }
@@ -93,7 +83,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                   textlintRules={editorContainer.state.textlintRules}
                   value={request.revisionBody}
-                  isConflictMode
+                  isConflict
                   readOnly
                   // options={codeMirrorRevisionOption}
                 />
@@ -103,7 +93,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => {
                       setIsRevisionSelected(true);
-                      resolvedRevision.current = request.revisionBody;
+                      setResolvedRevision(request.revisionBody);
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>
@@ -122,13 +112,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
+                {/* TODO: replace: RevisionDiff and adjust design */}
                 <CodeMirrorEditor
                   indentSize={editorContainer.state.indentSize}
                   editorOptions={editorContainer.state.editorOptions}
                   isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                   textlintRules={editorContainer.state.textlintRules}
                   value={origin.revisionBody}
-                  isConflictMode
+                  isConflict
                   readOnly
                   // options={codeMirrorRevisionOption}
                 />
@@ -137,8 +128,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
-                      setIsRevisionSelected(true);
-                      resolvedRevision.current = origin.revisionBody;
+                      setResolvedRevision(origin.revisionBody);
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>
@@ -157,13 +147,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
+                {/* TODO: replace: RevisionDiff and adjust design */}
                 <CodeMirrorEditor
                   indentSize={editorContainer.state.indentSize}
                   editorOptions={editorContainer.state.editorOptions}
                   isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                   textlintRules={editorContainer.state.textlintRules}
                   value={latest.revisionBody}
-                  isConflictMode
+                  isConflict
                   readOnly
                   // options={codeMirrorRevisionOption}
                 />
@@ -173,7 +164,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     className="btn btn-primary"
                     onClick={() => {
                       setIsRevisionSelected(true);
-                      resolvedRevision.current = latest.revisionBody;
+                      setResolvedRevision(latest.revisionBody);
                     }}
                   >
                     <i className="icon-fw icon-arrow-down-circle"></i>
@@ -183,29 +174,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               </div>
               <div className="col-12 border border-dark">
                 <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                {/*
-                <CodeMirror
-                  value={resolvedRevision.current}
-                  options={{
-                    mode: 'htmlmixed',
-                    lineNumbers: true,
-                    tabSize: 2,
-                    indentUnit: 2,
-                    placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                  }}
-                  onChange={(editor, data, pageBody) => {
-                    if (pageBody === '') setIsRevisionSelected(false);
-                    resolvedRevision.current = pageBody;
-                  }}
-                />
-                */}
                 <CodeMirrorEditor
                   indentSize={editorContainer.state.indentSize}
                   editorOptions={editorContainer.state.editorOptions}
                   isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                   textlintRules={editorContainer.state.textlintRules}
-                  value={latest.revisionBody}
-                  // options={codeMirrorRevisionOption}
+                  value={resolvedRevision}
+                  onChange={onChangeSelectedRevision}
+                  isConflict
                 />
               </div>
             </div>

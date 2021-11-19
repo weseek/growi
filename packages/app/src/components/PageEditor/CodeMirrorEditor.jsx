@@ -5,7 +5,7 @@ import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
 import { Button } from 'reactstrap';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+import { UnControlled as ReactCodeMirrorUncontroled, Controlled as ReactCodeMirrorControlled } from 'react-codemirror2';
 
 import { JSHINT } from 'jshint';
 
@@ -109,7 +109,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
-      isConflictMode: this.props.isConflict,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -879,22 +878,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
-  render() {
+  renderReactCideMirror() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const isMarkDownButtonHidden = this.props.isConflictMode;
 
     let placeholder;
 
     if (this.state.isGfmMode) {
       placeholder = 'Input with Markdown..';
     }
-    else if (this.state.isConflictMode) {
-      placeholder = 'Please select revision body..';
-    }
     else {
       placeholder = 'Input with Plain Text..';
+    }
+
+    if (this.state.isConflict) {
+      placeholder = 'Please select revision body..';
     }
 
     const gutters = [];
@@ -905,10 +904,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
       gutters.push('CodeMirror-lint-markers');
     }
 
-    return (
-      <React.Fragment>
+    if (this.props.isConflict) {
 
-        <ReactCodeMirror
+      return (
+        <ReactCodeMirrorControlled
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"
@@ -917,7 +916,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
-          value={this.state.value}
+          value={this.props.value}
           options={{
             mode,
             theme: this.props.editorOptions.theme,
@@ -958,13 +957,86 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onScroll(data);
             }
           }}
-          onChange={this.changeHandler}
+          onBeforeChange={this.changeHandler}
           onDragEnter={(editor, event) => {
             if (this.props.onDragEnter != null) {
               this.props.onDragEnter(event);
             }
           }}
         />
+      );
+    }
+
+    return (
+      <ReactCodeMirrorUncontroled
+        ref={(c) => { this.cm = c }}
+        className={additionalClasses}
+        placeholder="search"
+        editorDidMount={(editor) => {
+          // add event handlers
+          editor.on('paste', this.pasteHandler);
+          editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
+        }}
+        value={this.state.value}
+        options={{
+          mode,
+          theme: this.props.editorOptions.theme,
+          styleActiveLine: this.props.editorOptions.styleActiveLine,
+          lineNumbers: this.props.lineNumbers,
+          tabSize: 4,
+          indentUnit: this.props.indentSize,
+          lineWrapping: true,
+          scrollPastEnd: true,
+          autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
+          autoCloseTags: true,
+          placeholder,
+          matchBrackets: true,
+          matchTags: { bothTags: true },
+          readOnly: (this.props.readOnly || false),
+          // folding
+          foldGutter: this.props.lineNumbers,
+          gutters,
+          // match-highlighter, matchesonscrollbar, annotatescrollbar options
+          highlightSelectionMatches: { annotateScrollbar: true },
+          // continuelist, indentlist
+          extraKeys: {
+            Enter: this.handleEnterKey,
+            'Ctrl-Enter': this.handleCtrlEnterKey,
+            'Cmd-Enter': this.handleCtrlEnterKey,
+            Tab: 'indentMore',
+            'Shift-Tab': 'indentLess',
+            'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+          },
+          lint,
+        }}
+        onCursor={this.cursorHandler}
+        onScroll={(editor, data) => {
+          if (this.props.onScroll != null) {
+            // add line data
+            const line = editor.lineAtHeight(data.top, 'local');
+            data.line = line;
+            this.props.onScroll(data);
+          }
+        }}
+        onChange={this.changeHandler}
+        onDragEnter={(editor, event) => {
+          if (this.props.onDragEnter != null) {
+            this.props.onDragEnter(event);
+          }
+        }}
+      />
+    );
+
+  }
+
+  render() {
+
+    const isMarkDownButtonHidden = this.props.isConflict;
+
+    return (
+      <React.Fragment>
+
+        { this.renderReactCideMirror() }
 
         { this.renderLoadingKeymapOverlay() }
 
