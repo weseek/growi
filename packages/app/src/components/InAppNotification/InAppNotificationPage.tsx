@@ -50,7 +50,7 @@ const InAppNotificationPage: FC = () => {
   const UnReadInAppNotificationList = () => {
     return (
       <>
-        <div className="mb-2">
+        <div className="mb-2 d-flex justify-content-end">
           <button
             type="button"
             className="btn btn-outline-primary"
