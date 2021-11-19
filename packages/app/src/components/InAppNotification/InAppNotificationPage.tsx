@@ -28,7 +28,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, UnopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
   const { t } = useTranslation();
 
-  if (inAppNotificationData == null) {
+  if (inAppNotificationData == null || unopendNotificationData == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -82,8 +82,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
         <PaginationWrapper
           activePage={activeUnopenedNotificationPage}
           changePage={setUnopenedPageNumber}
-          totalItemsCount={inAppNotificationData.totalDocs}
-          pagingLimit={inAppNotificationData.limit}
+          totalItemsCount={unopendNotificationData.totalDocs}
+          pagingLimit={unopendNotificationData.limit}
           align="center"
           size="sm"
         />
