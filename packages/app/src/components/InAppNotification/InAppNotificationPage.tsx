@@ -9,7 +9,7 @@ import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import PasswordSettings from '../Me/PasswordSettings';
 
 
-const AllInAppNotifications: FC = () => {
+const InAppNotificationPage: FC = () => {
   const [activePage, setActivePage] = useState(1);
   const [offset, setOffset] = useState(0);
   const limit = 10;
@@ -69,4 +69,4 @@ const AllInAppNotifications: FC = () => {
   );
 };
 
-export default AllInAppNotifications;
+export default InAppNotificationPage;
