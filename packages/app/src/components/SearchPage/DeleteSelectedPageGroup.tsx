@@ -38,7 +38,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
       <button
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
-        disabled={checkboxState === CheckboxType.NONE_CHECKED}
+        disabled={selectAllCheckboxType === CheckboxType.NONE_CHECKED}
         onClick={() => {
           if (onClickDeleteButton != null) {
             onClickDeleteButton();
