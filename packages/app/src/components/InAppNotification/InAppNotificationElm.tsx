@@ -11,6 +11,7 @@ interface Props {
   notification: IInAppNotification & HasObjectId
 }
 
+// TODO 81946 Return to not nullable
 const InAppNotificationElm = (props: Props): JSX.Element | null => {
 
   const { notification } = props;
@@ -66,6 +67,8 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
   }, []);
 
   const actionUsers = getActionUsers();
+
+  // TODO 81946 Return to not nullable
   const pagePath = { path: props.notification.target?.path };
   if (pagePath.path == null) {
     return null;
