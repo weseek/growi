@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
+import SubNavButtons from '../Navbar/SubNavButtons';
 
 type Props = {
   appContainer:AppContainer
@@ -11,11 +12,11 @@ type Props = {
   isCompactMode?: boolean,
 }
 
+
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
     appContainer, pageId, path, isCompactMode, isSignleLineMode,
   } = props;
-
   const { isSharedUser } = appContainer;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
@@ -35,11 +36,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        {/* TODO: refactor SubNavButtons in a way that it can be used independently from pageContainer
-              TASK : #80481 https://estoc.weseek.co.jp/redmine/issues/80481
-              CONDITION reference: https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-        */}
-        {/* <SubnavButtons isCompactMode={isCompactMode} /> */}
+        <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons>
       </div>
     </div>
   );
@@ -49,7 +46,10 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SearchResultContentSubNavigationWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
+const SearchResultContentSubNavigationUnstatedWrapper = withUnstatedContainers(SearchResultContentSubNavigation, [AppContainer]);
 
-
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
+const SearchResultContentSubNavigationWrapper = (props) => {
+  return <SearchResultContentSubNavigationUnstatedWrapper {...props}></SearchResultContentSubNavigationUnstatedWrapper>;
+};
 export default SearchResultContentSubNavigationWrapper;
