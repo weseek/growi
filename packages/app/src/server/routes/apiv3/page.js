@@ -263,6 +263,11 @@ module.exports = (crowi) => {
         logger.error('Like notification failed', err);
       }
     }
+
+    if (isLiked) {
+      const pageEvent = crowi.event('page');
+      pageEvent.emit('likes:notification', page, req.user);
+    }
   });
 
   /**

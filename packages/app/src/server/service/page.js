@@ -58,6 +58,11 @@ class PageService {
 
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+
+    // likes
+    this.pageEvent.on('likes:notification', async(page, user) => {
+      console.log('like event!!!');
+    });
   }
 
 
