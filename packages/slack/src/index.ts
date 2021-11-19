@@ -22,6 +22,7 @@ export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'keep',
 ];
 
+export * from './interfaces/channel';
 export * from './interfaces/growi-command-processor';
 export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-command';

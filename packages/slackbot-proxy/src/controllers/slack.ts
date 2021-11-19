@@ -12,7 +12,7 @@ import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond, supportedGrowiCommands,
+  respond, supportedGrowiCommands, IChannelOptionalId,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -227,16 +227,21 @@ export class SlackCtrl {
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
+    const channel: IChannelOptionalId = {
+      id: body.channel_id,
+      name: body.channel_name,
+    };
+
     // check permission
     await Promise.all(relations.map(async(relation) => {
       const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
-        relation, growiCommand.growiCommandType, body.channel_name,
+        relation, growiCommand.growiCommandType, channel,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
         isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
-          relation, growiCommand.growiCommandType, body.channel_name,
+          relation, growiCommand.growiCommandType, channel,
         );
       }
 
@@ -346,8 +351,13 @@ export class SlackCtrl {
 
     const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
 
-    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    const channelFromMeta = {
+      name: privateMeta?.body?.channel_name || privateMeta?.channelName,
+    };
+
+    const channel: IChannelOptionalId = interactionPayload.channel || channelFromMeta;
+    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
+
     const {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     } = permission;
