@@ -5,7 +5,7 @@ import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
 import { Button } from 'reactstrap';
-import { UnControlled as ReactCodeMirrorUncontroled, Controlled as ReactCodeMirrorControlled } from 'react-codemirror2';
+import { UnControlled as ReactCodeMirrorUncontrolled, Controlled as ReactCodeMirrorControlled } from 'react-codemirror2';
 
 import { JSHINT } from 'jshint';
 
@@ -878,7 +878,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
-  renderReactCideMirror() {
+  renderReactCodeMirror() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
@@ -968,7 +968,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     return (
-      <ReactCodeMirrorUncontroled
+      <ReactCodeMirrorUncontrolled
         ref={(c) => { this.cm = c }}
         className={additionalClasses}
         placeholder="search"
@@ -1036,7 +1036,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        { this.renderReactCideMirror() }
+        { this.renderReactCodeMirror() }
 
         { this.renderLoadingKeymapOverlay() }
 
