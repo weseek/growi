@@ -16,3 +16,8 @@ export interface TargetAndAncestors {
   targetAndAncestors: Partial<IPageForItem>[]
   rootPage: Partial<IPageForItem>,
 }
+
+
+export interface V5MigrationStatus {
+  migratablePagesCount: number
+}

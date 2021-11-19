@@ -1,7 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { AncestorsChildrenResult, ChildrenResult } from '../interfaces/page-listing-results';
+import { AncestorsChildrenResult, ChildrenResult, V5MigrationStatus } from '../interfaces/page-listing-results';
 
 
 export const useSWRxPageAncestorsChildren = (
@@ -26,6 +26,17 @@ export const useSWRxPageChildren = (
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         children: response.data.children,
+      };
+    }),
+  );
+};
+
+export const useSWRxV5MigrationStatus = (): SWRResponse<V5MigrationStatus, Error> => {
+  return useSWR(
+    '/pages/v5-migration-status',
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return {
+        migratablePagesCount: response.data.migratablePagesCount,
       };
     }),
   );

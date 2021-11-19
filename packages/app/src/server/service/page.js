@@ -1,4 +1,5 @@
 import { pagePathUtils } from '@growi/core';
+import Page from '~/components/Page';
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
@@ -950,6 +951,14 @@ class PageService {
       logger.warn('Failed to create non-unique indexes on pages.path.', err);
       throw err;
     }
+  }
+
+  async v5MigratablePrivatePagesCount(user) {
+    if (user == null) {
+      throw Error('user is required');
+    }
+    const Page = this.crowi.model('Page');
+    return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
 }

@@ -710,5 +710,15 @@ module.exports = (crowi) => {
     return res.apiv3({ isV5Compatible });
   });
 
+  router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
+    try {
+      const migratablePagesCount = await crowi.pageService.v5MigratablePrivatePagesCount(req.user);
+      return res.apiv3({ migratablePagesCount });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
+    }
+  });
+
   return router;
 };
