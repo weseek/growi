@@ -1,10 +1,10 @@
 import useSWR, { SWRResponse } from 'swr';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get } from '../client/util/apiv3-client';
 import { apiGet } from '../client/util/apiv1-client';
 
-import { IPage } from '~/interfaces/page';
-import { IPagingResult } from '~/interfaces/paging-result';
+import { IPage } from '../interfaces/page';
+import { IPagingResult } from '../interfaces/paging-result';
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
 
