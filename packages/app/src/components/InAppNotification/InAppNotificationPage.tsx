@@ -51,13 +51,13 @@ const InAppNotificationPage: FC = () => {
 
   const navTabMapping = {
     user_infomation: {
-      Icon: () => <i className="icon-fw icon-user"></i>,
+      Icon: () => <></>,
       Content: AllInAppNotificationList,
       i18n: t('in_app_notification.all'),
       index: 0,
     },
     external_accounts: {
-      Icon: () => <i className="icon-fw icon-share-alt"></i>,
+      Icon: () => <></>,
       Content: PasswordSettings,
       i18n: t('in_app_notification.unopend'),
       index: 1,
