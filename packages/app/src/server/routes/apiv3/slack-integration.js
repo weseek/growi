@@ -97,7 +97,10 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);
-    const fromChannel = req.body.channel_name;
+    const fromChannel = {
+      id: req.body.channel_id,
+      name: req.body.channel_name,
+    };
     const siteUrl = crowi.appService.getSiteUrl();
 
     let commandPermission;
@@ -143,7 +146,7 @@ module.exports = (crowi) => {
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const callbacIdkOrActionId = callbackId || actionId;
-    const fromChannel = interactionPayloadAccessor.getChannelName();
+    const fromChannel = interactionPayloadAccessor.getChannel();
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);

@@ -12,8 +12,6 @@
   data-page-grant="{{ grant }}"
   data-page-grant-group="{{ grantedGroupId }}"
   data-page-grant-group-name="{{ grantedGroupName }}"
-  data-page-is-liked="{% if user %}{{ page.isLiked(user) }}{% else %}false{% endif %}"
-  data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-not-creatable="false"
@@ -27,8 +25,6 @@
   data-page-deleted-at="{% if page && page.deletedAt %}{{ page.deletedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
-  data-page-ids-of-seen-users="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"
-  data-page-count-of-seen-users="{{ page.seenUsers.length|default(0) }}"
   data-share-links-number="{% if page %}{{ sharelinksNumber }}{% endif %}"
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
   >

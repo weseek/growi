@@ -3,7 +3,7 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';
 
-import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp } from '@growi/slack';
+import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp, IChannelOptionalId } from '@growi/slack';
 import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
@@ -23,6 +23,7 @@ type CheckEachRelationResult = {
   disallowedGrowiUrl:string|null,
   eachRelationCommandName:string,
 }
+
 
 @Service()
 export class RelationsService {
@@ -76,7 +77,7 @@ export class RelationsService {
     return relation;
   }
 
-  private isPermitted(permissionSettings: PermissionSettingsInterface, growiCommandType: string, channelName: string): boolean {
+  private isPermitted(permissionSettings: PermissionSettingsInterface, growiCommandType: string, channel: IChannelOptionalId): boolean {
     // TODO assert (permissionSettings != null)
 
     const permissionForCommand = permissionSettings[growiCommandType];
@@ -86,13 +87,23 @@ export class RelationsService {
     }
 
     if (Array.isArray(permissionForCommand)) {
-      return permissionForCommand.includes(channelName);
-    }
+      if (permissionForCommand.includes(channel.name)) {
+        return true;
+      }
 
-    return permissionForCommand;
+      if (channel.id == null) {
+        return false;
+      }
+
+      if (permissionForCommand.includes(channel.id)) {
+        return true;
+      }
+    }
+    return permissionForCommand as boolean;
+
   }
 
-  async isPermissionsForSingleUseCommands(relation: Relation, growiCommandType: string, channelName: string): Promise<boolean> {
+  async isPermissionsForSingleUseCommands(relation: Relation, growiCommandType: string, channel: IChannelOptionalId): Promise<boolean> {
     // TODO assert (relation != null)
     if (relation == null) {
       return false;
@@ -110,10 +121,10 @@ export class RelationsService {
 
     // TODO assert (relationToEval.permissionsForSingleUseCommands != null) because syncRelation success
 
-    return this.isPermitted(relationToEval.permissionsForSingleUseCommands, growiCommandType, channelName);
+    return this.isPermitted(relationToEval.permissionsForSingleUseCommands, growiCommandType, channel);
   }
 
-  async isPermissionsUseBroadcastCommands(relation: Relation, growiCommandType: string, channelName: string):Promise<boolean> {
+  async isPermissionsUseBroadcastCommands(relation: Relation, growiCommandType: string, channel: IChannelOptionalId):Promise<boolean> {
     // TODO assert (relation != null)
     if (relation == null) {
       return false;
@@ -131,11 +142,11 @@ export class RelationsService {
 
     // TODO assert (relationToEval.permissionsForSingleUseCommands != null) because syncRelation success
 
-    return this.isPermitted(relationToEval.permissionsForBroadcastUseCommands, growiCommandType, channelName);
+    return this.isPermitted(relationToEval.permissionsForBroadcastUseCommands, growiCommandType, channel);
   }
 
   async checkPermissionForInteractions(
-      relations:Relation[], actionId:string, callbackId:string, channelName:string,
+      relations: Relation[], actionId: string, callbackId: string, channel: IChannelOptionalId,
   ):Promise<CheckPermissionForInteractionsResults> {
 
     const allowedRelations:Relation[] = [];
@@ -143,7 +154,7 @@ export class RelationsService {
     let commandName = '';
 
     const results = await Promise.allSettled(relations.map((relation) => {
-      const relationResult = this.checkEachRelation(relation, actionId, callbackId, channelName);
+      const relationResult = this.checkEachRelation(relation, actionId, callbackId, channel);
       const { allowedRelation, disallowedGrowiUrl, eachRelationCommandName } = relationResult;
 
       if (allowedRelation != null) {
@@ -164,8 +175,7 @@ export class RelationsService {
     };
   }
 
-  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):CheckEachRelationResult {
-
+  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channel: IChannelOptionalId): CheckEachRelationResult {
     let allowedRelation:Relation|null = null;
     let disallowedGrowiUrl:string|null = null;
     let eachRelationCommandName = '';
@@ -198,9 +208,18 @@ export class RelationsService {
       }
 
       // check permission at channel level
-      if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
-        allowedRelation = relation;
-        return;
+      if (Array.isArray(permissionForInteractions)) {
+        if (permissionForInteractions.includes(channel.name)) {
+          allowedRelation = relation;
+          return;
+        }
+
+        if (channel.id == null) return;
+
+        if (permissionForInteractions.includes(channel.id)) {
+          allowedRelation = relation;
+          return;
+        }
       }
 
       disallowedGrowiUrl = relation.growiUri;

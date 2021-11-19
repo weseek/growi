@@ -11,7 +11,13 @@
     "installed_version": "已安装版本",
     "list_of_env_vars": "环境变量列表",
     "env_var_priority": "对于安全性以外的环境变量，优先获取数据库的值。",
-    "about_security": "检查安全环境变量的<a href='/admin/security'>安全设置</a>。"
+    "about_security": "检查安全环境变量的<a href='/admin/security'>安全设置</a>。",
+    "copy_prefilled_host_information": {
+      "default": "复制预填的主机信息",
+      "done": "复制到剪贴板!"
+    },
+    "bug_report": "提交一个错误报告",
+    "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>然后提交你的问题到GitHub。</a>"
   },
   "app_setting": {
     "site_name": "网站名称 ",

@@ -26,6 +26,7 @@ export const defaultSupportedSlackEventActions: string[] = [
   'unfurl',
 ];
 
+export * from './interfaces/channel';
 export * from './interfaces/growi-command-processor';
 export * from './interfaces/growi-interaction-processor';
 export * from './interfaces/growi-event-processor';
