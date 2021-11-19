@@ -21,7 +21,7 @@ const GrowiSubNavigation = (props) => {
   } = props;
   const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
+    pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
@@ -59,7 +59,14 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubNavButtons isCompactMode={isCompactMode} pageId={pageId} />
+            <SubNavButtons
+              isCompactMode={isCompactMode}
+              pageId={pageId}
+              revisionId={revisionId}
+              path={path}
+              isDeletable={isDeletable}
+              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+            />
           </div>
           <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (

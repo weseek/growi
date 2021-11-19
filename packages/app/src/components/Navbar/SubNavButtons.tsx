@@ -18,10 +18,14 @@ type SubNavButtonsProps= {
   navigationContainer: NavigationContainer,
   isCompactMode?: boolean,
   pageId: string,
+  revisionId: string,
+  path: string,
+  isDeletable: boolean,
+  isAbleToDeleteCompletely: boolean,
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
-    appContainer, navigationContainer, isCompactMode, pageId,
+    appContainer, navigationContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
@@ -94,6 +98,15 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         CONDITION :isAbleToShowPageManagement = !isNotFoundPage && !isTrashPage && !isSharedUser
       */}
       {/* if (CONDITION) then <PageManagement isCompactMode> */}
+      <PageManagement
+        pageId={pageId}
+        revisionId={revisionId}
+        path={path}
+        isDeletable={isDeletable}
+        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+      >
+
+      </PageManagement>
     </>
   );
 };

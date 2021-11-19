@@ -36,7 +36,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons>
+        {/* <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons> */}
       </div>
     </div>
   );
