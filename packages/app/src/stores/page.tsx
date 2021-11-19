@@ -34,22 +34,18 @@ export const useSWRxPageList = (
 };
 
 
-// res
+// response
 // {"data":{"tags":["test","hello"],"ok":true}}
-interface DataInRes {
-  tags: string[];
-  ok : boolean;
-}
-interface Res {
-  data: DataInRes;
+interface ITagInfoData {
+  data : {
+    tags: string[];
+    ok : boolean;
+  };
 }
 
 export const useSWRTagsInfo = (pageId) => {
   return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response) => {
-    // const res = response as Res;
     return {
-      // res: response,
-      // tags: res.data.tags,
       data: response,
     };
   }));
