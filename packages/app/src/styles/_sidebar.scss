@@ -235,8 +235,9 @@
   }
 
   .grw-sidebar-content-footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    width: inherit;
     border-top: solid 1px $border-color;
   }
 }
