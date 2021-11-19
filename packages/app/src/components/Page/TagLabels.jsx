@@ -76,6 +76,7 @@ TagLabels.propTypes = {
   tagsUpdateInvoked: PropTypes.func,
 };
 
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
 const TagLabelsWrapper = (props) => {
   return <TagLabelsUnstatedWrapper {...props}></TagLabelsUnstatedWrapper>;
 };
