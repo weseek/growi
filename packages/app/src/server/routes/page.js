@@ -168,7 +168,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
   }
 
   function isUserPage(path) {
@@ -289,6 +289,47 @@ module.exports = function(crowi, app) {
     return compiledTemplate(definitions);
   }
 
+  async function _notFound(req, res) {
+    const path = getPathFromRequest(req);
+
+    let view;
+    const renderVars = { path };
+
+    if (!isCreatablePage(path)) {
+      view = 'layout-growi/not_creatable';
+    }
+    else if (req.isForbidden) {
+      view = 'layout-growi/forbidden';
+    }
+    else {
+      view = 'layout-growi/not_found';
+
+      // retrieve templates
+      if (req.user != null) {
+        const template = await Page.findTemplate(path);
+        if (template.templateBody) {
+          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+          const tags = template.templateTags;
+          renderVars.template = body;
+          renderVars.templateTags = tags;
+        }
+      }
+
+      // add scope variables by ancestor page
+      const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
+      if (ancestor != null) {
+        await ancestor.populate('grantedGroup').execPopulate();
+        addRenderVarsForScope(renderVars, ancestor);
+      }
+    }
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset) || 0;
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
+
+    return res.render(view, renderVars);
+  }
+
   async function showPageForPresentation(req, res, next) {
     const id = req.params.id;
     const { revisionId } = req.query;
@@ -297,6 +338,11 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       next();
+    }
+
+    if (page.isEmpty) {
+      req.pagePath = page.path;
+      return next();
     }
 
     const renderVars = {};
@@ -354,7 +400,13 @@ module.exports = function(crowi, app) {
     if (page == null) {
       // check the page is forbidden or just does not exist.
       req.isForbidden = await Page.count({ _id: id }) > 0;
-      return next();
+      return _notFound(req, res);
+    }
+
+    // empty page
+    if (page.isEmpty) {
+      req.pagePath = page.path;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
@@ -503,44 +555,7 @@ module.exports = function(crowi, app) {
   /* eslint-enable no-else-return */
 
   actions.notFound = async function(req, res) {
-    const path = getPathFromRequest(req);
-
-    let view;
-    const renderVars = { path };
-
-    if (!isCreatablePage(path)) {
-      view = 'layout-growi/not_creatable';
-    }
-    else if (req.isForbidden) {
-      view = 'layout-growi/forbidden';
-    }
-    else {
-      view = 'layout-growi/not_found';
-
-      // retrieve templates
-      if (req.user != null) {
-        const template = await Page.findTemplate(path);
-        if (template.templateBody) {
-          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
-          const tags = template.templateTags;
-          renderVars.template = body;
-          renderVars.templateTags = tags;
-        }
-      }
-
-      // add scope variables by ancestor page
-      const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
-      if (ancestor != null) {
-        await ancestor.populate('grantedGroup').execPopulate();
-        addRenderVarsForScope(renderVars, ancestor);
-      }
-    }
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset) || 0;
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-
-    return res.render(view, renderVars);
+    return _notFound(req, res);
   };
 
   actions.deletedPageListShow = async function(req, res) {
@@ -586,6 +601,10 @@ module.exports = function(crowi, app) {
     }
 
     if (pages.length === 1) {
+      if (pages[0].isEmpty) {
+        return _notFound(req, res);
+      }
+
       const url = new URL('https://dummy.origin');
       url.pathname = `/${pages[0]._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
@@ -594,7 +613,7 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    return next(); // to page.notFound
+    return _notFound(req, res);
   }
 
   actions.redirector = async function(req, res, next) {
