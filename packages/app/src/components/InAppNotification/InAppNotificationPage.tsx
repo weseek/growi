@@ -6,8 +6,6 @@ import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 import PaginationWrapper from '../PaginationWrapper';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
-import PasswordSettings from '../Me/PasswordSettings';
-
 
 const InAppNotificationPage: FC = () => {
   const [activePage, setActivePage] = useState(1);
@@ -56,9 +54,10 @@ const InAppNotificationPage: FC = () => {
       i18n: t('in_app_notification.all'),
       index: 0,
     },
+    // TODO: show unopend notification list by 81945
     external_accounts: {
       Icon: () => <></>,
-      Content: PasswordSettings,
+      Content: AllInAppNotificationList,
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
