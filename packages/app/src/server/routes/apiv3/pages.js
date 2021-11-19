@@ -192,7 +192,7 @@ module.exports = (crowi) => {
   async function createPageAction({
     path, body, user, options,
   }) {
-    const createdPage = Page.create(path, body, user, options);
+    const createdPage = await Page.create(path, body, user, options);
     return createdPage;
   }
 
@@ -267,21 +267,21 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
-    // check page existence
-    const isExist = await Page.count({ path }) > 0;
-    if (isExist) {
-      return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
-    }
-
     const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await createPageAction({
-      path, body, user: req.user, options,
-    });
+    let createdPage;
+    try {
+      createdPage = await createPageAction({
+        path, body, user: req.user, options,
+      });
+    }
+    catch (err) {
+      return res.apiv3Error(err);
+    }
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
