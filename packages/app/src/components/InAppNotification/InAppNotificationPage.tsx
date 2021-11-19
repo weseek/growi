@@ -54,11 +54,13 @@ const InAppNotificationPage: FC = () => {
           <button
             type="button"
             className="btn btn-outline-primary"
+            // TODO: set unopend notification status opend by 81951
             // onClick={}
           >
             {t('in_app_notification.mark_all_as_read')}
           </button>
         </div>
+        {/*  TODO: show only unopened notifications by 81945 */}
         <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         <PaginationWrapper
           activePage={activePage}
