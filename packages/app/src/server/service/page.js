@@ -69,7 +69,12 @@ class PageService {
 
     // likes
     this.pageEvent.on('likes:notification', async(page, user) => {
-      console.log('like event!!!');
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     });
   }
 
