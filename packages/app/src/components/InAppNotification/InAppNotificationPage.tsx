@@ -24,8 +24,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
 
   const [activeUnopenedNotificationPage, setActiveUnopenedPage] = useState(1);
-  const UnopenedNotificationOffset = (activeUnopenedNotificationPage - 1) * limit;
-  const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, UnopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+  const unopenedNotificationOffset = (activeUnopenedNotificationPage - 1) * limit;
+  const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, unopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
   const { t } = useTranslation();
 
   if (inAppNotificationData == null || unopendNotificationData == null) {
