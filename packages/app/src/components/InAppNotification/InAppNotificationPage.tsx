@@ -21,7 +21,11 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const [activePage, setActivePage] = useState(1);
   const offset = (activePage - 1) * limit;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
-  const { data: unOpendinAppNotificationData } = useSWRxInAppNotifications(limit, offset, InAppNotificationStatuses.STATUS_UNOPENED);
+
+
+  const [activeUnopenedPage, setActiveUnopenedPage] = useState(1);
+  const UnopenedOffset = (activeUnopenedPage - 1) * limit;
+  const { data: unOpendinAppNotificationData } = useSWRxInAppNotifications(limit, UnopenedOffset, InAppNotificationStatuses.STATUS_UNOPENED);
   const { t } = useTranslation();
 
   if (inAppNotificationData == null) {
@@ -37,6 +41,10 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   const setPageNumber = (selectedPageNumber): void => {
     setActivePage(selectedPageNumber);
+  };
+
+  const setUnopenedPageNumber = (selectedPageNumber): void => {
+    setActiveUnopenedPage(selectedPageNumber);
   };
 
   // commonize notification lists by 81953
@@ -78,8 +86,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
         {/*  TODO: show only unopened notifications by 81945 */}
         <InAppNotificationList inAppNotificationData={unOpendinAppNotificationData} />
         <PaginationWrapper
-          activePage={activePage}
-          changePage={setPageNumber}
+          activePage={activeUnopenedPage}
+          changePage={setUnopenedPageNumber}
           totalItemsCount={inAppNotificationData.totalDocs}
           pagingLimit={inAppNotificationData.limit}
           align="center"
