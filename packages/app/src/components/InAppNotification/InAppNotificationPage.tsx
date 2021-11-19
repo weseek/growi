@@ -23,9 +23,9 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
 
 
-  const [activeUnopenedPage, setActiveUnopenedPage] = useState(1);
-  const UnopenedOffset = (activeUnopenedPage - 1) * limit;
-  const { data: unopendinAppNotificationData } = useSWRxInAppNotifications(limit, UnopenedOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+  const [activeUnopenedNotificationPage, setActiveUnopenedPage] = useState(1);
+  const UnopenedNotificationOffset = (activeUnopenedNotificationPage - 1) * limit;
+  const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, UnopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
   const { t } = useTranslation();
 
   if (inAppNotificationData == null) {
@@ -78,9 +78,9 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
             {t('in_app_notification.mark_all_as_read')}
           </button>
         </div>
-        <InAppNotificationList inAppNotificationData={unopendinAppNotificationData} />
+        <InAppNotificationList inAppNotificationData={unopendNotificationData} />
         <PaginationWrapper
-          activePage={activeUnopenedPage}
+          activePage={activeUnopenedNotificationPage}
           changePage={setUnopenedPageNumber}
           totalItemsCount={inAppNotificationData.totalDocs}
           pagingLimit={inAppNotificationData.limit}
