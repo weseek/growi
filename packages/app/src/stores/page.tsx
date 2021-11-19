@@ -36,7 +36,7 @@ export const useSWRxPageList = (
 
 
 export const useSWRTagsInfo = (pageId: string) : SWRResponse<IPageTagsInfo, Error> => {
-  // apiGet returns Promise<unknown>
+  // apiGet():Promise<unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response: any) => {
     return {
