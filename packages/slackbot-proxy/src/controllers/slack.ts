@@ -12,7 +12,7 @@ import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond, supportedGrowiCommands, IChannel,
+  respond, supportedGrowiCommands, IChannelOptionalId,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -227,7 +227,7 @@ export class SlackCtrl {
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
-    const channel: IChannel = {
+    const channel: IChannelOptionalId = {
       id: body.channel_id,
       name: body.channel_name,
     };
@@ -348,7 +348,14 @@ export class SlackCtrl {
     }
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
-    const channel: IChannel = interactionPayload.channel;
+
+    const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
+
+    const channelFromMeta = {
+      name: privateMeta?.body?.channel_name || privateMeta?.channelName,
+    };
+
+    const channel: IChannelOptionalId = interactionPayload.channel || channelFromMeta;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
 
     const {
