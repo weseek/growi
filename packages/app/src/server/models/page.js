@@ -1022,6 +1022,7 @@ module.exports = function(crowi) {
     }
 
     pageEvent.emit('update', savedPage, user);
+    pageEvent.emit('update:notification', savedPage, user);
 
     return savedPage;
   };

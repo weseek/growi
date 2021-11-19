@@ -32,7 +32,7 @@ class PageService {
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
     // update
-    this.pageEvent.on('update', async(page, user) => {
+    this.pageEvent.on('update:notification', async(page, user) => {
 
       this.pageEvent.onUpdate();
 
@@ -45,7 +45,7 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, user) => {
+    this.pageEvent.on('rename:notification', async(page, user) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
       }
@@ -55,7 +55,7 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user) => {
+    this.pageEvent.on('delete:notification', async(page, user) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
       }
@@ -148,7 +148,7 @@ class PageService {
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', renamedPage, user);
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename:notification', page, user);
 
     return renamedPage;
   }
@@ -477,6 +477,7 @@ class PageService {
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
+    this.pageEvent.emit('delete:notification', page, user);
 
     return deletedPage;
   }
