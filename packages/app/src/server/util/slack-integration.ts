@@ -1,9 +1,9 @@
-import { getSupportedGrowiActionsRegExp, IChannel } from '@growi/slack';
+import { getSupportedGrowiActionsRegExp, IChannelOptionalId } from '@growi/slack';
 
 type CommandPermission = { [key:string]: string[] | boolean }
 
 export const checkPermission = (
-    commandPermission: CommandPermission, commandOrActionIdOrCallbackId: string, fromChannel: IChannel,
+    commandPermission: CommandPermission, commandOrActionIdOrCallbackId: string, fromChannel: IChannelOptionalId,
 ):boolean => {
   let isPermitted = false;
 
@@ -24,10 +24,18 @@ export const checkPermission = (
       return;
     }
 
-    const fromChannelIdOrName = fromChannel.id || fromChannel.name;
-    if (Array.isArray(permission) && permission.includes(fromChannelIdOrName)) {
-      isPermitted = true;
-      return;
+    if (Array.isArray(permission)) {
+      if (permission.includes(fromChannel.name)) {
+        isPermitted = true;
+        return;
+      }
+
+      if (fromChannel.id == null) return;
+
+      if (permission.includes(fromChannel.id)) {
+        isPermitted = true;
+        return;
+      }
     }
   });
 
