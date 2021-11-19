@@ -54,7 +54,15 @@ class PageService {
       }
     });
 
-    // TODO 81841
+    // delete
+    this.pageEvent.on('delete', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
 
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
