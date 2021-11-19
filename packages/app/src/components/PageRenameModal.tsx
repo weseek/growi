@@ -259,7 +259,7 @@ PageRenameModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onRenameCompleted: PropTypes.func.isRequired,
+  onRenameCompleted: PropTypes.func,
 
   pageId: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
