@@ -1,6 +1,7 @@
 const MODEL_PAGE = 'Page';
 const MODEL_COMMENT = 'Comment';
 
+const ACTION_PAGE_LIKE = 'PAGE_LIKE';
 const ACTION_PAGE_UPDATE = 'PAGE_UPDATE';
 const ACTION_PAGE_RENAME = 'PAGE_RENAME';
 const ACTION_PAGE_DELETE = 'PAGE_DELETE';
@@ -17,6 +18,7 @@ const getSupportEventModelNames = () => {
 
 const getSupportActionNames = () => {
   return [
+    ACTION_PAGE_LIKE,
     ACTION_PAGE_UPDATE,
     ACTION_PAGE_RENAME,
     ACTION_PAGE_DELETE,
@@ -29,6 +31,7 @@ const activityDefine = {
   MODEL_PAGE,
   MODEL_COMMENT,
 
+  ACTION_PAGE_LIKE,
   ACTION_PAGE_UPDATE,
   ACTION_PAGE_RENAME,
   ACTION_PAGE_DELETE,
