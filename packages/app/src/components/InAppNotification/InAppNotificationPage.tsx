@@ -47,7 +47,7 @@ const InAppNotificationPage: FC = () => {
     );
   };
 
-  const UnReadInAppNotificationList = () => {
+  const UnopenedInAppNotificationList = () => {
     return (
       <>
         <div className="mb-2 d-flex justify-content-end">
@@ -84,7 +84,7 @@ const InAppNotificationPage: FC = () => {
     // TODO: show unopend notification list by 81945
     external_accounts: {
       Icon: () => <></>,
-      Content: UnReadInAppNotificationList,
+      Content: UnopenedInAppNotificationList,
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
