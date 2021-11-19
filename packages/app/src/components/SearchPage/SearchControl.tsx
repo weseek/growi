@@ -9,9 +9,11 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   searchResultCount: number,
+  selectAllCheckboxType: CheckboxType,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
+  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -39,15 +41,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     // https://estoc.weseek.co.jp/redmine/issues/77525
   };
 
-  const onCheckAllPagesInvoked = (nextCheckboxState:CheckboxType) => {
-    console.log(`onCheckAllPagesInvoked is called with arg ${nextCheckboxState}`);
-    // Todo: set the checkboxState, isChecked, and indeterminate value of checkbox element according to the passed argument
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-
-    // setting checkbox to indeterminate is required to use of useRef to access checkbox element.
-    // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
-  };
-
   return (
     <div className="">
       <div className="search-page-input sps sps--abv">
@@ -61,10 +54,10 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="d-flex my-4">
         {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
         <DeleteSelectedPageGroup
-          checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
           isCheckboxDisabled={(searchResultCount == null || searchResultCount === 0) || false}
-          onClickInvoked={onDeleteSelectedPageHandler}
-          onCheckInvoked={onCheckAllPagesInvoked}
+          selectAllCheckboxType={props.selectAllCheckboxType}
+          onClickDeleteButton={onDeleteSelectedPageHandler}
+          onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">

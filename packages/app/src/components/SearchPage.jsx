@@ -13,6 +13,8 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 
+import { CheckboxType } from '../interfaces/search';
+
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
@@ -34,9 +36,10 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 3, // change to an appropriate limit number
+      pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      selectAllCheckboxType: CheckboxType.NONE_CHECKED,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -189,7 +192,27 @@ class SearchPage extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
+    switch (this.state.selectedPages.size) {
+      case 0:
+        return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
+      case this.state.searchedPages.length:
+        return this.setState({ selectAllCheckboxType: CheckboxType.ALL_CHECKED });
+      default:
+        return this.setState({ selectAllCheckboxType: CheckboxType.INDETERMINATE });
+    }
   }
+
+  toggleAllCheckBox = (nextSelectAllCheckboxType) => {
+    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
+      this.state.selectedPages.clear();
+    }
+    else {
+      this.state.searchedPages.forEach((page) => {
+        this.state.selectedPages.add(page);
+      });
+    }
+    this.setState({ selectAllCheckboxType: nextSelectAllCheckboxType });
+  };
 
   renderSearchResultContent = () => {
     return (
@@ -227,6 +250,8 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
+        onClickSelectAllCheckbox={this.toggleAllCheckBox}
+        selectAllCheckboxType={this.state.selectAllCheckboxType}
       >
       </SearchControl>
     );

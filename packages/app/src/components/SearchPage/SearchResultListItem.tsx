@@ -1,4 +1,7 @@
 import React, { FC } from 'react';
+
+import Clamp from 'react-multiline-clamp';
+
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
@@ -66,11 +69,16 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 type Props = {
   page: ISearchedPage,
   isSelected: boolean,
+  onClickCheckboxInvoked?: (page: ISearchedPage) => void,
+  // todo: fix name
+  // refs: https://redmine.weseek.co.jp/issues/81100
   onClickInvoked?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-  const { page, isSelected } = props;
+  const {
+    page, isSelected, onClickInvoked, onClickCheckboxInvoked,
+  } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${page._id}`;
@@ -78,23 +86,30 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
 
-  const onClickInvoked = (pageId) => {
-    if (props.onClickInvoked != null) {
-      props.onClickInvoked(pageId);
-    }
-  };
-
   return (
-    <li key={page._id} className={`page-list-li w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => onClickInvoked(page._id)}
+        onClick={() => {
+          if (onClickInvoked != null) {
+            onClickInvoked(page._id);
+          }
+        }}
       >
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mr-3">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onClick={() => {
+                if (onClickCheckboxInvoked != null) {
+                  onClickCheckboxInvoked(page);
+                }
+              }}
+            />
           </div>
           <div className="w-100">
             {/* page path */}
@@ -117,13 +132,19 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <PageItemControl page={page} />
               </div>
             </div>
+            <div className="my-2">
+              <Clamp
+                lines={2}
+              >
+                {page.snippet
+                  ? <div className="mt-1">page.snippet</div>
+                  : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
+                }
+              </Clamp>
+            </div>
           </div>
         </div>
         {/* TODO: adjust snippet position */}
-        {page.snippet
-          ? <div className="mt-1">page.snippet</div>
-          : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
-        }
       </a>
     </li>
   );
