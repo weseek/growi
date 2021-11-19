@@ -5,6 +5,7 @@ import { apiGet } from '../client/util/apiv1-client';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
+import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,19 +35,12 @@ export const useSWRxPageList = (
 };
 
 
-// response
-// {"data":{"tags":["test","hello"],"ok":true}}
-interface ITagInfoData {
-  data : {
-    tags: string[];
-    ok : boolean;
-  };
-}
-
-export const useSWRTagsInfo = (pageId) => {
-  return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response) => {
+export const useSWRTagsInfo = (pageId: string) : SWRResponse<IPageTagsInfo, Error> => {
+  // apiGet returns Promise<unknown>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response: any) => {
     return {
-      data: response,
+      tags: response.data.tags,
     };
   }));
 };

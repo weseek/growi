@@ -36,7 +36,6 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     }
   };
 
-  const TAGS = tagInfoData.data.tags;
   const { isSharedUser } = appContainer;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
@@ -44,7 +43,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       <div className="grw-path-nav-container">
         {!isSharedUser && !isCompactMode && (
           <div className="grw-taglabels-container">
-            <TagLabels tags={TAGS} tagsUpdateInvoked={tagsUpdatedHandler} />
+            <TagLabels tags={tagInfoData.tags} tagsUpdateInvoked={tagsUpdatedHandler} />
           </div>
         )}
         <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
