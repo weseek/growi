@@ -47,6 +47,31 @@ const InAppNotificationPage: FC = () => {
     );
   };
 
+  const UnReadInAppNotificationList = () => {
+    return (
+      <>
+        <div className="mb-2">
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            // onClick={}
+          >
+            {t('in_app_notification.mark_all_as_read')}
+          </button>
+        </div>
+        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={inAppNotificationData.totalDocs}
+          pagingLimit={inAppNotificationData.limit}
+          align="center"
+          size="sm"
+        />
+      </>
+    );
+  };
+
   const navTabMapping = {
     user_infomation: {
       Icon: () => <></>,
@@ -57,7 +82,7 @@ const InAppNotificationPage: FC = () => {
     // TODO: show unopend notification list by 81945
     external_accounts: {
       Icon: () => <></>,
-      Content: AllInAppNotificationList,
+      Content: UnReadInAppNotificationList,
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
