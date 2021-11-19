@@ -8,8 +8,6 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
-  selectedPagesCount: number,
-  displayPageCount: number,
   selectAllCheckboxType: CheckboxType,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
@@ -57,8 +55,6 @@ const SearchControl: FC <Props> = (props: Props) => {
           selectAllCheckboxType={props.selectAllCheckboxType}
           onClickDeleteButton={onDeleteSelectedPageHandler}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-          selectedPagesCount={props.selectedPagesCount}
-          displayPageCount={props.displayPageCount}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
           <label className="my-0 mr-2" htmlFor="flexCheckDefault">

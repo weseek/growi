@@ -194,20 +194,14 @@ class SearchPage extends React.Component {
     else {
       selectedPagesIdList.add(pageId);
     }
-    const getNextSelectAllCheckboxType = () => {
-      switch (this.state.selectedPages.size) {
-        case 0:
-          return CheckboxType.NONE_CHECKED;
-        case this.state.searchedPages.length:
-          return CheckboxType.ALL_CHECKED;
-        default:
-          return CheckboxType.INDETERMINATE;
-      }
-    };
-    this.setState({
-      selectedPagesIdList,
-      selectAllCheckboxType: getNextSelectAllCheckboxType(),
-    });
+    switch (this.state.selectedPages.size) {
+      case 0:
+        return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
+      case this.state.searchedPages.length:
+        return this.setState({ selectAllCheckboxType: CheckboxType.ALL_CHECKED });
+      default:
+        return this.setState({ selectAllCheckboxType: CheckboxType.INDETERMINATE });
+    }
   }
 
   toggleAllCheckBox = (nextSelectAllCheckboxType) => {
@@ -262,8 +256,6 @@ class SearchPage extends React.Component {
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
-        selectedPagesCount={this.state.selectedPagesIdList.size}
-        displayPageCount={this.state.searchedPages.length}
         selectAllCheckboxType={this.state.selectAllCheckboxType}
       >
       </SearchControl>

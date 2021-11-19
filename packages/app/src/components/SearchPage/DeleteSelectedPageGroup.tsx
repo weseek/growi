@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
-  selectedPagesCount: number,
-  displayPageCount: number,
   selectAllCheckboxType: CheckboxType,
   onClickDeleteButton?: () => void,
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
@@ -27,7 +25,6 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   return (
     <>
       {/** todo: implement the design for CheckboxType = INDETERMINATE */}
-      {/** refs: https://estoc.weseek.co.jp/redmine/issues/81246  */}
       <input
         id="check-all-pages"
         type="checkbox"
