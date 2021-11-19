@@ -29,6 +29,11 @@ module.exports = (crowi) => {
       limit,
     };
 
+    // get categorized notification list
+    if (req.query.status) {
+      console.log('req.query.status');
+      Object.assign(queryOptions, { status: req.query.status });
+    }
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
 
