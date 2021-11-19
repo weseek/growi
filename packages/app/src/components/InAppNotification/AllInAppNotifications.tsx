@@ -1,8 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import InAppNotificationList from './InAppNotificationList';
 import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 import PaginationWrapper from '../PaginationWrapper';
+import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
+
+import UserSettings from '../Me/UserSettings';
+import PasswordSettings from '../Me/PasswordSettings';
 
 
 const AllInAppNotifications: FC = () => {
@@ -10,6 +15,25 @@ const AllInAppNotifications: FC = () => {
   const [offset, setOffset] = useState(0);
   const limit = 10;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
+  const { t } = useTranslation();
+
+
+  const navTabMapping = useMemo(() => {
+    return {
+      user_infomation: {
+        Icon: () => <i className="icon-fw icon-user"></i>,
+        Content: UserSettings,
+        i18n: t('User Information'),
+        index: 0,
+      },
+      external_accounts: {
+        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        Content: PasswordSettings,
+        i18n: t('admin:user_management.external_accounts'),
+        index: 1,
+      },
+    };
+  }, [t]);
 
   if (inAppNotificationData == null) {
     return (
@@ -21,6 +45,7 @@ const AllInAppNotifications: FC = () => {
     );
   }
 
+
   const setPageNumber = (selectedPageNumber): void => {
     setActivePage(selectedPageNumber);
     const offset = (selectedPageNumber - 1) * limit;
@@ -29,7 +54,8 @@ const AllInAppNotifications: FC = () => {
 
   return (
     <>
-      <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+      <CustomNavAndContents navTabMapping={navTabMapping} />
+      {/* <InAppNotificationList inAppNotificationData={inAppNotificationData} />
       <PaginationWrapper
         activePage={activePage}
         changePage={setPageNumber}
@@ -37,7 +63,7 @@ const AllInAppNotifications: FC = () => {
         pagingLimit={inAppNotificationData.limit}
         align="center"
         size="sm"
-      />
+      /> */}
     </>
   );
 };
