@@ -56,7 +56,7 @@ const InAppNotificationPage: FC = () => {
           <button
             type="button"
             className="btn btn-outline-primary"
-            // TODO: set unopend notification status opend by 81951
+            // TODO: set "UNOPENED" notification status "OPEND" by 81951
             // onClick={}
           >
             {t('in_app_notification.mark_all_as_read')}
