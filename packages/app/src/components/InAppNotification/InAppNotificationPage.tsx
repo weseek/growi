@@ -18,12 +18,12 @@ type Props = {
 const InAppNotificationPageBody: FC<Props> = (props) => {
   const { appContainer } = props;
   const limit = appContainer.config.pageLimitationXL;
-  const [activePage, setActivePage] = useState(1);
-  const offset = (activePage - 1) * limit;
+  const [activePageOfAllNotificationCat, setActivePage] = useState(1);
+  const offset = (activePageOfAllNotificationCat - 1) * limit;
   const { data: allNotificationData } = useSWRxInAppNotifications(limit, offset);
 
-  const [activeUnopenedNotificationPage, setActiveUnopenedNotificationPage] = useState(1);
-  const unopenedNotificationOffset = (activeUnopenedNotificationPage - 1) * limit;
+  const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
+  const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
 
   const { t } = useTranslation();
 
@@ -38,7 +38,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   }
 
 
-  const setPageNumber = (selectedPageNumber): void => {
+  const setAllNotificationPageNumber = (selectedPageNumber): void => {
     setActivePage(selectedPageNumber);
   };
 
@@ -52,8 +52,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
       <>
         <InAppNotificationList inAppNotificationData={allNotificationData} />
         <PaginationWrapper
-          activePage={activePage}
-          changePage={setPageNumber}
+          activePage={activePageOfAllNotificationCat}
+          changePage={setAllNotificationPageNumber}
           totalItemsCount={allNotificationData.totalDocs}
           pagingLimit={allNotificationData.limit}
           align="center"
@@ -65,7 +65,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
-    const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, unopenedNotificationOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+    const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
 
     if (unopendNotificationData == null) {
       return (
@@ -91,7 +91,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
         </div>
         <InAppNotificationList inAppNotificationData={unopendNotificationData} />
         <PaginationWrapper
-          activePage={activeUnopenedNotificationPage}
+          activePage={activePageOfUnopenedNotificationCat}
           changePage={setUnopenedPageNumber}
           totalItemsCount={unopendNotificationData.totalDocs}
           pagingLimit={unopendNotificationData.limit}
