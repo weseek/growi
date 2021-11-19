@@ -45,6 +45,7 @@ const GrowiSubNavigation = (props) => {
 
     try {
       const { tags } = await apiPost('/tags.update', { pageId, tags: newTags });
+      // here mutate();
 
       // update pageContainer.state
       pageContainer.setState({ tags });

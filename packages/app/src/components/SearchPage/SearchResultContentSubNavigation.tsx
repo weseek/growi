@@ -5,6 +5,7 @@ import AppContainer from '../../client/services/AppContainer';
 import TagLabels from '../Page/TagLabels';
 import { toastSuccess, toastError } from '../../client/util/apiNotification';
 import { apiPost } from '../../client/util/apiv1-client';
+import { useSWRTagsInfo } from '../../stores/page';
 
 type Props = {
   appContainer:AppContainer
@@ -14,29 +15,24 @@ type Props = {
   isCompactMode?: boolean,
 }
 
-const TagLableWrapper = (props) => {
-  return <TagLabels {...props}></TagLabels>;
-};
 
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
     appContainer, pageId, path, isCompactMode, isSignleLineMode,
   } = props;
-  const [tags, setTags] = useState([]);
 
-  useEffect(() => {
-    const f = async() => {
-      const res : any = await appContainer.apiGet('/pages.getPageTag', { pageId });
-      setTags(res.tags);
-    };
-    f();
-  }, []);
+  const { data: tagData, error, mutate } = useSWRTagsInfo(pageId);
+  let TAGS;
 
+  if (tagData != null) {
+    TAGS = tagData.data.tags;
+    console.log(JSON.stringify(tagData.data.tags));
+  }
   const tagsUpdatedHandler = async(newTags) => {
     try {
-      const res : any = await apiPost('/tags.update', { pageId, tags: newTags });
-      setTags(res.tags);
+      await apiPost('/tags.update', { pageId, tags: newTags });
       toastSuccess('updated tags successfully');
+      mutate();
     }
     catch (err) {
       toastError(err, 'fail to update tags');
@@ -50,7 +46,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       <div className="grw-path-nav-container">
         {!isSharedUser && !isCompactMode && (
           <div className="grw-taglabels-container">
-            <TagLableWrapper tags={tags} tagsUpdateInvoked={tagsUpdatedHandler} />
+            <TagLabels tags={TAGS} tagsUpdateInvoked={tagsUpdatedHandler} />
           </div>
         )}
         <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />

@@ -1,6 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiGet } from '../client/util/apiv1-client';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
@@ -30,4 +31,26 @@ export const useSWRxPageList = (
       };
     }),
   );
+};
+
+
+// res
+// {"data":{"tags":["test","hello"],"ok":true}}
+interface DataInRes {
+  tags: string[];
+  ok : boolean;
+}
+interface Res {
+  data: DataInRes;
+}
+
+export const useSWRTagsInfo = (pageId) => {
+  return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response) => {
+    // const res = response as Res;
+    return {
+      // res: response,
+      // tags: res.data.tags,
+      data: response,
+    };
+  }));
 };

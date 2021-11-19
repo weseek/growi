@@ -66,7 +66,7 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
+const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -76,4 +76,7 @@ TagLabels.propTypes = {
   tagsUpdateInvoked: PropTypes.func,
 };
 
+const TagLabelsWrapper = (props) => {
+  return <TagLabelsUnstatedWrapper {...props}></TagLabelsUnstatedWrapper>;
+};
 export default withTranslation()(TagLabelsWrapper);
