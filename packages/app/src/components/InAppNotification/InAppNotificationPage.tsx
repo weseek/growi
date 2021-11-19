@@ -1,15 +1,23 @@
 import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import AppContainer from '~/client/services/AppContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 import PaginationWrapper from '../PaginationWrapper';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
 
-const InAppNotificationPage: FC = () => {
+type Props = {
+  appContainer: AppContainer
+}
+
+const InAppNotificationPageBody: FC<Props> = (props) => {
+  const { appContainer } = props;
+  const limit = appContainer.config.pageLimitationXL;
   const [activePage, setActivePage] = useState(1);
-  const limit = 10;
   const offset = (activePage - 1) * limit;
   const { data: inAppNotificationData } = useSWRxInAppNotifications(limit, offset);
   const { t } = useTranslation();
@@ -95,4 +103,9 @@ const InAppNotificationPage: FC = () => {
   );
 };
 
+const InAppNotificationPage = withUnstatedContainers(InAppNotificationPageBody, [AppContainer]);
 export default InAppNotificationPage;
+
+InAppNotificationPageBody.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
