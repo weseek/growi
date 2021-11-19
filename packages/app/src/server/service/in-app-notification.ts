@@ -1,12 +1,11 @@
 import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
-import { InAppNotificationStatuses, PaginateResult, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import Crowi from '../crowi';
 import {
   InAppNotification,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
-
 
 import { ActivityDocument } from '~/server/models/activity';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';

@@ -78,7 +78,6 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
             {t('in_app_notification.mark_all_as_read')}
           </button>
         </div>
-        {/*  TODO: show only unopened notifications by 81945 */}
         <InAppNotificationList inAppNotificationData={unopendinAppNotificationData} />
         <PaginationWrapper
           activePage={activeUnopenedPage}
@@ -99,7 +98,6 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
       i18n: t('in_app_notification.all'),
       index: 0,
     },
-    // TODO: show unopend notification list by 81945
     external_accounts: {
       Icon: () => <></>,
       Content: UnopenedInAppNotificationList,

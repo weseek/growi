@@ -1,8 +1,6 @@
 import useSWR, { SWRResponse } from 'swr';
 import { InAppNotificationStatuses, IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
-
 import { apiv3Get } from '../client/util/apiv3-client';
-
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxInAppNotifications = <Data, Error>(

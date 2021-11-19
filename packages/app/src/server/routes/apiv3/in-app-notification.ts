@@ -29,9 +29,8 @@ module.exports = (crowi) => {
       limit,
     };
 
-    // get categorized notification list
+    // set in-app-notification status to categorize
     if (req.query.status) {
-      console.log('req.query.status');
       Object.assign(queryOptions, { status: req.query.status });
     }
 
