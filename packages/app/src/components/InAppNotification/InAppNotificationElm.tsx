@@ -11,7 +11,7 @@ interface Props {
   notification: IInAppNotification & HasObjectId
 }
 
-const InAppNotificationElm = (props: Props): JSX.Element => {
+const InAppNotificationElm = (props: Props): JSX.Element | null => {
 
   const { notification } = props;
 
@@ -66,7 +66,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   }, []);
 
   const actionUsers = getActionUsers();
-  const pagePath = { path: props.notification.target.path };
+  const pagePath = { path: props.notification.target?.path };
+  if (pagePath.path == null) {
+    return null;
+  }
 
   const actionType: string = notification.action;
   let actionMsg: string;
