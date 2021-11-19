@@ -8,7 +8,7 @@ import { SWRConfig } from 'swr';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import AllInAppNotifications from '../components/InAppNotification/AllInAppNotifications';
+import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
@@ -87,7 +87,7 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
-  'all-in-app-notifications': <AllInAppNotifications />,
+  'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
