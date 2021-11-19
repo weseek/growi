@@ -175,7 +175,7 @@ export class RelationsService {
     };
   }
 
-  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channel: IChannelOptionalId):CheckEachRelationResult {
+  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channel: IChannelOptionalId): CheckEachRelationResult {
     let allowedRelation:Relation|null = null;
     let disallowedGrowiUrl:string|null = null;
     let eachRelationCommandName = '';
