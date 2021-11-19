@@ -57,7 +57,7 @@ const SearchControl: FC <Props> = (props: Props) => {
     setIsFileterOptionModalShown(false);
   };
 
-  const rednerModal = () => {
+  const rednerFilterOptionModal = () => {
     return (
       <FilterOptionModal
         isOpen={isFileterOptionModalShown || false}
@@ -97,6 +97,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <div className="d-lg-none mr-4">
           <button
             type="button"
+            className="btn"
             onClick={openPageRenameModalHandler}
           >
             <i className="icon-equalizer"></i>
@@ -127,7 +128,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
-      {rednerModal()}
+      {rednerFilterOptionModal()}
     </>
   );
 };
