@@ -24,16 +24,11 @@ export const checkPermission = (
       return;
     }
 
-    if (Array.isArray(permission) && permission.includes(fromChannel.id)) {
+    const fromChannelIdOrName = fromChannel.id || fromChannel.name;
+    if (Array.isArray(permission) && permission.includes(fromChannelIdOrName)) {
       isPermitted = true;
       return;
     }
-
-    if (Array.isArray(permission) && permission.includes(fromChannel.name)) {
-      isPermitted = true;
-      return;
-    }
-
   });
 
   return isPermitted;
