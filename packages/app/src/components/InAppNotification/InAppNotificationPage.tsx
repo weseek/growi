@@ -25,7 +25,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   const [activeUnopenedPage, setActiveUnopenedPage] = useState(1);
   const UnopenedOffset = (activeUnopenedPage - 1) * limit;
-  const { data: unOpendinAppNotificationData } = useSWRxInAppNotifications(limit, UnopenedOffset, InAppNotificationStatuses.STATUS_UNOPENED);
+  const { data: unopendinAppNotificationData } = useSWRxInAppNotifications(limit, UnopenedOffset, InAppNotificationStatuses.STATUS_UNOPENED);
   const { t } = useTranslation();
 
   if (inAppNotificationData == null) {
@@ -66,11 +66,6 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
-    console.log('inAppNotificationData', unOpendinAppNotificationData);
-    // const unopendNotifications = inAppNotificationData.map((notification) => {
-
-    // });
-
     return (
       <>
         <div className="mb-2 d-flex justify-content-end">
@@ -84,7 +79,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
           </button>
         </div>
         {/*  TODO: show only unopened notifications by 81945 */}
-        <InAppNotificationList inAppNotificationData={unOpendinAppNotificationData} />
+        <InAppNotificationList inAppNotificationData={unopendinAppNotificationData} />
         <PaginationWrapper
           activePage={activeUnopenedPage}
           changePage={setUnopenedPageNumber}
