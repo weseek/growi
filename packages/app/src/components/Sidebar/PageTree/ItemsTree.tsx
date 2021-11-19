@@ -85,7 +85,7 @@ const ItemsTree: FC = () => {
 
   const isOpen = true;
   return (
-    <div className="grw-pagetree">
+    <div className="grw-page-tree p-3">
       <Item key={(initialNode as ItemNode).page.path} itemNode={(initialNode as ItemNode)} isOpen={isOpen} />
     </div>
   );
