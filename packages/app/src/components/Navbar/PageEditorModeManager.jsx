@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -38,16 +38,17 @@ const PageEditorModeButtonWrapper = React.memo(({
 
 function PageEditorModeManager(props) {
   const {
-    t, appContainer,
+    appContainer,
     editorMode, onPageEditorModeButtonClicked, isBtnDisabled,
   } = props;
 
+  const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const isAdmin = appContainer.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
-  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled && editorMode !== 'hackmd';
+  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled && editorMode !== EditorMode.HackMD;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
     if (isBtnDisabled) {
@@ -66,7 +67,7 @@ function PageEditorModeManager(props) {
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
       >
-        {(!isDeviceSmallerThanMd || editorMode !== 'view') && (
+        {(!isDeviceSmallerThanMd || editorMode !== EditorMode.View) && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -76,7 +77,7 @@ function PageEditorModeManager(props) {
             label={t('view')}
           />
         )}
-        {(!isDeviceSmallerThanMd || editorMode === 'view') && (
+        {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -86,7 +87,7 @@ function PageEditorModeManager(props) {
             label={t('Edit')}
           />
         )}
-        {(!isDeviceSmallerThanMd || editorMode === 'view') && showHackmdBtn && (
+        {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && showHackmdBtn && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
@@ -114,7 +115,6 @@ function PageEditorModeManager(props) {
 }
 
 PageEditorModeManager.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   onPageEditorModeButtonClicked: PropTypes.func,
@@ -131,4 +131,4 @@ PageEditorModeManager.defaultProps = {
  */
 const PageEditorModeManagerWrapper = withUnstatedContainers(PageEditorModeManager, [AppContainer]);
 
-export default withTranslation()(PageEditorModeManagerWrapper);
+export default PageEditorModeManagerWrapper;

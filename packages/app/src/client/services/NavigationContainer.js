@@ -22,12 +22,12 @@ export default class NavigationContainer extends Container {
     const { localStorage } = window;
 
     this.state = {
-      editorMode: 'view',
+      // editorMode: 'view',
 
       isScrollTop: true,
     };
 
-    this.setEditorMode = this.setEditorMode.bind(this);
+    // this.setEditorMode = this.setEditorMode.bind(this);
     this.initScrollEvent();
   }
 
@@ -57,49 +57,49 @@ export default class NavigationContainer extends Container {
     });
   }
 
-  setEditorMode(editorMode) {
-    const { isNotCreatable } = this.getPageContainer().state;
+  // setEditorMode(editorMode) {
+  //   const { isNotCreatable } = this.getPageContainer().state;
 
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to edit the page or use hackmd.');
-      return;
-    }
+  //   if (this.appContainer.currentUser == null) {
+  //     logger.warn('Please login or signup to edit the page or use hackmd.');
+  //     return;
+  //   }
 
-    if (isNotCreatable) {
-      logger.warn('This page could not edit.');
-      return;
-    }
+  //   if (isNotCreatable) {
+  //     logger.warn('This page could not edit.');
+  //     return;
+  //   }
 
-    this.setState({ editorMode });
-    if (editorMode === 'view') {
-      $('body').removeClass('on-edit');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      $('body').removeClass('pathname-sidebar');
-      window.history.replaceState(null, '', window.location.pathname);
-    }
+  //   this.setState({ editorMode });
+  //   if (editorMode === 'view') {
+  //     $('body').removeClass('on-edit');
+  //     $('body').removeClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     $('body').removeClass('pathname-sidebar');
+  //     window.history.replaceState(null, '', window.location.pathname);
+  //   }
 
-    if (editorMode === 'edit') {
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      // editing /Sidebar
-      if (window.location.pathname === '/Sidebar') {
-        $('body').addClass('pathname-sidebar');
-      }
-      window.location.hash = '#edit';
-    }
+  //   if (editorMode === 'edit') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     // editing /Sidebar
+  //     if (window.location.pathname === '/Sidebar') {
+  //       $('body').addClass('pathname-sidebar');
+  //     }
+  //     window.location.hash = '#edit';
+  //   }
 
-    if (editorMode === 'hackmd') {
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('pathname-sidebar');
-      window.location.hash = '#hackmd';
-    }
+  //   if (editorMode === 'hackmd') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('hackmd');
+  //     $('body').removeClass('builtin-editor');
+  //     $('body').removeClass('pathname-sidebar');
+  //     window.location.hash = '#hackmd';
+  //   }
 
-    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
-  }
+  //   this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
+  // }
 
   /**
    * Update drawer related state by specified 'newState' object

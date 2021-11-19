@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 
 import { Collapse, Button } from 'reactstrap';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import AppContainer from '~/client/services/AppContainer';
-import { useDrawerOpened, useIsDeviceSmallerThanMd } from '~/stores/ui';
+import {
+  EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
+} from '~/stores/ui';
 
 import SlackNotification from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
@@ -18,15 +19,12 @@ import OptionsSelector from './OptionsSelector';
 
 const EditorNavbarBottom = (props) => {
 
+  const { data: editorMode } = useEditorMode();
+
   const [isExpanded, setExpanded] = useState(false);
 
   const [isSlackExpanded, setSlackExpanded] = useState(false);
   const isSlackConfigured = props.appContainer.getConfig().isSlackConfigured;
-
-  const {
-    navigationContainer,
-  } = props;
-  const { editorMode } = navigationContainer.state;
 
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
@@ -64,7 +62,7 @@ const EditorNavbarBottom = (props) => {
     </div>
   );
 
-  const isOptionsSelectorEnabled = editorMode !== 'hackmd';
+  const isOptionsSelectorEnabled = editorMode !== EditorMode.HackMD;
   const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
 
   return (
@@ -136,9 +134,8 @@ const EditorNavbarBottom = (props) => {
 };
 
 EditorNavbarBottom.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default withUnstatedContainers(EditorNavbarBottom, [NavigationContainer, EditorContainer, AppContainer]);
+export default withUnstatedContainers(EditorNavbarBottom, [EditorContainer, AppContainer]);
