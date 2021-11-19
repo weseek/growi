@@ -1,4 +1,4 @@
-import React, { FC, useState, useMemo } from 'react';
+import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import InAppNotificationList from './InAppNotificationList';
@@ -6,7 +6,6 @@ import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 import PaginationWrapper from '../PaginationWrapper';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 
-import UserSettings from '../Me/UserSettings';
 import PasswordSettings from '../Me/PasswordSettings';
 
 
@@ -34,7 +33,7 @@ const AllInAppNotifications: FC = () => {
     setOffset(offset);
   };
 
-  const InAppNotificationListContent = () => {
+  const AllInAppNotificationList = () => {
     return (
       <>
         <InAppNotificationList inAppNotificationData={inAppNotificationData} />
@@ -53,7 +52,7 @@ const AllInAppNotifications: FC = () => {
   const navTabMapping = {
     user_infomation: {
       Icon: () => <i className="icon-fw icon-user"></i>,
-      Content: InAppNotificationListContent,
+      Content: AllInAppNotificationList,
       i18n: t('User Information'),
       index: 0,
     },
@@ -66,19 +65,7 @@ const AllInAppNotifications: FC = () => {
   };
 
   return (
-    <>
-      <CustomNavAndContents navTabMapping={navTabMapping} />
-      {/* <InAppNotificationListContent /> */}
-      {/* <InAppNotificationList inAppNotificationData={inAppNotificationData} />
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setPageNumber}
-        totalItemsCount={inAppNotificationData.totalDocs}
-        pagingLimit={inAppNotificationData.limit}
-        align="center"
-        size="sm"
-      /> */}
-    </>
+    <CustomNavAndContents navTabMapping={navTabMapping} />
   );
 };
 
