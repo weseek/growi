@@ -17,10 +17,16 @@ class LegacyLikeButtons extends React.Component {
 
     this.state = {
       isPopoverOpen: false,
+      likers: [],
     };
 
     this.togglePopover = this.togglePopover.bind(this);
     this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.appContainer.apiGet('/users.list', { user_ids: [...this.props.likerIds].join(',') })
+      .then((res) => { this.setState({ likers: res.users }) });
   }
 
   togglePopover() {
@@ -67,7 +73,7 @@ class LegacyLikeButtons extends React.Component {
         <Popover placement="bottom" isOpen={this.state.isPopoverOpen} target="po-total-likes" toggle={this.togglePopover} trigger="legacy">
           <PopoverBody className="seen-user-popover">
             <div className="px-2 text-right user-list-content text-truncate text-muted">
-              {likerIds.length ? <UserPictureList users={likerIds} /> : t('No users have liked this yet.')}
+              {likerIds.length ? <UserPictureList users={this.state.likers} /> : t('No users have liked this yet.')}
             </div>
           </PopoverBody>
         </Popover>

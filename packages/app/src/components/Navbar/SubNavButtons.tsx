@@ -55,7 +55,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         <PageReactionButtons
           pageId={pageId}
           sumOfLikers={sumOfLikers}
-          likerIds={likerIds}
+          likerIds={likerIds || []}
           isLiked={isLiked}
           onLikeClicked={likeClickhandler}
         >
