@@ -40,6 +40,9 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     return <></>;
   }
   const { isSharedUser } = appContainer;
+  // path : /trash/hoge. subStr(0,7) => /trash/
+  const isTrashPage = path.substr(0, 7) === '/trash/';
+  const isAbleToShowPageManagement = !isTrashPage && !isSharedUser;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
       {/* Left side */}
@@ -60,6 +63,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
           path={path}
           isDeletable
           isAbleToDeleteCompletely
+          willShowPageManagement={isAbleToShowPageManagement}
         >
         </SubNavButtons>
       </div>

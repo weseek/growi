@@ -20,12 +20,13 @@ type SubNavButtonsProps= {
   pageId: string,
   revisionId: string,
   path: string,
+  willShowPageManagement: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
-    appContainer, navigationContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
+    appContainer, navigationContainer, isCompactMode, pageId, revisionId, path, willShowPageManagement, isDeletable, isAbleToDeleteCompletely,
   } = props;
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
@@ -91,14 +92,16 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         </PageReactionButtons>
       )}
       {/* TODO add condition here */}
-      <PageManagement
-        pageId={pageId}
-        revisionId={revisionId}
-        path={path}
-        isDeletable={isDeletable}
-        isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-      >
-      </PageManagement>
+      {willShowPageManagement && (
+        <PageManagement
+          pageId={pageId}
+          revisionId={revisionId}
+          path={path}
+          isDeletable={isDeletable}
+          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        >
+        </PageManagement>
+      )}
     </>
   );
 };

@@ -25,14 +25,26 @@ const GrowiSubNavigation = (props) => {
   } = props;
   const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
-    pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely, createdAt, creator, updatedAt, revisionAuthor, isPageExist, tags,
+    pageId,
+    revisionId,
+    path,
+    isDeletable,
+    isAbleToDeleteCompletely,
+    createdAt,
+    creator,
+    updatedAt,
+    revisionAuthor,
+    isPageExist,
+    isTrashPage,
+    tags,
   } = pageContainer.state;
 
-  const { isGuestUser } = appContainer;
+  const { isGuestUser, isSharedUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
+  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser;
   function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
@@ -92,6 +104,7 @@ const GrowiSubNavigation = (props) => {
               path={path}
               isDeletable={isDeletable}
               isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+              willShowPageManagement={isAbleToShowPageManagement}
             />
           </div>
           <div className="mt-2">
