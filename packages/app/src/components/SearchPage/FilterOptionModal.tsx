@@ -19,9 +19,15 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
+  const onClose = () => {
+    if (props.onClose != null) {
+      props.onClose();
+    }
+  };
+
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={props.isOpen} toggle={onClose} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
         Filter Option
       </ModalHeader>
       <ModalBody>
