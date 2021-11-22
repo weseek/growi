@@ -312,7 +312,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   async handleEventsRequest(client: WebClient, growiBotEvent: GrowiBotEvent<any>, permission: EventActionsPermission, data?: any): Promise<void> {
     const { eventType } = growiBotEvent;
-    const { channel = '' } = growiBotEvent.event;
+    const { channel = '' } = growiBotEvent.event; // only channelId
 
     if (this.linkSharedHandler.shouldHandle(eventType, permission, channel)) {
       return this.linkSharedHandler.handleEvent(client, growiBotEvent, data);

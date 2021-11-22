@@ -25,6 +25,11 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     if (eventType !== 'link_shared') return false;
 
     const unfurlPermission = permission.get('unfurl');
+
+    if (Array.isArray(unfurlPermission) && unfurlPermission.length === 0) {
+      return false;
+    }
+
     return (Array.isArray(unfurlPermission) && unfurlPermission.includes(channel)) || unfurlPermission as boolean;
   }
 
