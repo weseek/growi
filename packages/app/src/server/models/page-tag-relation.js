@@ -24,11 +24,13 @@ const schema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Tag',
     required: true,
+    index: true,
   },
   isPageTrashed: {
     type: Boolean,
     default: false,
     required: true,
+    index: true,
   },
 });
 // define unique compound index
@@ -44,22 +46,28 @@ schema.plugin(uniqueValidator);
 class PageTagRelation {
 
   static async createTagListWithCount(option) {
-    const Tag = mongoose.model('Tag');
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
-    const offset = opt.offset || 0;
-    const limit = opt.limit || 50;
+    const skip = opt.skip;
+    const limit = opt.limit;
 
-    const existTagIds = await Tag.find().distinct('_id');
     const tags = await this.aggregate()
-      .match({ relatedTag: { $in: existTagIds }, isPageTrashed: false })
-      .group({ _id: '$relatedTag', count: { $sum: 1 } })
-      .sort(sortOpt);
+      .match({ isPageTrashed: false })
+      .lookup({
+        from: 'tags',
+        localField: 'relatedTag',
+        foreignField: '_id',
+        as: 'tag',
+      })
+      .unwind('$tag')
+      .group({ _id: '$relatedTag', count: { $sum: 1 }, name: { $first: '$tag.name' } })
+      .sort(sortOpt)
+      .skip(skip)
+      .limit(limit);
 
-    const list = tags.slice(offset, offset + limit);
-    const totalCount = tags.length;
+    const totalCount = (await this.find({ isPageTrashed: false }).distinct('relatedTag')).length;
 
-    return { list, totalCount };
+    return { data: tags, totalCount };
   }
 
   static async findByPageId(pageId) {
