@@ -1,26 +1,22 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC } from 'react';
 import LikeButtons from './LikeButtons';
 
 
 type Props = {
   pageId: string,
-  sumOfLikers: number,
-  likerIds: string[],
-  isLiked: boolean,
   onLikeClicked: (isLiked : boolean)=>void,
 }
 
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    pageId, sumOfLikers, likerIds, isLiked, onLikeClicked,
+    pageId, onLikeClicked,
   } = props;
-
 
   return (
     <>
       <span>
-        <LikeButtons onLikeClicked={onLikeClicked} pageId={pageId} likerIds={likerIds} sumOfLikers={sumOfLikers} isLiked={isLiked}></LikeButtons>
+        <LikeButtons onLikeClicked={onLikeClicked} pageId={pageId}></LikeButtons>
       </span>
       <span>
         {/*

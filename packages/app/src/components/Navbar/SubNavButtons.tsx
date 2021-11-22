@@ -47,16 +47,12 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   if (pageInfoError != null || pageInfo == null) {
     return <></>;
   }
-  const { sumOfLikers, likerIds, isLiked } = pageInfo;
 
   return (
     <>
       {isViewMode && (
         <PageReactionButtons
           pageId={pageId}
-          sumOfLikers={sumOfLikers}
-          likerIds={likerIds || []}
-          isLiked={isLiked}
           onLikeClicked={likeClickhandler}
         >
         </PageReactionButtons>
