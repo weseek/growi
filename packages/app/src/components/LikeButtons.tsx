@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
