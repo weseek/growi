@@ -26,11 +26,11 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
     const unfurlPermission = permission.get('unfurl');
 
-    if (Array.isArray(unfurlPermission) && unfurlPermission.length === 0) {
-      return false;
+    if (!Array.isArray(unfurlPermission)) {
+      return unfurlPermission as boolean;
     }
 
-    return (Array.isArray(unfurlPermission) && unfurlPermission.includes(channel)) || unfurlPermission as boolean;
+    return unfurlPermission.includes(channel);
   }
 
   async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data?: {origin: string}): Promise<void> {
