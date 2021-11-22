@@ -1,9 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '../../utils/logger';
 import { CheckboxType } from '../../interfaces/search';
-
-const logger = loggerFactory('growi:searchResultList');
 
 type Props = {
   checkboxState: CheckboxType,
@@ -18,13 +15,11 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   } = props;
 
   const onCheckAllPages = () => {
-    if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
-    else { onCheckInvoked() }
+    if (onCheckInvoked != null) { onCheckInvoked() }
   };
 
   const onClickDeleteButtonHandler = () => {
-    if (onClickDeleteButton == null) { logger.error('onClickDeleteButton is null') }
-    else { onClickDeleteButton() }
+    if (onClickDeleteButton != null) { onClickDeleteButton() }
   };
 
   return (

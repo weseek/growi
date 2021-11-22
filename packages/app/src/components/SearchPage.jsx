@@ -69,9 +69,9 @@ class SearchPage extends React.Component {
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
-    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.onClickDeleteAllButton = this.onClickDeleteAllButton.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
-    this.toggleDeleteCompletely = this.toggleDeleteCompletely.bind(this);
+    this.onChangeDeleteCompletely = this.onChangeDeleteCompletely.bind(this);
   }
 
   componentDidMount() {
@@ -248,7 +248,8 @@ class SearchPage extends React.Component {
     this.updateCheckboxState();
   };
 
-  showDeleteConfirmModal() {
+  onClickDeleteAllButton() {
+    if (this.state.selectedPages.size === 0) { return }
     this.setState({ isDeleteConfirmModalShown: true });
   }
 
@@ -256,7 +257,7 @@ class SearchPage extends React.Component {
     this.setState({ isDeleteConfirmModalShown: false });
   }
 
-  toggleDeleteCompletely() {
+  onChangeDeleteCompletely() {
     this.setState({ isDeleteCompletely: !this.state.isDeleteCompletely });
   }
 
@@ -319,7 +320,7 @@ class SearchPage extends React.Component {
         onExcludeTrash={this.onExcludeTrash}
         onClickInvoked={this.toggleAllCheckBox}
         checkboxState={this.state.checkboxState}
-        onClickDeleteButton={this.showDeleteConfirmModal}
+        onClickDeleteButton={this.onClickDeleteAllButton}
       >
       </SearchControl>
     );
@@ -343,7 +344,7 @@ class SearchPage extends React.Component {
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
           isDeleteCompletely={this.state.isDeleteCompletely}
-          toggleDeleteCompletely={this.toggleDeleteCompletely}
+          onChangeDeleteCompletely={this.onChangeDeleteCompletely}
         />
       </div>
     );
