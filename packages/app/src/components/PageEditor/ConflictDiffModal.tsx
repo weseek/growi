@@ -77,6 +77,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
                   </div>
                 </div>
+                {/* TODO: replace: RevisionDiff and adjust design */}
                 <CodeMirrorEditor
                   indentSize={editorContainer.state.indentSize}
                   editorOptions={editorContainer.state.editorOptions}
@@ -85,7 +86,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   value={request.revisionBody}
                   isConflict
                   readOnly
-                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
@@ -121,7 +121,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   value={origin.revisionBody}
                   isConflict
                   readOnly
-                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
@@ -156,7 +155,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   value={latest.revisionBody}
                   isConflict
                   readOnly
-                  // options={codeMirrorRevisionOption}
                 />
                 <div className="text-center my-4">
                   <button
