@@ -63,7 +63,40 @@ class PageStatusAlert extends React.Component {
           <i className="icon-fw icon-reload mr-1"></i>
           {t('Load latest')}
         </button>
-        <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
+        <button
+          type="button"
+          onClick={() => {
+            // create function about following lines
+            // when isconflictingonsave no change
+            pageContainer.setState({
+              isConflictDiffModalOpen: true,
+              revisionsOnConflict: {
+                request: {
+                  revisionId: '',
+                  revisionBody: 'markdownOnEdit',
+                  createdAt: (new Date()).toString(),
+                  userName: 'request.user', // required
+                  userImgPath: 'request user img', // required
+                },
+                origin: {
+                  revisionId: pageContainer.revisionId,
+                  revisionBody: pageContainer.state.markdown,
+                  createdAt: pageContainer.state.updatedAt.toString(),
+                  userName: pageContainer.creator.name,
+                  userImgPath: pageContainer.creator.createdAt,
+                },
+                latest: {
+                  revisionId: pageContainer.remoteRevisionId,
+                  revisionBody: pageContainer.state.remoteRevisionBody,
+                  createdAt: (new Date()).toString(), // retrieve from page container
+                  userName: pageContainer.state.lastUpdateUsername,
+                  userImgPath: 'latest user img path', // retrieve from page container
+                },
+              },
+            });
+          }}
+          className="btn btn-outline-white"
+        >
           <i className="fa fa-fw fa-file-text-o mr-1"></i>
           {t('modal_resolve_conflict.resolve_conflict')}
         </button>
@@ -109,13 +142,23 @@ class PageStatusAlert extends React.Component {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
     } = this.props.pageContainer.state;
 
-    console.log('pageContainer is', this.props.pageContainer.state);
+    console.log('pageContainer is', this.props.pageContainer);
+
+    const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
+    let markdownOnEdit = '';
+
+    // when page mode is not view
+    if (pageEditor != null) {
+      markdownOnEdit = pageEditor.getMarkdown();
+    }
+
     const isRevisionOutdated = revisionId !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+    const isConflictOnEdit = isRevisionOutdated && (markdownOnEdit !== this.props.pageContainer.state.markdown);
 
     let getContentsFunc = null;
     // when conflicting on save
-    if (isConflictingOnSave) {
+    if (isConflictingOnSave || isConflictOnEdit) {
       getContentsFunc = this.getContentsForRevisionOutdated;
     }
     // when remote revision is newer than both

@@ -630,6 +630,7 @@ export default class PageContainer extends Container {
 
       // update remote page data
       const { s2cMessagePageUpdated } = data;
+      console.log('s2cMessagePageUpdated:', s2cMessagePageUpdated);
       if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
         pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
       }

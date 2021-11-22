@@ -83,7 +83,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {request.userName}</p>
-                    <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{request.createdAt}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -112,7 +112,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {origin.userName}</p>
-                    <p className="my-0">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{origin.createdAt}</p>
                   </div>
                 </div>
                 <CodeMirror
@@ -141,7 +141,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   </div>
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {latest.userName}</p>
-                    <p className="my-0">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                    <p className="my-0">{latest.createdAt}</p>
                   </div>
                 </div>
                 <CodeMirror
