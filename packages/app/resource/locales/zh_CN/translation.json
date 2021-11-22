@@ -849,7 +849,8 @@
 		"deletion_modal_header": "删除页",
 		"delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
-    "delete_all_selected_page": "删除所有"
+    "delete_all_selected_page": "删除所有",
+    "narrow_donw" : "细化您的搜索"
 	},
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {
