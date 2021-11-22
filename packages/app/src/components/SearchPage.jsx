@@ -21,6 +21,14 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:searchPage');
 
+const toastrOption = {
+  closeButton: true,
+  progressBar: true,
+  newestOnTop: false,
+  showDuration: '100',
+  hideDuration: '100',
+  timeOut: '3000',
+};
 
 export const specificPathNames = {
   user: '/user',
@@ -63,6 +71,7 @@ class SearchPage extends React.Component {
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
+    this.toggleDeleteCompletely = this.toggleDeleteCompletely.bind(this);
   }
 
   componentDidMount() {
@@ -248,46 +257,31 @@ class SearchPage extends React.Component {
   }
 
   toggleDeleteCompletely() {
-    this.setState({ isDeleteCompletely: true });
+    this.setState({ isDeleteCompletely: !this.state.isDeleteCompletely });
   }
 
   async deleteSelectedPages() {
-    const deleteCompletely = this.state.isDeleteCompletely;
-    Promise.all(Array.from(this.state.selectedPages).map((page) => {
-      return new Promise((resolve, reject) => {
-        const pageId = page._id;
-        const revisionId = page.revision._id;
+    const deleteCompletely = this.state.isDeleteCompletely || null;
+    try {
+      await Promise.all(Array.from(this.state.selectedPages).map(async(page) => {
+        const removePageParams = { page_id: page._id, revision_id: page.revision, completely: deleteCompletely };
+        // Todo: add recursively option to the body for deleting child pages
+        try {
+          const res = await this.props.appContainer.apiPost('/pages.remove', removePageParams);
+          if (res.ok) { this.state.selectedPages.delete(page) }
+        }
+        catch (err) {
+          logger.error(err.message);
+          this.setState({ errorMessageForDeleting: err.message });
+          throw new Error(err.message);
+        }
+      }));
+      window.location.reload();
+    }
+    catch (err) {
+      toastr.error(err, 'Error occured', { toastrOption });
+    }
 
-        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
-          .then((res) => {
-            if (res.ok) {
-              this.state.selectedPages.delete(page);
-              return resolve();
-            }
-
-            return reject();
-
-          })
-          .catch((err) => {
-            logger.error(err.message);
-            this.setState({ errorMessageForDeleting: err.message });
-            return reject();
-          });
-      });
-    }))
-      .then(() => {
-        window.location.reload();
-      })
-      .catch((err) => {
-        toastr.error(err, 'Error occured', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '3000',
-        });
-      });
   }
 
   renderSearchResultContent = () => {
