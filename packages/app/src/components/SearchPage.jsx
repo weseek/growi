@@ -265,7 +265,6 @@ class SearchPage extends React.Component {
     try {
       await Promise.all(Array.from(this.state.selectedPages).map(async(page) => {
         const removePageParams = { page_id: page._id, revision_id: page.revision, completely: deleteCompletely };
-        // Todo: add recursively option to the body for deleting child pages
         try {
           const res = await this.props.appContainer.apiPost('/pages.remove', removePageParams);
           if (res.ok) { this.state.selectedPages.delete(page) }
@@ -281,7 +280,6 @@ class SearchPage extends React.Component {
     catch (err) {
       toastr.error(err, 'Error occured', { toastrOption });
     }
-
   }
 
   renderSearchResultContent = () => {
