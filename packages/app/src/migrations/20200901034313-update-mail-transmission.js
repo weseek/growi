@@ -11,17 +11,26 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const sesExist = await Config.findOne({
+    const sesAccessKeyId = await Config.findOne({
       ns: 'crowi',
       key: 'mail:sesAccessKeyId',
     });
+    const transmissionMethod = await Config.findOne({
+      ns: 'crowi',
+      key: 'mail:transmissionMethod',
+    });
 
-    if (sesExist == null) {
-      return logger.info('Document does not exist, value of transmission method will be set smtp automatically.');
+    if (sesAccessKeyId == null) {
+      return logger.info('The key \'mail:sesAccessKeyId\' does not exist, value of transmission method will be set smtp automatically.');
     }
-    const value = (
-      sesExist.value != null ? 'ses' : 'smtp'
-    );
+    if (transmissionMethod != null) {
+      return logger.info('The key \'mail:transmissionMethod\' already exists, there is no need to migrate.');
+    }
+
+    const value = sesAccessKeyId.value != null
+      ? JSON.stringify('ses')
+      : JSON.stringify('smtp');
+
     await Config.create({
       ns: 'crowi',
       key: 'mail:transmissionMethod',

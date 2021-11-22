@@ -1,8 +1,9 @@
 import loggerFactory from '~/utils/logger';
 
 const {
-  markdownSectionBlock, inputSectionBlock, inputBlock,
+  markdownHeaderBlock, inputSectionBlock, inputBlock, actionsBlock, buttonElement,
 } = require('@growi/slack');
+const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:note');
 
@@ -14,38 +15,28 @@ module.exports = (crowi) => {
   const conversationsSelectElement = {
     action_id: 'conversation',
     type: 'conversations_select',
-    response_url_enabled: true,
     default_to_current_conversation: true,
   };
 
   handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
-    await client.views.open({
-      trigger_id: body.trigger_id,
+    await respondUtil.respond({
+      text: 'Take a note on GROWI',
+      blocks: [
+        markdownHeaderBlock('Take a note on GROWI'),
+        inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
+        inputSectionBlock('path', 'Page path', 'path_input', false, '/path'),
+        inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+        actionsBlock(
+          buttonElement({ text: 'Cancel', actionId: 'note:cancel' }),
+          buttonElement({ text: 'Create page', actionId: 'note:createPage', style: 'primary' }),
+        ),
 
-      view: {
-        type: 'modal',
-        callback_id: 'note:createPage',
-        title: {
-          type: 'plain_text',
-          text: 'Take a note',
-        },
-        submit: {
-          type: 'plain_text',
-          text: 'Submit',
-        },
-        close: {
-          type: 'plain_text',
-          text: 'Cancel',
-        },
-        blocks: [
-          markdownSectionBlock('Take a note on GROWI'),
-          inputBlock(conversationsSelectElement, 'conversation', 'Channel name to display in the page to be created'),
-          inputSectionBlock('path', 'Page path', 'path_input', false, '/path'),
-          inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
-        ],
-        private_metadata: JSON.stringify({ channelId: body.channel_id, channelName: body.channel_name }),
-      },
+      ],
     });
+  };
+
+  handler.cancel = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
+    await respondUtil.deleteOriginal();
   };
 
   handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
@@ -54,18 +45,12 @@ module.exports = (crowi) => {
 
   handler.createPage = async function(client, interactionPayload, interactionPayloadAccessor, respondUtil) {
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
-    const privateMetadata = interactionPayloadAccessor.getViewPrivateMetaData();
-    if (privateMetadata == null) {
-      await respondUtil.respond({
-        text: 'Error occurred',
-        blocks: [
-          markdownSectionBlock('Failed to create a page.'),
-        ],
-      });
-      return;
-    }
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;
+    if (path == null || contentsBody == null) {
+      throw new SlackCommandHandlerError('All parameters are required.');
+    }
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
+    await respondUtil.deleteOriginal();
   };
 
   return handler;

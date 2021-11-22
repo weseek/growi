@@ -22,6 +22,10 @@ class CustomizeThemeOptions extends React.Component {
       name: 'mono-blue',  bg: '#F7FBFD', topbar: '#2a2929', sidebar: '#00587A', theme: '#00587A',
     }, {
       name: 'hufflepuff',  bg: '#EFE2CF', topbar: '#2a2929', sidebar: '#EAAB20', theme: '#993439',
+    }, {
+      name: 'fire-red',  bg: '#FDFDFD', topbar: '#2c2c2c', sidebar: '#BFBFBF', theme: '#EA5532',
+    }, {
+      name: 'jade-green',  bg: '#FDFDFD', topbar: '#2c2c2c', sidebar: '#BFBFBF', theme: '#38B48B',
     }];
 
     const uniqueTheme = [{
@@ -42,6 +46,8 @@ class CustomizeThemeOptions extends React.Component {
       name: 'halloween',  bg: '#030003', topbar: '#aa4a04', sidebar: '#162b33', theme: '#e9af2b',
     }, {
       name: 'kibela',  bg: '#f4f5f6', topbar: '#1256a3', sidebar: '#5882fa', theme: '#b5cbf79c',
+    }, {
+      name: 'blackboard',  bg: '#223729', topbar: '#563E23', sidebar: '#7B5932', theme: '#DA8506',
     }];
     /* eslint-enable no-multi-spaces */
 

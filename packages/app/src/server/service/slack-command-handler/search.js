@@ -132,22 +132,24 @@ module.exports = (crowi) => {
 
     const actionBlocks = {
       type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Dismiss',
-          },
-          style: 'danger',
-          action_id: 'search:dismissSearchResults',
-        },
-      ],
+      elements: [],
     };
+    // add "Dismiss" button
+    actionBlocks.elements.push(
+      {
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: 'Dismiss',
+        },
+        style: 'danger',
+        action_id: 'search:dismissSearchResults',
+      },
+    );
     // show "Prev" button if previous page exists
     // eslint-disable-next-line yoda
     if (0 < offset) {
-      actionBlocks.elements.unshift(
+      actionBlocks.elements.push(
         {
           type: 'button',
           text: {
@@ -161,7 +163,7 @@ module.exports = (crowi) => {
     }
     // show "Next" button if next page exists
     if (offset + PAGINGLIMIT < resultsTotal) {
-      actionBlocks.elements.unshift(
+      actionBlocks.elements.push(
         {
           type: 'button',
           text: {
