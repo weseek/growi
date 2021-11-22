@@ -20,8 +20,6 @@ type LikeButtonsProps = {
   t: (s:string)=>string,
 }
 
-// TODO : user image not displayed in search page. Fix it.
-// task : https://estoc.weseek.co.jp/redmine/issues/81110
 const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { data: pageInfo } = useSWRPageInfo(props.pageId);
