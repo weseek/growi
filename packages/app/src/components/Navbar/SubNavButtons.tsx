@@ -54,7 +54,8 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
       return;
     }
     try {
-      await apiv3Put('/bookmarks', { pageId, bool: !bookmarkInfo.isBookmarked });
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await apiv3Put('/bookmarks', { pageId, bool: !bookmarkInfo!.isBookmarked });
       mutateBookmarkInfo();
     }
     catch (err) {
@@ -89,15 +90,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         >
         </PageReactionButtons>
       )}
-      {/*
-        TODO :
-        once 80335 is done, merge 77543 branch(parent of 80335) into 77524.
-        (pageContainer dependencies in bookmark, delete modal, rename etc are removed)
-        then place PageManagement here.
-        TASK: https://estoc.weseek.co.jp/redmine/issues/81076
-        CONDITION :isAbleToShowPageManagement = !isNotFoundPage && !isTrashPage && !isSharedUser
-      */}
-      {/* if (CONDITION) then <PageManagement isCompactMode> */}
+      {/* TODO add condition here */}
       <PageManagement
         pageId={pageId}
         revisionId={revisionId}
@@ -105,7 +98,6 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         isDeletable={isDeletable}
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       >
-
       </PageManagement>
     </>
   );

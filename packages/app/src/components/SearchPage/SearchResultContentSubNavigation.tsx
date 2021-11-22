@@ -7,6 +7,7 @@ import SubNavButtons from '../Navbar/SubNavButtons';
 type Props = {
   appContainer:AppContainer
   pageId: string,
+  revisionId: string,
   path: string,
   isSignleLineMode?: boolean,
   isCompactMode?: boolean,
@@ -15,7 +16,7 @@ type Props = {
 
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
-    appContainer, pageId, path, isCompactMode, isSignleLineMode,
+    appContainer, pageId, revisionId, path, isCompactMode, isSignleLineMode,
   } = props;
   const { isSharedUser } = appContainer;
   return (
@@ -36,7 +37,15 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
       </div>
       {/* Right side */}
       <div className="d-flex">
-        {/* <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons> */}
+        <SubNavButtons
+          isCompactMode={isCompactMode}
+          pageId={pageId}
+          revisionId={revisionId}
+          path={path}
+          isDeletable
+          isAbleToDeleteCompletely
+        >
+        </SubNavButtons>
       </div>
     </div>
   );

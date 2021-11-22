@@ -22,7 +22,12 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   if (page.tags != null && page.tags.length > 0) { showTags = true }
   return (
     <div key={page._id} className="search-result-page mb-5">
-      <SearchResultContentSubNavigation pageId={page._id} path={page.path}></SearchResultContentSubNavigation>
+      <SearchResultContentSubNavigation
+        pageId={page._id}
+        revisionId={page.revision}
+        path={page.path}
+      >
+      </SearchResultContentSubNavigation>
       <RevisionLoader
         growiRenderer={growiRenderer}
         pageId={page._id}
