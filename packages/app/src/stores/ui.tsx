@@ -82,11 +82,55 @@ const mutateDrawerMode: Middleware = (useSWRNext) => {
   };
 };
 
+const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
+  return (...args) => {
+    // -- TODO: https://redmine.weseek.co.jp/issues/81817
+    const swrNext = useSWRNext(...args);
+    return {
+      ...swrNext,
+      mutate: (data, shouldRevalidate) => {
+        const newEditorMode = data as unknown as EditorMode;
+
+        return swrNext.mutate(data, shouldRevalidate)
+          .then((value) => {
+            switch (newEditorMode) {
+              case EditorMode.View:
+                $('body').removeClass('on-edit');
+                $('body').removeClass('builtin-editor');
+                $('body').removeClass('hackmd');
+                $('body').removeClass('pathname-sidebar');
+                window.history.replaceState(null, '', window.location.pathname);
+                break;
+              case EditorMode.Editor:
+                $('body').addClass('on-edit');
+                $('body').addClass('builtin-editor');
+                $('body').removeClass('hackmd');
+                // editing /Sidebar
+                if (window.location.pathname === '/Sidebar') {
+                  $('body').addClass('pathname-sidebar');
+                }
+                window.location.hash = '#edit';
+                break;
+              case EditorMode.HackMD:
+                $('body').addClass('on-edit');
+                $('body').addClass('hackmd');
+                $('body').removeClass('builtin-editor');
+                $('body').removeClass('pathname-sidebar');
+                window.location.hash = '#hackmd';
+                break;
+            }
+            return value;
+          });
+      },
+    };
+  };
+};
+
 export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
   const key: Key = 'editorMode';
   const initialData = EditorMode.View;
 
-  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [mutateDrawerMode] });
+  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [postChangeEditorModeMiddleware] });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {

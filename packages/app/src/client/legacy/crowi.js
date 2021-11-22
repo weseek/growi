@@ -17,7 +17,7 @@ window.Crowi = Crowi;
 Crowi.setCaretLineData = function(line) {
   const { appContainer } = window;
   const navigationContainer = appContainer.getContainer('NavigationContainer');
-  navigationContainer.setEditorMode('edit');
+  // navigationContainer.setEditorMode('edit');
   const pageEditorDom = document.querySelector('#page-editor');
   pageEditorDom.setAttribute('data-caret-line', line);
 };
@@ -228,18 +228,18 @@ window.addEventListener('hashchange', (e) => {
   Crowi.unblinkSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.blinkSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
-  const { appContainer } = window;
-  const navigationContainer = appContainer.getContainer('NavigationContainer');
+  // const { appContainer } = window;
+  // const navigationContainer = appContainer.getContainer('NavigationContainer');
 
 
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      navigationContainer.setEditorMode('edit');
+      // navigationContainer.setEditorMode('edit');
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
+      // navigationContainer.setEditorMode('hackmd');
     }
   }
 });
