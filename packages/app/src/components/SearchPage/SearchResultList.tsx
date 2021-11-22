@@ -1,40 +1,32 @@
 import React, { FC } from 'react';
 import SearchResultListItem from './SearchResultListItem';
-import { IPageHasId } from '../../interfaces/page';
 import PaginationWrapper from '../PaginationWrapper';
+import { IPageSearchResultData } from '../../interfaces/search';
 
-// TOOD: retrieve bookmark count and add it to the following type
-export type ISearchedPage = IPageHasId & {
-  snippet: string,
-  elasticSearchResult: {
-    snippet: string,
-    matchedPath: string,
-  },
-};
 
 type Props = {
-  pages: ISearchedPage[],
-  selectedPages: ISearchedPage[],
+  pages: IPageSearchResultData[],
+  selectedPages: IPageSearchResultData[],
   onClickInvoked?: (pageId: string) => void,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
-  focusedPage?: ISearchedPage,
+  focusedSearchResultData?: IPageSearchResultData,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedPage } = props;
-  const focusedPageId = focusedPage != null && focusedPage._id != null ? focusedPage._id : '';
+  const { focusedSearchResultData } = props;
+  const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <>
       {props.pages.map((page) => {
         return (
           <SearchResultListItem
-            key={page._id}
+            key={page.pageData._id}
             page={page}
             onClickInvoked={props.onClickInvoked}
-            isSelected={page._id === focusedPageId || false}
+            isSelected={page.pageData._id === focusedPageId || false}
           />
         );
       })}
