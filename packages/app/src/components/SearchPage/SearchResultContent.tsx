@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import { IPageSearchResultData } from '../../interfaces/search';
+
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 
@@ -7,13 +9,14 @@ import AppContainer from '../../client/services/AppContainer';
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  focusedPage : any,
+  focusedSearchResultData : IPageSearchResultData,
 }
 const SearchResultContent: FC<Props> = (props: Props) => {
   // Temporaly workaround for lint error
   // later needs to be fixed: RevisoinRender to typescriptcomponet
   const RevisionRenderTypeAny: any = RevisionLoader;
-  const renderPage = (page) => {
+  const renderPage = (searchResultData) => {
+    const page = searchResultData?.pageData || {};
     const growiRenderer = props.appContainer.getRenderer('searchresult');
     let showTags = false;
     if (page.tags != null && page.tags.length > 0) { showTags = true }
@@ -39,7 +42,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       </div>
     );
   };
-  const content = renderPage(props.focusedPage);
+  const content = renderPage(props.focusedSearchResultData);
   return (
 
     <div>{content}</div>
