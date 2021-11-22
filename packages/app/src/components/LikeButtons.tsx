@@ -9,7 +9,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { useSWRPageInfo } from '../stores/page';
 import { IUser } from '../interfaces/user';
 
-type LegacyLikeButtonsProps = {
+type LikeButtonsProps = {
   appContainer: AppContainer,
   likerIds: string[],
   sumOfLikers: number,
@@ -22,7 +22,7 @@ type LegacyLikeButtonsProps = {
 
 // TODO : user image not displayed in search page. Fix it.
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
-const LegacyLikeButtons: FC<LegacyLikeButtonsProps> = (props: LegacyLikeButtonsProps) => {
+const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { data: pageInfo } = useSWRPageInfo(props.pageId);
 
@@ -78,10 +78,10 @@ const LegacyLikeButtons: FC<LegacyLikeButtonsProps> = (props: LegacyLikeButtonsP
 /**
  * Wrapper component for using unstated
  */
-const LegacyLikeButtonsWrapper = withUnstatedContainers(LegacyLikeButtons, [AppContainer]);
+const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
 
-const LikeButtons = (props) => {
-  return <LegacyLikeButtonsWrapper {...props}></LegacyLikeButtonsWrapper>;
+const LikeButtonsWrapper = (props) => {
+  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
 };
 
-export default withTranslation()(LikeButtons);
+export default withTranslation()(LikeButtonsWrapper);

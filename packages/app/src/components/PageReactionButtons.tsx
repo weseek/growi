@@ -8,7 +8,7 @@ type Props = {
   likerIds: string[],
   isLiked: boolean,
   likers: IUser[],
-  onLikeClicked: (isLiked : boolean)=>void,
+  onLikeClicked?: ()=>void,
 }
 
 
