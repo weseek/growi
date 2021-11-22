@@ -33,22 +33,20 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
       <ModalBody>
         <div className="d-flex justify-content-center mr-3">
           <div className="border border-gray mr-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="mr-2"
                 type="checkbox"
-                id="flexCheckDefault"
                 onClick={props.switchIncludingUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
           </div>
           <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckChecked">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="mr-2"
                 type="checkbox"
-                id="flexCheckChecked"
                 onClick={props.switchIncludingUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
