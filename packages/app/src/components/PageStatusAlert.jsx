@@ -109,6 +109,7 @@ class PageStatusAlert extends React.Component {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
     } = this.props.pageContainer.state;
 
+    console.log('pageContainer is', this.props.pageContainer.state);
     const isRevisionOutdated = revisionId !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 

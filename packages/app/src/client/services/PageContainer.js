@@ -87,6 +87,7 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      remoteRevisionBody: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
@@ -363,6 +364,7 @@ export default class PageContainer extends Container {
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
     };

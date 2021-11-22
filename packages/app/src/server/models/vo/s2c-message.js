@@ -15,6 +15,7 @@ class S2cMessagePageUpdated {
 
     this.pageId = _id;
     this.revisionId = revision;
+    this.revisionBody = page.revision.body;
     this.revisionIdHackmdSynced = revisionHackmdSynced;
     this.hasDraftOnHackmd = hasDraftOnHackmd;
 
