@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -37,7 +37,7 @@ const GrowiSubNavigation = (props) => {
     navigationContainer.setEditorMode(viewType);
   }
 
-  const tagsUpdatedHandler = async(newTags) => {
+  const tagsUpdatedHandler = useCallback(async(newTags) => {
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === 'edit') {
       return editorContainer.setState({ tags: newTags });
@@ -56,7 +56,8 @@ const GrowiSubNavigation = (props) => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageId]);
 
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>

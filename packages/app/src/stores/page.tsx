@@ -48,7 +48,6 @@ export const useSWRPageInfo = (pageId: string): SWRResponse<IPageInfo, Error> =>
 };
 
 export const useSWRTagsInfo = (pageId: string): SWRResponse<IPageTagsInfo, Error> => {
-  // apiGet():Promise<unknown>
   return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
     return {
       tags: response.tags,
