@@ -1,22 +1,35 @@
 import React, { FC } from 'react';
 import LikeButtons from './LikeButtons';
-
+import { IUser } from '../interfaces/user';
 
 type Props = {
   pageId: string,
+  sumOfLikers: number,
+  likerIds: string[],
+  isLiked: boolean,
+  likers: IUser[],
   onLikeClicked: (isLiked : boolean)=>void,
 }
 
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    pageId, onLikeClicked,
+    pageId, sumOfLikers, likerIds, isLiked, likers, onLikeClicked,
   } = props;
+
 
   return (
     <>
       <span>
-        <LikeButtons onLikeClicked={onLikeClicked} pageId={pageId}></LikeButtons>
+        <LikeButtons
+          onLikeClicked={onLikeClicked}
+          pageId={pageId}
+          likerIds={likerIds}
+          sumOfLikers={sumOfLikers}
+          isLiked={isLiked}
+          likers={likers}
+        >
+        </LikeButtons>
       </span>
       <span>
         {/*

@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback,
+  FC, useCallback, useState, useEffect,
 } from 'react';
 import AppContainer from '../../client/services/AppContainer';
 import NavigationContainer from '../../client/services/NavigationContainer';
@@ -25,7 +25,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
   const { data: pageInfo, error: pageInfoError, mutate: mutatePageInfo } = useSWRPageInfo(pageId);
-
+  const [likers, setLikers] = useState([]);
   const likeClickhandler = useCallback(async() => {
     const { isGuestUser } = appContainer;
 
@@ -43,16 +43,31 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     }
   }, [pageInfo]);
 
+  const updateLikers = async() => {
+    if (pageInfo != null && pageInfo.likerIds.length > 0) {
+      const res: any = await props.appContainer.apiGet('/users.list', { user_ids: [...pageInfo.likerIds].join(',') });
+      setLikers(res.users);
+    }
+  };
+
+  useEffect(() => {
+    updateLikers();
+  }, [pageInfo]);
 
   if (pageInfoError != null || pageInfo == null) {
     return <></>;
   }
+  const { sumOfLikers, likerIds, isLiked } = pageInfo;
 
   return (
     <>
       {isViewMode && (
         <PageReactionButtons
           pageId={pageId}
+          sumOfLikers={sumOfLikers}
+          likerIds={likerIds}
+          isLiked={isLiked}
+          likers={likers || []}
           onLikeClicked={likeClickhandler}
         >
         </PageReactionButtons>

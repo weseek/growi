@@ -7,10 +7,15 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
 import { useSWRPageInfo } from '../stores/page';
+import { IUser } from '../interfaces/user';
 
 type LegacyLikeButtonsProps = {
   appContainer: AppContainer,
+  likerIds: string[],
+  sumOfLikers: number,
+  isLiked: boolean,
   pageId: string,
+  likers: IUser[],
   onLikeClicked?: ()=>void,
   t: (s:string)=>string,
 }
@@ -19,19 +24,7 @@ type LegacyLikeButtonsProps = {
 // task : https://estoc.weseek.co.jp/redmine/issues/81110
 const LegacyLikeButtons: FC<LegacyLikeButtonsProps> = (props: LegacyLikeButtonsProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [likers, setLikers] = useState([]);
   const { data: pageInfo } = useSWRPageInfo(props.pageId);
-
-  const updateLikers = async() => {
-    if (pageInfo != null) {
-      const res: any = await props.appContainer.apiGet('/users.list', { user_ids: [...pageInfo.likerIds].join(',') });
-      setLikers(res.users);
-    }
-  };
-
-  useEffect(() => {
-    updateLikers();
-  }, [pageInfo]);
 
   const togglePopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -73,7 +66,7 @@ const LegacyLikeButtons: FC<LegacyLikeButtonsProps> = (props: LegacyLikeButtonsP
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet.')}
+            {props.likers.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
           </div>
         </PopoverBody>
       </Popover>
