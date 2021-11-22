@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
+import loggerFactory from '../../utils/logger';
 import { CheckboxType } from '../../interfaces/search';
 
 const logger = loggerFactory('growi:searchResultList');
