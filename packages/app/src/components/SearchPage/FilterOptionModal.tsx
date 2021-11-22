@@ -13,6 +13,8 @@ type Props = {
   onExcludeTrash?: () => void,
 }
 
+// todo: implement filtering search result
+// refs: https://redmine.weseek.co.jp/issues/81845
 const FilterOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
@@ -23,7 +25,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
         Filter Option
       </ModalHeader>
       <ModalBody>
-        <div className="d-flex align-items-center mr-3">
+        <div className="d-flex justify-content-center mr-3">
           <div className="border border-gray mr-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
               <input
@@ -47,9 +49,13 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
             </label>
           </div>
         </div>
-
       </ModalBody>
       <ModalFooter>
+        <button
+          type="button"
+          className="btn btn-secondary"
+        >{t('search_result.narrow_donw')}
+        </button>
       </ModalFooter>
     </Modal>
   );
