@@ -91,12 +91,12 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         >
         </PageReactionButtons>
       )}
-      {/* TODO add condition here */}
       {willShowPageManagement && (
         <PageManagement
           pageId={pageId}
           revisionId={revisionId}
           path={path}
+          isCompactMode={isCompactMode}
           isDeletable={isDeletable}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         >
