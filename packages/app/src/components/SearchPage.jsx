@@ -35,8 +35,8 @@ class SearchPage extends React.Component {
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: 10, // change to an appropriate limit number
-      excludeUsersHome: true,
-      excludeTrash: true,
+      excludeUnderUserPage: true,
+      excludeUnderTrashPage: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -44,8 +44,8 @@ class SearchPage extends React.Component {
     this.searchHandler = this.searchHandler.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
-    this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.switchExcludingUnderUserPage = this.switchExcludingUnderUserPage.bind(this);
+    this.switchExcludingUnderTrashPage = this.switchExcludingUnderTrashPage.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
@@ -68,12 +68,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  onExcludeUsersHome() {
-    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
+  switchExcludingUnderUserPage() {
+    this.setState({ excludeUnderUserPage: !this.state.excludeUnderUserPage });
   }
 
-  onExcludeTrash() {
-    this.setState({ excludeTrash: !this.state.excludeTrash });
+  switchExcludingUnderTrashPage() {
+    this.setState({ excludeUnderTrashPage: !this.state.excludeUnderTrashPage });
   }
 
   changeURL(keyword, refreshHash) {
@@ -91,10 +91,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.excludeTrash) {
+    if (this.state.excludeUnderTrashPage) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.excludeUsersHome) {
+    if (this.state.excludeUnderUserPage) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
@@ -224,8 +224,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
-        onExcludeUsersHome={this.onExcludeUsersHome}
-        onExcludeTrash={this.onExcludeTrash}
+        switchExcludingUnderUserPage={this.switchExcludingUnderUserPage}
+        switchExcludingUnderTrashPage={this.switchExcludingUnderTrashPage}
       >
       </SearchControl>
     );

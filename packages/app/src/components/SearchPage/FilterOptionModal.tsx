@@ -8,9 +8,9 @@ import {
 
 type Props = {
   isOpen: boolean,
-  onClose: () => void,
-  onExcludeUsersHome?: () => void,
-  onExcludeTrash?: () => void,
+  onClose?: () => void,
+  switchExcludingUnderUserPage?: () => void,
+  switchExcludingUnderTrashPage?: () => void,
 }
 
 // todo: implement filtering search result
@@ -37,7 +37,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onExcludeUsersHome}
+                onClick={props.switchExcludingUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -47,7 +47,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onExcludeTrash}
+                onClick={props.switchExcludingUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
