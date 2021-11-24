@@ -233,6 +233,13 @@
       font-size: 18px;
     }
   }
+
+  .grw-sidebar-content-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-top: solid 1px $border-color;
+  }
 }
 
 // Dock Mode
