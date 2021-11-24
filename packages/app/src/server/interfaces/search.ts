@@ -15,7 +15,7 @@ export interface SearchResolver {
 }
 
 export interface SearchDelegator<T = unknown> {
-  name: SearchDelegatorName
+  name?: SearchDelegatorName
   search(queryString: string | null, user, userGroups, option): Promise<Result<T> & MetaData>
 }
 

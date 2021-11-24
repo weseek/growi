@@ -3,7 +3,7 @@ import RE2 from 're2';
 
 import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, PaginateResult, MetaData,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData,
 } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
@@ -163,11 +163,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return {} as SearchDelegator;
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<PaginateResult<any> & MetaData> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
     // TODO: parse
     // TODO: resolve
     // TODO: search
-    return {} as PaginateResult<any> & MetaData;
+    return {} as Result<any> & MetaData;
   }
 
 }
