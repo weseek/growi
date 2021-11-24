@@ -2,16 +2,16 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 
 
 export type ParsedQuery = {
-  originalString: string
-  nqNames: string[]
+  queryString: string // original query string in request
+  nqNames: string[] // possible NamedQuery names found in query string
 }
 
 export interface SearchQueryParser {
-  parseSearchQuery(queryString): Promise<ParsedQuery>
+  parseSearchQuery(queryString: string): Promise<ParsedQuery>
 }
 
 export interface SearchResolver {
-  resolve(parsedQuery: ParsedQuery): SearchDelegator
+  resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator>
 }
 
 export interface SearchDelegator<T = unknown> {

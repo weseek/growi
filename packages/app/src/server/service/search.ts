@@ -1,26 +1,17 @@
 import mongoose from 'mongoose';
+import RE2 from 're2';
 
-import { HasObjectId } from '~/interfaces/has-object-id';
-import { IPage } from '~/interfaces/page';
 import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
+import {
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, PaginateResult, MetaData,
+} from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
 
-export type SearchResult = {
-  data: IPage & HasObjectId
-  meta?: any
-}
-
-type ParsedQuery = {
-  queryString: string
-  namedQueries: NamedQueryDocument[]
-  shouldSearchKeyword: boolean
-}
-
-class SearchService {
+class SearchService implements SearchQueryParser, SearchResolver {
 
   crowi!: any
 
@@ -30,7 +21,7 @@ class SearchService {
 
   isErrorOccuredOnSearching: boolean | null
 
-  delegator: any
+  delegator: any & SearchDelegator
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -163,75 +154,29 @@ class SearchService {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    let shouldSearchKeyword = false;
-
     // do not reassign queryString
     let queryString = _queryString.trim();
     queryString = _queryString.replace(/\s+/, ' ');
-    const namedQueryRegExp = /^\[\.+\]$/g;
+    const namedQueryRegExp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
 
     const queryParts = queryString.split(' ');
-    const namedQueryNames = queryParts
+    const nqNames = queryParts
       .filter(str => namedQueryRegExp.test(str)) // filter by regexp
       .map(str => str.replace(/\[|\]/g, '')); // remove []
 
-    const allCount = queryParts.length;
-    const namedQueriesCount = namedQueryNames.length;
-    if (allCount > 0 && allCount === namedQueriesCount) {
-      shouldSearchKeyword = true;
-    }
-
-    // find NamedQuery
-    const NamedQuery: NamedQueryModel = mongoose.model('NamedQuery');
-    const namedQueries = namedQueryNames.length ? await NamedQuery.find({ name: { $in: namedQueryNames } }) : [];
-    return { queryString, namedQueries, shouldSearchKeyword };
+    return { queryString, nqNames };
   }
 
-  async searchKeyword(keyword, user, userGroups, searchOpts): Promise<SearchResult> {
-    // TODO: call parseQueryString then call necessary search methods
-    let parsedQuery: ParsedQuery;
-    try {
-      parsedQuery = await this.parseSearchQuery(keyword);
-    }
-    catch (err) {
-      logger.error('Failed to parse query string', err);
-      throw Error('Failed to parse query string');
-    }
-    const { queryString, namedQueries, shouldSearchKeyword } = parsedQuery;
-
-    const result = await Promise.all(namedQueries.map(async(namedQuery) => {
-      return this.searchByNamedQuery(namedQuery, user, userGroups, searchOpts);
-    }));
-    // if namedQuery.queryString != null { return await this.delegator.searchKeyword(keyword.concat(' ', queryString), user, userGroups, searchOpts) }
-    // else if namedQuery.resolverName != null { return await this.resolveSearch(resolverName, user, userGroups, searchOpts) }
-
-    let searchKeywordResult: SearchResult;
-    try {
-      searchKeywordResult = shouldSearchKeyword ? this.delegator.searchKeyword(keyword, user, userGroups, searchOpts) : {};
-    }
-    catch (err) {
-      logger.error(err);
-
-      // switch error flag, `isReachable` to be `false`
-      this.isErrorOccuredOnSearching = true;
-      throw err;
-    }
-
-    return {
-      data: { ...searchKeywordResult.data },
-      meta: { ...searchKeywordResult.meta },
-    };
+  async resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator> {
+    // TODO: impl resolve
+    return {} as SearchDelegator;
   }
 
-  async searchByNamedQuery(namedQuery: NamedQueryDocument, user, userGroups, searchOpts): Promise<SearchResult> {
-    const { resolverName } = namedQuery;
-
-    switch (resolverName) {
-      default:
-        break;
-    }
-
-    return {} as SearchResult;
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<PaginateResult<any> & MetaData> {
+    // TODO: parse
+    // TODO: resolve
+    // TODO: search
+    return {} as PaginateResult<any> & MetaData;
   }
 
 }
