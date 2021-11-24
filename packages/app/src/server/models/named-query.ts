@@ -6,7 +6,7 @@ import mongoose, {
 
 import { getOrCreateModel } from '@growi/core';
 import loggerFactory from '../../utils/logger';
-import { INamedQuery } from '../../interfaces/named-query';
+import { INamedQuery, SearchResolverName } from '../../interfaces/named-query';
 
 const logger = loggerFactory('growi:models:named-query');
 
@@ -17,9 +17,9 @@ export type NamedQueryModel = Model<NamedQueryDocument>
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
-  name: { type: String, unique: true },
+  name: { type: String, required: true, unique: true },
   aliasOf: { type: String },
-  resolverName: { type: String, index: true },
+  resolverName: { type: String, enum: SearchResolverName },
   creator: { type: ObjectId, ref: 'User', index: true },
 });
 
