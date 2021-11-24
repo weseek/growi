@@ -238,7 +238,6 @@ class SearchPage extends React.Component {
       this.state.selectedPages.clear();
       // Force a render to tell React that the State has been changed by the Set class method
       this.forceUpdate();
-      this.updateCheckboxState();
       return;
     }
     this.state.searchedPages.forEach((page) => {
