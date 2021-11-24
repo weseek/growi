@@ -20,7 +20,9 @@ const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
   name: { type: String, required: true, unique: true },
   aliasOf: { type: String },
   resolverName: { type: String, enum: SearchResolverName },
-  creator: { type: ObjectId, ref: 'User', index: true },
+  creator: {
+    type: ObjectId, ref: 'User', index: true, default: null,
+  },
 });
 
 schema.pre('validate', async function(this, next) {
