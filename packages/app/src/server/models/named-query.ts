@@ -6,7 +6,7 @@ import mongoose, {
 
 import { getOrCreateModel } from '@growi/core';
 import loggerFactory from '../../utils/logger';
-import { INamedQuery, SearchResolverName } from '../../interfaces/named-query';
+import { INamedQuery, SearchDelegatorName } from '../../interfaces/named-query';
 
 const logger = loggerFactory('growi:models:named-query');
 
@@ -19,15 +19,15 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
   name: { type: String, required: true, unique: true },
   aliasOf: { type: String },
-  resolverName: { type: String, enum: SearchResolverName },
+  delegatorName: { type: String, enum: SearchDelegatorName },
   creator: {
     type: ObjectId, ref: 'User', index: true, default: null,
   },
 });
 
 schema.pre('validate', async function(this, next) {
-  if (this.aliasOf == null && this.resolverName == null) {
-    throw Error('Either of aliasOf and resolverName must not be null.');
+  if (this.aliasOf == null && this.delegatorName == null) {
+    throw Error('Either of aliasOf and delegatorNameName must not be null.');
   }
 
   next();
