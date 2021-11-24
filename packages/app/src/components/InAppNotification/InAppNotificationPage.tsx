@@ -9,6 +9,7 @@ import { useSWRxInAppNotifications } from '../../stores/in-app-notification';
 import PaginationWrapper from '../PaginationWrapper';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 
 type Props = {
@@ -63,10 +64,18 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
     );
   };
 
+
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
     const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
-    const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
+    const {
+      data: unopendNotificationData, mutate,
+    } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
+
+    const updateUnopendNotificationStatusesToOpened = async() => {
+      await apiv3Put('/in-app-notification/all-statuses-open');
+      mutate();
+    };
 
     if (unopendNotificationData == null) {
       return (
@@ -84,8 +93,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
           <button
             type="button"
             className="btn btn-outline-primary"
-            // TODO: set "UNOPENED" notification status "OPEND" by 81951
-            // onClick={}
+            onClick={updateUnopendNotificationStatusesToOpened}
           >
             {t('in_app_notification.mark_all_as_read')}
           </button>

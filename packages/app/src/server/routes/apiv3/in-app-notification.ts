@@ -103,5 +103,17 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const user = req.user;
+
+    try {
+      await inAppNotificationService.updateAllNotificationsAsOpened(user);
+      return res.apiv3();
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
+
   return router;
 };
