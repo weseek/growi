@@ -138,6 +138,12 @@ export default class InAppNotificationService {
     return;
   }
 
+  updateAllNotificationsAsOpened = async function(user: IUser & HasObjectId): Promise<void> {
+    const unopenedNotificatins = await InAppNotification.find({ user: user._id, status: 'UNOPENED' });
+    console.log('notifiunopenedNotificatinscatins', unopenedNotificatins);
+    return;
+  }
+
   getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
     const query = { user, status: STATUS_UNREAD };
 
