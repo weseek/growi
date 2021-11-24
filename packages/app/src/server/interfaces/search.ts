@@ -16,12 +16,10 @@ export interface SearchResolver {
 
 export interface SearchDelegator<T = unknown> {
   name: SearchDelegatorName
-  search(queryString: string | null, user, userGroups, option): PaginateResult<T> & MetaData
+  search(queryString: string | null, user, userGroups, option): Promise<Result<T> & MetaData>
 }
 
-export type PaginateResult<T> = {
-  limit: number
-  offset: number
+export type Result<T> = {
   data: T
 }
 

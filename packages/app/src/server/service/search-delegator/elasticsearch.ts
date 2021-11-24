@@ -9,6 +9,7 @@ import streamToPromise from 'stream-to-promise';
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { PageDocument, PageModel } from '../../models/page';
+import { MetaData, SearchDelegator, Result } from '../../interfaces/search';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -16,7 +17,9 @@ const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
 const BULK_REINDEX_SIZE = 100;
 
-class ElasticsearchDelegator {
+type Data = any;
+
+class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   configManager!: any
 
@@ -538,7 +541,7 @@ class ElasticsearchDelegator {
    *   data: [ pages ...],
    * }
    */
-  async search(query) {
+  async searchKeyword(query) {
     // for debug
     if (process.env.NODE_ENV === 'development') {
       const result = await this.client.indices.validateQuery({
@@ -832,7 +835,7 @@ class ElasticsearchDelegator {
     };
   }
 
-  async searchKeyword(queryString, user, userGroups, option) {
+  async search(queryString: string, user, userGroups, option): Promise<Result<Data> & MetaData> {
     const from = option.offset || null;
     const size = option.limit || null;
     const query = this.createSearchQuerySortedByScore();
@@ -844,7 +847,7 @@ class ElasticsearchDelegator {
 
     await this.appendFunctionScore(query, queryString);
 
-    return this.search(query);
+    return this.searchKeyword(query);
   }
 
   parseQueryString(queryString: string) {

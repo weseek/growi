@@ -154,17 +154,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    // do not reassign queryString
-    let queryString = _queryString.trim();
-    queryString = _queryString.replace(/\s+/, ' ');
-    const namedQueryRegExp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
-
-    const queryParts = queryString.split(' ');
-    const nqNames = queryParts
-      .filter(str => namedQueryRegExp.test(str)) // filter by regexp
-      .map(str => str.replace(/\[|\]/g, '')); // remove []
-
-    return { queryString, nqNames };
+    // TODO: impl parser
+    return {} as ParsedQuery;
   }
 
   async resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator> {
