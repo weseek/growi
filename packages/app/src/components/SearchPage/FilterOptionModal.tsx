@@ -11,6 +11,9 @@ type Props = {
   onClose?: () => void,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
+  // todo: implement this method
+  // refs: https://redmine.weseek.co.jp/issues/81845
+  onClickFilteringSearchResultButton?: () => void,
 }
 
 // todo: implement filtering search result
@@ -58,6 +61,9 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-secondary"
+          // todo: implement this method
+          // refs: https://redmine.weseek.co.jp/issues/81845
+          onClick={props.onClickFilteringSearchResultButton}
         >{t('search_result.narrow_donw')}
         </button>
       </ModalFooter>
