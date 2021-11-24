@@ -103,5 +103,21 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/open-all', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    // const user = req.user;
+    // const id = req.body.id;
+    console.log('api叩かれた');
+
+    // try {
+    //   // findする
+    //   const notifications = await inAppNotificationService.markAllNotificationsAsOpened(user);
+    //   const result = { notifications };
+    //   return res.apiv3(result);
+    // }
+    // catch (err) {
+    //   return res.apiv3Err(err);
+    // }
+  });
+
   return router;
 };
