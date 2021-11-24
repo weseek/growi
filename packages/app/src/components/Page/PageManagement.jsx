@@ -29,7 +29,7 @@ const LegacyPageManagemenet = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
-  const presentationHref = new URL(urljoin(window.location.origin, path, '?presentation=1')).href;
+  const presentationHref = urljoin(window.location.origin, path, '?presentation=1');
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);

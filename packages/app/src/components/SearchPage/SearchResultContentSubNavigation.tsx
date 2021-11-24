@@ -1,4 +1,5 @@
 import React, { FC, useCallback } from 'react';
+import { pagePathUtils } from '@growi/core';
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
@@ -23,6 +24,8 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     appContainer, pageId, revisionId, path, isCompactMode, isSignleLineMode,
   } = props;
 
+  const { isTrashPage } = pagePathUtils;
+
   const { data: tagInfoData, error: tagInfoError, mutate: mutateTagInfo } = useSWRTagsInfo(pageId);
 
   const tagsUpdatedHandler = useCallback(async(newTags) => {
@@ -40,9 +43,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     return <></>;
   }
   const { isSharedUser } = appContainer;
-  // path : /trash/hoge. subStr(0,7) => /trash/
-  const isTrashPage = path.substr(0, 7) === '/trash/';
-  const isAbleToShowPageManagement = !isTrashPage && !isSharedUser;
+  const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
       {/* Left side */}
