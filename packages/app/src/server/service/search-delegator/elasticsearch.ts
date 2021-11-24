@@ -1008,4 +1008,4 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
 }
 
-module.exports = ElasticsearchDelegator;
+export default ElasticsearchDelegator;

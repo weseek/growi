@@ -1,11 +1,13 @@
+import { SearchDelegator } from '~/server/interfaces/search';
 import loggerFactory from '~/utils/logger';
+
+import ElasticsearchDelegator from './elasticsearch';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search-delegator:searchbox');
 
-const ElasticsearchDelegator = require('./elasticsearch');
 
-class SearchboxDelegator extends ElasticsearchDelegator {
+class SearchboxDelegator extends ElasticsearchDelegator implements SearchDelegator {
 
   /**
    * @inheritdoc
