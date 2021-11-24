@@ -1,5 +1,6 @@
 import { SearchDelegatorName } from '~/interfaces/named-query';
 
+
 export type ParsedQuery = {
   originalString: string
   nqNames: string[]
@@ -13,17 +14,17 @@ export interface SearchResolver {
   resolve(parsedQuery: ParsedQuery): SearchDelegator
 }
 
-export interface SearchDelegator<T> {
-  name: DelegatorName
+export interface SearchDelegator<T = unknown> {
+  name: SearchDelegatorName
   search(queryString: string | null, user, userGroups, option): PaginateResult<T> & MetaData
 }
 
-type PaginateResult<T> = {
+export type PaginateResult<T> = {
   limit: number
   offset: number
   data: T
 }
 
-type MetaData = {
+export type MetaData = {
   meta: { [key:string]: any }
 }
