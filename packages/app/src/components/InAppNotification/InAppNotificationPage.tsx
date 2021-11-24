@@ -18,25 +18,11 @@ type Props = {
 
 const InAppNotificationPageBody: FC<Props> = (props) => {
   const { appContainer } = props;
-  const limit = appContainer.config.pageLimitationXL;
-  const [activePageOfAllNotificationCat, setActivePage] = useState(1);
-  const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
-  const { data: allNotificationData, mutate } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
-
-  const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
-  const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
-
   const { t } = useTranslation();
 
-  if (allNotificationData == null) {
-    return (
-      <div className="wiki">
-        <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
-      </div>
-    );
-  }
+  const limit = appContainer.config.pageLimitationXL;
+  const [activePageOfAllNotificationCat, setActivePage] = useState(1);
+  const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
 
 
   const setAllNotificationPageNumber = (selectedPageNumber): void => {
@@ -49,6 +35,20 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
+    const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
+    const { data: allNotificationData } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
+
+    if (allNotificationData == null) {
+      return (
+        <div className="wiki">
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        </div>
+      );
+    }
+
+
     return (
       <>
         <InAppNotificationList inAppNotificationData={allNotificationData} />
@@ -64,14 +64,18 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
     );
   };
 
-  const updateUnopendNotificationStatusesToOpened = async() => {
-    await apiv3Put('/in-app-notification/all-statuses-open');
-    mutate();
-  };
 
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
-    const { data: unopendNotificationData } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
+    const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
+    const {
+      data: unopendNotificationData, mutate,
+    } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
+
+    const updateUnopendNotificationStatusesToOpened = async() => {
+      await apiv3Put('/in-app-notification/all-statuses-open');
+      mutate();
+    };
 
     if (unopendNotificationData == null) {
       return (
