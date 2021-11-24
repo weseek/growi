@@ -6,15 +6,12 @@ import UserPictureList from './User/UserPictureList';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '~/client/services/AppContainer';
-import { useSWRPageInfo } from '../stores/page';
 import { IUser } from '../interfaces/user';
 
 type LikeButtonsProps = {
   appContainer: AppContainer,
-  likerIds: string[],
   sumOfLikers: number,
   isLiked: boolean,
-  pageId: string,
   likers: IUser[],
   onLikeClicked?: ()=>void,
   t: (s:string)=>string,
@@ -22,7 +19,6 @@ type LikeButtonsProps = {
 
 const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { data: pageInfo } = useSWRPageInfo(props.pageId);
 
   const togglePopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -37,7 +33,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   };
 
   const {
-    appContainer, t,
+    appContainer, isLiked, sumOfLikers, t,
   } = props;
   const { isGuestUser } = appContainer;
 
@@ -48,7 +44,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         id="like-button"
         onClick={handleClick}
         className={`btn btn-like border-0
-            ${pageInfo?.isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+            ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className="icon-like"></i>
       </button>
@@ -58,8 +54,8 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         </UncontrolledTooltip>
       )}
 
-      <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${pageInfo?.isLiked ? 'active' : ''}`}>
-        {pageInfo?.sumOfLikers}
+      <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
+        {sumOfLikers}
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">

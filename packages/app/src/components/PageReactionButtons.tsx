@@ -5,7 +5,6 @@ import { IUser } from '../interfaces/user';
 type Props = {
   pageId: string,
   sumOfLikers: number,
-  likerIds: string[],
   isLiked: boolean,
   likers: IUser[],
   onLikeClicked?: ()=>void,
@@ -14,7 +13,7 @@ type Props = {
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    pageId, sumOfLikers, likerIds, isLiked, likers, onLikeClicked,
+    sumOfLikers, isLiked, likers, onLikeClicked,
   } = props;
 
 
@@ -23,8 +22,6 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
       <span>
         <LikeButtons
           onLikeClicked={onLikeClicked}
-          pageId={pageId}
-          likerIds={likerIds}
           sumOfLikers={sumOfLikers}
           isLiked={isLiked}
           likers={likers}
