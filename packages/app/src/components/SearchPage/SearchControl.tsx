@@ -49,11 +49,11 @@ const SearchControl: FC <Props> = (props: Props) => {
     // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
   };
 
-  const openPageRenameModalHandler = () => {
+  const openFilterOptionModalHandler = () => {
     setIsFileterOptionModalShown(true);
   };
 
-  const closePageRenameModalHandler = () => {
+  const closeFilterOptionModalHandler = () => {
     setIsFileterOptionModalShown(false);
   };
 
@@ -61,7 +61,7 @@ const SearchControl: FC <Props> = (props: Props) => {
     return (
       <FilterOptionModal
         isOpen={isFileterOptionModalShown || false}
-        onClose={closePageRenameModalHandler}
+        onClose={closeFilterOptionModalHandler}
         switchExcludingUnderUserPage={switchExcludingUnderUserPage}
         switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
       />
@@ -98,7 +98,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <button
             type="button"
             className="btn"
-            onClick={openPageRenameModalHandler}
+            onClick={openFilterOptionModalHandler}
           >
             <i className="icon-equalizer"></i>
           </button>
