@@ -2,8 +2,7 @@ import { IUser } from './user';
 
 
 export enum SearchResolverName {
-  ELASTIC_SEARCH = 'ElasticSearch',
-  SEARCH_BOX = 'SearchBox',
+  DEFAULT = 'FullTextSearch',
   PRIVATE_LEGACY_PAGES = 'PrivateLegacyPages',
 }
 export interface INamedQuery {
