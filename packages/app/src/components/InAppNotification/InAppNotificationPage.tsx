@@ -21,7 +21,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const limit = appContainer.config.pageLimitationXL;
   const [activePageOfAllNotificationCat, setActivePage] = useState(1);
   const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
-  const { data: allNotificationData } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
+  const { data: allNotificationData, mutate } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
 
   const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
   const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
@@ -66,6 +66,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   const updateUnopendNotificationStatusesToOpened = async() => {
     await apiv3Put('/in-app-notification/all-statuses-open');
+    mutate();
   };
 
   // commonize notification lists by 81953

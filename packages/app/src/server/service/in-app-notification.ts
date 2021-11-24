@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { subDays } from 'date-fns';
-import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses, PaginateResult, IInAppNotification } from '~/interfaces/in-app-notification';
 import Crowi from '../crowi';
 import {
   InAppNotification,
@@ -12,6 +12,7 @@ import InAppNotificationSettings from '~/server/models/in-app-notification-setti
 import Subscription, { STATUS_SUBSCRIBE } from '~/server/models/subscription';
 
 import { IUser } from '~/interfaces/user';
+
 import { HasObjectId } from '~/interfaces/has-object-id';
 import loggerFactory from '~/utils/logger';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -139,8 +140,10 @@ export default class InAppNotificationService {
   }
 
   updateAllNotificationsAsOpened = async function(user: IUser & HasObjectId): Promise<void> {
-    const unopenedNotificatins = await InAppNotification.find({ user: user._id, status: 'UNOPENED' });
-    console.log('notifiunopenedNotificatinscatins', unopenedNotificatins);
+    const filter = { user: user._id, status: STATUS_UNOPENED };
+    const options = { status: STATUS_OPENED };
+
+    await InAppNotification.updateMany(filter, options);
     return;
   }
 
