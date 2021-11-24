@@ -103,7 +103,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/open-all', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     // const user = req.user;
     // const id = req.body.id;
     console.log('api叩かれた');
