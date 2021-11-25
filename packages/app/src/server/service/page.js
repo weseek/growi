@@ -76,6 +76,11 @@ class PageService {
         logger.error(err);
       }
     });
+
+    // bookmark
+    this.pageEvent.on('bookmark', async(page, user) => {
+      console.log('ブックマークされたンゴ！');
+    });
   }
 
 

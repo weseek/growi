@@ -254,8 +254,9 @@ module.exports = (crowi) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
+    let page;
     try {
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
@@ -269,6 +270,12 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('update-bookmark-failed', err);
       return res.apiv3Err(err, 500);
+    }
+
+    if (bool) {
+      const pageEvent = crowi.event('page');
+      // in-app notification
+      pageEvent.emit('bookmark', page, req.user);
     }
 
     bookmark.depopulate('page');
