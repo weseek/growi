@@ -161,6 +161,7 @@ export default class EditorContainer extends Container {
   // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {
     // Cancel the event
+    console.log('showUnsavedWarning');
     e.preventDefault();
     // display browser default message
     e.returnValue = '';
@@ -168,13 +169,18 @@ export default class EditorContainer extends Container {
   }
 
   disableUnsavedWarning() {
+    console.log('disableUnsavedWarning7');
     window.removeEventListener('beforeunload', this.showUnsavedWarning);
+    console.log('disableUnsavedWarning');
     this.isSetBeforeunloadEventHandler = false;
   }
 
   enableUnsavedWarning() {
+    console.log('enableUnsavedWarninga');
+    // invoked!!!!!!
     if (!this.isSetBeforeunloadEventHandler) {
       window.addEventListener('beforeunload', this.showUnsavedWarning);
+      console.log('enableUnsavedWarning');
       this.isSetBeforeunloadEventHandler = true;
     }
   }

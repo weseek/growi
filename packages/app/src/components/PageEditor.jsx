@@ -114,7 +114,7 @@ class PageEditor extends React.Component {
     const { pageContainer, editorContainer } = this.props;
 
     if (this.state.markdown !== prevState.markdown) {
-      if (pageContainer.state.markdown !== this.state.markdown) {
+      if (pageContainer.state.markdown !== this.state.markdown && !pageContainer.state.isConflictingOnSave) {
         editorContainer.enableUnsavedWarning();
       }
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { parseISO, format } from 'date-fns';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -29,10 +30,48 @@ class PageStatusAlert extends React.Component {
     this.getContentsForRevisionOutdated = this.getContentsForRevisionOutdated.bind(this);
     this.getContentsForDraftExistsAlert = this.getContentsForDraftExistsAlert.bind(this);
     this.getContentsForUpdatedAlert = this.getContentsForUpdatedAlert.bind(this);
+    this.onClickResolveConflict = this.onClickResolveConflict.bind(this);
   }
 
   refreshPage() {
     window.location.reload();
+  }
+
+  onClickResolveConflict() {
+
+    const { pageContainer, appContainer } = this.props;
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
+
+    const markdownOnEdit = pageEditor.getMarkdown();
+
+    pageContainer.setState({
+      isConflictingOnSave: true,
+      isConflictDiffModalOpen: true,
+      revisionsOnConflict: {
+        request: {
+          revisionId: '',
+          revisionBody: markdownOnEdit,
+          createdAt: format(new Date(), 'yyyy/MM/dd HH:mm:ss'),
+          userName: this.props.appContainer.currentUser.username,
+          userImgPath: this.props.appContainer.currentUser.imageUrlCached,
+        },
+        origin: {
+          revisionId: pageContainer.state.revisionId,
+          revisionBody: pageContainer.state.markdown,
+          createdAt: pageContainer.state.updatedAt.toString(),
+          userName: pageContainer.state.creator.username,
+          userImgPath: pageContainer.state.creator.imageUrlCached,
+        },
+        latest: {
+          revisionId: pageContainer.state.remoteRevisionId,
+          revisionBody: pageContainer.state.remoteRevisionBody,
+          createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt), 'yyyy/MM/dd HH:mm:ss'),
+          userName: pageContainer.state.lastUpdateUsername.toString(),
+          userImgPath: pageContainer.state.lastUpdateUserImagePath,
+        },
+      },
+    });
+
   }
 
   getContentsForSomeoneEditingAlert() {
@@ -51,7 +90,10 @@ class PageStatusAlert extends React.Component {
   }
 
   getContentsForRevisionOutdated() {
-    const { t, pageContainer } = this.props;
+    const { t, pageContainer, appContainer } = this.props;
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
+    const isEditScreen = pageEditor != null;
+
     return [
       ['bg-warning', 'd-hackmd-none'],
       <>
@@ -63,50 +105,18 @@ class PageStatusAlert extends React.Component {
           <i className="icon-fw icon-reload mr-1"></i>
           {t('Load latest')}
         </button>
-        <button
-          type="button"
-          onClick={() => {
-
-            const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
-            let markdownOnEdit = '';
-            // when page mode is not view
-            if (pageEditor != null) {
-              markdownOnEdit = pageEditor.getMarkdown();
-            }
-            // create function about following lines
-            // when isconflictingonsave no change
-            pageContainer.setState({
-              isConflictDiffModalOpen: true,
-              revisionsOnConflict: {
-                request: {
-                  revisionId: '',
-                  revisionBody: markdownOnEdit,
-                  createdAt: (new Date()).toString(),
-                  userName: this.props.appContainer.currentUser.username, // required
-                  userImgPath: this.props.appContainer.currentUser.imageUrlCached, // required
-                },
-                origin: {
-                  revisionId: pageContainer.state.revisionId,
-                  revisionBody: pageContainer.state.markdown,
-                  createdAt: pageContainer.state.updatedAt.toString(),
-                  userName: pageContainer.state.creator.username,
-                  userImgPath: pageContainer.state.creator.imageUrlCached,
-                },
-                latest: {
-                  revisionId: pageContainer.state.remoteRevisionId,
-                  revisionBody: pageContainer.state.remoteRevisionBody,
-                  createdAt: pageContainer.state.remoteRevisionUpdateAt.toString(), // retrieve from page container
-                  userName: pageContainer.state.lastUpdateUsername,
-                  userImgPath: pageContainer.state.lastUpdateUserImagePath, // retrieve from page container
-                },
-              },
-            });
-          }}
-          className="btn btn-outline-white"
-        >
-          <i className="fa fa-fw fa-file-text-o mr-1"></i>
-          {t('modal_resolve_conflict.resolve_conflict')}
-        </button>
+        {isEditScreen
+          && (
+            <button
+              type="button"
+              onClick={this.onClickResolveConflict}
+              className="btn btn-outline-white"
+            >
+              <i className="fa fa-fw fa-file-text-o mr-1"></i>
+              {t('modal_resolve_conflict.resolve_conflict')}
+            </button>
+          )
+        }
       </>,
     ];
   }
