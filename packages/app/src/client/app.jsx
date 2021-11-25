@@ -118,6 +118,8 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
+
+  'growi-context-extractor': <ContextExtractor />, // use static swr
 });
 
 // additional definitions if data exists
@@ -131,7 +133,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
@@ -155,23 +156,42 @@ if (pageContainer.state.path != null) {
   });
 }
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <SWRConfig value={swrGlobalConfiguration}>
-            <Provider inject={injectableContainers}>
-              {componentMappings[key]}
-            </Provider>
-          </SWRConfig>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <SWRConfig value={swrGlobalConfiguration}>
+              <Provider inject={injectableContainers}>
+                {componentMappings[key]}
+              </Provider>
+            </SWRConfig>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+ReactDOM.render(
+  <I18nextProvider i18n={i18n}>
+    <ErrorBoundary>
+      <SWRConfig value={swrGlobalConfiguration}>
+        <Provider inject={injectableContainers}>
+          {componentMappings['growi-context-extractor']}
+        </Provider>
+      </SWRConfig>
+    </ErrorBoundary>
+  </I18nextProvider>,
+  elem,
+  renderMainComponents,
+);
+
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

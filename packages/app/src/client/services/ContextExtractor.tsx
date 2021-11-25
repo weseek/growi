@@ -54,7 +54,10 @@ const ContextExtractor: FC = () => {
   /*
    * use static swr
    */
+  // App
   useCurrentUser(currentUser);
+
+  // Page
   useCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
