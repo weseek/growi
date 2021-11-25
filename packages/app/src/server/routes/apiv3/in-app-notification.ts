@@ -29,6 +29,10 @@ module.exports = (crowi) => {
       limit,
     };
 
+    // set in-app-notification status to categorize
+    if (req.query.status != null) {
+      Object.assign(queryOptions, { status: req.query.status });
+    }
 
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
 
@@ -93,6 +97,18 @@ module.exports = (crowi) => {
       const notification = await inAppNotificationService.open(user, id);
       const result = { notification };
       return res.apiv3(result);
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
+
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const user = req.user;
+
+    try {
+      await inAppNotificationService.updateAllNotificationsAsOpened(user);
+      return res.apiv3();
     }
     catch (err) {
       return res.apiv3Err(err);

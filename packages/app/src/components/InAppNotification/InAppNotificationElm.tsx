@@ -104,7 +104,7 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
       <div className="p-2 mr-2 d-flex align-items-center">
-        <span className={`${notification.status === 'UNOPENED' && 'grw-unopend-notification'} rounded-circle mr-3`}></span>
+        <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
         {renderActionUserPictures()}
       </div>
       <div className="p-2">
