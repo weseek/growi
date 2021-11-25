@@ -24,7 +24,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
 
   // commonize notification lists by 81953
-  const AllInAppNotificationList = () => {
+  const InAppNotificationCategory = () => {
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
     const { data: notificationData } = useSWRxInAppNotifications(limit, offset);
@@ -115,7 +115,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const navTabMapping = {
     user_infomation: {
       Icon: () => <></>,
-      Content: AllInAppNotificationList,
+      Content: () => InAppNotificationCategory,
       i18n: t('in_app_notification.all'),
       index: 0,
     },
