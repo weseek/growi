@@ -572,7 +572,7 @@ export default class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-      config[doc.ns][doc.key] = JSON.parse(doc.value);
+      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);
