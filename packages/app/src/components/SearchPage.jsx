@@ -27,9 +27,9 @@ class SearchPage extends React.Component {
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
-      searchedPages: [],
+      searchResults: [],
       searchResultMeta: {},
-      focusedPage: {},
+      focusedSearchResultData: {},
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
@@ -128,7 +128,7 @@ class SearchPage extends React.Component {
       this.setState({
         searchingKeyword: '',
         searchedKeyword: '',
-        searchedPages: [],
+        searchResults: [],
         searchResultMeta: {},
         searchResultCount: 0,
         activePage: 1,
@@ -152,10 +152,10 @@ class SearchPage extends React.Component {
       if (res.data.length > 0) {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: res.data,
+          searchResults: res.data,
           searchResultMeta: res.meta,
           searchResultCount: res.meta.total,
-          focusedPage: res.data[0],
+          focusedSearchResultData: res.data[0],
           // reset active page if keyword changes, otherwise set the current state
           activePage: this.state.searchedKeyword === keyword ? this.state.activePage : 1,
         });
@@ -163,10 +163,10 @@ class SearchPage extends React.Component {
       else {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: [],
+          searchResults: [],
           searchResultMeta: {},
           searchResultCount: 0,
-          focusedPage: {},
+          focusedSearchResultData: {},
           activePage: 1,
         });
       }
@@ -177,11 +177,11 @@ class SearchPage extends React.Component {
   }
 
   selectPage= (pageId) => {
-    const index = this.state.searchedPages.findIndex((page) => {
-      return page._id === pageId;
+    const index = this.state.searchResults.findIndex(({ pageData }) => {
+      return pageData._id === pageId;
     });
     this.setState({
-      focusedPage: this.state.searchedPages[index],
+      focusedSearchResultData: this.state.searchResults[index],
     });
   }
 
@@ -199,7 +199,7 @@ class SearchPage extends React.Component {
       <SearchResultContent
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
-        focusedPage={this.state.focusedPage}
+        focusedSearchResultData={this.state.focusedSearchResultData}
       >
       </SearchResultContent>
     );
@@ -208,8 +208,8 @@ class SearchPage extends React.Component {
   renderSearchResultList = () => {
     return (
       <SearchResultList
-        pages={this.state.searchedPages || []}
-        focusedPage={this.state.focusedPage}
+        pages={this.state.searchResults || []}
+        focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPages={this.state.selectedPages || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
