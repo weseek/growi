@@ -27,8 +27,11 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     let categoryStatus;
 
-    if (status === InAppNotificationStatuses.STATUS_UNOPENED) {
-      categoryStatus = InAppNotificationStatuses.STATUS_UNOPENED;
+    switch (status) {
+      case InAppNotificationStatuses.STATUS_UNOPENED:
+        categoryStatus = InAppNotificationStatuses.STATUS_UNOPENED;
+        break;
+      default:
     }
 
     const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset, categoryStatus);
