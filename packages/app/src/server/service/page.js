@@ -54,7 +54,15 @@ class PageService {
       }
     });
 
-    // TODO 81841
+    // delete
+    this.pageEvent.on('delete', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
 
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
@@ -138,8 +146,6 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', renamedPage, user);
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;

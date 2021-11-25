@@ -11,7 +11,8 @@ interface Props {
   notification: IInAppNotification & HasObjectId
 }
 
-const InAppNotificationElm = (props: Props): JSX.Element => {
+// TODO 81946 Return to not nullable
+const InAppNotificationElm = (props: Props): JSX.Element | null => {
 
   const { notification } = props;
 
@@ -66,7 +67,12 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   }, []);
 
   const actionUsers = getActionUsers();
-  const pagePath = { path: props.notification.target.path };
+
+  // TODO 81946 Return to not nullable
+  const pagePath = { path: props.notification.target?.path };
+  if (pagePath.path == null) {
+    return null;
+  }
 
   const actionType: string = notification.action;
   let actionMsg: string;
@@ -80,6 +86,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     case 'PAGE_RENAME':
       actionMsg = 'renamed';
       actionIcon = 'icon-action-redo';
+      break;
+    case 'PAGE_DELETE':
+      actionMsg = 'deleted';
+      actionIcon = 'icon-trash';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
