@@ -180,15 +180,9 @@ const renderMainComponents = () => {
 const elem = document.getElementById('growi-context-extractor');
 if (elem != null) {
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <SWRConfig value={swrGlobalConfiguration}>
-          <Provider inject={injectableContainers}>
-            {componentMappings['growi-context-extractor']}
-          </Provider>
-        </SWRConfig>
-      </ErrorBoundary>
-    </I18nextProvider>,
+    <SWRConfig value={swrGlobalConfiguration}>
+      {componentMappings['growi-context-extractor']}
+    </SWRConfig>,
     elem,
     renderMainComponents,
   );
