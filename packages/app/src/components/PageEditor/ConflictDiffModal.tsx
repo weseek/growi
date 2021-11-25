@@ -49,6 +49,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+    editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,

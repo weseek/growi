@@ -66,7 +66,7 @@ class PageStatusAlert extends React.Component {
           revisionId: pageContainer.state.remoteRevisionId,
           revisionBody: pageContainer.state.remoteRevisionBody,
           createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt), 'yyyy/MM/dd HH:mm:ss'),
-          userName: pageContainer.state.lastUpdateUsername.toString(),
+          userName: pageContainer.state.lastUpdateUsername,
           userImgPath: pageContainer.state.lastUpdateUserImagePath,
         },
       },

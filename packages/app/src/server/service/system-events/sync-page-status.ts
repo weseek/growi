@@ -103,6 +103,7 @@ class SyncPageStatusService implements S2sMessageHandlable {
       logger.debug('\'update\' event emitted.');
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
+
       // emit to the room for each page
       socketIoService.getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
