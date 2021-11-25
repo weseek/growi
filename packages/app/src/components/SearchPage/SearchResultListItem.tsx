@@ -7,11 +7,7 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { IPageSearchResultData } from '../../interfaces/search';
 
-
-import loggerFactory from '~/utils/logger';
 import { IPageHasId } from '~/interfaces/page';
-
-const logger = loggerFactory('growi:searchResultList');
 
 type PageItemControlProps = {
   page: IPageHasId,

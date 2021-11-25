@@ -5,13 +5,13 @@ import React, { useState } from 'react';
 import {
   Button, Popover, PopoverBody,
 } from 'reactstrap';
+import { FootstampIcon } from '@growi/ui';
 import UserPictureList from './UserPictureList';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageContainer from '~/client/services/PageContainer';
 
-import FootstampIcon from '../FootstampIcon';
 
 /* eslint react/no-multi-comp: 0, react/prop-types: 0 */
 
