@@ -8,5 +8,5 @@ const userFetcher = (endpoint:string, ids:string) => {
 
 export const useSWRxLikerList = (likerIds?: string[]): SWRResponse<IUser[], Error> => {
   const shouldFetch = likerIds != null && likerIds.length > 0;
-  return useSWR<any>(shouldFetch ? ['/users.list', [...likerIds].join(',')] : null, userFetcher);
+  return useSWR(shouldFetch ? ['/users.list', [...likerIds].join(',')] : null, userFetcher);
 };
