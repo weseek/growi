@@ -24,10 +24,17 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
 
   // commonize notification lists by 81953
-  const InAppNotificationCategoryByStatus = (status?) => {
+  const InAppNotificationCategoryByStatus = (status?: string) => {
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
-    const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset);
+
+    let categoryStatus;
+
+    if (status === 'UNOPENED') {
+      categoryStatus = InAppNotificationStatuses.STATUS_UNOPENED;
+    }
+
+    const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset, categoryStatus);
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
