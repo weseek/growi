@@ -31,7 +31,7 @@ const ContextExtractor: FC = () => {
   const createdAt = mainContent?.getAttribute('data-page-created-at');
   const updatedAt = mainContent?.getAttribute('data-page-updated-at');
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
-  const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || '') != null;
+  const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const isTrashPage = _isTrashPage(path);
   const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull);
   const isDeletable = JSON.parse(mainContent?.getAttribute('data-page-is-deletable') || jsonNull);
