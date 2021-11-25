@@ -18,12 +18,9 @@ type Props = {
 
 const InAppNotificationPageBody: FC<Props> = (props) => {
   const { appContainer } = props;
+  const limit = appContainer.config.pageLimitationXL;
   const { t } = useTranslation();
 
-  const limit = appContainer.config.pageLimitationXL;
-
-
-  // commonize notification lists by 81953
   const InAppNotificationCategoryByStatus = (status?: string) => {
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
