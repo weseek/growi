@@ -96,7 +96,6 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isConflictingOnSave: false,
       isConflictDiffModalOpen: false,
 
       revisionsOnConflict: {},

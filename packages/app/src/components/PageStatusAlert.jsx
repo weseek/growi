@@ -45,7 +45,6 @@ class PageStatusAlert extends React.Component {
     const markdownOnEdit = pageEditor.getMarkdown();
 
     pageContainer.setState({
-      isConflictingOnSave: true,
       isConflictDiffModalOpen: true,
       revisionsOnConflict: {
         request: {
@@ -156,7 +155,7 @@ class PageStatusAlert extends React.Component {
 
   render() {
     const {
-      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
     } = this.props.pageContainer.state;
 
     const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
@@ -173,7 +172,7 @@ class PageStatusAlert extends React.Component {
 
     let getContentsFunc = null;
     // when conflicting on save
-    if (isConflictingOnSave || isConflictOnEdit) {
+    if (isConflictOnEdit) {
       getContentsFunc = this.getContentsForRevisionOutdated;
     }
     // when remote revision is newer than both
