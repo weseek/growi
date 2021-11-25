@@ -13,6 +13,7 @@ type Props = {
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
+  onClickDeleteAllButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
@@ -35,12 +36,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
-  const onDeleteSelectedPageHandler = () => {
-    console.log('onDeleteSelectedPageHandler is called');
-    // TODO: implement this function to delete selected pages.
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-  };
-
   return (
     <div className="">
       <div className="search-page-input sps sps--abv">
@@ -56,7 +51,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <DeleteSelectedPageGroup
           isSelectAllCheckboxDisabled={searchResultCount === 0}
           selectAllCheckboxType={props.selectAllCheckboxType}
-          onClickDeleteButton={onDeleteSelectedPageHandler}
+          onClickDeleteButton={props.onClickDeleteAllButton}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">
