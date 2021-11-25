@@ -86,8 +86,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         >
           <i className="icon-control-play"></i>
         </button>
-        <a href={page._id} className="d-block flex-grow-1">
-          <p className="grw-pagetree-title">{nodePath.basename(page.path as string) || '/'}</p>
+        <a href={page._id} className="flex-grow-1">
+          <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
         <div className="grw-pagetree-control">
           Ctrl
