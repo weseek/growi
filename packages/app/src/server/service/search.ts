@@ -3,10 +3,11 @@ import RE2 from 're2';
 
 import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, QueryTerms,
 } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -22,6 +23,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
   isErrorOccuredOnSearching: boolean | null
 
   delegator: any & SearchDelegator
+
+  nqDelegators: {[delegatorName:string]: SearchDelegator} // TODO: initialize
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -232,15 +235,44 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator> {
-    // TODO: impl resolve
-    return {} as SearchDelegator;
+    const { queryString, nqNames } = parsedQuery;
+
+    if (nqNames.length === 0) {
+      return this.delegator.search(queryString);
+    }
+
+    // find NamedQuery
+    const NamedQuery: NamedQueryModel = mongoose.model('NamedQuery');
+    const namedQueries = await NamedQuery.find({ name: { $in: nqNames } });
+
+    const delegatableNamedQuery = namedQueries.filter(nq => nq.delegatorName != null)[0]; // only the first named query is valid
+
+    if (delegatableNamedQuery == null) {
+      // expand aliasOf
+      // search with new qs
+    }
+
+    const nqDelegator = this.nqDelegators[delegatableNamedQuery.delegatorName as SearchDelegatorName];
+    if (nqDelegator != null) {
+      return nqDelegator.search(queryString);
+    }
+
+    return this.delegator.search();
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
-    // TODO: parse
-    // TODO: resolve
+    // parse
+    const parsedQuery = await this.parseSearchQuery(keyword);
+    // resolve
+    const delegator = await this.resolve(parsedQuery);
+
     // TODO: search
     return {} as Result<any> & MetaData;
+  }
+
+  async parseAliasOf(namedQueries: NamedQueryDocument[]): QueryTerms {
+    const expandedAliasOf = namedQueries.map(nq => nq.aliasOf as string).reduce((a, b) => a + b);
+
   }
 
 }
