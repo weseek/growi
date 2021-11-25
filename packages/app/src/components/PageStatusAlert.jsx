@@ -170,13 +170,13 @@ class PageStatusAlert extends React.Component {
 
     let getContentsFunc = null;
 
-    // when remote revision is newer than both
-    if (isHackmdDocumentOutdated && isRevisionOutdated) {
-      getContentsFunc = this.getContentsForUpdatedAlert;
-    }
     // when conflicting on save
-    else if (isRevisionOutdated) {
+    if (isRevisionOutdated) {
       getContentsFunc = this.getContentsForRevisionOutdated;
+    }
+    // when remote revision is newer than both
+    else if (isHackmdDocumentOutdated && isRevisionOutdated) {
+      getContentsFunc = this.getContentsForUpdatedAlert;
     }
     // when someone editing with HackMD
     else if (isHackmdDraftUpdatingInRealtime) {
