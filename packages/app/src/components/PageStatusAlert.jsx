@@ -40,8 +40,8 @@ class PageStatusAlert extends React.Component {
   onClickResolveConflict() {
 
     const { pageContainer, appContainer } = this.props;
-    const pageEditor = appContainer.getComponentInstance('PageEditor');
 
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
     const markdownOnEdit = pageEditor.getMarkdown();
 
     pageContainer.setState({
@@ -57,7 +57,7 @@ class PageStatusAlert extends React.Component {
         origin: {
           revisionId: pageContainer.state.revisionId,
           revisionBody: pageContainer.state.markdown,
-          createdAt: pageContainer.state.updatedAt.toString(),
+          createdAt: pageContainer.state.updatedAt,
           userName: pageContainer.state.creator.username,
           userImgPath: pageContainer.state.creator.imageUrlCached,
         },
@@ -89,9 +89,16 @@ class PageStatusAlert extends React.Component {
   }
 
   getContentsForRevisionOutdated() {
-    const { t, pageContainer, appContainer } = this.props;
+    const { t, appContainer, pageContainer } = this.props;
     const pageEditor = appContainer.getComponentInstance('PageEditor');
-    const isEditScreen = pageEditor != null;
+
+    let markdownOnEdit = '';
+    let isConflictOnEdit = false;
+
+    if (pageEditor != null) {
+      markdownOnEdit = pageEditor.getMarkdown();
+      isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
+    }
 
     return [
       ['bg-warning', 'd-hackmd-none'],
@@ -104,7 +111,7 @@ class PageStatusAlert extends React.Component {
           <i className="icon-fw icon-reload mr-1"></i>
           {t('Load latest')}
         </button>
-        {isEditScreen
+        {isConflictOnEdit
           && (
             <button
               type="button"
@@ -158,26 +165,18 @@ class PageStatusAlert extends React.Component {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
     } = this.props.pageContainer.state;
 
-    const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
-    let markdownOnEdit = '';
-
-    // when page mode is not view
-    if (pageEditor != null) {
-      markdownOnEdit = pageEditor.getMarkdown();
-    }
-
     const isRevisionOutdated = revisionId !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
-    const isConflictOnEdit = isRevisionOutdated && (markdownOnEdit !== this.props.pageContainer.state.markdown);
 
     let getContentsFunc = null;
-    // when conflicting on save
-    if (isConflictOnEdit) {
-      getContentsFunc = this.getContentsForRevisionOutdated;
-    }
+
     // when remote revision is newer than both
-    else if (isHackmdDocumentOutdated && isRevisionOutdated) {
+    if (isHackmdDocumentOutdated && isRevisionOutdated) {
       getContentsFunc = this.getContentsForUpdatedAlert;
+    }
+    // when conflicting on save
+    else if (isRevisionOutdated) {
+      getContentsFunc = this.getContentsForRevisionOutdated;
     }
     // when someone editing with HackMD
     else if (isHackmdDraftUpdatingInRealtime) {
