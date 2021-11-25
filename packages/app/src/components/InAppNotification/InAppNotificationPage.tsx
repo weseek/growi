@@ -21,22 +21,18 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const limit = appContainer.config.pageLimitationXL;
-  const [activePageOfAllNotificationCat, setActivePage] = useState(1);
-  const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
 
-
-  const setAllNotificationPageNumber = (selectedPageNumber): void => {
-    setActivePage(selectedPageNumber);
-  };
-
-  const setUnopenedPageNumber = (selectedPageNumber): void => {
-    setActiveUnopenedNotificationPage(selectedPageNumber);
-  };
 
   // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
+    const [activePageOfAllNotificationCat, setActivePage] = useState(1);
     const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
     const { data: allNotificationData } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
+
+    const setAllNotificationPageNumber = (selectedPageNumber): void => {
+      setActivePage(selectedPageNumber);
+    };
+
 
     if (allNotificationData == null) {
       return (
@@ -67,10 +63,15 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const UnopenedInAppNotificationList = () => {
+    const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
     const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
     const {
       data: unopendNotificationData, mutate,
     } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
+
+    const setUnopenedPageNumber = (selectedPageNumber): void => {
+      setActiveUnopenedNotificationPage(selectedPageNumber);
+    };
 
     const updateUnopendNotificationStatusesToOpened = async() => {
       await apiv3Put('/in-app-notification/all-statuses-open');
