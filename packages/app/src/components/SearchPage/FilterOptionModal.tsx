@@ -10,11 +10,10 @@ type Props = {
   isOpen: boolean,
   excludeUnderUserPage: boolean,
   excludeUnderTrashPage: boolean,
-  keyword: string,
   onClose?: () => void,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
-  onClickFilteringSearchResultButton?: (data: {keyword: string}) => void,
+  onClickFilteringSearchResultButton?: () => void,
 }
 
 const FilterOptionModal: FC<Props> = (props: Props) => {
@@ -22,7 +21,8 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const {
-    isOpen, keyword, onClose, switchExcludingUnderUserPage, switchExcludingUnderTrashPage,
+    isOpen, onClose, switchExcludingUnderUserPage, switchExcludingUnderTrashPage,
+    excludeUnderUserPage, excludeUnderTrashPage,
   } = props;
 
   const onCloseModal = () => {
@@ -33,7 +33,8 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
 
   const onClickFilteringSearchResultButton = () => {
     if (props.onClickFilteringSearchResultButton != null) {
-      props.onClickFilteringSearchResultButton({ keyword });
+      props.onClickFilteringSearchResultButton();
+      onCloseModal();
     }
   };
 
@@ -50,7 +51,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 onClick={switchExcludingUnderUserPage}
-                checked={}
+                checked={!excludeUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -61,7 +62,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 onClick={switchExcludingUnderTrashPage}
-                checked={}
+                checked={!excludeUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
@@ -72,8 +73,6 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-secondary"
-          // todo: implement this method
-          // refs: https://redmine.weseek.co.jp/issues/81845
           onClick={onClickFilteringSearchResultButton}
         >{t('search_result.narrow_donw')}
         </button>

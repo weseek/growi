@@ -11,7 +11,7 @@ type Props = {
   appContainer: AppContainer,
   excludeUnderUserPage: boolean,
   excludeUnderTrashPage: boolean,
-  onSearchInvoked: (data : any[]) => boolean,
+  onSearchInvoked: (data: {keyword: string}) => boolean,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
 }
@@ -59,12 +59,17 @@ const SearchControl: FC <Props> = (props: Props) => {
     setIsFileterOptionModalShown(false);
   };
 
+  const onClickFilteringSearchResultButton = () => {
+    if (props.onSearchInvoked != null) {
+      props.onSearchInvoked({ keyword: props.searchingKeyword });
+    }
+  };
+
   const rednerFilterOptionModal = () => {
     return (
       <FilterOptionModal
-        keyword={props.searchingKeyword}
         isOpen={isFileterOptionModalShown || false}
-        onClickFilteringSearchResultButton={props.onSearchInvoked}
+        onClickFilteringSearchResultButton={onClickFilteringSearchResultButton}
         onClose={closeFilterOptionModalHandler}
         switchExcludingUnderUserPage={switchExcludingUnderUserPage}
         switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
