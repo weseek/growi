@@ -140,8 +140,8 @@ export default class InAppNotificationService {
   }
 
   updateAllNotificationsAsOpened = async function(user: IUser & HasObjectId): Promise<void> {
-    const filter = { user: user._id, status: STATUS_OPENED };
-    const options = { status: STATUS_UNOPENED };
+    const filter = { user: user._id, status: STATUS_UNOPENED };
+    const options = { status: STATUS_OPENED };
 
     await InAppNotification.updateMany(filter, options);
     return;
