@@ -51,11 +51,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return this.isConfigured && !this.isErrorOccuredOnHealthcheck && !this.isErrorOccuredOnSearching;
   }
 
-  get isSearchboxEnabled() {
-    const uri = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
-    return uri != null && uri.length > 0;
-  }
-
   get isElasticsearchEnabled() {
     const uri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
     return uri != null && uri.length > 0;
@@ -64,14 +59,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
   generateDelegator() {
     logger.info('Initializing search delegator');
 
-    if (this.isSearchboxEnabled) {
-      const SearchboxDelegator = require('./search-delegator/searchbox');
-      logger.info('Searchbox is enabled');
-      return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
-    }
     if (this.isElasticsearchEnabled) {
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
-      logger.info('Elasticsearch (not Searchbox) is enabled');
+      logger.info('Elasticsearch is enabled');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
 

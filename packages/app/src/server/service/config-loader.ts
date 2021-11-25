@@ -262,12 +262,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 8000, // msec
   },
-  SEARCHBOX_SSL_URL: {
-    ns:      'crowi',
-    key:     'app:searchboxSslUrl',
-    type:    ValueType.STRING,
-    default: null,
-  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',

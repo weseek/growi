@@ -1,8 +1,21 @@
+/* eslint-disable camelcase */
 import { SearchDelegatorName } from '~/interfaces/named-query';
 
 
+export type QueryTerms = {
+  match: string[],
+  not_match: string[],
+  phrase: string[],
+  not_phrase: string[],
+  prefix: string[],
+  not_prefix: string[],
+  tag: string[],
+  not_tag: string[],
+}
+
 export type ParsedQuery = {
   queryString: string // original query string in request
+  terms: QueryTerms // terms found in query string
   nqNames: string[] // possible NamedQuery names found in query string
 }
 
