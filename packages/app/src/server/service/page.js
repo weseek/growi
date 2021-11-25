@@ -79,7 +79,12 @@ class PageService {
 
     // bookmark
     this.pageEvent.on('bookmark', async(page, user) => {
-      console.log('ブックマークされたンゴ！');
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     });
   }
 
