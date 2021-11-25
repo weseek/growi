@@ -162,7 +162,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     // when Normal Query
     if (!regexp.test(queryString)) {
-      return { terms: this.parseQueryString(queryString) };
+      return { queryString, terms: this.parseQueryString(queryString) };
     }
 
     // when Named Query
@@ -178,17 +178,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     let parsedQuery;
     if (aliasOf != null) {
-      parsedQuery = { terms: this.parseQueryString(aliasOf) };
+      parsedQuery = { queryString, terms: this.parseQueryString(aliasOf) };
     }
     if (delegatorName != null) {
-      parsedQuery = { delegatorName };
+      parsedQuery = { queryString, delegatorName };
     }
 
     return parsedQuery;
   }
 
   async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
-    const { terms, delegatorName } = parsedQuery;
+    const { queryString, terms, delegatorName } = parsedQuery;
 
     if (delegatorName != null) {
       const nqDelegator = this.nqDelegators[delegatorName];
@@ -213,7 +213,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return delegator.search(data, user, userGroups, searchOpts);
   }
 
-  parseQueryString(_queryString: string): QueryTerms {
+  parseQueryString(queryString: string): QueryTerms {
     // terms
     const matchWords: string[] = [];
     const notMatchWords: string[] = [];
@@ -223,9 +223,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const notPrefixPaths: string[] = [];
     const tags: string[] = [];
     const notTags: string[] = [];
-
-    let queryString = _queryString.trim();
-    queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
 
     // First: Parse phrase keywords
     const phraseRegExp = new RegExp(/(-?"[^"]+")/g);

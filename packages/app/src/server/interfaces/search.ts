@@ -13,7 +13,7 @@ export type QueryTerms = {
   not_tag: string[],
 }
 
-export type ParsedQuery = { terms?: QueryTerms, delegatorName?: string }
+export type ParsedQuery = { queryString: string, terms?: QueryTerms, delegatorName?: string }
 
 export interface SearchQueryParser {
   parseSearchQuery(queryString: string): Promise<ParsedQuery>
