@@ -210,7 +210,7 @@ module.exports = function(crowi, app) {
    * @apiGroup Tag
    *
    * @apiParam {Number} limit
-   * @apiParam {Number} skip
+   * @apiParam {Number} offset
    */
   api.list = async function(req, res) {
     const limit = +req.query.limit || 50;
