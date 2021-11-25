@@ -159,9 +159,6 @@ class PageStatusAlert extends React.Component {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
     } = this.props.pageContainer.state;
 
-    console.log('pageContaineris', this.props.pageContainer);
-    console.log('appContaineris', this.props.appContainer);
-
     const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
     let markdownOnEdit = '';
 

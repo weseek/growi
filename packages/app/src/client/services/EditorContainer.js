@@ -177,7 +177,6 @@ export default class EditorContainer extends Container {
 
   enableUnsavedWarning() {
     console.log('enableUnsavedWarninga');
-    // invoked!!!!!!
     if (!this.isSetBeforeunloadEventHandler) {
       window.addEventListener('beforeunload', this.showUnsavedWarning);
       console.log('enableUnsavedWarning');

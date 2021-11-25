@@ -9,10 +9,6 @@ class S2cMessagePageUpdated {
   constructor(page, user) {
     const serializedPage = serializePageSecurely(page);
 
-    console.log('pageis', page);
-    console.log('serializedPageis', serializedPage);
-    console.log('useris', user);
-
     const {
       _id, revision, updatedAt, revisionHackmdSynced, hasDraftOnHackmd,
     } = serializedPage;
