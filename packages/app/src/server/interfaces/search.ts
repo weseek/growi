@@ -15,7 +15,6 @@ export type QueryTerms = {
 
 export type ParsedQuery = {
   queryString: string // original query string in request
-  terms: QueryTerms // terms found in query string
   nqNames: string[] // possible NamedQuery names found in query string
 }
 
@@ -23,13 +22,13 @@ export interface SearchQueryParser {
   parseSearchQuery(queryString: string): Promise<ParsedQuery>
 }
 
-export interface SearchResolver {
-  resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator>
+export interface SearchResolver{
+  resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]>
 }
 
 export interface SearchDelegator<T = unknown> {
   name?: SearchDelegatorName
-  search(queryString: string | null, user, userGroups, option): Promise<Result<T> & MetaData>
+  search(data: SearchableData | null, user, userGroups, option): Promise<Result<T> & MetaData>
 }
 
 export type Result<T> = {
@@ -38,4 +37,9 @@ export type Result<T> = {
 
 export type MetaData = {
   meta: { [key:string]: any }
+}
+
+export type SearchableData = {
+  queryString: string
+  terms: QueryTerms
 }

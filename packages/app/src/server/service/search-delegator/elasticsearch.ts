@@ -9,7 +9,9 @@ import streamToPromise from 'stream-to-promise';
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { PageDocument, PageModel } from '../../models/page';
-import { MetaData, SearchDelegator, Result } from '../../interfaces/search';
+import {
+  MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
+} from '../../interfaces/search';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -638,11 +640,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     return query;
   }
 
-  appendCriteriaForQueryString(query, queryString) {
+  appendCriteriaForQueryString(query, parsedKeywords: QueryTerms) {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
-
-    // parse
-    const parsedKeywords = {} as any; // TODO: pass parsedQuery to this method
 
     if (parsedKeywords.match.length > 0) {
       const q = {
@@ -835,11 +834,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(queryString: string, user, userGroups, option): Promise<Result<Data> & MetaData> {
+  async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
+    const { queryString, terms } = data;
+
     const from = option.offset || null;
     const size = option.limit || null;
     const query = this.createSearchQuerySortedByScore();
-    this.appendCriteriaForQueryString(query, queryString);
+    this.appendCriteriaForQueryString(query, terms);
 
     await this.filterPagesByViewer(query, user, userGroups);
 

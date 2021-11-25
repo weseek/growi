@@ -3,7 +3,7 @@ import RE2 from 're2';
 
 import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
@@ -11,6 +11,13 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+const normalizeQueryString = (_queryString: string): string => {
+  let queryString = _queryString.trim();
+  queryString = queryString.replace(/\s+/g, ' ');
+
+  return queryString;
+};
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -147,6 +154,62 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
+    const nqNames: string[] = [];
+    const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+
+    const queryString = normalizeQueryString(_queryString);
+
+    queryString.split(' ').forEach((word) => {
+      const isNamedQuery = regexp.test(word);
+
+      if (isNamedQuery) {
+        nqNames.push(word.replace(/\[nq:|\]/g, '')); // remove '[nq:' and ']'
+      }
+    });
+
+    return { queryString: _queryString, nqNames };
+  }
+
+  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
+    const { queryString, nqNames } = parsedQuery;
+
+    if (nqNames.length === 0) {
+      return this.delegator.search(queryString);
+    }
+
+    // find NamedQuery
+    const NamedQuery: NamedQueryModel = mongoose.model('NamedQuery');
+    const namedQueries = await NamedQuery.find({ name: { $in: nqNames } });
+
+    const delegatableNamedQuery = namedQueries.filter(nq => nq.delegatorName != null)[0]; // only the first named query is valid
+
+    if (delegatableNamedQuery == null) {
+      // expand aliasOf
+      // search with new qs
+    }
+
+    const nqDelegator = this.nqDelegators[delegatableNamedQuery.delegatorName as SearchDelegatorName];
+    if (nqDelegator != null) {
+      return [nqDelegator, null];
+    }
+
+    return [this.delegator, null];
+
+    // TODO: impl resolve
+    return [{}, {}] as [SearchDelegator, SearchableData];
+  }
+
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
+    // parse
+    const parsedQuery = await this.parseSearchQuery(keyword);
+    // resolve
+    const delegator = await this.resolve(parsedQuery);
+
+    // TODO: search
+    return {} as Result<any> & MetaData;
+  }
+
+  async parseQueryString(_queryString: string): Promise<QueryTerms> {
     // terms
     const matchWords: string[] = [];
     const notMatchWords: string[] = [];
@@ -156,8 +219,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const notPrefixPaths: string[] = [];
     const tags: string[] = [];
     const notTags: string[] = [];
-    // nqNames
-    const nqNames: string[] = [];
 
     let queryString = _queryString.trim();
     queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -190,13 +251,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
       const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
       // https://regex101.com/r/3qw9FQ/1
       const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
-      // https://regex101.com/r/FzDUvT/1
-      const isNamedQuery = (new RE2(/^\[nq:.+\]$/g)).test(word);
 
-      if (isNamedQuery) {
-        nqNames.push(word.replace(/\[nq:|\]/g, '')); // remove '[nq:' and ']'
-      }
-      else if (matchNegative != null) {
+      if (matchNegative != null) {
         if (matchNegative[1] === 'prefix:') {
           notPrefixPaths.push(matchNegative[2]);
         }
@@ -231,48 +287,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       not_tag: notTags,
     };
 
-    return { queryString: _queryString, terms, nqNames };
-  }
-
-  async resolve(parsedQuery: ParsedQuery): Promise<SearchDelegator> {
-    const { queryString, nqNames } = parsedQuery;
-
-    if (nqNames.length === 0) {
-      return this.delegator.search(queryString);
-    }
-
-    // find NamedQuery
-    const NamedQuery: NamedQueryModel = mongoose.model('NamedQuery');
-    const namedQueries = await NamedQuery.find({ name: { $in: nqNames } });
-
-    const delegatableNamedQuery = namedQueries.filter(nq => nq.delegatorName != null)[0]; // only the first named query is valid
-
-    if (delegatableNamedQuery == null) {
-      // expand aliasOf
-      // search with new qs
-    }
-
-    const nqDelegator = this.nqDelegators[delegatableNamedQuery.delegatorName as SearchDelegatorName];
-    if (nqDelegator != null) {
-      return nqDelegator.search(queryString);
-    }
-
-    return this.delegator.search();
-  }
-
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
-    // parse
-    const parsedQuery = await this.parseSearchQuery(keyword);
-    // resolve
-    const delegator = await this.resolve(parsedQuery);
-
-    // TODO: search
-    return {} as Result<any> & MetaData;
-  }
-
-  async parseAliasOf(namedQueries: NamedQueryDocument[]): QueryTerms {
-    const expandedAliasOf = namedQueries.map(nq => nq.aliasOf as string).reduce((a, b) => a + b);
-
+    return terms;
   }
 
 }
