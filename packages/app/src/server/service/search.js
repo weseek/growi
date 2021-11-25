@@ -68,6 +68,10 @@ class SearchService {
     pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
     pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
     pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
+    pageEvent.on('rename', () => {
+      this.delegator.syncPageDeleted.bind(this.delegator);
+      this.delegator.syncPageUpdated.bind(this.delegator);
+    });
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
