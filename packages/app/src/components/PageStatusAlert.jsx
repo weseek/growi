@@ -66,6 +66,13 @@ class PageStatusAlert extends React.Component {
         <button
           type="button"
           onClick={() => {
+
+            const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
+            let markdownOnEdit = '';
+            // when page mode is not view
+            if (pageEditor != null) {
+              markdownOnEdit = pageEditor.getMarkdown();
+            }
             // create function about following lines
             // when isconflictingonsave no change
             pageContainer.setState({
@@ -73,24 +80,24 @@ class PageStatusAlert extends React.Component {
               revisionsOnConflict: {
                 request: {
                   revisionId: '',
-                  revisionBody: 'markdownOnEdit',
+                  revisionBody: markdownOnEdit,
                   createdAt: (new Date()).toString(),
-                  userName: 'request.user', // required
-                  userImgPath: 'request user img', // required
+                  userName: this.props.appContainer.currentUser.username, // required
+                  userImgPath: this.props.appContainer.currentUser.imageUrlCached, // required
                 },
                 origin: {
-                  revisionId: pageContainer.revisionId,
+                  revisionId: pageContainer.state.revisionId,
                   revisionBody: pageContainer.state.markdown,
                   createdAt: pageContainer.state.updatedAt.toString(),
-                  userName: pageContainer.creator.name,
-                  userImgPath: pageContainer.creator.createdAt,
+                  userName: pageContainer.state.creator.username,
+                  userImgPath: pageContainer.state.creator.imageUrlCached,
                 },
                 latest: {
-                  revisionId: pageContainer.remoteRevisionId,
+                  revisionId: pageContainer.state.remoteRevisionId,
                   revisionBody: pageContainer.state.remoteRevisionBody,
-                  createdAt: (new Date()).toString(), // retrieve from page container
+                  createdAt: pageContainer.state.remoteRevisionUpdateAt.toString(), // retrieve from page container
                   userName: pageContainer.state.lastUpdateUsername,
-                  userImgPath: 'latest user img path', // retrieve from page container
+                  userImgPath: pageContainer.state.lastUpdateUserImagePath, // retrieve from page container
                 },
               },
             });
@@ -142,7 +149,8 @@ class PageStatusAlert extends React.Component {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
     } = this.props.pageContainer.state;
 
-    console.log('pageContainer is', this.props.pageContainer);
+    console.log('pageContaineris', this.props.pageContainer);
+    console.log('appContaineris', this.props.appContainer);
 
     const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
     let markdownOnEdit = '';

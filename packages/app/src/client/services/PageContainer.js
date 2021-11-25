@@ -88,8 +88,10 @@ export default class PageContainer extends Container {
       // latest(on remote) information
       remoteRevisionId: revisionId,
       remoteRevisionBody: null,
+      remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
+      lastUpdateUserImagePath:  mainContent.getAttribute('data-page-updated-at') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
@@ -365,8 +367,10 @@ export default class PageContainer extends Container {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
       remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+      lastUpdateUserImagePath: s2cMessagePageUpdated.lastUpdateUserImagePath,
     };
 
     if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
