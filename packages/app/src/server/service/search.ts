@@ -154,29 +154,41 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const delegatorNameObj = {
-      name: null,
-      isExist: false,
-    };
 
     const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RE2(/\[nq:|\]/g);
 
     const queryString = normalizeQueryString(_queryString);
 
-    const promises = queryString.split(' ').map(async(word) => {
-      const isNamedQuery = regexp.test(word);
+    // when Normal Query
+    if (!regexp.test(queryString)) {
+      return { terms: this.parseQueryString(queryString) };
+    }
 
-      if (isNamedQuery) {
-        const name = word.replace(/\[nq:|\]/g, ''); // remove '[nq:' and ']'
+    // when Named Query
+    const NamedQuery = mongoose.model('NamedQuery') as NamedQueryModel;
 
-      }
-    });
+    const name = queryString.replace(replaceRegexp, '');
+    const nq = await NamedQuery.findOne({ name });
+    if (nq == null) {
+      throw Error('Named Query not found.');
+    }
 
-    return { queryString: _queryString, delegatorName };
+    const { aliasOf, delegatorName } = nq;
+
+    let parsedQuery;
+    if (aliasOf != null) {
+      parsedQuery = { terms: this.parseQueryString(aliasOf) };
+    }
+    if (delegatorName != null) {
+      parsedQuery = { delegatorName };
+    }
+
+    return parsedQuery;
   }
 
   async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
-    const { queryString, delegatorName } = parsedQuery;
+    const { terms, delegatorName } = parsedQuery;
 
     if (delegatorName != null) {
       const nqDelegator = this.nqDelegators[delegatorName];
