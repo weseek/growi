@@ -33,7 +33,7 @@ class SearchPage extends React.Component {
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 0,
+      pagingLimit: this.props.appContainer.config.pageLimitationL,
       excludeUsersHome: true,
       excludeTrash: true,
     };
