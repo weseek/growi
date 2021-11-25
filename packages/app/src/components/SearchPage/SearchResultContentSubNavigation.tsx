@@ -24,7 +24,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
     appContainer, pageId, revisionId, path, isCompactMode, isSignleLineMode,
   } = props;
 
-  const { isTrashPage } = pagePathUtils;
+  const { isTrashPage, isDeletablePage } = pagePathUtils;
 
   const { data: tagInfoData, error: tagInfoError, mutate: mutateTagInfo } = useSWRTagsInfo(pageId);
 
@@ -42,6 +42,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   if (tagInfoError != null || tagInfoData == null) {
     return <></>;
   }
+  const isPageDeletable = isDeletablePage(path);
   const { isSharedUser } = appContainer;
   const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
@@ -62,7 +63,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
           pageId={pageId}
           revisionId={revisionId}
           path={path}
-          isDeletable
+          isDeletable={isPageDeletable}
           isAbleToDeleteCompletely
           willShowPageManagement={isAbleToShowPageManagement}
         >
