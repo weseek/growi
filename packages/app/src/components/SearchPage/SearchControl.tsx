@@ -47,7 +47,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <>
+    <div className="search-control-section">
       <div className="search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
@@ -96,7 +96,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
