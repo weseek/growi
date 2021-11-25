@@ -25,16 +25,16 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
   // commonize notification lists by 81953
   const AllInAppNotificationList = () => {
-    const [activePageOfAllNotificationCat, setActivePage] = useState(1);
-    const offsetOfAllNotificationCat = (activePageOfAllNotificationCat - 1) * limit;
-    const { data: allNotificationData } = useSWRxInAppNotifications(limit, offsetOfAllNotificationCat);
+    const [activePage, setActivePage] = useState(1);
+    const offset = (activePage - 1) * limit;
+    const { data: notificationData } = useSWRxInAppNotifications(limit, offset);
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
     };
 
 
-    if (allNotificationData == null) {
+    if (notificationData == null) {
       return (
         <div className="wiki">
           <div className="text-muted text-center">
@@ -47,12 +47,12 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     return (
       <>
-        <InAppNotificationList inAppNotificationData={allNotificationData} />
+        <InAppNotificationList inAppNotificationData={notificationData} />
         <PaginationWrapper
-          activePage={activePageOfAllNotificationCat}
+          activePage={activePage}
           changePage={setAllNotificationPageNumber}
-          totalItemsCount={allNotificationData.totalDocs}
-          pagingLimit={allNotificationData.limit}
+          totalItemsCount={notificationData.totalDocs}
+          pagingLimit={notificationData.limit}
           align="center"
           size="sm"
         />
