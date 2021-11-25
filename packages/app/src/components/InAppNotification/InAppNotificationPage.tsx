@@ -86,58 +86,6 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
     );
   };
 
-
-  // commonize notification lists by 81953
-  const UnopenedInAppNotificationList = () => {
-    const [activePageOfUnopenedNotificationCat, setActiveUnopenedNotificationPage] = useState(1);
-    const offsetOfUnopenedNotificationCat = (activePageOfUnopenedNotificationCat - 1) * limit;
-    const {
-      data: unopendNotificationData, mutate,
-    } = useSWRxInAppNotifications(limit, offsetOfUnopenedNotificationCat, InAppNotificationStatuses.STATUS_UNOPENED);
-
-    const setUnopenedPageNumber = (selectedPageNumber): void => {
-      setActiveUnopenedNotificationPage(selectedPageNumber);
-    };
-
-    const updateUnopendNotificationStatusesToOpened = async() => {
-      await apiv3Put('/in-app-notification/all-statuses-open');
-      mutate();
-    };
-
-    if (unopendNotificationData == null) {
-      return (
-        <div className="wiki">
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <>
-        <div className="mb-2 d-flex justify-content-end">
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={updateUnopendNotificationStatusesToOpened}
-          >
-            {t('in_app_notification.mark_all_as_read')}
-          </button>
-        </div>
-        <InAppNotificationList inAppNotificationData={unopendNotificationData} />
-        <PaginationWrapper
-          activePage={activePageOfUnopenedNotificationCat}
-          changePage={setUnopenedPageNumber}
-          totalItemsCount={unopendNotificationData.totalDocs}
-          pagingLimit={unopendNotificationData.limit}
-          align="center"
-          size="sm"
-        />
-      </>
-    );
-  };
-
   const navTabMapping = {
     user_infomation: {
       Icon: () => <></>,
