@@ -24,10 +24,10 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
 
   // commonize notification lists by 81953
-  const InAppNotificationCategory = () => {
+  const InAppNotificationCategoryByStatus = (status?) => {
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
-    const { data: notificationData } = useSWRxInAppNotifications(limit, offset);
+    const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset);
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
@@ -44,9 +44,28 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
       );
     }
 
+    const updateUnopendNotificationStatusesToOpened = async() => {
+      await apiv3Put('/in-app-notification/all-statuses-open');
+      mutate();
+    };
+
 
     return (
       <>
+        {status === 'UNOPENED'
+      && (
+        <div className="mb-2 d-flex justify-content-end">
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={updateUnopendNotificationStatusesToOpened}
+          >
+            {t('in_app_notification.mark_all_as_read')}
+          </button>
+        </div>
+      )
+        }
+
         <InAppNotificationList inAppNotificationData={notificationData} />
         <PaginationWrapper
           activePage={activePage}
@@ -115,13 +134,13 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const navTabMapping = {
     user_infomation: {
       Icon: () => <></>,
-      Content: () => InAppNotificationCategory,
+      Content: () => InAppNotificationCategoryByStatus(),
       i18n: t('in_app_notification.all'),
       index: 0,
     },
     external_accounts: {
       Icon: () => <></>,
-      Content: UnopenedInAppNotificationList,
+      Content: () => InAppNotificationCategoryByStatus('UNOPENED'),
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
