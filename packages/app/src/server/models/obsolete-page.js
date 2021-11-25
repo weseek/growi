@@ -929,7 +929,7 @@ export const getPageSchema = (crowi) => {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({ path });
+    const isExist = await this.count({ path, isEmpty: false }); // not validate empty page
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
     }
