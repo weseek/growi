@@ -214,9 +214,9 @@ module.exports = function(crowi, app) {
    */
   api.list = async function(req, res) {
     const limit = +req.query.limit || 50;
-    const skip = +req.query.skip || 0;
+    const offset = +req.query.offset || 0;
     const sortOpt = { count: -1, _id: -1 };
-    const queryOptions = { skip, limit, sortOpt };
+    const queryOptions = { offset, limit, sortOpt };
 
     try {
       // get tag list contains id name and count properties

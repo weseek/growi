@@ -40,11 +40,11 @@ class TagsList extends React.Component {
 
   async getTagList(selectPageNumber) {
     const limit = this.state.pagingLimit;
-    const skip = (selectPageNumber - 1) * limit;
+    const offset = (selectPageNumber - 1) * limit;
     let res;
 
     try {
-      res = await apiGet('/tags.list', { limit, skip });
+      res = await apiGet('/tags.list', { limit, offset });
     }
     catch (error) {
       toastError(error);

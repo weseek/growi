@@ -48,7 +48,7 @@ class PageTagRelation {
   static async createTagListWithCount(option) {
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
-    const skip = opt.skip;
+    const offset = opt.offset;
     const limit = opt.limit;
 
     const tags = await this.aggregate()
@@ -62,7 +62,7 @@ class PageTagRelation {
       .unwind('$tag')
       .group({ _id: '$relatedTag', count: { $sum: 1 }, name: { $first: '$tag.name' } })
       .sort(sortOpt)
-      .skip(skip)
+      .skip(offset)
       .limit(limit);
 
     const totalCount = (await this.find({ isPageTrashed: false }).distinct('relatedTag')).length;
