@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 import RE2 from 're2';
 
-import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
+import { NamedQueryModel } from '../models/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
-import { SearchDelegatorName } from '~/interfaces/named-query';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -170,15 +169,16 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     const name = queryString.replace(replaceRegexp, '');
     const nq = await NamedQuery.findOne({ name });
+
     if (nq == null) {
-      throw Error('Named Query not found.');
+      throw Error('Named query was not found.');
     }
 
     const { aliasOf, delegatorName } = nq;
 
     let parsedQuery;
     if (aliasOf != null) {
-      parsedQuery = { queryString, terms: this.parseQueryString(aliasOf) };
+      parsedQuery = { queryString: normalizeQueryString(aliasOf), terms: this.parseQueryString(aliasOf) };
     }
     if (delegatorName != null) {
       parsedQuery = { queryString, delegatorName };
@@ -189,7 +189,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
     const { queryString, terms, delegatorName } = parsedQuery;
-
     if (delegatorName != null) {
       const nqDelegator = this.nqDelegators[delegatorName];
       if (nqDelegator != null) {
@@ -197,19 +196,39 @@ class SearchService implements SearchQueryParser, SearchResolver {
       }
     }
 
+    if (terms == null) {
+      throw Error('Either of terms or delegatorName must not be null');
+    }
+
     const data = {
       queryString,
-      terms: this.parseQueryString(queryString),
+      terms,
     };
     return [this.delegator, data];
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
+    let parsedQuery;
     // parse
-    const parsedQuery = await this.parseSearchQuery(keyword);
+    try {
+      parsedQuery = await this.parseSearchQuery(keyword);
+    }
+    catch (err) {
+      logger.error('Error occurred while parseSearchQuery', err);
+      throw err;
+    }
+
+    let delegator;
+    let data;
     // resolve
-    const [delegator, data] = await this.resolve(parsedQuery);
-    // search
+    try {
+      [delegator, data] = await this.resolve(parsedQuery);
+    }
+    catch (err) {
+      logger.error('Error occurred while resolving search delegator', err);
+      throw err;
+    }
+
     return delegator.search(data, user, userGroups, searchOpts);
   }
 
