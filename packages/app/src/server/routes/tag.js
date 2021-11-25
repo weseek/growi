@@ -217,30 +217,12 @@ module.exports = function(crowi, app) {
     const offset = +req.query.offset || 0;
     const sortOpt = { count: -1, _id: -1 };
     const queryOptions = { offset, limit, sortOpt };
-    const result = {};
 
     try {
-      // get tag list contains id and count properties
-      const listData = await PageTagRelation.createTagListWithCount(queryOptions);
-      const ids = listData.list.map((obj) => { return obj._id });
+      // get tag list contains id name and count properties
+      const tagsWithCount = await PageTagRelation.createTagListWithCount(queryOptions);
 
-      // get tag documents for add name data to the list
-      const tags = await Tag.find({ _id: { $in: ids } });
-
-      // add name property
-      result.data = listData.list.map((elm) => {
-        const data = {};
-        const tag = tags.find((tag) => { return (tag.id === elm._id.toString()) });
-
-        data._id = elm._id;
-        data.name = tag.name;
-        data.count = elm.count; // the number of related pages
-        return data;
-      });
-
-      result.totalCount = listData.totalCount;
-
-      return res.json(ApiResponse.success(result));
+      return res.json(ApiResponse.success(tagsWithCount));
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
