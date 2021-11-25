@@ -44,6 +44,17 @@ export interface PageModel extends Model<PageDocument> {
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
+
+  PageQueryBuilder: typeof PageQueryBuilder
+
+  GRANT_PUBLIC
+  GRANT_RESTRICTED
+  GRANT_SPECIFIED
+  GRANT_OWNER
+  GRANT_USER_GROUP
+  PAGE_GRANT_ERROR
+  STATUS_PUBLISHED
+  STATUS_DELETED
 }
 
 const ObjectId = mongoose.Schema.Types.ObjectId;

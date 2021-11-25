@@ -1,9 +1,27 @@
+import mongoose from 'mongoose';
+import RE2 from 're2';
+
+import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
+import {
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData,
+} from '../interfaces/search';
+
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
 
-class SearchService {
+class SearchService implements SearchQueryParser, SearchResolver {
+
+  crowi!: any
+
+  configManager!: any
+
+  isErrorOccuredOnHealthcheck: boolean | null
+
+  isErrorOccuredOnSearching: boolean | null
+
+  delegator: any & SearchDelegator
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -33,11 +51,6 @@ class SearchService {
     return this.isConfigured && !this.isErrorOccuredOnHealthcheck && !this.isErrorOccuredOnSearching;
   }
 
-  get isSearchboxEnabled() {
-    const uri = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
-    return uri != null && uri.length > 0;
-  }
-
   get isElasticsearchEnabled() {
     const uri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
     return uri != null && uri.length > 0;
@@ -46,14 +59,9 @@ class SearchService {
   generateDelegator() {
     logger.info('Initializing search delegator');
 
-    if (this.isSearchboxEnabled) {
-      const SearchboxDelegator = require('./search-delegator/searchbox');
-      logger.info('Searchbox is enabled');
-      return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
-    }
     if (this.isElasticsearchEnabled) {
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
-      logger.info('Elasticsearch (not Searchbox) is enabled');
+      logger.info('Elasticsearch is enabled');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
 
@@ -135,19 +143,23 @@ class SearchService {
     return this.delegator.rebuildIndex();
   }
 
-  async searchKeyword(keyword, user, userGroups, searchOpts) {
-    try {
-      return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
-    }
-    catch (err) {
-      logger.error(err);
+  async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
+    // TODO: impl parser
+    return {} as ParsedQuery;
+  }
 
-      // switch error flag, `isReachable` to be `false`
-      this.isErrorOccuredOnSearching = true;
-      throw err;
-    }
+  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]> {
+    // TODO: impl resolve
+    return [{}, {}] as [SearchDelegator, SearchableData];
+  }
+
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
+    // TODO: parse
+    // TODO: resolve
+    // TODO: search
+    return {} as Result<any> & MetaData;
   }
 
 }
 
-module.exports = SearchService;
+export default SearchService;
