@@ -21,13 +21,13 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const limit = appContainer.config.pageLimitationXL;
   const { t } = useTranslation();
 
-  const InAppNotificationCategoryByStatus = (status?: string) => {
+  const InAppNotificationCategoryByStatus = (status?: InAppNotificationStatuses) => {
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
 
     let categoryStatus;
 
-    if (status === 'UNOPENED') {
+    if (status === InAppNotificationStatuses.STATUS_UNOPENED) {
       categoryStatus = InAppNotificationStatuses.STATUS_UNOPENED;
     }
 
@@ -92,7 +92,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
     },
     external_accounts: {
       Icon: () => <></>,
-      Content: () => InAppNotificationCategoryByStatus('UNOPENED'),
+      Content: () => InAppNotificationCategoryByStatus(InAppNotificationStatuses.STATUS_UNOPENED),
       i18n: t('in_app_notification.unopend'),
       index: 1,
     },
