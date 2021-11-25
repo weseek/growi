@@ -267,7 +267,7 @@ module.exports = (crowi) => {
     if (isLiked) {
       const pageEvent = crowi.event('page');
       // in-app notification
-      pageEvent.emit('likes', page, req.user);
+      pageEvent.emit('like', page, req.user);
     }
   });
 

@@ -80,7 +80,7 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
 
   switch (actionType) {
     case 'PAGE_LIKE':
-      actionMsg = 'likes on';
+      actionMsg = 'liked';
       actionIcon = 'icon-like';
       break;
     case 'PAGE_BOOKMARK':

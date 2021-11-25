@@ -68,7 +68,7 @@ class PageService {
     });
 
     // likes
-    this.pageEvent.on('likes', async(page, user) => {
+    this.pageEvent.on('like', async(page, user) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
       }
