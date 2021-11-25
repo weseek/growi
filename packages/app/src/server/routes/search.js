@@ -179,6 +179,8 @@ module.exports = function(crowi, app) {
             elasticSearchResult: data.elasticSearchResult,
           };
 
+          pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
+
           return { pageData, pageMeta };
         })
         .sort((page1, page2) => {
