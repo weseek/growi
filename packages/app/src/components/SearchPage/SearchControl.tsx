@@ -9,6 +9,8 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
+  excludeUnderUserPage: boolean,
+  excludeUnderTrashPage: boolean,
   onSearchInvoked: (data : any[]) => boolean,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
@@ -60,10 +62,14 @@ const SearchControl: FC <Props> = (props: Props) => {
   const rednerFilterOptionModal = () => {
     return (
       <FilterOptionModal
+        keyword={props.searchingKeyword}
         isOpen={isFileterOptionModalShown || false}
+        onClickFilteringSearchResultButton={props.onSearchInvoked}
         onClose={closeFilterOptionModalHandler}
         switchExcludingUnderUserPage={switchExcludingUnderUserPage}
         switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
+        excludeUnderUserPage={props.excludeUnderUserPage}
+        excludeUnderTrashPage={props.excludeUnderTrashPage}
       />
     );
   };

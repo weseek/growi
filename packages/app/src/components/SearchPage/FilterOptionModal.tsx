@@ -8,12 +8,15 @@ import {
 
 type Props = {
   isOpen: boolean,
+  excludeUnderUserPage: boolean,
+  excludeUnderTrashPage: boolean,
+  keyword: string,
   onClose?: () => void,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
   // todo: implement this method
   // refs: https://redmine.weseek.co.jp/issues/81845
-  onClickFilteringSearchResultButton?: () => void,
+  onClickFilteringSearchResultButton?: (data: {keyword: string}) => void,
 }
 
 // todo: implement filtering search result
@@ -22,15 +25,25 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
-  const onClose = () => {
-    if (props.onClose != null) {
-      props.onClose();
+  const {
+    isOpen, keyword, onClose, switchExcludingUnderUserPage, switchExcludingUnderTrashPage,
+  } = props;
+
+  const onCloseModal = () => {
+    if (onClose != null) {
+      onClose();
+    }
+  };
+
+  const onClickFilteringSearchResultButton = () => {
+    if (props.onClickFilteringSearchResultButton != null) {
+      props.onClickFilteringSearchResultButton({ keyword });
     }
   };
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={isOpen} toggle={onCloseModal} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={onCloseModal} className="bg-primary text-light">
         Filter Option
       </ModalHeader>
       <ModalBody>
@@ -42,7 +55,8 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.switchExcludingUnderUserPage}
+                onClick={switchExcludingUnderUserPage}
+                checked={}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -54,7 +68,8 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.switchExcludingUnderTrashPage}
+                onClick={switchExcludingUnderTrashPage}
+                checked={}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
@@ -67,7 +82,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
           className="btn btn-secondary"
           // todo: implement this method
           // refs: https://redmine.weseek.co.jp/issues/81845
-          onClick={props.onClickFilteringSearchResultButton}
+          onClick={onClickFilteringSearchResultButton}
         >{t('search_result.narrow_donw')}
         </button>
       </ModalFooter>
