@@ -154,62 +154,54 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const nqNames: string[] = [];
+    const delegatorNameObj = {
+      name: null,
+      isExist: false,
+    };
+
     const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
 
     const queryString = normalizeQueryString(_queryString);
 
-    queryString.split(' ').forEach((word) => {
+    const promises = queryString.split(' ').map(async(word) => {
       const isNamedQuery = regexp.test(word);
 
       if (isNamedQuery) {
-        nqNames.push(word.replace(/\[nq:|\]/g, '')); // remove '[nq:' and ']'
+        const name = word.replace(/\[nq:|\]/g, ''); // remove '[nq:' and ']'
+
       }
     });
 
-    return { queryString: _queryString, nqNames };
+    return { queryString: _queryString, delegatorName };
   }
 
   async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
-    const { queryString, nqNames } = parsedQuery;
+    const { queryString, delegatorName } = parsedQuery;
 
-    if (nqNames.length === 0) {
-      return this.delegator.search(queryString);
+    if (delegatorName != null) {
+      const nqDelegator = this.nqDelegators[delegatorName];
+      if (nqDelegator != null) {
+        return [nqDelegator, null];
+      }
     }
 
-    // find NamedQuery
-    const NamedQuery: NamedQueryModel = mongoose.model('NamedQuery');
-    const namedQueries = await NamedQuery.find({ name: { $in: nqNames } });
-
-    const delegatableNamedQuery = namedQueries.filter(nq => nq.delegatorName != null)[0]; // only the first named query is valid
-
-    if (delegatableNamedQuery == null) {
-      // expand aliasOf
-      // search with new qs
-    }
-
-    const nqDelegator = this.nqDelegators[delegatableNamedQuery.delegatorName as SearchDelegatorName];
-    if (nqDelegator != null) {
-      return [nqDelegator, null];
-    }
-
-    return [this.delegator, null];
-
-    // TODO: impl resolve
-    return [{}, {}] as [SearchDelegator, SearchableData];
+    const data = {
+      queryString,
+      terms: this.parseQueryString(queryString),
+    };
+    return [this.delegator, data];
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
     // parse
     const parsedQuery = await this.parseSearchQuery(keyword);
     // resolve
-    const delegator = await this.resolve(parsedQuery);
-
-    // TODO: search
-    return {} as Result<any> & MetaData;
+    const [delegator, data] = await this.resolve(parsedQuery);
+    // search
+    return delegator.search(data, user, userGroups, searchOpts);
   }
 
-  async parseQueryString(_queryString: string): Promise<QueryTerms> {
+  parseQueryString(_queryString: string): QueryTerms {
     // terms
     const matchWords: string[] = [];
     const notMatchWords: string[] = [];

@@ -14,8 +14,8 @@ export type QueryTerms = {
 }
 
 export type ParsedQuery = {
-  queryString: string // original query string in request
-  nqNames: string[] // possible NamedQuery names found in query string
+  queryString: string
+  delegatorName: string
 }
 
 export interface SearchQueryParser {
@@ -23,7 +23,7 @@ export interface SearchQueryParser {
 }
 
 export interface SearchResolver{
-  resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]>
+  resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]>
 }
 
 export interface SearchDelegator<T = unknown> {
