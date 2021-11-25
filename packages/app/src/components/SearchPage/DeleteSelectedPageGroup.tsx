@@ -5,14 +5,14 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
-  onClickDeleteButton?: () => void,
+  onClickDeleteAllButton?: () => void,
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    onClickDeleteButton, onClickSelectAllCheckbox, selectAllCheckboxType,
+    onClickDeleteAllButton, onClickSelectAllCheckbox, selectAllCheckboxType,
   } = props;
 
   const onClickCheckbox = () => {
@@ -20,7 +20,10 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
       const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
       onClickSelectAllCheckbox(next);
     }
+  };
 
+  const onClickDeleteButton = () => {
+    if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
   return (
@@ -39,11 +42,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         type="button"
         className="btn text-danger font-weight-light p-0 ml-3"
         disabled={selectAllCheckboxType === CheckboxType.NONE_CHECKED}
-        onClick={() => {
-          if (onClickDeleteButton != null) {
-            onClickDeleteButton();
-          }
-        }}
+        onClick={onClickDeleteButton}
       >
         <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}

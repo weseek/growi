@@ -51,7 +51,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <DeleteSelectedPageGroup
           isSelectAllCheckboxDisabled={searchResultCount === 0}
           selectAllCheckboxType={props.selectAllCheckboxType}
-          onClickDeleteButton={props.onClickDeleteAllButton}
+          onClickDeleteAllButton={props.onClickDeleteAllButton}
           onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
         />
         <div className="d-flex align-items-center border rounded border-gray px-2 py-1 mr-2 ml-auto">

@@ -243,7 +243,6 @@ class SearchPage extends React.Component {
 
   onClickDeleteAllButton() {
     if (this.state.selectedPagesIdList.size === 0) { return }
-
     this.setState({ isDeleteConfirmModalShown: true });
   }
 
