@@ -14,13 +14,9 @@ type Props = {
   onClose?: () => void,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
-  // todo: implement this method
-  // refs: https://redmine.weseek.co.jp/issues/81845
   onClickFilteringSearchResultButton?: (data: {keyword: string}) => void,
 }
 
-// todo: implement filtering search result
-// refs: https://redmine.weseek.co.jp/issues/81845
 const FilterOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
@@ -50,8 +46,6 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
         <div className="d-flex justify-content-center mr-3">
           <div className="border border-gray mr-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
-              {/** todo: get checked state from parent component */}
-              {/** // refs: https://redmine.weseek.co.jp/issues/81845 */}
               <input
                 className="mr-2"
                 type="checkbox"
@@ -63,8 +57,6 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
           </div>
           <div className="border border-gray">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
-              {/** todo: get checked state from parent component */}
-              {/** // refs: https://redmine.weseek.co.jp/issues/81845 */}
               <input
                 className="mr-2"
                 type="checkbox"
