@@ -831,35 +831,7 @@ module.exports = function(crowi, app) {
     const Revision = crowi.model('Revision');
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      const populatedFields = 'name imageUrlCached';
-      // when isUpdatable is false, originRevisionId is a reqested revisionId
-      const originRevision = await Revision.findById(revisionId).populate('author', populatedFields);
-      const latestRevision = await Revision.findById(page.revision).populate('author', populatedFields);
-
-      const revisions = {};
-
-      revisions.request = {
-        revisionId: '',
-        revisionBody: pageBody,
-        createdAt: new Date(),
-        userName: req.user.name,
-        userImgPath: req.user.imageUrlCached,
-      };
-      revisions.origin = {
-        revisionId: originRevision._id.toString(),
-        revisionBody: originRevision.body,
-        createdAt: originRevision.createdAt,
-        userName: originRevision.author.name,
-        userImgPath: originRevision.author.imageUrlCached,
-      };
-      revisions.latest = {
-        revisionId: latestRevision._id.toString(),
-        revisionBody: latestRevision.body,
-        createdAt: latestRevision.createdAt,
-        userName: latestRevision.author.name,
-        userImgPath: latestRevision.author.imageUrlCached,
-      };
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', revisions));
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict'));
     }
 
     const options = { isSyncRevisionToHackmd };
