@@ -642,7 +642,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
     // parse
-    const parsedKeywords = this.parseQueryString(queryString);
+    const parsedKeywords = {} as any; // TODO: pass parsedQuery to this method
 
     if (parsedKeywords.match.length > 0) {
       const q = {
@@ -848,84 +848,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     await this.appendFunctionScore(query, queryString);
 
     return this.searchKeyword(query);
-  }
-
-  parseQueryString(queryString: string) {
-    const matchWords: string[] = [];
-    const notMatchWords: string[] = [];
-    const phraseWords: string[] = [];
-    const notPhraseWords: string[] = [];
-    const prefixPaths: string[] = [];
-    const notPrefixPaths: string[] = [];
-    const tags: string[] = [];
-    const notTags: string[] = [];
-
-    queryString.trim();
-    queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
-
-    // First: Parse phrase keywords
-    const phraseRegExp = new RegExp(/(-?"[^"]+")/g);
-    const phrases = queryString.match(phraseRegExp);
-
-    if (phrases !== null) {
-      queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
-
-      phrases.forEach((phrase) => {
-        phrase.trim();
-        if (phrase.match(/^-/)) {
-          notPhraseWords.push(phrase.replace(/^-/, ''));
-        }
-        else {
-          phraseWords.push(phrase);
-        }
-      });
-    }
-
-    // Second: Parse other keywords (include minus keywords)
-    queryString.split(' ').forEach((word) => {
-      if (word === '') {
-        return;
-      }
-
-      // https://regex101.com/r/pN9XfK/1
-      const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
-      // https://regex101.com/r/3qw9FQ/1
-      const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
-
-      if (matchNegative != null) {
-        if (matchNegative[1] === 'prefix:') {
-          notPrefixPaths.push(matchNegative[2]);
-        }
-        else if (matchNegative[1] === 'tag:') {
-          notTags.push(matchNegative[2]);
-        }
-        else {
-          notMatchWords.push(matchNegative[2]);
-        }
-      }
-      else if (matchPositive != null) {
-        if (matchPositive[1] === 'prefix:') {
-          prefixPaths.push(matchPositive[2]);
-        }
-        else if (matchPositive[1] === 'tag:') {
-          tags.push(matchPositive[2]);
-        }
-        else {
-          matchWords.push(matchPositive[2]);
-        }
-      }
-    });
-
-    return {
-      match: matchWords,
-      not_match: notMatchWords,
-      phrase: phraseWords,
-      not_phrase: notPhraseWords,
-      prefix: prefixPaths,
-      not_prefix: notPrefixPaths,
-      tag: tags,
-      not_tag: notTags,
-    };
   }
 
   async syncPageUpdated(page, user) {
