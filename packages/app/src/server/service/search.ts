@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
 import RE2 from 're2';
 
-import { NamedQueryModel } from '../models/named-query';
 import { SearchDelegatorName } from '~/interfaces/named-query';
+
+import { NamedQueryModel } from '../models/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
+import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +34,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   delegator: any & SearchDelegator
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator} // TODO: initialize
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -43,6 +45,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     try {
       this.delegator = this.generateDelegator();
+      this.nqDelegators = this.generateNQDelegators(this.delegator);
     }
     catch (err) {
       logger.error(err);
@@ -76,6 +79,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
+  }
+
+  generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+    return {
+      [SearchDelegatorName.DEFAULT]: defaultDelegator,
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
+    };
   }
 
   registerUpdateEvent() {
@@ -205,7 +215,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       queryString,
       terms,
     };
-    return [this.delegator, data];
+    return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
