@@ -31,6 +31,9 @@ class PageService {
     // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
+    // createMany
+    this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+
     // update
     this.pageEvent.on('update', async(page, user) => {
 
@@ -64,8 +67,15 @@ class PageService {
       }
     });
 
-    // createMany
-    this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+    // likes
+    this.pageEvent.on('like', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
   }
 
 

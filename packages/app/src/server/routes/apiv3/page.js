@@ -255,6 +255,10 @@ module.exports = (crowi) => {
     res.apiv3({ result });
 
     if (isLiked) {
+      const pageEvent = crowi.event('page');
+      // in-app notification
+      pageEvent.emit('like', page, req.user);
+
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
