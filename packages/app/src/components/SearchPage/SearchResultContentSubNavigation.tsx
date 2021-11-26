@@ -57,6 +57,11 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
         <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
       </div>
       {/* Right side */}
+      {/*
+        DeleteCompletely is currently disabled
+        TODO : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
+        story: https://redmine.weseek.co.jp/issues/82222
+      */}
       <div className="d-flex">
         <SubNavButtons
           isCompactMode={isCompactMode}
@@ -64,7 +69,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
           revisionId={revisionId}
           path={path}
           isDeletable={isPageDeletable}
-          isAbleToDeleteCompletely
+          // isAbleToDeleteCompletely={}
           willShowPageManagement={isAbleToShowPageManagement}
         >
         </SubNavButtons>
