@@ -262,6 +262,10 @@ module.exports = (crowi) => {
       }
       if (bool) {
         bookmark = await Bookmark.add(page, req.user);
+
+        const pageEvent = crowi.event('page');
+        // in-app notification
+        pageEvent.emit('bookmark', page, req.user);
       }
       else {
         bookmark = await Bookmark.removeBookmark(page, req.user);
@@ -270,12 +274,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('update-bookmark-failed', err);
       return res.apiv3Err(err, 500);
-    }
-
-    if (bool) {
-      const pageEvent = crowi.event('page');
-      // in-app notification
-      pageEvent.emit('bookmark', page, req.user);
     }
 
     bookmark.depopulate('page');
