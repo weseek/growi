@@ -263,6 +263,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({

@@ -22,10 +22,16 @@ export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'keep',
 ];
 
+export const defaultSupportedSlackEventActions: string[] = [
+  'unfurl',
+];
+
 export * from './interfaces/channel';
 export * from './interfaces/growi-command-processor';
 export * from './interfaces/growi-interaction-processor';
+export * from './interfaces/growi-event-processor';
 export * from './interfaces/growi-command';
+export * from './interfaces/growi-bot-event';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
 export * from './interfaces/response-url';

@@ -4,14 +4,16 @@ import {
 import createError from 'http-errors';
 import loggerFactory from '~/utils/logger';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
+import ErrorV3 from '../../models/vo/error-apiv3';
 
 const express = require('express');
 const mongoose = require('mongoose');
-const urljoin = require('url-join');
+const { body } = require('express-validator');
 
 const {
   verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
 } = require('@growi/slack');
+
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -181,6 +183,18 @@ module.exports = (crowi) => {
   const addSigningSecretToReq = (req, res, next) => {
     req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
     return next();
+  };
+
+  const verifyUrlMiddleware = (req, res, next) => {
+    const { body } = req;
+
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return res.send({ challenge: body.challenge });
+    }
+
+    next();
   };
 
   const parseSlackInteractionRequest = (req, res, next) => {
@@ -369,6 +383,61 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
 
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+  });
+
+  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+    const { event } = req.body;
+
+    const growiBotEvent = {
+      eventType: event.type,
+      event,
+    };
+
+    try {
+      const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
+      // convert permission object to map
+      const permission = new Map(Object.entries(crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission')));
+
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permission);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error('Error occurred while handling event request.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
+    }
+  });
+
+  const validator = {
+    validateEventRequest: [
+      body('growiBotEvent').exists(),
+      body('data').exists(),
+    ],
+  };
+
+  router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async(req, res) => {
+    const { growiBotEvent, data } = req.body;
+
+    try {
+      const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+      const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+      if (slackAppIntegration == null) {
+        throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
+      }
+
+      const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
+      const { permissionsForSlackEventActions } = slackAppIntegration;
+
+      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permissionsForSlackEventActions, data);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error('Error occurred while handling event request.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
+    }
   });
 
   // error handler
