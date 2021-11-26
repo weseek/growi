@@ -76,32 +76,34 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
-  const checkExistPathsDebounce = useCallback(() => {
-    const checkExistPaths = async(newParentPath, fromPath) => {
-      try {
-        const res = await apiv3Get('/page/exist-paths', { fromPath, toPath: newParentPath });
-        const { existPaths } = res.data;
-        setExistingPaths(existPaths);
-      }
-      catch (err) {
-        setErrs(err);
-        toastError(t('modal_rename.label.Fail to get exist path'));
-      }
-    };
-    debounce(1000, false, checkExistPaths);
-  }, [t]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function checkExistPaths(newParentPath: any):Promise<any> {
+    try {
+      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, false, checkExistPaths), [],
+  );
+
+  useEffect(() => {
+    if (pageNameInput !== path) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
 
   useEffect(() => {
     setPageNameInput(path);
   }, [path]);
-
-  useEffect(() => {
-    if (pageNameInput !== path) {
-      checkExistPathsDebounce();
-    }
-  // "path" must not be checked.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
