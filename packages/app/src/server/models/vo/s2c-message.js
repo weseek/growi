@@ -21,8 +21,9 @@ class S2cMessagePageUpdated {
     this.hasDraftOnHackmd = hasDraftOnHackmd;
 
     if (user != null) {
+      this.remoteLastUpdateUser = user;
+      // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
       this.lastUpdateUsername = user.name;
-      this.lastUpdateUserImagePath = user.imageUrlCached;
     }
   }
 

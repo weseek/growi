@@ -38,39 +38,9 @@ class PageStatusAlert extends React.Component {
   }
 
   onClickResolveConflict() {
-
-    const { pageContainer, appContainer } = this.props;
-
-    const pageEditor = appContainer.getComponentInstance('PageEditor');
-    const markdownOnEdit = pageEditor.getMarkdown();
-
-    pageContainer.setState({
+    this.props.pageContainer.setState({
       isConflictDiffModalOpen: true,
-      revisionsOnConflict: {
-        request: {
-          revisionId: '',
-          revisionBody: markdownOnEdit,
-          createdAt: format(new Date(), 'yyyy/MM/dd HH:mm:ss'),
-          userName: this.props.appContainer.currentUser.username,
-          userImgPath: this.props.appContainer.currentUser.imageUrlCached,
-        },
-        origin: {
-          revisionId: pageContainer.state.revisionId,
-          revisionBody: pageContainer.state.markdown,
-          createdAt: pageContainer.state.updatedAt,
-          userName: pageContainer.state.creator.username,
-          userImgPath: pageContainer.state.creator.imageUrlCached,
-        },
-        latest: {
-          revisionId: pageContainer.state.remoteRevisionId,
-          revisionBody: pageContainer.state.remoteRevisionBody,
-          createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt), 'yyyy/MM/dd HH:mm:ss'),
-          userName: pageContainer.state.lastUpdateUsername,
-          userImgPath: pageContainer.state.lastUpdateUserImagePath,
-        },
-      },
     });
-
   }
 
   getContentsForSomeoneEditingAlert() {
