@@ -59,7 +59,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     return (
       <>
-        {status === InAppNotificationStatuses.STATUS_UNOPENED
+        {(status === InAppNotificationStatuses.STATUS_UNOPENED && notificationData.totalDocs > 0)
       && (
         <div className="mb-2 d-flex justify-content-end">
           <button
@@ -70,18 +70,22 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
             {t('in_app_notification.mark_all_as_read')}
           </button>
         </div>
-      )
-        }
-
+      )}
         <InAppNotificationList inAppNotificationData={notificationData} />
-        <PaginationWrapper
-          activePage={activePage}
-          changePage={setAllNotificationPageNumber}
-          totalItemsCount={notificationData.totalDocs}
-          pagingLimit={notificationData.limit}
-          align="center"
-          size="sm"
-        />
+
+        {notificationData.totalDocs > 0
+          && (
+
+            <PaginationWrapper
+              activePage={activePage}
+              changePage={setAllNotificationPageNumber}
+              totalItemsCount={notificationData.totalDocs}
+              pagingLimit={notificationData.limit}
+              align="center"
+              size="sm"
+            />
+          )
+        }
       </>
     );
   };
