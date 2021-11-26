@@ -32,7 +32,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   isErrorOccuredOnSearching: boolean | null
 
-  delegator: any & SearchDelegator
+  fullTextSearchDelegator: any & SearchDelegator
 
   nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
 
@@ -44,21 +44,21 @@ class SearchService implements SearchQueryParser, SearchResolver {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.delegator = this.generateDelegator();
-      this.nqDelegators = this.generateNQDelegators(this.delegator);
+      this.fullTextSearchDelegator = this.generateDelegator();
+      this.nqDelegators = this.generateNQDelegators(this.fullTextSearchDelegator);
     }
     catch (err) {
       logger.error(err);
     }
 
     if (this.isConfigured) {
-      this.delegator.init();
+      this.fullTextSearchDelegator.init();
       this.registerUpdateEvent();
     }
   }
 
   get isConfigured() {
-    return this.delegator != null;
+    return this.fullTextSearchDelegator != null;
   }
 
   get isReachable() {
@@ -90,19 +90,19 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   registerUpdateEvent() {
     const pageEvent = this.crowi.event('page');
-    pageEvent.on('create', this.delegator.syncPageUpdated.bind(this.delegator));
-    pageEvent.on('update', this.delegator.syncPageUpdated.bind(this.delegator));
-    pageEvent.on('deleteCompletely', this.delegator.syncPagesDeletedCompletely.bind(this.delegator));
-    pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
-    pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
-    pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
+    pageEvent.on('create', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('update', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPagesDeletedCompletely.bind(this.fullTextSearchDelegator));
+    pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
-    bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
-    bookmarkEvent.on('delete', this.delegator.syncBookmarkChanged.bind(this.delegator));
+    bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
+    bookmarkEvent.on('delete', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
 
     const tagEvent = this.crowi.event('tag');
-    tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
+    tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
   }
 
   resetErrorStatus() {
@@ -112,7 +112,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async reconnectClient() {
     logger.info('Try to reconnect...');
-    this.delegator.initClient();
+    this.fullTextSearchDelegator.initClient();
 
     try {
       await this.getInfoForHealth();
@@ -127,7 +127,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async getInfo() {
     try {
-      return await this.delegator.getInfo();
+      return await this.fullTextSearchDelegator.getInfo();
     }
     catch (err) {
       logger.error(err);
@@ -137,7 +137,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async getInfoForHealth() {
     try {
-      const result = await this.delegator.getInfoForHealth();
+      const result = await this.fullTextSearchDelegator.getInfoForHealth();
 
       this.isErrorOccuredOnHealthcheck = false;
       return result;
@@ -152,15 +152,15 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async getInfoForAdmin() {
-    return this.delegator.getInfoForAdmin();
+    return this.fullTextSearchDelegator.getInfoForAdmin();
   }
 
   async normalizeIndices() {
-    return this.delegator.normalizeIndices();
+    return this.fullTextSearchDelegator.normalizeIndices();
   }
 
   async rebuildIndex() {
-    return this.delegator.rebuildIndex();
+    return this.fullTextSearchDelegator.rebuildIndex();
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
@@ -181,8 +181,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const name = queryString.replace(replaceRegexp, '');
     const nq = await NamedQuery.findOne({ name });
 
+    // will delegate to full-text search
     if (nq == null) {
-      throw Error('Named query was not found.');
+      return { queryString, terms: this.parseQueryString(queryString) };
     }
 
     const { aliasOf, delegatorName } = nq;
@@ -207,13 +208,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
       }
     }
 
-    if (terms == null) {
-      throw Error('Either of terms or delegatorName must not be null');
-    }
-
     const data = {
       queryString,
-      terms,
+      terms: terms as QueryTerms,
     };
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
