@@ -25,7 +25,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const { editorMode } = navigationContainer.state;
   const isViewMode = editorMode === 'view';
   const { data: pageInfo, error: pageInfoError, mutate: mutatePageInfo } = useSWRPageInfo(pageId);
-  const { data: likers, mutate: mutateLikerList } = useSWRxLikerList(pageInfo?.likerIds);
+  const { data: likers } = useSWRxLikerList(pageInfo?.likerIds);
 
   const likeClickhandler = useCallback(async() => {
     const { isGuestUser } = appContainer;
@@ -42,10 +42,6 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     catch (err) {
       toastError(err);
     }
-  }, [pageInfo]);
-
-  useEffect(() => {
-    mutateLikerList();
   }, [pageInfo]);
 
   if (pageInfoError != null || pageInfo == null) {
