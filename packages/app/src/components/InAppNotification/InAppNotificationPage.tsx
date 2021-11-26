@@ -75,7 +75,6 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
         {notificationData.totalDocs > 0
           && (
-
             <PaginationWrapper
               activePage={activePage}
               changePage={setAllNotificationPageNumber}
