@@ -6,6 +6,7 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
+import ElasticsearchDelegator from './search-delegator/elasticsearch';
 
 import loggerFactory from '~/utils/logger';
 
@@ -70,7 +71,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     logger.info('Initializing search delegator');
 
     if (this.isElasticsearchEnabled) {
-      const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
       logger.info('Elasticsearch is enabled');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
