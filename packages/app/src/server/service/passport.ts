@@ -810,15 +810,16 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const { field, term } = luceneRule;
-    if (field === '<implicit>') {
+    const unescapedField = this.literalUnescape(field);
+    if (unescapedField === '<implicit>') {
       return attributes[term] != null;
     }
 
-    if (attributes[field] == null) {
+    if (attributes[unescapedField] == null) {
       return false;
     }
 
-    return attributes[field].includes(term);
+    return attributes[unescapedField].includes(term);
   }
 
   /**
@@ -971,6 +972,18 @@ class PassportService implements S2sMessageHandlable {
   isSameEmailTreatedAsIdenticalUser(providerType) {
     const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
     return this.crowi.configManager.getConfig('crowi', key);
+  }
+
+  literalUnescape(string: string) {
+    return string
+      .replace(/\\\\/g, '\\')
+      .replace(/\\\//g, '/')
+      .replace(/\\:/g, ':')
+      .replace(/\\"/g, '"')
+      .replace(/\\0/g, '\0')
+      .replace(/\\t/g, '\t')
+      .replace(/\\n/g, '\n')
+      .replace(/\\r/g, '\r');
   }
 
 }

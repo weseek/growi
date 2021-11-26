@@ -1,8 +1,63 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.12](https://github.com/weseek/growi/compare/v4.4.11...v4.4.12) - 2021-11-15
+
+### 🐛 Bug Fixes
+
+- fix: Cannot use HackMD (#4667)
+
+### 🧰 Maintenance
+
+- ci(deps): Downgrade passport to 0.4.0 (#4669) @mudana-grune
+
+## [v4.4.11](https://github.com/weseek/growi/compare/v4.4.10...v4.4.11) - 2021-11-12
+
+### 🚀 Improvement
+
+- imprv: SAML settings by DB (#4656) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Unescape Attribute-based Login Control field value (#4651) @haruhikonyan
+- fix: Slack Integration 'note' command causes expired_trigger_id error (#4629) @stevenfukase
+- fix: Timeline was broken (#4639) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump mpath with mongoose (#4638) @yuki-takei
+- ci(deps): bump passport-oauth2 from 1.4.0 to 1.6.1 (#4599) @dependabot
+- ci(deps): bump passport from 0.4.0 to 0.5.0 (#4582) @dependabot
+- ci(deps): bump axios from 0.21.1 to 0.24.0 (#4604) @dependabot
+- ci(deps): bump tar from 4.4.13 to 4.4.19 (#4601) @dependabot
+
+## [v4.4.10](https://github.com/weseek/growi/compare/v4.4.9...v4.4.10) - 2021-11-08
+
+### 🚀 Improvement
+
+- imprv: Sidebar content header style (#4526) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: /pages/info API is broken (#4602) @yuki-takei
+- fix: blackboard theme location in theme list (#4506) @ayaka0417
+
+### 🧰 Maintenance
+
+- support: Use SWR (#4487) @yuki-takei
+- support: Replaced PageList with SWR (#4498) @takayuki-t
+- support: Improve devcontainer (#4510) @yuki-takei
+- support: Update passport-ldpauth from ^2.0.0 to ^3.0.1 (#4578) @LuqmanHakim-Grune
+- ci(deps): bump validator from 13.6.0 to 13.7.0 (#4588) @dependabot
+- ci(deps-dev): bump stylelint from 13.2.0 to 14.0.1 (#4583) @dependabot
+- Bump browserslist from 4.0.1 to 4.16.6 (#3776) @dependabot
+- ci(deps-dev): bump colors from 1.2.5 to 1.4.0 (#4365) @dependabot
+- ci(deps-dev): bump on-headers from 1.0.1 to 1.0.2 (#4366) @dependabot
+- ci(deps-dev): bump jquery-ui from 1.12.1 to 1.13.0 (#4549) @dependabot
+- docs(page): Add docs to /page/info api (#4531) @Mxchaeltrxn
 
 ## [v4.4.9](https://github.com/weseek/growi/compare/v4.4.8...v4.4.9) - 2021-10-18
 
