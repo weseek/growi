@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback,
+  FC, useCallback, useState, useEffect,
 } from 'react';
 import AppContainer from '../../client/services/AppContainer';
 import NavigationContainer from '../../client/services/NavigationContainer';
@@ -11,7 +11,7 @@ import { useSWRPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { toastError } from '../../client/util/apiNotification';
 import { apiv3Put } from '../../client/util/apiv3-client';
-
+import { useSWRxLikerList } from '../../stores/user';
 
 type SubNavButtonsProps= {
   appContainer: AppContainer,
@@ -33,9 +33,11 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const { isGuestUser } = appContainer;
 
   const { data: pageInfo, error: pageInfoError, mutate: mutatePageInfo } = useSWRPageInfo(pageId);
+  const { data: likers } = useSWRxLikerList(pageInfo?.likerIds);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likeClickhandler = useCallback(async() => {
+    const { isGuestUser } = appContainer;
     if (isGuestUser) {
       return;
     }
@@ -64,7 +66,6 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     }
   }, [bookmarkInfo]);
 
-
   if (pageInfoError != null || pageInfo == null) {
     return <></>;
   }
@@ -73,17 +74,16 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     return <></>;
   }
 
-  const { sumOfLikers, likerIds, isLiked } = pageInfo;
+  const { sumOfLikers, isLiked } = pageInfo;
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo;
 
   return (
     <>
       {isViewMode && (
         <PageReactionButtons
-          pageId={pageId}
           sumOfLikers={sumOfLikers}
-          likerIds={likerIds}
           isLiked={isLiked}
+          likers={likers || []}
           onLikeClicked={likeClickhandler}
           sumOfBookmarks={sumOfBookmarks}
           isBookmarked={isBookmarked}
