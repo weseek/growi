@@ -17,6 +17,7 @@ https://github.com/weseek/growi.
 3. Microsoft/vscode (https://github.com/Microsoft/vscode)
 4. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
 5. EmojiOne Version 3 (https://github.com/joypixels/emojione/tree/v3.1.1)
+6. Kuromoji.js (https://github.com/takuyaa/kuromoji.js)
 
 
 License Notice for Apache License, Version 2.0 Derivative Works
@@ -107,4 +108,14 @@ https://creativecommons.org/licenses/by/4.0/
 
 ```
 author: "EmojiOne <ryan@emojione.com> (http://emojione.com)"
+```
+
+
+License Notice for Kuromoji.js
+------------------------
+
+https://github.com/takuyaa/kuromoji.js/blob/master/LICENSE-2.0.txt
+
+```
+author: "Takuya Asano <takuya.a@gmail.com>"
 ```

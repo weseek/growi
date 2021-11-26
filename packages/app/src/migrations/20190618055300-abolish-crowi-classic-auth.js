@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
+import { getMongoUri, mongoOptions } from '@growi/core';
 import Config from '~/server/models/config';
-import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:abolish-crowi-classic-auth');
@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:migrate:abolish-crowi-classic-auth');
 module.exports = {
   async up(db, next) {
     logger.info('Start migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([

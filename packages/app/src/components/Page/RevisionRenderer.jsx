@@ -69,7 +69,7 @@ class RevisionRenderer extends React.PureComponent {
         .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-      returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
+      returnBody = returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
     });
 
     return returnBody;

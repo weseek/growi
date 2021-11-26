@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
+import { SWRConfig } from 'swr';
+
 import loggerFactory from '~/utils/logger';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
@@ -47,6 +50,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -114,6 +118,8 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
+
+  'growi-context-extractor': <ContextExtractor />, // use static swr
 });
 
 // additional definitions if data exists
@@ -150,21 +156,41 @@ if (pageContainer.state.path != null) {
   });
 }
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <SWRConfig value={swrGlobalConfiguration}>
+              <Provider inject={injectableContainers}>
+                {componentMappings[key]}
+              </Provider>
+            </SWRConfig>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      {componentMappings['growi-context-extractor']}
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
+
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

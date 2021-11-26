@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import config from '^/config/migrate';
+import { getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:drop-pages-indices');
@@ -21,7 +21,7 @@ async function dropIndexIfExists(db, collectionName, indexName) {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     await dropIndexIfExists(db, 'pages', 'lastUpdateUser_1');
     await dropIndexIfExists(db, 'pages', 'liker_1');

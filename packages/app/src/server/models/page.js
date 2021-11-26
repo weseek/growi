@@ -263,6 +263,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
@@ -434,8 +445,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
-      .execPopulate();
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
@@ -443,7 +453,7 @@ module.exports = function(crowi) {
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    return this.populate('revision').execPopulate();
+    return this.populate('revision');
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
@@ -729,7 +739,7 @@ module.exports = function(crowi) {
 
     // find
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.exec('find');
+    const pages = await builder.query.clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -772,7 +782,7 @@ module.exports = function(crowi) {
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
+    const pages = await builder.query.lean().clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -962,7 +972,6 @@ module.exports = function(crowi) {
     const format = options.format || 'markdown';
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
-    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -995,7 +1004,7 @@ module.exports = function(crowi) {
     savedPage = await this.findByPath(revision.path);
     await savedPage.populateDataToShowRevision();
 
-    pageEvent.emit('create', savedPage, user, socketClientId);
+    pageEvent.emit('create', savedPage, user);
 
     return savedPage;
   };
@@ -1007,7 +1016,6 @@ module.exports = function(crowi) {
     const grant = options.grant || pageData.grant; //                                  use the previous data if absence
     const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
-    const socketClientId = options.socketClientId || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1023,7 +1031,7 @@ module.exports = function(crowi) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    pageEvent.emit('update', savedPage, user, socketClientId);
+    pageEvent.emit('update', savedPage, user);
 
     return savedPage;
   };

@@ -19,6 +19,7 @@ export default class CdnResourcesDownloader {
     const cdnScriptResources: CdnResource[] = cdnManifests.js.map((manifest: CdnManifest) => {
       return { manifest, outDir: cdnLocalScriptRoot };
     });
+
     const cdnStyleResources: CdnResource[] = cdnManifests.style.map((manifest) => {
       return { manifest, outDir: cdnLocalStyleRoot };
     });

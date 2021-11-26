@@ -14,9 +14,11 @@ class GlobalSearch extends React.Component {
   constructor(props) {
     super(props);
 
+    const isSearchScopeChildrenAsDefault = this.props.appContainer.getConfig().isSearchScopeChildrenAsDefault;
+
     this.state = {
       text: '',
-      isScopeChildren: false,
+      isScopeChildren: isSearchScopeChildrenAsDefault,
     };
 
     this.onInputChange = this.onInputChange.bind(this);

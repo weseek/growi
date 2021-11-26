@@ -6,6 +6,7 @@ import ConfigModel, {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
 } from '../models/config';
 
+
 const logger = loggerFactory('growi:service:ConfigLoader');
 
 enum ValueType { NUMBER, STRING, BOOLEAN }
@@ -492,6 +493,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:commandPermission',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_WITHOUT_PROXY_EVENT_ACTIONS_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:eventActionsPermission',
+    type:    ValueType.STRING,
+    default: null,
+  },
   SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
     ns:      'crowi',
     key:     'slackbot:withProxy:saltForGtoP',
@@ -565,7 +578,7 @@ export default class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-      config[doc.ns][doc.key] = JSON.parse(doc.value);
+      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);
