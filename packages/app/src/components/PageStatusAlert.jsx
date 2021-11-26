@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { parseISO, format } from 'date-fns';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
