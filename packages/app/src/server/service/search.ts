@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import RE2 from 're2';
 
 import { NamedQueryModel } from '../models/named-query';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
@@ -30,7 +31,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   delegator: any & SearchDelegator
 
-  nqDelegators: {[delegatorName:string]: SearchDelegator} // TODO: initialize
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator} // TODO: initialize
 
   constructor(crowi) {
     this.crowi = crowi;
