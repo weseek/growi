@@ -6,7 +6,7 @@ const userFetcher = (endpoint:string, userIds:string) => {
   return apiGet(endpoint, { user_ids: userIds }).then((response:any) => response.users);
 };
 
-export const useSWRxLikerList = (likerIds?: string[]): SWRResponse<IUser[], Error> => {
-  const shouldFetch = likerIds != null && likerIds.length > 0;
+export const useSWRxLikerList = (likerIds: string[] = []): SWRResponse<IUser[], Error> => {
+  const shouldFetch = likerIds.length > 0;
   return useSWR(shouldFetch ? ['/users.list', [...likerIds].join(',')] : null, userFetcher);
 };
