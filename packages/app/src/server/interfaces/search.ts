@@ -13,17 +13,14 @@ export type QueryTerms = {
   not_tag: string[],
 }
 
-export type ParsedQuery = {
-  queryString: string // original query string in request
-  nqNames: string[] // possible NamedQuery names found in query string
-}
+export type ParsedQuery = { queryString: string, terms?: QueryTerms, delegatorName?: string }
 
 export interface SearchQueryParser {
   parseSearchQuery(queryString: string): Promise<ParsedQuery>
 }
 
 export interface SearchResolver{
-  resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]>
+  resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]>
 }
 
 export interface SearchDelegator<T = unknown> {

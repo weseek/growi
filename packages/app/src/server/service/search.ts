@@ -1,15 +1,23 @@
 import mongoose from 'mongoose';
 import RE2 from 're2';
 
-import { NamedQueryModel, NamedQueryDocument } from '../models/named-query';
+import { NamedQueryModel } from '../models/named-query';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
 
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+const normalizeQueryString = (_queryString: string): string => {
+  let queryString = _queryString.trim();
+  queryString = queryString.replace(/\s+/g, ' ');
+
+  return queryString;
+};
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -21,7 +29,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   isErrorOccuredOnSearching: boolean | null
 
-  delegator: any & SearchDelegator
+  fullTextSearchDelegator: any & SearchDelegator
+
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator} // TODO: initialize
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -31,20 +41,20 @@ class SearchService implements SearchQueryParser, SearchResolver {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.delegator = this.generateDelegator();
+      this.fullTextSearchDelegator = this.generateDelegator();
     }
     catch (err) {
       logger.error(err);
     }
 
     if (this.isConfigured) {
-      this.delegator.init();
+      this.fullTextSearchDelegator.init();
       this.registerUpdateEvent();
     }
   }
 
   get isConfigured() {
-    return this.delegator != null;
+    return this.fullTextSearchDelegator != null;
   }
 
   get isReachable() {
@@ -70,19 +80,19 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   registerUpdateEvent() {
     const pageEvent = this.crowi.event('page');
-    pageEvent.on('create', this.delegator.syncPageUpdated.bind(this.delegator));
-    pageEvent.on('update', this.delegator.syncPageUpdated.bind(this.delegator));
-    pageEvent.on('deleteCompletely', this.delegator.syncPagesDeletedCompletely.bind(this.delegator));
-    pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
-    pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
-    pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
+    pageEvent.on('create', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('update', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPagesDeletedCompletely.bind(this.fullTextSearchDelegator));
+    pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
-    bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
-    bookmarkEvent.on('delete', this.delegator.syncBookmarkChanged.bind(this.delegator));
+    bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
+    bookmarkEvent.on('delete', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
 
     const tagEvent = this.crowi.event('tag');
-    tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
+    tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
   }
 
   resetErrorStatus() {
@@ -92,7 +102,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async reconnectClient() {
     logger.info('Try to reconnect...');
-    this.delegator.initClient();
+    this.fullTextSearchDelegator.initClient();
 
     try {
       await this.getInfoForHealth();
@@ -107,7 +117,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async getInfo() {
     try {
-      return await this.delegator.getInfo();
+      return await this.fullTextSearchDelegator.getInfo();
     }
     catch (err) {
       logger.error(err);
@@ -117,7 +127,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   async getInfoForHealth() {
     try {
-      const result = await this.delegator.getInfoForHealth();
+      const result = await this.fullTextSearchDelegator.getInfoForHealth();
 
       this.isErrorOccuredOnHealthcheck = false;
       return result;
@@ -132,32 +142,170 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async getInfoForAdmin() {
-    return this.delegator.getInfoForAdmin();
+    return this.fullTextSearchDelegator.getInfoForAdmin();
   }
 
   async normalizeIndices() {
-    return this.delegator.normalizeIndices();
+    return this.fullTextSearchDelegator.normalizeIndices();
   }
 
   async rebuildIndex() {
-    return this.delegator.rebuildIndex();
+    return this.fullTextSearchDelegator.rebuildIndex();
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    // TODO: impl parser
-    return {} as ParsedQuery;
+
+    const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RE2(/\[nq:|\]/g);
+
+    const queryString = normalizeQueryString(_queryString);
+
+    // when Normal Query
+    if (!regexp.test(queryString)) {
+      return { queryString, terms: this.parseQueryString(queryString) };
+    }
+
+    // when Named Query
+    const NamedQuery = mongoose.model('NamedQuery') as NamedQueryModel;
+
+    const name = queryString.replace(replaceRegexp, '');
+    const nq = await NamedQuery.findOne({ name });
+
+    // will delegate to full-text search
+    if (nq == null) {
+      return { queryString, terms: this.parseQueryString(queryString) };
+    }
+
+    const { aliasOf, delegatorName } = nq;
+
+    let parsedQuery;
+    if (aliasOf != null) {
+      parsedQuery = { queryString: normalizeQueryString(aliasOf), terms: this.parseQueryString(aliasOf) };
+    }
+    if (delegatorName != null) {
+      parsedQuery = { queryString, delegatorName };
+    }
+
+    return parsedQuery;
   }
 
-  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData]> {
-    // TODO: impl resolve
-    return [{}, {}] as [SearchDelegator, SearchableData];
+  async resolve(parsedQuery: ParsedQuery): Promise<[SearchDelegator, SearchableData | null]> {
+    const { queryString, terms, delegatorName } = parsedQuery;
+    if (delegatorName != null) {
+      const nqDelegator = this.nqDelegators[delegatorName];
+      if (nqDelegator != null) {
+        return [nqDelegator, null];
+      }
+    }
+
+    const data = {
+      queryString,
+      terms: terms as QueryTerms,
+    };
+    return [this.fullTextSearchDelegator, data];
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
-    // TODO: parse
-    // TODO: resolve
-    // TODO: search
-    return {} as Result<any> & MetaData;
+    let parsedQuery;
+    // parse
+    try {
+      parsedQuery = await this.parseSearchQuery(keyword);
+    }
+    catch (err) {
+      logger.error('Error occurred while parseSearchQuery', err);
+      throw err;
+    }
+
+    let delegator;
+    let data;
+    // resolve
+    try {
+      [delegator, data] = await this.resolve(parsedQuery);
+    }
+    catch (err) {
+      logger.error('Error occurred while resolving search delegator', err);
+      throw err;
+    }
+
+    return delegator.search(data, user, userGroups, searchOpts);
+  }
+
+  parseQueryString(queryString: string): QueryTerms {
+    // terms
+    const matchWords: string[] = [];
+    const notMatchWords: string[] = [];
+    const phraseWords: string[] = [];
+    const notPhraseWords: string[] = [];
+    const prefixPaths: string[] = [];
+    const notPrefixPaths: string[] = [];
+    const tags: string[] = [];
+    const notTags: string[] = [];
+
+    // First: Parse phrase keywords
+    const phraseRegExp = new RegExp(/(-?"[^"]+")/g);
+    const phrases = queryString.match(phraseRegExp);
+
+    if (phrases !== null) {
+      queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
+
+      phrases.forEach((phrase) => {
+        phrase.trim();
+        if (phrase.match(/^-/)) {
+          notPhraseWords.push(phrase.replace(/^-/, ''));
+        }
+        else {
+          phraseWords.push(phrase);
+        }
+      });
+    }
+
+    // Second: Parse other keywords (include minus keywords)
+    queryString.split(' ').forEach((word) => {
+      if (word === '') {
+        return;
+      }
+
+      // https://regex101.com/r/pN9XfK/1
+      const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
+      // https://regex101.com/r/3qw9FQ/1
+      const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
+
+      if (matchNegative != null) {
+        if (matchNegative[1] === 'prefix:') {
+          notPrefixPaths.push(matchNegative[2]);
+        }
+        else if (matchNegative[1] === 'tag:') {
+          notTags.push(matchNegative[2]);
+        }
+        else {
+          notMatchWords.push(matchNegative[2]);
+        }
+      }
+      else if (matchPositive != null) {
+        if (matchPositive[1] === 'prefix:') {
+          prefixPaths.push(matchPositive[2]);
+        }
+        else if (matchPositive[1] === 'tag:') {
+          tags.push(matchPositive[2]);
+        }
+        else {
+          matchWords.push(matchPositive[2]);
+        }
+      }
+    });
+
+    const terms = {
+      match: matchWords,
+      not_match: notMatchWords,
+      phrase: phraseWords,
+      not_phrase: notPhraseWords,
+      prefix: prefixPaths,
+      not_prefix: notPrefixPaths,
+      tag: tags,
+      not_tag: notTags,
+    };
+
+    return terms;
   }
 
 }
