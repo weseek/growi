@@ -1,4 +1,5 @@
 import React, { FC, useCallback } from 'react';
+import { pagePathUtils } from '@growi/core';
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
@@ -11,6 +12,7 @@ import SubNavButtons from '../Navbar/SubNavButtons';
 type Props = {
   appContainer:AppContainer
   pageId: string,
+  revisionId: string,
   path: string,
   isSignleLineMode?: boolean,
   isCompactMode?: boolean,
@@ -19,8 +21,10 @@ type Props = {
 
 const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const {
-    appContainer, pageId, path, isCompactMode, isSignleLineMode,
+    appContainer, pageId, revisionId, path, isCompactMode, isSignleLineMode,
   } = props;
+
+  const { isTrashPage, isDeletablePage } = pagePathUtils;
 
   const { data: tagInfoData, error: tagInfoError, mutate: mutateTagInfo } = useSWRTagsInfo(pageId);
 
@@ -38,7 +42,9 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   if (tagInfoError != null || tagInfoData == null) {
     return <></>;
   }
+  const isPageDeletable = isDeletablePage(path);
   const { isSharedUser } = appContainer;
+  const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
       {/* Left side */}
@@ -51,8 +57,22 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
         <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
       </div>
       {/* Right side */}
+      {/*
+        DeleteCompletely is currently disabled
+        TODO : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
+        story: https://redmine.weseek.co.jp/issues/82222
+      */}
       <div className="d-flex">
-        <SubNavButtons isCompactMode={isCompactMode} pageId={pageId}></SubNavButtons>
+        <SubNavButtons
+          isCompactMode={isCompactMode}
+          pageId={pageId}
+          revisionId={revisionId}
+          path={path}
+          isDeletable={isPageDeletable}
+          // isAbleToDeleteCompletely={}
+          willShowPageManagement={isAbleToShowPageManagement}
+        >
+        </SubNavButtons>
       </div>
     </div>
   );
