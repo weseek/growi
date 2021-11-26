@@ -13,7 +13,7 @@ type Props = {
   onClose?: () => void,
   switchExcludingUnderUserPage?: () => void,
   switchExcludingUnderTrashPage?: () => void,
-  onClickFilteringSearchResultButton?: () => void,
+  onClickFilteringSearchResult?: () => void,
 }
 
 const FilterOptionModal: FC<Props> = (props: Props) => {
@@ -31,9 +31,9 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
     }
   };
 
-  const onClickFilteringSearchResultButton = () => {
-    if (props.onClickFilteringSearchResultButton != null) {
-      props.onClickFilteringSearchResultButton();
+  const onClickFilteringSearchResult = () => {
+    if (props.onClickFilteringSearchResult != null) {
+      props.onClickFilteringSearchResult();
       onCloseModal();
     }
   };
@@ -73,7 +73,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={onClickFilteringSearchResultButton}
+          onClick={onClickFilteringSearchResult}
         >{t('search_result.narrow_donw')}
         </button>
       </ModalFooter>

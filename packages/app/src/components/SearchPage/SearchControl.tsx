@@ -59,7 +59,7 @@ const SearchControl: FC <Props> = (props: Props) => {
     setIsFileterOptionModalShown(false);
   };
 
-  const onClickFilteringSearchResultButton = () => {
+  const onRetrySearchInvoked = () => {
     if (props.onSearchInvoked != null) {
       props.onSearchInvoked({ keyword: props.searchingKeyword });
     }
@@ -69,7 +69,7 @@ const SearchControl: FC <Props> = (props: Props) => {
     return (
       <FilterOptionModal
         isOpen={isFileterOptionModalShown || false}
-        onClickFilteringSearchResultButton={onClickFilteringSearchResultButton}
+        onClickFilteringSearchResult={onRetrySearchInvoked}
         onClose={closeFilterOptionModalHandler}
         switchExcludingUnderUserPage={switchExcludingUnderUserPage}
         switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
