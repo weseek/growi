@@ -280,7 +280,7 @@ module.exports = (crowi) => {
       });
     }
     catch (err) {
-      return res.apiv3Error(err);
+      return res.apiv3Err(err);
     }
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
