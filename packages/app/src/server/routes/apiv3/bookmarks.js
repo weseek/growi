@@ -254,9 +254,8 @@ module.exports = (crowi) => {
     const { pageId, bool } = req.body;
 
     let bookmark;
-    let page;
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
+      const page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
