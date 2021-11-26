@@ -255,21 +255,30 @@ class SearchPage extends React.Component {
   }
 
   async deleteSelectedPages() {
-    const deleteCompletely = this.state.isDeleteCompletely || null;
+    const { t } = this.props;
+    toastr.warning(t('search_result.currently_not_implemented'));
+    // const deleteCompletely = this.state.isDeleteCompletely || null;
     try {
-      const selectedPages = this.getSelectedPages();
-      await Promise.all(selectedPages.map(async(page) => {
-        const removePageParams = { page_id: page._id, revision_id: page.revision, completely: deleteCompletely };
-        try {
-          const res = await this.props.appContainer.apiPost('/pages.remove', removePageParams);
-          if (res.ok) { this.state.selectedPagesIdList.delete(page) }
-        }
-        catch (err) {
-          this.setState({ errorMessageForDeleting: err.message });
-          throw new Error(err.message);
-        }
-      }));
-      window.location.reload();
+
+      // const selectedPages = this.getSelectedPages();
+
+      // ************** replace these code that remove pages with code that does bulk remove **************
+      // Todo: https://redmine.weseek.co.jp/issues/82220
+      // await Promise.all(selectedPages.map(async(page) => {
+      //   const removePageParams = { page_id: page._id, revision_id: page.revision, completely: deleteCompletely };
+      //   try {
+      //     const res = await this.props.appContainer.apiPost('/pages.remove', removePageParams);
+      //     if (res.ok) { this.state.selectedPagesIdList.delete(page) }
+      //   }
+      //   catch (err) {
+      //     this.setState({ errorMessageForDeleting: err.message });
+      //     throw new Error(err.message);
+      //   }
+      // }));
+      // **************************************************************************************************
+
+      this.search({ keyword: this.state.searchedKeyword });
+      this.onCloseDeleteConfirmModal();
     }
     catch (err) {
       toastr.error(err, 'Error occured', { toastrOption });

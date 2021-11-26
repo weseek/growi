@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import Clamp from 'react-multiline-clamp';
+import toastr from 'toastr';
 
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
@@ -48,16 +49,16 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+        <button className="dropdown-item text-danger" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-fire"></i>{t('Delete')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-docs"></i>{t('Duplicate')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
       </div>

@@ -15,9 +15,6 @@ class DeletePageListModal extends React.Component {
    */
   static get OMIT_BODY_THRES() { return 400 }
 
-  componentWillMount() {
-  }
-
   render() {
     const { t } = this.props;
     if (this.props.pages == null || this.props.pages.length === 0) {
