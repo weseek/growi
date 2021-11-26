@@ -76,6 +76,16 @@ class PageService {
         logger.error(err);
       }
     });
+
+    // bookmark
+    this.pageEvent.on('bookmark', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
   }
 
 
