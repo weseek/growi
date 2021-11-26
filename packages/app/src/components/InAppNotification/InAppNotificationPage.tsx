@@ -59,7 +59,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     return (
       <>
-        {status === 'UNOPENED'
+        {status === InAppNotificationStatuses.STATUS_UNOPENED
       && (
         <div className="mb-2 d-flex justify-content-end">
           <button
