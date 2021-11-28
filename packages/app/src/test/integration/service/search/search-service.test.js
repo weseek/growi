@@ -196,10 +196,10 @@ describe('SearchService test', () => {
 
       const result = await delegator.search(data, testUser1, null, { limit: 0, offset: 0 });
 
-      const resultPaths = result.data.pages.map(page => page.path).sort();
-      const expectedPaths = ['/user1', '/user1_owner', '/user2_public'].sort();
+      const resultPaths = result.data.pages.map(page => page.path);
+      const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
 
-      expect(resultPaths).toStrictEqual(expectedPaths);
+      expect(flag).toBe(true);
     });
   });
 
