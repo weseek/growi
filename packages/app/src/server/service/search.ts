@@ -44,8 +44,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.fullTextSearchDelegator = this.generateDelegator();
+      this.fullTextSearchDelegator = this.generateFullTextSearchDelegator();
       this.nqDelegators = this.generateNQDelegators(this.fullTextSearchDelegator);
+      logger.info('Succeeded to initialize search delegators');
     }
     catch (err) {
       logger.error(err);
@@ -70,7 +71,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return uri != null && uri.length > 0;
   }
 
-  generateDelegator() {
+  generateFullTextSearchDelegator() {
     logger.info('Initializing search delegator');
 
     if (this.isElasticsearchEnabled) {
@@ -164,7 +165,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-
     const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
     const replaceRegexp = new RE2(/\[nq:|\]/g);
 

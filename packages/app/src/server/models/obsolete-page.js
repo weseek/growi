@@ -219,6 +219,18 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionAsRootOrHasParent() {
+    this.query = this.query
+      .and({ $or: [{ parent: null }, { path: '/' }] });
+
+    return this;
+  }
+
+  addConditionAsNotRootOrHasParent() {
+    this.query = this.query
+      .and({ $nor: [{ parent: null }, { path: '/' }] });
+  }
+
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */

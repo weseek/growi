@@ -27,9 +27,10 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<Data> {
     const Page = mongoose.model('Page') as PageModel;
     const { PageQueryBuilder } = Page;
 
-    const queryBuilder = new PageQueryBuilder(Page.find({ parent: null }));
+    const queryBuilder = new PageQueryBuilder(Page.find());
 
     const pages: PageDocument[] = await queryBuilder
+      .addConditionAsRootOrHasParent()
       .addConditionToFilteringByViewer(user, userGroups)
       .addConditionToPagenate(offset, limit)
       .query

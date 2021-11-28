@@ -19,7 +19,7 @@ describe('SearchService test', () => {
   let namedQuery1;
   let namedQuery2;
 
-  const dummyDelegator = {
+  const dummyFullTextSearchDelegator = {
     search() {
       return;
     },
@@ -29,7 +29,8 @@ describe('SearchService test', () => {
     crowi = await getInstance();
     searchService = new SearchService(crowi);
     searchService.nqDelegators = {
-      FullTextSearch: dummyDelegator,
+      ...searchService.nqDelegators,
+      [DEFAULT]: dummyFullTextSearchDelegator, // override with dummy full-text search delegator
     };
 
     dummyAliasOf = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
@@ -46,11 +47,11 @@ describe('SearchService test', () => {
 
   describe('parseQueryString()', () => {
     test('should parse queryString', async() => {
-      const queryString = 'match -notmatch "phrase" -"notphrase" [nq:named_query] prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
+      const queryString = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
       const terms = await searchService.parseQueryString(queryString);
 
       const expected = { // QueryTerms
-        match: ['match', '[nq:named_query]'],
+        match: ['match'],
         not_match: ['notmatch'],
         phrase: ['"phrase"'],
         not_phrase: ['"notphrase"'],
@@ -163,9 +164,10 @@ describe('SearchService test', () => {
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
         {
-          path: '/user2_notOwner',
+          path: '/user2_public',
           grant: Page.GRANT_PUBLIC,
           creator: testUser2,
           lastUpdateUser: testUser2,
@@ -192,10 +194,10 @@ describe('SearchService test', () => {
 
       const [delegator, data] = await searchService.resolve(parsedQuery);
 
-      const result = await delegator.search(data, testUser1, null, { limit: 10, offset: 0 });
+      const result = await delegator.search(data, testUser1, null, { limit: 0, offset: 0 });
 
       const resultPaths = result.data.pages.map(page => page.path).sort();
-      const expectedPaths = ['/user1', '/user1_owner'].sort();
+      const expectedPaths = ['/user1', '/user1_owner', '/user2_public'].sort();
 
       expect(resultPaths).toStrictEqual(expectedPaths);
     });
