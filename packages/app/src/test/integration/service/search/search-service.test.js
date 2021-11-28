@@ -145,12 +145,12 @@ describe('SearchService test', () => {
       const Page = mongoose.model('Page');
       const User = mongoose.model('User');
       await User.insertMany([
-        { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
-        { name: 'someone2', username: 'someone2', email: 'someone2@example.com' },
+        { name: 'dummyuser1', username: 'dummyuser1', email: 'dummyuser1@example.com' },
+        { name: 'dummyuser2', username: 'dummyuser2', email: 'dummyuser2@example.com' },
       ]);
 
-      const testUser1 = await User.findOne({ username: 'someone1' });
-      const testUser2 = await User.findOne({ username: 'someone2' });
+      const testUser1 = await User.findOne({ username: 'dummyuser1' });
+      const testUser2 = await User.findOne({ username: 'dummyuser2' });
 
       await Page.insertMany([
         {
