@@ -74,11 +74,9 @@ activitySchema.index({
 
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser, targetModel, target } = this;
+  const { user: actionUser, target } = this;
 
-  const model: any = await this.model(targetModel).findById(target);
-  const [targetUsers, subscribeUsers, unsubscribeUsers] = await Promise.all([
-    model.getNotificationTargetUsers(),
+  const [subscribeUsers, unsubscribeUsers] = await Promise.all([
     Subscription.getSubscription((target as any) as Types.ObjectId),
     Subscription.getUnsubscription((target as any) as Types.ObjectId),
   ]);
@@ -88,7 +86,7 @@ activitySchema.methods.getNotificationTargetUsers = async function() {
     const ids = pull.map(object => object.toString());
     return array.filter(object => !ids.includes(object.toString()));
   };
-  const notificationUsers = filter(unique([...targetUsers, ...subscribeUsers]), [...unsubscribeUsers, actionUser]);
+  const notificationUsers = filter(unique([...subscribeUsers]), [...unsubscribeUsers, actionUser]);
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },
     status: User.STATUS_ACTIVE,
