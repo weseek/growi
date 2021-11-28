@@ -7,6 +7,14 @@
   .grw-pagetree-item {
     &:hover {
       opacity: 0.7;
+
+      .grw-pagetree-control {
+        display: flex;
+      }
+
+      .grw-pagetree-count {
+        display: none;
+      }
     }
 
     .grw-pagetree-button {
@@ -17,13 +25,30 @@
       }
     }
 
-    .grw-pagetree-title {
-      font-size: medium;
+    a {
+      width: 100%;
+      overflow: hidden;
+
+      .grw-pagetree-title {
+        overflow: hidden;
+        font-size: medium;
+        text-overflow: ellipsis;
+      }
     }
 
     .grw-pagetree-control {
+      display: none;
+    }
+
+    .grw-pagetree-count {
+      display: inline-block;
+
       &:hover {
-        display: inline-block;
+        display: none;
+      }
+
+      span {
+        padding: 0.3rem 1rem;
       }
     }
   }
