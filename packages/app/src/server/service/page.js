@@ -777,7 +777,7 @@ class PageService {
   }
 
   async v5MigrationByPageIds(pageIds) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page');
 
     if (pageIds == null || pageIds.length === 0) {
       return;
@@ -836,17 +836,21 @@ class PageService {
    */
   async _generateRegExpsByPageIds(pageIds) {
     const Page = mongoose.model('Page');
+    const { PageQueryBuilder } = Page;
 
-    let result;
+    let pages;
     try {
-      result = await Page.findListByPageIds(pageIds, null, false);
+      const builder = new PageQueryBuilder(Page.find({ _id: { $in: pageIds } }));
+      pages = await builder
+        .query
+        .lean()
+        .exec();
     }
     catch (err) {
-      logger.error('Failed to find pages by ids');
+      logger.error('Failed to find pages by ids', err);
       throw err;
     }
 
-    const { pages } = result;
     const regexps = pages.map(page => new RegExp(`^${page.path}`));
 
     return regexps;

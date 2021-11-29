@@ -820,7 +820,7 @@ describe('PageService', () => {
     });
   });
 
-  describe('_v5RecursiveMigration()', () => {
+  describe('v5MigrationByPageIds()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       // initialize pages for test
       const pages = await Page.insertMany([
