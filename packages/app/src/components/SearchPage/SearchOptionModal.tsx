@@ -11,12 +11,12 @@ type Props = {
   excludeUnderUserPage: boolean,
   excludeUnderTrashPage: boolean,
   onClose?: () => void,
-  switchExcludingUnderUserPage?: () => void,
-  switchExcludingUnderTrashPage?: () => void,
+  onSwitchExcludingUserPagesInvoked?: () => void,
+  onSwitchExcludingTrashPagesInvoked?: () => void,
   onClickFilteringSearchResult?: () => void,
 }
 
-const FilterOptionModal: FC<Props> = (props: Props) => {
+const SearchOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
@@ -41,7 +41,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
   return (
     <Modal size="lg" isOpen={isOpen} toggle={onCloseModal} autoFocus={false}>
       <ModalHeader tag="h4" toggle={onCloseModal} className="bg-primary text-light">
-        Filter Option
+        Search Option
       </ModalHeader>
       <ModalBody>
         <div className="d-flex justify-content-center mr-3">
@@ -50,7 +50,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={switchExcludingUnderUserPage}
+                onClick={props.onSwitchExcludingUserPagesInvoked}
                 checked={!excludeUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
@@ -61,7 +61,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={switchExcludingUnderTrashPage}
+                onClick={props.onSwitchExcludingTrashPagesInvoked}
                 checked={!excludeUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
@@ -74,11 +74,11 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
           type="button"
           className="btn btn-secondary"
           onClick={onClickFilteringSearchResult}
-        >{t('search_result.narrow_donw')}
+        >{t('search_result.search_again')}
         </button>
       </ModalFooter>
     </Modal>
   );
 };
 
-export default FilterOptionModal;
+export default SearchOptionModal;

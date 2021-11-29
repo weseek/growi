@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
-import FilterOptionModal from './FilterOptionModal';
+import SearchOptionModal from './SearchOptionModal';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
   excludeUnderUserPage: boolean,
   excludeUnderTrashPage: boolean,
   onSearchInvoked: (data: {keyword: string}) => boolean,
-  switchExcludingUnderUserPage?: () => void,
-  switchExcludingUnderTrashPage?: () => void,
+  onSwitchExcludingUserPagesInvoked?: () => void,
+  onSwitchExcludingTrashPagesInvoked?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -24,15 +24,15 @@ const SearchControl: FC <Props> = (props: Props) => {
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
 
-  const switchExcludingUnderUserPage = () => {
-    if (props.switchExcludingUnderUserPage != null) {
-      props.switchExcludingUnderUserPage();
+  const switchExcludingUnderUserPageHandler = () => {
+    if (props.onSwitchExcludingUserPagesInvoked != null) {
+      props.onSwitchExcludingUserPagesInvoked();
     }
   };
 
-  const switchExcludingUnderTrashPage = () => {
-    if (props.switchExcludingUnderTrashPage != null) {
-      props.switchExcludingUnderTrashPage();
+  const switchExcludingUnderTrashPageHandler = () => {
+    if (props.onSwitchExcludingTrashPagesInvoked != null) {
+      props.onSwitchExcludingTrashPagesInvoked();
     }
   };
 
@@ -51,11 +51,11 @@ const SearchControl: FC <Props> = (props: Props) => {
     // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
   };
 
-  const openFilterOptionModalHandler = () => {
+  const openSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(true);
   };
 
-  const closeFilterOptionModalHandler = () => {
+  const closeSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(false);
   };
 
@@ -65,14 +65,14 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
-  const rednerFilterOptionModal = () => {
+  const rednerSearchOptionModal = () => {
     return (
-      <FilterOptionModal
+      <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
         onClickFilteringSearchResult={onRetrySearchInvoked}
-        onClose={closeFilterOptionModalHandler}
-        switchExcludingUnderUserPage={switchExcludingUnderUserPage}
-        switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
+        onClose={closeSearchOptionModalHandler}
+        onSwitchExcludingUserPagesInvoked={switchExcludingUnderUserPageHandler}
+        onSwitchExcludingTrashPagesInvoked={switchExcludingUnderTrashPageHandler}
         excludeUnderUserPage={props.excludeUnderUserPage}
         excludeUnderTrashPage={props.excludeUnderTrashPage}
       />
@@ -109,7 +109,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <button
             type="button"
             className="btn"
-            onClick={openFilterOptionModalHandler}
+            onClick={openSearchOptionModalHandler}
           >
             <i className="icon-equalizer"></i>
           </button>
@@ -121,7 +121,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckDefault"
-                onClick={() => switchExcludingUnderUserPage()}
+                onClick={switchExcludingUnderUserPageHandler}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -132,14 +132,14 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckChecked"
-                onClick={() => switchExcludingUnderTrashPage()}
+                onClick={switchExcludingUnderTrashPageHandler}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
           </div>
         </div>
       </div>
-      {rednerFilterOptionModal()}
+      {rednerSearchOptionModal()}
     </>
   );
 };
