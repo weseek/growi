@@ -69,6 +69,7 @@ const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const injectableContainers = [
   appContainer,
   navigationContainer,
@@ -83,6 +84,7 @@ const injectableContainers = [
   adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
+  socketIoContainer,
 ];
 
 logger.info('unstated containers have been initialized');
