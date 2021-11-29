@@ -1,5 +1,4 @@
 import { pagePathUtils } from '@growi/core';
-import { callbackify } from 'util';
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
