@@ -29,7 +29,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchResults: [],
       searchResultMeta: {},
-      focusedSearchResultData: {},
+      focusedSearchResultData: null,
       selectedPages: new Set(),
       searchResultCount: 0,
       activePage: 1,
