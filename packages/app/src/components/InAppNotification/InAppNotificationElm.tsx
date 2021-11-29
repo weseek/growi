@@ -12,7 +12,7 @@ interface Props {
 }
 
 // TODO 81946 Return to not nullable
-const InAppNotificationElm = (props: Props): JSX.Element | null => {
+const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
 
@@ -68,11 +68,9 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
 
   const actionUsers = getActionUsers();
 
-  // TODO 81946 Return to not nullable
-  const pagePath = { path: props.notification.target?.path };
-  if (pagePath.path == null) {
-    return null;
-  }
+  // TODO: 82528 Swap target.path and snapshot.path
+  // const pagePath = { path: props.notification?.target.path };
+  const pagePath = { path: 'test-page' };
 
   const actionType: string = notification.action;
   let actionMsg: string;
