@@ -18,7 +18,8 @@ $color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 $bordercolor-search-item-left-active: $primary;
-$bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%);
+$bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%) !default;
+$color-search-item-pagelist-meta: $gray-500 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -598,6 +599,12 @@ body.pathname-sidebar {
             background-color: $bgcolor-search-item-active;
             border-color: $bordercolor-search-item-left-active;
           }
+        }
+      }
+      .page-list-meta {
+        color: $color-search-item-pagelist-meta;
+        svg {
+          fill: $color-search-item-pagelist-meta;
         }
       }
     }
