@@ -76,9 +76,7 @@ const PageRenameModal = (props) => {
     }
   }, [props.isOpen, updateSubordinatedList]);
 
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function checkExistPaths(newParentPath: any):Promise<any> {
+  const checkExistPaths = async(newParentPath: string): Promise<void> => {
     try {
       const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
@@ -88,9 +86,8 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Fail to get exist path'));
     }
-  }
+  };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
     debounce(1000, false, checkExistPaths), [],
   );
