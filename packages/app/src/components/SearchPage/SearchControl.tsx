@@ -10,8 +10,8 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  switchExcludingUnderUserPage?: () => void,
-  switchExcludingUnderTrashPage?: () => void,
+  onSwitchExcludingUnderUserPageInvoked?: () => void,
+  onSwitchExcludingUnderTrashPageInvoked?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -22,15 +22,15 @@ const SearchControl: FC <Props> = (props: Props) => {
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
 
-  const switchExcludingUnderUserPage = () => {
-    if (props.switchExcludingUnderUserPage != null) {
-      props.switchExcludingUnderUserPage();
+  const switchExcludingUnderUserPageHandler = () => {
+    if (props.onSwitchExcludingUnderUserPageInvoked != null) {
+      props.onSwitchExcludingUnderUserPageInvoked();
     }
   };
 
-  const switchExcludingUnderTrashPage = () => {
-    if (props.switchExcludingUnderTrashPage != null) {
-      props.switchExcludingUnderTrashPage();
+  const switchExcludingUnderTrashPageHandler = () => {
+    if (props.onSwitchExcludingUnderTrashPageInvoked != null) {
+      props.onSwitchExcludingUnderTrashPageInvoked();
     }
   };
 
@@ -62,8 +62,8 @@ const SearchControl: FC <Props> = (props: Props) => {
       <FilterOptionModal
         isOpen={isFileterOptionModalShown || false}
         onClose={closeFilterOptionModalHandler}
-        switchExcludingUnderUserPage={switchExcludingUnderUserPage}
-        switchExcludingUnderTrashPage={switchExcludingUnderTrashPage}
+        onSwitchExcludingUnderUserPageInvoked={switchExcludingUnderUserPageHandler}
+        onSwitchExcludingUnderTrashPageInvoked={switchExcludingUnderTrashPageHandler}
       />
     );
   };
@@ -110,7 +110,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckDefault"
-                onClick={() => switchExcludingUnderUserPage()}
+                onClick={switchExcludingUnderUserPageHandler}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -121,7 +121,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckChecked"
-                onClick={() => switchExcludingUnderTrashPage()}
+                onClick={switchExcludingUnderTrashPageHandler}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>

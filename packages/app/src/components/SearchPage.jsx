@@ -44,8 +44,8 @@ class SearchPage extends React.Component {
     this.searchHandler = this.searchHandler.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.switchExcludingUnderUserPage = this.switchExcludingUnderUserPage.bind(this);
-    this.switchExcludingUnderTrashPage = this.switchExcludingUnderTrashPage.bind(this);
+    this.switchExcludingUnderUserPageHandler = this.switchExcludingUnderUserPageHandler.bind(this);
+    this.switchExcludingUnderTrashPageHandler = this.switchExcludingUnderTrashPageHandler.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
@@ -68,11 +68,11 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  switchExcludingUnderUserPage() {
+  switchExcludingUnderUserPageHandler() {
     this.setState({ excludeUnderUserPage: !this.state.excludeUnderUserPage });
   }
 
-  switchExcludingUnderTrashPage() {
+  switchExcludingUnderTrashPageHandler() {
     this.setState({ excludeUnderTrashPage: !this.state.excludeUnderTrashPage });
   }
 
@@ -224,8 +224,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
-        switchExcludingUnderUserPage={this.switchExcludingUnderUserPage}
-        switchExcludingUnderTrashPage={this.switchExcludingUnderTrashPage}
+        onSwitchExcludingUnderUserPageInvoked={this.switchExcludingUnderUserPageHandler}
+        onSwitchExcludingUnderTrashPageInvoked={this.switchExcludingUnderTrashPageHandler}
       >
       </SearchControl>
     );
