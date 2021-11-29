@@ -22,13 +22,13 @@ const SearchControl: FC <Props> = (props: Props) => {
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
 
-  const switchExcludingUnderUserPageHandler = () => {
+  const switchExcludingUserPagesHandler = () => {
     if (props.onSwitchExcludingUserPagesInvoked != null) {
       props.onSwitchExcludingUserPagesInvoked();
     }
   };
 
-  const switchExcludingUnderTrashPageHandler = () => {
+  const switchExcludingTrashPagesHandler = () => {
     if (props.onSwitchExcludingTrashPagesInvoked != null) {
       props.onSwitchExcludingTrashPagesInvoked();
     }
@@ -62,8 +62,8 @@ const SearchControl: FC <Props> = (props: Props) => {
       <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
         onClose={closeSearchOptionModalHandler}
-        onSwitchExcludingUserPagesInvoked={switchExcludingUnderUserPageHandler}
-        onSwitchExcludingTrashPagesInvoked={switchExcludingUnderTrashPageHandler}
+        onSwitchExcludingUserPagesInvoked={switchExcludingUserPagesHandler}
+        onSwitchExcludingTrashPagesInvoked={switchExcludingTrashPagesHandler}
       />
     );
   };
@@ -110,7 +110,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckDefault"
-                onClick={switchExcludingUnderUserPageHandler}
+                onClick={switchExcludingUserPagesHandler}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -121,7 +121,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 id="flexCheckChecked"
-                onClick={switchExcludingUnderTrashPageHandler}
+                onClick={switchExcludingTrashPagesHandler}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
