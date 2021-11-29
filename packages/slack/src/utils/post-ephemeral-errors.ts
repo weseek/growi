@@ -1,23 +1,16 @@
 import { WebAPICallResult } from '@slack/web-api';
+import { respond } from './response-url';
 
 import { markdownSectionBlock } from './block-kit-builder';
-import { generateWebClient } from './webclient-factory';
 
-export const postEphemeralErrors = async(
+export const respondRejectedErrors = async(
     rejectedResults: PromiseRejectedResult[],
-    channelId: string,
-    userId: string,
-    botToken: string,
+    responseUrl: string,
 ): Promise<WebAPICallResult|void> => {
 
   if (rejectedResults.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const client = generateWebClient(botToken);
-
-    return client.chat.postEphemeral({
+    await respond(responseUrl, {
       text: 'Error occured.',
-      channel: channelId,
-      user: userId,
       blocks: [
         markdownSectionBlock('*Error occured:*'),
         ...rejectedResults.map((rejectedResult) => {

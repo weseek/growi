@@ -258,6 +258,42 @@
       "This tree": "この階層下の子ページのみ"
     }
   },
+  "editor_settings": {
+    "editor_settings": "エディター設定",
+    "common_settings": {
+      "common_settings": "共通設定",
+      "common_misspellings": "ウィキペディアから一般的なスペルミスを見つけます。",
+      "max_comma": "文の読点（,）を最大10個に制限します。初期値: 4。",
+      "sentence_length": "文の最大文字数を制限します。初期値: 100。",
+      "en_capitalization": "英文の大文字化をチェックします",
+      "no_unmatched_pair": "（ と ] のような一致しないペアをチェックします",
+      "date_weekday_mismatch": "日付と平日の不一致を検出します。",
+      "no_kangxi_radicals": "康熙帝の部首の使用を防ぎます。",
+      "no_surrogate_pair": "文中のサロゲートペア（D800-DBFFおよびDC00-DFFF）を検出します。",
+      "no_zero_width_spaces": "ゼロ幅スペースを許可しません。",
+      "period_in_list_item": "リストアイテムのピリオドの有無をチェックします。",
+      "use_si_units": "SI単位系以外の使用を禁止します。"
+      },
+    "japanese_settings": {
+      "japanese_settings": "日本語設定",
+      "ja_hiragana_keishikimeishi": "漢字よりひらがなで書かれた読みやすい形式名詞をチェックします。",
+      "ja_no_abusage": "よくある誤用をチェックします。",
+      "ja_no_inappropriate_words": "不適切表現をチェックします。",
+      "ja_no_mixed_period": "パラグラフの末尾に必ず句点記号を付けていることをチェックします。",
+      "ja_no_redundant_expression": "冗長な表現を禁止します。冗長な表現とは、その文から省いても意味が通じるような表現を示しています。",
+      "max_kanji_continuous_len": "漢字が連続する最大文字数を制限します。初期値: 5。",
+      "max_ten": "一文に利用できる、の数を制限します。一文の読点の数が多いと冗長で読みにくい文章となるため、読点の数を一定数以下にするルールです。 読点の数を減らすためには、句点(。)で文を区切る必要があります。",
+      "no_double_negative_ja": "二重否定を検出します。",
+      "no_doubled_conjunction": "同じ接続詞が連続して出現していないかどうかをチェックします。",
+      "no_doubled_joshi": "1つの文中に同じ助詞が連続して出てくるのをチェックします。",
+      "no_dropping_the_ra": "ら抜き言葉を検出します。",
+      "no_hankaku_kana": "半角カナの利用を禁止します。",
+      "prefer_tari_tari": "「〜たり〜たりする」をチェックします。",
+      "ja_unnatural_alphabet": "不自然なアルファベットを検知します。",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "全角と半角アルファベットを混在をチェックします。",
+      "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
+    }
+  },
   "copy_to_clipboard": {
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",
@@ -418,6 +454,11 @@
       "title": "コメントフォームショートカット",
       "Post": "投稿"
     }
+  },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Textlintを有効にしますか？20MBの辞書ファイルをダウンロードします。",
+    "enable_textlint": "Textlintを有効にする",
+    "dont_ask_again": "常に許可する"
   },
   "link_edit": {
     "edit_link": "リンク編集",
@@ -656,8 +697,10 @@
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
       "attr_based_login_control_detail": "SAMLの <code>&lt;saml:AttributeStatement&gt;</code> 要素に含まれる <code>&lt;saml:Attribute&gt;</code> 要素と、その子要素 <code>&lt;saml:AttributeValue&gt;</code> を利用してログインの可否を制御します。",
-      "attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>利用可能なクエリ:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>利用不可なクエリ:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
-      "attr_based_login_control_rule_example": "<h6>Example</h6>ルールに <code>(Department: A || Department: B) && Position: Leader</code> を指定した場合, <code>Department: A</code> または <code>Department: B</code> のどちらかに該当し、かつ <code>Position: Leader</code> を持つユーザーにログインを<strong>許可</strong>します。"
+      "attr_based_login_control_rule_help": "<h5>利用可能なクエリ:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>利用不可なクエリ:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>特殊文字のエスケープ</h5>次の特殊文字はエスケープする必要があります。<code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
+      "attr_based_login_control_rule_example1": "<h5>条件式の例</h5>ルールに <code>(Department: A || Department: B) && Position: Leader</code> を指定した場合, <code>Department: A</code> または <code>Department: B</code> のどちらかに該当し、かつ <code>Position: Leader</code> を持つユーザーにログインを<strong>許可</strong>します。",
+      "attr_based_login_control_rule_exampl2": "<h5>エスケープの例</h5>ルールに URL を利用したい場合は、次のようにエスケープしてください:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
+      "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
       "enable_basic": "Basic を有効にする",

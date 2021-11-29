@@ -3,7 +3,7 @@
 import {
   Types, Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '@growi/core';
 
 export interface IUpdatePost {
   pathPattern: string
@@ -36,7 +36,7 @@ const updatePostSchema = new Schema<UpdatePostDocument, UpdatePostModel>({
   channel: { type: String, required: true },
   provider: { type: String, required: true },
   creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: new Date(Date.now()) },
 });
 
 updatePostSchema.statics.normalizeChannelName = function(channel) {

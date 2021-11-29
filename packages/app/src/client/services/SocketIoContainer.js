@@ -23,7 +23,6 @@ export default class SocketIoContainer extends Container {
     this.socket = io(ns, {
       transports: ['websocket'],
     });
-    this.socketClientId = Math.floor(Math.random() * 100000);
 
     this.socket.on('connect_error', (error) => {
       logger.error(error);
@@ -46,10 +45,6 @@ export default class SocketIoContainer extends Container {
 
   getSocket() {
     return this.socket;
-  }
-
-  getSocketClientId() {
-    return this.socketClientId;
   }
 
 }

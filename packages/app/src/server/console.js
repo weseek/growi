@@ -2,7 +2,7 @@ const repl = require('repl');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 const models = require('./models');
 

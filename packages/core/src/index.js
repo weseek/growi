@@ -14,6 +14,7 @@ import * as _templateChecker from './utils/template-checker';
 
 export * from './plugin/interfaces/plugin-definition-v4';
 export * from './models/devided-page-path';
+export * from './utils/mongoose-utils';
 
 // export utils
 export const pathUtils = _pathUtils;

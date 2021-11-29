@@ -5,6 +5,8 @@ import { S2cMessagePageUpdated } from '../../models/vo/s2c-message';
 import { S2sMessageHandlable } from '../s2s-messaging/handlable';
 import { S2sMessagingService } from '../s2s-messaging/base';
 
+import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
+
 const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 
 /**
@@ -84,33 +86,54 @@ class SyncPageStatusService implements S2sMessageHandlable {
     const { socketIoService } = this;
 
     // register events
-    this.emitter.on('create', (page, user, socketClientId) => {
+    this.emitter.on('create', (page, user) => {
       logger.debug('\'create\' event emitted.');
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
-      socketIoService.getDefaultSocket().emit('page:create', { s2cMessagePageUpdated, socketClientId });
+
+      // emit to the room for each page
+      socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
+        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
+        .emit('page:create', { s2cMessagePageUpdated });
 
       this.publishToOtherServers('page:create', { s2cMessagePageUpdated });
     });
-    this.emitter.on('update', (page, user, socketClientId) => {
+    this.emitter.on('update', (page, user) => {
       logger.debug('\'update\' event emitted.');
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
-      socketIoService.getDefaultSocket().emit('page:update', { s2cMessagePageUpdated, socketClientId });
+
+      // emit to the room for each page
+      socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
+        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
+        .emit('page:update', { s2cMessagePageUpdated });
 
       this.publishToOtherServers('page:update', { s2cMessagePageUpdated });
     });
-    this.emitter.on('delete', (page, user, socketClientId) => {
+    this.emitter.on('delete', (page, user) => {
       logger.debug('\'delete\' event emitted.');
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
-      socketIoService.getDefaultSocket().emit('page:delete', { s2cMessagePageUpdated, socketClientId });
+
+      // emit to the room for each page
+      socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
+        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
+        .emit('page:delete', { s2cMessagePageUpdated });
 
       this.publishToOtherServers('page:delete', { s2cMessagePageUpdated });
     });
-    this.emitter.on('saveOnHackmd', (page) => {
+    this.emitter.on('saveOnHackmd', (page, user) => {
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page);
-      socketIoService.getDefaultSocket().emit('page:editingWithHackmd', { s2cMessagePageUpdated });
+
+      // emit to the room for each page
+      socketIoService.getDefaultSocket()
+        .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
+        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
+        .emit('page:editingWithHackmd', { s2cMessagePageUpdated });
+
       this.publishToOtherServers('page:editingWithHackmd', { s2cMessagePageUpdated });
     });
   }

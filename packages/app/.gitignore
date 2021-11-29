@@ -5,6 +5,7 @@
 # dist
 /dist/
 /transpiled/
+/report/
 /public/static/js
 /public/static/styles
 /public/uploads

@@ -78,7 +78,6 @@ class PageService {
     const path = page.path;
     const createRedirectPage = options.createRedirectPage || false;
     const updateMetadata = options.updateMetadata || false;
-    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
@@ -105,8 +104,8 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', page, user, socketClientId);
-    this.pageEvent.emit('create', renamedPage, user, socketClientId);
+    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('create', renamedPage, user);
 
     return renamedPage;
   }
@@ -248,7 +247,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };
@@ -415,7 +414,6 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    const socketClientId = options.socketClientId || null;
     if (!Page.isDeletableName(page.path)) {
       throw new Error('Page is not deletable.');
     }
@@ -434,8 +432,8 @@ class PageService {
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
-    this.pageEvent.emit('delete', page, user, socketClientId);
-    this.pageEvent.emit('create', deletedPage, user, socketClientId);
+    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
   }
@@ -530,13 +528,12 @@ class PageService {
   async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
-    const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
+    this.pageEvent.emit('deleteCompletely', pages, user); // update as renamed page
 
     return;
   }
@@ -544,7 +541,6 @@ class PageService {
   async deleteCompletely(page, user, options = {}, isRecursively = false) {
     const ids = [page._id];
     const paths = [page.path];
-    const socketClientId = options.socketClientId || null;
 
     logger.debug('Deleting completely', paths);
 
@@ -554,7 +550,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
+    this.pageEvent.emit('delete', page, user); // update as renamed page
 
     return;
   }
@@ -621,7 +617,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({

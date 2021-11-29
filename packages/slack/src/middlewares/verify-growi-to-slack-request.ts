@@ -4,7 +4,7 @@ import createError from 'http-errors';
 import loggerFactory from '../utils/logger';
 import { RequestFromGrowi } from '../interfaces/request-between-growi-and-proxy';
 
-const logger = loggerFactory('@growi/slack:middlewares:verify-slack-request');
+const logger = loggerFactory('@growi/slack:middlewares:verify-growi-to-slack-request');
 
 /**
  * Verify if the request came from slack

@@ -15,6 +15,7 @@ export const parseSlashCommand = (slashCommand:{[key:string]:string}): GrowiComm
 
   return {
     text: slashCommand.text,
+    responseUrl: slashCommand.response_url,
     growiCommandType: splitted[0],
     growiCommandArgs: splitted.slice(1),
   };
