@@ -186,6 +186,7 @@ module.exports = (crowi) => {
     ],
     v5PageMigration: [
       body('action').isString().withMessage('action is required'),
+      body('pageIds').isArray().withMessage('pageIds must be an array'),
     ],
   };
 
@@ -685,17 +686,20 @@ module.exports = (crowi) => {
   });
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
-    const { action } = req.body;
+    const { action, pageIds } = req.body;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const Page = crowi.model('Page');
 
     try {
       switch (action) {
         case 'initialMigration':
           if (!isV5Compatible) {
-            const Page = crowi.model('Page');
             // this method throws and emit socketIo event when error occurs
             crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
           }
+          break;
+        case 'privateLegacyPages':
+          crowi.pageService.v5MigrationByPageIds(pageIds);
           break;
 
         default:

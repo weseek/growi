@@ -692,13 +692,15 @@ export const getPageSchema = (crowi) => {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option) {
+  pageSchema.statics.findListByPageIds = async function(ids, option, excludeRedirect = true) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
-    builder.addConditionToExcludeRedirect();
+    if (excludeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     // count
