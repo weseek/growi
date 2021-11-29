@@ -195,14 +195,25 @@
             margin-right: 3px;
           }
         }
+        .page-list-meta {
+          > span {
+            margin-right: 12px;
+          }
+          .footstamp-icon {
+            margin-right: 2px;
+          }
+        }
       }
     }
 
     .search-result-meta {
-      margin-bottom: 10px;
       font-weight: bold;
     }
-
+    .search-result-select-group {
+      > select {
+        max-width: 8rem;
+      }
+    }
     .search-result-list-delete-checkbox {
       margin: 0 10px 0 0;
       vertical-align: middle;
