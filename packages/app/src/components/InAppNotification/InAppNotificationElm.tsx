@@ -11,8 +11,7 @@ interface Props {
   notification: IInAppNotification & HasObjectId
 }
 
-// TODO 81946 Return to not nullable
-const InAppNotificationElm = (props: Props): JSX.Element | null => {
+const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
 
@@ -63,16 +62,16 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
     apiv3Post('/in-app-notification/open', { id: notification._id });
 
     // jump to target page
-    window.location.href = notification.target.path;
+    const targetPagePath = notification.target?.path;
+    if (targetPagePath != null) {
+      window.location.href = targetPagePath;
+    }
   }, []);
 
   const actionUsers = getActionUsers();
 
-  // TODO 81946 Return to not nullable
-  const pagePath = { path: props.notification.target?.path };
-  if (pagePath.path == null) {
-    return null;
-  }
+  // TODO: 82528 Swap target.path and snapshot.path
+  const pagePath = { path: 'test-page' };
 
   const actionType: string = notification.action;
   let actionMsg: string;
