@@ -594,11 +594,9 @@ body.pathname-sidebar {
         background-color: $bgcolor-keyword-highlighted;
       }
       .page-list-ul {
-        .page-list-li {
-          &.active {
-            background-color: $bgcolor-search-item-active;
-            border-color: $bordercolor-search-item-left-active;
-          }
+        .page-list-li > a.active {
+          background-color: $bgcolor-search-item-active;
+          border-color: $bordercolor-search-item-left-active;
         }
       }
       .page-list-meta {
