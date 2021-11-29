@@ -594,7 +594,7 @@ body.pathname-sidebar {
         background-color: $bgcolor-keyword-highlighted;
       }
       .page-list-ul {
-        .page-list-li > a.active {
+        .active {
           background-color: $bgcolor-search-item-active;
           border-color: $bordercolor-search-item-left-active;
         }

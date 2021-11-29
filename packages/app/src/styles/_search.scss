@@ -177,6 +177,10 @@
 
     .nav.nav-pills {
       > .page-list-li {
+        &.active {
+          padding-right: 5px;
+          border-left: solid 3px transparent;
+        }
         > a {
           height: 123px;
           padding: 2px 4px;
@@ -184,10 +188,6 @@
           &:hover {
             color: inherit;
             text-decoration: none;
-          }
-          &.active {
-            padding-right: 5px;
-            border-left: solid 3px transparent;
           }
           > * {
             margin-right: 3px;

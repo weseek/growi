@@ -87,9 +87,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   };
 
   return (
-    <li key={pageData._id} className="page-list-li search-page-item w-100  px-4 list-group-item-action">
+    <li key={pageData._id} className={`page-list-li search-page-item w-100 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
-        className={`d-block pt-3 ${isSelected ? 'active' : ''}`}
+        className="d-block pt-3"
         href={pageId}
         onClick={() => onClickInvoked(pageData._id)}
       >
