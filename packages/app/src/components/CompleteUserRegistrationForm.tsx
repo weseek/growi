@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import axios from '../utils/axios';
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../client/services/AppContainer';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
 interface Props {
-  appContainer: AppContainer,
   messageErrors?: any,
   inputs?: any,
   email: string,
@@ -17,7 +15,6 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
   const {
-    appContainer,
     messageErrors,
     email,
     token,
@@ -31,9 +28,9 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
-      const res = await appContainer.apiGet('/check_username', { username: checkUsername });
-      if (res.ok) {
-        setUsernameAvailable(res.valid);
+      const data = await apiv3Get('/check_username', { username: checkUsername });
+      if (data.ok) {
+        setUsernameAvailable(data.valid);
       }
     }, 500);
 
@@ -43,7 +40,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   async function submitRegistration() {
     setDisableForm(true);
     try {
-      const res = await appContainer.apiv3.post('/complete-registration', {
+      const res = await apiv3Post('/complete-registration', {
         username: checkUsername, name, password, token,
       });
       toastSuccess('Registration succeed');
@@ -144,4 +141,4 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
 };
 
-export default withUnstatedContainers(CompleteUserRegistrationForm, [AppContainer]);
+export default CompleteUserRegistrationForm;

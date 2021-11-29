@@ -126,14 +126,12 @@ if (UserActivationForm) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer]}>
-        <CompleteUserRegistrationForm
-          messageErrors={messageErrors}
-          inputs={inputs}
-          email={email}
-          token={token}
-        />
-      </Provider>
+      <CompleteUserRegistrationForm
+        messageErrors={messageErrors}
+        inputs={inputs}
+        email={email}
+        token={token}
+      />
     </I18nextProvider>,
     UserActivationForm,
   );
