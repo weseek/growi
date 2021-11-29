@@ -9,10 +9,9 @@ import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 // TODO: consider whether to use codemirrorEditor
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
-import CodeMirror2 from 'codemirror/lib/codemirror';
+import CodeMirror from 'codemirror/lib/codemirror';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
-
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -20,7 +19,8 @@ require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
 
 // avoid typescript type error
-const CodeMirror:any = CodeMirrorAny;
+// todo: will be replaced to codemirroreditor
+const ReactCodeMirror:any = CodeMirrorAny;
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
@@ -42,18 +42,17 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
   useEffect(() => {
     if (codeMirrorRef) {
-      CodeMirror2.MergeView(codeMirrorRef, {
+      CodeMirror.MergeView(codeMirrorRef, {
         value: origin.revisionBody,
         origLeft: request.revisionBody,
         origRight: latest.revisionBody,
         lineNumbers: true,
         collapseIdentical: true,
+        showDifferences: true,
         highlightDifferences: true,
         connect: 'connect',
-        allowEditingOriginals: false,
         readOnly: true,
         revertButtons: false,
-        showDifferences: true,
       });
     }
   }, [codeMirrorRef, origin, request, latest]);
@@ -176,7 +175,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             </div>
             <div className="col-12 border border-dark">
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-              <CodeMirror
+              <ReactCodeMirror
                 value={resolvedRevision.current}
                 options={{
                   mode: 'htmlmixed',
