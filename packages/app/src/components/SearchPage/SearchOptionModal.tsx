@@ -21,7 +21,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const {
-    isOpen, onClose, switchExcludingUnderUserPage, switchExcludingUnderTrashPage,
+    isOpen, onClose, onSwitchExcludingUserPagesInvoked, onSwitchExcludingTrashPagesInvoked,
     excludeUnderUserPage, excludeUnderTrashPage,
   } = props;
 
@@ -50,7 +50,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onSwitchExcludingUserPagesInvoked}
+                onClick={onSwitchExcludingUserPagesInvoked}
                 checked={!excludeUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
@@ -61,7 +61,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onSwitchExcludingTrashPagesInvoked}
+                onClick={onSwitchExcludingTrashPagesInvoked}
                 checked={!excludeUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
