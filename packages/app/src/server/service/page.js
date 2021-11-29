@@ -788,7 +788,7 @@ class PageService {
 
     // migrate recursively
     try {
-      await this._v5RecursiveMigration(Page.GRANT_PUBLIC, regexps);
+      await this._v5RecursiveMigration(null, regexps);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -836,21 +836,17 @@ class PageService {
    */
   async _generateRegExpsByPageIds(pageIds) {
     const Page = mongoose.model('Page');
-    const { PageQueryBuilder } = Page;
 
-    let pages;
+    let result;
     try {
-      const builder = new PageQueryBuilder(Page.find({ _id: { $in: pageIds } }));
-      pages = await builder
-        .query
-        .lean()
-        .exec();
+      result = await Page.findListByPageIds(pageIds, null, false);
     }
     catch (err) {
       logger.error('Failed to find pages by ids', err);
       throw err;
     }
 
+    const { pages } = result;
     const regexps = pages.map(page => new RegExp(`^${page.path}`));
 
     return regexps;
@@ -878,10 +874,15 @@ class PageService {
 
     // generate filter
     let filter = {
-      grant,
       parent: null,
       path: { $ne: '/' },
     };
+    if (grant != null) {
+      filter = {
+        ...filter,
+        grant,
+      };
+    }
     if (regexps != null && regexps.length !== 0) {
       filter = {
         ...filter,

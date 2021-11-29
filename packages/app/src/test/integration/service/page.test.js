@@ -706,6 +706,7 @@ describe('PageService', () => {
       deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
       removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
     });
+
     test('deleteCompletelyOperation', async() => {
       await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
 
@@ -822,6 +823,8 @@ describe('PageService', () => {
 
   describe('v5MigrationByPageIds()', () => {
     test('should migrate all pages specified by pageIds', async() => {
+      jest.restoreAllMocks();
+
       // initialize pages for test
       const pages = await Page.insertMany([
         {
@@ -863,7 +866,7 @@ describe('PageService', () => {
 
       const expected = ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'];
 
-      expect(migratedPagePaths).toBe(expected);
+      expect(migratedPagePaths.sort()).toStrictEqual(expected.sort());
     });
 
   });
