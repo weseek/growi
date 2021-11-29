@@ -27,6 +27,7 @@ type ConflictDiffModalProps = {
   pageContainer: PageContainer;
   editorContainer: EditorContainer;
   appContainer: AppContainer;
+  markdownOnEdit: string;
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
@@ -40,14 +41,12 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
   const { pageContainer, editorContainer, appContainer } = props;
 
-  const pageEditor = appContainer.getComponentInstance('PageEditor');
-  const markdownOnEdit: string = pageEditor.getMarkdown();
 
   const currentTime: Date = new Date();
 
   const request: IRevisionOnConflictWithStringDate = {
     revisionId: '',
-    revisionBody: markdownOnEdit,
+    revisionBody: props.markdownOnEdit,
     createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
     user: appContainer.currentUser,
   };
@@ -240,6 +239,7 @@ ConflictDiffModal.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer:  PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  markdownOnEdit: PropTypes.string.isRequired,
 };
 
 ConflictDiffModal.defaultProps = {

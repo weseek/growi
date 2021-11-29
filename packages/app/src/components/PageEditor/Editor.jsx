@@ -279,6 +279,14 @@ class Editor extends AbstractEditor {
     );
   }
 
+  retrieveMarkdownOnEdit = () => {
+    if (this.props.pageContainer.state.isConflictDiffModalOpen) {
+      const pageEditor = this.props.appContainer.getComponentInstance('PageEditor');
+      return pageEditor.getMarkdown();
+    }
+    return '';
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -378,6 +386,7 @@ class Editor extends AbstractEditor {
           appContainer={this.props.appContainer}
           pageContainer={this.props.pageContainer}
           editorContainer={this.props.editorContainer}
+          markdownOnEdit={this.retrieveMarkdownOnEdit()}
         />
       </>
     );
