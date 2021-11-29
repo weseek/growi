@@ -63,7 +63,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     apiv3Post('/in-app-notification/open', { id: notification._id });
 
     // jump to target page
-    window.location.href = notification.target.path;
+    const targetPagePath = notification.target?.path;
+    if (targetPagePath != null) {
+      window.location.href = targetPagePath;
+    }
   }, []);
 
   const actionUsers = getActionUsers();
