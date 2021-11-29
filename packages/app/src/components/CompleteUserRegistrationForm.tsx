@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
@@ -28,7 +27,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
-      const data = await apiv3Get('/check_username', { username: checkUsername });
+      const { data } = await apiv3Get('/check_username', { username: checkUsername });
       if (data.ok) {
         setUsernameAvailable(data.valid);
       }
