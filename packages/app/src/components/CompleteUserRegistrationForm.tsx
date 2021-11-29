@@ -20,27 +20,27 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   } = props;
 
   const [usernameAvailable, setUsernameAvailable] = useState(true);
-  const [checkUsername, setCheckUsername] = useState('');
+  const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [disableForm, setDisableForm] = useState(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
-      const { data } = await apiv3Get('/check_username', { username: checkUsername });
-      if (data.ok) {
+      const data = await apiv3Get('/check_username', { username }); // TODO: use `{ data }` with bracket, currently using `{ data }` not working.
+      if (data.success) {
         setUsernameAvailable(data.valid);
       }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [checkUsername]);
+  }, [username]);
 
   async function submitRegistration() {
     setDisableForm(true);
     try {
       const res = await apiv3Post('/complete-registration', {
-        username: checkUsername, name, password, token,
+        username, name, password, token,
       });
       toastSuccess('Registration succeed');
       window.location.href = '/login';
@@ -79,7 +79,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               className="form-control"
               placeholder={t('User ID')}
               name="username"
-              onChange={e => setCheckUsername(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
               required
             />
           </div>

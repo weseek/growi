@@ -62,13 +62,13 @@ module.exports = function(crowi, app) {
     User.findUserByUsername(username)
       .then((userData) => {
         if (userData) {
-          return res.json({ valid: false, ok: true });
+          return res.json({ valid: false, success: true });
         }
 
-        return res.json({ valid: true, ok: true });
+        return res.json({ valid: true, success: true });
       })
       .catch((err) => {
-        return res.json({ valid: true, ok: true });
+        return res.json({ valid: true, success: true });
       });
   };
 
