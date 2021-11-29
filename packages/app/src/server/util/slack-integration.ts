@@ -5,6 +5,7 @@ type CommandPermission = { [key:string]: string[] | boolean }
 export const checkPermission = (
     commandPermission: CommandPermission, commandOrActionIdOrCallbackId: string, fromChannel: IChannelOptionalId,
 ): boolean => {
+  let isPermitted = false;
 
   // help
   if (commandOrActionIdOrCallbackId === 'help') {
@@ -17,8 +18,8 @@ export const checkPermission = (
     const commandRegExp = getSupportedGrowiActionsRegExp(command);
     if (!commandRegExp.test(commandOrActionIdOrCallbackId)) return;
 
-    return permissionParser(permission, fromChannel);
+    isPermitted = permissionParser(permission, fromChannel);
   });
 
-  return false;
+  return isPermitted;
 };
