@@ -87,13 +87,14 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      remoteRevisionBody: null,
+      remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isConflictingOnSave: false,
       isConflictDiffModalOpen: false,
 
       revisionsOnConflict: {},
@@ -108,6 +109,7 @@ export default class PageContainer extends Container {
     }
     try {
       this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+      this.state.lastUpdateUser = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
     }
     catch (e) {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
@@ -363,8 +365,12 @@ export default class PageContainer extends Container {
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+      lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
     };
 
     if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {

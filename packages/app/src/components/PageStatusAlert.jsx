@@ -29,10 +29,17 @@ class PageStatusAlert extends React.Component {
     this.getContentsForRevisionOutdated = this.getContentsForRevisionOutdated.bind(this);
     this.getContentsForDraftExistsAlert = this.getContentsForDraftExistsAlert.bind(this);
     this.getContentsForUpdatedAlert = this.getContentsForUpdatedAlert.bind(this);
+    this.onClickResolveConflict = this.onClickResolveConflict.bind(this);
   }
 
   refreshPage() {
     window.location.reload();
+  }
+
+  onClickResolveConflict() {
+    this.props.pageContainer.setState({
+      isConflictDiffModalOpen: true,
+    });
   }
 
   getContentsForSomeoneEditingAlert() {
@@ -51,7 +58,17 @@ class PageStatusAlert extends React.Component {
   }
 
   getContentsForRevisionOutdated() {
-    const { t, pageContainer } = this.props;
+    const { t, appContainer, pageContainer } = this.props;
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
+
+    let markdownOnEdit = '';
+    let isConflictOnEdit = false;
+
+    if (pageEditor != null) {
+      markdownOnEdit = pageEditor.getMarkdown();
+      isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
+    }
+
     return [
       ['bg-warning', 'd-hackmd-none'],
       <>
@@ -63,10 +80,18 @@ class PageStatusAlert extends React.Component {
           <i className="icon-fw icon-reload mr-1"></i>
           {t('Load latest')}
         </button>
-        <button type="button" onClick={() => pageContainer.setState({ isConflictDiffModalOpen: true })} className="btn btn-outline-white">
-          <i className="fa fa-fw fa-file-text-o mr-1"></i>
-          {t('modal_resolve_conflict.resolve_conflict')}
-        </button>
+        {isConflictOnEdit
+          && (
+            <button
+              type="button"
+              onClick={this.onClickResolveConflict}
+              className="btn btn-outline-white"
+            >
+              <i className="fa fa-fw fa-file-text-o mr-1"></i>
+              {t('modal_resolve_conflict.resolve_conflict')}
+            </button>
+          )
+        }
       </>,
     ];
   }
@@ -106,15 +131,16 @@ class PageStatusAlert extends React.Component {
 
   render() {
     const {
-      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, isConflictingOnSave,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
     } = this.props.pageContainer.state;
 
     const isRevisionOutdated = revisionId !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
     let getContentsFunc = null;
+
     // when conflicting on save
-    if (isConflictingOnSave) {
+    if (isRevisionOutdated) {
       getContentsFunc = this.getContentsForRevisionOutdated;
     }
     // when remote revision is newer than both
