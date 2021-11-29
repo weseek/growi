@@ -284,6 +284,8 @@ export class SlackCtrl {
       });
     }
 
+    console.log('##############', allowedRelationsForBroadcastUse);
+
     // select GROWI
     if (allowedRelationsForSingleUse.length > 0) {
       body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
