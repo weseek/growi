@@ -31,7 +31,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={onClose} autoFocus={false}>
       <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
-        Filter Option
+        Search Option
       </ModalHeader>
       <ModalBody>
         <div className="d-flex justify-content-center mr-3">
@@ -68,7 +68,7 @@ const FilterOptionModal: FC<Props> = (props: Props) => {
           // todo: implement this method
           // refs: https://redmine.weseek.co.jp/issues/81845
           onClick={props.onClickFilteringSearchResultButton}
-        >{t('search_result.narrow_donw')}
+        >{t('search_result.search_again')}
         </button>
       </ModalFooter>
     </Modal>

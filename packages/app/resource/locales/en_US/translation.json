@@ -577,7 +577,7 @@
     "delete_completely": "Delete completely",
     "include_certain_path" : "Include {{pathToInclude}} path ",
     "delete_all_selected_page" : "Delete All",
-    "narrow_donw" : "Narrow down"
+    "search_again" : "Search again"
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
