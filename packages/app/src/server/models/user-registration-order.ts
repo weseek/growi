@@ -4,7 +4,7 @@ import mongoose, {
 
 import uniqueValidator from 'mongoose-unique-validator';
 import crypto from 'crypto';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '@growi/core';
 
 export interface IUserRegistrationOrder {
   token: string,
@@ -28,8 +28,8 @@ const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderMo
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   isRevoked: { type: Boolean, default: false, required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
-  expiredAt: { type: Date, default: Date.now() + 600000, required: true },
+  createdAt: { type: Date, default: new Date(Date.now()), required: true },
+  expiredAt: { type: Date, default: new Date(Date.now() + 600000), required: true },
 });
 schema.plugin(uniqueValidator);
 
