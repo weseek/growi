@@ -22,6 +22,9 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<Data> {
     if (offset == null || limit == null) {
       throw Error('PrivateLegacyPagesDelegator requires pagination options (offset, limit).');
     }
+    if (user == null && userGroups == null) {
+      throw Error('Either of user and userGroups must not be null.');
+    }
 
     // find private legacy pages
     const Page = mongoose.model('Page') as PageModel;
@@ -30,7 +33,8 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<Data> {
     const queryBuilder = new PageQueryBuilder(Page.find());
 
     const pages: PageDocument[] = await queryBuilder
-      .addConditionAsRootOrHasParent()
+      .addConditionAsNonRootPage()
+      .addConditionAsNotMigrated()
       .addConditionToFilteringByViewer(user, userGroups)
       .addConditionToPagenate(offset, limit)
       .query
