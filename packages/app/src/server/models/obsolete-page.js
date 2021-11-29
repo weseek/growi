@@ -219,6 +219,26 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
+
+    return this;
+  }
+
+  addConditionAsNotMigrated() {
+    this.query = this.query
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and({ parent: { $ne: null } });
+
+    return this;
+  }
+
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
