@@ -207,10 +207,13 @@
     }
 
     .search-result-meta {
-      margin-bottom: 10px;
       font-weight: bold;
     }
-
+    .search-result-select-group {
+      > select {
+        max-width: 8rem;
+      }
+    }
     .search-result-list-delete-checkbox {
       margin: 0 10px 0 0;
       vertical-align: middle;
