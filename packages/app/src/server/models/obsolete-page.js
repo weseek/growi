@@ -219,16 +219,24 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionAsRootOrHasParent() {
-    this.query = this.query
-      .and({ $or: [{ parent: null }, { path: '/' }] });
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
 
     return this;
   }
 
-  addConditionAsNotRootOrHasParent() {
+  addConditionAsNotMigrated() {
     this.query = this.query
-      .and({ $nor: [{ parent: null }, { path: '/' }] });
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and({ parent: { $ne: null } });
+
+    return this;
   }
 
   /*
