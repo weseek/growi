@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
-import FilterOptionModal from './FilterOptionModal';
+import SearchOptionModal from './SearchOptionModal';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onSwitchExcludingUnderUserPageInvoked?: () => void,
-  onSwitchExcludingUnderTrashPageInvoked?: () => void,
+  onSwitchExcludingUserPagesInvoked?: () => void,
+  onSwitchExcludingTrashPagesInvoked?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -23,14 +23,14 @@ const SearchControl: FC <Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const switchExcludingUnderUserPageHandler = () => {
-    if (props.onSwitchExcludingUnderUserPageInvoked != null) {
-      props.onSwitchExcludingUnderUserPageInvoked();
+    if (props.onSwitchExcludingUserPagesInvoked != null) {
+      props.onSwitchExcludingUserPagesInvoked();
     }
   };
 
   const switchExcludingUnderTrashPageHandler = () => {
-    if (props.onSwitchExcludingUnderTrashPageInvoked != null) {
-      props.onSwitchExcludingUnderTrashPageInvoked();
+    if (props.onSwitchExcludingTrashPagesInvoked != null) {
+      props.onSwitchExcludingTrashPagesInvoked();
     }
   };
 
@@ -49,21 +49,21 @@ const SearchControl: FC <Props> = (props: Props) => {
     // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
   };
 
-  const openFilterOptionModalHandler = () => {
+  const openSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(true);
   };
 
-  const closeFilterOptionModalHandler = () => {
+  const closeSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(false);
   };
 
-  const rednerFilterOptionModal = () => {
+  const rednerSearchOptionModal = () => {
     return (
-      <FilterOptionModal
+      <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
-        onClose={closeFilterOptionModalHandler}
-        onSwitchExcludingUnderUserPageInvoked={switchExcludingUnderUserPageHandler}
-        onSwitchExcludingUnderTrashPageInvoked={switchExcludingUnderTrashPageHandler}
+        onClose={closeSearchOptionModalHandler}
+        onSwitchExcludingUserPagesInvoked={switchExcludingUnderUserPageHandler}
+        onSwitchExcludingTrashPagesInvoked={switchExcludingUnderTrashPageHandler}
       />
     );
   };
@@ -98,7 +98,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <button
             type="button"
             className="btn"
-            onClick={openFilterOptionModalHandler}
+            onClick={openSearchOptionModalHandler}
           >
             <i className="icon-equalizer"></i>
           </button>
@@ -128,7 +128,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
-      {rednerFilterOptionModal()}
+      {rednerSearchOptionModal()}
     </>
   );
 };

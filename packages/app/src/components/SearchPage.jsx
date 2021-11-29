@@ -35,8 +35,8 @@ class SearchPage extends React.Component {
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: 10, // change to an appropriate limit number
-      excludeUnderUserPage: true,
-      excludeUnderTrashPage: true,
+      excludeUserPages: true,
+      excludeTrashPages: true,
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -44,8 +44,8 @@ class SearchPage extends React.Component {
     this.searchHandler = this.searchHandler.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.switchExcludingUnderUserPageHandler = this.switchExcludingUnderUserPageHandler.bind(this);
-    this.switchExcludingUnderTrashPageHandler = this.switchExcludingUnderTrashPageHandler.bind(this);
+    this.switchExcludingUserPagesHandler = this.switchExcludingUserPagesHandler.bind(this);
+    this.switchExcludingTrashPagesHandler = this.switchExcludingTrashPagesHandler.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
@@ -68,12 +68,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  switchExcludingUnderUserPageHandler() {
-    this.setState({ excludeUnderUserPage: !this.state.excludeUnderUserPage });
+  switchExcludingUserPagesHandler() {
+    this.setState({ excludeUserPages: !this.state.excludeUserPages });
   }
 
-  switchExcludingUnderTrashPageHandler() {
-    this.setState({ excludeUnderTrashPage: !this.state.excludeUnderTrashPage });
+  switchExcludingTrashPagesHandler() {
+    this.setState({ excludeTrashPages: !this.state.excludeTrashPages });
   }
 
   changeURL(keyword, refreshHash) {
@@ -91,10 +91,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.excludeUnderTrashPage) {
+    if (this.state.excludeTrashPages) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.excludeUnderUserPage) {
+    if (this.state.excludeUserPages) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
@@ -224,8 +224,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
-        onSwitchExcludingUnderUserPageInvoked={this.switchExcludingUnderUserPageHandler}
-        onSwitchExcludingUnderTrashPageInvoked={this.switchExcludingUnderTrashPageHandler}
+        onSwitchExcludingUserPagesInvoked={this.switchExcludingUserPagesHandler}
+        onSwitchExcludingTrashPagesInvoked={this.switchExcludingTrashPagesHandler}
       >
       </SearchControl>
     );
