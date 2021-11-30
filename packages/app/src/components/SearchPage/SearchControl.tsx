@@ -10,8 +10,8 @@ type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
-  onExcludeUserPagesSwitch?: () => void,
-  onExcludeTrashPagesSwitch?: () => void,
+  onExcludeUserPagesSwitched?: () => void,
+  onExcludeTrashPagesSwitched?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -23,14 +23,14 @@ const SearchControl: FC <Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const switchExcludeUserPagesHandler = () => {
-    if (props.onExcludeUserPagesSwitch != null) {
-      props.onExcludeUserPagesSwitch();
+    if (props.onExcludeUserPagesSwitched != null) {
+      props.onExcludeUserPagesSwitched();
     }
   };
 
   const switchExcludeTrashPagesHandler = () => {
-    if (props.onExcludeTrashPagesSwitch != null) {
-      props.onExcludeTrashPagesSwitch();
+    if (props.onExcludeTrashPagesSwitched != null) {
+      props.onExcludeTrashPagesSwitched();
     }
   };
 
@@ -62,8 +62,8 @@ const SearchControl: FC <Props> = (props: Props) => {
       <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
         onClose={closeSearchOptionModalHandler}
-        onExcludeUserPagesSwitch={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitch={switchExcludeTrashPagesHandler}
+        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
       />
     );
   };

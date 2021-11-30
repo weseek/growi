@@ -224,8 +224,8 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
-        onExcludeUserPagesSwitch={this.switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitch={this.switchExcludeTrashPagesHandler}
+        onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
       >
       </SearchControl>
     );
