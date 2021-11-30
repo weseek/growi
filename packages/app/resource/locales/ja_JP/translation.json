@@ -578,6 +578,8 @@
     "include_certain_path": "{{pathToInclude}}下を含む ",
     "delete_all_selected_page" : "一括削除",
     "search_again" : "再検索"
+    "number_of_list_to_display" : "表示件数",
+    "page_number_unit" : "件"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
