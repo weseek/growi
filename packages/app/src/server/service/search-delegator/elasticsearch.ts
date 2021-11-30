@@ -330,6 +330,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       body: page.revision.body,
       // username: page.creator?.username, // available Node.js v14 and above
       username: page.creator != null ? page.creator.username : null,
+      comments: page.comments,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       like_count: page.liker.length || 0,
@@ -387,6 +388,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const Page = mongoose.model('Page') as PageModel;
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
+    const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
     const socket = this.socketIoService.getAdminSocket();
@@ -440,6 +442,28 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
           .forEach((doc) => {
             // append count from idToCountMap
             doc.bookmarkCount = idToCountMap[doc._id.toString()];
+          });
+
+        this.push(chunk);
+        callback();
+      },
+    });
+
+
+    const appendCommentStream = new Transform({
+      objectMode: true,
+      async transform(chunk, encoding, callback) {
+        const pageIds = chunk.map(doc => doc._id);
+
+        const idToCommentMap = await Comment.getPageIdToCommentMap(pageIds);
+        const idsHavingComment = Object.keys(idToCommentMap);
+
+        // append comments
+        chunk
+          .filter(doc => idsHavingComment.includes(doc._id.toString()))
+          .forEach((doc) => {
+            // append comments from idToCommentMap
+            doc.comments = idToCommentMap[doc._id.toString()];
           });
 
         this.push(chunk);
@@ -519,6 +543,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       .pipe(thinOutStream)
       .pipe(batchStream)
       .pipe(appendBookmarkCountStream)
+      .pipe(appendCommentStream)
       .pipe(appendTagNamesStream)
       .pipe(writeStream);
 
@@ -595,7 +620,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   createSearchQuerySortedByScore(option?) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -648,7 +673,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         multi_match: {
           query: parsedKeywords.match.join(' '),
           type: 'most_fields',
-          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
         },
       };
       query.body.query.bool.must.push(q);
@@ -658,7 +683,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       const q = {
         multi_match: {
           query: parsedKeywords.not_match.join(' '),
-          fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
+          fields: ['path.ja', 'path.en', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
           operator: 'or',
         },
       };
@@ -670,12 +695,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       parsedKeywords.phrase.forEach((phrase) => {
         phraseQueries.push({
           multi_match: {
-            query: phrase, // each phrase is quoteted words
+            query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
+              'comments',
             ],
           },
         });
@@ -921,6 +947,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     logger.debug('SearchClient.syncBookmarkChanged', pageId);
 
     return this.updateOrInsertPageById(pageId);
+  }
+
+  async syncCommentChanged(comment) {
+    logger.debug('SearchClient.syncCommentChanged', comment);
+
+    return this.updateOrInsertPageById(comment.page);
   }
 
   async syncTagChanged(page) {
