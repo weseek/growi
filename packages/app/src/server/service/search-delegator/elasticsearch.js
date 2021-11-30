@@ -606,6 +606,27 @@ class ElasticsearchDelegator {
     return query;
   }
 
+  createSearchQuery(sort, order, option) {
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
+    if (option) {
+      fields = option.fields || fields;
+    }
+
+    // sort by score
+    const query = {
+      index: this.aliasName,
+      type: 'pages',
+      body: {
+        sort: [{ [sort]: { order } }],
+        query: {}, // query
+        _source: fields,
+      },
+    };
+    this.appendResultSize(query);
+
+    return query;
+  }
+
   appendResultSize(query, from, size) {
     query.from = from || DEFAULT_OFFSET;
     query.size = size || DEFAULT_LIMIT;
@@ -880,7 +901,9 @@ class ElasticsearchDelegator {
     const from = option.offset || null;
     const size = option.limit || null;
     const type = option.type || null;
-    const query = this.createSearchQuerySortedByScore();
+    const sort = option.sort || '_score';
+    const order = option.order || 'desc';
+    const query = this.createSearchQuery(sort, order);
     this.appendCriteriaForQueryString(query, queryString);
 
     this.filterPagesByType(query, type);
