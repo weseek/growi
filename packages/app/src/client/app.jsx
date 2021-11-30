@@ -118,6 +118,8 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
+
+  'growi-context-extractor': <ContextExtractor />, // use static swr
 });
 
 // additional definitions if data exists
@@ -176,19 +178,12 @@ const renderMainComponents = () => {
 };
 
 // extract context before rendering main components
-const elem = document.getElementById('page-context');
-
+const elem = document.getElementById('growi-context-extractor');
 if (elem != null) {
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <SWRConfig value={swrGlobalConfiguration}>
-          <Provider inject={injectableContainers}>
-            {componentMappings['page-context']}
-          </Provider>
-        </SWRConfig>
-      </ErrorBoundary>
-    </I18nextProvider>,
+    <SWRConfig value={swrGlobalConfiguration}>
+      {componentMappings['growi-context-extractor']}
+    </SWRConfig>,
     elem,
     renderMainComponents,
   );

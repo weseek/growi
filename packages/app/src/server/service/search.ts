@@ -104,6 +104,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     const tagEvent = this.crowi.event('tag');
     tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
+
+    const commentEvent = this.crowi.event('comment');
+    commentEvent.on('create', this.delegator.syncCommentChanged.bind(this.delegator));
+    commentEvent.on('update', this.delegator.syncCommentChanged.bind(this.delegator));
+    commentEvent.on('delete', this.delegator.syncCommentChanged.bind(this.delegator));
   }
 
   resetErrorStatus() {
