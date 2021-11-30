@@ -60,7 +60,7 @@ export default class AdminAdminUserGroupDetailContainer extends Container {
       const [
         userGroupRelations,
         relatedPages,
-      ] = await Promise.all([
+      ] = await Promise.all([ // TODO: Check below requests, I'm sure these will work fine but need to do extra check
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
       ]);

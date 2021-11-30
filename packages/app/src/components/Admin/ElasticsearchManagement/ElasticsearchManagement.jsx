@@ -70,7 +70,7 @@ class ElasticsearchManagement extends React.Component {
     const { appContainer } = this.props;
 
     try {
-      const { info } = await appContainer.apiv3Get('/search/indices');
+      const { info } = await appContainer.apiv3Get('/search/indices'); // TODO: Need to check { data } since { info } is not part of AxiosResponse
 
       this.setState({
         isConnected: true,
