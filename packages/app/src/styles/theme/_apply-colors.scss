@@ -587,6 +587,13 @@ body.pathname-sidebar {
 /*
  * GROWI search result
  */
+
+#search-page-wrapper {
+  border-top: 3.3333px solid;
+  border-image: $border-image-navbar;
+  border-image-slice: 1;
+}
+
 .search-result {
   .search-result-list {
     .page-list {

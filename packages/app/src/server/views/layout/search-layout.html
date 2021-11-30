@@ -72,13 +72,9 @@
 
 <div id="wrapper">
 
-  <!-- {% block layout_head_nav %}
-    <nav id="grw-navbar" class="navbar grw-navbar navbar-expand navbar-dark sticky-top mb-0 px-0"></nav>
-  {% endblock  %} {# layout_head_nav #} -->
-
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
-  <div id="page-wrapper" class="page-wrapper d-flex d-print-block">
+  <div id="search-page-wrapper" class="page-wrapper d-flex d-print-block">
     {% block sidebar %}
     <div id="grw-sidebar-wrapper"></div>
     {% endblock %}
@@ -88,8 +84,6 @@
       {% block layout_main %}{% endblock %}
     </div>
   </div>
-
-  <!-- <div id="grw-navbar-bottom-container"></div> -->
 
 </div><!-- /#wrapper -->
 
