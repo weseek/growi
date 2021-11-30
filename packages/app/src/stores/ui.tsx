@@ -59,9 +59,6 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   return useStaticSWR(key, null, configuration);
 };
 
-// drawer mode keys
-const IS_DRAWER_MODE: Key = 'isDrawerMode';
-
 
 const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
   return (...args) => {
@@ -172,7 +169,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   return useSWR(
-    condition ? [IS_DRAWER_MODE, editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,
