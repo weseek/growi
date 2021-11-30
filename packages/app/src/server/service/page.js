@@ -1,4 +1,3 @@
-import RE2 from 're2';
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
