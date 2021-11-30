@@ -63,25 +63,6 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 const IS_DRAWER_MODE: Key = 'isDrawerMode';
 
 
-const mutateDrawerMode: Middleware = (useSWRNext) => {
-  return (...args) => {
-    return useSWRNext(...args);
-    // -- TODO: https://redmine.weseek.co.jp/issues/81817
-    // const { mutate } = useSWRConfig();
-    // const swrNext = useSWRNext(...args);
-    // return {
-    //   ...swrNext,
-    //   mutate: (data, shouldRevalidate) => {
-    //     return swrNext.mutate(data, shouldRevalidate)
-    //       .then((value) => {
-    //         mutate(IS_DRAWER_MODE); // mutate isDrawerMode
-    //         return value;
-    //       });
-    //   },
-    // };
-  };
-};
-
 const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
   return (...args) => {
     // -- TODO: https://redmine.weseek.co.jp/issues/81817
@@ -153,7 +134,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
     }
   }
 
-  return useStaticSWR(key, null, { use: [mutateDrawerMode] });
+  return useStaticSWR(key);
 };
 
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
@@ -161,7 +142,7 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boo
   const key: Key = data === undefined ? null : 'preferDrawerModeByUser';
   const initialData = data?.preferDrawerModeByUser;
 
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
 
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
@@ -169,7 +150,7 @@ export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRRespon
   const key: Key = data === undefined ? null : 'preferDrawerModeOnEditByUser';
   const initialData = data?.preferDrawerModeOnEditByUser;
 
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
