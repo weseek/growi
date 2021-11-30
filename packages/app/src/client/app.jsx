@@ -175,13 +175,18 @@ const renderMainComponents = () => {
 
 // extract context before rendering main components
 const elem = document.getElementById('growi-context-extractor');
-ReactDOM.render(
-  <SWRConfig value={swrGlobalConfiguration}>
-    <ContextExtractor />
-  </SWRConfig>,
-  elem,
-  renderMainComponents,
-);
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      {componentMappings['growi-context-extractor']}
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

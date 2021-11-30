@@ -284,7 +284,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };
@@ -654,7 +654,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({
