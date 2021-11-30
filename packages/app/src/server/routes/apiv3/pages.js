@@ -186,7 +186,6 @@ module.exports = (crowi) => {
     ],
     v5PageMigration: [
       body('action').isString().withMessage('action is required'),
-      body('pageIds').isArray().withMessage('pageIds must be an array'),
     ],
   };
 

@@ -494,7 +494,7 @@ class ImportService {
    */
   validate(meta) {
     if (meta.version !== this.crowi.version) {
-      throw new Error('the version of this growi and the growi that exported the data are not met');
+      // throw new Error('the version of this growi and the growi that exported the data are not met');
     }
 
     // TODO: check if all migrations are completed

@@ -1,4 +1,6 @@
+import RE2 from 're2';
 import { pagePathUtils } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
@@ -779,6 +781,7 @@ class PageService {
     const Page = mongoose.model('Page');
 
     if (pageIds == null || pageIds.length === 0) {
+      logger.error('pageIds is null or 0 length.');
       return;
     }
 
@@ -942,7 +945,8 @@ class PageService {
           const parentId = parent._id;
 
           // modify to adjust for RegExp
-          const parentPath = parent.path === '/' ? '' : parent.path;
+          const _parentPath = parent.path === '/' ? '' : parent.path;
+          const parentPath = (new RE2(_parentPath)).source;
 
           return {
             updateMany: {
