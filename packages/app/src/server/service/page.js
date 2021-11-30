@@ -920,6 +920,7 @@ class PageService {
     const batchStream = createBatchStream(BATCH_SIZE);
 
     let countPages = 0;
+    let shouldContinue = true;
 
     // migrate all siblings for each page
     const migratePagesStream = new Writable({
@@ -945,8 +946,11 @@ class PageService {
           const parentId = parent._id;
 
           // modify to adjust for RegExp
-          const _parentPath = parent.path === '/' ? '' : parent.path;
-          const parentPath = (new RE2(_parentPath)).source;
+          let parentPath = parent.path === '/' ? '' : parent.path;
+          // inject \ before brackets
+          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
+            parentPath = parentPath.replace(bracket, `\\${bracket}`);
+          });
 
           return {
             updateMany: {
@@ -963,8 +967,20 @@ class PageService {
         });
         try {
           const res = await Page.bulkWrite(updateManyOperations);
-          countPages += (res.items || []).length;
-          logger.info(`Page migration processing: (count=${countPages}, errors=${res.errors}, took=${res.took}ms)`);
+          countPages += res.result.nModified;
+          logger.info(`Page migration processing: (count=${countPages})`);
+
+          // throw
+          if (res.result.writeErrors.length > 0) {
+            logger.error('Failed to migrate some pages', res.result.writeErrors);
+            throw Error('Failed to migrate some pages');
+          }
+
+          // finish migration
+          if (res.result.nModified === 0) { // TODO: find the best property to count updated documents
+            shouldContinue = false;
+            logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
+          }
         }
         catch (err) {
           logger.error('Failed to update page.parent.', err);
@@ -984,7 +1000,7 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(filter)) {
+    if (await Page.exists(filter) && shouldContinue) {
       return this._v5RecursiveMigration(grant, regexps);
     }
 
