@@ -187,19 +187,14 @@ describe('SearchService test', () => {
       ]);
 
       const queryString = '[nq:named_query1]';
-      const parsedQuery = {
-        queryString,
-        delegatorName: PRIVATE_LEGACY_PAGES,
-      };
 
-      const [delegator, data] = await searchService.resolve(parsedQuery);
+      const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 10 });
 
-      const result = await delegator.search(data, testUser1, null, { limit: 0, offset: 0 });
-
-      const resultPaths = result.data.pages.map(page => page.path);
+      const resultPaths = result.data.map(page => page.path);
       const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
 
       expect(flag).toBe(true);
+      expect(delegatorName).toBe(PRIVATE_LEGACY_PAGES);
     });
   });
 
