@@ -24,7 +24,7 @@ const PageTree: FC = memo(() => {
 
       <div className="grw-sidebar-content-footer">
         {
-          data?.migratablePagesCount != null && data.migratablePagesCount !== 0 && (
+          data?.migratablePagesCount != null && data.migratablePagesCount === 0 && (
             <PrivateLegacyPages />
           )
         }

@@ -139,7 +139,7 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
+      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts); // TODO: separate when not full-text search
 
       // create score map for sorting
       // key: id , value: score

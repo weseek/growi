@@ -82,8 +82,8 @@ const schema = new Schema<PageDocument, PageModel>({
   pageIdOnHackmd: { type: String },
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() },
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
 }, {

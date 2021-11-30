@@ -6,7 +6,7 @@ const PrivateLegacyPages: FC = memo(() => {
 
   return (
     <div className="grw-prvt-legacy-pages p-3">
-      <a href="#" className="h5">
+      <a href="/private-legacy-pages?q=[nq:PrivateLegacyPages]" className="h5">
         <i className="icon-drawer mr-2"></i> PrivateLegacyPages
       </a>
     </div>
