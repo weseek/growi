@@ -89,10 +89,9 @@ const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
     return {
       ...swrNext,
       mutate: (data, shouldRevalidate) => {
-        const newEditorMode = data as unknown as EditorMode;
-
         return swrNext.mutate(data, shouldRevalidate)
           .then((value) => {
+            const newEditorMode = value as unknown as EditorMode;
             switch (newEditorMode) {
               case EditorMode.View:
                 $('body').removeClass('on-edit');

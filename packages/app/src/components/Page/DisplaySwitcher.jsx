@@ -29,7 +29,7 @@ const DisplaySwitcher = (props) => {
   return (
     <>
       <TabContent activeTab={editorMode}>
-        <TabPane tabId="view">
+        <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
             <div className="grw-side-contents-container">
@@ -54,12 +54,12 @@ const DisplaySwitcher = (props) => {
 
           </div>
         </TabPane>
-        <TabPane tabId="edit">
+        <TabPane tabId={EditorMode.Editor}>
           <div id="page-editor">
             <Editor />
           </div>
         </TabPane>
-        <TabPane tabId="hackmd">
+        <TabPane tabId={EditorMode.HackMD}>
           <div id="page-editor-with-hackmd">
             <PageEditorByHackmd />
           </div>

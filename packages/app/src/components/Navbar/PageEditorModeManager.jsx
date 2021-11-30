@@ -72,7 +72,7 @@ function PageEditorModeManager(props) {
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            targetMode="view"
+            targetMode={EditorMode.View}
             icon={<i className="icon-control-play" />}
             label={t('view')}
           />
@@ -82,7 +82,7 @@ function PageEditorModeManager(props) {
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            targetMode="edit"
+            targetMode={EditorMode.Editor}
             icon={<i className="icon-note" />}
             label={t('Edit')}
           />
@@ -92,7 +92,7 @@ function PageEditorModeManager(props) {
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            targetMode="hackmd"
+            targetMode={EditorMode.HackMD}
             icon={<i className="fa fa-file-text-o" />}
             label={t('hackmd.hack_md')}
             id="grw-page-editor-mode-manager-hackmd-button"
