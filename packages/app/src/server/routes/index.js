@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
+import * as privateLegacyPages from './private-legacy-pages';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -190,6 +191,9 @@ module.exports = function(crowi, app) {
     .get('/', forgotPassword.forgotPassword)
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleHttpErrosMiddleware));
+
+  app.use('/private-legacy-pages', express.Router()
+    .get('/', privateLegacyPages.renderPrivateLegacyPages));
 
   app.get('/share/:linkId', page.showSharedPage);
 

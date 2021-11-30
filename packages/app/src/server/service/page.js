@@ -911,7 +911,7 @@ class PageService {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
-    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
+    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
 
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
