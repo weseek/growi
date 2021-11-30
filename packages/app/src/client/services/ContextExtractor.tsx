@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
@@ -26,7 +26,7 @@ const getInitialEditorMode = (): EditorMode => {
   }
 };
 
-const ContextExtractor: FC = () => {
+const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
 
@@ -105,11 +105,17 @@ const ContextExtractor: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
-  return (
-    <div>
-      {/* Render nothing */}
-    </div>
-  );
+  return null;
 };
+
+const ContextExtractor: FC = React.memo(() => {
+  const [isRunOnce, setRunOnce] = useState(false);
+
+  useEffect(() => {
+    setRunOnce(true);
+  }, []);
+
+  return isRunOnce ? null : <ContextExtractorOnce></ContextExtractorOnce>;
+});
 
 export default ContextExtractor;
