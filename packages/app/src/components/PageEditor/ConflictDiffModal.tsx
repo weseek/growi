@@ -6,15 +6,12 @@ import {
 import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 // TODO: consider whether to use codemirrorEditor
-import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
-
-// avoid typescript type error
-const CodeMirror:any = CodeMirrorAny;
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
