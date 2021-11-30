@@ -42,7 +42,7 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorPr
 
 }
 
-// export default withUnstatedContainers(UncontrolledCodeMirrorCore, [EditorContainer]);
+// export const UncontrolledCodeMirror = withUnstatedContainers(UncontrolledCodeMirrorCore, [EditorContainer]);
 
 export const UncontrolledCodeMirror: FC<UncontrolledCodeMirrorProps> = props => (
   <Subscribe to={[EditorContainer]}>
