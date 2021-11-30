@@ -8,53 +8,60 @@ import {
 
 type Props = {
   isOpen: boolean,
+  excludeUserPages: boolean,
+  excludeTrashPages: boolean,
   onClose?: () => void,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
-  // todo: implement this method
-  // refs: https://redmine.weseek.co.jp/issues/81845
-  onClickFilteringSearchResultButton?: () => void,
+  onClickFilteringSearchResult?: () => void,
 }
 
-// todo: implement filtering search result
-// refs: https://redmine.weseek.co.jp/issues/81845
 const SearchOptionModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
-  const onClose = () => {
-    if (props.onClose != null) {
-      props.onClose();
+  const {
+    isOpen, onClose, excludeUserPages, excludeTrashPages,
+  } = props;
+
+  const onCloseModal = () => {
+    if (onClose != null) {
+      onClose();
+    }
+  };
+
+  const onClickFilteringSearchResult = () => {
+    if (props.onClickFilteringSearchResult != null) {
+      props.onClickFilteringSearchResult();
+      onCloseModal();
     }
   };
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={isOpen} toggle={onCloseModal} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={onCloseModal} className="bg-primary text-light">
         Search Option
       </ModalHeader>
       <ModalBody>
         <div className="d-flex p-3">
           <div className="border border-gray mr-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
-              {/** todo: get checked state from parent component */}
-              {/** // refs: https://redmine.weseek.co.jp/issues/81845 */}
               <input
                 className="mr-2"
                 type="checkbox"
                 onClick={props.onExcludeUserPagesSwitched}
+                checked={!excludeUserPages}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
           </div>
           <div className="border border-gray">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
-              {/** todo: get checked state from parent component */}
-              {/** // refs: https://redmine.weseek.co.jp/issues/81845 */}
               <input
                 className="mr-2"
                 type="checkbox"
                 onClick={props.onExcludeTrashPagesSwitched}
+                checked={!excludeTrashPages}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
@@ -65,9 +72,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-secondary"
-          // todo: implement this method
-          // refs: https://redmine.weseek.co.jp/issues/81845
-          onClick={props.onClickFilteringSearchResultButton}
+          onClick={onClickFilteringSearchResult}
         >{t('search_result.search_again')}
         </button>
       </ModalFooter>

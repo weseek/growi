@@ -119,6 +119,8 @@ class SearchPage extends React.Component {
     this.setState({ activePage: 1 }, () => this.search(data));
   }
 
+  // todo: refactoring
+  // refs: https://redmine.weseek.co.jp/issues/82139
   async search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
@@ -226,6 +228,8 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
+        excludeUserPages={this.state.excludeUserPages}
+        excludeTrashPages={this.state.excludeTrashPages}
       >
       </SearchControl>
     );
