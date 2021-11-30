@@ -191,9 +191,8 @@ describe('SearchService test', () => {
       const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 10 });
 
       const resultPaths = result.data.map(page => page.path);
-      const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
 
-      expect(flag).toBe(true);
+      expect(resultPaths.sort()).toStrictEqual(['/user1', '/user1_owner', '/user2_public'].sort());
       expect(delegatorName).toBe(PRIVATE_LEGACY_PAGES);
     });
   });
