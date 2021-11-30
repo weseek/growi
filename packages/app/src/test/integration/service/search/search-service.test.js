@@ -188,7 +188,7 @@ describe('SearchService test', () => {
 
       const queryString = '[nq:named_query1]';
 
-      const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 10 });
+      const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 100 });
 
       const resultPaths = result.data.map(page => page.path);
       const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
