@@ -142,9 +142,6 @@ describe('SearchService test', () => {
 
   describe('searchKeyword()', () => {
     test('should search with custom search delegator', async() => {
-      jest.restoreAllMocks();
-      jest.clearAllMocks();
-
       const Page = mongoose.model('Page');
       const User = mongoose.model('User');
       await User.insertMany([
@@ -194,8 +191,9 @@ describe('SearchService test', () => {
       const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 10 });
 
       const resultPaths = result.data.map(page => page.path);
+      const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
 
-      expect(resultPaths.sort()).toStrictEqual(['/user1', '/user1_owner', '/user2_public'].sort());
+      expect(flag).toBe(true);
       expect(delegatorName).toBe(PRIVATE_LEGACY_PAGES);
     });
   });
