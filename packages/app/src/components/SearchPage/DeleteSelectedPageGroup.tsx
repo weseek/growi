@@ -27,7 +27,8 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   };
 
   return (
-    <>
+
+    <div className="d-flex align-items-center">
       {/** todo: implement the design for CheckboxType = INDETERMINATE */}
       <input
         id="check-all-pages"
@@ -40,14 +41,14 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
       />
       <button
         type="button"
-        className="btn text-danger font-weight-light p-0 ml-3"
+        className="btn text-danger font-weight-light p-0 ml-2"
         disabled={selectAllCheckboxType === CheckboxType.NONE_CHECKED}
         onClick={onClickDeleteButton}
       >
         <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}
       </button>
-    </>
+    </div>
   );
 
 };

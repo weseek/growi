@@ -23,7 +23,7 @@ class DeletePageListModal extends React.Component {
 
     const listView = this.props.pages.map((page) => {
       return (
-        <li key={page._id}>{page.path}</li>
+        <li key={page.pageData._id}>{page.pageData.path}</li>
       );
     });
 
@@ -48,6 +48,7 @@ class DeletePageListModal extends React.Component {
                   id="customCheck-delete-completely"
                   checked={this.props.isDeleteCompletely}
                   onChange={this.props.onChangeDeleteCompletely}
+                  disabled
                 />
                 <label
                   className="custom-control-label text-danger"

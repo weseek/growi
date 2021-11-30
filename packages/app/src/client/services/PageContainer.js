@@ -328,12 +328,6 @@ export default class PageContainer extends Container {
     });
   }
 
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
-  }
-
   async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
@@ -527,49 +521,6 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return res;
-  }
-
-  deletePage(isRecursively, isCompletely) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const completely = isCompletely ? true : null;
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.remove', {
-      recursively,
-      completely,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
-    });
-
-  }
-
-  revertRemove(isRecursively) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.revertRemove', {
-      recursively,
-      page_id: this.state.pageId,
-    });
-  }
-
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId, path } = this.state;
-
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
-      path,
-    });
   }
 
   showSuccessToastr() {

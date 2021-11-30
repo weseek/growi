@@ -6,17 +6,15 @@ import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { ISearchedPage } from './SearchResultList';
+import { IPageSearchResultData } from '../../interfaces/search';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:searchResultList');
+import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
-  page: ISearchedPage,
+  page: IPageHasId,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) => {
 
   const { page } = props;
   const { t } = useTranslation('');
@@ -68,7 +66,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: ISearchedPage})
 };
 
 type Props = {
-  page: ISearchedPage,
+  page: IPageSearchResultData,
   isSelected: boolean,
   isChecked: boolean,
   onClickCheckbox?: (pageId: string) => void,
@@ -78,25 +76,22 @@ type Props = {
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-  const pageId = `#${page._id}`;
+  const pageId = `#${pageData._id}`;
 
-  const dPagePath = new DevidedPagePath(page.path, false, true);
-  const pagePathElem = <PagePathLabel page={page} isFormerOnly />;
+  const isPathIncludedHtml = pageMeta.elasticSearchResult.highlightedPath != null;
+  const dPagePath = new DevidedPagePath(pageData.path, false, true);
+  const pagePathElem = <PagePathLabel path={pageMeta.elasticSearchResult.highlightedPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
 
   return (
-    <li key={page._id} className={`page-list-li search-page-item w-100 border-bottom pr-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-page-item w-100 border-bottom px-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => {
-          if (onClickSearchResultItem != null) {
-            onClickSearchResultItem(page._id);
-          }
-        }}
+        onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
         <div className="d-flex">
           {/* checkbox */}
@@ -105,9 +100,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               className="form-check-input my-auto"
               type="checkbox"
               id="flexCheckDefault"
-              onClick={() => {
+              onChange={() => {
                 if (onClickCheckbox != null) {
-                  onClickCheckbox(page._id);
+                  onClickCheckbox(pageData._id);
                 }
               }}
               checked={isChecked}
@@ -122,26 +117,23 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             <div className="d-flex my-1 align-items-center">
               {/* page title */}
               <h3 className="mb-0">
-                <UserPicture user={page.lastUpdateUser} />
+                <UserPicture user={pageData.lastUpdateUser} />
                 <span className="mx-2">{dPagePath.latter}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
-                <PageListMeta page={page} />
+                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={page} />
+                <PageItemControl page={pageData} />
               </div>
             </div>
             <div className="my-2">
               <Clamp
                 lines={2}
               >
-                {page.snippet
-                  ? <div className="mt-1">page.snippet</div>
-                  : <div className="mt-1" dangerouslySetInnerHTML={{ __html: page.elasticSearchResult.snippet }}></div>
-                }
+                {pageMeta.elasticSearchResult && <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>}
               </Clamp>
             </div>
           </div>

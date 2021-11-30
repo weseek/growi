@@ -7,7 +7,6 @@ import toastr from 'toastr';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-
 import { toastError } from '~/client/util/apiNotification';
 import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
@@ -41,13 +40,13 @@ class SearchPage extends React.Component {
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
-      searchedPages: [],
+      searchResults: [],
       searchResultMeta: {},
-      focusedPage: {},
+      focusedSearchResultData: null,
       selectedPagesIdList: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: 10, // change to an appropriate limit number
+      pagingLimit: this.props.appContainer.config.pageLimitationL,
       excludeUsersHome: true,
       excludeTrash: true,
       selectAllCheckboxType: CheckboxType.NONE_CHECKED,
@@ -55,12 +54,13 @@ class SearchPage extends React.Component {
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
-    this.searchHandler = this.searchHandler.bind(this);
+    this.onSearchInvoked = this.onSearchInvoked.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
+    this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.onClickDeleteAllButton = this.onClickDeleteAllButton.bind(this);
     this.onCloseDeleteConfirmModal = this.onCloseDeleteConfirmModal.bind(this);
@@ -123,18 +123,21 @@ class SearchPage extends React.Component {
    * this method is called when user changes paging number
    */
   async onPagingNumberChanged(activePage) {
-    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
-    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
     this.setState({ activePage }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
   /**
    * this method is called when user searches by pressing Enter or using searchbox
    */
-  async searchHandler(data) {
-    // this.setState does not change the state immediately and following calls of this.search outside of this.setState will have old activePage state.
-    // To prevent above, pass this.search as a callback function to make sure this.search will have the latest activePage state.
+  async onSearchInvoked(data) {
     this.setState({ activePage: 1 }, () => this.search(data));
+  }
+
+  /**
+   * change number of pages to display per page and execute search method after.
+   */
+  async onPagingLimitChanged(limit) {
+    this.setState({ pagingLimit: limit }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
   async search(data) {
@@ -143,7 +146,7 @@ class SearchPage extends React.Component {
       this.setState({
         searchingKeyword: '',
         searchedKeyword: '',
-        searchedPages: [],
+        searchResults: [],
         searchResultMeta: {},
         searchResultCount: 0,
         activePage: 1,
@@ -167,10 +170,10 @@ class SearchPage extends React.Component {
       if (res.data.length > 0) {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: res.data,
+          searchResults: res.data,
           searchResultMeta: res.meta,
           searchResultCount: res.meta.total,
-          focusedPage: res.data[0],
+          focusedSearchResultData: res.data[0],
           // reset active page if keyword changes, otherwise set the current state
           activePage: this.state.searchedKeyword === keyword ? this.state.activePage : 1,
         });
@@ -178,10 +181,10 @@ class SearchPage extends React.Component {
       else {
         this.setState({
           searchedKeyword: keyword,
-          searchedPages: [],
+          searchResults: [],
           searchResultMeta: {},
           searchResultCount: 0,
-          focusedPage: {},
+          focusedSearchResultData: {},
           activePage: 1,
         });
       }
@@ -192,11 +195,11 @@ class SearchPage extends React.Component {
   }
 
   selectPage= (pageId) => {
-    const index = this.state.searchedPages.findIndex((page) => {
-      return page._id === pageId;
+    const index = this.state.searchResults.findIndex(({ pageData }) => {
+      return pageData._id === pageId;
     });
     this.setState({
-      focusedPage: this.state.searchedPages[index],
+      focusedSearchResultData: this.state.searchResults[index],
     });
   }
 
@@ -212,7 +215,7 @@ class SearchPage extends React.Component {
     switch (selectedPagesIdList.size) {
       case 0:
         return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
-      case this.state.searchedPages.length:
+      case this.state.searchResults.length:
         return this.setState({ selectAllCheckboxType: CheckboxType.ALL_CHECKED });
       default:
         return this.setState({ selectAllCheckboxType: CheckboxType.INDETERMINATE });
@@ -220,13 +223,13 @@ class SearchPage extends React.Component {
   }
 
   toggleAllCheckBox = (nextSelectAllCheckboxType) => {
-    const { selectedPagesIdList, searchedPages } = this.state;
+    const { selectedPagesIdList, searchResults } = this.state;
     if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
       selectedPagesIdList.clear();
     }
     else {
-      searchedPages.forEach((page) => {
-        selectedPagesIdList.add(page._id);
+      searchResults.forEach((page) => {
+        selectedPagesIdList.add(page.pageData._id);
       });
     }
     this.setState({
@@ -236,8 +239,8 @@ class SearchPage extends React.Component {
   };
 
   getSelectedPages() {
-    return this.state.searchedPages.filter((page) => {
-      return Array.from(this.state.selectedPagesIdList).find(id => id === page.id);
+    return this.state.searchResults.filter((page) => {
+      return Array.from(this.state.selectedPagesIdList).find(id => id === page.pageData._id);
     });
   }
 
@@ -290,7 +293,7 @@ class SearchPage extends React.Component {
       <SearchResultContent
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
-        focusedPage={this.state.focusedPage}
+        focusedSearchResultData={this.state.focusedSearchResultData}
       >
       </SearchResultContent>
     );
@@ -299,8 +302,8 @@ class SearchPage extends React.Component {
   renderSearchResultList = () => {
     return (
       <SearchResultList
-        pages={this.state.searchedPages || []}
-        focusedPage={this.state.focusedPage}
+        pages={this.state.searchResults || []}
+        focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
@@ -318,7 +321,7 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
-        onSearchInvoked={this.searchHandler}
+        onSearchInvoked={this.onSearchInvoked}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
         onClickSelectAllCheckbox={this.toggleAllCheckBox}
@@ -338,6 +341,8 @@ class SearchPage extends React.Component {
           SearchResultContent={this.renderSearchResultContent}
           searchResultMeta={this.state.searchResultMeta}
           searchingKeyword={this.state.searchedKeyword}
+          onPagingLimitChanged={this.onPagingLimitChanged}
+          initialPagingLimit={this.props.appContainer.config.pageLimitationL || 50}
         >
         </SearchPageLayout>
         <DeletePageListModal
@@ -363,7 +368,6 @@ const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   query: PropTypes.object,
 };
 SearchPage.defaultProps = {

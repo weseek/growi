@@ -170,8 +170,7 @@ class SearchService {
 
       data.elasticSearchResult = {
         snippet: filterXss.process(snippet),
-        // todo: use filter xss.process() for matchedPath;
-        matchedPath: pathMatch,
+        highlightedPath: filterXss.process(pathMatch),
       };
     });
     return esResult;
