@@ -9,8 +9,8 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
-  excludeUnderUserPage: boolean,
-  excludeUnderTrashPage: boolean,
+  excludeUserPages: boolean,
+  excludeTrashPages: boolean,
   onSearchInvoked: (data: {keyword: string}) => boolean,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
@@ -73,8 +73,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         onClose={closeSearchOptionModalHandler}
         onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUnderUserPage={props.excludeUnderUserPage}
-        excludeUnderTrashPage={props.excludeUnderTrashPage}
+        excludeUserPages={props.excludeUserPages}
+        excludeTrashPages={props.excludeTrashPages}
       />
     );
   };

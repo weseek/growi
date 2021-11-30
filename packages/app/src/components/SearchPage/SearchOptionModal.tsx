@@ -8,8 +8,8 @@ import {
 
 type Props = {
   isOpen: boolean,
-  excludeUnderUserPage: boolean,
-  excludeUnderTrashPage: boolean,
+  excludeUserPages: boolean,
+  excludeTrashPages: boolean,
   onClose?: () => void,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
@@ -21,8 +21,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const {
-    isOpen, onClose, onSwitchExcludingUserPagesInvoked, onSwitchExcludingTrashPagesInvoked,
-    excludeUnderUserPage, excludeUnderTrashPage,
+    isOpen, onClose, excludeUserPages, excludeTrashPages,
   } = props;
 
   const onCloseModal = () => {
@@ -51,7 +50,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 onClick={props.onExcludeUserPagesSwitched}
-                checked={!excludeUnderUserPage}
+                checked={!excludeUserPages}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -62,7 +61,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
                 className="mr-2"
                 type="checkbox"
                 onClick={props.onExcludeTrashPagesSwitched}
-                checked={!excludeUnderTrashPage}
+                checked={!excludeTrashPages}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>

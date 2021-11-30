@@ -228,8 +228,8 @@ class SearchPage extends React.Component {
         onSearchInvoked={this.searchHandler}
         onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
-        excludeUnderUserPage={this.state.excludeUnderUserPage}
-        excludeUnderTrashPage={this.state.excludeUnderTrashPage}
+        excludeUserPages={this.state.excludeUserPages}
+        excludeTrashPages={this.state.excludeTrashPages}
       >
       </SearchControl>
     );
