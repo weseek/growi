@@ -27,7 +27,7 @@ class SearchResult extends React.Component {
   }
 
   isNotSearchedYet() {
-    return !this.props.searchResultMeta.took;
+    return this.props.searchResultMeta == null;
   }
 
   isNotFound() {

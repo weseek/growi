@@ -1,4 +1,9 @@
+import { SearchDelegatorName } from '~/interfaces/named-query';
+
+const { default: loggerFactory } = require('~/utils/logger');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
+const logger = loggerFactory('growi:routes:search');
 
 /**
  * @swagger
@@ -35,6 +40,54 @@ module.exports = function(crowi, app) {
 
   const actions = {};
   const api = {};
+
+  // TODO: optimize the way to check isReshapable e.g. check data schema of searchResult
+  // So far, it determines by delegatorName passed by searchService.searchKeyword
+  const checkIsReshapable = (searchResult, delegatorName) => {
+    return delegatorName === SearchDelegatorName.DEFAULT;
+  };
+
+  const reshapeSearchResult = async(searchResult, delegatorName) => {
+    if (!checkIsReshapable(searchResult, delegatorName)) {
+      return searchResult;
+    }
+
+    const result = {};
+
+    // create score map for sorting
+    // key: id , value: score
+    const scoreMap = {};
+    for (const esPage of searchResult.data) {
+      scoreMap[esPage._id] = esPage._score;
+    }
+
+    const ids = searchResult.data.map((page) => { return page._id });
+    const findResult = await Page.findListByPageIds(ids);
+
+    // add tag data to result pages
+    findResult.pages.map((page) => {
+      const data = searchResult.data.find((data) => { return page.id === data._id });
+      page._doc.tags = data._source.tag_names;
+      return page;
+    });
+
+    result.meta = searchResult.meta;
+    result.totalCount = findResult.totalCount;
+    result.data = findResult.pages
+      .map((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+        page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
+        return page;
+      })
+      .sort((page1, page2) => {
+        // note: this do not consider NaN
+        return scoreMap[page2._id] - scoreMap[page1._id];
+      });
+
+    return result;
+  };
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
@@ -137,41 +190,19 @@ module.exports = function(crowi, app) {
 
     const searchOpts = { ...paginateOpts, type };
 
-    const result = {};
+    let searchResult;
+    let delegatorName;
     try {
-      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts); // TODO: separate when not full-text search
+      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts); // TODO: separate when not full-text search
+    }
+    catch (err) {
+      logger.error('Failed to search', err);
+      return res.json(ApiResponse.error(err));
+    }
 
-      // create score map for sorting
-      // key: id , value: score
-      const scoreMap = {};
-      for (const esPage of esResult.data) {
-        scoreMap[esPage._id] = esPage._score;
-      }
-
-      const ids = esResult.data.map((page) => { return page._id });
-      const findResult = await Page.findListByPageIds(ids);
-
-      // add tag data to result pages
-      findResult.pages.map((page) => {
-        const data = esResult.data.find((data) => { return page.id === data._id });
-        page._doc.tags = data._source.tag_names;
-        return page;
-      });
-
-      result.meta = esResult.meta;
-      result.totalCount = findResult.totalCount;
-      result.data = findResult.pages
-        .map((page) => {
-          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-          }
-          page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
-          return page;
-        })
-        .sort((page1, page2) => {
-          // note: this do not consider NaN
-          return scoreMap[page2._id] - scoreMap[page1._id];
-        });
+    let result;
+    try {
+      result = await reshapeSearchResult(searchResult, delegatorName);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
