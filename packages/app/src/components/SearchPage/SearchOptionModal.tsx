@@ -9,8 +9,8 @@ import {
 type Props = {
   isOpen: boolean,
   onClose?: () => void,
-  onSwitchExcludingUserPagesInvoked?: () => void,
-  onSwitchExcludingTrashPagesInvoked?: () => void,
+  onExcludeUserPagesSwitch?: () => void,
+  onExcludeTrashPagesSwitch?: () => void,
   // todo: implement this method
   // refs: https://redmine.weseek.co.jp/issues/81845
   onClickFilteringSearchResultButton?: () => void,
@@ -42,7 +42,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onSwitchExcludingUserPagesInvoked}
+                onClick={props.onExcludeUserPagesSwitch}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -54,7 +54,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onSwitchExcludingTrashPagesInvoked}
+                onClick={props.onExcludeTrashPagesSwitch}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
