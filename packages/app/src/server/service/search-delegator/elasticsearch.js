@@ -596,8 +596,7 @@ class ElasticsearchDelegator {
       index: this.aliasName,
       type: 'pages',
       body: {
-        // sort: [{ _score: { order: 'desc' } }],
-        sort: { created_at: 'desc' },
+        sort: [{ _score: { order: 'desc' } }],
         query: {}, // query
         _source: fields,
       },
