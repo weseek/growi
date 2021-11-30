@@ -5,10 +5,10 @@ import {
 } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-// TODO: consider whether to use codemirrorEditor
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 require('codemirror/mode/htmlmixed/htmlmixed');
 const DMP = require('diff_match_patch');
@@ -161,7 +161,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               </div>
               <div className="col-12 border border-dark">
                 <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <CodeMirror
+                {/* <CodeMirror
                   value={resolvedRevision.current}
                   options={{
                     mode: 'htmlmixed',
@@ -174,6 +174,14 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                     if (pageBody === '') setIsRevisionSelected(false);
                     resolvedRevision.current = pageBody;
                   }}
+                /> */}
+                <UncontrolledCodeMirror
+                  value={resolvedRevision.current}
+                  // placeholder={t('modal_resolve_conflict.resolve_conflict_message')}
+                  // onChange={(editor, data, pageBody) => {
+                  //   if (pageBody === '') setIsRevisionSelected(false);
+                  //   resolvedRevision.current = pageBody;
+                  // }}
                 />
               </div>
             </div>

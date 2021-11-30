@@ -1,11 +1,15 @@
-/* eslint-disable react/no-unused-prop-types */
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import PropTypes from 'prop-types';
 
-export default class AbstractEditor extends React.Component {
 
-  constructor(props) {
+export interface AbstractEditorProps {
+  onSave?: () => void;
+  onPasteFiles?: (event: Event) => void;
+}
+
+export default class AbstractEditor<T extends AbstractEditorProps> extends React.Component<T, Record<string, unknown>> {
+
+  constructor(props: Readonly<T>) {
     super(props);
 
     this.forceToFocus = this.forceToFocus.bind(this);
@@ -20,91 +24,87 @@ export default class AbstractEditor extends React.Component {
     this.dispatchSave = this.dispatchSave.bind(this);
   }
 
-  forceToFocus() {
-  }
+  forceToFocus(): void {}
 
   /**
    * set new value
    */
-  setValue(newValue) {
-  }
+  setValue(_newValue: string): void {}
 
   /**
    * Enable/Disable GFM mode
-   * @param {bool} bool
+   * @param {bool} _bool
    */
-  setGfmMode(bool) {
-  }
+  setGfmMode(_bool: boolean): void {}
 
   /**
    * set caret position of codemirror
    * @param {string} number
    */
-  setCaretLine(line) {
-  }
+  setCaretLine(_line: number): void {}
 
   /**
    * scroll
-   * @param {number} line
+   * @param {number} _line
    */
-  setScrollTopByLine(line) {
-  }
+  setScrollTopByLine(_line: number): void {}
 
   /**
    * return strings from BOL(beginning of line) to current position
    */
-  getStrFromBol() {
+  getStrFromBol(): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * return strings from current position to EOL(end of line)
    */
-  getStrToEol() {
+  getStrToEol(): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * return strings from BOL(beginning of line) to current position
    */
-  getStrFromBolToSelectedUpperPos() {
+  getStrFromBolToSelectedUpperPos(): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * replace Beggining Of Line to current position with param 'text'
-   * @param {string} text
+   * @param {string} _text
    */
-  replaceBolToCurrentPos(text) {
+  replaceBolToCurrentPos(_text: string): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * replace the current line with param 'text'
-   * @param {string} text
+   * @param {string} _text
    */
-  replaceLine(text) {
+  replaceLine(_text: string): Error {
     throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * insert text
-   * @param {string} text
+   * @param {string} _text
    */
-  insertText(text) {
+  insertText(_text: string): Error {
+    throw new Error('this method should be impelemented in subclass');
   }
 
   /**
    * insert line break to the current position
    */
-  insertLinebreak() {
+  insertLinebreak(): void {
     this.insertText('\n');
   }
 
   /**
    * dispatch onSave event
    */
-  dispatchSave() {
+  dispatchSave(): void {
     if (this.props.onSave != null) {
       this.props.onSave();
     }
@@ -114,7 +114,7 @@ export default class AbstractEditor extends React.Component {
    * dispatch onPasteFiles event
    * @param {object} event
    */
-  dispatchPasteFiles(event) {
+  dispatchPasteFiles(event: Event): void {
     if (this.props.onPasteFiles != null) {
       this.props.onPasteFiles(event);
     }
@@ -123,23 +123,8 @@ export default class AbstractEditor extends React.Component {
   /**
    * returns items(an array of react elements) in navigation bar for editor
    */
-  getNavbarItems() {
+  getNavbarItems(): null {
     return null;
   }
 
 }
-
-AbstractEditor.propTypes = {
-  value: PropTypes.string,
-  isGfmMode: PropTypes.bool,
-  onChange: PropTypes.func,
-  onScroll: PropTypes.func,
-  onScrollCursorIntoView: PropTypes.func,
-  onSave: PropTypes.func,
-  onPasteFiles: PropTypes.func,
-  onDragEnter: PropTypes.func,
-  onCtrlEnter: PropTypes.func,
-};
-AbstractEditor.defaultProps = {
-  isGfmMode: true,
-};
