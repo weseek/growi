@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import SearchService from '~/server/service/search';
 import NamedQuery from '~/server/models/named-query';
 
@@ -8,16 +10,16 @@ describe('SearchService test', () => {
   let searchService;
 
   const DEFAULT = 'FullTextSearch';
+  const PRIVATE_LEGACY_PAGES = 'PrivateLegacyPages';
 
   // let NamedQuery;
 
   let dummyAliasOf;
-  let dummyDelegatorName;
 
   let namedQuery1;
   let namedQuery2;
 
-  const dummyDelegator = {
+  const dummyFullTextSearchDelegator = {
     search() {
       return;
     },
@@ -27,18 +29,29 @@ describe('SearchService test', () => {
     crowi = await getInstance();
     searchService = new SearchService(crowi);
     searchService.nqDelegators = {
-      FullTextSearch: dummyDelegator,
+      ...searchService.nqDelegators,
+      [DEFAULT]: dummyFullTextSearchDelegator, // override with dummy full-text search delegator
     };
+
+    dummyAliasOf = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
+
+    await NamedQuery.insertMany([
+      { name: 'named_query1', delegatorName: PRIVATE_LEGACY_PAGES },
+      { name: 'named_query2', aliasOf: dummyAliasOf },
+    ]);
+
+    namedQuery1 = await NamedQuery.findOne({ name: 'named_query1' });
+    namedQuery2 = await NamedQuery.findOne({ name: 'named_query2' });
   });
 
 
   describe('parseQueryString()', () => {
     test('should parse queryString', async() => {
-      const queryString = 'match -notmatch "phrase" -"notphrase" [nq:named_query] prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
+      const queryString = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
       const terms = await searchService.parseQueryString(queryString);
 
       const expected = { // QueryTerms
-        match: ['match', '[nq:named_query]'],
+        match: ['match'],
         not_match: ['notmatch'],
         phrase: ['"phrase"'],
         not_phrase: ['"notphrase"'],
@@ -53,18 +66,6 @@ describe('SearchService test', () => {
   });
 
   describe('parseSearchQuery()', () => {
-    beforeAll(async() => {
-      dummyDelegatorName = DEFAULT;
-      dummyAliasOf = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
-
-      await NamedQuery.insertMany([
-        { name: 'named_query1', delegatorName: dummyDelegatorName },
-        { name: 'named_query2', aliasOf: dummyAliasOf },
-      ]);
-
-      namedQuery1 = await NamedQuery.findOne({ name: 'named_query1' });
-      namedQuery2 = await NamedQuery.findOne({ name: 'named_query2' });
-    });
 
     test('should return result with delegatorName', async() => {
       const queryString = '[nq:named_query1]';
@@ -72,7 +73,7 @@ describe('SearchService test', () => {
 
       const expected = {
         queryString,
-        delegatorName: dummyDelegatorName,
+        delegatorName: PRIVATE_LEGACY_PAGES,
       };
 
       expect(parsedQuery).toStrictEqual(expected);
@@ -97,7 +98,9 @@ describe('SearchService test', () => {
 
       expect(parsedQuery).toStrictEqual(expected);
     });
+  });
 
+  describe('resolve()', () => {
     test('should resolve as full-text search delegator', async() => {
       const parsedQuery = {
         queryString: dummyAliasOf,
@@ -118,14 +121,14 @@ describe('SearchService test', () => {
       const expectedData = parsedQuery;
 
       expect(data).toStrictEqual(expectedData);
-      // expect(typeof delegator.search).toBe('function'); TODO: enable test after implementing delegator initialization
+      expect(typeof delegator.search).toBe('function');
     });
 
     test('should resolve as custom search delegator', async() => {
       const queryString = '[nq:named_query1]';
       const parsedQuery = {
         queryString,
-        delegatorName: dummyDelegatorName,
+        delegatorName: PRIVATE_LEGACY_PAGES,
       };
 
       const [delegator, data] = await searchService.resolve(parsedQuery);
@@ -135,7 +138,69 @@ describe('SearchService test', () => {
       expect(data).toBe(expectedData);
       expect(typeof delegator.search).toBe('function');
     });
+  });
 
+  describe('searchKeyword()', () => {
+    test('should search with custom search delegator', async() => {
+      const Page = mongoose.model('Page');
+      const User = mongoose.model('User');
+      await User.insertMany([
+        { name: 'dummyuser1', username: 'dummyuser1', email: 'dummyuser1@example.com' },
+        { name: 'dummyuser2', username: 'dummyuser2', email: 'dummyuser2@example.com' },
+      ]);
+
+      const testUser1 = await User.findOne({ username: 'dummyuser1' });
+      const testUser2 = await User.findOne({ username: 'dummyuser2' });
+
+      await Page.insertMany([
+        {
+          path: '/user1',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/user1_owner',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
+        },
+        {
+          path: '/user2_public',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser2,
+          lastUpdateUser: testUser2,
+        },
+      ]);
+
+      const page1 = await Page.findOne({ path: '/user1' });
+
+      await Page.insertMany([
+        {
+          path: '/user1/hasParent',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          parent: page1,
+        },
+      ]);
+
+      const queryString = '[nq:named_query1]';
+      const parsedQuery = {
+        queryString,
+        delegatorName: PRIVATE_LEGACY_PAGES,
+      };
+
+      const [delegator, data] = await searchService.resolve(parsedQuery);
+
+      const result = await delegator.search(data, testUser1, null, { limit: 0, offset: 0 });
+
+      const resultPaths = result.data.pages.map(page => page.path);
+      const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');
+
+      expect(flag).toBe(true);
+    });
   });
 
 });

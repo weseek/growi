@@ -219,6 +219,26 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
+
+    return this;
+  }
+
+  addConditionAsNotMigrated() {
+    this.query = this.query
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and({ parent: { $ne: null } });
+
+    return this;
+  }
+
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
@@ -672,13 +692,15 @@ export const getPageSchema = (crowi) => {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option) {
+  pageSchema.statics.findListByPageIds = async function(ids, option, excludeRedirect = true) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
-    builder.addConditionToExcludeRedirect();
+    if (excludeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     // count
