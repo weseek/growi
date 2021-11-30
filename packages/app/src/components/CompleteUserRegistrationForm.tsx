@@ -27,9 +27,14 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
-      const data = await apiv3Get('/check_username', { username }); // TODO: use `{ data }` with bracket, currently using `{ data }` not working.
-      if (data.success) {
-        setUsernameAvailable(data.valid);
+      try {
+        const { data } = await apiv3Get('/check_username', { username });
+        if (data.success) {
+          setUsernameAvailable(data.valid);
+        }
+      }
+      catch (error) {
+        toastError(error, 'Error occurred when checking username');
       }
     }, 500);
 
@@ -39,7 +44,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   async function submitRegistration() {
     setDisableForm(true);
     try {
-      const res = await apiv3Post('/complete-registration', {
+      await apiv3Post('/complete-registration', {
         username, name, password, token,
       });
       toastSuccess('Registration succeed');
