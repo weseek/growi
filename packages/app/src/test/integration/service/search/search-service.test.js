@@ -142,6 +142,9 @@ describe('SearchService test', () => {
 
   describe('searchKeyword()', () => {
     test('should search with custom search delegator', async() => {
+      jest.restoreAllMocks();
+      jest.clearAllMocks();
+
       const Page = mongoose.model('Page');
       const User = mongoose.model('User');
       await User.insertMany([
