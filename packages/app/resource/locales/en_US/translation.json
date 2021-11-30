@@ -577,7 +577,7 @@
     "delete_completely": "Delete completely",
     "include_certain_path" : "Include {{pathToInclude}} path ",
     "delete_all_selected_page" : "Delete All",
-    "search_again" : "Search again"
+    "search_again" : "Search again",
     "number_of_list_to_display" : "Display",
     "page_number_unit" : "pages"
 
