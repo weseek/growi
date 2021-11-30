@@ -28,7 +28,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
       <div className="search-result d-flex" id="search-result">
         <div className="flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
 
-          <nav><SearchControl></SearchControl></nav>
+          <SearchControl></SearchControl>
           <div className="d-flex align-items-center justify-content-between my-3 ml-4">
             <div className="search-result-meta text-nowrap mr-3">
               <span className="font-weight-light">{t('search_result.result_meta')} </span>

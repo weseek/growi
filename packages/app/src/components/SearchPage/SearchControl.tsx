@@ -47,7 +47,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <>
+    <div className="position-sticky fixed-top">
       <div className="search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
@@ -62,7 +62,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="d-flex align-items-center py-2 border-bottom border-gray">
+      <div className="search-control d-flex align-items-center py-2 border-bottom border-gray">
         <div className="d-flex mr-auto ml-4">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
@@ -96,7 +96,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
