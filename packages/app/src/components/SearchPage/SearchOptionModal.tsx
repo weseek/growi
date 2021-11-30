@@ -11,8 +11,8 @@ type Props = {
   excludeUnderUserPage: boolean,
   excludeUnderTrashPage: boolean,
   onClose?: () => void,
-  onSwitchExcludingUserPagesInvoked?: () => void,
-  onSwitchExcludingTrashPagesInvoked?: () => void,
+  onExcludeUserPagesSwitched?: () => void,
+  onExcludeTrashPagesSwitched?: () => void,
   onClickFilteringSearchResult?: () => void,
 }
 
@@ -44,13 +44,13 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
         Search Option
       </ModalHeader>
       <ModalBody>
-        <div className="d-flex justify-content-center mr-3">
+        <div className="d-flex p-3">
           <div className="border border-gray mr-3">
             <label className="px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={onSwitchExcludingUserPagesInvoked}
+                onClick={props.onExcludeUserPagesSwitched}
                 checked={!excludeUnderUserPage}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
@@ -61,7 +61,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={onSwitchExcludingTrashPagesInvoked}
+                onClick={props.onExcludeTrashPagesSwitched}
                 checked={!excludeUnderTrashPage}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
