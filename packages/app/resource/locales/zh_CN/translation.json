@@ -850,6 +850,7 @@
 		"delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
     "delete_all_selected_page": "删除所有",
+    "search_again" : "再次搜索",
     "number_of_list_to_display" : "显示器的数量",
     "page_number_unit" : "例"
 	},
