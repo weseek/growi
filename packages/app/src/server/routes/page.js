@@ -834,7 +834,7 @@ module.exports = function(crowi, app) {
       const latestRevision = await Revision.findById(page.revision).populate('author');
       const returnLatestRevision = {
         revisionId: latestRevision._id.toString(),
-        revisionBody:  xss.process(latestRevision.body),
+        revisionBody: xss.process(latestRevision.body),
         createdAt: latestRevision.createdAt,
         user: serializeUserSecurely(latestRevision.author),
       };
