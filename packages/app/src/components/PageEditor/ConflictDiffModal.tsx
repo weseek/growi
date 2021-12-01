@@ -85,7 +85,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         revertButtons: false,
       });
     }
-  }, [codeMirrorRef, origin, request, latest]);
+  }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
 
   const onCancel = () => {
     if (props.onCancel != null) {
