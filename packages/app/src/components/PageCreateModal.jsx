@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -13,7 +13,8 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { usePageCreateModalOpened } from '~/stores/ui';
+import { useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModalOpened, usePageCreateModalPagePath } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -25,10 +26,12 @@ const PageCreateModal = (props) => {
   const { t, appContainer } = props;
 
   const { data: isPageCreateModalOpened, mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: selectedPagePath } = usePageCreateModalPagePath();
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const pathname = decodeURI(window.location.pathname);
+  const pathname = selectedPagePath || currentPagePath;
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -37,6 +40,11 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
+
+  // ensure pageNameInput is synced with selectedPagePath || currentPagePath
+  useEffect(() => {
+    setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
+  }, [pathname]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit

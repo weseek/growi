@@ -238,3 +238,8 @@ export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolea
   const initialData = false;
   return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
 };
+
+export const usePageCreateModalPagePath = (path?: string): SWRResponse<string, Error> => {
+  const initialData = '';
+  return useStaticSWR('pageCreateModalPagePath', path || null, { fallbackData: initialData });
+};
