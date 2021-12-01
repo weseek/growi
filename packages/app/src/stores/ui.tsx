@@ -59,19 +59,43 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   return useStaticSWR(key, null, configuration);
 };
 
-// drawer mode keys
-const IS_DRAWER_MODE: Key = 'isDrawerMode';
 
-export const mutateDrawerMode: Middleware = (useSWRNext) => {
+const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
   return (...args) => {
-    const { mutate } = useSWRConfig();
+    // -- TODO: https://redmine.weseek.co.jp/issues/81817
     const swrNext = useSWRNext(...args);
     return {
       ...swrNext,
       mutate: (data, shouldRevalidate) => {
         return swrNext.mutate(data, shouldRevalidate)
           .then((value) => {
-            mutate(IS_DRAWER_MODE); // mutate isDrawerMode
+            const newEditorMode = value as unknown as EditorMode;
+            switch (newEditorMode) {
+              case EditorMode.View:
+                $('body').removeClass('on-edit');
+                $('body').removeClass('builtin-editor');
+                $('body').removeClass('hackmd');
+                $('body').removeClass('pathname-sidebar');
+                window.history.replaceState(null, '', window.location.pathname);
+                break;
+              case EditorMode.Editor:
+                $('body').addClass('on-edit');
+                $('body').addClass('builtin-editor');
+                $('body').removeClass('hackmd');
+                // editing /Sidebar
+                if (window.location.pathname === '/Sidebar') {
+                  $('body').addClass('pathname-sidebar');
+                }
+                window.location.hash = '#edit';
+                break;
+              case EditorMode.HackMD:
+                $('body').addClass('on-edit');
+                $('body').addClass('hackmd');
+                $('body').removeClass('builtin-editor');
+                $('body').removeClass('pathname-sidebar');
+                window.location.hash = '#hackmd';
+                break;
+            }
             return value;
           });
       },
@@ -83,7 +107,7 @@ export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, 
   const key: Key = 'editorMode';
   const initialData = EditorMode.View;
 
-  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [mutateDrawerMode] });
+  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [postChangeEditorModeMiddleware] });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
@@ -107,7 +131,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
     }
   }
 
-  return useStaticSWR(key, null, { use: [mutateDrawerMode] });
+  return useStaticSWR(key);
 };
 
 export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
@@ -115,7 +139,7 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boo
   const key: Key = data === undefined ? null : 'preferDrawerModeByUser';
   const initialData = data?.preferDrawerModeByUser;
 
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
 
 export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
@@ -123,7 +147,7 @@ export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRRespon
   const key: Key = data === undefined ? null : 'preferDrawerModeOnEditByUser';
   const initialData = data?.preferDrawerModeOnEditByUser;
 
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [mutateDrawerMode, sessionStorageMiddleware] });
+  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
@@ -145,7 +169,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   return useSWR(
-    condition ? [IS_DRAWER_MODE, editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,
@@ -208,4 +232,9 @@ export const useCurrentProductNavWidth = (): SWRResponse<number, Error> => {
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
+};
+
+export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
+  const initialData = false;
+  return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
 };
