@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 
 import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 const EditPage = (props) => {
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   // setup effect
   useEffect(() => {
@@ -13,11 +15,11 @@ const EditPage = (props) => {
       return;
     }
 
-    props.navigationContainer.setEditorMode('edit');
+    mutateEditorMode(EditorMode.Editor);
 
     // remove this
     props.onDeleteRender(this);
-  }, [props]);
+  }, [mutateEditorMode, props]);
 
   return <></>;
 };

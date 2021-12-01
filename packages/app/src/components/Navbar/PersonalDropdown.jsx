@@ -6,11 +6,13 @@ import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import AppContainer from '~/client/services/AppContainer';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
-import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
 
 import {
   isUserPreferenceExists,
