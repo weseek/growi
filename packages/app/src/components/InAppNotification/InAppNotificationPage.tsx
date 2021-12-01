@@ -1,4 +1,6 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, {
+  FC, useState, useEffect, useCallback,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -11,6 +13,10 @@ import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:InAppNotificationPage');
+
 
 type Props = {
   appContainer: AppContainer
@@ -22,20 +28,19 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { t } = useTranslation();
   const { mutate: mutateInAppNotificationStatusData } = useSWRxInAppNotificationStatus();
 
-
-  const updateNotificationStatus = async() => {
+  const updateNotificationStatus = useCallback(async() => {
     try {
       await apiv3Post('/in-app-notification/read');
       mutateInAppNotificationStatusData();
     }
     catch (err) {
-      // logger.error(err);
+      logger.error(err);
     }
-  };
+  }, [mutateInAppNotificationStatusData]);
 
   useEffect(() => {
     updateNotificationStatus();
-  }, []);
+  }, [updateNotificationStatus]);
 
   const InAppNotificationCategoryByStatus = (status?: InAppNotificationStatuses) => {
     const [activePage, setActivePage] = useState(1);
