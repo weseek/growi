@@ -13,7 +13,7 @@ type Props = {
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
-  onChangeSortInvoked?: () => void,
+  onChangeSortInvoked?: (nextSort: string, nextOrder: string) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -34,9 +34,24 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
+  // TODO: imprement sort dropdown
+  // refs: https://redmine.weseek.co.jp/issues/82513
   const onClickChangeSort = () => {
     if (props.onChangeSortInvoked != null) {
-      props.onChangeSortInvoked();
+      const getNextSort = (sort) => {
+        switch (sort) {
+          case '_score':
+            return 'updated_at';
+          case 'updated_at':
+            return 'created_at';
+          case 'created_at':
+          default:
+            return '_score';
+        }
+      };
+      const nextSort = props.order === 'desc' ? props.sort : getNextSort(props.sort);
+      const nextOrder = nextSort === props.sort ? 'asc' : 'desc';
+      props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };
 
@@ -66,6 +81,10 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
         <div className="mr-4 d-flex">
+          {/*
+            TODO: imprement sort dropdown
+            refs: https://redmine.weseek.co.jp/issues/82513
+          */}
           <button type="button" onClick={onClickChangeSort}>change sort</button>
           <p>sort:{props.sort}, order: {props.order}</p>
         </div>

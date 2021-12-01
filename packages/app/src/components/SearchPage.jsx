@@ -79,20 +79,7 @@ class SearchPage extends React.Component {
     this.setState({ excludeTrash: !this.state.excludeTrash });
   }
 
-  getNextSort(sort) {
-    switch (sort) {
-      case '_score':
-        return 'updated_at';
-      case 'updated_at':
-        return 'created_at';
-      default:
-        return '_score';
-    }
-  }
-
-  onChangeSortInvoked() {
-    const nextSort = this.state.order === 'desc' ? this.state.sort : this.getNextSort(this.state.sort);
-    const nextOrder = nextSort === this.state.sort ? 'asc' : 'desc';
+  onChangeSortInvoked(nextSort, nextOrder) {
     this.setState({
       sort: nextSort,
       order: nextOrder,
