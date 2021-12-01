@@ -65,6 +65,20 @@
             }
           }
         },
+        "comments": {
+          "type": "text",
+          "fields": {
+            "ja": {
+              "type": "text",
+              "analyzer": "japanese"
+            },
+            "en": {
+              "type": "text",
+              "analyzer": "english_edge_ngram",
+              "search_analyzer": "standard"
+            }
+          }
+        },
         "username": {
           "type": "keyword"
         },
@@ -72,6 +86,9 @@
           "type": "integer"
         },
         "bookmark_count": {
+          "type": "integer"
+        },
+        "seenUsers_count":{
           "type": "integer"
         },
         "like_count": {

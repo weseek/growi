@@ -14,7 +14,7 @@ export type IPage = {
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
-  parent: Ref<IPage>,
+  parent: Ref<IPage> | null,
   isEmpty: boolean,
   redirectTo: string,
   grant: number,
@@ -32,3 +32,7 @@ export type IPage = {
 }
 
 export type IPageForItem = Partial<IPage & {isTarget?: boolean} & HasObjectId>;
+
+export type IPageHasId = IPage & {
+  _id: string,
+};

@@ -1,16 +1,28 @@
-import mongoose from 'mongoose';
 import RE2 from 're2';
+import xss from 'xss';
 
-import { NamedQueryModel } from '../models/named-query';
 import { SearchDelegatorName } from '~/interfaces/named-query';
+
+import NamedQuery from '../models/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
+import ElasticsearchDelegator from './search-delegator/elasticsearch';
+import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+// options for filtering xss
+const filterXssOptions = {
+  whiteList: {
+    em: ['class'],
+  },
+};
+
+const filterXss = new xss.FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
@@ -31,7 +43,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   fullTextSearchDelegator: any & SearchDelegator
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator} // TODO: initialize
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -41,7 +53,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.fullTextSearchDelegator = this.generateDelegator();
+      this.fullTextSearchDelegator = this.generateFullTextSearchDelegator();
+      this.nqDelegators = this.generateNQDelegators(this.fullTextSearchDelegator);
+      logger.info('Succeeded to initialize search delegators');
     }
     catch (err) {
       logger.error(err);
@@ -66,16 +80,22 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return uri != null && uri.length > 0;
   }
 
-  generateDelegator() {
+  generateFullTextSearchDelegator() {
     logger.info('Initializing search delegator');
 
     if (this.isElasticsearchEnabled) {
-      const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
       logger.info('Elasticsearch is enabled');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
 
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
+  }
+
+  generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+    return {
+      [SearchDelegatorName.DEFAULT]: defaultDelegator,
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
+    };
   }
 
   registerUpdateEvent() {
@@ -86,6 +106,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('addSeenUsers', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
@@ -93,6 +114,11 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     const tagEvent = this.crowi.event('tag');
     tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
+
+    const commentEvent = this.crowi.event('comment');
+    commentEvent.on('create', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on('update', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on('delete', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
   }
 
   resetErrorStatus() {
@@ -154,7 +180,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-
     const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
     const replaceRegexp = new RE2(/\[nq:|\]/g);
 
@@ -166,8 +191,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     // when Named Query
-    const NamedQuery = mongoose.model('NamedQuery') as NamedQueryModel;
-
     const name = queryString.replace(replaceRegexp, '');
     const nq = await NamedQuery.findOne({ name });
 
@@ -202,7 +225,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       queryString,
       terms: terms as QueryTerms,
     };
-    return [this.fullTextSearchDelegator, data];
+    return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
   async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<Result<any> & MetaData> {
@@ -306,6 +329,24 @@ class SearchService implements SearchQueryParser, SearchResolver {
     };
 
     return terms;
+  }
+
+  /**
+   * formatting result
+   */
+  formatResult(esResult) {
+    esResult.data.forEach((data) => {
+      const highlightData = data._highlight;
+      const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+      const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+      data.elasticSearchResult = {
+        snippet: filterXss.process(snippet),
+        // todo: use filter xss.process() for matchedPath;
+        matchedPath: pathMatch,
+      };
+    });
+    return esResult;
   }
 
 }

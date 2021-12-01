@@ -41,6 +41,7 @@ import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
+import ContextExtractor from '~/client/services/ContextExtractor';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
@@ -50,7 +51,6 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
-import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -99,7 +99,6 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
   'not-found-alert': <NotFoundAlert
-    onPageCreateClicked={navigationContainer.setEditorMode}
     isGuestUserMode={appContainer.isGuestUser}
     isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
@@ -131,7 +130,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'page-context': <ContextExtractor />, // use static swr
   });
 
   // show the Page accessory modal when query of "compare" is requested
@@ -176,19 +174,12 @@ const renderMainComponents = () => {
 };
 
 // extract context before rendering main components
-const elem = document.getElementById('page-context');
-
+const elem = document.getElementById('growi-context-extractor');
 if (elem != null) {
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <SWRConfig value={swrGlobalConfiguration}>
-          <Provider inject={injectableContainers}>
-            {componentMappings['page-context']}
-          </Provider>
-        </SWRConfig>
-      </ErrorBoundary>
-    </I18nextProvider>,
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
     elem,
     renderMainComponents,
   );
@@ -196,7 +187,6 @@ if (elem != null) {
 else {
   renderMainComponents();
 }
-
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

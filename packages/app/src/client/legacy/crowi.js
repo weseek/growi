@@ -17,7 +17,7 @@ window.Crowi = Crowi;
 Crowi.setCaretLineData = function(line) {
   const { appContainer } = window;
   const navigationContainer = appContainer.getContainer('NavigationContainer');
-  navigationContainer.setEditorMode('edit');
+  // navigationContainer.setEditorMode('edit');
   const pageEditorDom = document.querySelector('#page-editor');
   pageEditorDom.setAttribute('data-caret-line', line);
 };
@@ -154,32 +154,32 @@ Crowi.blinkSelectedSection = function(hash) {
   }
 };
 
-window.addEventListener('load', () => {
-  const { appContainer } = window;
-  const pageContainer = appContainer.getContainer('PageContainer');
+// window.addEventListener('load', () => {
+//   const { appContainer } = window;
+//   const pageContainer = appContainer.getContainer('PageContainer');
 
-  // Do nothing if the page does not exist
-  // ex.) admin page,login page
-  if (pageContainer == null) {
-    return null;
-  }
-  const { isAbleToOpenPageEditor } = pageContainer;
+//   // Do nothing if the page does not exist
+//   // ex.) admin page,login page
+//   if (pageContainer == null) {
+//     return null;
+//   }
+//   const { isAbleToOpenPageEditor } = pageContainer;
 
-  // hash on page
-  if (window.location.hash) {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
+//   // hash on page
+//   if (window.location.hash) {
+//     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
-      navigationContainer.setEditorMode('edit');
+//     if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
+//       navigationContainer.setEditorMode('edit');
 
-      // focus
-      Crowi.setCaretLineAndFocusToEditor();
-    }
-    else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
-    }
-  }
-});
+//       // focus
+//       Crowi.setCaretLineAndFocusToEditor();
+//     }
+//     else if (window.location.hash === '#hackmd') {
+//       navigationContainer.setEditorMode('hackmd');
+//     }
+//   }
+// });
 
 window.addEventListener('load', () => {
   const crowi = window.crowi;
@@ -228,18 +228,18 @@ window.addEventListener('hashchange', (e) => {
   Crowi.unblinkSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.blinkSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
-  const { appContainer } = window;
-  const navigationContainer = appContainer.getContainer('NavigationContainer');
+  // const { appContainer } = window;
+  // const navigationContainer = appContainer.getContainer('NavigationContainer');
 
 
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      navigationContainer.setEditorMode('edit');
+      // navigationContainer.setEditorMode('edit');
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
+      // navigationContainer.setEditorMode('hackmd');
     }
   }
 });

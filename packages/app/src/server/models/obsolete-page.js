@@ -219,6 +219,26 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
+
+    return this;
+  }
+
+  addConditionAsNotMigrated() {
+    this.query = this.query
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and({ parent: { $ne: null } });
+
+    return this;
+  }
+
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
@@ -239,6 +259,17 @@ export class PageQueryBuilder {
       .and({
         path: {
           $in: paths,
+        },
+      });
+
+    return this;
+  }
+
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
         },
       });
 
@@ -270,6 +301,7 @@ export const getPageSchema = (crowi) => {
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
     pageEvent.on('createMany', pageEvent.onCreateMany);
+    pageEvent.on('addSeenUsers', pageEvent.onAddSeenUsers);
   }
 
   function validateCrowi() {
@@ -395,6 +427,7 @@ export const getPageSchema = (crowi) => {
     const saved = await this.save();
 
     debug('seenUsers updated!', added);
+    pageEvent.emit('addSeenUsers', saved);
 
     return saved;
   };
@@ -416,8 +449,7 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
-      .execPopulate();
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
@@ -425,7 +457,7 @@ export const getPageSchema = (crowi) => {
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    return this.populate('revision').execPopulate();
+    return this.populate('revision');
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
@@ -672,13 +704,15 @@ export const getPageSchema = (crowi) => {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option) {
+  pageSchema.statics.findListByPageIds = async function(ids, option, excludeRedirect = true) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
-    builder.addConditionToExcludeRedirect();
+    if (excludeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     // count
@@ -686,7 +720,7 @@ export const getPageSchema = (crowi) => {
 
     // find
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.exec('find');
+    const pages = await builder.query.clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -729,7 +763,7 @@ export const getPageSchema = (crowi) => {
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
+    const pages = await builder.query.lean().clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
