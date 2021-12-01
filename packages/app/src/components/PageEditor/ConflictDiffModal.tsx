@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-// TODO: consider whether to use codemirrorEditor
+// todo: will be replaced by https://redmine.weseek.co.jp/issues/81032
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
 import CodeMirror from 'codemirror/lib/codemirror';
 import PageContainer from '../../client/services/PageContainer';
@@ -19,7 +19,7 @@ require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
 
 // avoid typescript type error
-// todo: will be replaced to codemirroreditor
+// todo: will be replaced by https://redmine.weseek.co.jp/issues/81032
 const ReactCodeMirror:any = CodeMirrorAny;
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
@@ -41,7 +41,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
 
   useEffect(() => {
-    if (codeMirrorRef) {
+    if (codeMirrorRef != null) {
       CodeMirror.MergeView(codeMirrorRef, {
         value: origin.revisionBody,
         origLeft: request.revisionBody,
@@ -175,6 +175,10 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             </div>
             <div className="col-12 border border-dark">
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+              {/*
+                todo: will be replaced
+                task: https://redmine.weseek.co.jp/issues/81032
+              */}
               <ReactCodeMirror
                 value={resolvedRevision.current}
                 options={{
