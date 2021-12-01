@@ -20,7 +20,7 @@ type Props = {
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
   const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
@@ -30,14 +30,14 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const initializeSocket = (props) => {
     const socket = props.socketIoContainer.getSocket();
     socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
-      setCount(data.count);
+      // setCount(data.count);
     });
   };
 
   const updateNotificationStatus = async() => {
     try {
       await apiv3Post('/in-app-notification/read');
-      setCount(0);
+      // setCount(0);
     }
     catch (err) {
       logger.error(err);
@@ -51,7 +51,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       if (inAppNotificationStatusData != null) {
         console.log('inAppNotificationStatusData', inAppNotificationStatusData);
         const { count } = inAppNotificationStatusData;
-        setCount(count);
+        // setCount(count);
       }
     }
     catch (err) {
@@ -66,7 +66,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
 
   const toggleDropdownHandler = () => {
-    if (!isOpen && count > 0) {
+    if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
       updateNotificationStatus();
     }
 
@@ -77,7 +77,15 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     setIsOpen(newIsOpenState);
   };
 
-  const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
+  // const { count } = inAppNotificationStatusData;
+
+  let badge;
+  if (inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
+    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationStatusData.count}</span>;
+  }
+  else {
+    badge = '';
+  }
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
