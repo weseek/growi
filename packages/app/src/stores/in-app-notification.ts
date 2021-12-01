@@ -13,3 +13,12 @@ export const useSWRxInAppNotifications = <Data, Error>(
     endpoint => apiv3Get(endpoint, { limit, offset, status }).then(response => response.data),
   );
 };
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxInAppNotificationStatus = <Data, Error>
+  (): SWRResponse<{ count: number }, Error> => {
+  return useSWR(
+    ['/in-app-notification/status'],
+    endpoint => apiv3Get(endpoint).then(response => response.data),
+  );
+};

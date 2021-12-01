@@ -9,7 +9,7 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
-import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
@@ -24,6 +24,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
   const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationStatusData } = useSWRxInAppNotificationStatus();
 
 
   const initializeSocket = (props) => {
@@ -33,11 +34,25 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     });
   };
 
+  const updateNotificationStatus = async() => {
+    try {
+      await apiv3Post('/in-app-notification/read');
+      setCount(0);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  };
+
   const fetchNotificationStatus = async() => {
     try {
-      const res = await apiv3Get('/in-app-notification/status');
-      const { count } = res.data;
-      setCount(count);
+      // const res = await apiv3Get('/in-app-notification/status');
+      // const { count } = res.data;
+      if (inAppNotificationStatusData != null) {
+        console.log('inAppNotificationStatusData', inAppNotificationStatusData);
+        const { count } = inAppNotificationStatusData;
+        setCount(count);
+      }
     }
     catch (err) {
       logger.error(err);
@@ -49,16 +64,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     fetchNotificationStatus();
   }, [props]);
 
-
-  const updateNotificationStatus = async() => {
-    try {
-      await apiv3Post('/in-app-notification/read');
-      setCount(0);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  };
 
   const toggleDropdownHandler = () => {
     if (!isOpen && count > 0) {
