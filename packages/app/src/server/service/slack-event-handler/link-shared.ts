@@ -86,8 +86,10 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   generateLinkUnfurls(body: PublicData, growiTargetUrl: string, toUrl: string): LinkUnfurls {
     const { pageBody: text, updatedAt, commentCount } = body;
 
+    const siteUrl = this.crowi.appService.getSiteUrl();
+
     const updatedAtFormatted = format(updatedAt, 'yyyy-MM-dd HH:mm');
-    const footer = `updated at: ${updatedAtFormatted}  comments: ${commentCount}`;
+    const footer = `URL: ${siteUrl}  Updated at: ${updatedAtFormatted}`;
 
     const attachment: MessageAttachment = {
       title: body.path,
