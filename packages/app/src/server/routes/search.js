@@ -110,7 +110,9 @@ module.exports = function(crowi, app) {
    */
   api.search = async function(req, res) {
     const user = req.user;
-    const { q: keyword = null, type = null } = req.query;
+    const {
+      q: keyword = null, type = null, sort = null, order = null,
+    } = req.query;
     let paginateOpts;
 
     try {
@@ -135,7 +137,9 @@ module.exports = function(crowi, app) {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const searchOpts = { ...paginateOpts, type };
+    const searchOpts = {
+      ...paginateOpts, type, sort, order,
+    };
 
     const result = {};
     try {
@@ -147,32 +151,28 @@ module.exports = function(crowi, app) {
       // key: id , value: score
       const scoreMap = {};
       for (const esPage of esResult.data) {
-        scoreMap[esPage._id] = esPage._score;
+        scoreMap[esPage._id] = esResult.indexOf(esPage);
       }
 
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
-      // add tags data to page
-      findResult.pages.map((pageData) => {
-        const data = esResult.data.find((data) => {
-          return pageData.id === data._id;
-        });
-        pageData._doc.tags = data._source.tag_names;
-        return pageData;
-      });
-
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
-      result.data = findResult.pages
-        .map((pageData) => {
+
+      result.data = esResult.data
+        .map((data) => {
+          const pageData = findResult.pages.find((pageData) => {
+            return pageData.id === data._id;
+          });
+
+          // add tags data to page
+          pageData._doc.tags = data._source.tag_names;
+
+          // add lastUpdateUser data to page
           if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
             pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
           }
-
-          const data = esResult.data.find((data) => {
-            return pageData.id === data._id;
-          });
 
           const pageMeta = {
             bookmarkCount: data._source.bookmark_count || 0,
@@ -182,10 +182,10 @@ module.exports = function(crowi, app) {
           pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
           return { pageData, pageMeta };
-        })
-        .sort((page1, page2) => {
-          // note: this do not consider NaN
-          return scoreMap[page2._id] - scoreMap[page1._id];
+        // })
+        //   .sort((page1, page2) => {
+        //     // note: this do not consider NaN
+        //     return scoreMap[page2.pageData._id] - scoreMap[page1.pageData._id];
         });
     }
     catch (err) {

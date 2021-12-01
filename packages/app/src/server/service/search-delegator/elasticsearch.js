@@ -901,6 +901,7 @@ class ElasticsearchDelegator {
     const from = option.offset || null;
     const size = option.limit || null;
     const type = option.type || null;
+    // default sort order is score descending
     const sort = option.sort || '_score';
     const order = option.order || 'desc';
     const query = this.createSearchQuery(sort, order);
