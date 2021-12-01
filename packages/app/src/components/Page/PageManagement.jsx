@@ -157,10 +157,17 @@ const PageManagement = (props) => {
     );
   }
 
+  function generatePageObjectToDelete() {
+    return {
+      pageData: { pageId, revisionId, path },
+    };
+  }
+
   function renderModals() {
     if (currentUser == null) {
       return null;
     }
+    const pageToDelete = generatePageObjectToDelete();
 
     return (
       <>
@@ -184,9 +191,7 @@ const PageManagement = (props) => {
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
+          pages={[pageToDelete]}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal

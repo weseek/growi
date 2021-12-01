@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import toastr from 'toastr';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
-import { apiPost } from '~/client/util/apiv1-client';
+// import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -26,7 +26,7 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, isOpen, onClose, isDeleteCompletelyModal, pageId, revisionId, path, isAbleToDeleteCompletely,
+    t, isOpen, onClose, isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -46,27 +46,29 @@ const PageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrs(null);
+    toastr.warning(t('search_result.currently_not_implemented'));
+    // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
+    // setErrs(null);
 
-    try {
-      // control flag
-      // If is it not true, Request value must be `null`.
-      const recursively = isDeleteRecursively ? true : null;
-      const completely = isDeleteCompletely ? true : null;
+    // try {
+    //   // control flag
+    //   // If is it not true, Request value must be `null`.
+    //   const recursively = isDeleteRecursively ? true : null;
+    //   const completely = isDeleteCompletely ? true : null;
 
-      const response = await apiPost('/pages.remove', {
-        page_id: pageId,
-        revision_id: revisionId,
-        recursively,
-        completely,
-      });
+    //   const response = await apiPost('/pages.remove', {
+    //     page_id: pageId,
+    //     revision_id: revisionId,
+    //     recursively,
+    //     completely,
+    //   });
 
-      const trashPagePath = response.page.path;
-      window.location.href = encodeURI(trashPagePath);
-    }
-    catch (err) {
-      setErrs(err);
-    }
+    //   const trashPagePath = response.page.path;
+    //   window.location.href = encodeURI(trashPagePath);
+    // }
+    // catch (err) {
+    //   setErrs(err);
+    // }
   }
 
   async function deleteButtonHandler() {
@@ -80,12 +82,13 @@ const PageDeleteModal = (props) => {
           className="custom-control-input"
           id="deleteRecursively"
           type="checkbox"
-          checked={isDeleteRecursively}
+          // checked={isDeleteRecursively}
+          checked={false}
           onChange={changeIsDeleteRecursivelyHandler}
+          disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
-          <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
@@ -99,11 +102,14 @@ const PageDeleteModal = (props) => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          disabled={!isAbleToDeleteCompletely}
+          // disabled={!isAbleToDeleteCompletely}
+          disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
+        {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
+        {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
+        <label className="custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely') }
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>
@@ -126,7 +132,9 @@ const PageDeleteModal = (props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
-          <code>{ path }</code>
+          {pages.map((page) => {
+            return <div><code>{ page.pageData.path }</code></div>;
+          })}
         </div>
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
@@ -148,10 +156,7 @@ PageDeleteModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-
-  pageId: PropTypes.string.isRequired,
-  revisionId: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
+  pages: PropTypes.array.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,
   isAbleToDeleteCompletely: PropTypes.bool,
 };
