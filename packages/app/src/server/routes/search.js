@@ -139,7 +139,9 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts); // TODO: separate when not full-text search
+      const esResult = searchService.formatResult(
+        await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
+      );
 
       // create score map for sorting
       // key: id , value: score
@@ -151,22 +153,33 @@ module.exports = function(crowi, app) {
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
-      // add tag data to result pages
-      findResult.pages.map((page) => {
-        const data = esResult.data.find((data) => { return page.id === data._id });
-        page._doc.tags = data._source.tag_names;
-        return page;
+      // add tags data to page
+      findResult.pages.map((pageData) => {
+        const data = esResult.data.find((data) => {
+          return pageData.id === data._id;
+        });
+        pageData._doc.tags = data._source.tag_names;
+        return pageData;
       });
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
       result.data = findResult.pages
-        .map((page) => {
-          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        .map((pageData) => {
+          if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
+            pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
           }
-          page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
-          return page;
+
+          const data = esResult.data.find((data) => {
+            return pageData.id === data._id;
+          });
+
+          const pageMeta = {
+            bookmarkCount: data._source.bookmark_count || 0,
+            elasticSearchResult: data.elasticSearchResult,
+          };
+
+          return { pageData, pageMeta };
         })
         .sort((page1, page2) => {
           // note: this do not consider NaN
@@ -176,7 +189,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-
     return res.json(ApiResponse.success(result));
   };
 
