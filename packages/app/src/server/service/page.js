@@ -1,5 +1,4 @@
 import { pagePathUtils } from '@growi/core';
-import Page from '~/components/Page';
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
@@ -286,7 +285,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };
@@ -656,7 +655,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({
@@ -776,6 +775,28 @@ class PageService {
     }
   }
 
+  async v5MigrationByPageIds(pageIds) {
+    const Page = mongoose.model('Page');
+
+    if (pageIds == null || pageIds.length === 0) {
+      return;
+    }
+
+    // generate regexps
+    const regexps = await this._generateRegExpsByPageIds(pageIds);
+
+    // migrate recursively
+    try {
+      await this._v5RecursiveMigration(null, regexps);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      // socket.emit('v5InitialMirationFailed', { error: err.message }); TODO: use socket to tell user
+
+      throw err;
+    }
+  }
+
   async v5InitialMigration(grant) {
     const socket = this.crowi.socketIoService.getAdminSocket();
     try {
@@ -809,6 +830,27 @@ class PageService {
     await this._setIsV5CompatibleTrue();
   }
 
+  /*
+   * returns an array of js RegExp instance instead of RE2 instance for mongo filter
+   */
+  async _generateRegExpsByPageIds(pageIds) {
+    const Page = mongoose.model('Page');
+
+    let result;
+    try {
+      result = await Page.findListByPageIds(pageIds, null, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages by ids', err);
+      throw err;
+    }
+
+    const { pages } = result;
+    const regexps = pages.map(page => new RegExp(`^${page.path}`));
+
+    return regexps;
+  }
+
   async _setIsV5CompatibleTrue() {
     try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
@@ -823,21 +865,38 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, rootPath) {
+  async _v5RecursiveMigration(grant, regexps) {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
-    const total = await Page.countDocuments({ grant, parent: null });
+    // generate filter
+    let filter = {
+      parent: null,
+      path: { $ne: '/' },
+    };
+    if (grant != null) {
+      filter = {
+        ...filter,
+        grant,
+      };
+    }
+    if (regexps != null && regexps.length !== 0) {
+      filter = {
+        ...filter,
+        path: {
+          $in: regexps,
+        },
+      };
+    }
+
+    const total = await Page.countDocuments(filter);
 
     let baseAggregation = Page
       .aggregate([
         {
-          $match: {
-            grant,
-            parent: null,
-          },
+          $match: filter,
         },
         {
           $project: { // minimize data to fetch
@@ -852,7 +911,7 @@ class PageService {
       baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
     }
 
-    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE }).exec();
+    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
 
     // use batch stream
     const batchStream = createBatchStream(BATCH_SIZE);
@@ -921,8 +980,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists({ grant, parent: null, path: { $ne: '/' } })) {
-      return this._v5RecursiveMigration(grant, rootPath);
+    if (await Page.exists(filter)) {
+      return this._v5RecursiveMigration(grant, regexps);
     }
 
   }

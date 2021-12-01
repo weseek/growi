@@ -33,7 +33,7 @@ export type Result<T> = {
 }
 
 export type MetaData = {
-  meta: { [key:string]: any }
+  meta?: { [key:string]: any }
 }
 
 export type SearchableData = {

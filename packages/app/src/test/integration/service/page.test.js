@@ -706,6 +706,7 @@ describe('PageService', () => {
       deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
       removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
     });
+
     test('deleteCompletelyOperation', async() => {
       await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
 
@@ -818,6 +819,56 @@ describe('PageService', () => {
       expect(revrtedFromPage).toBeNull();
       expect(revrtedFromPageRevision).toBeNull();
     });
+  });
+
+  describe('v5MigrationByPageIds()', () => {
+    test('should migrate all pages specified by pageIds', async() => {
+      jest.restoreAllMocks();
+
+      // initialize pages for test
+      const pages = await Page.insertMany([
+        {
+          path: '/private1',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/dummyParent/private1',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/dummyParent/private1/private2',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/dummyParent/private1/private3',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+      ]);
+
+      const pageIds = pages.map(page => page._id);
+      // migrate
+      await crowi.pageService.v5MigrationByPageIds(pageIds);
+
+      const migratedPages = await Page.find({
+        path: {
+          $in: ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'],
+        },
+      });
+      const migratedPagePaths = migratedPages.filter(doc => doc.parent != null).map(doc => doc.path);
+
+      const expected = ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'];
+
+      expect(migratedPagePaths.sort()).toStrictEqual(expected.sort());
+    });
+
   });
 
 

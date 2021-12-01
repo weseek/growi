@@ -18,6 +18,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AppService from '../service/app';
 import AclService from '../service/acl';
+import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -81,6 +82,7 @@ function Crowi() {
     user: new (require('../events/user'))(this),
     page: new (require('../events/page'))(this),
     bookmark: new (require('../events/bookmark'))(this),
+    comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
   };
@@ -370,7 +372,6 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const SearchService = require('~/server/service/search');
   this.searchService = new SearchService(this);
 };
 

@@ -1,0 +1,16 @@
+{% extends 'layout/layout.html' %}
+
+{% block html_additional_headers %}
+  {% parent %}
+  {{ cdnScriptTag('highlight-addons') }}
+  {{ cdnScriptTag('drawio-viewer') }}
+{% endblock %}
+
+{% block html_base_attr %}
+  data-spy="scroll"
+  data-target="#search-result-list"
+{% endblock %}
+
+{% block layout_main %}
+<p>This page is not implemented.</p>
+{% endblock %} {# layout_main #}

@@ -318,7 +318,7 @@ module.exports = function(crowi, app) {
       // add scope variables by ancestor page
       const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
       if (ancestor != null) {
-        await ancestor.populate('grantedGroup').execPopulate();
+        await ancestor.populate('grantedGroup');
         addRenderVarsForScope(renderVars, ancestor);
       }
     }
