@@ -5,13 +5,16 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 // todo: will be replaced by https://redmine.weseek.co.jp/issues/81032
 import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
+import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
+import AppContainer from '../../client/services/AppContainer';
+import { IRevisionOnConflict } from '../../interfaces/revision';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -29,7 +32,13 @@ type ConflictDiffModalProps = {
   onCancel: (() => void) | null;
   pageContainer: PageContainer;
   editorContainer: EditorContainer;
+  appContainer: AppContainer;
+  markdownOnEdit: string;
 };
+
+type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
+  createdAt: string
+}
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
@@ -37,8 +46,29 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
-  const { pageContainer, editorContainer } = props;
-  const { request, origin, latest } = pageContainer.state.revisionsOnConflict || { request: {}, origin: {}, latest: {} };
+  const { pageContainer, editorContainer, appContainer } = props;
+
+
+  const currentTime: Date = new Date();
+
+  const request: IRevisionOnConflictWithStringDate = {
+    revisionId: '',
+    revisionBody: props.markdownOnEdit,
+    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
+    user: appContainer.currentUser,
+  };
+  const origin: IRevisionOnConflictWithStringDate = {
+    revisionId: pageContainer.state.revisionId || '',
+    revisionBody: pageContainer.state.markdown || '',
+    createdAt: pageContainer.state.updatedAt || '',
+    user: pageContainer.state.revisionAuthor,
+  };
+  const latest: IRevisionOnConflictWithStringDate = {
+    revisionId: pageContainer.state.remoteRevisionId || '',
+    revisionBody: pageContainer.state.remoteRevisionBody || '',
+    createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    user: pageContainer.state.lastUpdateUser,
+  };
 
   useEffect(() => {
     if (codeMirrorRef != null) {
@@ -66,6 +96,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+    editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
@@ -95,11 +126,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
-                  <img height="40px" className="rounded-circle" src={request.userImgPath} />
+                  <UserPicture user={request.user} size="lg" noLink noTooltip />
                 </div>
                 <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {request.userName}</p>
-                  <p className="my-0">{format(parseISO(request.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  <p className="my-0">updated by {request.user.username}</p>
+                  <p className="my-0">{request.createdAt}</p>
                 </div>
               </div>
             </div>
@@ -107,11 +138,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
-                  <img height="40px" className="rounded-circle" src={origin.userImgPath} />
+                  <UserPicture user={origin.user} size="lg" noLink noTooltip />
                 </div>
                 <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {origin.userName}</p>
-                  <p className="my-0">{format(parseISO(origin.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  <p className="my-0">updated by {origin.user.username}</p>
+                  <p className="my-0">{origin.createdAt}</p>
                 </div>
               </div>
             </div>
@@ -119,11 +150,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
               <div className="d-flex align-items-center my-3">
                 <div>
-                  <img height="40px" className="rounded-circle" src={latest.userImgPath} />
+                  <UserPicture user={latest.user} size="lg" noLink noTooltip />
                 </div>
                 <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {latest.userName}</p>
-                  <p className="my-0">{format(parseISO(latest.createdAt), 'yyyy/MM/dd HH:mm:ss')}</p>
+                  <p className="my-0">updated by {latest.user.username}</p>
+                  <p className="my-0">{latest.createdAt}</p>
                 </div>
               </div>
             </div>
@@ -223,6 +254,8 @@ ConflictDiffModal.propTypes = {
   onCancel: PropTypes.func,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer:  PropTypes.instanceOf(EditorContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  markdownOnEdit: PropTypes.string.isRequired,
 };
 
 ConflictDiffModal.defaultProps = {

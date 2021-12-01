@@ -51,6 +51,7 @@ const CustomBotWithoutProxySettings = (props) => {
           onTestConnectionInvoked={props.onTestConnectionInvoked}
           onUpdatedSecretToken={props.onUpdatedSecretToken}
           commandPermission={props.commandPermission}
+          eventActionsPermission={props.eventActionsPermission}
         />
       </div>
     </>
@@ -71,6 +72,7 @@ CustomBotWithoutProxySettings.propTypes = {
   onTestConnectionInvoked: PropTypes.func.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
   commandPermission: PropTypes.object,
+  eventActionsPermission: PropTypes.object,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

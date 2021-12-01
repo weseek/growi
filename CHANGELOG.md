@@ -1,8 +1,28 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.4.13...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.4.13](https://github.com/weseek/growi/compare/v4.4.12...v4.4.13) - 2021-11-19
+
+### 💎 Features
+
+- feat: Including comments in full text search (#4703) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix(slackbot): Interactions from private channels not working (#4688) @stevenfukase
+
+## [v4.4.12](https://github.com/weseek/growi/compare/v4.4.11...v4.4.12) - 2021-11-15
+
+### 🐛 Bug Fixes
+
+- fix: Cannot use HackMD (#4667)
+
+### 🧰 Maintenance
+
+- ci(deps): Downgrade passport to 0.4.0 (#4669) @mudana-grune
 
 ## [v4.4.11](https://github.com/weseek/growi/compare/v4.4.10...v4.4.11) - 2021-11-12
 
