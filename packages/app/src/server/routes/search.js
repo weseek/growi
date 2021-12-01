@@ -147,13 +147,6 @@ module.exports = function(crowi, app) {
         await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
       );
 
-      // create score map for sorting
-      // key: id , value: score
-      const scoreMap = {};
-      for (const esPage of sortedSearchResult.data) {
-        scoreMap[esPage._id] = sortedSearchResult.indexOf(esPage);
-      }
-
       const ids = sortedSearchResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
@@ -182,10 +175,6 @@ module.exports = function(crowi, app) {
           pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
           return { pageData, pageMeta };
-        // })
-        //   .sort((page1, page2) => {
-        //     // note: this do not consider NaN
-        //     return scoreMap[page2.pageData._id] - scoreMap[page1.pageData._id];
         });
     }
     catch (err) {
