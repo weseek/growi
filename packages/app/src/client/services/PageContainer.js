@@ -162,12 +162,12 @@ export default class PageContainer extends Container {
   }
 
 
-  get isAbleToOpenPageEditor() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
+  // get isAbleToOpenPageEditor() {
+  //   const { isNotCreatable, isTrashPage } = this.state;
+  //   const { isGuestUser } = this.appContainer;
 
-    return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  }
+  //   return (!isNotCreatable && !isTrashPage && !isGuestUser);
+  // }
 
   /**
    * whether to display reaction buttons

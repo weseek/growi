@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
 import RE2 from 're2';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 
-import { NamedQueryModel } from '../models/named-query';
+import NamedQuery from '../models/named-query';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
@@ -106,9 +105,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
 
     const commentEvent = this.crowi.event('comment');
-    commentEvent.on('create', this.delegator.syncCommentChanged.bind(this.delegator));
-    commentEvent.on('update', this.delegator.syncCommentChanged.bind(this.delegator));
-    commentEvent.on('delete', this.delegator.syncCommentChanged.bind(this.delegator));
+    commentEvent.on('create', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on('update', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on('delete', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
   }
 
   resetErrorStatus() {
@@ -181,8 +180,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     // when Named Query
-    const NamedQuery = mongoose.model('NamedQuery') as NamedQueryModel;
-
     const name = queryString.replace(replaceRegexp, '');
     const nq = await NamedQuery.findOne({ name });
 

@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import NavigationContainer from '~/client/services/NavigationContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { usePageCreateModalOpened, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
+import { withUnstatedContainers } from '../UnstatedUtils';
 import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
@@ -11,7 +12,10 @@ const GrowiNavbarBottom = (props) => {
   const {
     navigationContainer,
   } = props;
-  const { isDrawerOpened, isDeviceSmallerThanMd } = navigationContainer.state;
+
+  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -36,7 +40,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => navigationContainer.toggleDrawer()}
+              onClick={() => mutateDrawerOpened(true)}
             >
               <i className="icon-menu"></i>
             </a>
@@ -55,7 +59,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => navigationContainer.openPageCreateModal()}
+              onClick={() => mutatePageCreateModalOpened(true)}
             >
               <i className="icon-pencil"></i>
             </a>
