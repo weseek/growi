@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
@@ -20,17 +20,18 @@ type Props = {
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  // const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
-  const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
-  const { data: inAppNotificationStatusData } = useSWRxInAppNotificationStatus();
+  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationStatusData, mutate: mutateInAppNotificationStatusData } = useSWRxInAppNotificationStatus();
 
 
   const initializeSocket = (props) => {
     const socket = props.socketIoContainer.getSocket();
+    // いらなくないこれ?
     socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
-      // setCount(data.count);
+      console.log('hogee');
+      mutateInAppNotificationStatusData();
     });
   };
 
@@ -44,24 +45,8 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     }
   };
 
-  const fetchNotificationStatus = async() => {
-    try {
-      // const res = await apiv3Get('/in-app-notification/status');
-      // const { count } = res.data;
-      if (inAppNotificationStatusData != null) {
-        console.log('inAppNotificationStatusData', inAppNotificationStatusData);
-        const { count } = inAppNotificationStatusData;
-        // setCount(count);
-      }
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  };
-
   useEffect(() => {
     initializeSocket(props);
-    fetchNotificationStatus();
   }, [props]);
 
 
@@ -72,12 +57,10 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
     const newIsOpenState = !isOpen;
     if (newIsOpenState) {
-      mutate();
+      mutateInAppNotificationData();
     }
     setIsOpen(newIsOpenState);
   };
-
-  // const { count } = inAppNotificationStatusData;
 
   let badge;
   if (inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
