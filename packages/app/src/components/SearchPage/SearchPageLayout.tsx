@@ -25,7 +25,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   } = props;
 
   const renderShowingPageCountInfo = () => {
-    if (searchResultMeta == null || searchResultMeta.total == null || searchResultMeta.total === 0) return (<span className="ml-3">0 / 0</span>);
+    if (searchResultMeta == null || searchResultMeta.total == null || searchResultMeta.total === 0) return;
     const leftNum = pagingLimit * (activePage - 1) + 1;
     const rightNum = (leftNum - 1) + searchResultMeta.results;
     return <span className="ml-3">{`${leftNum}-${rightNum}`} / {searchResultMeta.total || 0}</span>;
