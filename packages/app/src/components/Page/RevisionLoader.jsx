@@ -13,7 +13,7 @@ import RevisionRenderer from './RevisionRenderer';
 /**
  * Load data from server and render RevisionBody component
  */
-class RevisionLoader extends React.Component {
+class LegacyRevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
@@ -116,9 +116,9 @@ class RevisionLoader extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RevisionLoaderWrapper = withUnstatedContainers(RevisionLoader, [AppContainer]);
+const LegacyRevisionLoaderWrapper = withUnstatedContainers(LegacyRevisionLoader, [AppContainer]);
 
-RevisionLoader.propTypes = {
+LegacyRevisionLoader.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
@@ -129,4 +129,7 @@ RevisionLoader.propTypes = {
   highlightKeywords: PropTypes.string,
 };
 
-export default RevisionLoaderWrapper;
+const RevisionLoader = (props) => {
+  return <LegacyRevisionLoaderWrapper {...props}></LegacyRevisionLoaderWrapper>;
+};
+export default RevisionLoader;
