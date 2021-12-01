@@ -109,7 +109,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <UserPicture user={request.user} size="lg" noLink noTooltip />
               </div>
               <div className="ml-3 text-muted">
-                <p className="my-0">updated by {request.user.username}</p>
+                <p className="my-0">updated by {request.user?.username}</p>
                 <p className="my-0">{request.createdAt}</p>
               </div>
             </div>
@@ -138,7 +138,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <UserPicture user={origin.user} size="lg" noLink noTooltip />
               </div>
               <div className="ml-3 text-muted">
-                <p className="my-0">updated by {origin.user.username}</p>
+                <p className="my-0">updated by {origin.user?.username}</p>
                 <p className="my-0">{origin.createdAt}</p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 <UserPicture user={latest.user} size="lg" noLink noTooltip />
               </div>
               <div className="ml-3 text-muted">
-                <p className="my-0">updated by {latest.user.username}</p>
+                <p className="my-0">updated by {latest.user?.username}</p>
                 <p className="my-0">{latest.createdAt}</p>
               </div>
             </div>
