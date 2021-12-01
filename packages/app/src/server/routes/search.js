@@ -153,29 +153,28 @@ module.exports = function(crowi, app) {
       result.meta = sortedSearchResult.meta;
       result.totalCount = findResult.totalCount;
 
-      result.data = sortedSearchResult.data
-        .map((data) => {
-          const pageData = findResult.pages.find((pageData) => {
-            return pageData.id === data._id;
-          });
-
-          // add tags data to page
-          pageData._doc.tags = data._source.tag_names;
-
-          // add lastUpdateUser data to page
-          if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
-            pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
-          }
-
-          const pageMeta = {
-            bookmarkCount: data._source.bookmark_count || 0,
-            elasticSearchResult: data.elasticSearchResult,
-          };
-
-          pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
-
-          return { pageData, pageMeta };
+      result.data = sortedSearchResult.data.map((data) => {
+        const pageData = findResult.pages.find((pageData) => {
+          return pageData.id === data._id;
         });
+
+        // add tags data to page
+        pageData._doc.tags = data._source.tag_names;
+
+        // add lastUpdateUser data to page
+        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
+          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
+        }
+
+        const pageMeta = {
+          bookmarkCount: data._source.bookmark_count || 0,
+          elasticSearchResult: data.elasticSearchResult,
+        };
+
+        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
+
+        return { pageData, pageMeta };
+      });
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
