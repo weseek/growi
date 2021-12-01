@@ -3,7 +3,9 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';
 
-import { REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp, IChannelOptionalId } from '@growi/slack';
+import {
+  REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp, IChannelOptionalId, permissionParser,
+} from '@growi/slack';
 import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
@@ -82,25 +84,7 @@ export class RelationsService {
 
     const permissionForCommand = permissionSettings[growiCommandType];
 
-    if (permissionForCommand == null) {
-      return false;
-    }
-
-    if (Array.isArray(permissionForCommand)) {
-      if (permissionForCommand.includes(channel.name)) {
-        return true;
-      }
-
-      if (channel.id == null) {
-        return false;
-      }
-
-      if (permissionForCommand.includes(channel.id)) {
-        return true;
-      }
-    }
-    return permissionForCommand as boolean;
-
+    return permissionParser(permissionForCommand, channel);
   }
 
   async isPermissionsForSingleUseCommands(relation: Relation, growiCommandType: string, channel: IChannelOptionalId): Promise<boolean> {
