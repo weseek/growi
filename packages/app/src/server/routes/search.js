@@ -147,14 +147,15 @@ module.exports = function(crowi, app) {
         await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
       );
 
-      const ids = sortedSearchResult.data.map((page) => { return page._id });
-      const findResult = await Page.findListByPageIds(ids);
+      // get page data
+      const pageIds = sortedSearchResult.data.map((page) => { return page._id });
+      const findPageResult = await Page.findListByPageIds(pageIds);
 
       result.meta = sortedSearchResult.meta;
-      result.totalCount = findResult.totalCount;
+      result.totalCount = findPageResult.totalCount;
 
       result.data = sortedSearchResult.data.map((data) => {
-        const pageData = findResult.pages.find((pageData) => {
+        const pageData = findPageResult.pages.find((pageData) => {
           return pageData.id === data._id;
         });
 
