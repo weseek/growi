@@ -42,12 +42,11 @@ export default class InAppNotificationService {
   emitSocketIo = async(targetUsers) => {
     if (this.socketIoService.isInitialized) {
       targetUsers.forEach(async(userId) => {
-        const count = await this.getUnreadCountByUser(userId);
 
         // emit to the room for each user
         await this.socketIoService.getDefaultSocket()
           .in(getRoomNameWithId(RoomPrefix.USER, userId))
-          .emit('notificationUpdated', { userId, count });
+          .emit('notificationUpdated');
       });
     }
   }

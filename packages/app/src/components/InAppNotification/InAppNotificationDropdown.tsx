@@ -28,9 +28,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   const initializeSocket = (props) => {
     const socket = props.socketIoContainer.getSocket();
-    // いらなくないこれ?
-    socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
-      console.log('hogee');
+    socket.on('notificationUpdated', () => {
       mutateInAppNotificationStatusData();
     });
   };
