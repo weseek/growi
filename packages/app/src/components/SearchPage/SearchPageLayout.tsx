@@ -38,13 +38,13 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
 
           <SearchControl></SearchControl>
           <div className="d-flex align-items-center justify-content-between my-3 ml-4">
-            <div className="search-result-meta text-nowrap mr-3">
+            <div className="search-result-meta text-nowrap">
               <span className="font-weight-light">{t('search_result.result_meta')} </span>
               <span className="h5">{`"${searchingKeyword}"`}</span>
               {/* Todo: replace "1-10" to the appropriate value */}
               {renderShowingPageCountInfo()}
             </div>
-            <div className="input-group search-result-select-group">
+            <div className="input-group search-result-select-group ml-4">
               <div className="input-group-prepend">
                 <label className="input-group-text text-secondary" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
               </div>
