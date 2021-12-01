@@ -53,7 +53,8 @@ class ElasticsearchManagement extends React.Component {
       });
     });
 
-    socket.on('finishAddPage', (data) => {
+    socket.on('finishAddPage', async(data) => {
+      await this.retrieveIndicesStatus();
       this.setState({
         isRebuildingProcessing: false,
         isRebuildingCompleted: true,
