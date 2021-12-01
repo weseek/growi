@@ -10,7 +10,7 @@ import { IPagingResult } from '~/interfaces/paging-result';
 export const useSWRxRecentlyUpdated = <Data, Error>(): SWRResponse<IPage[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get<{ pages: IPage[] }>(endpoint).then(response => response.data?.pages), // TODO: I'm sure this is will work fine but need to check
+    endpoint => apiv3Get<{ pages: IPage[] }>(endpoint).then(response => response.data?.pages),
   );
 };
 
@@ -22,7 +22,7 @@ export const useSWRxPageList = (
   const page = pageNumber || 1;
   return useSWR(
     `/pages/list?path=${path}&page=${page}`,
-    endpoint => apiv3Get<{pages: IPage[], totalCount: number, limit: number}>(endpoint).then((response) => { // TODO: I'm sure this is will work fine but need to check
+    endpoint => apiv3Get<{pages: IPage[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
