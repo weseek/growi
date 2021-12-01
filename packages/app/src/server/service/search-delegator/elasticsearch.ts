@@ -626,7 +626,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     return query;
   }
 
-  createSearchQuerySortedByScore(option) {
+  createSearchQuerySortedByScore(option?) {
     let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
@@ -867,7 +867,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-<<<<<<< HEAD:packages/app/src/server/service/search-delegator/elasticsearch.js
   appendHighlight(query) {
     query.body.highlight = {
       fields: {
@@ -881,12 +880,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async searchKeyword(queryString, user, userGroups, option) {
-=======
   async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
     const { queryString, terms } = data;
 
->>>>>>> feat/pt-dev-master:packages/app/src/server/service/search-delegator/elasticsearch.ts
     const from = option.offset || null;
     const size = option.limit || null;
     const query = this.createSearchQuerySortedByScore();
@@ -896,56 +892,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     this.appendResultSize(query, from, size);
 
-<<<<<<< HEAD:packages/app/src/server/service/search-delegator/elasticsearch.js
-    this.appendFunctionScore(query, queryString);
-    this.appendHighlight(query);
-    return this.search(query);
-  }
-
-  parseQueryString(queryString) {
-    const matchWords = [];
-    const notMatchWords = [];
-    const phraseWords = [];
-    const notPhraseWords = [];
-    const prefixPaths = [];
-    const notPrefixPaths = [];
-    const tags = [];
-    const notTags = [];
-
-    queryString.trim();
-    queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
-
-    // First: Parse phrase keywords
-    const phraseRegExp = new RegExp(/(-?"[^"]+")/g);
-    const phrases = queryString.match(phraseRegExp);
-
-    if (phrases !== null) {
-      queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
-
-      phrases.forEach((phrase) => {
-        phrase.trim();
-        if (phrase.match(/^-/)) {
-          notPhraseWords.push(phrase.replace(/^-/, ''));
-        }
-        else {
-          phraseWords.push(phrase);
-        }
-      });
-    }
-
-    // Second: Parse other keywords (include minus keywords)
-    queryString.split(' ').forEach((word) => {
-      if (word === '') {
-        return;
-      }
-
-      // https://regex101.com/r/pN9XfK/1
-      const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
-      // https://regex101.com/r/3qw9FQ/1
-      const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
-=======
     await this.appendFunctionScore(query, queryString);
->>>>>>> feat/pt-dev-master:packages/app/src/server/service/search-delegator/elasticsearch.ts
 
     return this.searchKeyword(query);
   }
