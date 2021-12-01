@@ -14,6 +14,13 @@ export const PagePathLabel = (props) => {
     return <span className={classNames.join(' ')}>{dPagePath.latter}</span>;
   }
 
+  if (props.isFormerOnly) {
+    const textElem = dPagePath.isFormerRoot
+      ? <>/</>
+      : <>{dPagePath.former}</>;
+    return <span className={classNames.join(' ')}>{textElem}</span>;
+  }
+
   const textElem = dPagePath.isRoot
     ? <><strong>/</strong></>
     : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
@@ -24,6 +31,7 @@ export const PagePathLabel = (props) => {
 PagePathLabel.propTypes = {
   page: PropTypes.object.isRequired,
   isLatterOnly: PropTypes.bool,
+  isFormerOnly: PropTypes.bool,
   additionalClassNames: PropTypes.arrayOf(PropTypes.string),
 };
 

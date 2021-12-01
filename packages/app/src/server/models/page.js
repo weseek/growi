@@ -299,6 +299,7 @@ module.exports = function(crowi) {
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
     pageEvent.on('createMany', pageEvent.onCreateMany);
+    pageEvent.on('addSeenUsers', pageEvent.onAddSeenUsers);
   }
 
   function validateCrowi() {
@@ -424,6 +425,7 @@ module.exports = function(crowi) {
     const saved = await this.save();
 
     debug('seenUsers updated!', added);
+    pageEvent.emit('addSeenUsers', saved);
 
     return saved;
   };

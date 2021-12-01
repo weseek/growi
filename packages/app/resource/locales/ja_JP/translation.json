@@ -64,6 +64,7 @@
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
+  "Include Subordinated Target Page": "{{target}} 下を含む",
   "All Subordinated Page": "全ての配下ページ",
   "Specify Hierarchy": "階層の深さを指定",
   "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
@@ -149,6 +150,7 @@
   "Sidebar mode": "サイドバーモード",
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "No bookmarks yet": "No bookmarks yet",
+  "Add to bookmark": "ブックマークに追加",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "original_path":"元のパス",
@@ -566,13 +568,15 @@
     "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
-    "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
+    "result_meta": "検索結果:",
     "deletion_mode_btn_lavel": "ページを指定して削除",
     "cancel": "キャンセル",
     "delete": "削除",
     "check_all": "すべてチェック",
     "deletion_modal_header": "以下のページを削除",
-    "delete_completely": "完全に削除する"
+    "delete_completely": "完全に削除する",
+    "include_certain_path": "{{pathToInclude}}下を含む ",
+    "delete_all_selected_page" : "一括削除"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
