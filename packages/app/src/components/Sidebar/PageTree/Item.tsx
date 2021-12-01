@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, memo,
 } from 'react';
 import nodePath from 'path';
 
@@ -25,7 +25,11 @@ const markTarget = (children: ItemNode[], targetId: string): void => {
   return;
 };
 
-const ItemContol: FC = () => {
+const ItemContol: FC = memo(() => {
+  const onClickHandler = useCallback((e) => {
+    console.log('Clicked!');
+  }, []);
+
   return (
     <>
       <button
@@ -39,12 +43,13 @@ const ItemContol: FC = () => {
         type="button"
         className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
         data-toggle="dropdown"
+        onClick={onClickHandler}
       >
         <i className="fa fa-plus-circle text-muted"></i>
       </button>
     </>
   );
-};
+});
 
 const ItemCount: FC = () => {
   return (
