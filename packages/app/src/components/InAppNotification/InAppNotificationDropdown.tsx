@@ -36,7 +36,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const updateNotificationStatus = async() => {
     try {
       await apiv3Post('/in-app-notification/read');
-      // setCount(0);
     }
     catch (err) {
       logger.error(err);
@@ -51,6 +50,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const toggleDropdownHandler = () => {
     if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
       updateNotificationStatus();
+      mutateInAppNotificationStatusData();
     }
 
     const newIsOpenState = !isOpen;
