@@ -195,7 +195,9 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
             <UncontrolledCodeMirror
               value={resolvedRevision.current}
-              placeholder={t('modal_resolve_conflict.resolve_conflict_message')}
+              options={{
+                placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
+              }}
               onChange={(editor, data, pageBody) => {
                 if (pageBody === '') setIsRevisionSelected(false);
                 resolvedRevision.current = pageBody;

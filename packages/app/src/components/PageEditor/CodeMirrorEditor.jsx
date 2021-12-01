@@ -32,6 +32,7 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -879,7 +880,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
@@ -895,7 +895,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        <ReactCodeMirror
+        <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"
@@ -906,12 +906,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
-            mode,
-            theme: this.props.editorOptions.theme,
-            styleActiveLine: this.props.editorOptions.styleActiveLine,
-            lineNumbers: this.props.lineNumbers,
-            tabSize: 4,
-            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei

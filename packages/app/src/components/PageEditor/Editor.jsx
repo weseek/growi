@@ -374,9 +374,7 @@ class Editor extends AbstractEditor {
 
         </div>
         <ConflictDiffModal
-        // ################################# TEST ################################
-          // isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
-          isOpen
+          isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
           onCancel={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
           appContainer={this.props.appContainer}
           pageContainer={this.props.pageContainer}
