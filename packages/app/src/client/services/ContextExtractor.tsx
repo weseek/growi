@@ -1,18 +1,33 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
+
+import {
+  EditorMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+} from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
 
-const ContextExtractor: FC = () => {
+const getInitialEditorMode = (): EditorMode => {
+  switch (window.location.hash) {
+    case '#edit':
+      return EditorMode.Editor;
+    case '#hackmd':
+      return EditorMode.HackMD;
+    default:
+      return EditorMode.View;
+  }
+};
+
+const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
 
@@ -50,12 +65,19 @@ const ContextExtractor: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
+  const targetAndAncestors = JSON.parse(mainContent?.getAttribute('data-target-and-ancestors') || jsonNull);
 
   /*
    * use static swr
    */
   // App
   useCurrentUser(currentUser);
+
+  // Navigation
+  useEditorMode(getInitialEditorMode());
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   // Page
   useCreatedAt(createdAt);
@@ -84,12 +106,19 @@ const ContextExtractor: FC = () => {
   useUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
+  useTargetAndAncestors(targetAndAncestors);
 
-  return (
-    <div>
-      {/* Render nothing */}
-    </div>
-  );
+  return null;
 };
+
+const ContextExtractor: FC = React.memo(() => {
+  const [isRunOnce, setRunOnce] = useState(false);
+
+  useEffect(() => {
+    setRunOnce(true);
+  }, []);
+
+  return isRunOnce ? null : <ContextExtractorOnce></ContextExtractorOnce>;
+});
 
 export default ContextExtractor;

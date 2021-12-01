@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
+import * as privateLegacyPages from './private-legacy-pages';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -139,8 +140,6 @@ module.exports = function(crowi, app) {
   // my drafts
   app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
-  app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
   app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName', loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
@@ -156,7 +155,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
-  app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
@@ -194,9 +192,14 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleHttpErrosMiddleware));
 
+  app.use('/private-legacy-pages', express.Router()
+    .get('/', privateLegacyPages.renderPrivateLegacyPages));
+
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , page.showPage);
+
+  app.get('/*/$'                   , loginRequired , page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.redirector);
 
 };

@@ -1,0 +1,30 @@
+.grw-pagetree {
+  .grw-pagetree-item-wrapper {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  .grw-pagetree-item {
+    &:hover {
+      opacity: 0.7;
+    }
+
+    .grw-pagetree-button {
+      background-color: transparent;
+
+      &.rotate {
+        transform: rotate(90deg);
+      }
+    }
+
+    .grw-pagetree-title {
+      font-size: medium;
+    }
+
+    .grw-pagetree-control {
+      &:hover {
+        display: inline-block;
+      }
+    }
+  }
+}

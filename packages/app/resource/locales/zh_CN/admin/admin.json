@@ -19,6 +19,15 @@
     "bug_report": "提交一个错误报告",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>然后提交你的问题到GitHub。</a>"
   },
+  "v5_page_migration": {
+    "migration_desc": "Some of the public pages have the old schema. To take advantage of new features such as page trees and easy renaming, please upgrade the schema of all your pages. ",
+    "migration_note": "Note: You will lose unique constraints from the page paths.",
+    "upgrade_to_v5": "Upgrade to V5",
+    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during migration.",
+    "start_upgrading": "Start upgrading",
+    "successfully_started": "Succeeded to start migration",
+    "already_upgraded": "You have already completed upgrading"
+  },
   "app_setting": {
     "site_name": "网站名称 ",
     "sitename_change": "您可以更改用于标题和HTML标题的网站名称。",

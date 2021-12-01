@@ -41,6 +41,7 @@ import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
+import ContextExtractor from '~/client/services/ContextExtractor';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
@@ -50,7 +51,6 @@ import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
-import ContextExtractor from '~/client/services/ContextExtractor';
 
 import { appContainer, componentMappings } from './base';
 
@@ -99,7 +99,6 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
   'not-found-alert': <NotFoundAlert
-    onPageCreateClicked={navigationContainer.setEditorMode}
     isGuestUserMode={appContainer.isGuestUser}
     isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
@@ -118,8 +117,6 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
-
-  'growi-context-extractor': <ContextExtractor />, // use static swr
 });
 
 // additional definitions if data exists
@@ -181,7 +178,7 @@ const elem = document.getElementById('growi-context-extractor');
 if (elem != null) {
   ReactDOM.render(
     <SWRConfig value={swrGlobalConfiguration}>
-      {componentMappings['growi-context-extractor']}
+      <ContextExtractor></ContextExtractor>
     </SWRConfig>,
     elem,
     renderMainComponents,
@@ -190,7 +187,6 @@ if (elem != null) {
 else {
   renderMainComponents();
 }
-
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();
