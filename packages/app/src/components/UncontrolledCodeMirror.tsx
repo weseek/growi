@@ -1,7 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
-import { Subscribe } from 'unstated';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { Container, Subscribe } from 'unstated';
 import EditorContainer from '~/client/services/EditorContainer';
 import AbstractEditor, { AbstractEditorProps } from '~/components/PageEditor/AbstractEditor';
 
@@ -11,41 +10,45 @@ require('~/client/util/codemirror/gfm-growi.mode');
 
 export interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
   value: string;
-  // isGfmMode?: boolean;
-  // indentSize?: number;
-  // placeholder?: string;
-  // lineNumbers?: boolean;
-  // onChange: ICodeMirror['onChange'];
+  isGfmMode?: boolean;
+  indentSize?: number;
+  placeholder?: string;
+  lineNumbers?: boolean;
+  onChange: ICodeMirror['onChange'];
 }
 
-class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorProps> {
+interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
+  editorContainer: Container<EditorContainer>;
+}
+
+class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
 
   render(): ReactNode {
-    // const { editorOptions } = this.props.editorContainer.state;
+    const { editorOptions } = this.props.editorContainer.state;
+    console.log(editorOptions);
 
     return (
       <CodeMirror
         value={this.props.value}
         options={{
-          // lineNumbers: this.props.lineNumbers ?? true,
-          // mode: this.props.isGfmMode ? 'gfm-growi' : undefined,
-          // theme: editorOptions.theme,
-          // styleActiveLine: editorOptions.styleActiveLine,
+          lineNumbers: this.props.lineNumbers ?? true,
+          mode: this.props.isGfmMode ? 'gfm-growi' : undefined,
+          theme: editorOptions.theme,
+          styleActiveLine: editorOptions.styleActiveLine,
           tabSize: 4,
-          // indentUnit: this.props.indentSize,
-          // placeholder: this.props.placeholder,
+          indentUnit: this.props.indentSize,
+          placeholder: this.props.placeholder,
         }}
-        // onChange={this.props.onChange}
+        onChange={this.props.onChange}
       />
     );
   }
 
 }
 
-// export const UncontrolledCodeMirror = withUnstatedContainers(UncontrolledCodeMirrorCore, [EditorContainer]);
 
 export const UncontrolledCodeMirror: FC<UncontrolledCodeMirrorProps> = props => (
   <Subscribe to={[EditorContainer]}>
-    {editor => <UncontrolledCodeMirrorCore {...props} {...editor} />}
+    {(EditorContainer: Container<EditorContainer>) => <UncontrolledCodeMirrorCore {...props} editorContainer={EditorContainer} />}
   </Subscribe>
 );
