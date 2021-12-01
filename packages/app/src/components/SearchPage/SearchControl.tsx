@@ -7,10 +7,13 @@ import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
+  sort: string,
+  order: string,
   appContainer: AppContainer,
   onSearchInvoked: (data : any[]) => boolean,
   onExcludeUsersHome?: () => void,
   onExcludeTrash?: () => void,
+  onChangeSortInvoked?: () => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -28,6 +31,12 @@ const SearchControl: FC <Props> = (props: Props) => {
   const onExcludeTrash = () => {
     if (props.onExcludeTrash != null) {
       props.onExcludeTrash();
+    }
+  };
+
+  const onClickChangeSort = () => {
+    if (props.onChangeSortInvoked != null) {
+      props.onChangeSortInvoked();
     }
   };
 
@@ -56,9 +65,9 @@ const SearchControl: FC <Props> = (props: Props) => {
             onSearchFormChanged={props.onSearchInvoked}
           />
         </div>
-        <div className="mr-4">
-          {/* TODO: replace the following button */}
-          <button type="button">related pages</button>
+        <div className="mr-4 d-flex">
+          <button type="button" onClick={onClickChangeSort}>change sort</button>
+          <p>sort:{props.sort}, order: {props.order}</p>
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}

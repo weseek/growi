@@ -37,6 +37,8 @@ class SearchPage extends React.Component {
       pagingLimit: 10, // change to an appropriate limit number
       excludeUsersHome: true,
       excludeTrash: true,
+      sort: '_score',
+      order: 'desc',
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -46,6 +48,7 @@ class SearchPage extends React.Component {
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
     this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.onChangeSortInvoked = this.onChangeSortInvoked.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
   }
 
@@ -74,6 +77,26 @@ class SearchPage extends React.Component {
 
   onExcludeTrash() {
     this.setState({ excludeTrash: !this.state.excludeTrash });
+  }
+
+  getNextSort(sort) {
+    switch (sort) {
+      case '_score':
+        return 'updated_at';
+      case 'updated_at':
+        return 'created_at';
+      default:
+        return '_score';
+    }
+  }
+
+  onChangeSortInvoked() {
+    const nextSort = this.state.order === 'desc' ? this.state.sort : this.getNextSort(this.state.sort);
+    const nextOrder = nextSort === this.state.sort ? 'asc' : 'desc';
+    this.setState({
+      sort: nextSort,
+      order: nextOrder,
+    });
   }
 
   changeURL(keyword, refreshHash) {
@@ -139,11 +162,14 @@ class SearchPage extends React.Component {
     });
     const pagingLimit = this.state.pagingLimit;
     const offset = (this.state.activePage * pagingLimit) - pagingLimit;
+    const { sort, order } = this.state;
     try {
       const res = await this.props.appContainer.apiGet('/search', {
         q: this.createSearchQuery(keyword),
         limit: pagingLimit,
         offset,
+        sort,
+        order,
       });
       this.changeURL(keyword);
       if (res.data.length > 0) {
@@ -222,10 +248,13 @@ class SearchPage extends React.Component {
     return (
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
+        sort={this.state.sort}
+        order={this.state.order}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.searchHandler}
         onExcludeUsersHome={this.onExcludeUsersHome}
         onExcludeTrash={this.onExcludeTrash}
+        onChangeSortInvoked={this.onChangeSortInvoked}
       >
       </SearchControl>
     );
