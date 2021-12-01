@@ -25,10 +25,6 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const limit = 6;
   const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
 
-  useEffect(() => {
-    initializeSocket(props);
-    fetchNotificationStatus();
-  }, []);
 
   const initializeSocket = (props) => {
     const socket = props.socketIoContainer.getSocket();
@@ -37,21 +33,27 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
     });
   };
 
-  const updateNotificationStatus = async() => {
+  const fetchNotificationStatus = async() => {
     try {
-      await apiv3Post('/in-app-notification/read');
-      setCount(0);
+      const res = await apiv3Get('/in-app-notification/status');
+      const { count } = res.data;
+      setCount(count);
     }
     catch (err) {
       logger.error(err);
     }
   };
 
-  const fetchNotificationStatus = async() => {
+  useEffect(() => {
+    initializeSocket(props);
+    fetchNotificationStatus();
+  }, [props]);
+
+
+  const updateNotificationStatus = async() => {
     try {
-      const res = await apiv3Get('/in-app-notification/status');
-      const { count } = res.data;
-      setCount(count);
+      await apiv3Post('/in-app-notification/read');
+      setCount(0);
     }
     catch (err) {
       logger.error(err);
