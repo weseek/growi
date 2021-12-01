@@ -292,22 +292,6 @@ export default class PageContainer extends Container {
     await this.retrieveLikersAndSeenUsers();
   }
 
-  async toggleLike() {
-    {
-      const toggledIsLiked = !this.state.isLiked;
-      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
-
-      await this.setState(state => ({
-        isLiked: toggledIsLiked,
-        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
-        likerIds: toggledIsLiked
-          ? [...this.state.likerIds, this.appContainer.currentUserId]
-          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
-      }));
-    }
-
-    await this.retrieveLikersAndSeenUsers();
-  }
 
   async retrieveLikersAndSeenUsers() {
     const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
@@ -326,12 +310,6 @@ export default class PageContainer extends Container {
       sumOfBookmarks: response.data.sumOfBookmarks,
       isBookmarked: response.data.isBookmarked,
     });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
@@ -527,49 +505,6 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return res;
-  }
-
-  deletePage(isRecursively, isCompletely) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const completely = isCompletely ? true : null;
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.remove', {
-      recursively,
-      completely,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
-    });
-
-  }
-
-  revertRemove(isRecursively) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.revertRemove', {
-      recursively,
-      page_id: this.state.pageId,
-    });
-  }
-
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId, path } = this.state;
-
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
-      path,
-    });
   }
 
   showSuccessToastr() {

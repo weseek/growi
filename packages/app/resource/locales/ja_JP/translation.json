@@ -64,7 +64,7 @@
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
-  "Include Subordinated Target Page": "{{target}} 下を含む",
+  "Include Subordinated Target Page": "{{target}} 下も含む",
   "All Subordinated Page": "全ての配下ページ",
   "Specify Hierarchy": "階層の深さを指定",
   "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
@@ -576,7 +576,10 @@
     "deletion_modal_header": "以下のページを削除",
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
-    "delete_all_selected_page" : "一括削除"
+    "delete_all_selected_page" : "一括削除",
+    "search_again" : "再検索",
+    "number_of_list_to_display" : "表示件数",
+    "page_number_unit" : "件"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",

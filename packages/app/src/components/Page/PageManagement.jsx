@@ -7,7 +7,6 @@ import urljoin from 'url-join';
 import { pagePathUtils } from '@growi/core';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
@@ -18,11 +17,10 @@ import PresentationIcon from '../Icons/PresentationIcon';
 const { isTopPage } = pagePathUtils;
 
 
-const PageManagement = (props) => {
+const LegacyPageManagemenet = (props) => {
   const {
-    t, appContainer, pageContainer, isCompactMode,
+    t, appContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -31,6 +29,7 @@ const PageManagement = (props) => {
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
+  const presentationHref = urljoin(window.location.origin, path, '?presentation=1');
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -84,7 +83,6 @@ const PageManagement = (props) => {
   // }
 
   async function exportPageHandler(format) {
-    const { pageId, revisionId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
     url.searchParams.append('format', format);
     url.searchParams.append('revisionId', revisionId);
@@ -165,26 +163,33 @@ const PageManagement = (props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
         />
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          pageId={pageId}
+          path={path}
         />
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
-          href="?presentation=1"
+          href={presentationHref}
         />
       </>
     );
@@ -240,19 +245,28 @@ const PageManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
+const LegacyPageManagemenetWrapper = withUnstatedContainers(LegacyPageManagemenet, [AppContainer]);
 
 
-PageManagement.propTypes = {
+LegacyPageManagemenet.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  isDeletable: PropTypes.bool.isRequired,
+  isAbleToDeleteCompletely: PropTypes.bool.isRequired,
 
   isCompactMode: PropTypes.bool,
 };
 
-PageManagement.defaultProps = {
+LegacyPageManagemenet.defaultProps = {
   isCompactMode: false,
 };
 
-export default withTranslation()(PageManagementWrapper);
+const PageManagement = (props) => {
+  return <LegacyPageManagemenetWrapper {...props}></LegacyPageManagemenetWrapper>;
+};
+export default withTranslation()(PageManagement);

@@ -7,8 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -27,7 +26,7 @@ const deleteIconAndKey = {
 
 const PageDeleteModal = (props) => {
   const {
-    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
+    t, isOpen, onClose, isDeleteCompletelyModal, pageId, revisionId, path, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -50,7 +49,18 @@ const PageDeleteModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      // control flag
+      // If is it not true, Request value must be `null`.
+      const recursively = isDeleteRecursively ? true : null;
+      const completely = isDeleteCompletely ? true : null;
+
+      const response = await apiPost('/pages.remove', {
+        page_id: pageId,
+        revision_id: revisionId,
+        recursively,
+        completely,
+      });
+
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
     }
@@ -81,6 +91,12 @@ const PageDeleteModal = (props) => {
     );
   }
 
+  // DeleteCompletely is currently disabled
+  // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
+  // Story: https://redmine.weseek.co.jp/issues/82222
+
+  // TODO2 : use toaster
+  // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-danger">
@@ -89,12 +105,12 @@ const PageDeleteModal = (props) => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          disabled={!isAbleToDeleteCompletely}
+          disabled
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
         <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
-          { t('modal_delete.delete_completely') }
+          { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>
         {!isAbleToDeleteCompletely
@@ -133,18 +149,14 @@ const PageDeleteModal = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
-
 PageDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   isDeleteCompletelyModal: PropTypes.bool,
   isAbleToDeleteCompletely: PropTypes.bool,
@@ -154,4 +166,4 @@ PageDeleteModal.defaultProps = {
   isDeleteCompletelyModal: false,
 };
 
-export default withTranslation()(PageDeleteModalWrapper);
+export default withTranslation()(PageDeleteModal);

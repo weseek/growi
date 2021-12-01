@@ -576,7 +576,11 @@
     "deletion_modal_header": "Delete page",
     "delete_completely": "Delete completely",
     "include_certain_path" : "Include {{pathToInclude}} path ",
-    "delete_all_selected_page" : "Delete All"
+    "delete_all_selected_page" : "Delete All",
+    "search_again" : "Search again",
+    "number_of_list_to_display" : "Display",
+    "page_number_unit" : "pages"
+
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
