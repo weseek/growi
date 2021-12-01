@@ -11,6 +11,7 @@ import Dropzone from 'react-dropzone';
 
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import Cheatsheet from './Cheatsheet';
@@ -278,6 +279,7 @@ class Editor extends AbstractEditor {
     );
   }
 
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -374,8 +376,10 @@ class Editor extends AbstractEditor {
         <ConflictDiffModal
           isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
           onCancel={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          appContainer={this.props.appContainer}
           pageContainer={this.props.pageContainer}
           editorContainer={this.props.editorContainer}
+          markdownOnEdit={this.props.value}
         />
       </>
     );
@@ -385,6 +389,8 @@ class Editor extends AbstractEditor {
 
 Editor.propTypes = Object.assign({
   noCdn: PropTypes.bool,
+  // this value is markdown
+  value: PropTypes.string,
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
@@ -393,6 +399,7 @@ Editor.propTypes = Object.assign({
   onUpload: PropTypes.func,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 }, AbstractEditor.propTypes);
 
-export default withUnstatedContainers(Editor, [EditorContainer, PageContainer]);
+export default withUnstatedContainers(Editor, [EditorContainer, PageContainer, AppContainer]);
