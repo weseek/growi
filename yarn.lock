@@ -16496,11 +16496,6 @@ react-multiline-clamp@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-multiline-clamp/-/react-multiline-clamp-2.0.0.tgz#913a2092368ef1b52c1c79364d506ba4af27e019"
   integrity sha512-iPm3HxFD6LO63lE5ZnThiqs+6A3c+LW3WbsEM0oa0iNTa0qN4SKx/LK/6ZToSmXundEcQXBFVNzKDvgmExawTw==
 
-react-node-resolver@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"
-  integrity sha1-F5inKcDiGL8vDo3fecVQ1K9h2Do=
-
 react-overlays@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-0.8.3.tgz#fad65eea5b24301cca192a169f5dddb0b20d3ac5"
