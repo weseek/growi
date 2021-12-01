@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type SearchResultMeta = {
-  took : number,
-  total : number,
-  results: number
+  took?: number,
+  total?: number,
+  results?: number
 }
 
 type Props = {
@@ -25,9 +25,9 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   } = props;
 
   const renderShowingPageCountInfo = () => {
-    if (searchResultMeta == null || searchResultMeta.total == null || searchResultMeta.total === 0) return;
+    if (searchResultMeta.total == null || searchResultMeta.total === 0) return;
     const leftNum = pagingLimit * (activePage - 1) + 1;
-    const rightNum = (leftNum - 1) + searchResultMeta.results;
+    const rightNum = (leftNum - 1) + (searchResultMeta.results || 0);
     return <span className="ml-3">{`${leftNum}-${rightNum}`} / {searchResultMeta.total || 0}</span>;
   };
 
