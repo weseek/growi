@@ -151,9 +151,11 @@ module.exports = function(crowi, app) {
       const pageIds = sortedSearchResult.data.map((page) => { return page._id });
       const findPageResult = await Page.findListByPageIds(pageIds);
 
+      // set meta data
       result.meta = sortedSearchResult.meta;
       result.totalCount = findPageResult.totalCount;
 
+      // set search result page data
       result.data = sortedSearchResult.data.map((data) => {
         const pageData = findPageResult.pages.find((pageData) => {
           return pageData.id === data._id;
@@ -163,11 +165,12 @@ module.exports = function(crowi, app) {
         pageData._doc.tags = data._source.tag_names;
         pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
-        // add lastUpdateUser data to page
+        // serialize lastUpdateUser
         if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
           pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
         }
 
+        // generate pageMeta data
         const pageMeta = {
           bookmarkCount: data._source.bookmark_count || 0,
           elasticSearchResult: data.elasticSearchResult,
