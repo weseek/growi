@@ -116,7 +116,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
-        {Object.keys(pageContainer.state.revisionsOnConflict || {}).length > 0
+        { pageContainer.state.isConflictDiffModalOpen
         && (
           <div className="row">
             <div className="col-12 text-center mt-2 mb-4">
