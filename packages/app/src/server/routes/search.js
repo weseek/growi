@@ -143,24 +143,24 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = searchService.formatResult(
+      const sortedSearchResult = searchService.formatResult(
         await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
       );
 
       // create score map for sorting
       // key: id , value: score
       const scoreMap = {};
-      for (const esPage of esResult.data) {
-        scoreMap[esPage._id] = esResult.indexOf(esPage);
+      for (const esPage of sortedSearchResult.data) {
+        scoreMap[esPage._id] = sortedSearchResult.indexOf(esPage);
       }
 
-      const ids = esResult.data.map((page) => { return page._id });
+      const ids = sortedSearchResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
-      result.meta = esResult.meta;
+      result.meta = sortedSearchResult.meta;
       result.totalCount = findResult.totalCount;
 
-      result.data = esResult.data
+      result.data = sortedSearchResult.data
         .map((data) => {
           const pageData = findResult.pages.find((pageData) => {
             return pageData.id === data._id;
