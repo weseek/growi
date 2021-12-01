@@ -96,8 +96,6 @@ export default class PageContainer extends Container {
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
       isConflictDiffModalOpen: false,
-
-      revisionsOnConflict: {},
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
