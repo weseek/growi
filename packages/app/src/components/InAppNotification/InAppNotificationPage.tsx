@@ -26,17 +26,17 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   const { appContainer } = props;
   const limit = appContainer.config.pageLimitationXL;
   const { t } = useTranslation();
-  const { mutate: mutateInAppNotificationStatusData } = useSWRxInAppNotificationStatus();
+  const { mutate } = useSWRxInAppNotificationStatus();
 
   const updateNotificationStatus = useCallback(async() => {
     try {
       await apiv3Post('/in-app-notification/read');
-      mutateInAppNotificationStatusData();
+      mutate();
     }
     catch (err) {
       logger.error(err);
     }
-  }, [mutateInAppNotificationStatusData]);
+  }, [mutate]);
 
   useEffect(() => {
     updateNotificationStatus();
