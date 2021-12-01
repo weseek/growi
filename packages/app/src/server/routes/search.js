@@ -159,8 +159,9 @@ module.exports = function(crowi, app) {
           return pageData.id === data._id;
         });
 
-        // add tags data to page
+        // add tags and seenUserCount to pageData
         pageData._doc.tags = data._source.tag_names;
+        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
         // add lastUpdateUser data to page
         if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
@@ -171,8 +172,6 @@ module.exports = function(crowi, app) {
           bookmarkCount: data._source.bookmark_count || 0,
           elasticSearchResult: data.elasticSearchResult,
         };
-
-        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
         return { pageData, pageMeta };
       });
