@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, FC } from 'react';
 import toastr from 'toastr';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { useTranslation } from 'react-i18next';
 
-import { withTranslation } from 'react-i18next';
+import { IPageSearchResultData } from '../interfaces/search';
 
 // import { apiPost } from '~/client/util/apiv1-client';
 
@@ -24,9 +24,18 @@ const deleteIconAndKey = {
   },
 };
 
-const PageDeleteModal = (props) => {
+type Props = {
+  isOpen: boolean,
+  pages: IPageSearchResultData[],
+  isDeleteCompletelyModal: boolean,
+  isAbleToDeleteCompletely: boolean,
+  onClose?: () => void,
+}
+
+const PageDeleteModal: FC<Props> = (props: Props) => {
+  const { t } = useTranslation('');
   const {
-    t, isOpen, onClose, isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
+    isOpen, onClose, isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
   } = props;
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -151,18 +160,4 @@ const PageDeleteModal = (props) => {
   );
 };
 
-PageDeleteModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  pages: PropTypes.array.isRequired,
-  isDeleteCompletelyModal: PropTypes.bool,
-  isAbleToDeleteCompletely: PropTypes.bool,
-};
-
-PageDeleteModal.defaultProps = {
-  isDeleteCompletelyModal: false,
-};
-
-export default withTranslation()(PageDeleteModal);
+export default PageDeleteModal;
