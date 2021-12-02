@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { useSWRConfig } from 'swr';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
@@ -34,7 +35,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
       default:
     }
 
-    const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset, categoryStatus);
+    const { data: notificationData } = useSWRxInAppNotifications(limit, offset, categoryStatus);
+    const { mutate } = useSWRConfig();
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
@@ -53,7 +55,10 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     const updateUnopendNotificationStatusesToOpened = async() => {
       await apiv3Put('/in-app-notification/all-statuses-open');
-      mutate();
+      // mutate 'UNREAD' Category
+      mutate(['/in-app-notification/list', limit, offset, categoryStatus]);
+      // mutate 'ALL' Category
+      mutate(['/in-app-notification/list', limit, offset, undefined]);
     };
 
 
