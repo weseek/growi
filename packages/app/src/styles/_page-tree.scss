@@ -9,7 +9,7 @@
       opacity: 0.7;
 
       .grw-pagetree-control {
-        display: flex;
+        display: flex !important;
       }
 
       .grw-pagetree-count {
@@ -25,7 +25,7 @@
       }
     }
 
-    a {
+    .grw-pagetree-title-anchor {
       width: 100%;
       overflow: hidden;
 
@@ -36,18 +36,14 @@
       }
     }
 
-    .grw-pagetree-control {
-      display: none;
-    }
-
-    .grw-pagetree-count {
+    .grw-pagetree-count-wrapper {
       display: inline-block;
 
       &:hover {
         display: none;
       }
 
-      span {
+      .grw-pagetree-count {
         padding: 0.3rem 1rem;
       }
     }

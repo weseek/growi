@@ -1,4 +1,5 @@
 import RE2 from 're2';
+import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 
@@ -13,6 +14,15 @@ import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+// options for filtering xss
+const filterXssOptions = {
+  whiteList: {
+    em: ['class'],
+  },
+};
+
+const filterXss = new xss.FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
@@ -96,6 +106,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('addSeenUsers', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
@@ -318,6 +329,24 @@ class SearchService implements SearchQueryParser, SearchResolver {
     };
 
     return terms;
+  }
+
+  /**
+   * formatting result
+   */
+  formatResult(esResult) {
+    esResult.data.forEach((data) => {
+      const highlightData = data._highlight;
+      const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+      const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+      data.elasticSearchResult = {
+        snippet: filterXss.process(snippet),
+        // todo: use filter xss.process() for matchedPath;
+        matchedPath: pathMatch,
+      };
+    });
+    return esResult;
   }
 
 }

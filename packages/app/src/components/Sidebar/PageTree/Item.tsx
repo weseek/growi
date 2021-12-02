@@ -47,14 +47,14 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
         className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
         data-toggle="dropdown"
       >
-        <i className="fa fa-ellipsis-v text-muted"></i>
+        <i className="icon-options-vertical text-muted"></i>
       </button>
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
         onClick={onClickHandler}
       >
-        <i className="fa fa-plus-circle text-muted"></i>
+        <i className="icon-plus text-muted"></i>
       </button>
     </>
   );
@@ -63,7 +63,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 const ItemCount: FC = () => {
   return (
     <>
-      <span className="badge badge-pill badge-light">
+      <span className="grw-pagetree-count badge badge-pill badge-light">
         10
       </span>
     </>
@@ -140,13 +140,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         >
           <i className="icon-control-play"></i>
         </button>
-        <a href={page._id} className="flex-grow-1">
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
           <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
-        <div className="grw-pagetree-count">
+        <div className="grw-pagetree-count-wrapper">
           <ItemCount />
         </div>
-        <div className="grw-pagetree-control">
+        <div className="grw-pagetree-control d-none">
           <ItemControl onClickOpenModalButtonHandler={onClickOpenModalButtonHandler} />
         </div>
       </div>

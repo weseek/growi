@@ -134,6 +134,7 @@
     "re2": "^1.16.0",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "react-multiline-clamp": "^2.0.0",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rimraf": "^3.0.0",
