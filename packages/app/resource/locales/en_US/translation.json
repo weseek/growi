@@ -466,10 +466,10 @@
     "resolve_conflict": "Resolve Conflict",
     "resolve_and_save" : "Resolve and save",
     "select_revision" : "Select {{revision}}",
-    "requested_revision": "requested page body",
-    "origin_revision": "page body before request",
-    "latest_revision": "latest page body",
-    "selected_editable_revision": "Selected Revision(Editable)"
+    "requested_revision": "mine",
+    "origin_revision": "origin",
+    "latest_revision": "theirs",
+    "selected_editable_revision": "Selected Page Body (Editable)"
   },
   "link_edit": {
     "edit_link": "Edit Link",
