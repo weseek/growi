@@ -49,6 +49,7 @@ export default class EditorContainer extends Container {
     this.initStateGrant();
     this.initDrafts();
 
+    this.editorOptions = null;
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
     this.initEditorOptions('previewOptions', 'previewOptions', defaultPreviewOptions);
   }
