@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect, FC,
+  useState, useRef, useEffect, FC, useCallback, Ref,
 } from 'react';
 import PropTypes from 'prop-types';
 import { UserPicture } from '@growi/ui';
@@ -15,7 +15,7 @@ import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import { UncontrolledCodeMirror, UncontrolledCodeMirrorCore } from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -42,6 +42,9 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+  const [uncontrolledCodeMirror, setUncontrolledCodeMirror] = useState<Ref<UncontrolledCodeMirrorCore>>(null);
+
+  const uncontrolledRef = useCallback((cm) => { setUncontrolledCodeMirror(cm) }, []);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
@@ -92,6 +95,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+    console.log(uncontrolledCodeMirror);
     editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
@@ -203,6 +207,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             <div className="col-12 border border-dark">
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
               <UncontrolledCodeMirror
+                ref={uncontrolledRef}
                 value={resolvedRevision}
                 options={{
                   placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
