@@ -71,7 +71,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   const actionUsers = getActionUsers();
 
   // TODO: 82528 Swap target.path and snapshot.path
-  const pagePath = { path: 'test-page' };
+  const pagePath = { path: notification.pageIdSnapshot };
 
   const actionType: string = notification.action;
   let actionMsg: string;
