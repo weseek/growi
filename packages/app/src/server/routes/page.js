@@ -851,8 +851,10 @@ module.exports = function(crowi, app) {
 
     let savedTags;
     if (pageTags != null) {
+      const tagEvent = crowi.event('tag');
       await PageTagRelation.updatePageTags(pageId, pageTags);
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
+      tagEvent.emit('update', page, savedTags);
     }
 
     const result = {
