@@ -172,9 +172,12 @@
   .search-result-list {
     position: sticky;
     top: 0px;
-    height: 100vh;
-    overflow-y: scroll;
-
+    // height: 100vh;
+    // overflow-y: scroll;
+    .search-result-list-scroll {
+      overflow-y: scroll;
+      // need height here ?
+    }
     .nav.nav-pills {
       > .page-list-li {
         > a {
