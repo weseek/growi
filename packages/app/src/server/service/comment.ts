@@ -34,9 +34,10 @@ class CommentService {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
+        const page = await Page.findById(savedComment.page);
 
         const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity);
+        await this.createAndSendNotifications(activity, page.path);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -82,14 +83,14 @@ class CommentService {
     return activity;
   };
 
-  private createAndSendNotifications = async function(activity) {
+  private createAndSendNotifications = async function(activity, pagePath) {
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
+    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, pagePath);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
