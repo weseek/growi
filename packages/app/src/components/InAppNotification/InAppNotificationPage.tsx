@@ -55,9 +55,9 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     const updateUnopendNotificationStatusesToOpened = async() => {
       await apiv3Put('/in-app-notification/all-statuses-open');
-      // mutate 'UNREAD' Category
+      // mutate notification statuses in 'UNREAD' Category
       mutate(['/in-app-notification/list', limit, offset, categoryStatus]);
-      // mutate 'ALL' Category
+      // mutate notification statuses in 'ALL' Category
       mutate(['/in-app-notification/list', limit, offset, undefined]);
     };
 
