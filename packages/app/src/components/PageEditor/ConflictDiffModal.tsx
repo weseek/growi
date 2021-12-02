@@ -113,7 +113,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   <div className="ml-3 text-muted">
                     <p className="my-0">updated by {request.user.username}</p>
                     <p className="my-0">{request.createdAt}</p>
-                  </div>d
+                  </div>
                 </div>
                 <CodeMirror
                   value={request.revisionBody}
