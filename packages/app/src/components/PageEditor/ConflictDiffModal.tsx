@@ -2,28 +2,26 @@ import React, {
   useState, useRef, useEffect, FC,
 } from 'react';
 import PropTypes from 'prop-types';
+import { UserPicture } from '@growi/ui';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-// todo: will be replaced by https://redmine.weseek.co.jp/issues/81032
-import { UnControlled as CodeMirrorAny } from 'react-codemirror2';
-import { UserPicture } from '@growi/ui';
+
 import CodeMirror from 'codemirror/lib/codemirror';
+
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
+
 import { IRevisionOnConflict } from '../../interfaces/revision';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
 require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
-
-// avoid typescript type error
-// todo: will be replaced by https://redmine.weseek.co.jp/issues/81032
-const ReactCodeMirror:any = CodeMirrorAny;
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
@@ -47,7 +45,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   const { pageContainer, editorContainer, appContainer } = props;
-
 
   const currentTime: Date = new Date();
 
@@ -206,17 +203,9 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             </div>
             <div className="col-12 border border-dark">
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-              {/*
-                todo: will be replaced
-                task: https://redmine.weseek.co.jp/issues/81032
-              */}
-              <ReactCodeMirror
+              <UncontrolledCodeMirror
                 value={resolvedRevision.current}
                 options={{
-                  mode: 'htmlmixed',
-                  lineNumbers: true,
-                  tabSize: 2,
-                  indentUnit: 2,
                   placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
                 }}
                 onChange={(editor, data, pageBody) => {
