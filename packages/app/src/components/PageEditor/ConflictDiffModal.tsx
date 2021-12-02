@@ -44,7 +44,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
   const [uncontrolledCodeMirror, setUncontrolledCodeMirror] = useState<Ref<UncontrolledCodeMirrorCore>>(null);
 
-  const uncontrolledRef = useCallback((cm) => { setUncontrolledCodeMirror(cm) }, []);
+  // const uncontrolledRef = useCallback((cm) => { setUncontrolledCodeMirror(cm) }, []);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
@@ -95,7 +95,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
-    console.log(uncontrolledCodeMirror);
+    console.log(uncontrolledCodeMirror.editor.doc.getValue());
+    // console.log(uncontrolledCodeMirror.editor.doc.getValue());
     editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
