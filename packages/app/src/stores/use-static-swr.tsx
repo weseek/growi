@@ -1,5 +1,5 @@
 import {
-  Key, SWRConfiguration, SWRResponse, mutate,
+  Key, SWRConfiguration, SWRResponse,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import { Fetcher } from 'swr/dist/types';
@@ -17,10 +17,14 @@ export function useStaticSWR<Data, Error>(
 ): SWRResponse<Data, Error> {
   const [key, fetcher, configuration] = args;
 
+  const swrResponse = useSWRImmutable(key, null, configuration);
+
+  // mutate
   const fetcherFixed = fetcher || configuration?.fetcher;
   if (fetcherFixed != null) {
-    mutate(key, fetcherFixed);
+    const { mutate } = swrResponse;
+    mutate(fetcherFixed);
   }
 
-  return useSWRImmutable(key, null, configuration);
+  return swrResponse;
 }

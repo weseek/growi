@@ -1,4 +1,4 @@
-import useSWR, {
+import {
   useSWRConfig, SWRResponse, Key, Fetcher, Middleware,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -168,13 +168,11 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
-  return useSWR(
+  return useSWRImmutable(
     condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     },
   );
 };
