@@ -11,6 +11,8 @@ import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
 import loggerFactory from '~/utils/logger';
+import { PageModel } from '../models/page';
+import { serializeUserSecurely } from '../models/serializers/user-serializer';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -30,6 +32,12 @@ const normalizeQueryString = (_queryString: string): string => {
 
   return queryString;
 };
+
+export type FormattedSearchResult = {
+  data: any
+  meta?: any
+  totalCount: any
+}
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -331,11 +339,68 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return terms;
   }
 
+  // TODO: optimize the way to check isReshapable e.g. check data schema of searchResult
+  // So far, it determines by delegatorName passed by searchService.searchKeyword
+  checkIsReshapable(searchResult, delegatorName): boolean {
+    return delegatorName === SearchDelegatorName.DEFAULT;
+  }
+
   /**
    * formatting result
    */
-  formatResult(esResult) {
-    esResult.data.forEach((data) => {
+  async formatSearchResult(searchResult, delegatorName): Promise<FormattedSearchResult> {
+    if (!this.checkIsReshapable(searchResult, delegatorName)) {
+      return searchResult;
+    }
+
+    const Page = this.crowi.model('Page') as PageModel;
+    const User = this.crowi.model('User');
+    const result = {} as FormattedSearchResult;
+
+    // create score map for sorting
+    // key: id , value: score
+    const scoreMap = {};
+    for (const esPage of searchResult.data) {
+      scoreMap[esPage._id] = esPage._score;
+    }
+
+    const ids = searchResult.data.map((page) => { return page._id });
+    const findResult = await Page.findListByPageIds(ids);
+
+    // add tags data to page
+    findResult.pages.map((pageData) => {
+      const data = searchResult.data.find((data) => {
+        return pageData.id === data._id;
+      });
+      pageData._doc.tags = data._source.tag_names;
+      return pageData;
+    });
+
+    result.meta = searchResult.meta;
+    result.totalCount = findResult.totalCount;
+    result.data = findResult.pages
+      .map((pageData) => {
+        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
+          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
+        }
+
+        const data = searchResult.data.find((data) => {
+          return pageData.id === data._id;
+        });
+
+        const pageMeta = {
+          bookmarkCount: data._source.bookmark_count || 0,
+          elasticSearchResult: data.elasticSearchResult,
+        };
+
+        return { pageData, pageMeta };
+      })
+      .sort((page1, page2) => {
+        // note: this do not consider NaN
+        return scoreMap[page2._id] - scoreMap[page1._id];
+      });
+
+    result.data.forEach((data) => {
       const highlightData = data._highlight;
       const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
       const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
@@ -346,7 +411,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
         matchedPath: pathMatch,
       };
     });
-    return esResult;
+
+    return result;
   }
 
 }

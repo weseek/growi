@@ -1,7 +1,4 @@
-import { SearchDelegatorName } from '~/interfaces/named-query';
-
 const { default: loggerFactory } = require('~/utils/logger');
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 const logger = loggerFactory('growi:routes:search');
 
@@ -40,65 +37,6 @@ module.exports = function(crowi, app) {
 
   const actions = {};
   const api = {};
-
-  // TODO: optimize the way to check isReshapable e.g. check data schema of searchResult
-  // So far, it determines by delegatorName passed by searchService.searchKeyword
-  const checkIsReshapable = (searchResult, delegatorName) => {
-    return delegatorName === SearchDelegatorName.DEFAULT;
-  };
-
-  const reshapeSearchResult = async(searchResult, delegatorName) => {
-    if (!checkIsReshapable(searchResult, delegatorName)) {
-      return searchResult;
-    }
-
-    const result = {};
-
-    // create score map for sorting
-    // key: id , value: score
-    const scoreMap = {};
-    for (const esPage of searchResult.data) {
-      scoreMap[esPage._id] = esPage._score;
-    }
-
-    const ids = searchResult.data.map((page) => { return page._id });
-    const findResult = await Page.findListByPageIds(ids);
-
-    // add tags data to page
-    findResult.pages.map((pageData) => {
-      const data = searchResult.data.find((data) => {
-        return pageData.id === data._id;
-      });
-      pageData._doc.tags = data._source.tag_names;
-      return pageData;
-    });
-
-    result.meta = searchResult.meta;
-    result.totalCount = findResult.totalCount;
-    result.data = findResult.pages
-      .map((pageData) => {
-        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
-          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
-        }
-
-        const data = searchResult.data.find((data) => {
-          return pageData.id === data._id;
-        });
-
-        const pageMeta = {
-          bookmarkCount: data._source.bookmark_count || 0,
-          elasticSearchResult: data.elasticSearchResult,
-        };
-
-        return { pageData, pageMeta };
-      })
-      .sort((page1, page2) => {
-        // note: this do not consider NaN
-        return scoreMap[page2._id] - scoreMap[page1._id];
-      });
-
-    return result;
-  };
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
@@ -201,10 +139,10 @@ module.exports = function(crowi, app) {
 
     const searchOpts = { ...paginateOpts, type };
 
-    let _searchResult;
+    let searchResult;
     let delegatorName;
     try {
-      [_searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts); // TODO: separate when not full-text search
+      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
       logger.error('Failed to search', err);
@@ -213,8 +151,7 @@ module.exports = function(crowi, app) {
 
     let result;
     try {
-      const searchResult = searchService.formatResult(_searchResult);
-      result = await reshapeSearchResult(searchResult, delegatorName);
+      result = await searchService.formatSearchResult(searchResult, delegatorName);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
