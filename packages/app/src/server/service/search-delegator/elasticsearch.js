@@ -11,6 +11,9 @@ const {
 } = require('stream');
 const streamToPromise = require('stream-to-promise');
 
+const {
+  SORT_AXIS, SORT_AXIS_CONSTS, SORT_ORDER, SORT_ORDER_CONSTS,
+} = require('~/utils/search-axis-utils');
 const { createBatchStream } = require('../../util/batch-stream');
 
 const DEFAULT_OFFSET = 0;
@@ -606,6 +609,14 @@ class ElasticsearchDelegator {
     return query;
   }
 
+  /**
+   * create search query for Elasticsearch
+   *
+   * @param {SORT_AXIS} sort sort axis
+   * @param {SORT_ORDER} order sort order
+   * @param {*} option optional paramas
+   * @returns {object} query object
+   */
   createSearchQuery(sort, order, option) {
     let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
     if (option) {
@@ -902,8 +913,8 @@ class ElasticsearchDelegator {
     const size = option.limit || null;
     const type = option.type || null;
     // default sort order is score descending
-    const sort = option.sort || '_score';
-    const order = option.order || 'desc';
+    const sort = option.sort || SORT_AXIS_CONSTS.score;
+    const order = option.order || SORT_ORDER_CONSTS.desc;
     const query = this.createSearchQuery(sort, order);
     this.appendCriteriaForQueryString(query, queryString);
 

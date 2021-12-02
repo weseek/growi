@@ -11,6 +11,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import { SORT_AXIS_CONSTS, SORT_ORDER_CONSTS } from '~/utils/search-axis-utils';
 
 export const specificPathNames = {
   user: '/user',
@@ -36,8 +37,8 @@ class SearchPage extends React.Component {
       pagingLimit: this.props.appContainer.config.pageLimitationL,
       excludeUserPages: true,
       excludeTrashPages: true,
-      sort: '_score',
-      order: 'desc',
+      sort: SORT_AXIS_CONSTS.score,
+      order: SORT_ORDER_CONSTS.desc,
     };
 
     this.changeURL = this.changeURL.bind(this);

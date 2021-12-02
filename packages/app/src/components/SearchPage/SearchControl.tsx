@@ -5,10 +5,16 @@ import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import { CheckboxType } from '../../interfaces/search';
+import {
+  SORT_AXIS, SORT_AXIS_CONSTS, SORT_ORDER, SORT_ORDER_CONSTS,
+} from '~/utils/search-axis-utils';
+
+const { score: sortByScore, updatedAt: sortByUpdatedAt, createdAt: sortByCreatedAt } = SORT_AXIS_CONSTS;
+const { desc, asc } = SORT_ORDER_CONSTS;
 
 type Props = {
   searchingKeyword: string,
-  sort: string,
+  sort: SORT_AXIS,
   order: string,
   appContainer: AppContainer,
   excludeUserPages: boolean,
@@ -16,7 +22,7 @@ type Props = {
   onSearchInvoked: (data: {keyword: string}) => boolean,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
-  onChangeSortInvoked?: (nextSort: string, nextOrder: string) => void,
+  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -43,19 +49,19 @@ const SearchControl: FC <Props> = (props: Props) => {
   // refs: https://redmine.weseek.co.jp/issues/82513
   const onClickChangeSort = () => {
     if (props.onChangeSortInvoked != null) {
-      const getNextSort = (sort) => {
+      const getNextSort = (sort: SORT_AXIS) => {
         switch (sort) {
-          case '_score':
-            return 'updated_at';
-          case 'updated_at':
-            return 'created_at';
-          case 'created_at':
+          case sortByScore:
+            return sortByUpdatedAt;
+          case sortByUpdatedAt:
+            return sortByCreatedAt;
+          case sortByCreatedAt:
           default:
-            return '_score';
+            return sortByScore;
         }
       };
-      const nextSort = props.order === 'desc' ? props.sort : getNextSort(props.sort);
-      const nextOrder = nextSort === props.sort ? 'asc' : 'desc';
+      const nextSort = props.order === desc ? props.sort : getNextSort(props.sort);
+      const nextOrder = nextSort === props.sort ? asc : desc;
       props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };
