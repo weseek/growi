@@ -31,13 +31,21 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
     return <span className="ml-3">{`${leftNum}-${rightNum}`} / {searchResultMeta.total || 0}</span>;
   };
 
+  const calcScrollTargetElmHeight = () => {
+    const scrolltarget = document.getElementById('search-result-list-scroll');
+    if (scrolltarget == null) return;
+    return window.innerHeight - scrolltarget.getBoundingClientRect().top;
+  };
+
+  const searchResultListHeight = calcScrollTargetElmHeight();
+
   return (
     <div className="content-main">
       <div className="search-result d-flex" id="search-result">
         <div className="flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
 
           <SearchControl></SearchControl>
-          <div className="search-result-list-scroll">
+          <div id="search-result-list-scroll" className="search-result-list-scroll" style={{ height: searchResultListHeight }}>
             <div className="d-flex align-items-center justify-content-between my-3 ml-4">
               <div className="search-result-meta text-nowrap">
                 <span className="font-weight-light">{t('search_result.result_meta')} </span>
