@@ -13,8 +13,7 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { useCurrentPagePath } from '~/stores/context';
-import { usePageCreateModalOpened, usePageCreateModalPagePath } from '~/stores/ui';
+import { useCreateModalStatus, useCreateModalOpened, useCreateModalPath } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -25,13 +24,14 @@ const {
 const PageCreateModal = (props) => {
   const { t, appContainer } = props;
 
-  const { data: isPageCreateModalOpened, mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: selectedPagePath } = usePageCreateModalPagePath();
+  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { data: isOpened } = useCreateModalOpened();
+  const { data: path } = useCreateModalPath();
+
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const pathname = selectedPagePath || currentPagePath;
+  const pathname = path || '';
   const userPageRootPath = userPageRoot(appContainer.currentUser);
   const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -274,12 +274,12 @@ const PageCreateModal = (props) => {
   return (
     <Modal
       size="lg"
-      isOpen={isPageCreateModalOpened}
-      toggle={() => mutatePageCreateModalOpened(false)}
+      isOpen={isOpened}
+      toggle={() => mutateModalStatus({ isOpened: false })}
       className="grw-create-page"
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={() => mutatePageCreateModalOpened(false)} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => mutateModalStatus({ isOpened: false })} className="bg-primary text-light">
         {t('New Page')}
       </ModalHeader>
       <ModalBody>

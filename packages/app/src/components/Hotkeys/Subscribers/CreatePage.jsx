@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { usePageCreateModalOpened } from '~/stores/ui';
+import { useCreateModalStatus } from '~/stores/ui';
 
 const CreatePage = React.memo((props) => {
 
-  const { mutate } = usePageCreateModalOpened();
+  const { mutate: mutateModalStatus } = useCreateModalStatus();
 
   // setup effect
   useEffect(() => {
-    mutate(true);
+    mutateModalStatus({ isOpened: true });
 
     // remove this
     props.onDeleteRender(this);
-  }, [mutate, props]);
+  }, [mutateModalStatus, props]);
 
   return <></>;
 });

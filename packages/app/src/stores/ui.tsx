@@ -12,6 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { useCurrentPagePath } from './context';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -234,12 +235,33 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
 };
 
-export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
+type ModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+export const useCreateModalStatus = (status?: ModalStatus): SWRResponse<ModalStatus, Error> => {
+  return useStaticSWR('modalStatus', status || null);
 };
 
-export const usePageCreateModalPagePath = (path?: string): SWRResponse<string, Error> => {
-  const initialData = '';
-  return useStaticSWR('pageCreateModalPagePath', path || null, { fallbackData: initialData });
+export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = useCreateModalStatus();
+  return useSWR(
+    data != null ? ['isModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+export const useCreateModalPath = (): SWRResponse<string, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: status } = useCreateModalStatus();
+
+  return useSWR(
+    [currentPagePath, status],
+    (currentPagePath, status) => {
+      return status.path || currentPagePath;
+    },
+  );
 };

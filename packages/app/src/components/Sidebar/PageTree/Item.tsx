@@ -6,7 +6,7 @@ import nodePath from 'path';
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import { usePageId } from '../../../stores/context';
-import { usePageCreateModalOpened, usePageCreateModalPagePath } from '../../../stores/ui';
+import { useCreateModalStatus } from '../../../stores/ui';
 
 
 interface ItemProps {
@@ -81,8 +81,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
-  const { mutate: mutateSelectedPagePath } = usePageCreateModalPagePath();
+  const { mutate: mutateModalStatus } = useCreateModalStatus();
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
@@ -92,11 +91,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickOpenModalButtonHandler = useCallback(async() => {
-    await mutateSelectedPagePath(page.path);
-
-    mutatePageCreateModalOpened(true);
-  }, [mutateSelectedPagePath, mutatePageCreateModalOpened, page]);
+  const onClickOpenModalButtonHandler = useCallback(() => {
+    mutateModalStatus({ isOpened: true, path: page.path });
+  }, [mutateModalStatus, page]);
 
   // didMount
   useEffect(() => {
