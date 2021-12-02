@@ -27,15 +27,15 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
   const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
-  const { data: inAppNotificationStatusData, mutate: mutateInAppNotificationStatusData } = useSWRxInAppNotificationStatus();
+  const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
 
   const initializeSocket = useCallback((props) => {
     const socket = props.socketIoContainer.getSocket();
     socket.on('notificationUpdated', () => {
-      mutateInAppNotificationStatusData();
+      mutateInAppNotificationUnreadStatusCount();
     });
-  }, [mutateInAppNotificationStatusData]);
+  }, [mutateInAppNotificationUnreadStatusCount]);
 
   const updateNotificationStatus = async() => {
     try {
@@ -53,9 +53,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
 
   const toggleDropdownHandler = async() => {
-    if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData > 0) {
+    if (!isOpen && inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
       await updateNotificationStatus();
-      mutateInAppNotificationStatusData();
+      mutateInAppNotificationUnreadStatusCount();
     }
 
     const newIsOpenState = !isOpen;
@@ -66,14 +66,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   let badge;
-  if (inAppNotificationStatusData != null && inAppNotificationStatusData > 0) {
-    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationStatusData}</span>;
+  if (inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
+    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
   }
   else {
     badge = '';
   }
-
-  console.log('inAppNotificationStatusData', inAppNotificationStatusData);
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
