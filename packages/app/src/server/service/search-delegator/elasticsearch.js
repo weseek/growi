@@ -566,49 +566,6 @@ class ElasticsearchDelegator {
     };
   }
 
-  createSearchQuerySortedByUpdatedAt(option) {
-    // getting path by default is almost for debug
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
-    if (option) {
-      fields = option.fields || fields;
-    }
-
-    // default is only id field, sorted by updated_at
-    const query = {
-      index: this.aliasName,
-      type: 'pages',
-      body: {
-        sort: [{ updated_at: { order: 'desc' } }],
-        query: {}, // query
-        _source: fields,
-      },
-    };
-    this.appendResultSize(query);
-
-    return query;
-  }
-
-  createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
-    if (option) {
-      fields = option.fields || fields;
-    }
-
-    // sort by score
-    const query = {
-      index: this.aliasName,
-      type: 'pages',
-      body: {
-        sort: [{ _score: { order: 'desc' } }],
-        query: {}, // query
-        _source: fields,
-      },
-    };
-    this.appendResultSize(query);
-
-    return query;
-  }
-
   /**
    * create search query for Elasticsearch
    *
@@ -644,7 +601,7 @@ class ElasticsearchDelegator {
   }
 
   initializeBoolQuery(query) {
-    // query is created by createSearchQuerySortedByScore() or createSearchQuerySortedByUpdatedAt()
+    // query is created by ScreateSearchQuery()
     if (!query.body.query.bool) {
       query.body.query.bool = {};
     }
