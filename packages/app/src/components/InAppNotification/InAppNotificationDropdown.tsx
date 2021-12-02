@@ -52,9 +52,9 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   }, [initializeSocket, props]);
 
 
-  const toggleDropdownHandler = () => {
+  const toggleDropdownHandler = async() => {
     if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
-      updateNotificationStatus();
+      await updateNotificationStatus();
       mutateInAppNotificationStatusData();
     }
 
