@@ -13,6 +13,8 @@ import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
+import { toastError } from '~/client/util/apiNotification';
+
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 type Props = {
@@ -40,6 +42,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       await apiv3Post('/in-app-notification/read');
     }
     catch (err) {
+      toastError(err);
       logger.error(err);
     }
   };
