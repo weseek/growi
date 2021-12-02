@@ -158,9 +158,7 @@ const PageManagement = (props) => {
   }
 
   function generatePageObjectToDelete() {
-    return {
-      pageData: { pageId, revisionId, path },
-    };
+    return { pageId, revisionId, path };
   }
 
   function renderModals() {

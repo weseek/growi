@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-import { IPageSearchResultData } from '../interfaces/search';
+import { IPageForPageDeleteModal } from '../interfaces/page';
 
 // import { apiPost } from '~/client/util/apiv1-client';
 
@@ -26,7 +26,7 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageSearchResultData[],
+  pages: IPageForPageDeleteModal[],
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -142,7 +142,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         <div className="form-group">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {pages.map((page) => {
-            return <div><code>{ page.pageData.path }</code></div>;
+            return <div><code>{ page.path }</code></div>;
           })}
         </div>
         {renderDeleteRecursivelyForm()}

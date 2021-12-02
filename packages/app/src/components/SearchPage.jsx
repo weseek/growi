@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import toastr from 'toastr';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -20,16 +19,6 @@ export const specificPathNames = {
   user: '/user',
   trash: '/trash',
 };
-
-const toastrOption = {
-  closeButton: true,
-  progressBar: true,
-  newestOnTop: false,
-  showDuration: '100',
-  hideDuration: '100',
-  timeOut: '3000',
-};
-
 class SearchPage extends React.Component {
 
   constructor(props) {
@@ -239,10 +228,15 @@ class SearchPage extends React.Component {
     });
   };
 
-  getSelectedPages() {
-    return this.state.searchResults.filter((page) => {
+  getSelectedPagesToDelete() {
+    const filteredPages = this.state.searchResults.filter((page) => {
       return Array.from(this.state.deleteTargetPageIds).find(id => id === page.pageData._id);
     });
+    return filteredPages.map(page => ({
+      pageId: page.pageData._id,
+      revisionId: page.pageData.revision,
+      path: page.pageData.path,
+    }));
   }
 
   deleteSinglePageButtonHandler(pageId) {
@@ -321,7 +315,7 @@ class SearchPage extends React.Component {
         <PageDeleteModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModalHandler}
-          pages={this.getSelectedPages()}
+          pages={this.getSelectedPagesToDelete()}
         />
       </div>
     );
