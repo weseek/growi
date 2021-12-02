@@ -76,10 +76,16 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
 
-  const isPathIncludedHtml = pageMeta.elasticSearchResult.highlightedPath != null;
+  const isPathIncludedHtml = pageMeta.elasticSearchResult.highlightedPath !== '';
   const dPagePath = new DevidedPagePath(pageData.path, false, true);
   const pagePathElem = <PagePathLabel path={pageMeta.elasticSearchResult.highlightedPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
-
+  let pageTitle = '';
+  if (pageMeta.elasticSearchResult.highlightedPath !== '') {
+    pageTitle = new DevidedPagePath(pageMeta.elasticSearchResult.highlightedPath, false, true).latter;
+  }
+  else {
+    pageTitle = dPagePath.latter;
+  }
   const onClickInvoked = (pageId) => {
     if (props.onClickInvoked != null) {
       props.onClickInvoked(pageId);
@@ -108,7 +114,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2">{dPagePath.latter}</span>
+                <span className="mx-2" dangerouslySetInnerHTML={{ __html: pageTitle }}></span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
