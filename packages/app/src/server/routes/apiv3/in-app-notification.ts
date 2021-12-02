@@ -1,4 +1,3 @@
-import { InAppNotification } from '../../models/in-app-notification';
 import { IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');
@@ -69,8 +68,7 @@ module.exports = (crowi) => {
     const userId = req.user._id;
     try {
       const count = await inAppNotificationService.getUnreadCountByUser(userId);
-      const result = { count };
-      return res.apiv3(result);
+      return res.apiv3({ count });
     }
     catch (err) {
       return res.apiv3Err(err);

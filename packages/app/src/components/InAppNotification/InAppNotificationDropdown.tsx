@@ -53,7 +53,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
 
   const toggleDropdownHandler = async() => {
-    if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
+    if (!isOpen && inAppNotificationStatusData != null && inAppNotificationStatusData > 0) {
       await updateNotificationStatus();
       mutateInAppNotificationStatusData();
     }
@@ -66,12 +66,14 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   let badge;
-  if (inAppNotificationStatusData != null && inAppNotificationStatusData.count > 0) {
-    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationStatusData.count}</span>;
+  if (inAppNotificationStatusData != null && inAppNotificationStatusData > 0) {
+    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationStatusData}</span>;
   }
   else {
     badge = '';
   }
+
+  console.log('inAppNotificationStatusData', inAppNotificationStatusData);
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
