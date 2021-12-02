@@ -1,12 +1,15 @@
-import React, { useState, useRef, FC } from 'react';
+import React, {
+  useState, useRef, useEffect, FC,
+} from 'react';
 import PropTypes from 'prop-types';
 import { UserPicture } from '@growi/ui';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { format } from 'date-fns';
+import CodeMirror from 'codemirror/lib/codemirror';
+
 import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
@@ -14,7 +17,9 @@ import AppContainer from '../../client/services/AppContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
-require('codemirror/mode/htmlmixed/htmlmixed');
+require('codemirror/lib/codemirror.css');
+require('codemirror/addon/merge/merge');
+require('codemirror/addon/merge/merge.css');
 const DMP = require('diff_match_patch');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
@@ -36,6 +41,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const resolvedRevision = useRef<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
@@ -60,13 +66,22 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     user: pageContainer.state.lastUpdateUser,
   };
 
-  const codeMirrorRevisionOption = {
-    mode: 'htmlmixed',
-    lineNumbers: true,
-    tabSize: 2,
-    indentUnit: 2,
-    readOnly: true,
-  };
+  useEffect(() => {
+    if (codeMirrorRef != null) {
+      CodeMirror.MergeView(codeMirrorRef, {
+        value: origin.revisionBody,
+        origLeft: request.revisionBody,
+        origRight: latest.revisionBody,
+        lineNumbers: true,
+        collapseIdentical: true,
+        showDifferences: true,
+        highlightDifferences: true,
+        connect: 'connect',
+        readOnly: true,
+        revertButtons: false,
+      });
+    }
+  }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
 
   const onCancel = () => {
     if (props.onCancel != null) {
@@ -97,118 +112,109 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
-        {
-          pageContainer.state.isConflictDiffModalOpen
-          && (
-            <div className="row mx-2">
-              <div className="col-12 text-center mt-2 mb-4">
-                <h2 className="font-weight-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
-              </div>
-              <div className="col-12 col-md-4 border border-dark">
-                <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
-                <div className="d-flex align-items-center my-3">
-                  <div>
-                    <UserPicture user={request.user} size="lg" noLink noTooltip />
-                  </div>
-                  <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {request.user.username}</p>
-                    <p className="my-0">{request.createdAt}</p>
-                  </div>
+        { pageContainer.state.isConflictDiffModalOpen
+        && (
+          <div className="row">
+            <div className="col-12 text-center mt-2 mb-4">
+              <h2 className="font-weight-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
+            </div>
+            <div className="col-4">
+              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
+              <div className="d-flex align-items-center my-3">
+                <div>
+                  <UserPicture user={request.user} size="lg" noLink noTooltip />
                 </div>
-                <CodeMirror
-                  value={request.revisionBody}
-                  options={codeMirrorRevisionOption}
-                />
-                <div className="text-center my-4">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setIsRevisionSelected(true);
-                      resolvedRevision.current = request.revisionBody;
-                    }}
-                  >
-                    <i className="icon-fw icon-arrow-down-circle"></i>
-                    {t('modal_resolve_conflict.select_revision', { revision: 'request' })}
-                  </button>
+                <div className="ml-3 text-muted">
+                  <p className="my-0">updated by {request.user.username}</p>
+                  <p className="my-0">{request.createdAt}</p>
                 </div>
-              </div>
-              <div className="col-12 col-md-4 border border-dark">
-                <h3 className="font-weight-bold my-2">{t('origin_revision')}</h3>
-                <div className="d-flex align-items-center my-3">
-                  <div>
-                    <UserPicture user={origin.user} size="lg" noLink noTooltip />
-                  </div>
-                  <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {origin.user.username}</p>
-                    <p className="my-0">{origin.createdAt}</p>
-                  </div>
-                </div>
-                <CodeMirror
-                  value={origin.revisionBody}
-                  options={codeMirrorRevisionOption}
-                />
-                <div className="text-center my-4">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setIsRevisionSelected(true);
-                      if (resolvedRevision != null) {
-                        resolvedRevision.current = origin.revisionBody;
-                      }
-                    }}
-                  >
-                    <i className="icon-fw icon-arrow-down-circle"></i>
-                    {t('modal_resolve_conflict.select_revision', { revision: 'origin' })}
-                  </button>
-                </div>
-              </div>
-              <div className="col-12 col-md-4 border border-dark">
-                <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
-                <div className="d-flex align-items-center my-3">
-                  <div>
-                    <UserPicture user={latest.user} size="lg" noLink noTooltip />
-                  </div>
-                  <div className="ml-3 text-muted">
-                    <p className="my-0">updated by {latest.user.username}</p>
-                    <p className="my-0">{latest.createdAt}</p>
-                  </div>
-                </div>
-                <CodeMirror
-                  value={latest.revisionBody}
-                  options={codeMirrorRevisionOption}
-                />
-                <div className="text-center my-4">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setIsRevisionSelected(true);
-                      resolvedRevision.current = latest.revisionBody;
-                    }}
-                  >
-                    <i className="icon-fw icon-arrow-down-circle"></i>
-                    {t('modal_resolve_conflict.select_revision', { revision: 'latest' })}
-                  </button>
-                </div>
-              </div>
-              <div className="col-12 border border-dark">
-                <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <UncontrolledCodeMirror
-                  value={resolvedRevision.current}
-                  options={{
-                    placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                  }}
-                  onChange={(editor, data, pageBody) => {
-                    if (pageBody === '') setIsRevisionSelected(false);
-                    resolvedRevision.current = pageBody;
-                  }}
-                />
               </div>
             </div>
-          )
-        }
+            <div className="col-4">
+              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
+              <div className="d-flex align-items-center my-3">
+                <div>
+                  <UserPicture user={origin.user} size="lg" noLink noTooltip />
+                </div>
+                <div className="ml-3 text-muted">
+                  <p className="my-0">updated by {origin.user.username}</p>
+                  <p className="my-0">{origin.createdAt}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-4">
+              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
+              <div className="d-flex align-items-center my-3">
+                <div>
+                  <UserPicture user={latest.user} size="lg" noLink noTooltip />
+                </div>
+                <div className="ml-3 text-muted">
+                  <p className="my-0">updated by {latest.user.username}</p>
+                  <p className="my-0">{latest.createdAt}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-12" ref={(el) => { setCodeMirrorRef(el) }}></div>
+            <div className="col-4">
+              <div className="text-center my-4">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setIsRevisionSelected(true);
+                    resolvedRevision.current = request.revisionBody;
+                  }}
+                >
+                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  {t('modal_resolve_conflict.select_revision', { revision: 'request' })}
+                </button>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="text-center my-4">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setIsRevisionSelected(true);
+                    resolvedRevision.current = origin.revisionBody;
+                  }}
+                >
+                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  {t('modal_resolve_conflict.select_revision', { revision: 'origin' })}
+                </button>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="text-center my-4">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setIsRevisionSelected(true);
+                    resolvedRevision.current = latest.revisionBody;
+                  }}
+                >
+                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  {t('modal_resolve_conflict.select_revision', { revision: 'latest' })}
+                </button>
+              </div>
+            </div>
+            <div className="col-12 border border-dark">
+              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+              <UncontrolledCodeMirror
+                value={resolvedRevision.current}
+                options={{
+                  placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
+                }}
+                onChange={(editor, data, pageBody) => {
+                  if (pageBody === '') setIsRevisionSelected(false);
+                  resolvedRevision.current = pageBody;
+                }}
+              />
+            </div>
+          </div>
+        )}
       </ModalBody>
       <ModalFooter>
         <button
