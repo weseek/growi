@@ -126,7 +126,8 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               <Clamp
                 lines={2}
               >
-                {pageMeta.elasticSearchResult && <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>}
+                {pageMeta.elasticSearchResult != null
+                && <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>}
               </Clamp>
             </div>
           </div>

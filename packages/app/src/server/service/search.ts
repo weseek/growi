@@ -13,6 +13,7 @@ import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages
 import loggerFactory from '~/utils/logger';
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import { IPage } from '~/interfaces/page';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -34,9 +35,25 @@ const normalizeQueryString = (_queryString: string): string => {
 };
 
 export type FormattedSearchResult = {
-  data: any
-  meta?: any
-  totalCount: any
+  data: {
+    pageData: IPage
+    pageMeta: {
+      bookmarkCount?: number
+      elasticsearchResult?: {
+        snippet?: string
+        matchedPath?: string
+        highlightedPath?: string
+      }
+    }
+  }[]
+
+  totalCount: number
+
+  meta?: {
+    total: number
+    took?: number
+    count?: number
+  }
 }
 
 class SearchService implements SearchQueryParser, SearchResolver {
@@ -339,18 +356,28 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return terms;
   }
 
-  // TODO: optimize the way to check isReshapable e.g. check data schema of searchResult
+  // TODO: optimize the way to check isFormattable e.g. check data schema of searchResult
   // So far, it determines by delegatorName passed by searchService.searchKeyword
-  checkIsReshapable(searchResult, delegatorName): boolean {
+  checkIsFormattable(searchResult, delegatorName): boolean {
     return delegatorName === SearchDelegatorName.DEFAULT;
   }
 
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult, delegatorName): Promise<FormattedSearchResult> {
-    if (!this.checkIsReshapable(searchResult, delegatorName)) {
-      return searchResult;
+  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<FormattedSearchResult> {
+    if (!this.checkIsFormattable(searchResult, delegatorName)) {
+      const data = searchResult.data.map((page) => {
+        return {
+          pageData: page,
+          pageMeta: {},
+        };
+      });
+      return {
+        data,
+        totalCount: data.length,
+        meta: searchResult.meta,
+      };
     }
 
     const Page = this.crowi.model('Page') as PageModel;
@@ -388,29 +415,31 @@ class SearchService implements SearchQueryParser, SearchResolver {
           return pageData.id === data._id;
         });
 
+        // increment elasticSearchResult
+        let elasticSearchResult;
+        const highlightData = data._highlight;
+        if (highlightData != null) {
+          const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+          const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+          elasticSearchResult = {
+            snippet: filterXss.process(snippet),
+            // todo: use filter xss.process() for matchedPath;
+            matchedPath: pathMatch,
+          };
+        }
+
         const pageMeta = {
           bookmarkCount: data._source.bookmark_count || 0,
-          elasticSearchResult: data.elasticSearchResult,
+          elasticSearchResult,
         };
 
         return { pageData, pageMeta };
       })
       .sort((page1, page2) => {
         // note: this do not consider NaN
-        return scoreMap[page2._id] - scoreMap[page1._id];
+        return scoreMap[page2.pageData._id] - scoreMap[page1.pageData._id];
       });
-
-    result.data.forEach((data) => {
-      const highlightData = data._highlight;
-      const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
-      const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
-
-      data.elasticSearchResult = {
-        snippet: filterXss.process(snippet),
-        // todo: use filter xss.process() for matchedPath;
-        matchedPath: pathMatch,
-      };
-    });
 
     return result;
   }

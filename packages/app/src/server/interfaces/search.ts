@@ -29,7 +29,7 @@ export interface SearchDelegator<T = unknown> {
 }
 
 export type Result<T> = {
-  data: T
+  data: T[]
 }
 
 export type MetaData = {

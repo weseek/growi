@@ -8,7 +8,7 @@ import {
 } from '../../interfaces/search';
 
 
-class PrivateLegacyPagesDelegator implements SearchDelegator<IPage[]> {
+class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
 
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES
 
@@ -16,7 +16,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage[]> {
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(data: SearchableData | null, user, userGroups, option): Promise<Result<IPage[]> & MetaData> {
+  async search(_data: SearchableData | null, user, userGroups, option): Promise<Result<IPage> & MetaData> {
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
