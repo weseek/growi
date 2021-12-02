@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
+import { ICodeMirror } from 'react-codemirror2';
 
 
-export interface AbstractEditorProps {
+export interface AbstractEditorProps extends ICodeMirror {
   value?: string;
   isGfmMode?: boolean;
   onScrollCursorIntoView?: (line: number) => void;
