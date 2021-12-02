@@ -79,13 +79,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   const isPathIncludedHtml = pageMeta.elasticSearchResult.highlightedPath !== '';
   const dPagePath = new DevidedPagePath(pageData.path, false, true);
   const pagePathElem = <PagePathLabel path={pageMeta.elasticSearchResult.highlightedPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
-  let pageTitle = '';
-  if (pageMeta.elasticSearchResult.highlightedPath !== '') {
-    pageTitle = new DevidedPagePath(pageMeta.elasticSearchResult.highlightedPath, false, true).latter;
-  }
-  else {
-    pageTitle = dPagePath.latter;
-  }
+  const pageTitle = pageMeta.elasticSearchResult.highlightedPath !== ''
+    ? new DevidedPagePath(pageMeta.elasticSearchResult.highlightedPath, false, true).latter : dPagePath.latter;
+
   const onClickInvoked = (pageId) => {
     if (props.onClickInvoked != null) {
       props.onClickInvoked(pageId);
