@@ -3,8 +3,12 @@ import React from 'react';
 
 
 export interface AbstractEditorProps {
-  onSave?: () => void;
+  value?: string;
+  isGfmMode?: boolean;
+  onScrollCursorIntoView?: (line: number) => void;
+  onSave?: () => Promise<void>;
   onPasteFiles?: (event: Event) => void;
+  onCtrlEnter?: (event: Event) => void;
 }
 
 export default class AbstractEditor<T extends AbstractEditorProps> extends React.Component<T, Record<string, unknown>> {
