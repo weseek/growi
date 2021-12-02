@@ -8,7 +8,6 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-
 import CodeMirror from 'codemirror/lib/codemirror';
 
 import PageContainer from '../../client/services/PageContainer';
