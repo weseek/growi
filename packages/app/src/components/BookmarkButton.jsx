@@ -10,7 +10,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 
 import AppContainer from '~/client/services/AppContainer';
 
-class BookmarkButton extends React.Component {
+class LegacyBookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -19,25 +19,11 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const {
-      appContainer, pageId, isBookmarked, onChangeInvoked,
-    } = this.props;
-    const { isGuestUser } = appContainer;
 
-    if (isGuestUser) {
+    if (this.props.onBookMarkClicked == null) {
       return;
     }
-
-    try {
-      const bool = !isBookmarked;
-      await apiv3Put('/bookmarks', { pageId, bool });
-      if (onChangeInvoked != null) {
-        onChangeInvoked();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.props.onBookMarkClicked();
   }
 
   render() {
@@ -77,21 +63,24 @@ class BookmarkButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer]);
+const LegacyBookmarkButtonWrapper = withUnstatedContainers(LegacyBookmarkButton, [AppContainer]);
 
-BookmarkButton.propTypes = {
+LegacyBookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  pageId: PropTypes.string.isRequired,
   isBookmarked: PropTypes.bool.isRequired,
   sumOfBookmarks: PropTypes.number,
-  onChangeInvoked: PropTypes.func,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
+  onBookMarkClicked: PropTypes.func,
 };
 
-BookmarkButton.defaultProps = {
+LegacyBookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default withTranslation()(BookmarkButtonWrapper);
+const BookmarkButton = (props) => {
+  return <LegacyBookmarkButtonWrapper {...props}></LegacyBookmarkButtonWrapper>;
+};
+
+export default withTranslation()(BookmarkButton);
