@@ -1,4 +1,6 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, {
+  useState, useEffect, FC, useCallback,
+} from 'react';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -26,12 +28,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { data: inAppNotificationStatusData, mutate: mutateInAppNotificationStatusData } = useSWRxInAppNotificationStatus();
 
 
-  const initializeSocket = (props) => {
+  const initializeSocket = useCallback((props) => {
     const socket = props.socketIoContainer.getSocket();
     socket.on('notificationUpdated', () => {
       mutateInAppNotificationStatusData();
     });
-  };
+  }, [mutateInAppNotificationStatusData]);
 
   const updateNotificationStatus = async() => {
     try {
@@ -44,7 +46,7 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     initializeSocket(props);
-  }, [props]);
+  }, [initializeSocket, props]);
 
 
   const toggleDropdownHandler = () => {
