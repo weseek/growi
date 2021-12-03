@@ -57,13 +57,16 @@ function LargePageItem({ page }) {
   }
 
   const tags = page.tags;
-  const tagElements = tags.map((tag) => {
-    return (
-      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
-        {tag.name}
-      </a>
-    );
-  });
+  // when tag document is deleted from database directly tags includes null
+  const tagElements = tags.includes(null)
+    ? <></>
+    : tags.map((tag) => {
+      return (
+        <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
+          {tag.name}
+        </a>
+      );
+    });
 
   return (
     <li className="list-group-item py-3 px-0">
