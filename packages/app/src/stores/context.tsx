@@ -21,17 +21,6 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<any>, Error>('currentPagePath', initialData ?? null);
 };
 
-export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
-  const { data: currentPagePath } = useCurrentPagePath();
-
-  const isLoading = currentUser === undefined || currentPagePath === undefined;
-
-  const key = isLoading ? null : 'isSharedUser';
-  const value = !isLoading && currentUser == null && pagePathUtils.isSharedPage(currentPagePath as string);
-
-  return useStaticSWR(key, value);
-};
 
 export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('pageId', initialData ?? null);
@@ -127,4 +116,45 @@ export const useCreator = (initialData?: Nullable<any>): SWRResponse<Nullable<an
 
 export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData ?? null);
+};
+
+
+/** **********************************************************
+ *                     Computed contexts
+ *********************************************************** */
+
+export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
+  const { data: currentUser } = useCurrentUser();
+
+  const isLoading = currentUser === undefined;
+
+  return useSWRImmutable(
+    isLoading ? null : ['isGuestUser', currentUser],
+    (key: Key, currentUser: IUser) => currentUser == null,
+  );
+};
+
+export const useIsEditable = (): SWRResponse<boolean, Error> => {
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isTrashPage } = useIsTrashPage();
+
+  return useSWRImmutable(
+    ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
+    (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
+      return (!isNotCreatable && !isTrashPage && !isGuestUser);
+    },
+  );
+};
+
+export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  return useSWRImmutable(
+    ['isSharedUser', isGuestUser, currentPagePath],
+    (key: Key, isGuestUser: boolean, currentPagePath: string) => {
+      return isGuestUser && pagePathUtils.isSharedPage(currentPagePath as string);
+    },
+  );
 };
