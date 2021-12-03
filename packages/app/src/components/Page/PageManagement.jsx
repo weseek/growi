@@ -257,7 +257,7 @@ LegacyPageManagemenet.propTypes = {
   revisionId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   isDeletable: PropTypes.bool.isRequired,
-  isAbleToDeleteCompletely: PropTypes.bool.isRequired,
+  isAbleToDeleteCompletely: PropTypes.bool,
 
   isCompactMode: PropTypes.bool,
 };

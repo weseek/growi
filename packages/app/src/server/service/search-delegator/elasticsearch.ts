@@ -1,25 +1,45 @@
+import elasticsearch from 'elasticsearch';
+import mongoose from 'mongoose';
+
+import { URL } from 'url';
+
+import { Writable, Transform } from 'stream';
+import streamToPromise from 'stream-to-promise';
+
+import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
+import { PageDocument, PageModel } from '../../models/page';
+import {
+  MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
+} from '../../interfaces/search';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
-const elasticsearch = require('elasticsearch');
-const mongoose = require('mongoose');
-
-const { URL } = require('url');
-
-const {
-  Writable, Transform,
-} = require('stream');
-const streamToPromise = require('stream-to-promise');
-
-const { createBatchStream } = require('../../util/batch-stream');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
 const BULK_REINDEX_SIZE = 100;
 
-class ElasticsearchDelegator {
+type Data = any;
+
+class ElasticsearchDelegator implements SearchDelegator<Data> {
+
+  name!: SearchDelegatorName.DEFAULT
+
+  configManager!: any
+
+  socketIoService!: any
+
+  client: any
+
+  queries: any
+
+  indexName: string
+
+  esUri: string
 
   constructor(configManager, socketIoService) {
+    this.name = SearchDelegatorName.DEFAULT;
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 
@@ -115,7 +135,7 @@ class ElasticsearchDelegator {
     let esVersion = 'unknown';
     const esNodeInfos = {};
 
-    for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
+    for (const [nodeName, nodeInfo] of Object.entries<any>(info.nodes)) {
       esVersion = nodeInfo.version;
 
       const filteredInfo = {
@@ -160,7 +180,7 @@ class ElasticsearchDelegator {
     const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
-    const existingIndices = [];
+    const existingIndices: string[] = [];
     if (isExistsMainIndex) { existingIndices.push(indexName) }
     if (isExistsTmpIndex) { existingIndices.push(tmpIndexName) }
 
@@ -315,6 +335,7 @@ class ElasticsearchDelegator {
       body: page.revision.body,
       // username: page.creator?.username, // available Node.js v14 and above
       username: page.creator != null ? page.creator.username : null,
+      comments: page.comments,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
@@ -357,7 +378,7 @@ class ElasticsearchDelegator {
   }
 
   updateOrInsertDescendantsPagesById(page, user) {
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.find());
     builder.addConditionToListWithDescendants(page.path);
@@ -367,13 +388,14 @@ class ElasticsearchDelegator {
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option = {}) {
+  async updateOrInsertPages(queryFactory, option: any = {}) {
     const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
 
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
     const { PageQueryBuilder } = Page;
-    const Bookmark = mongoose.model('Bookmark');
-    const PageTagRelation = mongoose.model('PageTagRelation');
+    const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
+    const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
     const socket = this.socketIoService.getAdminSocket();
 
@@ -426,6 +448,28 @@ class ElasticsearchDelegator {
           .forEach((doc) => {
             // append count from idToCountMap
             doc.bookmarkCount = idToCountMap[doc._id.toString()];
+          });
+
+        this.push(chunk);
+        callback();
+      },
+    });
+
+
+    const appendCommentStream = new Transform({
+      objectMode: true,
+      async transform(chunk, encoding, callback) {
+        const pageIds = chunk.map(doc => doc._id);
+
+        const idToCommentMap = await Comment.getPageIdToCommentMap(pageIds);
+        const idsHavingComment = Object.keys(idToCommentMap);
+
+        // append comments
+        chunk
+          .filter(doc => idsHavingComment.includes(doc._id.toString()))
+          .forEach((doc) => {
+            // append comments from idToCommentMap
+            doc.comments = idToCommentMap[doc._id.toString()];
           });
 
         this.push(chunk);
@@ -505,6 +549,7 @@ class ElasticsearchDelegator {
       .pipe(thinOutStream)
       .pipe(batchStream)
       .pipe(appendBookmarkCountStream)
+      .pipe(appendCommentStream)
       .pipe(appendTagNamesStream)
       .pipe(writeStream);
 
@@ -529,7 +574,7 @@ class ElasticsearchDelegator {
    *   data: [ pages ...],
    * }
    */
-  async search(query) {
+  async searchKeyword(query) {
     // for debug
     if (process.env.NODE_ENV === 'development') {
       const result = await this.client.indices.validateQuery({
@@ -585,8 +630,8 @@ class ElasticsearchDelegator {
     return query;
   }
 
-  createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
+  createSearchQuerySortedByScore(option?) {
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -606,7 +651,7 @@ class ElasticsearchDelegator {
     return query;
   }
 
-  appendResultSize(query, from, size) {
+  appendResultSize(query, from?, size?) {
     query.from = from || DEFAULT_OFFSET;
     query.size = size || DEFAULT_LIMIT;
   }
@@ -631,18 +676,15 @@ class ElasticsearchDelegator {
     return query;
   }
 
-  appendCriteriaForQueryString(query, queryString) {
+  appendCriteriaForQueryString(query, parsedKeywords: QueryTerms) {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
-
-    // parse
-    const parsedKeywords = this.parseQueryString(queryString);
 
     if (parsedKeywords.match.length > 0) {
       const q = {
         multi_match: {
           query: parsedKeywords.match.join(' '),
           type: 'most_fields',
-          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+          fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
         },
       };
       query.body.query.bool.must.push(q);
@@ -652,7 +694,7 @@ class ElasticsearchDelegator {
       const q = {
         multi_match: {
           query: parsedKeywords.not_match.join(' '),
-          fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
+          fields: ['path.ja', 'path.en', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
           operator: 'or',
         },
       };
@@ -660,16 +702,17 @@ class ElasticsearchDelegator {
     }
 
     if (parsedKeywords.phrase.length > 0) {
-      const phraseQueries = [];
+      const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
         phraseQueries.push({
           multi_match: {
-            query: phrase, // each phrase is quoteted words
+            query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
+              'comments',
             ],
           },
         });
@@ -679,7 +722,7 @@ class ElasticsearchDelegator {
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
-      const notPhraseQueries = [];
+      const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
         notPhraseQueries.push({
           multi_match: {
@@ -732,12 +775,12 @@ class ElasticsearchDelegator {
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
     const {
       GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
     } = Page;
 
-    const grantConditions = [
+    const grantConditions: any[] = [
       { term: { grant: GRANT_PUBLIC } },
     ];
 
@@ -804,44 +847,9 @@ class ElasticsearchDelegator {
     query.body.query.bool.filter.push({ bool: { should: grantConditions } });
   }
 
-  filterPortalPages(query) {
-    query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
-
-    query.body.query.bool.must_not.push(this.queries.USER);
-    query.body.query.bool.filter.push(this.queries.PORTAL);
-  }
-
-  filterPublicPages(query) {
-    query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
-
-    query.body.query.bool.must_not.push(this.queries.USER);
-    query.body.query.bool.filter.push(this.queries.PUBLIC);
-  }
-
-  filterUserPages(query) {
-    query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
-
-    query.body.query.bool.filter.push(this.queries.USER);
-  }
-
-  filterPagesByType(query, type) {
-    const Page = mongoose.model('Page');
-
-    switch (type) {
-      case Page.TYPE_PORTAL:
-        return this.filterPortalPages(query);
-      case Page.TYPE_PUBLIC:
-        return this.filterPublicPages(query);
-      case Page.TYPE_USER:
-        return this.filterUserPages(query);
-      default:
-        return query;
-    }
-  }
-
-  appendFunctionScore(query, queryString) {
+  async appendFunctionScore(query, queryString) {
     const User = mongoose.model('User');
-    const count = User.count({}) || 1;
+    const count = await User.count({}) || 1;
 
     const minScore = queryString.length * 0.1 - 1; // increase with length
     logger.debug('min_score: ', minScore);
@@ -876,99 +884,21 @@ class ElasticsearchDelegator {
     };
   }
 
-  async searchKeyword(queryString, user, userGroups, option) {
+  async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
+    const { queryString, terms } = data;
+
     const from = option.offset || null;
     const size = option.limit || null;
-    const type = option.type || null;
     const query = this.createSearchQuerySortedByScore();
-    this.appendCriteriaForQueryString(query, queryString);
+    this.appendCriteriaForQueryString(query, terms);
 
-    this.filterPagesByType(query, type);
     await this.filterPagesByViewer(query, user, userGroups);
 
     this.appendResultSize(query, from, size);
 
-    this.appendFunctionScore(query, queryString);
-    this.appendHighlight(query);
-    return this.search(query);
-  }
+    await this.appendFunctionScore(query, queryString);
 
-  parseQueryString(queryString) {
-    const matchWords = [];
-    const notMatchWords = [];
-    const phraseWords = [];
-    const notPhraseWords = [];
-    const prefixPaths = [];
-    const notPrefixPaths = [];
-    const tags = [];
-    const notTags = [];
-
-    queryString.trim();
-    queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
-
-    // First: Parse phrase keywords
-    const phraseRegExp = new RegExp(/(-?"[^"]+")/g);
-    const phrases = queryString.match(phraseRegExp);
-
-    if (phrases !== null) {
-      queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
-
-      phrases.forEach((phrase) => {
-        phrase.trim();
-        if (phrase.match(/^-/)) {
-          notPhraseWords.push(phrase.replace(/^-/, ''));
-        }
-        else {
-          phraseWords.push(phrase);
-        }
-      });
-    }
-
-    // Second: Parse other keywords (include minus keywords)
-    queryString.split(' ').forEach((word) => {
-      if (word === '') {
-        return;
-      }
-
-      // https://regex101.com/r/pN9XfK/1
-      const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
-      // https://regex101.com/r/3qw9FQ/1
-      const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
-
-      if (matchNegative != null) {
-        if (matchNegative[1] === 'prefix:') {
-          notPrefixPaths.push(matchNegative[2]);
-        }
-        else if (matchNegative[1] === 'tag:') {
-          notTags.push(matchNegative[2]);
-        }
-        else {
-          notMatchWords.push(matchNegative[2]);
-        }
-      }
-      else if (matchPositive != null) {
-        if (matchPositive[1] === 'prefix:') {
-          prefixPaths.push(matchPositive[2]);
-        }
-        else if (matchPositive[1] === 'tag:') {
-          tags.push(matchPositive[2]);
-        }
-        else {
-          matchWords.push(matchPositive[2]);
-        }
-      }
-    });
-
-    return {
-      match: matchWords,
-      not_match: notMatchWords,
-      phrase: phraseWords,
-      not_phrase: notPhraseWords,
-      prefix: prefixPaths,
-      not_prefix: notPrefixPaths,
-      tag: tags,
-      not_tag: notTags,
-    };
+    return this.searchKeyword(query);
   }
 
   async syncPageUpdated(page, user) {
@@ -990,11 +920,11 @@ class ElasticsearchDelegator {
 
   // remove pages whitch should nod Indexed
   async syncPagesUpdated(pages, user) {
-    const shoudDeletePages = [];
+    const shoudDeletePages: any[] = [];
     pages.forEach((page) => {
       logger.debug('SearchClient.syncPageUpdated', page.path);
       if (!this.shouldIndexed(page)) {
-        shoudDeletePages.append(page);
+        shoudDeletePages.push(page);
       }
     });
 
@@ -1043,6 +973,12 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPageById(pageId);
   }
 
+  async syncCommentChanged(comment) {
+    logger.debug('SearchClient.syncCommentChanged', comment);
+
+    return this.updateOrInsertPageById(comment.page);
+  }
+
   async syncTagChanged(page) {
     logger.debug('SearchClient.syncTagChanged', page.path);
 
@@ -1051,4 +987,4 @@ class ElasticsearchDelegator {
 
 }
 
-module.exports = ElasticsearchDelegator;
+export default ElasticsearchDelegator;
