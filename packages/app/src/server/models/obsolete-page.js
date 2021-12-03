@@ -1,4 +1,5 @@
 import { templateChecker, pagePathUtils } from '@growi/core';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
@@ -28,6 +29,18 @@ const GRANT_USER_GROUP = 5;
 const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
+
+const { CREATED_AT, UPDATED_AT } = SORT_AXIS;
+const { DESC, ASC } = SORT_ORDER;
+
+const OBSOLETE_SEARCH_SORT_AXIS = {
+  [CREATED_AT]: 'createdAt',
+  [UPDATED_AT]: 'updatedAt',
+};
+const OBSOLETE_SEARCH_SORT_ORDER = {
+  [DESC]: { desc: 1 },
+  [ASC]: { desc: -1 },
+};
 
 // schema definition has moved to page.ts
 const pageSchema = {
@@ -217,6 +230,11 @@ export class PageQueryBuilder {
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
     return this;
+  }
+
+  addConditionToSort(sortAxis, sortOrder) {
+    const sortCondition = { sort: OBSOLETE_SEARCH_SORT_AXIS[sortAxis], desc: OBSOLETE_SEARCH_SORT_ORDER[sortOrder] };
+    this.query = this.query.sort(sortCondition);
   }
 
   addConditionAsNonRootPage() {
