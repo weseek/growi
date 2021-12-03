@@ -33,6 +33,4 @@ export type IPage = {
 
 export type IPageForItem = Partial<IPage & {isTarget?: boolean} & HasObjectId>;
 
-export type IPageHasId = IPage & {
-  _id: string,
-};
+export type IPageHasId = IPage & HasObjectId;

@@ -180,7 +180,7 @@ class SearchTypeahead extends React.Component {
     return (
       <span>
         <UserPicture user={page.lastUpdateUser} size="sm" noLink />
-        <span className="ml-1 text-break text-wrap"><PagePathLabel page={page} /></span>
+        <span className="ml-1 text-break text-wrap"><PagePathLabel path={page.path} /></span>
         <PageListMeta page={page} />
       </span>
     );
