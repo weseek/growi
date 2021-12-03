@@ -291,7 +291,7 @@ class SearchPage extends React.Component {
         searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.onSearchInvoked}
-        onClickSelectAllCheckbox={this.toggleAllCheck        onClickSelectAllCheckbox={this.toggleAllCheckBox}
+        onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectAllCheckboxType={this.state.selectAllCheckboxType}
         onClickDeleteAllButton={this.deleteAllPagesButtonHandler}
         onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
