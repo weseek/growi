@@ -12,13 +12,19 @@ import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
   page: IPageHasId,
+  onClickDeleteButton?: (pageId: string)=>void,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page } = props;
+  const { page, onClickDeleteButton } = props;
   const { t } = useTranslation('');
 
+  const deleteButtonHandler = () => {
+    if (onClickDeleteButton != null) {
+      onClickDeleteButton(page._id);
+    }
+  };
   return (
     <>
       <button
@@ -47,7 +53,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) =>
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+        <button className="dropdown-item text-danger" type="button" onClick={deleteButtonHandler}>
           <i className="icon-fw icon-fire"></i>{t('Delete')}
         </button>
         <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
@@ -71,6 +77,7 @@ type Props = {
   isChecked: boolean,
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
+  onClickDeleteButton?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
@@ -126,7 +133,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} />
+                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} />
               </div>
             </div>
             <div className="my-2">
