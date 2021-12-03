@@ -49,7 +49,7 @@ export type FormattedSearchResult = {
 
   totalCount: number
 
-  meta?: {
+  meta: {
     total: number
     took?: number
     count?: number

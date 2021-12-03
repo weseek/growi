@@ -33,7 +33,7 @@ export type Result<T> = {
 }
 
 export type MetaData = {
-  meta?: {
+  meta: {
     [key:string]: any,
     total: number,
   }
