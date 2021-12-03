@@ -821,11 +821,17 @@ class PageService {
     };
     const activity = await activityService.createByParameters(parameters);
 
+    const snapshot = JSON.stringify({
+      path: page.path,
+      creator: page.creator,
+      lastUpdateUser: page.lastUpdateUser,
+    });
+
     // Get user to be notified
     const targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await inAppNotificationService.upsertByActivity(targetUsers, activity, page.path);
+    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
   };
 
