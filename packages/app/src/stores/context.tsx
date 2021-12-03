@@ -126,10 +126,8 @@ export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Null
 export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
 
-  const isLoading = currentUser === undefined;
-
   return useSWRImmutable(
-    isLoading ? null : ['isGuestUser', currentUser],
+    ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
   );
 };
