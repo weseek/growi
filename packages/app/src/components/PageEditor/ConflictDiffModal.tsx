@@ -171,7 +171,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   }}
                 >
                   <i className="icon-fw icon-arrow-down-circle"></i>
-                  {t('modal_resolve_conflict.select_revision', { revision: 'request' })}
+                  {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
                 </button>
               </div>
             </div>
@@ -201,7 +201,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   }}
                 >
                   <i className="icon-fw icon-arrow-down-circle"></i>
-                  {t('modal_resolve_conflict.select_revision', { revision: 'latest' })}
+                  {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
                 </button>
               </div>
             </div>
