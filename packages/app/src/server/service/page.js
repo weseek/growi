@@ -606,7 +606,7 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteCompletely', pages, user); // update as renamed page
+    pages.map(page => this.pageEvent.emit('deleteCompletely', page, user));
 
     return;
   }

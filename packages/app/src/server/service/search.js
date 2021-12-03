@@ -64,7 +64,7 @@ class SearchService {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.delegator.syncPageUpdated.bind(this.delegator));
     pageEvent.on('update', this.delegator.syncPageUpdated.bind(this.delegator));
-    pageEvent.on('deleteCompletely', this.delegator.syncPagesDeletedCompletely.bind(this.delegator));
+    pageEvent.on('deleteCompletely', this.delegator.syncPageDeletedCompletely.bind(this.delegator));
     pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
     pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
     pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));

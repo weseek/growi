@@ -993,13 +993,11 @@ class ElasticsearchDelegator {
     return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
-  async syncPagesDeletedCompletely(pages, user) {
-    for (let i = 0; i < pages.length; i++) {
-      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
-    }
+  async syncPageDeletedCompletely(page, user) {
+    logger.debug('SearchClient.syncPageDeleted', page.path);
 
     try {
-      return await this.deletePages(pages);
+      return await this.deletePages([page]);
     }
     catch (err) {
       logger.error('deletePages:ES Error', err);
