@@ -41,6 +41,7 @@ import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
+import ContextExtractor from '~/client/services/ContextExtractor';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
@@ -98,7 +99,6 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
   'not-found-alert': <NotFoundAlert
-    onPageCreateClicked={navigationContainer.setEditorMode}
     isGuestUserMode={appContainer.isGuestUser}
     isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
   />,
@@ -153,23 +153,40 @@ if (pageContainer.state.path != null) {
   });
 }
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <SWRConfig value={swrGlobalConfiguration}>
-            <Provider inject={injectableContainers}>
-              {componentMappings[key]}
-            </Provider>
-          </SWRConfig>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <SWRConfig value={swrGlobalConfiguration}>
+              <Provider inject={injectableContainers}>
+                {componentMappings[key]}
+              </Provider>
+            </SWRConfig>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

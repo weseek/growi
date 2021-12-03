@@ -82,6 +82,7 @@ export default class PageContainer extends Container {
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
+      targetAndAncestors: JSON.parse(mainContent.getAttribute('data-target-and-ancestors') || null),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
@@ -161,12 +162,12 @@ export default class PageContainer extends Container {
   }
 
 
-  get isAbleToOpenPageEditor() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
+  // get isAbleToOpenPageEditor() {
+  //   const { isNotCreatable, isTrashPage } = this.state;
+  //   const { isGuestUser } = this.appContainer;
 
-    return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  }
+  //   return (!isNotCreatable && !isTrashPage && !isGuestUser);
+  // }
 
   /**
    * whether to display reaction buttons

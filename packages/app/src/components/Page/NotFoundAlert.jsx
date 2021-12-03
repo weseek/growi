@@ -1,24 +1,26 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
 const NotFoundAlert = (props) => {
-  const { t, isHidden, isGuestUserMode } = props;
-  function clickHandler(viewType) {
+  const { t } = useTranslation();
+  const { isHidden, isGuestUserMode } = props;
 
+  const { mutate: mutateEditorMode } = useEditorMode();
+
+  const clickHandler = useCallback(() => {
     // check guest user,
     // disabled of button cannot be used for using tooltip.
     if (isGuestUserMode) {
       return;
     }
 
-    if (props.onPageCreateClicked === null) {
-      return;
-    }
-    props.onPageCreateClicked(viewType);
-  }
+    mutateEditorMode(EditorMode.Editor);
+
+  }, [isGuestUserMode, mutateEditorMode]);
 
   if (isHidden) {
     return null;
@@ -38,7 +40,7 @@ const NotFoundAlert = (props) => {
           <button
             type="button"
             className={`pl-3 pr-3 btn bg-info text-white ${isGuestUserMode ? 'disabled' : ''}`}
-            onClick={() => { clickHandler('edit') }}
+            onClick={clickHandler}
           >
             <i className="icon-note icon-fw" />
             {t('not_found_page.Create Page')}
@@ -58,10 +60,8 @@ const NotFoundAlert = (props) => {
 
 
 NotFoundAlert.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  onPageCreateClicked: PropTypes.func,
   isHidden: PropTypes.bool.isRequired,
   isGuestUserMode: PropTypes.bool.isRequired,
 };
 
-export default withTranslation()(NotFoundAlert);
+export default NotFoundAlert;

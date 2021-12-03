@@ -1,4 +1,6 @@
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+const { default: loggerFactory } = require('~/utils/logger');
+
+const logger = loggerFactory('growi:routes:search');
 
 /**
  * @swagger
@@ -141,12 +143,17 @@ module.exports = function(crowi, app) {
       ...paginateOpts, type, sort, order,
     };
 
-    const result = {};
+    let searchResult;
+    let delegatorName;
     try {
-      const sortedSearchResult = searchService.formatResult(
-        await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
-      );
+      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
+    }
+    catch (err) {
+      logger.error('Failed to search', err);
+      return res.json(ApiResponse.error(err));
+    }
 
+// ---local changes---
       // get page data
       const pageIds = sortedSearchResult.data.map((page) => { return page._id });
       const findPageResult = await Page.findListByPageIds(pageIds);
@@ -178,6 +185,12 @@ module.exports = function(crowi, app) {
 
         return { pageData, pageMeta };
       });
+// ---local changes---
+// ---remote changes---
+    let result;
+    try {
+      result = await searchService.formatSearchResult(searchResult, delegatorName);
+// ---remote changes---
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

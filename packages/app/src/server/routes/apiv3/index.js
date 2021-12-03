@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import pageListing from './page-listing';
+
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -41,6 +43,8 @@ module.exports = (crowi) => {
   router.use('/pages', require('./pages')(crowi));
   router.use('/revisions', require('./revisions')(crowi));
 
+  router.use('/page-listing', pageListing(crowi));
+
   router.use('/share-links', require('./share-links')(crowi));
 
   router.use('/bookmarks', require('./bookmarks')(crowi));
@@ -52,6 +56,8 @@ module.exports = (crowi) => {
   router.use('/staffs', require('./staffs')(crowi));
 
   router.use('/forgot-password', require('./forgot-password')(crowi));
+
+  router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
   return router;
 };

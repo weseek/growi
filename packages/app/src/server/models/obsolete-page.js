@@ -10,8 +10,6 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
@@ -22,11 +20,6 @@ const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-/*
- * define schema
- */
 const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
 const GRANT_SPECIFIED = 3;
@@ -36,37 +29,11 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-const pageSchema = new mongoose.Schema({
-  path: {
-    type: String, required: true, index: true, unique: true,
-  },
-  revision: { type: ObjectId, ref: 'Revision' },
-  redirectTo: { type: String, index: true },
-  status: { type: String, default: STATUS_PUBLISHED, index: true },
-  grant: { type: Number, default: GRANT_PUBLIC, index: true },
-  grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
-  creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User' },
-  liker: [{ type: ObjectId, ref: 'User' }],
-  seenUsers: [{ type: ObjectId, ref: 'User' }],
-  commentCount: { type: Number, default: 0 },
-  slackChannels: { type: String },
-  pageIdOnHackmd: String,
-  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
-  hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  deleteUser: { type: ObjectId, ref: 'User' },
-  deletedAt: { type: Date },
-}, {
-  toJSON: { getters: true },
-  toObject: { getters: true },
-});
-// apply plugins
-pageSchema.plugin(mongoosePaginate);
-pageSchema.plugin(uniqueValidator);
-
+// schema definition has moved to page.ts
+const pageSchema = {
+  statics: {},
+  methods: {},
+};
 
 /**
  * return an array of ancestors paths that is extracted from specified pagePath
@@ -110,7 +77,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 /* eslint-enable object-curly-newline, object-property-newline */
 
 
-class PageQueryBuilder {
+export class PageQueryBuilder {
 
   constructor(query) {
     this.query = query;
@@ -252,11 +219,57 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionAsNonRootPage() {
+    this.query = this.query.and({ path: { $ne: '/' } });
+
+    return this;
+  }
+
+  addConditionAsNotMigrated() {
+    this.query = this.query
+      .and({ parent: null });
+
+    return this;
+  }
+
+  addConditionAsMigrated() {
+    this.query = this.query
+      .and({ parent: { $ne: null } });
+
+    return this;
+  }
+
+  /*
+   * Add this condition when get any ancestor pages including the target's parent
+   */
+  addConditionToSortAncestorPages() {
+    this.query = this.query.sort('-path');
+
+    return this;
+  }
+
+  addConditionToMinimizeDataForRendering() {
+    this.query = this.query.select('_id path isEmpty grant');
+
+    return this;
+  }
+
   addConditionToListByPathsArray(paths) {
     this.query = this.query
       .and({
         path: {
           $in: paths,
+        },
+      });
+
+    return this;
+  }
+
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
         },
       });
 
@@ -279,7 +292,7 @@ class PageQueryBuilder {
 
 }
 
-module.exports = function(crowi) {
+export const getPageSchema = (crowi) => {
   let pageEvent;
 
   // init event
@@ -436,8 +449,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
-      .execPopulate();
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
@@ -445,7 +457,7 @@ module.exports = function(crowi) {
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    return this.populate('revision').execPopulate();
+    return this.populate('revision');
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
@@ -596,31 +608,6 @@ module.exports = function(crowi) {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByPathAndViewer = async function(path, user, userGroups) {
-    if (path == null) {
-      throw new Error('path is required.');
-    }
-
-    const baseQuery = this.findOne({ path });
-
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
-    const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
-
-    return await queryBuilder.query.exec();
-  };
-
-  /**
-   * @param {string} path Page path
-   * @param {User} user User instance
-   * @param {UserGroup[]} userGroups List of UserGroup instances
-   */
   pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups) {
     if (path == null) {
       throw new Error('path is required.');
@@ -717,13 +704,15 @@ module.exports = function(crowi) {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option) {
+  pageSchema.statics.findListByPageIds = async function(ids, option, excludeRedirect = true) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
-    builder.addConditionToExcludeRedirect();
+    if (excludeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     // count
@@ -731,7 +720,7 @@ module.exports = function(crowi) {
 
     // find
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.exec('find');
+    const pages = await builder.query.clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -774,7 +763,7 @@ module.exports = function(crowi) {
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
+    const pages = await builder.query.lean().clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -961,9 +950,9 @@ module.exports = function(crowi) {
 
     const Page = this;
     const Revision = crowi.model('Revision');
-    const format = options.format || 'markdown';
-    const redirectTo = options.redirectTo || null;
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const {
+      format = 'markdown', redirectTo, grantUserGroupId, parentId,
+    } = options;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -974,18 +963,37 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({ path });
-
+    const isExist = await this.count({ path, isEmpty: false }); // not validate empty page
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
     }
 
-    const page = new Page();
+    /*
+     * update empty page if exists, if not, create a new page
+     */
+    let page;
+    const emptyPage = await Page.findOne({ path, isEmpty: true });
+    if (emptyPage != null) {
+      page = emptyPage;
+      page.isEmpty = false;
+    }
+    else {
+      page = new Page();
+    }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    let parent = parentId;
+    if (isV5Compatible && parent == null && !isTopPage(path)) {
+      parent = await Page.getParentIdAndFillAncestors(path);
+    }
+
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
+    page.parent = parent;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
@@ -1167,5 +1175,5 @@ module.exports = function(crowi) {
 
   pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
 
-  return mongoose.model('Page', pageSchema);
+  return pageSchema;
 };
