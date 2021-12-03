@@ -591,6 +591,9 @@ body.pathname-sidebar {
   .search-result-list {
     .search-control {
       background-color: $bgcolor-global;
+      .search-include-path-btn {
+        color: $secondary;
+      }
     }
     .page-list {
       .highlighted-keyword {
