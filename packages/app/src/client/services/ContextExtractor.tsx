@@ -71,12 +71,6 @@ const ContextExtractorOnce: FC = () => {
   // App
   useCurrentUser(currentUser);
 
-  // Navigation
-  useEditorMode(getInitialEditorMode());
-  usePreferDrawerModeByUser();
-  usePreferDrawerModeOnEditByUser();
-  useIsDeviceSmallerThanMd();
-
   // Page
   useCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
@@ -104,6 +98,12 @@ const ContextExtractorOnce: FC = () => {
   useUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
+
+  // Navigation
+  useEditorMode(getInitialEditorMode());
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   return null;
 };

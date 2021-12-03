@@ -12,6 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { useIsEditable } from './context';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -104,10 +105,12 @@ const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
 };
 
 export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
-  const key: Key = 'editorMode';
-  const initialData = EditorMode.View;
+  const { data: isEditable } = useIsEditable();
 
-  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [postChangeEditorModeMiddleware] });
+  const key: Key = ['editorMode', isEditable];
+  const mutateValue = isEditable ? (editorMode ?? null) : null;
+
+  return useStaticSWR(key, mutateValue || null, { fallbackData: EditorMode.View, use: [postChangeEditorModeMiddleware] });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
