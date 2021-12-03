@@ -169,7 +169,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   return useSWRImmutable(
-    condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,
