@@ -5,6 +5,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { blinkElem } from '~/client/util/blink-section-header';
 
 import RevisionBody from './RevisionBody';
 
@@ -46,7 +47,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
-    addSmoothScrollEvent(HeaderLinkArray);
+    addSmoothScrollEvent(HeaderLinkArray, blinkElem);
 
     const { interceptorManager } = this.props.appContainer;
 

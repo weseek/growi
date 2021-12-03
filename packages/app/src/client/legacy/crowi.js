@@ -1,3 +1,5 @@
+const { blinkElem, blinkSectionHeaderAtBoot } = require('../util/blink-section-header');
+
 /* eslint-disable react/jsx-filename-extension */
 require('jquery.cookie');
 
@@ -110,48 +112,6 @@ Crowi.initClassesByOS = function() {
   });
 };
 
-Crowi.findHashFromUrl = function(url) {
-  let match;
-  /* eslint-disable no-cond-assign */
-  if (match = url.match(/#(.+)$/)) {
-    return `#${match[1]}`;
-  }
-  /* eslint-enable no-cond-assign */
-
-  return '';
-};
-
-Crowi.findSectionHeader = function(hash) {
-  if (hash.length === 0) {
-    return;
-  }
-
-  // omit '#'
-  const id = hash.replace('#', '');
-  // don't use jQuery and document.querySelector
-  //  because hash may containe Base64 encoded strings
-  const elem = document.getElementById(id);
-  if (elem != null && elem.tagName.match(/h\d+/i)) { // match h1, h2, h3...
-    return elem;
-  }
-
-  return null;
-};
-
-Crowi.unblinkSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.remove('blink');
-  }
-};
-
-Crowi.blinkSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.add('blink');
-  }
-};
-
 // window.addEventListener('load', () => {
 //   const { appContainer } = window;
 //   const pageContainer = appContainer.getContainer('PageContainer');
@@ -217,14 +177,13 @@ window.addEventListener('load', () => {
     });
   }
 
-  Crowi.blinkSelectedSection(window.location.hash);
+  blinkSectionHeaderAtBoot();
+
   Crowi.modifyScrollTop();
   Crowi.initClassesByOS();
 });
 
 window.addEventListener('hashchange', (e) => {
-  Crowi.unblinkSelectedSection(Crowi.findHashFromUrl(e.oldURL));
-  Crowi.blinkSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
 
   // hash on page
@@ -232,8 +191,8 @@ window.addEventListener('hashchange', (e) => {
     if (window.location.hash === '#edit') {
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (window.location.hash === '#hackmd') {
-    }
+    // else if (window.location.hash === '#hackmd') {
+    // }
   }
 });
 

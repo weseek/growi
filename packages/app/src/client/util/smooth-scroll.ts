@@ -14,7 +14,9 @@ export const smoothScrollIntoView = (element: HTMLElement, offsetTop = 0): void 
   });
 };
 
-export const addSmoothScrollEvent = (elements: HTMLAnchorElement[]): void => {
+export type SmoothScrollEventCallback = (elem: HTMLElement) => void;
+
+export const addSmoothScrollEvent = (elements: HTMLAnchorElement[], callback?: SmoothScrollEventCallback): void => {
   elements.forEach((link) => {
     const href = link.getAttribute('href');
 
@@ -33,6 +35,10 @@ export const addSmoothScrollEvent = (elements: HTMLAnchorElement[]): void => {
       const targetDom = document.getElementById(elemId);
       if (targetDom != null) {
         smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
+
+        if (callback != null) {
+          callback(targetDom);
+        }
       }
     });
   });

@@ -6,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import PageContainer from '~/client/services/PageContainer';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { blinkElem } from '~/client/util/blink-section-header';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -50,7 +51,7 @@ const TableOfContents = (props) => {
   useEffect(() => {
     const tocDom = document.getElementById('revision-toc-content');
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    addSmoothScrollEvent(anchorsInToc);
+    addSmoothScrollEvent(anchorsInToc, blinkElem);
   }, [tocHtml]);
 
   return (
