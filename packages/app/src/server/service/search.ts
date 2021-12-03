@@ -373,12 +373,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
           pageMeta: {},
         };
       });
+
       return {
         data,
         totalCount: data.length,
         meta: searchResult.meta,
       };
     }
+
+    /*
+     * Format ElasticSearch result
+     */
 
     const Page = this.crowi.model('Page') as PageModel;
     const User = this.crowi.model('User');
