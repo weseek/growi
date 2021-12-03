@@ -153,44 +153,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-// ---local changes---
-      // get page data
-      const pageIds = sortedSearchResult.data.map((page) => { return page._id });
-      const findPageResult = await Page.findListByPageIds(pageIds);
-
-      // set meta data
-      result.meta = sortedSearchResult.meta;
-      result.totalCount = findPageResult.totalCount;
-
-      // set search result page data
-      result.data = sortedSearchResult.data.map((data) => {
-        const pageData = findPageResult.pages.find((pageData) => {
-          return pageData.id === data._id;
-        });
-
-        // add tags and seenUserCount to pageData
-        pageData._doc.tags = data._source.tag_names;
-        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
-
-        // serialize lastUpdateUser
-        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
-          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
-        }
-
-        // generate pageMeta data
-        const pageMeta = {
-          bookmarkCount: data._source.bookmark_count || 0,
-          elasticSearchResult: data.elasticSearchResult,
-        };
-
-        return { pageData, pageMeta };
-      });
-// ---local changes---
-// ---remote changes---
     let result;
     try {
       result = await searchService.formatSearchResult(searchResult, delegatorName);
-// ---remote changes---
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
