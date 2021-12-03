@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
@@ -8,14 +8,25 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
 import {
-  useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  EditorMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
 } from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
 
-const ContextExtractor: FC = () => {
+const getInitialEditorMode = (): EditorMode => {
+  switch (window.location.hash) {
+    case '#edit':
+      return EditorMode.Editor;
+    case '#hackmd':
+      return EditorMode.HackMD;
+    default:
+      return EditorMode.View;
+  }
+};
+
+const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
 
@@ -61,7 +72,7 @@ const ContextExtractor: FC = () => {
   useCurrentUser(currentUser);
 
   // Navigation
-  useEditorMode();
+  useEditorMode(getInitialEditorMode());
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
@@ -94,11 +105,17 @@ const ContextExtractor: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
-  return (
-    <div>
-      {/* Render nothing */}
-    </div>
-  );
+  return null;
 };
+
+const ContextExtractor: FC = React.memo(() => {
+  const [isRunOnce, setRunOnce] = useState(false);
+
+  useEffect(() => {
+    setRunOnce(true);
+  }, []);
+
+  return isRunOnce ? null : <ContextExtractorOnce></ContextExtractorOnce>;
+});
 
 export default ContextExtractor;

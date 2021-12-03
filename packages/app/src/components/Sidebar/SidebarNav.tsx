@@ -1,7 +1,7 @@
 import React, { FC, memo, useCallback } from 'react';
 
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { scheduleToPutUserUISettings } from '~/services/user-ui-settings';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
 

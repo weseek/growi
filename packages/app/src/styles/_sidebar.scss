@@ -255,7 +255,11 @@
 @mixin drawer() {
   z-index: $zindex-fixed + 2;
 
-  // override @atlaskit/navigation-next styles
+  .data-layout-container {
+    position: fixed;
+    top: 0;
+    width: 0;
+  }
   div.navigation {
     max-width: 80vw;
 
@@ -277,6 +281,10 @@
     .grw-drawer-toggler {
       display: block;
     }
+  }
+
+  .grw-navigation-resize-button {
+    display: none;
   }
 
   .grw-drawer-toggler {
