@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, FC, Ref,
+  useState, useEffect, FC, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { UserPicture } from '@growi/ui';
@@ -42,9 +42,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
-  const [uncontrolledCodeMirror, setUncontrolledCodeMirror] = useState<Ref<UncontrolledCodeMirrorCore>>(null);
 
-  // const uncontrolledRef = useCallback((cm) => { setUncontrolledCodeMirror(cm) }, []);
+  const uncontrolledRef = useRef<UncontrolledCodeMirrorCore | null>(null);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
@@ -95,14 +94,13 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
-    console.log(uncontrolledCodeMirror.editor.doc.getValue());
-    // console.log(uncontrolledCodeMirror.editor.doc.getValue());
+    const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
     editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest.revisionId,
-        resolvedRevision,
+        codeMirrorVal,
         editorContainer.getCurrentOptionsToSave(),
       );
     }
