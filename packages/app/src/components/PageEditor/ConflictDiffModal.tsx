@@ -15,7 +15,7 @@ import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
-import { UncontrolledCodeMirror, UncontrolledCodeMirrorCore } from '../UncontrolledCodeMirror';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/merge/merge');
@@ -43,7 +43,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
-  const uncontrolledRef = useRef<UncontrolledCodeMirrorCore | null>(null);
+  const uncontrolledRef = useRef<CodeMirror>(null);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
