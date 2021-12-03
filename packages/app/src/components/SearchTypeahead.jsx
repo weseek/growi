@@ -176,7 +176,7 @@ class SearchTypeahead extends React.Component {
   }
 
   renderMenuItemChildren(option, props, index) {
-    const page = option;
+    const page = option.pageData;
     return (
       <span>
         <UserPicture user={page.lastUpdateUser} size="sm" noLink />
@@ -205,7 +205,7 @@ class SearchTypeahead extends React.Component {
           ref={(c) => { this.typeahead = c }}
           inputProps={inputProps}
           isLoading={this.state.isLoading}
-          labelKey="path"
+          labelKey={data => data?.pageData?.path || 'path'} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
           minLength={0}
           options={this.state.pages} // Search result (Some page names)
           promptText={this.props.helpElement}
