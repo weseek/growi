@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect, FC, useCallback, Ref,
+  useState, useEffect, FC, Ref,
 } from 'react';
 import PropTypes from 'prop-types';
 import { UserPicture } from '@growi/ui';
