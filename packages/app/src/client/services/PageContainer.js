@@ -405,9 +405,7 @@ export default class PageContainer extends Container {
    * @param {object} optionsToSave
    * @return {object} { page: Page, tags: Tag[] }
    */
-  async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.navigationContainer.state;
-
+  async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
 
@@ -431,15 +429,14 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  async saveAndReload(optionsToSave) {
+  async saveAndReload(optionsToSave, editorMode) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
     }
 
-    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
-      logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
+      logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
       return;
     }
 
