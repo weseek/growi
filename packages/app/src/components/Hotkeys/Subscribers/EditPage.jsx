@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 const EditPage = (props) => {
@@ -25,14 +23,11 @@ const EditPage = (props) => {
 };
 
 EditPage.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onDeleteRender: PropTypes.func.isRequired,
 };
 
-const EditPageWrapper = withUnstatedContainers(EditPage, [NavigationContainer]);
-
-EditPageWrapper.getHotkeyStrokes = () => {
+EditPage.getHotkeyStrokes = () => {
   return [['e']];
 };
 
-export default EditPageWrapper;
+export default EditPage;

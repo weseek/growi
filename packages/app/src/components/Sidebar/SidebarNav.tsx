@@ -18,13 +18,11 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     contents, iconName, onItemSelected,
   } = props;
 
-  // TODO: migrate from NavigationContainer
   const { data: currentContents, mutate } = useCurrentSidebarContents();
 
   const isSelected = contents === currentContents;
 
   const itemSelectedHandler = useCallback(() => {
-    // const { navigationContainer, onItemSelected } = this.props;
     if (onItemSelected != null) {
       onItemSelected(contents);
     }

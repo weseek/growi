@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
 import { usePageCreateModalOpened, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
-
-  const {
-    navigationContainer,
-  } = props;
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
@@ -71,8 +65,5 @@ const GrowiNavbarBottom = (props) => {
   );
 };
 
-GrowiNavbarBottom.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
 
-export default withUnstatedContainers(GrowiNavbarBottom, [NavigationContainer]);
+export default GrowiNavbarBottom;
