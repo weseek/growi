@@ -131,10 +131,12 @@ export default class NavigationContainer extends Container {
    */
   addSmoothScrollEvent(elements = {}) {
     elements.forEach(link => link.addEventListener('click', (e) => {
+      // modify location.hash without scroll
       e.preventDefault();
+      window.history.pushState({}, '', link.href);
 
+      // smooth scroll
       const href = link.getAttribute('href').replace('#', '');
-      window.location.hash = href;
       const targetDom = document.getElementById(href);
       this.smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
     }));
