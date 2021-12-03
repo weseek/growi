@@ -380,9 +380,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags, revision) {
-    const { editorMode } = this.navigationContainer.state;
-
+  updateStateAfterSave(page, tags, revision, editorMode) {
     // update state of PageContainer
     const newState = {
       pageId: page._id,
@@ -446,7 +444,7 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags, res.revision);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
     return res;
   }
 
