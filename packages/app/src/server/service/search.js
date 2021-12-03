@@ -165,13 +165,13 @@ class SearchService {
   formatResult(esResult) {
     esResult.data.forEach((data) => {
       const highlightData = data._highlight;
+      // path and snippet have <em class='highligted'> tag around the search keyword
+      // as for displayPath, if no keyword in it , simply page's path
       const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
       const pathMatch = (highlightData['path.en'] || highlightData['path.ja']) || data._source.path;
-      // path and snippet have <em class='highligted'> tag around the search keyword
-      // as for path, if no keyword in it , simply page's path
       data.elasticSearchResult = {
         snippet: filterXss.process(snippet),
-        path: filterXss.process(pathMatch),
+        displayPath: filterXss.process(pathMatch),
       };
     });
     return esResult;
