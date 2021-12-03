@@ -29,7 +29,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     const delayDebounceFn = setTimeout(async() => {
       try {
         const { data } = await apiv3Get('/check_username', { username });
-        if (data.success) {
+        if (data.ok) {
           setUsernameAvailable(data.valid);
         }
       }

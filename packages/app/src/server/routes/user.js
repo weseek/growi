@@ -56,20 +56,23 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
-  api.checkUsername = function(req, res) {
+  api.checkUsername = async function(req, res) {
     const username = req.query.username;
 
-    User.findUserByUsername(username)
+    let valid = false;
+    await User.findUserByUsername(username)
       .then((userData) => {
         if (userData) {
-          return res.json({ valid: false, success: true });
+          valid = false;
         }
-
-        return res.json({ valid: true, success: true });
+        else {
+          valid = true;
+        }
       })
       .catch((err) => {
-        return res.json({ valid: true, success: true });
+        valid = false;
       });
+    return res.json(ApiResponse.success({ valid }));
   };
 
   /**
