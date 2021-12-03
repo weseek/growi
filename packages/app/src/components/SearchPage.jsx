@@ -173,9 +173,9 @@ class SearchPage extends React.Component {
     }
   }
 
-  selectPage= (pageId) => {
+  selectPage = (pageId) => {
     const index = this.state.searchedPages.findIndex((page) => {
-      return page._id === pageId;
+      return page.pageData._id === pageId;
     });
     this.setState({
       focusedPage: this.state.searchedPages[index],
