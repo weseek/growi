@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture, FootstampIcon } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
@@ -14,8 +14,6 @@ import { useSWRxRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import LinkedPagePath from '~/models/linked-page-path';
-
-import FootstampIcon from '../FootstampIcon';
 
 
 import FormattedDistanceDate from '../FormattedDistanceDate';

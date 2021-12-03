@@ -1,4 +1,6 @@
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+const { default: loggerFactory } = require('~/utils/logger');
+
+const logger = loggerFactory('growi:routes:search');
 
 /**
  * @swagger
@@ -137,54 +139,19 @@ module.exports = function(crowi, app) {
 
     const searchOpts = { ...paginateOpts, type };
 
-    const result = {};
+    let searchResult;
+    let delegatorName;
     try {
-      const esResult = searchService.formatResult(
-        await searchService.searchKeyword(keyword, user, userGroups, searchOpts),
-      );
+      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
+    }
+    catch (err) {
+      logger.error('Failed to search', err);
+      return res.json(ApiResponse.error(err));
+    }
 
-      // create score map for sorting
-      // key: id , value: score
-      const scoreMap = {};
-      for (const esPage of esResult.data) {
-        scoreMap[esPage._id] = esPage._score;
-      }
-
-      const ids = esResult.data.map((page) => { return page._id });
-      const findResult = await Page.findListByPageIds(ids);
-
-      // add tags data to page
-      findResult.pages.map((pageData) => {
-        const data = esResult.data.find((data) => {
-          return pageData.id === data._id;
-        });
-        pageData._doc.tags = data._source.tag_names;
-        return pageData;
-      });
-
-      result.meta = esResult.meta;
-      result.totalCount = findResult.totalCount;
-      result.data = findResult.pages
-        .map((pageData) => {
-          if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
-            pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
-          }
-
-          const data = esResult.data.find((data) => {
-            return pageData.id === data._id;
-          });
-
-          const pageMeta = {
-            bookmarkCount: data._source.bookmark_count || 0,
-            elasticSearchResult: data.elasticSearchResult,
-          };
-
-          return { pageData, pageMeta };
-        })
-        .sort((page1, page2) => {
-          // note: this do not consider NaN
-          return scoreMap[page2._id] - scoreMap[page1._id];
-        });
+    let result;
+    try {
+      result = await searchService.formatSearchResult(searchResult, delegatorName);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

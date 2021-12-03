@@ -12,6 +12,7 @@ import { PageDocument, PageModel } from '../../models/page';
 import {
   MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
 } from '../../interfaces/search';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -22,6 +23,8 @@ const BULK_REINDEX_SIZE = 100;
 type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data> {
+
+  name!: SearchDelegatorName.DEFAULT
 
   configManager!: any
 
@@ -36,6 +39,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   esUri: string
 
   constructor(configManager, socketIoService) {
+    this.name = SearchDelegatorName.DEFAULT;
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 

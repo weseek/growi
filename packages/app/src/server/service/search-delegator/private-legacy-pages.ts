@@ -6,17 +6,18 @@ import { IPage } from '~/interfaces/page';
 import {
   MetaData, Result, SearchableData, SearchDelegator,
 } from '../../interfaces/search';
+import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
 
-type Data = {
-  pages: IPage[]
-}
-
-class PrivateLegacyPagesDelegator implements SearchDelegator<Data> {
+class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
 
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES
 
-  async search(data: SearchableData | null, user, userGroups, option): Promise<Result<Data> & MetaData> {
+  constructor() {
+    this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
+  }
+
+  async search(_data: SearchableData | null, user, userGroups, option): Promise<Result<IPage> & MetaData> {
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -32,18 +33,24 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<Data> {
 
     const queryBuilder = new PageQueryBuilder(Page.find());
 
-    const pages: PageDocument[] = await queryBuilder
+    const _pages: PageDocument[] = await queryBuilder
       .addConditionAsNonRootPage()
       .addConditionAsNotMigrated()
       .addConditionToFilteringByViewer(user, userGroups)
       .addConditionToPagenate(offset, limit)
       .query
-      .lean()
+      .populate('lastUpdateUser')
       .exec();
 
+    const pages = _pages.map((page) => {
+      page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+      return page;
+    });
+
     return {
-      data: {
-        pages,
+      data: pages,
+      meta: {
+        total: pages.length,
       },
     };
   }
