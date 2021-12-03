@@ -329,10 +329,6 @@ export default class PageContainer extends Container {
     }
   }
 
-  get navigationContainer() {
-    return this.appContainer.getContainer('NavigationContainer');
-  }
-
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
