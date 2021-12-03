@@ -37,7 +37,7 @@ class CommentService {
         const page = await Page.findById(savedComment.page);
 
         const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity, page.path);
+        await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -83,14 +83,20 @@ class CommentService {
     return activity;
   };
 
-  private createAndSendNotifications = async function(activity, pagePath) {
+  private createAndSendNotifications = async function(activity, page) {
+
+    const snapshot = JSON.stringify({
+      path: page.path,
+      creator: page.creator,
+      lastUpdateUser: page.lastUpdateUser,
+    });
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, pagePath);
+    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 
