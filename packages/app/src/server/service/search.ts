@@ -1,4 +1,5 @@
 import RE2 from 're2';
+import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 
@@ -10,9 +11,21 @@ import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
 import loggerFactory from '~/utils/logger';
+import { PageModel } from '../models/page';
+import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import { IPageHasId } from '~/interfaces/page';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
+
+// options for filtering xss
+const filterXssOptions = {
+  whiteList: {
+    em: ['class'],
+  },
+};
+
+const filterXss = new xss.FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
@@ -20,6 +33,27 @@ const normalizeQueryString = (_queryString: string): string => {
 
   return queryString;
 };
+
+export type FormattedSearchResult = {
+  data: {
+    pageData: IPageHasId
+    pageMeta: {
+      bookmarkCount?: number
+      elasticsearchResult?: {
+        snippet: string
+        highlightedPath: string
+      }
+    }
+  }[]
+
+  totalCount: number
+
+  meta: {
+    total: number
+    took?: number
+    count?: number
+  }
+}
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -96,6 +130,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('addSeenUsers', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
@@ -318,6 +353,100 @@ class SearchService implements SearchQueryParser, SearchResolver {
     };
 
     return terms;
+  }
+
+  // TODO: optimize the way to check isFormattable e.g. check data schema of searchResult
+  // So far, it determines by delegatorName passed by searchService.searchKeyword
+  checkIsFormattable(searchResult, delegatorName): boolean {
+    return delegatorName === SearchDelegatorName.DEFAULT;
+  }
+
+  /**
+   * formatting result
+   */
+  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<FormattedSearchResult> {
+    if (!this.checkIsFormattable(searchResult, delegatorName)) {
+      const data = searchResult.data.map((page) => {
+        return {
+          pageData: page,
+          pageMeta: {},
+        };
+      });
+
+      return {
+        data,
+        totalCount: data.length,
+        meta: searchResult.meta,
+      };
+    }
+
+    /*
+     * Format ElasticSearch result
+     */
+
+    const Page = this.crowi.model('Page') as PageModel;
+    const User = this.crowi.model('User');
+    const result = {} as FormattedSearchResult;
+
+    // create score map for sorting
+    // key: id , value: score
+    const scoreMap = {};
+    for (const esPage of searchResult.data) {
+      scoreMap[esPage._id] = esPage._score;
+    }
+
+    const ids = searchResult.data.map((page) => { return page._id });
+    const findResult = await Page.findListByPageIds(ids);
+
+    // add tags data to page
+    findResult.pages.map((pageData) => {
+      const data = searchResult.data.find((data) => {
+        return pageData.id === data._id;
+      });
+      pageData._doc.tags = data._source.tag_names;
+      return pageData;
+    });
+
+    result.meta = searchResult.meta;
+    result.totalCount = findResult.totalCount;
+    result.data = findResult.pages
+      .map((pageData) => {
+        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
+          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
+        }
+
+        const data = searchResult.data.find((data) => {
+          return pageData.id === data._id;
+        });
+
+        // increment elasticSearchResult
+        let elasticSearchResult;
+        const highlightData = data._highlight;
+        if (highlightData != null) {
+          const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+          const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+          elasticSearchResult = {
+            snippet: filterXss.process(snippet),
+            highlightedPath: filterXss.process(pathMatch),
+          };
+        }
+
+        const pageMeta = {
+          bookmarkCount: data._source.bookmark_count || 0,
+          elasticSearchResult,
+        };
+
+        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
+
+        return { pageData, pageMeta };
+      })
+      .sort((page1, page2) => {
+        // note: this do not consider NaN
+        return scoreMap[page2.pageData._id] - scoreMap[page1.pageData._id];
+      });
+
+    return result;
   }
 
 }

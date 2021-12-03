@@ -329,6 +329,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
+    const seenUsersCount = page.seenUsers.length || 0;
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -337,6 +338,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       comments: page.comments,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
+      seenUsers_count: seenUsersCount,
       like_count: page.liker.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
@@ -596,14 +598,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
-        return { _id: elm._id, _score: elm._score, _source: elm._source };
+        return {
+          _id: elm._id,
+          _score: elm._score,
+          _source: elm._source,
+          _highlight: elm.highlight,
+        };
       }),
     };
   }
 
   createSearchQuerySortedByUpdatedAt(option) {
     // getting path by default is almost for debug
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -624,7 +631,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   createSearchQuerySortedByScore(option?) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names', 'comments'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -860,6 +867,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
           missing: 0,
         },
         boost_mode: 'sum',
+      },
+    };
+  }
+
+  appendHighlight(query) {
+    query.body.highlight = {
+      fields: {
+        '*': {
+          fragment_size: 40,
+          fragmenter: 'simple',
+          pre_tags: ["<em class='highlighted-keyword'>"],
+          post_tags: ['</em>'],
+        },
       },
     };
   }

@@ -25,6 +25,37 @@ const markTarget = (children: ItemNode[], targetId: string): void => {
   return;
 };
 
+const ItemContol: FC = () => {
+  return (
+    <>
+      <button
+        type="button"
+        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        data-toggle="dropdown"
+      >
+        <i className="icon-options-vertical text-muted"></i>
+      </button>
+      <button
+        type="button"
+        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        data-toggle="dropdown"
+      >
+        <i className="icon-plus text-muted"></i>
+      </button>
+    </>
+  );
+};
+
+const ItemCount: FC = () => {
+  return (
+    <>
+      <span className="grw-pagetree-count badge badge-pill badge-light">
+        10
+      </span>
+    </>
+  );
+};
+
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { itemNode, isOpen: _isOpen = false } = props;
 
@@ -86,11 +117,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         >
           <i className="icon-control-play"></i>
         </button>
-        <a href={page._id} className="flex-grow-1">
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
           <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>
         </a>
-        <div className="grw-pagetree-control">
-          Ctrl
+        <div className="grw-pagetree-count-wrapper">
+          <ItemCount />
+        </div>
+        <div className="grw-pagetree-control d-none">
+          <ItemContol />
         </div>
       </div>
       {

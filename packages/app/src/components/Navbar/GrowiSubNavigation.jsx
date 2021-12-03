@@ -1,88 +1,81 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
-import { DevidedPagePath } from '@growi/core';
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import LinkedPagePath from '~/models/linked-page-path';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
+import {
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
+} from '~/stores/ui';
+import EditorContainer from '~/client/services/EditorContainer';
 
-import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
-import SubnavButtons from './SubNavButtons';
+import SubNavButtons from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
-const PagePathNav = ({
-  // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isEditorMode, isCompactMode,
-}) => {
+import PagePathNav from '../PagePathNav';
 
-  const dPagePath = new DevidedPagePath(pagePath, false, true);
-
-  let formerLink;
-  let latterLink;
-
-  // one line
-  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
-    const linkedPagePath = new LinkedPagePath(pagePath);
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
-  }
-  // two line
-  else {
-    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
-  }
-
-  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
-  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
-
-  return (
-    <div className="grw-page-path-nav">
-      {formerLink}
-      <span className="d-flex align-items-center">
-        <h1 className="m-0">{latterLink}</h1>
-        <div className="mx-2">
-          <CopyDropdown
-            pageId={pageId}
-            pagePath={pagePath}
-            dropdownToggleId={copyDropdownId}
-            dropdownToggleClassName={copyDropdownToggleClassName}
-          >
-            <i className="ti-clipboard"></i>
-          </CopyDropdown>
-        </div>
-      </span>
-    </div>
-  );
-};
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiPost } from '~/client/util/apiv1-client';
 
 const GrowiSubNavigation = (props) => {
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+
   const {
-    appContainer, navigationContainer, pageContainer, isCompactMode,
+    appContainer, pageContainer, editorContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
+    pageId,
+    revisionId,
+    path,
+    isDeletable,
+    isAbleToDeleteCompletely,
+    createdAt,
+    creator,
+    updatedAt,
+    revisionAuthor,
+    isPageExist,
+    isTrashPage,
+    tags,
   } = pageContainer.state;
 
-  const { isGuestUser } = appContainer;
-  const isEditorMode = editorMode !== 'view';
+  const { isGuestUser, isSharedUser } = appContainer;
+  const isEditorMode = editorMode !== EditorMode.View;
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
+  const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
+  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser;
   function onPageEditorModeButtonClicked(viewType) {
-    navigationContainer.setEditorMode(viewType);
+    mutateEditorMode(viewType);
   }
+
+  const tagsUpdatedHandler = useCallback(async(newTags) => {
+    // It will not be reflected in the DB until the page is refreshed
+    if (editorMode === 'edit') {
+      return editorContainer.setState({ tags: newTags });
+    }
+
+    try {
+      const { tags } = await apiPost('/tags.update', { pageId, tags: newTags });
+
+      // update pageContainer.state
+      pageContainer.setState({ tags });
+      // update editorContainer.state
+      editorContainer.setState({ tags });
+
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err, 'fail to update tags');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageId]);
 
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
@@ -98,10 +91,10 @@ const GrowiSubNavigation = (props) => {
         <div className="grw-path-nav-container">
           { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
-              <TagLabels editorMode={editorMode} />
+              <TagLabels tags={tags} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
+          <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
@@ -110,7 +103,15 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubnavButtons isCompactMode={isCompactMode} />
+            <SubNavButtons
+              isCompactMode={isCompactMode}
+              pageId={pageId}
+              revisionId={revisionId}
+              path={path}
+              isDeletable={isDeletable}
+              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+              willShowPageManagement={isAbleToShowPageManagement}
+            />
           </div>
           <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (
@@ -136,25 +137,22 @@ const GrowiSubNavigation = (props) => {
           </ul>
         ) }
       </div>
-
     </div>
   );
-
 };
 
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer, EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
 };
 
-export default withTranslation()(GrowiSubNavigationWrapper);
+export default GrowiSubNavigationWrapper;

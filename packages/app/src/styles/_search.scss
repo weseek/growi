@@ -1,6 +1,17 @@
-.search-listpage-icon {
-  font-size: 16px;
-  color: $gray-400;
+.search-page-nav {
+  background-color: #f7f7f7;
+}
+
+.search-group-submit-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
 }
 
 .search-listpage-clear {
@@ -102,17 +113,19 @@
   }
 
   .btn-group-submit-search {
-    position: absolute;
-    top: 0;
-    right: 0;
+    @extend .search-group-submit-button;
+  }
+}
 
-    z-index: 3;
+.grw-search-form-in-search-result-page {
+  .btn-group-submit-search {
+    @extend .search-group-submit-button;
+  }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+  button {
+    &:focus {
+      box-shadow: none !important;
+    }
   }
 }
 
@@ -158,14 +171,15 @@
 .search-result {
   .search-result-list {
     position: sticky;
-    top: 64px;
+    top: 0px;
     height: 100vh;
     overflow-y: scroll;
 
     .nav.nav-pills {
-      > li {
+      > .page-list-li {
         > a {
-          padding: 2px 8px;
+          height: 123px;
+          padding: 2px 4px;
           word-break: break-all;
           border-radius: 0;
 
@@ -175,20 +189,31 @@
           }
           &.active {
             padding-right: 5px;
-            border-right: solid 3px transparent;
+            border-left: solid 3px transparent;
           }
           > * {
             margin-right: 3px;
+          }
+        }
+        .page-list-meta {
+          > span {
+            margin-right: 12px;
+          }
+          .footstamp-icon {
+            margin-right: 2px;
           }
         }
       }
     }
 
     .search-result-meta {
-      margin-bottom: 10px;
       font-weight: bold;
     }
-
+    .search-result-select-group {
+      > select {
+        max-width: 8rem;
+      }
+    }
     .search-result-list-delete-checkbox {
       margin: 0 10px 0 0;
       vertical-align: middle;
@@ -222,6 +247,7 @@
   }
 }
 
+// 2021/9/22 TODO: Remove after moving to SearchResult
 .search-page-input {
   position: sticky;
   top: 15px;
@@ -241,6 +267,10 @@
   caption {
     display: table-header-group;
   }
+}
+
+.search-page-item {
+  height: 130px;
 }
 
 @include media-breakpoint-down(sm) {
