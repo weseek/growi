@@ -47,8 +47,7 @@ export default class PageContainer extends Container {
 
     this.state = {
       // local page data
-      markdown: 'markdown test', // will be initialized after initStateMarkdown()
-      // markdown: null, // will be initialized after initStateMarkdown()
+      markdown: null, // will be initialized after initStateMarkdown()
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
@@ -88,8 +87,7 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
-      remoteRevisionBody: 'remoteRevisionBody',
-      // remoteRevisionBody: null,
+      remoteRevisionBody: null,
       remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
@@ -97,8 +95,7 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isConflictDiffModalOpen: true,
-      // isConflictDiffModalOpen: false,
+      isConflictDiffModalOpen: false,
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
@@ -691,7 +688,7 @@ export default class PageContainer extends Container {
 
   async resolveConflictAndReload(pageId, revisionId, markdown, optionsToSave) {
     await this.resolveConflict(pageId, revisionId, markdown, optionsToSave);
-    // window.location.reload();
+    window.location.reload();
   }
 
 }
