@@ -10,9 +10,9 @@ export type IPageSearchResultData = {
   pageData: IPageHasId,
   pageMeta: {
     bookmarkCount: number,
-    elasticSearchResult: {
+    elasticSearchResult?: {
       snippet: string,
-      matchedPath: string,
+      highlightedPath: string,
     },
   },
 }

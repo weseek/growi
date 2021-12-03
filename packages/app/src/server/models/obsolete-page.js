@@ -383,7 +383,7 @@ export const getPageSchema = (crowi) => {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('Already liked'));
       }
     }));
   };
@@ -404,7 +404,7 @@ export const getPageSchema = (crowi) => {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('Already unliked'));
       }
     }));
   };
