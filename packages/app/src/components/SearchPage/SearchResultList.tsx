@@ -12,12 +12,12 @@ type Props = {
   activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
-  focusedPage?: IPageSearchResultData,
+  focusedSearchResultData?: IPageSearchResultData,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedPage } = props;
-  const focusedPageId = (focusedPage !== undefined && focusedPage.pageData !== undefined) ? focusedPage.pageData._id : '';
+  const { focusedSearchResultData } = props;
+  const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <>
       {props.pages.map((page) => {

@@ -41,7 +41,6 @@ export type FormattedSearchResult = {
       bookmarkCount?: number
       elasticsearchResult?: {
         snippet?: string
-        matchedPath?: string
         highlightedPath?: string
       }
     }
@@ -429,8 +428,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
           elasticSearchResult = {
             snippet: filterXss.process(snippet),
-            // todo: use filter xss.process() for matchedPath;
-            matchedPath: pathMatch,
+            highlightedPath: filterXss.process(pathMatch),
           };
         }
 
@@ -438,6 +436,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
           bookmarkCount: data._source.bookmark_count || 0,
           elasticSearchResult,
         };
+
+        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
 
         return { pageData, pageMeta };
       })

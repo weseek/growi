@@ -6,10 +6,11 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
-import PageContainer from '~/client/services/PageContainer';
+import { apiv3Put } from '~/client/util/apiv3-client';
+
 import AppContainer from '~/client/services/AppContainer';
 
-class BookmarkButton extends React.Component {
+class LegacyBookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,24 +19,17 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const { appContainer, pageContainer } = this.props;
-    const { isGuestUser } = appContainer;
 
-    if (isGuestUser) {
+    if (this.props.onBookMarkClicked == null) {
       return;
     }
-
-    try {
-      pageContainer.toggleBookmark();
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.props.onBookMarkClicked();
   }
 
-
   render() {
-    const { appContainer, pageContainer, t } = this.props;
+    const {
+      appContainer, t, isBookmarked, sumOfBookmarks,
+    } = this.props;
     const { isGuestUser } = appContainer;
 
     return (
@@ -45,12 +39,14 @@ class BookmarkButton extends React.Component {
           id="bookmark-button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
-          ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>
-          <span className="total-bookmarks">
-            {pageContainer.state.sumOfBookmarks}
-          </span>
+          {sumOfBookmarks && (
+            <span className="total-bookmarks">
+              {sumOfBookmarks}
+            </span>
+          )}
         </button>
 
         {isGuestUser && (
@@ -67,19 +63,24 @@ class BookmarkButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
+const LegacyBookmarkButtonWrapper = withUnstatedContainers(LegacyBookmarkButton, [AppContainer]);
 
-BookmarkButton.propTypes = {
+LegacyBookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  pageId: PropTypes.string,
+  isBookmarked: PropTypes.bool.isRequired,
+  sumOfBookmarks: PropTypes.number,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
+  onBookMarkClicked: PropTypes.func,
 };
 
-BookmarkButton.defaultProps = {
+LegacyBookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default withTranslation()(BookmarkButtonWrapper);
+const BookmarkButton = (props) => {
+  return <LegacyBookmarkButtonWrapper {...props}></LegacyBookmarkButtonWrapper>;
+};
+
+export default withTranslation()(BookmarkButton);

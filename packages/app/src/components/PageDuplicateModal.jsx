@@ -11,7 +11,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
@@ -20,11 +19,12 @@ import DuplicatePathsTable from './DuplicatedPathsTable';
 const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const {
+    t, appContainer, pageId, path,
+  } = props;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { pageId, path } = pageContainer.state;
   const { crowi } = appContainer.config;
 
   const [pageNameInput, setPageNameInput] = useState(path);
@@ -188,7 +188,7 @@ const PageDuplicateModal = (props) => {
             )}
           </div>
           <div>
-            {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isDuplicateRecursively && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
             {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
           </div>
         </div>
@@ -213,16 +213,18 @@ const PageDuplicateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
+const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer]);
 
 
 PageDuplicateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+
+  pageId: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FootstampIcon = () => (
+export const FootstampIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -27,5 +27,3 @@ const FootstampIcon = () => (
     <path d="M13.49,7.57a.81.81,0,0,0-.8.71l-.1.71a.82.82,0,0,0,.7.91h.11a.81.81,0,0,0,.8-.71l.1-.71a.81.81,0,0,0-.7-.91Z" />
   </svg>
 );
-
-export default FootstampIcon;
