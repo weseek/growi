@@ -5,8 +5,6 @@ import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
 
@@ -103,7 +101,7 @@ const StickyStretchableScroller = (props) => {
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
-    resetScrollbar();
+    setTimeout(resetScrollbar, 100);
   }, [resetScrollbar]);
 
   // setup effect by sticky event
@@ -138,13 +136,6 @@ const StickyStretchableScroller = (props) => {
       window.removeEventListener('resize', resizeHandler);
     };
   }, [resetScrollbarDebounced]);
-
-  // setup effect by isScrollTop
-  // useEffect(() => {
-  //   if (navigationContainer.state.isScrollTop) {
-  //     resetScrollbar();
-  //   }
-  // }, [navigationContainer.state.isScrollTop, resetScrollbar]);
 
   // setup effect by update props
   useEffect(() => {

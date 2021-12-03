@@ -24,11 +24,11 @@ export default class NavigationContainer extends Container {
     this.state = {
       // editorMode: 'view',
 
-      isScrollTop: true,
+      // isScrollTop: true,
     };
 
     // this.setEditorMode = this.setEditorMode.bind(this);
-    this.initScrollEvent();
+    // this.initScrollEvent();
   }
 
   /**
@@ -43,18 +43,18 @@ export default class NavigationContainer extends Container {
   }
 
   initScrollEvent() {
-    window.addEventListener('scroll', () => {
-      const currentYOffset = window.pageYOffset;
+    // window.addEventListener('scroll', () => {
+    //   const currentYOffset = window.pageYOffset;
 
-      // original throttling
-      if (SCROLL_THRES_SKIP < currentYOffset) {
-        return;
-      }
+    //   // original throttling
+    //   if (SCROLL_THRES_SKIP < currentYOffset) {
+    //     return;
+    //   }
 
-      this.setState({
-        isScrollTop: currentYOffset === 0,
-      });
-    });
+    //   this.setState({
+    //     isScrollTop: currentYOffset === 0,
+    //   });
+    // });
   }
 
   // setEditorMode(editorMode) {
