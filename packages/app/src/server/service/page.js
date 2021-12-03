@@ -545,6 +545,8 @@ class PageService {
         redirectTo: newPath,
         revision: revisionId,
       });
+
+      this.pageEvent.emit('delete', page, user);
     });
 
     try {
