@@ -75,12 +75,11 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
-
-  const isPathIncludedHtml = pageMeta.elasticSearchResult.highlightedPath !== '';
-  const dPagePath = new DevidedPagePath(pageData.path, false, true);
-  const pagePathElem = <PagePathLabel path={pageMeta.elasticSearchResult.highlightedPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
-  const pageTitle = pageMeta.elasticSearchResult.highlightedPath !== ''
-    ? new DevidedPagePath(pageMeta.elasticSearchResult.highlightedPath, false, true).latter : dPagePath.latter;
+  const path = pageMeta.elasticSearchResult.path;
+  const isPathIncludedHtml = path.includes('<em class="highlighted-keyword">');
+  const pagePathElem = <PagePathLabel path={path} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
+  const dPagePath = new DevidedPagePath(path, false, true);
+  const pageTitle = dPagePath.latter;
 
   const onClickInvoked = (pageId) => {
     if (props.onClickInvoked != null) {

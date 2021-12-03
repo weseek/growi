@@ -12,7 +12,7 @@ export type IPageSearchResultData = {
     bookmarkCount: number,
     elasticSearchResult: {
       snippet: string,
-      highlightedPath: string,
+      path: string,
     },
   },
 }
