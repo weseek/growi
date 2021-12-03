@@ -4,13 +4,11 @@ import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
-import { CheckboxType } from '../../interfaces/search';
-import {
-  SORT_AXIS, SORT_AXIS_CONSTS, SORT_ORDER, SORT_ORDER_CONSTS,
-} from '~/utils/search-axis-utils';
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
-const { score: sortByScore, updatedAt: sortByUpdatedAt, createdAt: sortByCreatedAt } = SORT_AXIS_CONSTS;
-const { desc, asc } = SORT_ORDER_CONSTS;
+
+const { RELATION_SCORE, UPDATED_AT, CREATED_AT } = SORT_AXIS;
+const { DESC, ASC } = SORT_ORDER;
 
 type Props = {
   searchingKeyword: string,
@@ -51,17 +49,17 @@ const SearchControl: FC <Props> = (props: Props) => {
     if (props.onChangeSortInvoked != null) {
       const getNextSort = (sort: SORT_AXIS) => {
         switch (sort) {
-          case sortByScore:
-            return sortByUpdatedAt;
-          case sortByUpdatedAt:
-            return sortByCreatedAt;
-          case sortByCreatedAt:
+          case RELATION_SCORE:
+            return UPDATED_AT;
+          case UPDATED_AT:
+            return CREATED_AT;
+          case CREATED_AT:
           default:
-            return sortByScore;
+            return RELATION_SCORE;
         }
       };
-      const nextSort = props.order === desc ? props.sort : getNextSort(props.sort);
-      const nextOrder = nextSort === props.sort ? asc : desc;
+      const nextSort = props.order === DESC ? props.sort : getNextSort(props.sort);
+      const nextOrder = nextSort === props.sort ? ASC : DESC;
       props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };

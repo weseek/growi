@@ -13,16 +13,26 @@ import {
   MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
 } from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-
-const {
-  SORT_AXIS, SORT_AXIS_CONSTS, SORT_ORDER, SORT_ORDER_CONSTS,
-} = require('~/utils/search-axis-utils');
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
 const BULK_REINDEX_SIZE = 100;
+
+const { RELATION_SCORE, CREATED_AT, UPDATED_AT } = SORT_AXIS;
+const { DESC, ASC } = SORT_ORDER;
+
+const ES_SORT_AXIS = {
+  [RELATION_SCORE]: '_score',
+  [CREATED_AT]: 'created_at',
+  [UPDATED_AT]: 'updated_at',
+};
+const ES_SORT_ORDER = {
+  [DESC]: 'desc',
+  [ASC]: 'asc',
+};
 
 type Data = any;
 
@@ -615,12 +625,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   /**
    * create search query for Elasticsearch
    *
-   * @param {SORT_AXIS} sort sort axis
-   * @param {SORT_ORDER} order sort order
    * @param {object | undefined} option optional paramas
    * @returns {object} query object
    */
-  createSearchQuery(sort, order, option?) {
+  createSearchQuery(option?) {
     let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
@@ -631,12 +639,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       index: this.aliasName,
       type: 'pages',
       body: {
-        sort: [{ [sort]: { order } }],
         query: {}, // query
         _source: fields,
       },
     };
-    this.appendResultSize(query);
 
     return query;
   }
@@ -646,8 +652,22 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     query.size = size || DEFAULT_LIMIT;
   }
 
+  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER) {
+    // default sort order is score descending
+    const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
+    const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
+    query.body.sort = { [sort]: { order } };
+  }
+
+  convertSortQuery(sortAxis) {
+    switch (sortAxis) {
+      case RELATION_SCORE:
+        return '_score';
+    }
+  }
+
   initializeBoolQuery(query) {
-    // query is created by ScreateSearchQuery()
+    // query is created by createSearchQuery()
     if (!query.body.query.bool) {
       query.body.query.bool = {};
     }
@@ -879,15 +899,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     const from = option.offset || null;
     const size = option.limit || null;
-    // default sort order is score descending
-    const sort = option.sort || SORT_AXIS_CONSTS.score;
-    const order = option.order || SORT_ORDER_CONSTS.desc;
-    const query = this.createSearchQuery(sort, order);
+    const sort = option.sort || null;
+    const order = option.order || null;
+    const query = this.createSearchQuery();
     this.appendCriteriaForQueryString(query, terms);
 
     await this.filterPagesByViewer(query, user, userGroups);
 
     this.appendResultSize(query, from, size);
+
+    this.appendSortOrder(query, sort, order);
 
     await this.appendFunctionScore(query, queryString);
 
