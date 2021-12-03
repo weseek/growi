@@ -15,6 +15,9 @@ import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '~/client/services/EditorContainer';
 
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+
 const logger = loggerFactory('growi:PageEditor');
 
 class PageEditor extends React.Component {
@@ -132,7 +135,7 @@ class PageEditor extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(this.state.markdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -186,7 +189,7 @@ class PageEditor extends React.Component {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
+        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
         editorContainer.setState({ grant: res.page.grant });
       }
     }
@@ -347,12 +350,20 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorWrapper = (props) => {
+  const { data } = useEditorMode();
+  return <PageEditorHOCWrapper {...props} editorMode={data} />;
+};
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
 };
 
 export default PageEditorWrapper;
