@@ -5,11 +5,15 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-import { IPageForPageDeleteModal } from '../interfaces/page';
-
 // import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+
+export type IPageForPageDeleteModal = {
+  pageId: string,
+  revisionId: string,
+  path: string
+}
 
 const deleteIconAndKey = {
   completely: {

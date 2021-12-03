@@ -19,9 +19,3 @@ export type IPage = {
 export type IPageHasId = IPage & {
   _id: string,
 };
-
-export type IPageForPageDeleteModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
-}
