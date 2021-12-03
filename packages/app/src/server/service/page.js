@@ -215,6 +215,8 @@ class PageService {
         });
       }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
+
+      this.pageEvent.emit('rename', page, user);
     });
 
     try {
