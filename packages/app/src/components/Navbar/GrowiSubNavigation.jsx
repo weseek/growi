@@ -1,10 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { DevidedPagePath } from '@growi/core';
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import LinkedPagePath from '~/models/linked-page-path';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -148,7 +144,7 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer, EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {

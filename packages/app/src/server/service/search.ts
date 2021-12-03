@@ -13,7 +13,7 @@ import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages
 import loggerFactory from '~/utils/logger';
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
-import { IPage } from '~/interfaces/page';
+import { IPageHasId } from '~/interfaces/page';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -36,12 +36,12 @@ const normalizeQueryString = (_queryString: string): string => {
 
 export type FormattedSearchResult = {
   data: {
-    pageData: IPage
+    pageData: IPageHasId
     pageMeta: {
       bookmarkCount?: number
       elasticsearchResult?: {
-        snippet?: string
-        highlightedPath?: string
+        snippet: string
+        highlightedPath: string
       }
     }
   }[]
