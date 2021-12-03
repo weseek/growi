@@ -605,6 +605,9 @@ body.pathname-sidebar {
             background-color: $bgcolor-search-item-active;
             border-color: $bordercolor-search-item-left-active;
           }
+          .search-result-page-title {
+            color: $color-global;
+          }
         }
       }
       .page-list-meta {

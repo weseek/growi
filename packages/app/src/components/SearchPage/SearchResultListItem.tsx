@@ -108,7 +108,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2">{dPagePath.latter}</span>
+                <span className="mx-2 search-result-page-title">{dPagePath.latter}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
