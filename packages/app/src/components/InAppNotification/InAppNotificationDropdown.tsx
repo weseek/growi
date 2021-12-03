@@ -1,15 +1,19 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, {
+  useState, useEffect, FC, useCallback,
+} from 'react';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import InAppNotificationList from './InAppNotificationList';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
-import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
+
+import { toastError } from '~/client/util/apiNotification';
 
 const logger = loggerFactory('growi:InAppNotificationDropdown');
 
@@ -20,57 +24,54 @@ type Props = {
 const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const [count, setCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
-  const { data: inAppNotificationData, mutate } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
-  useEffect(() => {
-    initializeSocket(props);
-    fetchNotificationStatus();
-  }, []);
 
-  const initializeSocket = (props) => {
+  const initializeSocket = useCallback((props) => {
     const socket = props.socketIoContainer.getSocket();
-    socket.on('notificationUpdated', (data: { userId: string, count: number }) => {
-      setCount(data.count);
+    socket.on('notificationUpdated', () => {
+      mutateInAppNotificationUnreadStatusCount();
     });
-  };
+  }, [mutateInAppNotificationUnreadStatusCount]);
 
   const updateNotificationStatus = async() => {
     try {
       await apiv3Post('/in-app-notification/read');
-      setCount(0);
     }
     catch (err) {
+      toastError(err);
       logger.error(err);
     }
   };
 
-  const fetchNotificationStatus = async() => {
-    try {
-      const res = await apiv3Get('/in-app-notification/status');
-      const { count } = res.data;
-      setCount(count);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  };
+  useEffect(() => {
+    initializeSocket(props);
+  }, [initializeSocket, props]);
 
-  const toggleDropdownHandler = () => {
-    if (!isOpen && count > 0) {
-      updateNotificationStatus();
+
+  const toggleDropdownHandler = async() => {
+    if (!isOpen && inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
+      await updateNotificationStatus();
+      mutateInAppNotificationUnreadStatusCount();
     }
 
     const newIsOpenState = !isOpen;
     if (newIsOpenState) {
-      mutate();
+      mutateInAppNotificationData();
     }
     setIsOpen(newIsOpenState);
   };
 
-  const badge = count > 0 ? <span className="badge badge-pill badge-danger grw-notification-badge">{count}</span> : '';
+  let badge;
+  if (inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
+    badge = <span className="badge badge-pill badge-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
+  }
+  else {
+    badge = '';
+  }
 
   return (
     <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
