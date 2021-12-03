@@ -69,7 +69,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   }, []);
 
   const actionUsers = getActionUsers();
-  const pagePath = { path: notification.pageIdSnapshot };
+  const pagePath = { path: notification.snapshot };
 
   const actionType: string = notification.action;
   let actionMsg: string;

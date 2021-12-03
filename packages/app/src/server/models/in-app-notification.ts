@@ -20,7 +20,7 @@ export interface InAppNotificationDocument extends Document {
   activities: ActivityDocument[]
   status: string
   createdAt: Date
-  pageIdSnapshot: string
+  snapshot: string
 }
 
 
@@ -74,7 +74,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
     type: Date,
     default: Date.now,
   },
-  pageIdSnapshot: {
+  snapshot: {
     type: String,
     require: true,
   },

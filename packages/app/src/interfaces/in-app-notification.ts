@@ -16,7 +16,7 @@ export interface IInAppNotification {
   status: InAppNotificationStatuses
   actionUsers: IUser[]
   createdAt: Date
-  pageIdSnapshot: string
+  snapshot: string
 }
 
 /*
