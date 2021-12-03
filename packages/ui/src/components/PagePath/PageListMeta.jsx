@@ -23,12 +23,12 @@ export class PageListMeta extends React.Component {
     }
 
     let commentCount;
-    if (page.commentCount > 0) {
+    if (page.commentCount != null && page.commentCount > 0) {
       commentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
     let likerCount;
-    if (page.liker.length > 0) {
+    if (page.liker != null && page.liker.length > 0) {
       likerCount = <span><i className="icon-like" />{page.liker.length}</span>;
     }
 

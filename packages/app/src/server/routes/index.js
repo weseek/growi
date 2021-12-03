@@ -146,7 +146,7 @@ module.exports = function(crowi, app) {
   app.get('/download/:id([0-9a-z]{24})'    , loginRequired, attachment.api.download);
 
   app.get('/_search'                 , loginRequired , search.searchPage);
-  app.get('/_api/search'             , accessTokenParser , loginRequired , search.api.search);
+  app.get('/_api/search'             , accessTokenParser , loginRequired, search.api.search);
 
   app.get('/_api/check_username'           , user.api.checkUsername);
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);

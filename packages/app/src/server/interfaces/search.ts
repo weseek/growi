@@ -29,11 +29,14 @@ export interface SearchDelegator<T = unknown> {
 }
 
 export type Result<T> = {
-  data: T
+  data: T[]
 }
 
 export type MetaData = {
-  meta?: { [key:string]: any }
+  meta: {
+    [key:string]: any,
+    total: number,
+  }
 }
 
 export type SearchableData = {
