@@ -34,7 +34,12 @@ class CommentService {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
+
         const page = await Page.findById(savedComment.page);
+        if (page == null) {
+          logger.error('Page is not found');
+          return;
+        }
 
         const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
         await this.createAndSendNotifications(activity, page);
