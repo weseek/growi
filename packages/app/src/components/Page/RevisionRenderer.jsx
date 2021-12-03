@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 
 import RevisionBody from './RevisionBody';
 
@@ -35,7 +35,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords, navigationContainer } = this.props;
+    const { markdown, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -46,7 +46,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
-    navigationContainer.addSmoothScrollEvent(HeaderLinkArray);
+    addSmoothScrollEvent(HeaderLinkArray);
 
     const { interceptorManager } = this.props.appContainer;
 
@@ -119,7 +119,6 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
 LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
@@ -129,7 +128,7 @@ LegacyRevisionRenderer.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer, NavigationContainer]);
+const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer]);
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

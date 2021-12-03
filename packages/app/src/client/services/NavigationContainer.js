@@ -129,31 +129,31 @@ export default class NavigationContainer extends Container {
    * Function that implements the click event for realizing smooth scroll
    * @param {array} elements
    */
-  addSmoothScrollEvent(elements = {}) {
-    elements.forEach(link => link.addEventListener('click', (e) => {
-      // modify location.hash without scroll
-      e.preventDefault();
-      window.history.pushState({}, '', link.href);
+  // addSmoothScrollEvent(elements = {}) {
+  //   elements.forEach(link => link.addEventListener('click', (e) => {
+  //     // modify location.hash without scroll
+  //     e.preventDefault();
+  //     window.history.pushState({}, '', link.href);
 
-      // smooth scroll
-      const href = link.getAttribute('href').replace('#', '');
-      const targetDom = document.getElementById(href);
-      this.smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
-    }));
-  }
+  //     // smooth scroll
+  //     const href = link.getAttribute('href').replace('#', '');
+  //     const targetDom = document.getElementById(href);
+  //     this.smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
+  //   }));
+  // }
 
-  smoothScrollIntoView(element = null, offsetTop = 0) {
-    const targetElement = element || window.document.body;
+  // smoothScrollIntoView(element = null, offsetTop = 0) {
+  //   const targetElement = element || window.document.body;
 
-    // get the distance to the target element top
-    const rectTop = targetElement.getBoundingClientRect().top;
+  //   // get the distance to the target element top
+  //   const rectTop = targetElement.getBoundingClientRect().top;
 
-    const top = window.pageYOffset + rectTop - offsetTop;
+  //   const top = window.pageYOffset + rectTop - offsetTop;
 
-    window.scrollTo({
-      top,
-      behavior: 'smooth',
-    });
-  }
+  //   window.scrollTo({
+  //     top,
+  //     behavior: 'smooth',
+  //   });
+  // }
 
 }

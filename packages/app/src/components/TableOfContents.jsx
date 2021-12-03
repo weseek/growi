@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 
 import PageContainer from '~/client/services/PageContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:TableOfContents');
  */
 const TableOfContents = (props) => {
 
-  const { t, pageContainer, navigationContainer } = props;
+  const { t, pageContainer } = props;
   const { pageUser } = pageContainer.state;
   const isUserPage = pageUser != null;
 
@@ -50,8 +50,8 @@ const TableOfContents = (props) => {
   useEffect(() => {
     const tocDom = document.getElementById('revision-toc-content');
     const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    navigationContainer.addSmoothScrollEvent(anchorsInToc);
-  }, [tocHtml, navigationContainer]);
+    addSmoothScrollEvent(anchorsInToc);
+  }, [tocHtml]);
 
   return (
     <StickyStretchableScroller
@@ -85,13 +85,12 @@ const TableOfContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer]);
 
 TableOfContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(TableOfContentsWrapper);

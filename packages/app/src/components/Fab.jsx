@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { usePageCreateModalOpened } from '~/stores/ui';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -15,7 +15,7 @@ import ReturnTopIcon from './Icons/ReturnTopIcon';
 const logger = loggerFactory('growi:cli:Fab');
 
 const Fab = (props) => {
-  const { navigationContainer, appContainer } = props;
+  const { appContainer } = props;
   const { currentUser } = appContainer;
 
   const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
@@ -72,7 +72,7 @@ const Fab = (props) => {
         <button
           type="button"
           className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
-          onClick={() => navigationContainer.smoothScrollIntoView()}
+          onClick={() => smoothScrollIntoView()}
         >
           <ReturnTopIcon />
         </button>
@@ -84,7 +84,6 @@ const Fab = (props) => {
 
 Fab.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(Fab, [AppContainer, NavigationContainer]);
+export default withUnstatedContainers(Fab, [AppContainer]);
