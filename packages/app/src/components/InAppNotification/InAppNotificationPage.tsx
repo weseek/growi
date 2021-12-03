@@ -55,7 +55,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
       default:
     }
 
-    const { data: notificationData, mutate } = useSWRxInAppNotifications(limit, offset, categoryStatus);
+    const { data: notificationData, mutate: mutateNotificationData } = useSWRxInAppNotifications(limit, offset, categoryStatus);
+    const { mutate: mutateAllNotificationData } = useSWRxInAppNotifications(limit, offset, undefined);
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
@@ -74,7 +75,10 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     const updateUnopendNotificationStatusesToOpened = async() => {
       await apiv3Put('/in-app-notification/all-statuses-open');
-      mutate();
+      // mutate notification statuses in 'UNREAD' Category
+      mutateNotificationData();
+      // mutate notification statuses in 'ALL' Category
+      mutateAllNotificationData();
     };
 
 
