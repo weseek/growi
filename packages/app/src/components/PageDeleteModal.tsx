@@ -107,6 +107,12 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     );
   }
 
+  // DeleteCompletely is currently disabled
+  // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
+  // Story: https://redmine.weseek.co.jp/issues/82222
+
+  // TODO2 : use toaster
+  // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-danger">
@@ -123,7 +129,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
         {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
         <label className="custom-control-label" htmlFor="deleteCompletely">
-          { t('modal_delete.delete_completely') }
+          { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
         </label>
         {!isAbleToDeleteCompletely

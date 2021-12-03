@@ -1,0 +1,22 @@
+{% extends 'base/layout.html' %}
+
+<!-- WIP -->
+
+{% block content_main %}
+  <div>ContentMain</div>
+  <div>
+    {% for page in pages %}
+      <li>{{page._id.toString()}}: {{page.path}}</li>
+    {% endfor %}
+  </div>
+  <br>
+  <div>redirectFrom: {{redirectFrom}}</div>
+{% endblock %}
+
+{% block content_footer %}
+  <div>Footer</div>
+{% endblock %}
+
+{% block body_end %}
+  <div>BodyEnd</div>
+{% endblock %}

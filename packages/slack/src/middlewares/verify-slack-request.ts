@@ -12,7 +12,7 @@ const logger = loggerFactory('@growi/slack:middlewares:verify-slack-request');
  * Verify if the request came from slack
  * See: https://api.slack.com/authentication/verifying-requests-from-slack
  */
-export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: NextFunction): Record<string, any> | void => {
+export const verifySlackRequest = (req: RequestFromSlack & { rawBody: any }, res: Response, next: NextFunction): Record<string, any> | void => {
   const signingSecret = req.slackSigningSecret;
 
   if (signingSecret == null) {
@@ -39,8 +39,16 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
     return next(createError(403, message));
   }
 
+  // use req.rawBody for Events API
+  // reference: https://stackoverflow.com/questions/64794287/how-to-verify-a-request-from-slack-events-api
+  let sigBaseString: string;
+  if (req.body.event != null) {
+    sigBaseString = `v0:${timestamp}:${req.rawBody}`;
+  }
+  else {
+    sigBaseString = `v0:${timestamp}:${stringify(req.body, { format: 'RFC1738' })}`;
+  }
   // generate growi signature
-  const sigBaseString = `v0:${timestamp}:${stringify(req.body, { format: 'RFC1738' })}`;
   const hasher = createHmac('sha256', signingSecret);
   hasher.update(sigBaseString, 'utf8');
   const hashedSigningSecret = hasher.digest('hex');

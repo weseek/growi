@@ -36,8 +36,8 @@ class SearchPage extends React.Component {
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: this.props.appContainer.config.pageLimitationL,
-      excludeUsersHome: true,
-      excludeTrash: true,
+      excludeUserPages: true,
+      excludeTrashPages: true,
       selectAllCheckboxType: CheckboxType.NONE_CHECKED,
       isDeleteConfirmModalShown: false,
       deleteTargetPageIds: new Set(),
@@ -48,8 +48,8 @@ class SearchPage extends React.Component {
     this.onSearchInvoked = this.onSearchInvoked.bind(this);
     this.selectPage = this.selectPage.bind(this);
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
-    this.onExcludeUsersHome = this.onExcludeUsersHome.bind(this);
-    this.onExcludeTrash = this.onExcludeTrash.bind(this);
+    this.switchExcludeUserPagesHandler = this.switchExcludeUserPagesHandler.bind(this);
+    this.switchExcludeTrashPagesHandler = this.switchExcludeTrashPagesHandler.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
     this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
     this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
@@ -76,12 +76,12 @@ class SearchPage extends React.Component {
     return query;
   }
 
-  onExcludeUsersHome() {
-    this.setState({ excludeUsersHome: !this.state.excludeUsersHome });
+  switchExcludeUserPagesHandler() {
+    this.setState({ excludeUserPages: !this.state.excludeUserPages });
   }
 
-  onExcludeTrash() {
-    this.setState({ excludeTrash: !this.state.excludeTrash });
+  switchExcludeTrashPagesHandler() {
+    this.setState({ excludeTrashPages: !this.state.excludeTrashPages });
   }
 
   changeURL(keyword, refreshHash) {
@@ -99,10 +99,10 @@ class SearchPage extends React.Component {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (this.state.excludeTrash) {
+    if (this.state.excludeTrashPages) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (this.state.excludeUsersHome) {
+    if (this.state.excludeUserPages) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
@@ -130,6 +130,8 @@ class SearchPage extends React.Component {
     this.setState({ pagingLimit: limit }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
+  // todo: refactoring
+  // refs: https://redmine.weseek.co.jp/issues/82139
   async search(data) {
     const keyword = data.keyword;
     if (keyword === '') {
@@ -289,11 +291,13 @@ class SearchPage extends React.Component {
         searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.onSearchInvoked}
-        onExcludeUsersHome={this.onExcludeUsersHome}
-        onExcludeTrash={this.onExcludeTrash}
-        onClickSelectAllCheckbox={this.toggleAllCheckBox}
+        onClickSelectAllCheckbox={this.toggleAllCheck        onClickSelectAllCheckbox={this.toggleAllCheckBox}
         selectAllCheckboxType={this.state.selectAllCheckboxType}
         onClickDeleteAllButton={this.deleteAllPagesButtonHandler}
+        onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
+        excludeUserPages={this.state.excludeUserPages}
+        excludeTrashPages={this.state.excludeTrashPages}
       >
       </SearchControl>
     );

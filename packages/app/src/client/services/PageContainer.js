@@ -82,6 +82,7 @@ export default class PageContainer extends Container {
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
       shareLinksNumber: mainContent.getAttribute('data-share-links-number'),
       shareLinkId: JSON.parse(mainContent.getAttribute('data-share-link-id') || null),
+      targetAndAncestors: JSON.parse(mainContent.getAttribute('data-target-and-ancestors') || null),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
@@ -161,12 +162,12 @@ export default class PageContainer extends Container {
   }
 
 
-  get isAbleToOpenPageEditor() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
+  // get isAbleToOpenPageEditor() {
+  //   const { isNotCreatable, isTrashPage } = this.state;
+  //   const { isGuestUser } = this.appContainer;
 
-    return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  }
+  //   return (!isNotCreatable && !isTrashPage && !isGuestUser);
+  // }
 
   /**
    * whether to display reaction buttons
@@ -292,22 +293,6 @@ export default class PageContainer extends Container {
     await this.retrieveLikersAndSeenUsers();
   }
 
-  async toggleLike() {
-    {
-      const toggledIsLiked = !this.state.isLiked;
-      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
-
-      await this.setState(state => ({
-        isLiked: toggledIsLiked,
-        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
-        likerIds: toggledIsLiked
-          ? [...this.state.likerIds, this.appContainer.currentUserId]
-          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
-      }));
-    }
-
-    await this.retrieveLikersAndSeenUsers();
-  }
 
   async retrieveLikersAndSeenUsers() {
     const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });

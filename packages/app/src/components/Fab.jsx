@@ -6,6 +6,8 @@ import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
+import { usePageCreateModalOpened } from '~/stores/ui';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
@@ -15,6 +17,8 @@ const logger = loggerFactory('growi:cli:Fab');
 const Fab = (props) => {
   const { navigationContainer, appContainer } = props;
   const { currentUser } = appContainer;
+
+  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -52,7 +56,7 @@ const Fab = (props) => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={navigationContainer.openPageCreateModal}
+            onClick={() => mutatePageCreateModalOpened(true)}
           >
             <CreatePageIcon />
           </button>

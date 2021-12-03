@@ -28,6 +28,8 @@ type SendCommandBody = {
   // eslint-disable-next-line camelcase
   trigger_id: string,
   // eslint-disable-next-line camelcase
+  channel_id: string,
+  // eslint-disable-next-line camelcase
   channel_name: string,
 }
 
@@ -209,9 +211,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     }
 
     // increment sendCommandBody
-    const channelName = interactionPayloadAccessor.getChannelName();
-    if (channelName == null) {
-      logger.error('Growi command failed: channelName not found.');
+    const channel = interactionPayloadAccessor.getChannel();
+    if (channel == null) {
+      logger.error('Growi command failed: channel not found.');
       await respond(responseUrl, {
         text: 'Growi command failed',
         blocks: [
@@ -222,7 +224,8 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     }
     const sendCommandBody: SendCommandBody = {
       trigger_id: interactionPayload.trigger_id,
-      channel_name: channelName,
+      channel_id: channel.id,
+      channel_name: channel.name,
     };
 
     return {
