@@ -812,6 +812,12 @@ class PageService {
 
     const { activityService, inAppNotificationService } = this.crowi;
 
+    const snapshot = JSON.stringify({
+      path: page.path,
+      creator: page.creator,
+      lastUpdateUser: page.lastUpdateUser,
+    });
+
     // Create activity
     const parameters = {
       user: user._id,
@@ -820,12 +826,6 @@ class PageService {
       action,
     };
     const activity = await activityService.createByParameters(parameters);
-
-    const snapshot = JSON.stringify({
-      path: page.path,
-      creator: page.creator,
-      lastUpdateUser: page.lastUpdateUser,
-    });
 
     // Get user to be notified
     const targetUsers = await activity.getNotificationTargetUsers();
