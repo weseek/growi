@@ -56,7 +56,7 @@ const Fab = (props) => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={async() => mutateModalStatus({ isOpened: true })}
+            onClick={() => mutateModalStatus({ isOpened: true })}
           >
             <CreatePageIcon />
           </button>
