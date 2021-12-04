@@ -113,17 +113,16 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
 
   const isLoading = _isEditable === undefined;
   const isEditable = !isLoading && _isEditable;
+  const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
-    isEditable
-      ? null
-      : () => EditorMode.View, // fixed if not editable
-    { fallbackData: editorModeByHash },
+    null,
+    { fallbackData: initialData },
   );
 
   // initial updating
-  if (!isEditorModeLoaded && swrResponse.data != null) {
+  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
     if (isEditable) {
       updateBodyClassesForEditorMode(swrResponse.data);
     }
