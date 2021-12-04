@@ -53,7 +53,7 @@ class TagLabels extends React.Component {
     const { pageId } = pageContainer.state;
 
     // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === 'edit') {
+    if (editorMode === EditorMode.Editor) {
       return editorContainer.setState({ tags: newTags });
     }
 
