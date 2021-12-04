@@ -361,7 +361,7 @@ const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
 
-  if (isEditable == null || editorMode || null) {
+  if (isEditable == null || editorMode == null) {
     return null;
   }
 
