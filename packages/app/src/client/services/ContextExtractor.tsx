@@ -8,23 +8,12 @@ import {
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
 import {
-  EditorMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
 } from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
-
-const getInitialEditorMode = (): EditorMode => {
-  switch (window.location.hash) {
-    case '#edit':
-      return EditorMode.Editor;
-    case '#hackmd':
-      return EditorMode.HackMD;
-    default:
-      return EditorMode.View;
-  }
-};
 
 const ContextExtractorOnce: FC = () => {
 
@@ -100,7 +89,6 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
 
   // Navigation
-  useEditorMode(getInitialEditorMode());
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();

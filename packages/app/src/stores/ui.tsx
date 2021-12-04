@@ -61,56 +61,84 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 };
 
 
-const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
-  return (...args) => {
-    // -- TODO: https://redmine.weseek.co.jp/issues/81817
-    const swrNext = useSWRNext(...args);
-    return {
-      ...swrNext,
-      mutate: (data, shouldRevalidate) => {
-        return swrNext.mutate(data, shouldRevalidate)
-          .then((value) => {
-            const newEditorMode = value as unknown as EditorMode;
-            switch (newEditorMode) {
-              case EditorMode.View:
-                $('body').removeClass('on-edit');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                $('body').removeClass('pathname-sidebar');
-                window.history.replaceState(null, '', window.location.pathname);
-                break;
-              case EditorMode.Editor:
-                $('body').addClass('on-edit');
-                $('body').addClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                // editing /Sidebar
-                if (window.location.pathname === '/Sidebar') {
-                  $('body').addClass('pathname-sidebar');
-                }
-                window.location.hash = '#edit';
-                break;
-              case EditorMode.HackMD:
-                $('body').addClass('on-edit');
-                $('body').addClass('hackmd');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('pathname-sidebar');
-                window.location.hash = '#hackmd';
-                break;
-            }
-            return value;
-          });
-      },
-    };
-  };
+const updateBodyClassesForEditorMode = (newEditorMode: EditorMode) => {
+  switch (newEditorMode) {
+    case EditorMode.View:
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      $('body').removeClass('pathname-sidebar');
+      window.history.replaceState(null, '', window.location.pathname);
+      break;
+    case EditorMode.Editor:
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      // editing /Sidebar
+      if (window.location.pathname === '/Sidebar') {
+        $('body').addClass('pathname-sidebar');
+      }
+      window.location.hash = '#edit';
+      break;
+    case EditorMode.HackMD:
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('pathname-sidebar');
+      window.location.hash = '#hackmd';
+      break;
+  }
 };
 
-export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
+export const useEditorModeByHash = (): SWRResponse<EditorMode, Error> => {
+  return useSWRImmutable(
+    ['initialEditorMode', window.location.hash],
+    (key: Key, hash: string) => {
+      switch (hash) {
+        case '#edit':
+          return EditorMode.Editor;
+        case '#hackmd':
+          return EditorMode.HackMD;
+        default:
+          return EditorMode.View;
+      }
+    },
+  );
+};
+
+let isEditorModeLoaded = false;
+export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const { data: isEditable } = useIsEditable();
+  const { data: editorModeByHash } = useEditorModeByHash();
 
-  const key: Key = ['editorMode', isEditable];
-  const mutateValue = isEditable ? (editorMode ?? null) : null;
+  const isLoading = isEditable === undefined;
 
-  return useStaticSWR(key, mutateValue || null, { fallbackData: EditorMode.View, use: [postChangeEditorModeMiddleware] });
+  const swrResponse = useSWRImmutable(
+    isLoading ? null : ['editorMode', isEditable],
+    isEditable
+      ? null
+      : () => EditorMode.View,
+    { fallbackData: editorModeByHash },
+  );
+
+  // initial updateBodyClassesForEditorMode
+  if (!isEditorModeLoaded && swrResponse.data != null) {
+    updateBodyClassesForEditorMode(swrResponse.data);
+    isEditorModeLoaded = true;
+  }
+
+  return {
+    ...swrResponse,
+
+    // overwrite mutate
+    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
+      if (isEditable) {
+        updateBodyClassesForEditorMode(editorMode);
+        return swrResponse.mutate(editorMode, shouldRevalidate);
+      }
+      return Promise.resolve(EditorMode.View);
+    },
+  };
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
