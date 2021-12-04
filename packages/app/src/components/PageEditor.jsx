@@ -360,6 +360,11 @@ const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, P
 const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+
+  if (isEditable == null || editorMode || null) {
+    return null;
+  }
+
   return <PageEditorHOCWrapper {...props} isEditable={isEditable} editorMode={editorMode} />;
 };
 
@@ -368,7 +373,7 @@ PageEditor.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
-  isEditable: PropTypes.bool,
+  isEditable: PropTypes.bool.isRequired,
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
