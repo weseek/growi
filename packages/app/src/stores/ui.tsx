@@ -108,22 +108,25 @@ export const useEditorModeByHash = (): SWRResponse<EditorMode, Error> => {
 
 let isEditorModeLoaded = false;
 export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
-  const { data: isEditable } = useIsEditable();
+  const { data: _isEditable } = useIsEditable();
   const { data: editorModeByHash } = useEditorModeByHash();
 
-  const isLoading = isEditable === undefined;
+  const isLoading = _isEditable === undefined;
+  const isEditable = !isLoading && _isEditable;
 
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     isEditable
       ? null
-      : () => EditorMode.View,
+      : () => EditorMode.View, // fixed if not editable
     { fallbackData: editorModeByHash },
   );
 
-  // initial updateBodyClassesForEditorMode
+  // initial updating
   if (!isEditorModeLoaded && swrResponse.data != null) {
-    updateBodyClassesForEditorMode(swrResponse.data);
+    if (isEditable) {
+      updateBodyClassesForEditorMode(swrResponse.data);
+    }
     isEditorModeLoaded = true;
   }
 
@@ -132,11 +135,11 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
 
     // overwrite mutate
     mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
-      if (isEditable) {
-        updateBodyClassesForEditorMode(editorMode);
-        return swrResponse.mutate(editorMode, shouldRevalidate);
+      if (!isEditable) {
+        return Promise.resolve(EditorMode.View); // fixed if not editable
       }
-      return Promise.resolve(EditorMode.View);
+      updateBodyClassesForEditorMode(editorMode);
+      return swrResponse.mutate(editorMode, shouldRevalidate);
     },
   };
 };
