@@ -14,6 +14,7 @@ import ContentLinkButtons from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+import HashChanged from '../EventListeneres/HashChanged';
 
 
 const DisplaySwitcher = (props) => {
@@ -66,6 +67,8 @@ const DisplaySwitcher = (props) => {
         </TabPane>
       </TabContent>
       {!isViewMode && <EditorNavbarBottom /> }
+
+      <HashChanged></HashChanged>
     </>
   );
 };
