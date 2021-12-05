@@ -27,12 +27,12 @@ const markTarget = (children: ItemNode[], targetId: string): void => {
 };
 
 type ItemControlProps = {
-  onClickOpenModalButtonHandler?(): void
+  onClickPlusButtonHandler?(): void
 }
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickHandler = () => {
-    const { onClickOpenModalButtonHandler: handler } = props;
+    const { onClickPlusButtonHandler: handler } = props;
     if (handler == null) {
       return;
     }
@@ -91,7 +91,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickOpenModalButtonHandler = useCallback(() => {
+  const onClickPlusButtonHandler = useCallback(() => {
     openCreateModal(page.path);
   }, [openCreateModal, page]);
 
@@ -144,7 +144,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemControl onClickOpenModalButtonHandler={onClickOpenModalButtonHandler} />
+          <ItemControl onClickPlusButtonHandler={onClickPlusButtonHandler} />
         </div>
       </div>
       {
