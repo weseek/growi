@@ -1,6 +1,7 @@
 import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
+import { Input } from 'reactstrap';
 
 export const AlertType = {
   WARNING: 'warning',
@@ -23,7 +24,7 @@ type ClosableTextInputProps = {
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
-  const ref = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
@@ -56,33 +57,37 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   /*
    * Hide when click outside the ref
    */
-  const handleClickOutside = (e) => {
-    if (ref.current != null && !ref.current.contains(e.target) && props.onClickOutside != null) {
-      props.onClickOutside();
+  const onBlurHandler = () => {
+    if (props.onClickOutside == null) {
+      return;
     }
 
-    return;
+    props.onClickOutside();
   };
 
+  // didMount
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
-
-    // Clean up when unmount
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
+    // autoFocus
+    if (inputRef?.current == null) {
+      return;
+    }
+    inputRef.current.focus();
   });
+
 
   // TODO: improve style
   return (
-    <div ref={ref} className={props.isShown ? 'd-block' : 'd-none'}>
+    <div className={props.isShown ? 'd-block' : 'd-none'}>
       <input
+        ref={inputRef}
         type="text"
         className="form-control"
         placeholder={props.placeholder}
         name="input"
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
+        onBlur={onBlurHandler}
+        autoFocus={false}
       />
       <div>
         {currentAlertInfo != null && (
