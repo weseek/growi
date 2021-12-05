@@ -1,7 +1,6 @@
 import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
-import { Input } from 'reactstrap';
 
 export const AlertType = {
   WARNING: 'warning',
