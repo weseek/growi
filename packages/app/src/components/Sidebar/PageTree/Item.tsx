@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import { usePageId } from '../../../stores/context';
-import ClosableTextInput, { AlertInfo, AlertType } from './ClosableTextInput';
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 
 
 interface ItemProps {
