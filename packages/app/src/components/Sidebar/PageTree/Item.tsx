@@ -2,11 +2,12 @@ import React, {
   useCallback, useState, FC, useEffect, memo,
 } from 'react';
 import nodePath from 'path';
+import { useTranslation } from 'react-i18next';
 
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import { usePageId } from '../../../stores/context';
-import { useCreateModalStatus } from '../../../stores/ui';
+import ClosableTextInput, { AlertInfo, AlertType } from './ClosableTextInput';
 
 
 interface ItemProps {
@@ -71,6 +72,7 @@ const ItemCount: FC = () => {
 };
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
+  const { t } = useTranslation();
   const { itemNode, isOpen: _isOpen = false } = props;
 
   const { page, children } = itemNode;
@@ -78,10 +80,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
+  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
+
   const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
-
-  const { open: openCreateModal } = useCreateModalStatus();
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
@@ -91,9 +93,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickPlusButtonHandler = useCallback(() => {
-    openCreateModal(page.path);
-  }, [openCreateModal, page]);
+  const inputValidator = (title: string | null): AlertInfo | null => {
+    if (title == null || title === '') {
+      return {
+        type: AlertType.ERROR,
+        message: t('Page title is required'),
+      };
+    }
+
+    return null;
+  };
+
+  // TODO: go to create page page
+  const onPressEnterHandler = () => {
+    console.log('Enter key was pressed!');
+  };
 
   // didMount
   useEffect(() => {
@@ -144,9 +158,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemControl onClickPlusButtonHandler={onClickPlusButtonHandler} />
+          <ItemControl onClickPlusButtonHandler={() => { setNewPageInputShown(true) }} />
         </div>
       </div>
+
+      <ClosableTextInput
+        isShown={isNewPageInputShown}
+        placeholder={t('Input title')}
+        onClickOutside={() => { setNewPageInputShown(false) }}
+        onPressEnter={onPressEnterHandler}
+        inputValidator={inputValidator}
+      />
       {
         isOpen && hasChildren() && currentChildren.map(node => (
           <Item
