@@ -1,4 +1,4 @@
-import {
+import useSWR, {
   useSWRConfig, SWRResponse, Key, Fetcher, Middleware,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
