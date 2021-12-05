@@ -35,15 +35,22 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     setAlertInfo(alertInfo);
   };
 
-  const onKeyDownHandler = (e) => {
-    if (e.key !== 'Enter') {
-      return;
-    }
+  const onPressEnter = () => {
     if (props.onPressEnter == null) {
       return;
     }
 
     props.onPressEnter();
+  };
+
+  const onKeyDownHandler = (e) => {
+    switch (e.key) {
+      case 'Enter':
+        onPressEnter();
+        break;
+      default:
+        break;
+    }
   };
 
   /*
