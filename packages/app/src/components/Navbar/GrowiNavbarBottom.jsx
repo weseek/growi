@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import NavigationContainer from '~/client/services/NavigationContainer';
-import { usePageCreateModalOpened, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useCreateModalStatus, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GlobalSearch from './GlobalSearch';
@@ -15,7 +15,7 @@ const GrowiNavbarBottom = (props) => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -40,7 +40,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => mutateDrawerOpened(true)}
+              onClick={() => openCreateModal()}
             >
               <i className="icon-menu"></i>
             </a>
@@ -59,7 +59,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => mutatePageCreateModalOpened(true)}
+              onClick={() => openCreateModal(true)}
             >
               <i className="icon-pencil"></i>
             </a>

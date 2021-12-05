@@ -1,11 +1,12 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, memo,
 } from 'react';
 import nodePath from 'path';
 
 import { ItemNode } from './ItemNode';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import { usePageId } from '../../../stores/context';
+import { useCreateModalStatus } from '../../../stores/ui';
 
 
 interface ItemProps {
@@ -25,7 +26,20 @@ const markTarget = (children: ItemNode[], targetId: string): void => {
   return;
 };
 
-const ItemContol: FC = () => {
+type ItemControlProps = {
+  onClickOpenModalButtonHandler?(): void
+}
+
+const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
+  const onClickHandler = () => {
+    const { onClickOpenModalButtonHandler: handler } = props;
+    if (handler == null) {
+      return;
+    }
+
+    handler();
+  };
+
   return (
     <>
       <button
@@ -37,14 +51,14 @@ const ItemContol: FC = () => {
       </button>
       <button
         type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
-        data-toggle="dropdown"
+        className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
+        onClick={onClickHandler}
       >
         <i className="icon-plus text-muted"></i>
       </button>
     </>
   );
-};
+});
 
 const ItemCount: FC = () => {
   return (
@@ -67,6 +81,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  const { open: openCreateModal } = useCreateModalStatus();
+
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -74,6 +90,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
+
+  const onClickOpenModalButtonHandler = useCallback(() => {
+    openCreateModal(page.path);
+  }, [openCreateModal, page]);
 
   // didMount
   useEffect(() => {
@@ -124,7 +144,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemContol />
+          <ItemControl onClickOpenModalButtonHandler={onClickOpenModalButtonHandler} />
         </div>
       </div>
       {
