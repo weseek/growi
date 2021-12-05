@@ -235,13 +235,24 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
 };
 
-type ModalStatus = {
+type CreateModalStatus = {
   isOpened: boolean,
   path?: string,
 }
 
-export const useCreateModalStatus = (status?: ModalStatus): SWRResponse<ModalStatus, Error> => {
-  return useStaticSWR('modalStatus', status || null);
+type CreateModalStatusUtils = {
+  open(path?: string): Promise<CreateModalStatus | undefined>
+  close(): Promise<CreateModalStatus | undefined>
+}
+
+export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
+  const swrResponse = useStaticSWR<CreateModalStatus, Error>('modalStatus', status || null);
+
+  return {
+    ...swrResponse,
+    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
 };
 
 export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {

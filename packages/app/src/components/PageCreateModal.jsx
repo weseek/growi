@@ -24,7 +24,7 @@ const {
 const PageCreateModal = (props) => {
   const { t, appContainer } = props;
 
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { close: closeCreateModal } = useCreateModalStatus();
   const { data: isOpened } = useCreateModalOpened();
   const { data: path } = useCreateModalPath();
 
@@ -275,11 +275,11 @@ const PageCreateModal = (props) => {
     <Modal
       size="lg"
       isOpen={isOpened}
-      toggle={() => mutateModalStatus({ isOpened: false })}
+      toggle={() => closeCreateModal()}
       className="grw-create-page"
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={() => mutateModalStatus({ isOpened: false })} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => closeCreateModal()} className="bg-primary text-light">
         {t('New Page')}
       </ModalHeader>
       <ModalBody>

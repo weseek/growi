@@ -20,7 +20,7 @@ type NavbarRightProps = {
 }
 const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { t } = useTranslation();
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const { currentUser } = props;
 
@@ -35,7 +35,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <button
           className="px-md-2 nav-link btn-create-page border-0 bg-transparent"
           type="button"
-          onClick={() => mutateModalStatus({ isOpened: true })}
+          onClick={() => openCreateModal()}
         >
           <i className="icon-pencil mr-2"></i>
           <span className="d-none d-lg-block">{ t('New') }</span>

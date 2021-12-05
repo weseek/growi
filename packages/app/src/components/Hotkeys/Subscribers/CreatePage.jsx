@@ -5,15 +5,15 @@ import { useCreateModalStatus } from '~/stores/ui';
 
 const CreatePage = React.memo((props) => {
 
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   // setup effect
   useEffect(() => {
-    mutateModalStatus({ isOpened: true });
+    openCreateModal();
 
     // remove this
     props.onDeleteRender(this);
-  }, [mutateModalStatus, props]);
+  }, [openCreateModal, props]);
 
   return <></>;
 });

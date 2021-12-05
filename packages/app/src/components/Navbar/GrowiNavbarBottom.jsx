@@ -15,7 +15,7 @@ const GrowiNavbarBottom = (props) => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -40,7 +40,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => mutateModalStatus({ isOpened: true })}
+              onClick={() => openCreateModal()}
             >
               <i className="icon-menu"></i>
             </a>
@@ -59,7 +59,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => mutateModalStatus(true)}
+              onClick={() => openCreateModal(true)}
             >
               <i className="icon-pencil"></i>
             </a>

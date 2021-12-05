@@ -18,7 +18,7 @@ const Fab = (props) => {
   const { navigationContainer, appContainer } = props;
   const { currentUser } = appContainer;
 
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -56,7 +56,7 @@ const Fab = (props) => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={() => mutateModalStatus({ isOpened: true })}
+            onClick={() => openCreateModal()}
           >
             <CreatePageIcon />
           </button>

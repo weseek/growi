@@ -81,7 +81,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const { mutate: mutateModalStatus } = useCreateModalStatus();
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
@@ -92,8 +92,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [isOpen]);
 
   const onClickOpenModalButtonHandler = useCallback(() => {
-    mutateModalStatus({ isOpened: true, path: page.path });
-  }, [mutateModalStatus, page]);
+    openCreateModal(page.path);
+  }, [openCreateModal, page]);
 
   // didMount
   useEffect(() => {
