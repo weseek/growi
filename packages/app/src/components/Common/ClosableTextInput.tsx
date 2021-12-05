@@ -66,6 +66,8 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
+
+    // Clean up when unmount
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
