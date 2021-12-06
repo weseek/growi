@@ -69,9 +69,6 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const actionUsers = getActionUsers();
 
-  const snapshot = JSON.parse(notification.snapshot);
-  const pagePath = snapshot.path;
-
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;
@@ -110,13 +107,12 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
+  const renderPageModelNotification = (): JSX.Element => {
 
-  return (
-    <div className="dropdown-item d-flex flex-row mb-3">
-      <div className="p-2 mr-2 d-flex align-items-center">
-        <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
-        {renderActionUserPictures()}
-      </div>
+    const snapshot = JSON.parse(notification.snapshot);
+    const pagePath = snapshot.path;
+
+    return (
       <div className="p-2">
         <div onClick={notificationClickHandler}>
           <div>
@@ -131,6 +127,18 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
           />
         </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="dropdown-item d-flex flex-row mb-3">
+      <div className="p-2 mr-2 d-flex align-items-center">
+        <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
+        {renderActionUserPictures()}
+      </div>
+      {notification.targetModel === 'Page' && (
+        renderPageModelNotification()
+      )}
     </div>
   );
 };
