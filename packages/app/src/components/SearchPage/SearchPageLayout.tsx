@@ -57,7 +57,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
           </div>
 
           <div className="page-list">
-            <ul className="page-list-ul page-list-ul-flat nav nav-pills"><SearchResultList></SearchResultList></ul>
+            <ul className="page-list-ul page-list-ul-flat pl-4 nav nav-pills"><SearchResultList></SearchResultList></ul>
           </div>
         </div>
         <div className="flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
