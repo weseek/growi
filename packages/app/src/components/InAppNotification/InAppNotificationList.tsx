@@ -28,11 +28,17 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const renderInAppNotificationList = () => {
     const inAppNotificationList = notifications.map((notification: IInAppNotification & HasObjectId) => {
-      return (
-        <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotificationElm notification={notification} />
-        </div>
-      );
+
+      if (notification.targetModel === 'Page') {
+        const snapshot = JSON.parse(notification.snapshot);
+
+        return (
+          <div className="d-flex flex-row" key={notification._id}>
+            <InAppNotificationElm notification={notification} pagePath={snapshot.path} />
+          </div>
+        );
+      }
+
     });
 
     return inAppNotificationList;

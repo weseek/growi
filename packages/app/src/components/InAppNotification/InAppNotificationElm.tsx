@@ -9,12 +9,12 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
+  pagePath: string
 }
 
 const InAppNotificationElm = (props: Props): JSX.Element => {
 
-  const { notification } = props;
-
+  const { notification, pagePath } = props;
 
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -70,9 +70,6 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const actionUsers = getActionUsers();
 
-  const snapshot = JSON.parse(notification.snapshot);
-  const pagePath = { path: snapshot.path };
-
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;
@@ -121,7 +118,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       <div className="p-2">
         <div onClick={notificationClickHandler}>
           <div>
-            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
+            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={{ path: pagePath }} />
           </div>
           <i className={`${actionIcon} mr-2`} />
           <FormattedDistanceDate
