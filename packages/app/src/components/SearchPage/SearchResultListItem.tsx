@@ -4,7 +4,6 @@ import Clamp from 'react-multiline-clamp';
 
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 import { IPageSearchResultData } from '../../interfaces/search';
 
 import { IPageHasId } from '~/interfaces/page';
@@ -76,11 +75,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
   const displayPath = pageMeta.elasticSearchResult.displayPath;
-  const isPathIncludedHtml = displayPath.includes('<em class="highlighted-keyword">');
+  const isPathIncludedHtml = displayPath.includes('<em');
   const pagePathElem = <PagePathLabel path={displayPath} isFormerOnly isPathIncludedHtml={isPathIncludedHtml} />;
-  const dPagePath = new DevidedPagePath(displayPath, false, true);
-  const pageTitle = dPagePath.latter;
-
+  const pageTitle = <PagePathLabel path={displayPath} isPathIncludedHtml={isPathIncludedHtml} isLatterOnly></PagePathLabel>;
   const onClickInvoked = (pageId) => {
     if (props.onClickInvoked != null) {
       props.onClickInvoked(pageId);
@@ -109,7 +106,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2" dangerouslySetInnerHTML={{ __html: pageTitle }}></span>
+                <span className="mx-2">{pageTitle}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
