@@ -42,7 +42,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
               </div>
               <select className="custom-select" id="inputGroupSelect01" onChange={(e) => { props.onPagingLimitChanged(Number(e.target.value)) }}>
                 {[20, 50, 100, 200].map((limit) => {
-                  return <option selected={limit === props.initialPagingLimit} value={limit}>{limit}{t('search_result.page_number_unit')}</option>;
+                  return <option selected={limit === props.initialPagingLimit} value={limit} key={limit}>{limit}{t('search_result.page_number_unit')}</option>;
                 })}
               </select>
             </div>
