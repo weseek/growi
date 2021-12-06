@@ -10,8 +10,6 @@
 
 - imprv: APIv3 payload (#4770) @LuqmanHakim-Grune
 
-Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/45x.html](https://docs.growi.org/en/admin-guide/upgrading/45x.html)
-
 ### 💎 Features
 
 - feat: Slackbot unfurl (#4720) @hakumizuki
