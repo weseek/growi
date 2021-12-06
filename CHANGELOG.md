@@ -1,8 +1,38 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.13...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.0](https://github.com/weseek/growi/compare/v4.4.13...v4.5.0) - 2021-12-06
+
+### BREAKING CHANGES
+
+- imprv: APIv3 payload (#4770) @LuqmanHakim-Grune
+
+Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/45x.html](https://docs.growi.org/en/admin-guide/upgrading/45x.html)
+
+### 💎 Features
+
+- feat: Slackbot unfurl (#4720) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: APIv3 payload (#4770) @LuqmanHakim-Grune
+- imprv: upgrade passport from v0.4.x to v0.5.x (#4727) @mudana-grune
+- imprv: Show site url in unfurl footer (#4755) @hakumizuki
+- imprv: SWRize context (#4740) @hakumizuki
+- imprv: Upgrade mongoose from 5.x to 6.x (#4659) @mudana-grune
+
+### 🐛 Bug Fixes
+
+- fix(slackbot-proxy): Support new API v3 data scheme (#4800) @yuki-takei
+- fix(Slackbot): Slash commands response when sent from disabled channels (#4754) @stevenfukase
+
+### 🧰 Maintenance
+
+- ci(deps): bump detect-indent from 6.0.0 to 7.0.0 (#4635) @dependabot
+- ci(deps): bump passport-saml from 2.2.0 to 3.2.0 (#4431) @dependabot
 
 ## [v4.4.13](https://github.com/weseek/growi/compare/v4.4.12...v4.4.13) - 2021-11-19
 
