@@ -8,7 +8,6 @@ import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { usePath, useCurrentCreatedAt } from '~/stores/context';
 
-
 const PageContentFooter = (props) => {
   const { pageContainer } = props;
   const { data: createdAt } = useCurrentCreatedAt();
