@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.4.13",
+  "version": "4.5.0-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -35,6 +35,8 @@
     "app:server": "yarn lerna run server --scope @growi/app",
     "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
     "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
+    "bump-versions:premajor": "node ./bin/github-actions/bump-versions -i premajor",
+    "bump-versions:preminor": "node ./bin/github-actions/bump-versions -i preminor",
     "bump-versions:patch": "node ./bin/github-actions/bump-versions -i patch",
     "bump-versions:rc": "node ./bin/github-actions/bump-versions -i prerelease",
     "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false",

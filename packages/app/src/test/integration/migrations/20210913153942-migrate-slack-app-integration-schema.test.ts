@@ -34,7 +34,7 @@ describe('migrate-slack-app-integration-schema', () => {
     expect(doc2 != null).toBeTruthy();
     expect(doc3 != null).toBeTruthy();
     expect(doc1).toStrictEqual({
-      _id: doc1._id,
+      _id: doc1?._id,
       tokenGtoP: 'tokenGtoP1',
       tokenPtoG: 'tokenPtoG1',
       permissionsForBroadcastUseCommands: {
@@ -45,7 +45,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
     });
     expect(doc2).toStrictEqual({
-      _id: doc2._id,
+      _id: doc2?._id,
       tokenGtoP: 'tokenGtoP2',
       tokenPtoG: 'tokenPtoG2',
       supportedCommandsForBroadcastUse: [
@@ -56,7 +56,7 @@ describe('migrate-slack-app-integration-schema', () => {
       ],
     });
     expect(doc3).toStrictEqual({
-      _id: doc3._id,
+      _id: doc3?._id,
       tokenGtoP: 'tokenGtoP3',
       tokenPtoG: 'tokenPtoG3',
     });
@@ -71,14 +71,14 @@ describe('migrate-slack-app-integration-schema', () => {
     expect(fixedDoc1 != null).toBeTruthy();
     expect(fixedDoc2 != null).toBeTruthy();
     expect(fixedDoc3 != null).toBeTruthy();
-    expect(fixedDoc1.supportedCommandsForBroadcastUse).toBeUndefined();
-    expect(fixedDoc1.supportedCommandsForSingleUse).toBeUndefined();
-    expect(fixedDoc2.supportedCommandsForBroadcastUse).toBeUndefined();
-    expect(fixedDoc2.supportedCommandsForSingleUse).toBeUndefined();
-    expect(fixedDoc3.supportedCommandsForBroadcastUse).toBeUndefined();
-    expect(fixedDoc3.supportedCommandsForSingleUse).toBeUndefined();
+    expect(fixedDoc1?.supportedCommandsForBroadcastUse).toBeUndefined();
+    expect(fixedDoc1?.supportedCommandsForSingleUse).toBeUndefined();
+    expect(fixedDoc2?.supportedCommandsForBroadcastUse).toBeUndefined();
+    expect(fixedDoc2?.supportedCommandsForSingleUse).toBeUndefined();
+    expect(fixedDoc3?.supportedCommandsForBroadcastUse).toBeUndefined();
+    expect(fixedDoc3?.supportedCommandsForSingleUse).toBeUndefined();
     expect(fixedDoc1).toStrictEqual({
-      _id: doc1._id,
+      _id: doc1?._id,
       tokenGtoP: 'tokenGtoP1',
       tokenPtoG: 'tokenPtoG1',
       permissionsForBroadcastUseCommands: {
@@ -92,7 +92,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
     });
     expect(fixedDoc2).toStrictEqual({
-      _id: doc2._id,
+      _id: doc2?._id,
       tokenGtoP: 'tokenGtoP2',
       tokenPtoG: 'tokenPtoG2',
       permissionsForBroadcastUseCommands: {
@@ -106,7 +106,7 @@ describe('migrate-slack-app-integration-schema', () => {
       },
     });
     expect(fixedDoc3).toStrictEqual({
-      _id: doc3._id,
+      _id: doc3?._id,
       tokenGtoP: 'tokenGtoP3',
       tokenPtoG: 'tokenPtoG3',
       permissionsForBroadcastUseCommands: {
