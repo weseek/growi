@@ -42,7 +42,6 @@ import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
 import ContextExtractor from '~/client/services/ContextExtractor';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
@@ -62,7 +61,6 @@ const { i18n } = appContainer;
 const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
-const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
@@ -72,7 +70,7 @@ const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
+  appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
   commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 

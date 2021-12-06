@@ -424,6 +424,11 @@ const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, 
 
 const PageEditorByHackmdWrapper = (props) => {
   const { data } = useEditorMode();
+
+  if (data == null) {
+    return null;
+  }
+
   return <PageEditorByHackmdHOCWrapper {...props} editorMode={data} />;
 };
 

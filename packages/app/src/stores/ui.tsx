@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath, useIsEditable } from './context';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -61,54 +61,86 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 };
 
 
-const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
-  return (...args) => {
-    // -- TODO: https://redmine.weseek.co.jp/issues/81817
-    const swrNext = useSWRNext(...args);
-    return {
-      ...swrNext,
-      mutate: (data, shouldRevalidate) => {
-        return swrNext.mutate(data, shouldRevalidate)
-          .then((value) => {
-            const newEditorMode = value as unknown as EditorMode;
-            switch (newEditorMode) {
-              case EditorMode.View:
-                $('body').removeClass('on-edit');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                $('body').removeClass('pathname-sidebar');
-                window.history.replaceState(null, '', window.location.pathname);
-                break;
-              case EditorMode.Editor:
-                $('body').addClass('on-edit');
-                $('body').addClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                // editing /Sidebar
-                if (window.location.pathname === '/Sidebar') {
-                  $('body').addClass('pathname-sidebar');
-                }
-                window.location.hash = '#edit';
-                break;
-              case EditorMode.HackMD:
-                $('body').addClass('on-edit');
-                $('body').addClass('hackmd');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('pathname-sidebar');
-                window.location.hash = '#hackmd';
-                break;
-            }
-            return value;
-          });
-      },
-    };
-  };
+const updateBodyClassesForEditorMode = (newEditorMode: EditorMode) => {
+  switch (newEditorMode) {
+    case EditorMode.View:
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      $('body').removeClass('pathname-sidebar');
+      window.history.replaceState(null, '', window.location.pathname);
+      break;
+    case EditorMode.Editor:
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      // editing /Sidebar
+      if (window.location.pathname === '/Sidebar') {
+        $('body').addClass('pathname-sidebar');
+      }
+      window.location.hash = '#edit';
+      break;
+    case EditorMode.HackMD:
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('pathname-sidebar');
+      window.location.hash = '#hackmd';
+      break;
+  }
 };
 
-export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
-  const key: Key = 'editorMode';
-  const initialData = EditorMode.View;
+export const useEditorModeByHash = (): SWRResponse<EditorMode, Error> => {
+  return useSWRImmutable(
+    ['initialEditorMode', window.location.hash],
+    (key: Key, hash: string) => {
+      switch (hash) {
+        case '#edit':
+          return EditorMode.Editor;
+        case '#hackmd':
+          return EditorMode.HackMD;
+        default:
+          return EditorMode.View;
+      }
+    },
+  );
+};
 
-  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [postChangeEditorModeMiddleware] });
+let isEditorModeLoaded = false;
+export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
+  const { data: _isEditable } = useIsEditable();
+  const { data: editorModeByHash } = useEditorModeByHash();
+
+  const isLoading = _isEditable === undefined;
+  const isEditable = !isLoading && _isEditable;
+  const initialData = isEditable ? editorModeByHash : EditorMode.View;
+
+  const swrResponse = useSWRImmutable(
+    isLoading ? null : ['editorMode', isEditable],
+    null,
+    { fallbackData: initialData },
+  );
+
+  // initial updating
+  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
+    if (isEditable) {
+      updateBodyClassesForEditorMode(swrResponse.data);
+    }
+    isEditorModeLoaded = true;
+  }
+
+  return {
+    ...swrResponse,
+
+    // overwrite mutate
+    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
+      if (!isEditable) {
+        return Promise.resolve(EditorMode.View); // fixed if not editable
+      }
+      updateBodyClassesForEditorMode(editorMode);
+      return swrResponse.mutate(editorMode, shouldRevalidate);
+    },
+  };
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
@@ -170,7 +202,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   return useSWRImmutable(
-    condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,

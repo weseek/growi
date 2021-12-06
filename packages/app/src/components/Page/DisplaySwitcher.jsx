@@ -14,6 +14,8 @@ import ContentLinkButtons from '../ContentLinkButtons';
 import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
+import HashChanged from '../EventListeneres/HashChanged';
+import { useIsEditable } from '~/stores/context';
 
 
 const DisplaySwitcher = (props) => {
@@ -22,6 +24,7 @@ const DisplaySwitcher = (props) => {
   } = props;
   const { isPageExist, pageUser } = pageContainer.state;
 
+  const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
 
   const isViewMode = editorMode === EditorMode.View;
@@ -54,18 +57,24 @@ const DisplaySwitcher = (props) => {
 
           </div>
         </TabPane>
-        <TabPane tabId={EditorMode.Editor}>
-          <div id="page-editor">
-            <Editor />
-          </div>
-        </TabPane>
-        <TabPane tabId={EditorMode.HackMD}>
-          <div id="page-editor-with-hackmd">
-            <PageEditorByHackmd />
-          </div>
-        </TabPane>
+        { isEditable && (
+          <TabPane tabId={EditorMode.Editor}>
+            <div id="page-editor">
+              <Editor />
+            </div>
+          </TabPane>
+        ) }
+        { isEditable && (
+          <TabPane tabId={EditorMode.HackMD}>
+            <div id="page-editor-with-hackmd">
+              <PageEditorByHackmd />
+            </div>
+          </TabPane>
+        ) }
       </TabContent>
-      {!isViewMode && <EditorNavbarBottom /> }
+      { isEditable && !isViewMode && <EditorNavbarBottom /> }
+
+      { isEditable && <HashChanged></HashChanged> }
     </>
   );
 };
