@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import Clamp from 'react-multiline-clamp';
+import toastr from 'toastr';
 
 import { useTranslation } from 'react-i18next';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
@@ -11,13 +12,19 @@ import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
   page: IPageHasId,
+  onClickDeleteButton?: (pageId: string)=>void,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) => {
+const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page } = props;
+  const { page, onClickDeleteButton } = props;
   const { t } = useTranslation('');
 
+  const deleteButtonHandler = () => {
+    if (onClickDeleteButton != null) {
+      onClickDeleteButton(page._id);
+    }
+  };
   return (
     <>
       <button
@@ -46,16 +53,16 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) =>
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={() => console.log('delete modal show')}>
+        <button className="dropdown-item text-danger" type="button" onClick={deleteButtonHandler}>
           <i className="icon-fw icon-fire"></i>{t('Delete')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-docs"></i>{t('Duplicate')}
         </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
+        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
       </div>
@@ -67,11 +74,17 @@ const PageItemControl: FC<PageItemControlProps> = (props: {page: IPageHasId}) =>
 type Props = {
   page: IPageSearchResultData,
   isSelected: boolean,
-  onClickInvoked?: (pageId: string) => void,
+  isChecked: boolean,
+  onClickCheckbox?: (pageId: string) => void,
+  onClickSearchResultItem?: (pageId: string) => void,
+  onClickDeleteButton?: (pageId: string) => void,
 }
 
 const SearchResultListItem: FC<Props> = (props:Props) => {
-  const { page: { pageData, pageMeta }, isSelected } = props;
+  const {
+    // todo: refactoring variable name to clear what changed
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked,
+  } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
@@ -86,23 +99,27 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
     />
   );
 
-  const onClickInvoked = (pageId) => {
-    if (props.onClickInvoked != null) {
-      props.onClickInvoked(pageId);
-    }
-  };
-
   return (
     <li key={pageData._id} className={`page-list-li search-page-item w-100 border-bottom px-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block pt-3"
         href={pageId}
-        onClick={() => onClickInvoked(pageData._id)}
+        onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
         <div className="d-flex">
           {/* checkbox */}
           <div className="form-check my-auto mr-3">
-            <input className="form-check-input my-auto" type="checkbox" value="" id="flexCheckDefault" />
+            <input
+              className="form-check-input my-auto"
+              type="checkbox"
+              id="flexCheckDefault"
+              onChange={() => {
+                if (onClickCheckbox != null) {
+                  onClickCheckbox(pageData._id);
+                }
+              }}
+              checked={isChecked}
+            />
           </div>
           <div className="w-100">
             {/* page path */}
@@ -122,7 +139,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} />
+                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} />
               </div>
             </div>
             <div className="my-2">
