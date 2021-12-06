@@ -64,6 +64,16 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
+  const renderSortControlDropdown = () => {
+    return (
+      <>
+        {Object.keys(SORT_AXIS).forEach((sortAxis) => {
+          return <div>{SORT_AXIS[sortAxis]}</div>;
+        })}
+      </>
+    );
+  };
+
   const onDeleteSelectedPageHandler = () => {
     console.log('onDeleteSelectedPageHandler is called');
     // TODO: implement this function to delete selected pages.
@@ -124,6 +134,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           */}
           <button type="button" onClick={onClickChangeSort}>change sort</button>
           <p>sort:{props.sort}, order: {props.order}</p>
+          {renderSortControlDropdown()}
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
