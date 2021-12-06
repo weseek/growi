@@ -107,12 +107,12 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
-  const renderPageModelNotification = (): JSX.Element => {
+  const RenderPageModelNotification = (): JSX.Element => {
 
     const snapshot = JSON.parse(notification.snapshot);
     const pagePath = { path: snapshot.path };
 
-    const notificationClickHandler = () => {
+    const notificationClickHandler = useCallback(() => {
       // set notification status "OPEND"
       apiv3Post('/in-app-notification/open', { id: notification._id });
 
@@ -121,7 +121,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       if (targetPagePath != null) {
         window.location.href = targetPagePath;
       }
-    };
+    }, []);
 
     return (
       <div className="p-2">
@@ -143,7 +143,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         {renderActionUserPictures()}
       </div>
       {notification.targetModel === 'Page' && (
-        renderPageModelNotification()
+        RenderPageModelNotification()
       )}
     </div>
   );
