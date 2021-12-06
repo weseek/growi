@@ -119,7 +119,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <PageItemControl page={pageData} />
               </div>
             </div>
-            <div className="my-2">
+            <div className="my-2 search-result-list-snippet">
               <Clamp
                 lines={2}
               >
