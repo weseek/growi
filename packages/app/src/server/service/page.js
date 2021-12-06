@@ -10,7 +10,7 @@ const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
-const { isTrashPage } = pagePathUtils;
+const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -25,6 +25,43 @@ class PageService {
     this.pageEvent.on('create', this.pageEvent.onCreate);
     this.pageEvent.on('update', this.pageEvent.onUpdate);
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+  }
+
+  async findPageAndMetaDataByViewer({ pageId, path, user }) {
+
+    const Page = this.crowi.model('Page');
+
+    let page;
+    if (pageId != null) { // prioritized
+      page = await Page.findByIdAndViewer(pageId, user);
+    }
+    else {
+      page = await Page.findByPathAndViewer(path, user);
+    }
+
+    const result = {};
+
+    if (page == null) {
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      result.isForbidden = isExist;
+      result.isNotFound = !isExist;
+      result.isCreatable = isCreatablePage(path);
+      result.isDeletable = false;
+      result.canDeleteCompletely = false;
+      result.page = page;
+
+      return result;
+    }
+
+    result.page = page;
+    result.isForbidden = false;
+    result.isNotFound = false;
+    result.isCreatable = false;
+    result.isDeletable = isDeletablePage(path);
+    result.isDeleted = page.isDeleted();
+    result.canDeleteCompletely = user != null && user.canDeleteCompletely(page.creator);
+
+    return result;
   }
 
   /**

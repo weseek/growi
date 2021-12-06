@@ -1,31 +1,29 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { usePageCreateModalOpened } from '~/stores/ui';
 
-const CreatePage = (props) => {
+const CreatePage = React.memo((props) => {
+
+  const { mutate } = usePageCreateModalOpened();
 
   // setup effect
   useEffect(() => {
-    props.navigationContainer.openPageCreateModal();
+    mutate(true);
 
     // remove this
     props.onDeleteRender(this);
-  }, [props]);
+  }, [mutate, props]);
 
   return <></>;
-};
+});
 
 CreatePage.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onDeleteRender: PropTypes.func.isRequired,
 };
 
-const CreatePageWrapper = withUnstatedContainers(CreatePage, [NavigationContainer]);
-
-CreatePageWrapper.getHotkeyStrokes = () => {
+CreatePage.getHotkeyStrokes = () => {
   return [['c']];
 };
 
-export default CreatePageWrapper;
+export default CreatePage;

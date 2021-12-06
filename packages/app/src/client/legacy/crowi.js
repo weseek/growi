@@ -1,3 +1,5 @@
+const { blinkElem, blinkSectionHeaderAtBoot } = require('../util/blink-section-header');
+
 /* eslint-disable react/jsx-filename-extension */
 require('jquery.cookie');
 
@@ -16,8 +18,6 @@ window.Crowi = Crowi;
  */
 Crowi.setCaretLineData = function(line) {
   const { appContainer } = window;
-  const navigationContainer = appContainer.getContainer('NavigationContainer');
-  navigationContainer.setEditorMode('edit');
   const pageEditorDom = document.querySelector('#page-editor');
   pageEditorDom.setAttribute('data-caret-line', line);
 };
@@ -112,74 +112,32 @@ Crowi.initClassesByOS = function() {
   });
 };
 
-Crowi.findHashFromUrl = function(url) {
-  let match;
-  /* eslint-disable no-cond-assign */
-  if (match = url.match(/#(.+)$/)) {
-    return `#${match[1]}`;
-  }
-  /* eslint-enable no-cond-assign */
+// window.addEventListener('load', () => {
+//   const { appContainer } = window;
+//   const pageContainer = appContainer.getContainer('PageContainer');
 
-  return '';
-};
+//   // Do nothing if the page does not exist
+//   // ex.) admin page,login page
+//   if (pageContainer == null) {
+//     return null;
+//   }
+//   const { isAbleToOpenPageEditor } = pageContainer;
 
-Crowi.findSectionHeader = function(hash) {
-  if (hash.length === 0) {
-    return;
-  }
+//   // hash on page
+//   if (window.location.hash) {
+//     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-  // omit '#'
-  const id = hash.replace('#', '');
-  // don't use jQuery and document.querySelector
-  //  because hash may containe Base64 encoded strings
-  const elem = document.getElementById(id);
-  if (elem != null && elem.tagName.match(/h\d+/i)) { // match h1, h2, h3...
-    return elem;
-  }
+//     if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
+//       navigationContainer.setEditorMode('edit');
 
-  return null;
-};
-
-Crowi.unblinkSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.remove('blink');
-  }
-};
-
-Crowi.blinkSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.add('blink');
-  }
-};
-
-window.addEventListener('load', () => {
-  const { appContainer } = window;
-  const pageContainer = appContainer.getContainer('PageContainer');
-
-  // Do nothing if the page does not exist
-  // ex.) admin page,login page
-  if (pageContainer == null) {
-    return null;
-  }
-  const { isAbleToOpenPageEditor } = pageContainer;
-
-  // hash on page
-  if (window.location.hash) {
-    const navigationContainer = appContainer.getContainer('NavigationContainer');
-
-    if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
-      navigationContainer.setEditorMode('edit');
-
-      // focus
-      Crowi.setCaretLineAndFocusToEditor();
-    }
-    else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
-    }
-  }
-});
+//       // focus
+//       Crowi.setCaretLineAndFocusToEditor();
+//     }
+//     else if (window.location.hash === '#hackmd') {
+//       navigationContainer.setEditorMode('hackmd');
+//     }
+//   }
+// });
 
 window.addEventListener('load', () => {
   const crowi = window.crowi;
@@ -219,28 +177,22 @@ window.addEventListener('load', () => {
     });
   }
 
-  Crowi.blinkSelectedSection(window.location.hash);
+  blinkSectionHeaderAtBoot();
+
   Crowi.modifyScrollTop();
   Crowi.initClassesByOS();
 });
 
 window.addEventListener('hashchange', (e) => {
-  Crowi.unblinkSelectedSection(Crowi.findHashFromUrl(e.oldURL));
-  Crowi.blinkSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
-  const { appContainer } = window;
-  const navigationContainer = appContainer.getContainer('NavigationContainer');
-
 
   // hash on page
   if (window.location.hash) {
     if (window.location.hash === '#edit') {
-      navigationContainer.setEditorMode('edit');
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
-    }
+    // else if (window.location.hash === '#hackmd') {
+    // }
   }
 });
 
