@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
-  useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
+  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
@@ -58,7 +58,7 @@ const ContextExtractor: FC = () => {
   useCurrentUser(currentUser);
 
   // Page
-  useCreatedAt(createdAt);
+  useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);

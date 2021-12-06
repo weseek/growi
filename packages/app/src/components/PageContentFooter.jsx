@@ -7,11 +7,11 @@ import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import { useCreatedAt } from '~/stores/context';
+import { useCurrentCreatedAt } from '~/stores/context';
 
 const PageContentFooter = (props) => {
   const { pageContainer } = props;
-  const { data: createdAt } = useCreatedAt();
+  const { data: createdAt } = useCurrentCreatedAt();
 
   const {
     creator, updatedAt, revisionAuthor,
