@@ -1,9 +1,8 @@
 import urljoin from 'url-join';
-import { format } from 'date-fns';
 import {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
-import { GrowiBotEvent } from '@growi/slack';
+import { GrowiBotEvent, generateLastUpdateMrkdwn } from '@growi/slack';
 import { SlackEventHandler } from './base-event-handler';
 import {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
@@ -84,18 +83,17 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
   // builder method for unfurl parameter
   generateLinkUnfurls(body: PublicData, growiTargetUrl: string, toUrl: string): LinkUnfurls {
-    const { pageBody: text, updatedAt, commentCount } = body;
+    const { pageBody: text, updatedAt } = body;
 
+    const appTitle = this.crowi.appService.getAppTitle();
     const siteUrl = this.crowi.appService.getSiteUrl();
-
-    const updatedAtFormatted = format(updatedAt, 'yyyy-MM-dd HH:mm');
-    const footer = `URL: ${siteUrl}  Updated at: ${updatedAtFormatted}`;
 
     const attachment: MessageAttachment = {
       title: body.path,
       title_link: toUrl, // permalink
       text,
-      footer,
+      footer: `<${decodeURI(siteUrl)}|*${appTitle}*>`
+      + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, new Date())}\``,
     };
 
     const unfurls: LinkUnfurls = {
