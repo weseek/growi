@@ -184,12 +184,15 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+    v5PageMigration: [
+      body('action').isString().withMessage('action is required'),
+    ],
   };
 
   async function createPageAction({
     path, body, user, options,
   }) {
-    const createdPage = Page.create(path, body, user, options);
+    const createdPage = await Page.create(path, body, user, options);
     return createdPage;
   }
 
@@ -264,21 +267,21 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
-    // check page existence
-    const isExist = await Page.count({ path }) > 0;
-    if (isExist) {
-      return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
-    }
-
     const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await createPageAction({
-      path, body, user: req.user, options,
-    });
+    let createdPage;
+    try {
+      createdPage = await createPageAction({
+        path, body, user: req.user, options,
+      });
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
@@ -680,5 +683,45 @@ module.exports = (crowi) => {
     }
 
   });
+
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
+    const { action, pageIds } = req.body;
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const Page = crowi.model('Page');
+
+    try {
+      switch (action) {
+        case 'initialMigration':
+          if (!isV5Compatible) {
+            // this method throws and emit socketIo event when error occurs
+            crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+          }
+          break;
+        case 'privateLegacyPages':
+          crowi.pageService.v5MigrationByPageIds(pageIds);
+          break;
+
+        default:
+          logger.error(`${action} action is not supported.`);
+          return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
+      }
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+    }
+
+    return res.apiv3({ isV5Compatible });
+  });
+
+  router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
+    try {
+      const migratablePagesCount = await crowi.pageService.v5MigratablePrivatePagesCount(req.user);
+      return res.apiv3({ migratablePagesCount });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
+    }
+  });
+
   return router;
 };

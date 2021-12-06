@@ -1,8 +1,7 @@
 import React, {
-  FC, useCallback, useState, useEffect,
+  FC, useCallback,
 } from 'react';
 import AppContainer from '../../client/services/AppContainer';
-import NavigationContainer from '../../client/services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import PageReactionButtons from '../PageReactionButtons';
@@ -12,10 +11,10 @@ import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { toastError } from '../../client/util/apiNotification';
 import { apiv3Put } from '../../client/util/apiv3-client';
 import { useSWRxLikerList } from '../../stores/user';
+import { useEditorMode } from '~/stores/ui';
 
 type SubNavButtonsProps= {
   appContainer: AppContainer,
-  navigationContainer: NavigationContainer,
   isCompactMode?: boolean,
   pageId: string,
   revisionId: string,
@@ -26,9 +25,9 @@ type SubNavButtonsProps= {
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
-    appContainer, navigationContainer, isCompactMode, pageId, revisionId, path, willShowPageManagement, isDeletable, isAbleToDeleteCompletely,
+    appContainer, isCompactMode, pageId, revisionId, path, willShowPageManagement, isDeletable, isAbleToDeleteCompletely,
   } = props;
-  const { editorMode } = navigationContainer.state;
+  const { data: editorMode } = useEditorMode();
   const isViewMode = editorMode === 'view';
   const { isGuestUser } = appContainer;
 
@@ -109,7 +108,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
 /**
  * Wrapper component for using unstated
  */
-const SubNavButtonsUnstatedWrapper = withUnstatedContainers(SubNavButtons, [AppContainer, NavigationContainer]);
+const SubNavButtonsUnstatedWrapper = withUnstatedContainers(SubNavButtons, [AppContainer]);
 
 // wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
 const SubNavButtonsWrapper = (props) => {

@@ -72,7 +72,7 @@ TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tags: PropTypes.arrayOf(String),
   tagsUpdateInvoked: PropTypes.func,
 };
 

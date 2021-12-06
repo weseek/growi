@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
+import {
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
+} from '~/stores/ui';
 import EditorContainer from '~/client/services/EditorContainer';
 
 import TagLabels from '../Page/TagLabels';
@@ -20,10 +22,14 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 
 const GrowiSubNavigation = (props) => {
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+
   const {
-    appContainer, navigationContainer, pageContainer, editorContainer, isCompactMode,
+    appContainer, pageContainer, editorContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+
   const {
     pageId,
     revisionId,
@@ -40,13 +46,13 @@ const GrowiSubNavigation = (props) => {
   } = pageContainer.state;
 
   const { isGuestUser, isSharedUser } = appContainer;
-  const isEditorMode = editorMode !== 'view';
+  const isEditorMode = editorMode !== EditorMode.View;
   // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
+  const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
   const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser;
   function onPageEditorModeButtonClicked(viewType) {
-    navigationContainer.setEditorMode(viewType);
+    mutateEditorMode(viewType);
   }
 
   const tagsUpdatedHandler = useCallback(async(newTags) => {
@@ -138,12 +144,11 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer, PageContainer, EditorContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer, EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
