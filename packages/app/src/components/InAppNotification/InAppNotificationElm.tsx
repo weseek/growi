@@ -56,17 +56,6 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  const notificationClickHandler = useCallback(() => {
-    // set notification status "OPEND"
-    apiv3Post('/in-app-notification/open', { id: notification._id });
-
-    // jump to target page
-    const targetPagePath = notification.target?.path;
-    if (targetPagePath != null) {
-      window.location.href = targetPagePath;
-    }
-  }, []);
-
   const actionUsers = getActionUsers();
 
   const actionType: string = notification.action;
@@ -110,13 +99,24 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
   const renderPageModelNotification = (): JSX.Element => {
 
     const snapshot = JSON.parse(notification.snapshot);
-    const pagePath = snapshot.path;
+    const pagePath = { path: snapshot.path };
+
+    const notificationClickHandler = () => {
+      // set notification status "OPEND"
+      apiv3Post('/in-app-notification/open', { id: notification._id });
+
+      // jump to target page
+      const targetPagePath = notification.target?.path;
+      if (targetPagePath != null) {
+        window.location.href = targetPagePath;
+      }
+    };
 
     return (
       <div className="p-2">
         <div onClick={notificationClickHandler}>
           <div>
-            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={{ path: pagePath }} />
+            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
           </div>
           <i className={`${actionIcon} mr-2`} />
           <FormattedDistanceDate
