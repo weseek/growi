@@ -114,7 +114,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center mr-4 font-weight-lighst">
+        <div className="d-none d-lg-flex align-items-center mr-4">
           <div className="border border-gray mr-3">
             <label className="search-include-path-btn px-3 py-2 mb-0 d-flex align-items-center font-weight-light" htmlFor="flexCheckDefault">
               <input
