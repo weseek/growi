@@ -205,7 +205,7 @@ class SearchTypeahead extends React.Component {
           ref={(c) => { this.typeahead = c }}
           inputProps={inputProps}
           isLoading={this.state.isLoading}
-          labelKey={data => data?.pageData?.path || 'path'} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
+          labelKey={data => data?.pageData?.path || this.props.keywordOnInit || ''} // https://github.com/ericgio/react-bootstrap-typeahead/blob/master/docs/Rendering.md#labelkey-stringfunction
           minLength={0}
           options={this.state.pages} // Search result (Some page names)
           promptText={this.props.helpElement}
