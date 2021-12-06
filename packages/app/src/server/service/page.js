@@ -1,16 +1,18 @@
 import { pagePathUtils } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
+const pathlib = require('path');
 
-const logger = loggerFactory('growi:models:page');
-const debug = require('debug')('growi:models:page');
+const logger = loggerFactory('growi:services:page');
+const debug = require('debug')('growi:services:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
-const { isTrashPage } = pagePathUtils;
+const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -26,6 +28,43 @@ class PageService {
     this.pageEvent.on('update', this.pageEvent.onUpdate);
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
+  }
+
+  async findPageAndMetaDataByViewer({ pageId, path, user }) {
+
+    const Page = this.crowi.model('Page');
+
+    let page;
+    if (pageId != null) { // prioritized
+      page = await Page.findByIdAndViewer(pageId, user);
+    }
+    else {
+      page = await Page.findByPathAndViewer(path, user);
+    }
+
+    const result = {};
+
+    if (page == null) {
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      result.isForbidden = isExist;
+      result.isNotFound = !isExist;
+      result.isCreatable = isCreatablePage(path);
+      result.isDeletable = false;
+      result.canDeleteCompletely = false;
+      result.page = page;
+
+      return result;
+    }
+
+    result.page = page;
+    result.isForbidden = false;
+    result.isNotFound = false;
+    result.isCreatable = false;
+    result.isDeletable = isDeletablePage(path);
+    result.isDeleted = page.isDeleted();
+    result.canDeleteCompletely = user != null && user.canDeleteCompletely(page.creator);
+
+    return result;
   }
 
   /**
@@ -248,7 +287,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };
@@ -618,7 +657,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({
@@ -736,6 +775,269 @@ class PageService {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
     }
+  }
+
+  async v5MigrationByPageIds(pageIds) {
+    const Page = mongoose.model('Page');
+
+    if (pageIds == null || pageIds.length === 0) {
+      logger.error('pageIds is null or 0 length.');
+      return;
+    }
+
+    // generate regexps
+    const regexps = await this._generateRegExpsByPageIds(pageIds);
+
+    // migrate recursively
+    try {
+      await this._v5RecursiveMigration(null, regexps);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      // socket.emit('v5InitialMirationFailed', { error: err.message }); TODO: use socket to tell user
+
+      throw err;
+    }
+  }
+
+  async v5InitialMigration(grant) {
+    const socket = this.crowi.socketIoService.getAdminSocket();
+    try {
+      await this._v5RecursiveMigration(grant);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      socket.emit('v5InitialMirationFailed', { error: err.message });
+
+      throw err;
+    }
+
+    const Page = this.crowi.model('Page');
+    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
+    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
+    const isPathIndexExists = pathIndexStatus != null;
+    const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
+
+    if (isUnique || !isPathIndexExists) {
+      try {
+        await this._v5NormalizeIndex(isPathIndexExists);
+      }
+      catch (err) {
+        logger.error('V5 index normalization failed.', err);
+        socket.emit('v5IndexNormalizationFailed', { error: err.message });
+
+        throw err;
+      }
+    }
+
+    await this._setIsV5CompatibleTrue();
+  }
+
+  /*
+   * returns an array of js RegExp instance instead of RE2 instance for mongo filter
+   */
+  async _generateRegExpsByPageIds(pageIds) {
+    const Page = mongoose.model('Page');
+
+    let result;
+    try {
+      result = await Page.findListByPageIds(pageIds, null, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages by ids', err);
+      throw err;
+    }
+
+    const { pages } = result;
+    const regexps = pages.map(page => new RegExp(`^${page.path}`));
+
+    return regexps;
+  }
+
+  async _setIsV5CompatibleTrue() {
+    try {
+      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+        'app:isV5Compatible': true,
+      });
+      logger.info('Successfully migrated all public pages.');
+    }
+    catch (err) {
+      logger.warn('Failed to update app:isV5Compatible to true.');
+      throw err;
+    }
+  }
+
+  // TODO: use websocket to show progress
+  async _v5RecursiveMigration(grant, regexps) {
+    const BATCH_SIZE = 100;
+    const PAGES_LIMIT = 1000;
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    // generate filter
+    let filter = {
+      parent: null,
+      path: { $ne: '/' },
+    };
+    if (grant != null) {
+      filter = {
+        ...filter,
+        grant,
+      };
+    }
+    if (regexps != null && regexps.length !== 0) {
+      filter = {
+        ...filter,
+        path: {
+          $in: regexps,
+        },
+      };
+    }
+
+    const total = await Page.countDocuments(filter);
+
+    let baseAggregation = Page
+      .aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $project: { // minimize data to fetch
+            _id: 1,
+            path: 1,
+          },
+        },
+      ]);
+
+    // limit pages to get
+    if (total > PAGES_LIMIT) {
+      baseAggregation = baseAggregation.limit(Math.floor(total * 0.3));
+    }
+
+    const pagesStream = await baseAggregation.cursor({ batchSize: BATCH_SIZE });
+
+    // use batch stream
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    let countPages = 0;
+    let shouldContinue = true;
+
+    // migrate all siblings for each page
+    const migratePagesStream = new Writable({
+      objectMode: true,
+      async write(pages, encoding, callback) {
+        // make list to create empty pages
+        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPaths = Array.from(parentPathsSet);
+
+        // fill parents with empty pages
+        await Page.createEmptyPagesByPaths(parentPaths);
+
+        // find parents again
+        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
+        const parents = await builder
+          .addConditionToListByPathsArray(parentPaths)
+          .query
+          .lean()
+          .exec();
+
+        // bulkWrite to update parent
+        const updateManyOperations = parents.map((parent) => {
+          const parentId = parent._id;
+
+          // modify to adjust for RegExp
+          let parentPath = parent.path === '/' ? '' : parent.path;
+          // inject \ before brackets
+          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
+            parentPath = parentPath.replace(bracket, `\\${bracket}`);
+          });
+
+          return {
+            updateMany: {
+              filter: {
+                // regexr.com/6889f
+                // ex. /parent/any_child OR /any_level1
+                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+              },
+              update: {
+                parent: parentId,
+              },
+            },
+          };
+        });
+        try {
+          const res = await Page.bulkWrite(updateManyOperations);
+          countPages += res.result.nModified;
+          logger.info(`Page migration processing: (count=${countPages})`);
+
+          // throw
+          if (res.result.writeErrors.length > 0) {
+            logger.error('Failed to migrate some pages', res.result.writeErrors);
+            throw Error('Failed to migrate some pages');
+          }
+
+          // finish migration
+          if (res.result.nModified === 0) { // TODO: find the best property to count updated documents
+            shouldContinue = false;
+            logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
+          }
+        }
+        catch (err) {
+          logger.error('Failed to update page.parent.', err);
+          throw err;
+        }
+
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+
+    pagesStream
+      .pipe(batchStream)
+      .pipe(migratePagesStream);
+
+    await streamToPromise(migratePagesStream);
+
+    if (await Page.exists(filter) && shouldContinue) {
+      return this._v5RecursiveMigration(grant, regexps);
+    }
+
+  }
+
+  async _v5NormalizeIndex(isPathIndexExists) {
+    const collection = mongoose.connection.collection('pages');
+
+    if (isPathIndexExists) {
+      try {
+        // drop pages.path_1 indexes
+        await collection.dropIndex('path_1');
+        logger.info('Succeeded to drop unique indexes from pages.path.');
+      }
+      catch (err) {
+        logger.warn('Failed to drop unique indexes from pages.path.', err);
+        throw err;
+      }
+    }
+
+    try {
+      // create indexes without
+      await collection.createIndex({ path: 1 }, { unique: false });
+      logger.info('Succeeded to create non-unique indexes on pages.path.');
+    }
+    catch (err) {
+      logger.warn('Failed to create non-unique indexes on pages.path.', err);
+      throw err;
+    }
+  }
+
+  async v5MigratablePrivatePagesCount(user) {
+    if (user == null) {
+      throw Error('user is required');
+    }
+    const Page = this.crowi.model('Page');
+    return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
 }
