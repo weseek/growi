@@ -107,6 +107,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
+  // Change the display for each TargetModel
   const RenderPageModelNotification = (): JSX.Element => {
 
     const snapshot = JSON.parse(notification.snapshot);
