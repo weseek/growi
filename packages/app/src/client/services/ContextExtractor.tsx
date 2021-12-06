@@ -11,6 +11,7 @@ import {
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
+const dateNull = 'null';
 
 const ContextExtractor: FC = () => {
 
@@ -28,7 +29,7 @@ const ContextExtractor: FC = () => {
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
   const pageId = mainContent?.getAttribute('data-page-id') || null;
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
-  const createdAt = mainContent?.getAttribute('data-page-created-at');
+  const createdAt = new Date(mainContent?.getAttribute('data-page-created-at') || dateNull);
   const updatedAt = mainContent?.getAttribute('data-page-updated-at');
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
