@@ -89,11 +89,11 @@ const SearchControl: FC <Props> = (props: Props) => {
         <div className="d-flex mr-auto ml-3">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
-          isSelectAllCheckboxDisabled={searchResultCount === 0}
-          selectAllCheckboxType={props.selectAllCheckboxType}
-          onClickDeleteAllButton={props.onClickDeleteAllButton}
-          onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-        />
+            isSelectAllCheckboxDisabled={searchResultCount === 0}
+            selectAllCheckboxType={props.selectAllCheckboxType}
+            onClickDeleteAllButton={props.onClickDeleteAllButton}
+            onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
+          />
         </div>
         {/** filter option */}
         <div className="d-lg-none mr-4">
