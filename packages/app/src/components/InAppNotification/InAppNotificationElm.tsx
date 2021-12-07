@@ -6,7 +6,7 @@ import { HasObjectId } from '~/interfaces/has-object-id';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
-import { renderHogeModelNotification } from './renderTargetModel/page';
+import { RenderPageModelNotification } from './renderTargetModel/page';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -57,16 +57,16 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  const renderNotificationDate = (): JSX.Element => {
-    return (
-      <FormattedDistanceDate
-        id={notification._id}
-        date={notification.createdAt}
-        isShowTooltip={false}
-        differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-      />
-    );
-  };
+  // const renderNotificationDate = (): JSX.Element => {
+  //   return (
+  //     <FormattedDistanceDate
+  //       id={notification._id}
+  //       date={notification.createdAt}
+  //       isShowTooltip={false}
+  //       differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
+  //     />
+  //   );
+  // };
 
   const actionUsers = getActionUsers();
 
@@ -108,35 +108,35 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
-  // Change the display for each TargetModel
-  const RenderPageModelNotification = (): JSX.Element => {
+  // // Change the display for each TargetModel
+  // const RenderPageModelNotification = (): JSX.Element => {
 
-    const snapshot = JSON.parse(notification.snapshot);
-    const pagePath = { path: snapshot.path };
+  //   const snapshot = JSON.parse(notification.snapshot);
+  //   const pagePath = { path: snapshot.path };
 
-    const notificationClickHandler = useCallback(() => {
-      // set notification status "OPEND"
-      apiv3Post('/in-app-notification/open', { id: notification._id });
+  //   const notificationClickHandler = useCallback(() => {
+  //     // set notification status "OPEND"
+  //     apiv3Post('/in-app-notification/open', { id: notification._id });
 
-      // jump to target page
-      const targetPagePath = notification.target?.path;
-      if (targetPagePath != null) {
-        window.location.href = targetPagePath;
-      }
-    }, []);
+  //     // jump to target page
+  //     const targetPagePath = notification.target?.path;
+  //     if (targetPagePath != null) {
+  //       window.location.href = targetPagePath;
+  //     }
+  //   }, []);
 
-    return (
-      <div className="p-2">
-        <div onClick={notificationClickHandler}>
-          <div>
-            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
-          </div>
-          <i className={`${actionIcon} mr-2`} />
-          {renderNotificationDate()}
-        </div>
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="p-2">
+  //       <div onClick={notificationClickHandler}>
+  //         <div>
+  //           <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
+  //         </div>
+  //         <i className={`${actionIcon} mr-2`} />
+  //         {renderNotificationDate()}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
@@ -144,11 +144,14 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
         {renderActionUserPictures()}
       </div>
-      {/* test */}
-      {renderHogeModelNotification()}
-      {/* {notification.targetModel === 'Page' && (
-        RenderPageModelNotification()
-      )} */}
+      {notification.targetModel === 'Page' && (
+        <RenderPageModelNotification
+          notification={notification}
+          actionMsg={actionMsg}
+          actionIcon={actionIcon}
+          actionUsers={actionUsers}
+        />
+      )}
     </div>
   );
 };
