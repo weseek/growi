@@ -23,20 +23,12 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
     SearchResultList, SearchControl, SearchResultContent, searchResultMeta, searchingKeyword,
   } = props;
 
-  const calcScrollTargetElmHeight = () => {
-    const scrolltarget = document.getElementById('search-result-list-scroll');
-    if (scrolltarget == null) return;
-    return window.innerHeight - scrolltarget.getBoundingClientRect().top;
-  };
-
-  const searchResultListHeight = calcScrollTargetElmHeight();
-
   return (
     <div className="content-main">
       <div className="search-result row" id="search-result">
         <div className="col-lg-6 page-list border boder-gray search-result-list px-0" id="search-result-list">
           <nav><SearchControl></SearchControl></nav>
-          <div id="search-result-list-scroll" className="search-result-list-scroll" style={{ height: searchResultListHeight }}>
+          <div className="search-result-list-scroll">
             <div className="d-flex align-items-center justify-content-between mt-1 mb-3">
               <div className="search-result-meta text-nowrap mr-3">
                 <span className="font-weight-light">{t('search_result.result_meta')} </span>
