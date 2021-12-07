@@ -27,10 +27,6 @@ export const SlackNotification: FC<SlackNotificationProps> = ({ id, slackChannel
     }
   };
 
-  useEffect(() => {
-    // console.log(isSlackEnabled);
-  }, [isSlackEnabled]);
-
 
   return (
     <div className="grw-slack-notification w-100">
