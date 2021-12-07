@@ -20,6 +20,7 @@ export interface InAppNotificationDocument extends Document {
   activities: ActivityDocument[]
   status: string
   createdAt: Date
+  snapshot: string
 }
 
 
@@ -72,6 +73,10 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  snapshot: {
+    type: String,
+    require: true,
   },
 });
 inAppNotificationSchema.plugin(mongoosePaginate);

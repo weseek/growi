@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import { UserPicture, PagePathLabel } from '@growi/ui';
+import { UserPicture } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import { apiv3Post } from '~/client/util/apiv3-client';
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
+// Change the display for each targetmodel
+import PageModelNotification from './PageNotification/PageModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -14,7 +14,6 @@ interface Props {
 const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
-
 
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -57,21 +56,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  const notificationClickHandler = useCallback(() => {
-    // set notification status "OPEND"
-    apiv3Post('/in-app-notification/open', { id: notification._id });
-
-    // jump to target page
-    const targetPagePath = notification.target?.path;
-    if (targetPagePath != null) {
-      window.location.href = targetPagePath;
-    }
-  }, []);
-
   const actionUsers = getActionUsers();
-
-  // TODO: 82528 Swap target.path and snapshot.path
-  const pagePath = { path: 'test-page' };
 
   const actionType: string = notification.action;
   let actionMsg: string;
@@ -111,27 +96,20 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
-
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
       <div className="p-2 mr-2 d-flex align-items-center">
         <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
         {renderActionUserPictures()}
       </div>
-      <div className="p-2">
-        <div onClick={notificationClickHandler}>
-          <div>
-            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
-          </div>
-          <i className={`${actionIcon} mr-2`} />
-          <FormattedDistanceDate
-            id={notification._id}
-            date={notification.createdAt}
-            isShowTooltip={false}
-            differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-          />
-        </div>
-      </div>
+      {notification.targetModel === 'Page' && (
+        <PageModelNotification
+          notification={notification}
+          actionMsg={actionMsg}
+          actionIcon={actionIcon}
+          actionUsers={actionUsers}
+        />
+      )}
     </div>
   );
 };
