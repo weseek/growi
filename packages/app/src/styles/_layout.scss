@@ -32,7 +32,7 @@ body.growi-layout-fluid .grw-container-convertible {
 }
 
 .grw-scrollable-modal-body {
-  max-height: 35vh;
+  max-height: calc(100vh - 330px);
   overflow-y: scroll;
 }
 
