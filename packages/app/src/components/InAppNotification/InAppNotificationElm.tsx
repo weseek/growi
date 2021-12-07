@@ -1,10 +1,8 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import { UserPicture, PagePathLabel } from '@growi/ui';
+import { UserPicture } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import { apiv3Post } from '~/client/util/apiv3-client';
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import PageModelNotification from './TargetModel/Page/PageModelNotification';
 
@@ -57,17 +55,6 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
     );
   };
 
-  // const renderNotificationDate = (): JSX.Element => {
-  //   return (
-  //     <FormattedDistanceDate
-  //       id={notification._id}
-  //       date={notification.createdAt}
-  //       isShowTooltip={false}
-  //       differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-  //     />
-  //   );
-  // };
-
   const actionUsers = getActionUsers();
 
   const actionType: string = notification.action;
@@ -107,36 +94,6 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionMsg = '';
       actionIcon = '';
   }
-
-  // // Change the display for each TargetModel
-  // const RenderPageModelNotification = (): JSX.Element => {
-
-  //   const snapshot = JSON.parse(notification.snapshot);
-  //   const pagePath = { path: snapshot.path };
-
-  //   const notificationClickHandler = useCallback(() => {
-  //     // set notification status "OPEND"
-  //     apiv3Post('/in-app-notification/open', { id: notification._id });
-
-  //     // jump to target page
-  //     const targetPagePath = notification.target?.path;
-  //     if (targetPagePath != null) {
-  //       window.location.href = targetPagePath;
-  //     }
-  //   }, []);
-
-  //   return (
-  //     <div className="p-2">
-  //       <div onClick={notificationClickHandler}>
-  //         <div>
-  //           <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
-  //         </div>
-  //         <i className={`${actionIcon} mr-2`} />
-  //         {renderNotificationDate()}
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
