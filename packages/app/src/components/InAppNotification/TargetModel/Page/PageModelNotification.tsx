@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 import { PagePathLabel } from '@growi/ui';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { getSnapshotPagePath } from './snapshot';
@@ -13,7 +13,7 @@ interface Props {
   actionUsers: string
 }
 
-const PageModelNotification = (props: Props): JSX.Element => {
+const PageModelNotification: FC<Props> = (props: Props) => {
   const {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
