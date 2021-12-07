@@ -63,7 +63,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
         <button className="dropdown-item text-danger border-top pt-2" type="button" onClick={deleteButtonHandler}>
-          <i className="icon-trash mr-1"></i>{t('Delete')}
+          <i className="icon-fw icon-trash"></i>{t('Delete')}
         </button>
       </div>
     </>
