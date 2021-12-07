@@ -1,12 +1,16 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult } from '../interfaces/page-listing-results';
+import {
+  AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
+} from '../interfaces/page-listing-results';
 
 
-export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
+export const useSWRxRootPage = (
+    shouldFetch: boolean,
+): SWRResponse<RootPageResult, Error> => {
   return useSWR(
-    '/page-listing/root',
+    shouldFetch ? '/page-listing/root' : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         rootPage: response.data.rootPage,

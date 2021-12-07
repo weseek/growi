@@ -6,7 +6,6 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
-import Page from '~/components/Page';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 

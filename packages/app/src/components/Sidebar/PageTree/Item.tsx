@@ -7,26 +7,28 @@ import { useTranslation } from 'react-i18next';
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
-import { usePageId } from '../../../stores/context';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 
 
 interface ItemProps {
   itemNode: ItemNode
+  targetId?: string
   isOpen?: boolean
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetId: string): void => {
+const markTarget = (children: ItemNode[], targetId?: string): void => {
+  if (targetId == null) {
+    return;
+  }
+
   children.forEach((node) => {
     if (node.page._id === targetId) {
       node.page.isTarget = true;
     }
     return node;
   });
-
-  return;
 };
 
 type ItemControlProps = {
@@ -82,7 +84,7 @@ const ItemCount: FC = () => {
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
-  const { itemNode, isOpen: _isOpen = false } = props;
+  const { itemNode, targetId, isOpen: _isOpen = false } = props;
 
   const { page, children } = itemNode;
 
@@ -91,7 +93,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
-  const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasChildren = useCallback((): boolean => {

@@ -2,7 +2,7 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, usePageId, useTargetAndAncestors } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
@@ -12,6 +12,9 @@ const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   const { data: currentPath } = useCurrentPagePath();
+  const { data: targetId } = usePageId();
+  const { data: targetAndAncestorsData } = useTargetAndAncestors();
+
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   const path = currentPath || '/';
@@ -23,7 +26,7 @@ const PageTree: FC = memo(() => {
       </div>
 
       <div className="grw-sidebar-content-body">
-        <ItemsTree path={path} />
+        <ItemsTree targetPath={path} targetId={targetId} targetAndAncestorsData={targetAndAncestorsData} />
       </div>
 
       <div className="grw-sidebar-content-footer">
