@@ -3,6 +3,8 @@ import isThisHour from 'date-fns/isThisHour/index.js';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
+import { createSnapshot } from '../../components/InAppNotification/renderTargetModel/page';
+
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
@@ -811,6 +813,9 @@ class PageService {
   createAndSendNotifications = async function(page, user, action) {
 
     const { activityService, inAppNotificationService } = this.crowi;
+
+    const t = createSnapshot(page);
+    console.log(t);
 
     const snapshot = JSON.stringify({
       path: page.path,

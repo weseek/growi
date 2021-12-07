@@ -6,6 +6,7 @@ import { HasObjectId } from '~/interfaces/has-object-id';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
+import { renderHogeModelNotification } from './renderTargetModel/page';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -143,9 +144,11 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
         {renderActionUserPictures()}
       </div>
-      {notification.targetModel === 'Page' && (
+      {/* test */}
+      {renderHogeModelNotification()}
+      {/* {notification.targetModel === 'Page' && (
         RenderPageModelNotification()
-      )}
+      )} */}
     </div>
   );
 };
