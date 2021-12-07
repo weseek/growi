@@ -8,7 +8,6 @@ import AppContainer from '~/client/services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
-import { EditorMode } from '~/stores/ui';
 
 class TagLabels extends React.Component {
 

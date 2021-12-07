@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.2](https://github.com/weseek/growi/compare/v4.5.1...v4.5.2) - 2021-12-06
+
+### 🐛 Bug Fixes
+
+- fix: Added scope for unfurl (#4811) @hakumizuki
+
+## [v4.5.1](https://github.com/weseek/growi/compare/v4.5.0...v4.5.1) - 2021-12-06
+
+### 🐛 Bug Fixes
+
+- fix: /admin/slack-integration page dump undefined error (#4806) @yuki-takei
 
 ## [v4.5.0](https://github.com/weseek/growi/compare/v4.4.13...v4.5.0) - 2021-12-06
 

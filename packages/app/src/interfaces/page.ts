@@ -31,6 +31,6 @@ export type IPage = {
   deletedAt: Date,
 }
 
-export type IPageForItem = Partial<IPage & {isTarget?: boolean} & HasObjectId>;
-
 export type IPageHasId = IPage & HasObjectId;
+
+export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
