@@ -17,6 +17,10 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';
 
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+import { useIsEditable } from '~/stores/context';
+
 const logger = loggerFactory('growi:SavePageControls');
 
 class SavePageControls extends React.Component {
@@ -31,6 +35,7 @@ class SavePageControls extends React.Component {
 
     this.save = this.save.bind(this);
     this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
+
   }
 
   updateGrantHandler(data) {
@@ -44,7 +49,7 @@ class SavePageControls extends React.Component {
 
     try {
       // save
-      await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
+      await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave(), this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -68,7 +73,7 @@ class SavePageControls extends React.Component {
     const optionsToSave = Object.assign(editorContainer.getCurrentOptionsToSave(), {
       overwriteScopesOfDescendants: true,
     });
-    pageContainer.saveAndReload(optionsToSave);
+    pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   }
 
   render() {
@@ -115,7 +120,22 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+
+const SavePageControlsWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  if (!isEditable) {
+    return null;
+  }
+
+  return <SavePageControlsHOCWrapper {...props} editorMode={editorMode} />;
+};
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -123,6 +143,9 @@ SavePageControls.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

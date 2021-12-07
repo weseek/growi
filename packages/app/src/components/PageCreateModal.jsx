@@ -11,9 +11,9 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
+import { usePageCreateModalOpened } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -22,7 +22,9 @@ const {
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
-  const { t, appContainer, navigationContainer } = props;
+  const { t, appContainer } = props;
+
+  const { data: isPageCreateModalOpened, mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
@@ -264,12 +266,12 @@ const PageCreateModal = (props) => {
   return (
     <Modal
       size="lg"
-      isOpen={navigationContainer.state.isPageCreateModalShown}
-      toggle={navigationContainer.closePageCreateModal}
+      isOpen={isPageCreateModalOpened}
+      toggle={() => mutatePageCreateModalOpened(false)}
       className="grw-create-page"
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={navigationContainer.closePageCreateModal} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => mutatePageCreateModalOpened(false)} className="bg-primary text-light">
         {t('New Page')}
       </ModalHeader>
       <ModalBody>
@@ -286,13 +288,12 @@ const PageCreateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer, NavigationContainer]);
+const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
 
 PageCreateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(ModalControlWrapper);

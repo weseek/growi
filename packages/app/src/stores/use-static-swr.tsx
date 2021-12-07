@@ -1,26 +1,31 @@
+import assert from 'assert';
 import {
-  Key, SWRConfiguration, SWRResponse, mutate,
+  Key, SWRConfiguration, SWRResponse,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import { Fetcher } from 'swr/dist/types';
 
 
 export function useStaticSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | Fetcher<Data> | null): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | Fetcher<Data> | null,
+export function useStaticSWR<Data, Error>(key: Key, data: Data | null): SWRResponse<Data, Error>;
+export function useStaticSWR<Data, Error>(key: Key, data: Data | null,
   configuration: SWRConfiguration<Data, Error> | undefined): SWRResponse<Data, Error>;
 
 export function useStaticSWR<Data, Error>(
     ...args: readonly [Key]
-    | readonly [Key, Data | Fetcher<Data> | null]
-    | readonly [Key, Data | Fetcher<Data> | null, SWRConfiguration<Data, Error> | undefined]
+    | readonly [Key, Data | null]
+    | readonly [Key, Data | null, SWRConfiguration<Data, Error> | undefined]
 ): SWRResponse<Data, Error> {
-  const [key, fetcher, configuration] = args;
+  const [key, data, configuration] = args;
 
-  const fetcherFixed = fetcher || configuration?.fetcher;
-  if (fetcherFixed != null) {
-    mutate(key, fetcherFixed);
+  assert.notStrictEqual(configuration?.fetcher, null, 'useStaticSWR does not support \'configuration.fetcher\'');
+
+  const swrResponse = useSWRImmutable(key, null, configuration);
+
+  // mutate
+  if (data != null) {
+    const { mutate } = swrResponse;
+    mutate(data);
   }
 
-  return useSWRImmutable(key, null, configuration);
+  return swrResponse;
 }

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 import { pagePathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 const { isTopPage } = pagePathUtils;
 
@@ -20,7 +20,7 @@ const WIKI_HEADER_LINK = 120;
  */
 const ContentLinkButtons = (props) => {
 
-  const { appContainer, navigationContainer, pageContainer } = props;
+  const { appContainer, pageContainer } = props;
   const { pageUser, path } = pageContainer.state;
   const { isPageExist } = pageContainer.state;
   const { isSharedUser } = appContainer;
@@ -39,7 +39,7 @@ const ContentLinkButtons = (props) => {
         <button
           type="button"
           className="btn btn-outline-secondary btn-sm btn-block"
-          onClick={() => navigationContainer.smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
+          onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
         >
           <i className="mr-2 icon-fw icon-bubbles"></i>
           <span>Comments</span>
@@ -53,7 +53,7 @@ const ContentLinkButtons = (props) => {
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-2"
-        onClick={() => navigationContainer.smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
+        onClick={() => smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
       >
         <i className="mr-2 icon-star"></i>
         <span>Bookmarks</span>
@@ -67,7 +67,7 @@ const ContentLinkButtons = (props) => {
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-3"
-        onClick={() => navigationContainer.smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
+        onClick={() => smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
       >
         <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
         <span>Recently Created</span>
@@ -90,8 +90,7 @@ const ContentLinkButtons = (props) => {
 
 ContentLinkButtons.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withUnstatedContainers(ContentLinkButtons, [AppContainer, NavigationContainer, PageContainer]);
+export default withUnstatedContainers(ContentLinkButtons, [AppContainer, PageContainer]);
