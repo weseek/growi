@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
@@ -7,12 +7,15 @@ import {
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
 } from '../../stores/context';
+import {
+  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+} from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
 
-const ContextExtractor: FC = () => {
+const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
 
@@ -85,11 +88,22 @@ const ContextExtractor: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
-  return (
-    <div>
-      {/* Render nothing */}
-    </div>
-  );
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
+
+  return null;
 };
+
+const ContextExtractor: FC = React.memo(() => {
+  const [isRunOnce, setRunOnce] = useState(false);
+
+  useEffect(() => {
+    setRunOnce(true);
+  }, []);
+
+  return isRunOnce ? null : <ContextExtractorOnce></ContextExtractorOnce>;
+});
 
 export default ContextExtractor;
