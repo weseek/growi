@@ -814,14 +814,7 @@ class PageService {
 
     const { activityService, inAppNotificationService } = this.crowi;
 
-    const t = createSnapshot(page);
-    console.log(t);
-
-    const snapshot = JSON.stringify({
-      path: page.path,
-      creator: page.creator,
-      lastUpdateUser: page.lastUpdateUser,
-    });
+    const snapshot = createSnapshot(page);
 
     // Create activity
     const parameters = {
