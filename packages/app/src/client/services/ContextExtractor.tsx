@@ -7,25 +7,13 @@ import {
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
-
 import {
-  EditorMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
 } from '~/stores/ui';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
-
-const getInitialEditorMode = (): EditorMode => {
-  switch (window.location.hash) {
-    case '#edit':
-      return EditorMode.Editor;
-    case '#hackmd':
-      return EditorMode.HackMD;
-    default:
-      return EditorMode.View;
-  }
-};
 
 const ContextExtractorOnce: FC = () => {
 
@@ -73,12 +61,6 @@ const ContextExtractorOnce: FC = () => {
   // App
   useCurrentUser(currentUser);
 
-  // Navigation
-  useEditorMode(getInitialEditorMode());
-  usePreferDrawerModeByUser();
-  usePreferDrawerModeOnEditByUser();
-  useIsDeviceSmallerThanMd();
-
   // Page
   useCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
@@ -107,6 +89,16 @@ const ContextExtractorOnce: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   return null;
 };

@@ -579,6 +579,7 @@
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
     "delete_all_selected_page" : "一括削除",
+    "currently_not_implemented":"現在未実装の機能です",
     "search_again" : "再検索",
     "number_of_list_to_display" : "表示件数",
     "page_number_unit" : "件"

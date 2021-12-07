@@ -12,12 +12,14 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import PageDeleteModal from './PageDeleteModal';
+
+import { CheckboxType } from '../interfaces/search';
 
 export const specificPathNames = {
   user: '/user',
   trash: '/trash',
 };
-
 class SearchPage extends React.Component {
 
   constructor(props) {
@@ -31,7 +33,7 @@ class SearchPage extends React.Component {
       searchResults: [],
       searchResultMeta: {},
       focusedSearchResultData: null,
-      selectedPages: new Set(),
+      selectedPagesIdList: new Set(),
       searchResultCount: 0,
       activePage: 1,
       pagingLimit: this.props.appContainer.config.pageLimitationL,
@@ -39,6 +41,9 @@ class SearchPage extends React.Component {
       excludeTrashPages: true,
       sort: SORT_AXIS.RELATION_SCORE,
       order: SORT_ORDER.DESC,
+      selectAllCheckboxType: CheckboxType.NONE_CHECKED,
+      isDeleteConfirmModalShown: false,
+      deleteTargetPageIds: new Set(),
     };
 
     this.changeURL = this.changeURL.bind(this);
@@ -51,6 +56,9 @@ class SearchPage extends React.Component {
     this.onChangeSortInvoked = this.onChangeSortInvoked.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
     this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
+    this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
+    this.deleteAllPagesButtonHandler = this.deleteAllPagesButtonHandler.bind(this);
+    this.closeDeleteConfirmModalHandler = this.closeDeleteConfirmModalHandler.bind(this);
   }
 
   componentDidMount() {
@@ -201,13 +209,65 @@ class SearchPage extends React.Component {
     });
   }
 
-  toggleCheckBox = (page) => {
-    if (this.state.selectedPages.has(page)) {
-      this.state.selectedPages.delete(page);
+  toggleCheckBox = (pageId) => {
+    const { selectedPagesIdList } = this.state;
+
+    if (selectedPagesIdList.has(pageId)) {
+      selectedPagesIdList.delete(pageId);
     }
     else {
-      this.state.selectedPages.add(page);
+      selectedPagesIdList.add(pageId);
     }
+    switch (selectedPagesIdList.size) {
+      case 0:
+        return this.setState({ selectAllCheckboxType: CheckboxType.NONE_CHECKED });
+      case this.state.searchResults.length:
+        return this.setState({ selectAllCheckboxType: CheckboxType.ALL_CHECKED });
+      default:
+        return this.setState({ selectAllCheckboxType: CheckboxType.INDETERMINATE });
+    }
+  }
+
+  toggleAllCheckBox = (nextSelectAllCheckboxType) => {
+    const { selectedPagesIdList, searchResults } = this.state;
+    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
+      selectedPagesIdList.clear();
+    }
+    else {
+      searchResults.forEach((page) => {
+        selectedPagesIdList.add(page.pageData._id);
+      });
+    }
+    this.setState({
+      selectedPagesIdList,
+      selectAllCheckboxType: nextSelectAllCheckboxType,
+    });
+  };
+
+  getSelectedPagesToDelete() {
+    const filteredPages = this.state.searchResults.filter((page) => {
+      return Array.from(this.state.deleteTargetPageIds).find(id => id === page.pageData._id);
+    });
+    return filteredPages.map(page => ({
+      pageId: page.pageData._id,
+      revisionId: page.pageData.revision,
+      path: page.pageData.path,
+    }));
+  }
+
+  deleteSinglePageButtonHandler(pageId) {
+    this.setState({ deleteTargetPageIds: new Set([pageId]) });
+    this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  deleteAllPagesButtonHandler() {
+    if (this.state.selectedPagesIdList.size === 0) { return }
+    this.setState({ deleteTargetPageIds: this.state.selectedPagesIdList });
+    this.setState({ isDeleteConfirmModalShown: true });
+  }
+
+  closeDeleteConfirmModalHandler() {
+    this.setState({ isDeleteConfirmModalShown: false });
   }
 
   renderSearchResultContent = () => {
@@ -226,13 +286,14 @@ class SearchPage extends React.Component {
       <SearchResultList
         pages={this.state.searchResults || []}
         focusedSearchResultData={this.state.focusedSearchResultData}
-        selectedPages={this.state.selectedPages || []}
+        selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
-        onClickInvoked={this.selectPage}
-        onChangedInvoked={this.toggleCheckBox}
+        onClickSearchResultItem={this.selectPage}
+        onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
+        onClickDeleteButton={this.deleteSinglePageButtonHandler}
       />
     );
   }
@@ -243,8 +304,12 @@ class SearchPage extends React.Component {
         searchingKeyword={this.state.searchingKeyword}
         sort={this.state.sort}
         order={this.state.order}
+        searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.onSearchInvoked}
+        onClickSelectAllCheckbox={this.toggleAllCheckBox}
+        selectAllCheckboxType={this.state.selectAllCheckboxType}
+        onClickDeleteAllButton={this.deleteAllPagesButtonHandler}
         onExcludeUserPagesSwitched={this.switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
         excludeUserPages={this.state.excludeUserPages}
@@ -268,6 +333,11 @@ class SearchPage extends React.Component {
           initialPagingLimit={this.props.appContainer.config.pageLimitationL || 50}
         >
         </SearchPageLayout>
+        <PageDeleteModal
+          isOpen={this.state.isDeleteConfirmModalShown}
+          onClose={this.closeDeleteConfirmModalHandler}
+          pages={this.getSelectedPagesToDelete()}
+        />
       </div>
     );
   }
