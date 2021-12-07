@@ -107,6 +107,7 @@
   "Create under": "Create page under below:",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
+  "V5 Page Migration": "V5 Page Migration",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -151,6 +152,7 @@
   "Add to bookmark": "Add to bookmark",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "Page Tree": "Page Tree",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
@@ -577,6 +579,7 @@
     "delete_completely": "Delete completely",
     "include_certain_path" : "Include {{pathToInclude}} path ",
     "delete_all_selected_page" : "Delete All",
+    "currently_not_implemented":"This is not currently implemented",
     "search_again" : "Search again",
     "number_of_list_to_display" : "Display",
     "page_number_unit" : "pages"

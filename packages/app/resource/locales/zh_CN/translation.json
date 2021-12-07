@@ -115,6 +115,7 @@
 	"Create under": "Create page under below:",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
+  "V5 Page Migration": "V5 Page Migration",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Customize": "页面定制",
@@ -159,6 +160,7 @@
   "Add to bookmark": "添加到书签",
 	"Recent Created": "最新创建",
   "Recent Changes": "最新修改",
+  "Page Tree": "页面树",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
@@ -850,6 +852,7 @@
 		"delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
     "delete_all_selected_page": "删除所有",
+    "currently_not_implemented": "这是当前未实现的功能",
     "search_again" : "再次搜索",
     "number_of_list_to_display" : "显示器的数量",
     "page_number_unit" : "例"

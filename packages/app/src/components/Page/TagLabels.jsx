@@ -8,6 +8,7 @@ import AppContainer from '~/client/services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
+import { EditorMode } from '~/stores/ui';
 
 class TagLabels extends React.Component {
 
@@ -72,7 +73,7 @@ TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tags: PropTypes.arrayOf(String),
   tagsUpdateInvoked: PropTypes.func,
 };
 

@@ -107,6 +107,7 @@
   "Create under": "ページを以下に作成",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
+  "V5 Page Migration": "V5 ページマイグレーション",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
@@ -153,6 +154,7 @@
   "Add to bookmark": "ブックマークに追加",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "Page Tree": "ページツリー",
   "original_path":"元のパス",
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
@@ -577,6 +579,7 @@
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
     "delete_all_selected_page" : "一括削除",
+    "currently_not_implemented":"現在未実装の機能です",
     "search_again" : "再検索",
     "number_of_list_to_display" : "表示件数",
     "page_number_unit" : "件"
