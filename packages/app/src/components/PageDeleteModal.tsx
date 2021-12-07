@@ -149,7 +149,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>
       <ModalBody>
-        <div className={`form-group ${pages.length >= 15 ? 'grw-scrollable-modal-body' : ''}`}>
+        <div className={`form-group ${pages.length >= 10 ? 'grw-scrollable-modal-body' : ''}`}>
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
