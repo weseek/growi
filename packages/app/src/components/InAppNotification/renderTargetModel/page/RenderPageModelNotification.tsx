@@ -4,7 +4,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import FormattedDistanceDate from '../../FormattedDistanceDate';
+import FormattedDistanceDate from '../../../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -13,7 +13,7 @@ interface Props {
   actionUsers: string
 }
 
-export const RenderPageModelNotification = (props: Props): JSX.Element => {
+const RenderPageModelNotification = (props: Props): JSX.Element => {
   const {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
@@ -49,3 +49,5 @@ export const RenderPageModelNotification = (props: Props): JSX.Element => {
     </div>
   );
 };
+
+export default RenderPageModelNotification;
