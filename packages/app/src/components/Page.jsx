@@ -17,6 +17,9 @@ import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+
 const logger = loggerFactory('growi:Page');
 
 class Page extends React.Component {
@@ -85,7 +88,7 @@ class Page extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -115,7 +118,7 @@ class Page extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -157,6 +160,19 @@ Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
 };
 
-export default withUnstatedContainers(Page, [AppContainer, PageContainer, EditorContainer]);
+const PageWrapper = (props) => {
+  const { data } = useEditorMode();
+
+  if (data == null) {
+    return null;
+  }
+
+  return <Page {...props} editorMode={data} />;
+};
+
+export default withUnstatedContainers(PageWrapper, [AppContainer, PageContainer, EditorContainer]);

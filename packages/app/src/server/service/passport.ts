@@ -8,7 +8,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer } from 'openid-client';
-import { Strategy as SamlStrategy } from 'passport-saml';
+import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
 import { BasicStrategy } from 'passport-http';
 
 import { IncomingMessage } from 'http';
@@ -722,12 +722,12 @@ class PassportService implements S2sMessageHandlable {
           issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
           cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
         },
-        (profile, done) => {
+        (profile: Profile, done: VerifiedCallback) => {
           if (profile) {
             return done(null, profile);
           }
 
-          return done(null, false);
+          return done(null);
         },
       ),
     );

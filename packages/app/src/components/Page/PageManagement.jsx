@@ -153,10 +153,15 @@ const LegacyPageManagemenet = (props) => {
     );
   }
 
+  function generatePageObjectToDelete() {
+    return { pageId, revisionId, path };
+  }
+
   function renderModals() {
     if (currentUser == null) {
       return null;
     }
+    const pageToDelete = generatePageObjectToDelete();
 
     return (
       <>
@@ -181,9 +186,7 @@ const LegacyPageManagemenet = (props) => {
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
+          pages={[pageToDelete]}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal
@@ -257,7 +260,7 @@ LegacyPageManagemenet.propTypes = {
   revisionId: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   isDeletable: PropTypes.bool.isRequired,
-  isAbleToDeleteCompletely: PropTypes.bool.isRequired,
+  isAbleToDeleteCompletely: PropTypes.bool,
 
   isCompactMode: PropTypes.bool,
 };

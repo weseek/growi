@@ -9,6 +9,10 @@ import { CheckboxType } from '../../interfaces/search';
 type Props = {
   searchingKeyword: string,
   appContainer: AppContainer,
+  searchResultCount: number,
+  selectAllCheckboxType: CheckboxType,
+  onClickDeleteAllButton?: () => void
+  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
   excludeTrashPages: boolean,
   onSearchInvoked: (data: {keyword: string}) => boolean,
@@ -23,6 +27,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
+  const { searchResultCount } = props;
 
   const switchExcludeUserPagesHandler = () => {
     if (props.onExcludeUserPagesSwitched != null) {
@@ -34,21 +39,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     if (props.onExcludeTrashPagesSwitched != null) {
       props.onExcludeTrashPagesSwitched();
     }
-  };
-
-  const onDeleteSelectedPageHandler = () => {
-    console.log('onDeleteSelectedPageHandler is called');
-    // TODO: implement this function to delete selected pages.
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-  };
-
-  const onCheckAllPagesInvoked = (nextCheckboxState:CheckboxType) => {
-    console.log(`onCheckAllPagesInvoked is called with arg ${nextCheckboxState}`);
-    // Todo: set the checkboxState, isChecked, and indeterminate value of checkbox element according to the passed argument
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-
-    // setting checkbox to indeterminate is required to use of useRef to access checkbox element.
-    // ref: https://getbootstrap.com/docs/4.5/components/forms/#checkboxes
   };
 
   const openSearchOptionModalHandler = () => {
@@ -99,9 +89,10 @@ const SearchControl: FC <Props> = (props: Props) => {
         <div className="d-flex mr-auto ml-4">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
-            checkboxState={'' || CheckboxType.NONE_CHECKED} // Todo: change the left value to appropriate value
-            onClickInvoked={onDeleteSelectedPageHandler}
-            onCheckInvoked={onCheckAllPagesInvoked}
+            isSelectAllCheckboxDisabled={searchResultCount === 0}
+            selectAllCheckboxType={props.selectAllCheckboxType}
+            onClickDeleteAllButton={props.onClickDeleteAllButton}
+            onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           />
         </div>
         {/** filter option */}
