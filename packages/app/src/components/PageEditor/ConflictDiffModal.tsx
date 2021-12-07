@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useEffect, FC,
+  useState, useEffect, FC, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { UserPicture } from '@growi/ui';
@@ -39,9 +39,11 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
 
 export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
-  const resolvedRevision = useRef<string>('');
+  const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+
+  const uncontrolledRef = useRef<CodeMirror>(null);
 
   const { pageContainer, editorContainer, appContainer } = props;
 
@@ -92,12 +94,13 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+    const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
     editorContainer.disableUnsavedWarning();
     try {
       await pageContainer.resolveConflictAndReload(
         pageContainer.state.pageId,
         latest.revisionId,
-        resolvedRevision.current,
+        codeMirrorVal,
         editorContainer.getCurrentOptionsToSave(),
       );
     }
@@ -162,7 +165,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   className="btn btn-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
-                    resolvedRevision.current = request.revisionBody;
+                    setResolvedRevision(request.revisionBody);
                   }}
                 >
                   <i className="icon-fw icon-arrow-down-circle"></i>
@@ -177,7 +180,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   className="btn btn-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
-                    resolvedRevision.current = origin.revisionBody;
+                    setResolvedRevision(origin.revisionBody);
                   }}
                 >
                   <i className="icon-fw icon-arrow-down-circle"></i>
@@ -192,7 +195,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                   className="btn btn-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
-                    resolvedRevision.current = latest.revisionBody;
+                    setResolvedRevision(latest.revisionBody);
                   }}
                 >
                   <i className="icon-fw icon-arrow-down-circle"></i>
@@ -203,13 +206,10 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
             <div className="col-12 border border-dark">
               <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
               <UncontrolledCodeMirror
-                value={resolvedRevision.current}
+                ref={uncontrolledRef}
+                value={resolvedRevision}
                 options={{
                   placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                }}
-                onChange={(editor, data, pageBody) => {
-                  if (pageBody === '') setIsRevisionSelected(false);
-                  resolvedRevision.current = pageBody;
                 }}
               />
             </div>
