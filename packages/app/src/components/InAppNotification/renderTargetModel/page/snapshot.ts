@@ -6,3 +6,7 @@ export const createSnapshot = (page: IPage): string => {
     creator: page.creator,
   });
 };
+
+export const getSnapshotPagePath = (snapshot: string): string => {
+  return JSON.parse(snapshot).path;
+};

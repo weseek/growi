@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { PagePathLabel } from '@growi/ui';
 import { apiv3Post } from '~/client/util/apiv3-client';
-
+import { getSnapshotPagePath } from './snapshot';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import FormattedDistanceDate from '../../../FormattedDistanceDate';
@@ -18,8 +18,8 @@ const RenderPageModelNotification = (props: Props): JSX.Element => {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
 
-  const snapshot = JSON.parse(notification.snapshot);
-  const pagePath = { path: snapshot.path };
+  const snapshot = getSnapshotPagePath(notification.snapshot);
+  const pagePath = { path: snapshot };
 
   const notificationClickHandler = useCallback(() => {
     // set notification status "OPEND"
