@@ -76,6 +76,7 @@ class CommentEditor extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
   }
 
@@ -418,9 +419,6 @@ CommentEditor.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
-
-  isSlackEnabled: PropTypes.bool,
-  isSlackEnabledToggleHandler: PropTypes.func,
 };
 
 /**
