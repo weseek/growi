@@ -18,8 +18,7 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
 
-  const snapshot = getSnapshotPagePath(notification.snapshot);
-  const pagePath = { path: snapshot };
+  const pagePath = getSnapshotPagePath(notification.snapshot);
 
   const notificationClickHandler = useCallback(() => {
     // set notification status "OPEND"
@@ -36,7 +35,7 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     <div className="p-2">
       <div onClick={notificationClickHandler}>
         <div>
-          <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
+          <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={{ path: pagePath }} />
         </div>
         <i className={`${actionIcon} mr-2`} />
         <FormattedDistanceDate
