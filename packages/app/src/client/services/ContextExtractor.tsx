@@ -11,10 +11,6 @@ import {
   useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
 } from '~/stores/ui';
 
-import {
-  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
-} from '~/stores/ui';
-
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
