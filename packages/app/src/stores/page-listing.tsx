@@ -1,8 +1,20 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { AncestorsChildrenResult, ChildrenResult, V5MigrationStatus } from '../interfaces/page-listing-results';
+import { AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult } from '../interfaces/page-listing-results';
 
+
+export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
+  return useSWR(
+    '/page-listing/root',
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return {
+        rootPage: response.data.rootPage,
+      };
+    }),
+    { revalidateOnFocus: false },
+  );
+};
 
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
