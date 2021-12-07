@@ -5,13 +5,13 @@ export interface IPageSnapshot {
   creator: IUser
 }
 
-export const stringifyPageModel = (page: IPageSnapshot): string => {
+export const stringifySnapshot = (page: IPageSnapshot): string => {
   return JSON.stringify({
     path: page.path,
     creator: page.creator,
   });
 };
 
-export const getSnapshotPagePath = (snapshot: string): string => {
-  return JSON.parse(snapshot).path;
+export const parseSnapshot = (snapshot: string): IPageSnapshot => {
+  return JSON.parse(snapshot);
 };

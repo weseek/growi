@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { PagePathLabel } from '@growi/ui';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { getSnapshotPagePath } from '../../../models/serializers/in-app-notification-snapshot/page';
+import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import FormattedDistanceDate from '../../FormattedDistanceDate';
@@ -18,7 +18,8 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
 
-  const pagePath = getSnapshotPagePath(notification.snapshot);
+  const snapshot = parseSnapshot(notification.snapshot);
+  const pagePath = { path: snapshot.path };
 
   const notificationClickHandler = useCallback(() => {
     // set notification status "OPEND"
@@ -35,7 +36,7 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     <div className="p-2">
       <div onClick={notificationClickHandler}>
         <div>
-          <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={{ path: pagePath }} />
+          <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
         </div>
         <i className={`${actionIcon} mr-2`} />
         <FormattedDistanceDate
