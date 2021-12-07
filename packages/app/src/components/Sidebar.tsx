@@ -93,21 +93,6 @@ const Sidebar: FC<Props> = (props: Props) => {
   const [isDragging, setDrag] = useState(false);
 
   const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
-  /**
-   * hack and override UIController.storeState
-   *
-   * Since UIController is an unstated container, setState() in storeState method should be awaited before writing to cache.
-   */
-  // hackUIController() {
-  //   const { navigationUIController } = this.props;
-
-  //   // see: @atlaskit/navigation-next/dist/esm/ui-controller/UIController.js
-  //   const orgStoreState = navigationUIController.storeState;
-  //   navigationUIController.storeState = async(state) => {
-  //     await navigationUIController.setState(state);
-  //     orgStoreState(state);
-  //   };
-  // }
 
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = isResizeDisabled !== bool;
@@ -117,10 +102,6 @@ const Sidebar: FC<Props> = (props: Props) => {
 
     // Drawer <-- Dock
     if (bool) {
-      // // cache state
-      // this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
-      // this.sidebarWidthCached = navigationUIController.state.productNavWidth;
-
       // disable resize
       mutateSidebarResizeDisabled(true, false);
     }
@@ -128,11 +109,6 @@ const Sidebar: FC<Props> = (props: Props) => {
     else {
       // enable resize
       mutateSidebarResizeDisabled(false, false);
-
-      // // restore width
-      // if (this.sidebarWidthCached != null) {
-      //   navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
-      // }
     }
   }, [isResizeDisabled, mutateSidebarResizeDisabled]);
 
@@ -141,8 +117,6 @@ const Sidebar: FC<Props> = (props: Props) => {
   }, [mutateDrawerOpened]);
 
   useEffect(() => {
-    // this.hackUIController();
-    // setMounted(true);
     setTimeout(() => {
       setTransitionEnabled(true);
     }, 1000);
