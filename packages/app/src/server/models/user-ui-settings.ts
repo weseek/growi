@@ -21,7 +21,7 @@ const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
   },
   currentProductNavWidth: { type: Number },
   preferDrawerModeByUser: { type: Boolean, default: false },
-  preferDrawerModeOnEditByUser: { type: Boolean, default: false },
+  preferDrawerModeOnEditByUser: { type: Boolean, default: true },
 });
 
 
