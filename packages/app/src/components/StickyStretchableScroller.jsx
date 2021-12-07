@@ -48,6 +48,7 @@ const StickyStretchableScroller = (props) => {
   const {
     children, contentsElemSelector, stickyElemSelector,
     calcViewHeightFunc, calcContentsHeightFunc,
+    resetKey,
   } = props;
 
   if (scrollTargetSelector == null && children == null) {
@@ -137,10 +138,12 @@ const StickyStretchableScroller = (props) => {
     };
   }, [resetScrollbarDebounced]);
 
-  // setup effect by update props
+  // setup effect on init
   useEffect(() => {
-    resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
+    if (resetKey != null) {
+      resetScrollbarDebounced();
+    }
+  }, [resetKey, resetScrollbarDebounced]);
 
   return (
     <>
@@ -155,6 +158,8 @@ StickyStretchableScroller.propTypes = {
   children: PropTypes.node,
   scrollTargetSelector: PropTypes.string,
   stickyElemSelector: PropTypes.string,
+
+  resetKey: PropTypes.any,
 
   calcViewHeightFunc: PropTypes.func,
   calcContentsHeightFunc: PropTypes.func,
