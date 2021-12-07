@@ -1,16 +1,15 @@
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 
-import { IPage } from '~/interfaces/page';
+import { IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 import { IPageInfo } from '../interfaces/page-info';
 
-export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
+export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
     ['/page', path],
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
@@ -22,10 +21,10 @@ export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRRespons
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxRecentlyUpdated = (): SWRResponse<(IPage & HasObjectId)[], Error> => {
+export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get<{ pages:(IPage & HasObjectId)[] }>(endpoint).then(response => response.data?.pages),
+    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
 
@@ -33,11 +32,11 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPage & HasObjectId)[], E
 export const useSWRxPageList = (
     path: string,
     pageNumber?: number,
-): SWRResponse<IPagingResult<IPage>, Error> => {
+): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   const page = pageNumber || 1;
   return useSWR(
     `/pages/list?path=${path}&page=${page}`,
-    endpoint => apiv3Get<{pages: IPage[], totalCount: number, limit: number}>(endpoint).then((response) => {
+    endpoint => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
