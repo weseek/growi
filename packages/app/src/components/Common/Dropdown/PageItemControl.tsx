@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
-  page: IPageHasId,
+  page: Partial<IPageHasId>,
   onClickDeleteButton?: (pageId: string)=>void,
 }
 
@@ -16,7 +16,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {
-    if (onClickDeleteButton != null) {
+    if (onClickDeleteButton != null && page._id != null) {
       onClickDeleteButton(page._id);
     }
   };
