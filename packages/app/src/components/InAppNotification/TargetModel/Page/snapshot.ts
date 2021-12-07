@@ -1,6 +1,6 @@
 import { IPage } from '~/interfaces/page';
 
-export const parsePageModel = (page: IPage): string => {
+export const stringifyPageModel = (page: IPage): string => {
   return JSON.stringify({
     path: page.path,
     creator: page.creator,

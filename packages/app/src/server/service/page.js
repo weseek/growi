@@ -1,9 +1,8 @@
 import { pagePathUtils } from '@growi/core';
-import isThisHour from 'date-fns/isThisHour/index.js';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-import { parsePageModel } from '../../components/InAppNotification/TargetModel/Page/snapshot';
+import { stringifyPageModel } from '../../components/InAppNotification/TargetModel/Page/snapshot';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -811,10 +810,9 @@ class PageService {
   }
 
   createAndSendNotifications = async function(page, user, action) {
-
     const { activityService, inAppNotificationService } = this.crowi;
 
-    const snapshot = parsePageModel(page);
+    const snapshot = stringifyPageModel(page);
 
     // Create activity
     const parameters = {
