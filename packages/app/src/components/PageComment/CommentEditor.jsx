@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -22,7 +22,6 @@ import { SlackNotification } from '../SlackNotification';
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
-import { useIsSlackEnabled } from '~/stores/editor';
 
 
 const navTabMapping = {
@@ -45,7 +44,7 @@ const navTabMapping = {
  * @extends {React.Component}
  */
 
-class CommentEditorCore extends React.Component {
+class CommentEditor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -77,6 +76,7 @@ class CommentEditorCore extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
   }
 
@@ -94,6 +94,10 @@ class CommentEditorCore extends React.Component {
   handleSelect(activeTab) {
     this.setState({ activeTab });
     this.renderHtml(this.state.comment);
+  }
+
+  onSlackEnabledFlagChange(isSlackEnabled) {
+    this.props.commentContainer.setState({ isSlackEnabled });
   }
 
   onSlackChannelsChange(slackChannels) {
@@ -354,9 +358,9 @@ class CommentEditorCore extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled={this.props.isSlackEnabled || false}
+                    isSlackEnabled={commentContainer.state.isSlackEnabled}
                     slackChannels={commentContainer.state.slackChannels}
-                    onEnabledFlagChange={this.props.isSlackEnabledToggleHandler}
+                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
                   />
@@ -401,7 +405,7 @@ class CommentEditorCore extends React.Component {
 
 }
 
-CommentEditorCore.propTypes = {
+CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
@@ -415,25 +419,6 @@ CommentEditorCore.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
-
-  isSlackEnabled: PropTypes.bool,
-  isSlackEnabledToggleHandler: PropTypes.func,
-};
-
-const CommentEditor = (props) => {
-  const { data, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-
-  const isSlackEnabledToggleHandler = useCallback(
-    bool => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
-  );
-
-  return (
-    <CommentEditorCore
-      isSlackEnabled={data}
-      isSlackEnabledToggleHandler={isSlackEnabledToggleHandler}
-      {...props}
-    />
-  );
 };
 
 /**
