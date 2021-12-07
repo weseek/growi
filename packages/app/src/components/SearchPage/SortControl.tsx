@@ -1,11 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SORT_AXIS, SORT_AXIS_CONSTS, SORT_ORDER, SORT_ORDER_CONSTS,
-} from '~/utils/search-axis-utils';
+import { SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
-const { score: sortByScore, updatedAt: sortByUpdatedAt, createdAt: sortByCreatedAt } = SORT_AXIS_CONSTS;
-const { desc, asc } = SORT_ORDER_CONSTS;
+const { DESC, ASC } = SORT_ORDER;
 
 type Props = {
   sort: SORT_AXIS,
@@ -13,61 +10,51 @@ type Props = {
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
-const SearchControl: FC <Props> = (props: Props) => {
+const SortControl: FC <Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
-  // TODO: imprement sort dropdown
-  // refs: https://redmine.weseek.co.jp/issues/82513
-  const onClickChangeSort = () => {
+  const onClickChangeSort = (nextSortAxis: SORT_AXIS, nextSortOrder: SORT_ORDER) => {
     if (props.onChangeSortInvoked != null) {
-      const getNextSort = (sort: SORT_AXIS) => {
-        switch (sort) {
-          case sortByScore:
-            return sortByUpdatedAt;
-          case sortByUpdatedAt:
-            return sortByCreatedAt;
-          case sortByCreatedAt:
-          default:
-            return sortByScore;
-        }
-      };
-      const nextSort = props.order === desc ? props.sort : getNextSort(props.sort);
-      const nextOrder = nextSort === props.sort ? asc : desc;
-      props.onChangeSortInvoked(nextSort, nextOrder);
+      props.onChangeSortInvoked(nextSortAxis, nextSortOrder);
     }
+  };
+
+  const renderOrderIcon = (order: SORT_ORDER) => {
+    const iconClassName = ASC === order ? 'fa fa-sort-asc' : 'fa fa-sort-desc';
+    return <i className={iconClassName} aria-hidden="true" />;
+  };
+
+  const renderSortItem = (sort, order) => {
+    return <><span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>{renderOrderIcon(order)}</>;
   };
 
   return (
     <>
       <button
         type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        className="btn btn-outline-secondary btn-dropdown-toggle dropdown-toggle-no-caret"
         data-toggle="dropdown"
       >
-        {props.sort}{props.order}
+        {renderSortItem(props.sort, props.order)}
       </button>
       <div className="dropdown-menu dropdown-menu-right">
-        {SORT_AXIS_CONSTS.map((axis) => {
+        {Object.values(SORT_AXIS).map((sortAxis) => {
+          const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
           return (
-            <button className="dropdown-item text-danger" type="button" onClick={onClickChangeSort}>
-              <i className="icon-fw icon-fire"></i>{t('Delete')}
+            <button
+              className="dropdown-item d-flex justify-content-between"
+              type="button"
+              onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
+            >
+              {renderSortItem(sortAxis, nextOrder)}
             </button>
           );
         })}
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
-          <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
-        </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('duplicate modal show')}>
-          <i className="icon-fw icon-docs"></i>{t('Duplicate')}
-        </button>
-        <button className="dropdown-item" type="button" onClick={() => console.log('rename function will be added')}>
-          <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
-        </button>
       </div>
     </>
   );
 };
 
 
-export default SearchControl;
+export default SortControl;

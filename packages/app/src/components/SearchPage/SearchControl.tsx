@@ -4,6 +4,7 @@ import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
+import SortControl from './SortControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 
@@ -48,35 +49,10 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
-  // TODO: imprement sort dropdown
-  // refs: https://redmine.weseek.co.jp/issues/82513
-  const onClickChangeSort = () => {
+  const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
     if (props.onChangeSortInvoked != null) {
-      const getNextSort = (sort: SORT_AXIS) => {
-        switch (sort) {
-          case RELATION_SCORE:
-            return UPDATED_AT;
-          case UPDATED_AT:
-            return CREATED_AT;
-          case CREATED_AT:
-          default:
-            return RELATION_SCORE;
-        }
-      };
-      const nextSort = props.order === DESC ? props.sort : getNextSort(props.sort);
-      const nextOrder = nextSort === props.sort ? ASC : DESC;
       props.onChangeSortInvoked(nextSort, nextOrder);
     }
-  };
-
-  const renderSortControlDropdown = () => {
-    return (
-      <>
-        {Object.keys(SORT_AXIS).forEach((sortAxis) => {
-          return <div>{SORT_AXIS[sortAxis]}</div>;
-        })}
-      </>
-    );
   };
 
   const openSearchOptionModalHandler = () => {
@@ -118,13 +94,11 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
         <div className="mr-4 d-flex">
-          {/*
-            TODO: imprement sort dropdown
-            refs: https://redmine.weseek.co.jp/issues/82513
-          */}
-          <button type="button" onClick={onClickChangeSort}>change sort</button>
-          <p>sort:{props.sort}, order: {props.order}</p>
-          {renderSortControlDropdown()}
+          <SortControl
+            sort={props.sort}
+            order={props.order}
+            onChangeSortInvoked={onChangeSortInvoked}
+          />
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
