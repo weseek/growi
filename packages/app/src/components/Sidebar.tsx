@@ -43,19 +43,6 @@ const GlobalNavigation = () => {
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
 
-// dummy skelton contents
-const GlobalNavigationSkelton = () => {
-  return (
-    <div className="grw-sidebar-nav">
-      <div className="grw-sidebar-nav-primary-container">
-      </div>
-      <div className="grw-sidebar-nav-secondary-container">
-      </div>
-    </div>
-  );
-};
-
-
 const SidebarContentsWrapper = () => {
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
@@ -86,13 +73,6 @@ const SidebarContentsWrapper = () => {
   );
 };
 
-// dummy skelton contents
-const SidebarSkeltonContents = () => {
-  return (
-    <div>Skelton Contents!!!</div>
-  );
-};
-
 
 type Props = {
 }
@@ -106,7 +86,6 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  const [isMounted, setMounted] = useState(false);
 
   const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
   /**
@@ -178,7 +157,7 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     // this.hackUIController();
-    setMounted(true);
+    // setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -288,7 +267,7 @@ const Sidebar: FC<Props> = (props: Props) => {
           <div className="navigation" onMouseLeave={hoverOutHandler}>
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
-                { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton></GlobalNavigationSkelton> }
+                <GlobalNavigation></GlobalNavigation>
               </div>
               <div
                 ref={resizableContainer}
@@ -298,7 +277,7 @@ const Sidebar: FC<Props> = (props: Props) => {
               >
                 <div className="grw-contextual-navigation-child">
                   <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
-                    { isMounted ? <SidebarContentsWrapper></SidebarContentsWrapper> : <SidebarSkeltonContents></SidebarSkeltonContents> }
+                    <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>
               </div>
