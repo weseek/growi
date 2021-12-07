@@ -1,24 +1,29 @@
 /* eslint-disable react/prop-types */
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
-import { useIsSlackEnabled } from '~/stores/editor';
+
 
 type SlackNotificationProps = {
   id: string;
+  isSlackEnabled: boolean;
   slackChannels: string;
+  onEnabledFlagChange: (isSlackEnabled: boolean) => void;
   onChannelChange: (value: string) => void;
 };
 
-export const SlackNotification: FC<SlackNotificationProps> = ({ id, slackChannels, onChannelChange }) => {
+export const SlackNotification: FC<SlackNotificationProps> = ({
+  id, isSlackEnabled, slackChannels, onEnabledFlagChange, onChannelChange,
+}) => {
   const { t } = useTranslation();
-  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-
   const idForSlackPopover = `${id}ForSlackPopover`;
 
-  const isSlackEnabledToggleHandler = useCallback(
-    (bool) => { mutateIsSlackEnabled(bool) }, [mutateIsSlackEnabled],
-  );
+  const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
+    const value = event.target.checked;
+    if (onChannelChange != null) {
+      onEnabledFlagChange(value);
+    }
+  };
 
   const updateSlackChannelsHandler = (event: { target: { value: string } }) => {
     const value = event.target.value;
@@ -38,7 +43,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({ id, slackChannel
               className="custom-control-input border-0"
               id={id}
               checked={isSlackEnabled}
-              onChange={e => isSlackEnabledToggleHandler(e.target.checked)}
+              onChange={updateCheckboxHandler}
             />
             <label className="custom-control-label align-center" htmlFor={id}></label>
           </div>

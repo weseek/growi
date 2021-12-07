@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -22,6 +22,7 @@ import { SlackNotification } from '../SlackNotification';
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 
 const navTabMapping = {
@@ -44,7 +45,7 @@ const navTabMapping = {
  * @extends {React.Component}
  */
 
-class CommentEditor extends React.Component {
+class CommentEditorCore extends React.Component {
 
   constructor(props) {
     super(props);
@@ -356,6 +357,8 @@ class CommentEditor extends React.Component {
                     slackChannels={commentContainer.state.slackChannels}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
+                    isSlackEnabled={this.props.isSlackEnabled || false}
+                    onEnabledFlagChange={this.props.isSlackEnabledToggleHandler}
                   />
                 </div>
               )
@@ -398,7 +401,7 @@ class CommentEditor extends React.Component {
 
 }
 
-CommentEditor.propTypes = {
+CommentEditorCore.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
@@ -412,6 +415,25 @@ CommentEditor.propTypes = {
   commentCreator: PropTypes.string,
   onCancelButtonClicked: PropTypes.func,
   onCommentButtonClicked: PropTypes.func,
+
+  isSlackEnabled: PropTypes.bool,
+  isSlackEnabledToggleHandler: PropTypes.func,
+};
+
+const CommentEditor = (props) => {
+  const { data, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+
+  const isSlackEnabledToggleHandler = useCallback(
+    bool => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
+  );
+
+  return (
+    <CommentEditorCore
+      isSlackEnabled={data}
+      isSlackEnabledToggleHandler={isSlackEnabledToggleHandler}
+      {...props}
+    />
+  );
 };
 
 /**

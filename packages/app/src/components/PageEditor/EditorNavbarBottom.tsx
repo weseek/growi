@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Collapse, Button } from 'reactstrap';
@@ -16,6 +16,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import SavePageControls from '../SavePageControls';
 
 import OptionsSelector from './OptionsSelector';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const EditorNavbarBottom = (props) => {
 
@@ -28,8 +29,12 @@ const EditorNavbarBottom = (props) => {
 
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const additionalClasses = ['grw-editor-navbar-bottom'];
+
+  const isSlackEnabledToggleHandler = useCallback(
+    bool => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
+  );
 
   const renderDrawerButton = () => (
     <button
@@ -40,7 +45,6 @@ const EditorNavbarBottom = (props) => {
       <i className="icon-menu"></i>
     </button>
   );
-
 
   const slackChannelsChangedHandler = (slackChannels) => {
     props.editorContainer.setState({ slackChannels });
@@ -66,10 +70,12 @@ const EditorNavbarBottom = (props) => {
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
-        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
+        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
+              isSlackEnabled={isSlackEnabled || false}
               slackChannels={props.editorContainer.state.slackChannels}
+              onEnabledFlagChange={isSlackEnabledToggleHandler}
               onChannelChange={slackChannelsChangedHandler}
               id="idForEditorNavbarBottomForMobile"
             />
@@ -98,7 +104,9 @@ const EditorNavbarBottom = (props) => {
           ) : (
             <div className="mr-2">
               <SlackNotification
+                isSlackEnabled={isSlackEnabled || false}
                 slackChannels={props.editorContainer.state.slackChannels}
+                onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
                 id="idForEditorNavbarBottom"
               />
