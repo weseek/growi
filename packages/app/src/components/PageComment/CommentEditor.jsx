@@ -354,11 +354,11 @@ class CommentEditorCore extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
+                    isSlackEnabled={this.props.isSlackEnabled || false}
                     slackChannels={commentContainer.state.slackChannels}
+                    onEnabledFlagChange={this.props.isSlackEnabledToggleHandler}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
-                    isSlackEnabled={this.props.isSlackEnabled || false}
-                    onEnabledFlagChange={this.props.isSlackEnabledToggleHandler}
                   />
                 </div>
               )
