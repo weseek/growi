@@ -22,6 +22,13 @@ const NotFoundAlert = (props) => {
 
   }, [isGuestUserMode, mutateEditorMode]);
 
+  // Alternative way for props isRequired
+  // NowFoundAlert is rendered in app.ts even if no 'not-found' id in html
+  // So a warning occurs in search page.(hence no pageContainer value availabel there)
+  if (isHidden == null || isGuestUserMode == null) {
+    return null;
+  }
+
   if (isHidden) {
     return null;
   }
@@ -60,8 +67,8 @@ const NotFoundAlert = (props) => {
 
 
 NotFoundAlert.propTypes = {
-  isHidden: PropTypes.bool.isRequired,
-  isGuestUserMode: PropTypes.bool.isRequired,
+  isHidden: PropTypes.bool,
+  isGuestUserMode: PropTypes.bool,
 };
 
 export default NotFoundAlert;
