@@ -4,6 +4,7 @@ import { UserPicture } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
+// Change the display for each targetmodel
 import PageModelNotification from './TargetModel/Page/PageModelNotification';
 
 interface Props {
