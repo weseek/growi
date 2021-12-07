@@ -11,10 +11,8 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
-import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
-
-import { CheckboxType } from '../interfaces/search';
 
 export const specificPathNames = {
   user: '/user',
