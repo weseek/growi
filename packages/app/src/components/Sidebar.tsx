@@ -44,6 +44,8 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
+  const { data: currentContents } = useCurrentSidebarContents();
+
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
   const calcViewHeight = useCallback(() => {
@@ -60,6 +62,7 @@ const SidebarContentsWrapper = () => {
         contentsElemSelector="#grw-sidebar-content-container"
         stickyElemSelector=".grw-sidebar"
         calcViewHeightFunc={calcViewHeight}
+        resetKey={currentContents}
       />
 
       <div id="grw-sidebar-contents-scroll-target">
