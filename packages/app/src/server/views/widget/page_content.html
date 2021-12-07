@@ -27,6 +27,7 @@
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
   data-share-links-number="{% if page %}{{ sharelinksNumber }}{% endif %}"
   data-share-link-id="{% if sharelink %}{{ sharelink._id|json }}{% endif %}"
+  data-target-and-ancestors="{% if targetAndAncestors %}{{ targetAndAncestors|json }}{% endif %}"
   >
 {% else %}
 <div id="content-main" class="content-main d-flex"
@@ -48,6 +49,7 @@
 </div>
 
 <div id="grw-page-status-alert-container"></div>
+<div id="page-context"></div>
 
 </div>
 

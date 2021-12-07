@@ -5,7 +5,10 @@ import loggerFactory from '~/utils/logger';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
+
+import { useCreateModalStatus } from '~/stores/ui';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
@@ -13,8 +16,10 @@ import ReturnTopIcon from './Icons/ReturnTopIcon';
 const logger = loggerFactory('growi:cli:Fab');
 
 const Fab = (props) => {
-  const { navigationContainer, appContainer } = props;
+  const { appContainer } = props;
   const { currentUser } = appContainer;
+
+  const { open: openCreateModal } = useCreateModalStatus();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -52,7 +57,7 @@ const Fab = (props) => {
           <button
             type="button"
             className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
-            onClick={navigationContainer.openPageCreateModal}
+            onClick={() => openCreateModal()}
           >
             <CreatePageIcon />
           </button>
@@ -68,7 +73,7 @@ const Fab = (props) => {
         <button
           type="button"
           className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
-          onClick={() => navigationContainer.smoothScrollIntoView()}
+          onClick={() => smoothScrollIntoView()}
         >
           <ReturnTopIcon />
         </button>
@@ -80,7 +85,6 @@ const Fab = (props) => {
 
 Fab.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(Fab, [AppContainer, NavigationContainer]);
+export default withUnstatedContainers(Fab, [AppContainer]);

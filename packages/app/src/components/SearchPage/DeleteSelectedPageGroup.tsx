@@ -1,53 +1,49 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
 import { CheckboxType } from '../../interfaces/search';
 
-const logger = loggerFactory('growi:searchResultList');
-
 type Props = {
-  checkboxState: CheckboxType,
-  onClickInvoked?: () => void,
-  onCheckInvoked?: (string:CheckboxType) => void,
+  isSelectAllCheckboxDisabled: boolean,
+  selectAllCheckboxType: CheckboxType,
+  onClickDeleteAllButton?: () => void,
+  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    checkboxState, onClickInvoked, onCheckInvoked,
+    onClickDeleteAllButton, onClickSelectAllCheckbox, selectAllCheckboxType,
   } = props;
 
-  const changeCheckboxStateHandler = () => {
-    console.log(`changeCheckboxStateHandler is called. current changebox state is ${checkboxState}`);
-    // Todo: determine next checkboxState from one of the following and tell the parent component
-    // to change the checkboxState by passing onCheckInvoked function the next checkboxState
-    // - NONE_CHECKED
-    // - INDETERMINATE
-    // - ALL_CHECKED
-    // https://estoc.weseek.co.jp/redmine/issues/77525
-    // use CheckboxType by importing from packages/app/src/interfaces/
-    if (onCheckInvoked == null) { logger.error('onCheckInvoked is null') }
-    else { onCheckInvoked(CheckboxType.ALL_CHECKED) } // change this to an appropriate value
+  const onClickCheckbox = () => {
+    if (onClickSelectAllCheckbox != null) {
+      const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
+      onClickSelectAllCheckbox(next);
+    }
   };
 
+  const onClickDeleteButton = () => {
+    if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
+  };
 
   return (
+
     <div className="d-flex align-items-center">
+      {/** todo: implement the design for CheckboxType = INDETERMINATE */}
       <input
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox ml-1 align-self-center"
-        onChange={changeCheckboxStateHandler}
-        checked={checkboxState === CheckboxType.INDETERMINATE || checkboxState === CheckboxType.ALL_CHECKED}
+        disabled={props.isSelectAllCheckboxDisabled}
+        onClick={onClickCheckbox}
+        checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}
       />
       <button
         type="button"
         className="btn text-danger font-weight-light p-0 ml-2"
-        onClick={() => {
-          if (onClickInvoked == null) { logger.error('onClickInvoked is null') }
-          else { onClickInvoked() }
-        }}
+        disabled={selectAllCheckboxType === CheckboxType.NONE_CHECKED}
+        onClick={onClickDeleteButton}
       >
         <i className="icon-trash"></i>
         {t('search_result.delete_all_selected_page')}
@@ -57,6 +53,4 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
 
 };
 
-DeleteSelectedPageGroup.propTypes = {
-};
 export default DeleteSelectedPageGroup;

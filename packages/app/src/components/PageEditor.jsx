@@ -15,6 +15,10 @@ import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '~/client/services/EditorContainer';
 
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+import { useIsEditable } from '~/stores/context';
+
 const logger = loggerFactory('growi:PageEditor');
 
 class PageEditor extends React.Component {
@@ -132,7 +136,7 @@ class PageEditor extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(this.state.markdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -186,7 +190,7 @@ class PageEditor extends React.Component {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
+        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
         editorContainer.setState({ grant: res.page.grant });
       }
     }
@@ -306,6 +310,10 @@ class PageEditor extends React.Component {
   }
 
   render() {
+    if (!this.props.isEditable) {
+      return null;
+    }
+
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
@@ -347,12 +355,28 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  return <PageEditorHOCWrapper {...props} isEditable={isEditable} editorMode={editorMode} />;
+};
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  isEditable: PropTypes.bool.isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
 };
 
 export default PageEditorWrapper;

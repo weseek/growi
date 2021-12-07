@@ -6,27 +6,36 @@ import { IPageSearchResultData } from '../../interfaces/search';
 
 type Props = {
   pages: IPageSearchResultData[],
-  selectedPages: IPageSearchResultData[],
-  onClickInvoked?: (pageId: string) => void,
+  selectedPagesIdList: Set<string>
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
-  onPagingNumberChanged?: (activePage: number) => void,
   focusedSearchResultData?: IPageSearchResultData,
+  onPagingNumberChanged?: (activePage: number) => void,
+  onClickSearchResultItem?: (pageId: string) => void,
+  onClickCheckbox?: (pageId: string) => void,
+  onClickInvoked?: (pageId: string) => void,
+  onClickDeleteButton?: (pageId: string) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedSearchResultData } = props;
+  const { focusedSearchResultData, selectedPagesIdList } = props;
+
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <>
-      {props.pages.map((page) => {
+      {Array.isArray(props.pages) && props.pages.map((page) => {
+        const isChecked = selectedPagesIdList.has(page.pageData._id);
+
         return (
           <SearchResultListItem
             key={page.pageData._id}
             page={page}
-            onClickInvoked={props.onClickInvoked}
+            onClickSearchResultItem={props.onClickSearchResultItem}
+            onClickCheckbox={props.onClickCheckbox}
+            isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
+            onClickDeleteButton={props.onClickDeleteButton}
           />
         );
       })}
