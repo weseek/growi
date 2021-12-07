@@ -76,7 +76,6 @@ class CommentEditor extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
   }
 
@@ -94,10 +93,6 @@ class CommentEditor extends React.Component {
   handleSelect(activeTab) {
     this.setState({ activeTab });
     this.renderHtml(this.state.comment);
-  }
-
-  onSlackEnabledFlagChange(isSlackEnabled) {
-    this.props.commentContainer.setState({ isSlackEnabled });
   }
 
   onSlackChannelsChange(slackChannels) {
