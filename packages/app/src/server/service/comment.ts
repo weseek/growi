@@ -4,7 +4,7 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
-import { createSnapshot } from '../../components/InAppNotification/TargetModel/Page/snapshot';
+import { parsePageModel } from '../../components/InAppNotification/TargetModel/Page/snapshot';
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -91,7 +91,7 @@ class CommentService {
   };
 
   private createAndSendNotifications = async function(activity, page) {
-    const snapshot = createSnapshot(page);
+    const snapshot = parsePageModel(page);
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
