@@ -592,6 +592,8 @@ body.pathname-sidebar {
     .search-control {
       background-color: $bgcolor-global;
       .search-include-path-btn {
+        // label has 700 weight by default
+        font-weight: initial;
         color: $secondary;
       }
     }

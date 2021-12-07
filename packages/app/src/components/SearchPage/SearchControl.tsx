@@ -116,7 +116,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
         <div className="d-none d-lg-flex align-items-center mr-4">
           <div className="border border-gray mr-3">
-            <label className="search-include-path-btn px-3 py-2 mb-0 d-flex align-items-center font-weight-light" htmlFor="flexCheckDefault">
+            <label className="search-include-path-btn px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
               <input
                 className="mr-2"
                 type="checkbox"
@@ -127,7 +127,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             </label>
           </div>
           <div className="border border-gray">
-            <label className="search-include-path-btn px-3 py-2 mb-0 d-flex align-items-center font-weight-light" htmlFor="flexCheckChecked">
+            <label className="search-include-path-btn px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckChecked">
               <input
                 className="mr-2"
                 type="checkbox"
