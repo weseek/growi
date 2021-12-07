@@ -87,6 +87,8 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
+  const [isTransitionEnabled, setTransitionEnabled] = useState(false);
+
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
 
@@ -119,21 +121,11 @@ const Sidebar: FC<Props> = (props: Props) => {
       // this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
       // this.sidebarWidthCached = navigationUIController.state.productNavWidth;
 
-      // // clear transition temporary
-      // if (this.sidebarCollapsedCached) {
-      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
-      // }
-
       // disable resize
       mutateSidebarResizeDisabled(true, false);
     }
     // Drawer --> Dock
     else {
-      // // clear transition temporary
-      // if (this.sidebarCollapsedCached) {
-      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
-      // }
-
       // enable resize
       mutateSidebarResizeDisabled(false, false);
 
@@ -144,16 +136,6 @@ const Sidebar: FC<Props> = (props: Props) => {
     }
   }, [isResizeDisabled, mutateSidebarResizeDisabled]);
 
-  // addCssClassTemporary(className) {
-  //   // clear
-  //   this.sidebarElem.classList.add(className);
-
-  //   // restore after 300ms
-  //   setTimeout(() => {
-  //     this.sidebarElem.classList.remove(className);
-  //   }, 300);
-  // }
-
   const backdropClickedHandler = useCallback(() => {
     mutateDrawerOpened(false, false);
   }, [mutateDrawerOpened]);
@@ -161,6 +143,9 @@ const Sidebar: FC<Props> = (props: Props) => {
   useEffect(() => {
     // this.hackUIController();
     // setMounted(true);
+    setTimeout(() => {
+      setTransitionEnabled(true);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -267,7 +252,7 @@ const Sidebar: FC<Props> = (props: Props) => {
     <>
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
-          <div className="navigation" onMouseLeave={hoverOutHandler}>
+          <div className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`} onMouseLeave={hoverOutHandler}>
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
                 <GlobalNavigation></GlobalNavigation>
