@@ -6856,6 +6856,11 @@ detect-indent@^6.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.0.0.tgz#0abd0f549f69fc6659a254fe96786186b6f528fd"
   integrity sha512-oSyFlqaTHCItVRGK5RmrmjB+CmaMOW7IaNA/kdxqhoa6d17j/5ce9O9eWXmV/KEdRwqpQA+Vqe8a8Bsybu4YnA==
 
+detect-indent@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-7.0.0.tgz#cab58e6ab1129c669e2101181a6c677917d43577"
+  integrity sha512-/6kJlmVv6RDFPqaHC/ZDcU8bblYcoph2dUQ3kB47QqhkUEqXe3VZPELK9BaEMrC73qu+wn0AQ7iSteceN+yuMw==
+
 detect-libc@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
@@ -18528,10 +18533,10 @@ statuses@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.4.0.tgz#bb73d446da2796106efcc1b601a253d6c46bd087"
 
-sticky-events@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/sticky-events/-/sticky-events-3.1.3.tgz#7b6b4091988b87b9f4e711c7c6532de07ab156dd"
-  integrity sha512-nTm2bDaYTXFHAyQS59mWDRnnno/D8oj3C4JddOdipq6ZRnLLqjj+PeyCSbHPwMVdfvQoKwmMmAztp+YybDhvtA==
+sticky-events@^3.4.11:
+  version "3.4.11"
+  resolved "https://registry.yarnpkg.com/sticky-events/-/sticky-events-3.4.11.tgz#c44b7866648c5b2818a00fe93f709aa86e9a09d3"
+  integrity sha512-g1ex5lR7EGJv8EXJh4gdBu0m8FMgAVeqFAow3dRR9MwxAIfBNVC2GtlXI1z+oMLE+/Ot2At+gp1aO/tbUGoOnQ==
 
 stoppable@^1.1.0:
   version "1.1.0"

@@ -1,11 +1,15 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, memo,
 } from 'react';
 import nodePath from 'path';
+import { useTranslation } from 'react-i18next';
 
 import { ItemNode } from './ItemNode';
+import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import { usePageId } from '../../../stores/context';
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import PageItemControl from '../../Common/Dropdown/PageItemControl';
 
 
 interface ItemProps {
@@ -25,44 +29,67 @@ const markTarget = (children: ItemNode[], targetId: string): void => {
   return;
 };
 
-const ItemContol: FC = () => {
+type ItemControlProps = {
+  page: Partial<IPageHasId>
+  onClickDeleteButtonHandler?(): void
+  onClickPlusButtonHandler?(): void
+}
+
+const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
+  const onClickPlusButton = () => {
+    if (props.onClickPlusButtonHandler == null) {
+      return;
+    }
+
+    props.onClickPlusButtonHandler();
+  };
+
+  const onClickDeleteButton = () => {
+    if (props.onClickDeleteButtonHandler == null) {
+      return;
+    }
+
+    props.onClickDeleteButtonHandler();
+  };
+
+  if (props.page == null) {
+    return <></>;
+  }
+
   return (
     <>
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} />
       <button
         type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
-        data-toggle="dropdown"
-      >
-        <i className="icon-options-vertical text-muted"></i>
-      </button>
-      <button
-        type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
-        data-toggle="dropdown"
+        className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
+        onClick={onClickPlusButton}
       >
         <i className="icon-plus text-muted"></i>
       </button>
     </>
   );
-};
+});
 
 const ItemCount: FC = () => {
   return (
     <>
       <span className="grw-pagetree-count badge badge-pill badge-light">
-        10
+        {/* TODO: consider to show the number of children pages */}
       </span>
     </>
   );
 };
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
+  const { t } = useTranslation();
   const { itemNode, isOpen: _isOpen = false } = props;
 
   const { page, children } = itemNode;
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
+
+  const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
   const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -74,6 +101,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
+
+  const onClickDeleteButtonHandler = useCallback(() => {
+    console.log('Show delete modal');
+  }, []);
+
+  const inputValidator = (title: string | null): AlertInfo | null => {
+    if (title == null || title === '') {
+      return {
+        type: AlertType.ERROR,
+        message: t('Page title is required'),
+      };
+    }
+
+    return null;
+  };
+
+  // TODO: go to create page page
+  const onPressEnterHandler = () => {
+    console.log('Enter key was pressed!');
+  };
 
   // didMount
   useEffect(() => {
@@ -124,9 +171,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemContol />
+          <ItemControl
+            page={page}
+            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+          />
         </div>
       </div>
+
+      <ClosableTextInput
+        isShown={isNewPageInputShown}
+        placeholder={t('Input title')}
+        onClickOutside={() => { setNewPageInputShown(false) }}
+        onPressEnter={onPressEnterHandler}
+        inputValidator={inputValidator}
+      />
       {
         isOpen && hasChildren() && currentChildren.map(node => (
           <Item

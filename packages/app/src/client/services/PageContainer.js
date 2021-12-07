@@ -162,13 +162,6 @@ export default class PageContainer extends Container {
   }
 
 
-  // get isAbleToOpenPageEditor() {
-  //   const { isNotCreatable, isTrashPage } = this.state;
-  //   const { isGuestUser } = this.appContainer;
-
-  //   return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  // }
-
   /**
    * whether to display reaction buttons
    * ex.) like, bookmark
@@ -329,10 +322,6 @@ export default class PageContainer extends Container {
     }
   }
 
-  get navigationContainer() {
-    return this.appContainer.getContainer('NavigationContainer');
-  }
-
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
@@ -359,9 +348,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags, revision) {
-    const { editorMode } = this.navigationContainer.state;
-
+  updateStateAfterSave(page, tags, revision, editorMode) {
     // update state of PageContainer
     const newState = {
       pageId: page._id,
@@ -405,9 +392,7 @@ export default class PageContainer extends Container {
    * @param {object} optionsToSave
    * @return {object} { page: Page, tags: Tag[] }
    */
-  async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.navigationContainer.state;
-
+  async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
 
@@ -427,19 +412,18 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags, res.revision);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
     return res;
   }
 
-  async saveAndReload(optionsToSave) {
+  async saveAndReload(optionsToSave, editorMode) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
     }
 
-    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
-      logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
+      logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
       return;
     }
 

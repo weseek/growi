@@ -11,6 +11,9 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
 class PageEditorByHackmd extends React.Component {
@@ -171,7 +174,7 @@ class PageEditorByHackmd extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(markdown, optionsToSave);
+      const { page, tags } = await pageContainer.save(markdown, this.props.editorMode, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
@@ -417,7 +420,17 @@ class PageEditorByHackmd extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+
+const PageEditorByHackmdWrapper = (props) => {
+  const { data } = useEditorMode();
+
+  if (data == null) {
+    return null;
+  }
+
+  return <PageEditorByHackmdHOCWrapper {...props} editorMode={data} />;
+};
 
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -425,6 +438,9 @@ PageEditorByHackmd.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageEditorByHackmdWrapper);
