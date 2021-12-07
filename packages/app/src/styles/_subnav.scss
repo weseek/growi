@@ -45,6 +45,11 @@
     border-radius: $border-radius-xl;
   }
 
+  .btn-bookmark {
+    display: flex;
+    align-items: center;
+  }
+
   .total-likes,
   .total-bookmarks {
     font-size: 17px;

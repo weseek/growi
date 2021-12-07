@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 
-import { IPage } from '../../../interfaces/page';
+import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
-import { useTargetAndAncestors } from '../../../stores/context';
+import { useTargetAndAncestors, useCurrentPagePath } from '../../../stores/context';
 import { HasObjectId } from '../../../interfaces/has-object-id';
 
 
 /*
  * Utility to generate initial node
  */
-const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
+const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPageHasId>[]): ItemNode => {
   const nodes = targetAndAncestors.map((page): ItemNode => {
     return new ItemNode(page, []);
   });
@@ -25,7 +25,7 @@ const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[])
   return rootNode;
 };
 
-const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPage & HasObjectId>[]>, rootNode: ItemNode): ItemNode => {
+const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPageHasId>[]>, rootNode: ItemNode): ItemNode => {
   const paths = Object.keys(ancestorsChildren);
 
   let currentNode = rootNode;

@@ -7,6 +7,9 @@ import {
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
+import {
+  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+} from '~/stores/ui';
 
 import {
   useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
@@ -90,6 +93,11 @@ const ContextExtractorOnce: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   // Navigation
   usePreferDrawerModeByUser();

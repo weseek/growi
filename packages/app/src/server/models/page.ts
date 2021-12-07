@@ -271,6 +271,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
   const _targetAndAncestors: PageDocument[] = await queryBuilder
+    .addConditionAsMigrated()
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
@@ -314,6 +315,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
   await addViewerCondition(queryBuilder, user, userGroups);
   const _pages = await queryBuilder
+    .addConditionAsMigrated()
     .addConditionToMinimizeDataForRendering()
     .query
     .lean()
