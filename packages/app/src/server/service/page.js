@@ -3,7 +3,7 @@ import isThisHour from 'date-fns/isThisHour/index.js';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-// import { createSnapshot } from '../../components/InAppNotification/renderTargetModel/page';
+import { createSnapshot } from '../../components/InAppNotification/renderTargetModel/page/snapshot';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -814,13 +814,7 @@ class PageService {
 
     const { activityService, inAppNotificationService } = this.crowi;
 
-    // const snapshot = createSnapshot(page);
-
-    const snapshot = JSON.stringify({
-      path: page.path,
-      creator: page.creator,
-      lastUpdateUser: page.lastUpdateUser,
-    });
+    const snapshot = createSnapshot(page);
 
     // Create activity
     const parameters = {
