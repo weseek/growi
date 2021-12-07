@@ -4,7 +4,7 @@ import { IPage } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
-import { useTargetAndAncestors, useCurrentPagePath } from '../../../stores/context';
+import { useTargetAndAncestors } from '../../../stores/context';
 import { HasObjectId } from '../../../interfaces/has-object-id';
 
 
@@ -42,22 +42,24 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
+type ItemsTreeProps = {
+  path: string
+}
+
 
 /*
  * ItemsTree
  */
-const ItemsTree: FC = () => {
-  const { data: currentPath } = useCurrentPagePath();
-
+const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data, error } = useTargetAndAncestors();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath || null);
+  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(props.path);
 
   if (error != null || error2 != null) {
     return null;
   }
 
-  if (data == null) {
+  if (data == null) { // when not permalink
     return null;
   }
 
@@ -86,7 +88,7 @@ const ItemsTree: FC = () => {
   const isOpen = true;
   return (
     <div className="grw-pagetree p-3">
-      <Item key={(initialNode as ItemNode).page.path} itemNode={(initialNode as ItemNode)} isOpen={isOpen} />
+      <Item key={initialNode.page.path} itemNode={initialNode} isOpen={isOpen} />
     </div>
   );
 };
