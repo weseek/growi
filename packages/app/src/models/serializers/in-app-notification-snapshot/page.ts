@@ -1,6 +1,11 @@
-import { IPage } from '~/interfaces/page';
+import { IUser } from '~/interfaces/user';
 
-export const stringifyPageModel = (page: IPage): string => {
+export interface IPageSnapshot {
+  path: string
+  creator: IUser
+}
+
+export const stringifyPageModel = (page: IPageSnapshot): string => {
   return JSON.stringify({
     path: page.path,
     creator: page.creator,

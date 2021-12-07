@@ -1,10 +1,10 @@
 import React, { FC, useCallback } from 'react';
 import { PagePathLabel } from '@growi/ui';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { getSnapshotPagePath } from './snapshot';
+import { getSnapshotPagePath } from '../../../models/serializers/in-app-notification-snapshot/page';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import FormattedDistanceDate from '../../../FormattedDistanceDate';
+import FormattedDistanceDate from '../../FormattedDistanceDate';
 
 interface Props {
   notification: IInAppNotification & HasObjectId

@@ -2,7 +2,7 @@ import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-import { stringifyPageModel } from '../../components/InAppNotification/TargetModel/Page/snapshot';
+import { stringifyPageModel } from '~/models/serializers/in-app-notification-snapshot/page';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
