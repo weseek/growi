@@ -17,7 +17,7 @@ import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import Editor from '../PageEditor/Editor';
-import SlackNotification from '../SlackNotification';
+import { SlackNotification } from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
@@ -358,9 +358,7 @@ class CommentEditor extends React.Component {
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled={commentContainer.state.isSlackEnabled}
                     slackChannels={commentContainer.state.slackChannels}
-                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
                     onChannelChange={this.onSlackChannelsChange}
                     id="idForComment"
                   />

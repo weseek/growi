@@ -1,0 +1,66 @@
+/* eslint-disable react/prop-types */
+import React, { FC, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
+import { useIsSlackEnabled } from '~/stores/editor';
+
+type SlackNotificationProps = {
+  id: string;
+  slackChannels: string;
+  onChannelChange: (value: string) => void;
+};
+
+export const SlackNotification: FC<SlackNotificationProps> = ({ id, slackChannels, onChannelChange }) => {
+  const { t } = useTranslation();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+
+  const idForSlackPopover = `${id}ForSlackPopover`;
+
+  const isSlackEnabledToggleHandler = useCallback(
+    (bool) => { mutateIsSlackEnabled(bool) }, [mutateIsSlackEnabled],
+  );
+
+  const updateSlackChannelsHandler = (event: { target: { value: string } }) => {
+    const value = event.target.value;
+    if (onChannelChange != null) {
+      onChannelChange(value);
+    }
+  };
+
+  useEffect(() => {
+    // console.log(isSlackEnabled);
+  }, [isSlackEnabled]);
+
+
+  return (
+    <div className="grw-slack-notification w-100">
+      <div className="grw-input-group-slack-notification input-group extended-setting">
+        <label className="input-group-addon">
+          <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
+            <input
+              type="checkbox"
+              className="custom-control-input border-0"
+              id={id}
+              checked={isSlackEnabled}
+              onChange={e => isSlackEnabledToggleHandler(e.target.checked)}
+            />
+            <label className="custom-control-label align-center" htmlFor={id}></label>
+          </div>
+        </label>
+        <input
+          className="grw-form-control-slack-notification form-control align-top pl-0"
+          id={idForSlackPopover}
+          type="text"
+          value={slackChannels}
+          placeholder="Input channels"
+          onChange={updateSlackChannelsHandler}
+        />
+        <UncontrolledPopover trigger="focus" placement="top" target={idForSlackPopover}>
+          <PopoverHeader>{t('slack_notification.popover_title')}</PopoverHeader>
+          <PopoverBody>{t('slack_notification.popover_desc')}</PopoverBody>
+        </UncontrolledPopover>
+      </div>
+    </div>
+
+  );
+};
