@@ -2,12 +2,9 @@ import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import EditorContainer from '~/client/services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -23,18 +20,8 @@ class TagLabels extends React.Component {
 
     this.openEditorModal = this.openEditorModal.bind(this);
     this.closeEditorModal = this.closeEditorModal.bind(this);
-    this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
   }
 
-  /**
-   * @return tags data
-   *   1. pageContainer.state.tags if editorMode is view
-   *   2. editorContainer.state.tags if editorMode is edit
-   */
-  getTagData() {
-    const { editorContainer, pageContainer, editorMode } = this.props;
-    return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
-  }
 
   openEditorModal() {
     this.setState({ isTagEditModalShown: true });
@@ -44,37 +31,9 @@ class TagLabels extends React.Component {
     this.setState({ isTagEditModalShown: false });
   }
 
-  async tagsUpdatedHandler(newTags) {
-    const {
-      appContainer, editorContainer, pageContainer, editorMode,
-    } = this.props;
-
-    const { pageId } = pageContainer.state;
-
-    // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === 'edit') {
-      return editorContainer.setState({ tags: newTags });
-    }
-
-    try {
-      const { tags } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
-
-      // update pageContainer.state
-      pageContainer.setState({ tags });
-      // update editorContainer.state
-      editorContainer.setState({ tags });
-
-      toastSuccess('updated tags successfully');
-    }
-    catch (err) {
-      toastError(err, 'fail to update tags');
-    }
-  }
-
 
   render() {
-    const tags = this.getTagData();
-    const { appContainer } = this.props;
+    const { appContainer, tagsUpdateInvoked, tags } = this.props;
 
     return (
       <>
@@ -95,7 +54,7 @@ class TagLabels extends React.Component {
           isOpen={this.state.isTagEditModalShown}
           onClose={this.closeEditorModal}
           appContainer={this.props.appContainer}
-          onTagsUpdated={this.tagsUpdatedHandler}
+          onTagsUpdated={tagsUpdateInvoked}
         />
 
       </>
@@ -107,16 +66,18 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, PageContainer, EditorContainer]);
+const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  editorMode: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tagsUpdateInvoked: PropTypes.func,
 };
 
+// wrapping tsx component returned by withUnstatedContainers to avoid type error when this component used in other tsx components.
+const TagLabelsWrapper = (props) => {
+  return <TagLabelsUnstatedWrapper {...props}></TagLabelsUnstatedWrapper>;
+};
 export default withTranslation()(TagLabelsWrapper);

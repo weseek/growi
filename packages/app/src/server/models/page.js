@@ -370,7 +370,7 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('Already liked'));
       }
     }));
   };
@@ -391,7 +391,7 @@ module.exports = function(crowi) {
       }
       else {
         logger.debug('liker not updated');
-        return reject(self);
+        return reject(new Error('Already unliked'));
       }
     }));
   };
