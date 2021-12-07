@@ -6,7 +6,7 @@ import { HasObjectId } from '~/interfaces/has-object-id';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
-import PageModelNotification from './TargetModel/page/PageModelNotification';
+import PageModelNotification from './TargetModel/Page/PageModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
