@@ -4,7 +4,7 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
-import { createSnapshot } from '../../components/InAppNotification/renderTargetModel/page/snapshot';
+import { createSnapshot } from '../../components/InAppNotification/TargetModel/page/snapshot';
 
 const logger = loggerFactory('growi:service:CommentService');
 

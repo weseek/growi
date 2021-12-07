@@ -3,7 +3,7 @@ import isThisHour from 'date-fns/isThisHour/index.js';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
-import { createSnapshot } from '../../components/InAppNotification/renderTargetModel/page/snapshot';
+import { createSnapshot } from '../../components/InAppNotification/TargetModel/page/snapshot';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');

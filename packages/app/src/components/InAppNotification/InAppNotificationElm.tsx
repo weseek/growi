@@ -6,7 +6,7 @@ import { HasObjectId } from '~/interfaces/has-object-id';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
-import RenderPageModelNotification from './renderTargetModel/page/RenderPageModelNotification';
+import PageModelNotification from './TargetModel/page/PageModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -145,7 +145,7 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
         {renderActionUserPictures()}
       </div>
       {notification.targetModel === 'Page' && (
-        <RenderPageModelNotification
+        <PageModelNotification
           notification={notification}
           actionMsg={actionMsg}
           actionIcon={actionIcon}

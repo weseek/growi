@@ -13,7 +13,7 @@ interface Props {
   actionUsers: string
 }
 
-const RenderPageModelNotification = (props: Props): JSX.Element => {
+const PageModelNotification = (props: Props): JSX.Element => {
   const {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
@@ -50,4 +50,4 @@ const RenderPageModelNotification = (props: Props): JSX.Element => {
   );
 };
 
-export default RenderPageModelNotification;
+export default PageModelNotification;
