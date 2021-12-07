@@ -44,7 +44,7 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
-  const { data: currentContents } = useCurrentSidebarContents();
+  const [resetKey, setResetKey] = useState(0);
 
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
@@ -62,11 +62,11 @@ const SidebarContentsWrapper = () => {
         contentsElemSelector="#grw-sidebar-content-container"
         stickyElemSelector=".grw-sidebar"
         calcViewHeightFunc={calcViewHeight}
-        resetKey={currentContents}
+        resetKey={resetKey}
       />
 
       <div id="grw-sidebar-contents-scroll-target">
-        <div id="grw-sidebar-content-container">
+        <div id="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
           <SidebarContents />
         </div>
       </div>
