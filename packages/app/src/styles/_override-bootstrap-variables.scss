@@ -75,10 +75,9 @@ $blockquote-small-color: $gray-500;
 
 //== Components
 //
-$border-radius: 0.35rem;
-$border-radius-sm: 0.3rem;
-$border-radius-lg: 0.4rem;
-$border-radius-xl: 0.55rem;
+$border-radius: 4px;
+$border-radius-sm: 0;
+$border-radius-lg: 8px;
 
 // Buttons + Forms
 //
@@ -115,6 +114,7 @@ $navbar-brand-padding-y: 0;
 $navbar-nav-link-padding-x: 1rem;
 
 //== Dropdowns
+$dropdown-border-radius: $border-radius-lg;
 $dropdown-link-disabled-color: $gray-500;
 $dropdown-header-color: $gray-500;
 $dropdown-box-shadow: 0 0.5rem 0.7rem rgba(black, 0.1);
@@ -131,7 +131,7 @@ $toast-header-color: $gray-500;
 
 //== Modals
 $modal-content-border-width: 0;
-$modal-content-border-radius: $border-radius-xl;
+$modal-content-border-radius: $border-radius-lg;
 $modal-header-padding-y: 0.75rem;
 $modal-header-padding-x: 1rem;
 
