@@ -22,7 +22,6 @@ const NotFoundAlert = (props) => {
 
   }, [isGuestUserMode, mutateEditorMode]);
 
-
   if (isHidden) {
     return null;
   }
