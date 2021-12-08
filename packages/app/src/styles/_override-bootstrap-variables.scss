@@ -71,10 +71,10 @@ $blockquote-small-color: $gray-500;
 
 //== Components
 //
-$border-radius:               .15rem;
-$border-radius-sm:            .1rem;
-$border-radius-lg:            .25rem;
-$border-radius-xl:            .35rem;
+$border-radius: 0.35rem;
+$border-radius-sm: 0.3rem;
+$border-radius-lg: 0.4rem;
+$border-radius-xl: 0.55rem;
 
 // Buttons
 //
@@ -84,10 +84,6 @@ $btn-link-disabled-color: $gray-500;
 //== Forms
 //
 $input-border-color: $gray-300;
-
-$input-border-radius: $border-radius-sm;
-$input-border-radius-sm: $border-radius-sm;
-$input-border-radius-lg: $border-radius;
 
 $input-placeholder-color: $gray-500;
 
@@ -107,7 +103,6 @@ $navbar-brand-padding-y: 0;
 $navbar-nav-link-padding-x: 1rem;
 
 //== Dropdowns
-$dropdown-border-radius: $border-radius-sm;
 $dropdown-link-disabled-color: $gray-500;
 $dropdown-header-color: $gray-500;
 
@@ -123,6 +118,7 @@ $toast-header-color: $gray-500;
 
 //== Modals
 $modal-content-border-width: 0;
+$modal-content-border-radius: $border-radius-xl;
 $modal-header-padding-y: 0.75rem;
 $modal-header-padding-x: 1rem;
 
@@ -133,7 +129,6 @@ $alert-color-level: -10;
 
 //== Progress bar
 $progress-height: 4px;
-$progress-border-radius: $border-radius-sm;
 $progress-bg: $gray-100;
 $progress-box-shadow: none;
 
