@@ -115,9 +115,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const { _id: pageId, revision: revisionId, path } = page;
 
     if (pageId == null || revisionId == null || path == null) {
-      // TODO: i18n
       throw Error('Any of _id, revision, and path must not be null.');
-      return;
     }
 
     const pageToDelete: IPageForPageDeleteModal = {
