@@ -10,7 +10,6 @@ import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
-import { toastError } from '~/client/util/apiNotification';
 
 
 interface ItemProps {
@@ -117,7 +116,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     if (pageId == null || revisionId == null || path == null) {
       // TODO: i18n
-      toastError('Any of _id, revision, and path must not be null.');
+      throw Error('Any of _id, revision, and path must not be null.');
       return;
     }
 
