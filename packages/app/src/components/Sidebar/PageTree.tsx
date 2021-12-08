@@ -1,16 +1,37 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { useCurrentPagePath, useCurrentPageId, useTargetAndAncestors } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
+import { IPageForPageDeleteModal } from '../PageDeleteModal';
 
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
-  const { data } = useSWRxV5MigrationStatus();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: targetId } = useCurrentPageId();
+  const { data: targetAndAncestorsData } = useTargetAndAncestors();
+
+  const { data: migrationStatus } = useSWRxV5MigrationStatus();
+
+  // for delete modal
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
+
+  const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
+    setDeleteModalOpen(true);
+    setPagesToDelete([page]);
+  };
+
+  const onCloseDelete = () => {
+    setDeleteModalOpen(false);
+  };
+
+  const path = currentPath || '/';
 
   return (
     <>
@@ -19,12 +40,22 @@ const PageTree: FC = memo(() => {
       </div>
 
       <div className="grw-sidebar-content-body">
-        <ItemsTree />
+        <ItemsTree
+          targetPath={path}
+          targetId={targetId}
+          targetAndAncestorsData={targetAndAncestorsData}
+          isDeleteModalOpen={isDeleteModalOpen}
+          pagesToDelete={pagesToDelete}
+          isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
+          isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
+          onCloseDelete={onCloseDelete}
+          onClickDeleteByPage={onClickDeleteByPage}
+        />
       </div>
 
       <div className="grw-sidebar-content-footer">
         {
-          data?.migratablePagesCount != null && data.migratablePagesCount !== 0 && (
+          migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
             <PrivateLegacyPages />
           )
         }

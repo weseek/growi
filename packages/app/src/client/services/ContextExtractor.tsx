@@ -4,28 +4,18 @@ import { pagePathUtils } from '@growi/core';
 import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
-
 import {
-  EditorMode, useEditorMode, useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useIsDeviceSmallerThanMd,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
-
-const getInitialEditorMode = (): EditorMode => {
-  switch (window.location.hash) {
-    case '#edit':
-      return EditorMode.Editor;
-    case '#hackmd':
-      return EditorMode.HackMD;
-    default:
-      return EditorMode.View;
-  }
-};
 
 const ContextExtractorOnce: FC = () => {
 
@@ -35,6 +25,11 @@ const ContextExtractorOnce: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * UserUISettings from DOM
+   */
+  const userUISettings: Partial<IUserUISettings> = JSON.parse(document.getElementById('growi-user-ui-settings')?.textContent || jsonNull);
 
   /*
    * Page Context from DOM
@@ -73,11 +68,12 @@ const ContextExtractorOnce: FC = () => {
   // App
   useCurrentUser(currentUser);
 
-  // Navigation
-  useEditorMode(getInitialEditorMode());
-  usePreferDrawerModeByUser();
-  usePreferDrawerModeOnEditByUser();
-  useIsDeviceSmallerThanMd();
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Page
   useCreatedAt(createdAt);
@@ -93,7 +89,7 @@ const ContextExtractorOnce: FC = () => {
   useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
-  usePageId(pageId);
+  useCurrentPageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);
@@ -107,6 +103,16 @@ const ContextExtractorOnce: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
+
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
 
   return null;
 };

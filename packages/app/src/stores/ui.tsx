@@ -1,18 +1,15 @@
 import useSWR, {
-  useSWRConfig, SWRResponse, Key, Fetcher, Middleware,
+  useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
-import { sessionStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath, useIsEditable } from './context';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -36,16 +33,6 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
-export const useSWRxUserUISettings = (): SWRResponse<IUserUISettings, Error> => {
-  const key = isServer ? null : 'userUISettings';
-
-  return useSWRImmutable(
-    key,
-    () => apiv3Get<IUserUISettings>('/user-ui-settings').then(response => response.data),
-  );
-};
-
-
 export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   const key = isServer ? null : 'isMobile';
 
@@ -61,54 +48,86 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
 };
 
 
-const postChangeEditorModeMiddleware: Middleware = (useSWRNext) => {
-  return (...args) => {
-    // -- TODO: https://redmine.weseek.co.jp/issues/81817
-    const swrNext = useSWRNext(...args);
-    return {
-      ...swrNext,
-      mutate: (data, shouldRevalidate) => {
-        return swrNext.mutate(data, shouldRevalidate)
-          .then((value) => {
-            const newEditorMode = value as unknown as EditorMode;
-            switch (newEditorMode) {
-              case EditorMode.View:
-                $('body').removeClass('on-edit');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                $('body').removeClass('pathname-sidebar');
-                window.history.replaceState(null, '', window.location.pathname);
-                break;
-              case EditorMode.Editor:
-                $('body').addClass('on-edit');
-                $('body').addClass('builtin-editor');
-                $('body').removeClass('hackmd');
-                // editing /Sidebar
-                if (window.location.pathname === '/Sidebar') {
-                  $('body').addClass('pathname-sidebar');
-                }
-                window.location.hash = '#edit';
-                break;
-              case EditorMode.HackMD:
-                $('body').addClass('on-edit');
-                $('body').addClass('hackmd');
-                $('body').removeClass('builtin-editor');
-                $('body').removeClass('pathname-sidebar');
-                window.location.hash = '#hackmd';
-                break;
-            }
-            return value;
-          });
-      },
-    };
-  };
+const updateBodyClassesForEditorMode = (newEditorMode: EditorMode) => {
+  switch (newEditorMode) {
+    case EditorMode.View:
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      $('body').removeClass('pathname-sidebar');
+      window.history.replaceState(null, '', window.location.pathname);
+      break;
+    case EditorMode.Editor:
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      // editing /Sidebar
+      if (window.location.pathname === '/Sidebar') {
+        $('body').addClass('pathname-sidebar');
+      }
+      window.location.hash = '#edit';
+      break;
+    case EditorMode.HackMD:
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('pathname-sidebar');
+      window.location.hash = '#hackmd';
+      break;
+  }
 };
 
-export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, Error> => {
-  const key: Key = 'editorMode';
-  const initialData = EditorMode.View;
+export const useEditorModeByHash = (): SWRResponse<EditorMode, Error> => {
+  return useSWRImmutable(
+    ['initialEditorMode', window.location.hash],
+    (key: Key, hash: string) => {
+      switch (hash) {
+        case '#edit':
+          return EditorMode.Editor;
+        case '#hackmd':
+          return EditorMode.HackMD;
+        default:
+          return EditorMode.View;
+      }
+    },
+  );
+};
 
-  return useStaticSWR(key, editorMode || null, { fallbackData: initialData, use: [postChangeEditorModeMiddleware] });
+let isEditorModeLoaded = false;
+export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
+  const { data: _isEditable } = useIsEditable();
+  const { data: editorModeByHash } = useEditorModeByHash();
+
+  const isLoading = _isEditable === undefined;
+  const isEditable = !isLoading && _isEditable;
+  const initialData = isEditable ? editorModeByHash : EditorMode.View;
+
+  const swrResponse = useSWRImmutable(
+    isLoading ? null : ['editorMode', isEditable],
+    null,
+    { fallbackData: initialData },
+  );
+
+  // initial updating
+  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
+    if (isEditable) {
+      updateBodyClassesForEditorMode(swrResponse.data);
+    }
+    isEditorModeLoaded = true;
+  }
+
+  return {
+    ...swrResponse,
+
+    // overwrite mutate
+    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
+      if (!isEditable) {
+        return Promise.resolve(EditorMode.View); // fixed if not editable
+      }
+      updateBodyClassesForEditorMode(editorMode);
+      return swrResponse.mutate(editorMode, shouldRevalidate);
+    },
+  };
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
@@ -135,20 +154,24 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
-export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const { data } = useSWRxUserUISettings();
-  const key: Key = data === undefined ? null : 'preferDrawerModeByUser';
-  const initialData = data?.preferDrawerModeByUser;
-
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('preferDrawerModeByUser', initialData ?? null, { fallbackData: false });
 };
 
-export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, Error> => {
-  const { data } = useSWRxUserUISettings();
-  const key: Key = data === undefined ? null : 'preferDrawerModeOnEditByUser';
-  const initialData = data?.preferDrawerModeOnEditByUser;
+export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('preferDrawerModeOnEditByUser', initialData ?? null, { fallbackData: true });
+};
 
-  return useStaticSWR(key, isPrefered || null, { fallbackData: initialData, use: [sessionStorageMiddleware] });
+export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isSidebarCollapsed', initialData ?? null, { fallbackData: false });
+};
+
+export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
+  return useStaticSWR('sidebarContents', initialData ?? null, { fallbackData: SidebarContentsType.RECENT });
+};
+
+export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR('productNavWidth', initialData ?? null, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
@@ -170,7 +193,7 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
   };
 
   return useSWRImmutable(
-    condition ? [editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
     {
       fallback: calcDrawerMode,
@@ -181,51 +204,6 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
-};
-
-export const useSidebarCollapsed = (): SWRResponse<boolean, Error> => {
-  const { data } = useSWRxUserUISettings();
-  const key = data === undefined ? null : 'isSidebarCollapsed';
-  const initialData = data?.isSidebarCollapsed || false;
-
-  return useStaticSWR(
-    key,
-    null,
-    {
-      fallbackData: initialData,
-      use: [sessionStorageMiddleware],
-    },
-  );
-};
-
-export const useCurrentSidebarContents = (): SWRResponse<SidebarContentsType, Error> => {
-  const { data } = useSWRxUserUISettings();
-  const key = data === undefined ? null : 'sidebarContents';
-  const initialData = data?.currentSidebarContents || SidebarContentsType.RECENT;
-
-  return useStaticSWR(
-    key,
-    null,
-    {
-      fallbackData: initialData,
-      use: [sessionStorageMiddleware],
-    },
-  );
-};
-
-export const useCurrentProductNavWidth = (): SWRResponse<number, Error> => {
-  const { data } = useSWRxUserUISettings();
-  const key = data === undefined ? null : 'productNavWidth';
-  const initialData = data?.currentProductNavWidth || 320;
-
-  return useStaticSWR(
-    key,
-    null,
-    {
-      fallbackData: initialData,
-      use: [sessionStorageMiddleware],
-    },
-  );
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {

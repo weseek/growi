@@ -5,8 +5,6 @@ import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
 
@@ -50,6 +48,7 @@ const StickyStretchableScroller = (props) => {
   const {
     children, contentsElemSelector, stickyElemSelector,
     calcViewHeightFunc, calcContentsHeightFunc,
+    resetKey,
   } = props;
 
   if (scrollTargetSelector == null && children == null) {
@@ -103,7 +102,7 @@ const StickyStretchableScroller = (props) => {
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
-    resetScrollbar();
+    setTimeout(resetScrollbar, 100);
   }, [resetScrollbar]);
 
   // setup effect by sticky event
@@ -139,17 +138,12 @@ const StickyStretchableScroller = (props) => {
     };
   }, [resetScrollbarDebounced]);
 
-  // setup effect by isScrollTop
-  // useEffect(() => {
-  //   if (navigationContainer.state.isScrollTop) {
-  //     resetScrollbar();
-  //   }
-  // }, [navigationContainer.state.isScrollTop, resetScrollbar]);
-
-  // setup effect by update props
+  // setup effect on init
   useEffect(() => {
-    resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
+    if (resetKey != null) {
+      resetScrollbarDebounced();
+    }
+  }, [resetKey, resetScrollbarDebounced]);
 
   return (
     <>
@@ -164,6 +158,8 @@ StickyStretchableScroller.propTypes = {
   children: PropTypes.node,
   scrollTargetSelector: PropTypes.string,
   stickyElemSelector: PropTypes.string,
+
+  resetKey: PropTypes.any,
 
   calcViewHeightFunc: PropTypes.func,
   calcContentsHeightFunc: PropTypes.func,

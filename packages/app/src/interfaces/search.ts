@@ -9,7 +9,7 @@ export enum CheckboxType {
 export type IPageSearchResultData = {
   pageData: IPageHasId,
   pageMeta: {
-    bookmarkCount: number,
+    bookmarkCount?: number,
     elasticSearchResult?: {
       snippet: string,
       highlightedPath: string,

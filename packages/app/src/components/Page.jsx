@@ -167,6 +167,11 @@ Page.propTypes = {
 
 const PageWrapper = (props) => {
   const { data } = useEditorMode();
+
+  if (data == null) {
+    return null;
+  }
+
   return <Page {...props} editorMode={data} />;
 };
 

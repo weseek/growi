@@ -19,6 +19,7 @@ import GrantSelector from './SavePageControls/GrantSelector';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
+import { useIsEditable } from '~/stores/context';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -114,8 +115,18 @@ class SavePageControls extends React.Component {
 const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
 
 const SavePageControlsWrapper = (props) => {
-  const { data } = useEditorMode();
-  return <SavePageControlsHOCWrapper {...props} editorMode={data} />;
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  if (!isEditable) {
+    return null;
+  }
+
+  return <SavePageControlsHOCWrapper {...props} editorMode={editorMode} />;
 };
 
 SavePageControls.propTypes = {
