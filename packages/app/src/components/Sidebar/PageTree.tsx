@@ -22,7 +22,7 @@ const PageTree: FC = memo(() => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
-  const onClickDelete = (page: IPageForPageDeleteModal) => {
+  const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
     setDeleteModalOpen(true);
     setPagesToDelete([page]);
   };
@@ -49,7 +49,7 @@ const PageTree: FC = memo(() => {
           isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
           isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
           onCloseDelete={onCloseDelete}
-          onClickDelete={onClickDelete}
+          onClickDeleteByPage={onClickDeleteByPage}
         />
       </div>
 

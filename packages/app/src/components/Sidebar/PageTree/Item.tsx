@@ -16,7 +16,7 @@ interface ItemProps {
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
-  onClickDelete?(page: IPageForPageDeleteModal): void
+  onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -87,7 +87,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDelete,
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
   } = props;
 
   const { page, children } = itemNode;
@@ -108,7 +108,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [isOpen]);
 
   const onClickDeleteButtonHandler = useCallback(() => {
-    if (onClickDelete == null) {
+    if (onClickDeleteByPage == null) {
       return;
     }
 
@@ -124,8 +124,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDelete(pageToDelete);
-  }, [page, onClickDelete]);
+    onClickDeleteByPage(pageToDelete);
+  }, [page, onClickDeleteByPage]);
 
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
@@ -213,7 +213,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             key={node.page._id}
             itemNode={node}
             isOpen={false}
-            onClickDelete={onClickDelete}
+            onClickDeleteByPage={onClickDeleteByPage}
           />
         ))
       }

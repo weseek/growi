@@ -53,15 +53,15 @@ type ItemsTreeProps = {
   isAbleToDeleteCompletely: boolean
   isDeleteCompletelyModal: boolean
   onCloseDelete(): void
-  onClickDelete(page: IPageForPageDeleteModal): void
+  onClickDeleteByPage(page: IPageForPageDeleteModal): void
 }
 
 const renderByInitialNode = (
-    initialNode: ItemNode, DeleteModal: JSX.Element, targetId?: string, onClickDelete?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode, DeleteModal: JSX.Element, targetId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
     <div className="grw-pagetree p-3">
-      <Item key={initialNode.page.path} targetId={targetId} itemNode={initialNode} isOpen onClickDelete={onClickDelete} />
+      <Item key={initialNode.page.path} targetId={targetId} itemNode={initialNode} isOpen onClickDeleteByPage={onClickDeleteByPage} />
       {DeleteModal}
     </div>
   );
@@ -74,7 +74,7 @@ const renderByInitialNode = (
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
     targetPath, targetId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    onClickDelete,
+    onClickDeleteByPage,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
@@ -101,7 +101,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDelete);
+    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
   }
 
   /*
@@ -109,7 +109,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDelete);
+    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
   }
 
   return null;
