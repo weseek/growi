@@ -13,6 +13,7 @@ export type IPageSearchResultData = {
     elasticSearchResult: {
       snippet: string,
       displayPath: string,
+      isHtmlIncludedInPath: boolean,
     },
   },
 }
