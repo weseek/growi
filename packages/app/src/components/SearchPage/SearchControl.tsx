@@ -7,14 +7,10 @@ import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
-
-const { RELATION_SCORE, UPDATED_AT, CREATED_AT } = SORT_AXIS;
-const { DESC, ASC } = SORT_ORDER;
-
 type Props = {
   searchingKeyword: string,
   sort: SORT_AXIS,
-  order: string,
+  order: SORT_ORDER,
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
