@@ -12,7 +12,7 @@ export interface UserUISettingsDocument extends IUserUISettings, Document {}
 export type UserUISettingsModel = Model<UserUISettingsDocument>
 
 const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
-  user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', unique: true },
   isSidebarCollapsed: { type: Boolean, default: false },
   currentSidebarContents: {
     type: String,
@@ -21,7 +21,7 @@ const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
   },
   currentProductNavWidth: { type: Number },
   preferDrawerModeByUser: { type: Boolean, default: false },
-  preferDrawerModeOnEditByUser: { type: Boolean, default: false },
+  preferDrawerModeOnEditByUser: { type: Boolean, default: true },
 });
 
 
