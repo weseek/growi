@@ -62,7 +62,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
         </button>
-        <button className="dropdown-item text-danger border-top pt-2" type="button" onClick={deleteButtonHandler}>
+        <div className="dropdown-divider"></div>
+        <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>
           <i className="icon-fw icon-trash"></i>{t('Delete')}
         </button>
       </div>
