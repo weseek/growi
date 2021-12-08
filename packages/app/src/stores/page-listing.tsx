@@ -6,11 +6,9 @@ import {
 } from '../interfaces/page-listing-results';
 
 
-export const useSWRxRootPage = (
-    shouldFetch: boolean,
-): SWRResponse<RootPageResult, Error> => {
+export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
   return useSWR(
-    shouldFetch ? '/page-listing/root' : null,
+    '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         rootPage: response.data.rootPage,

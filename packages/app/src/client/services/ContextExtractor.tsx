@@ -4,7 +4,7 @@ import { pagePathUtils } from '@growi/core';
 import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
 import {
@@ -75,7 +75,7 @@ const ContextExtractorOnce: FC = () => {
   useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
-  usePageId(pageId);
+  useCurrentPageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);
