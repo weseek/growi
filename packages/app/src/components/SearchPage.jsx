@@ -11,9 +11,8 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
-
-import { CheckboxType } from '../interfaces/search';
 
 export const specificPathNames = {
   user: '/user',
@@ -38,6 +37,8 @@ class SearchPage extends React.Component {
       pagingLimit: this.props.appContainer.config.pageLimitationL,
       excludeUserPages: true,
       excludeTrashPages: true,
+      sort: SORT_AXIS.RELATION_SCORE,
+      order: SORT_ORDER.DESC,
       selectAllCheckboxType: CheckboxType.NONE_CHECKED,
       isDeleteConfirmModalShown: false,
       deleteTargetPageIds: new Set(),
@@ -50,6 +51,7 @@ class SearchPage extends React.Component {
     this.toggleCheckBox = this.toggleCheckBox.bind(this);
     this.switchExcludeUserPagesHandler = this.switchExcludeUserPagesHandler.bind(this);
     this.switchExcludeTrashPagesHandler = this.switchExcludeTrashPagesHandler.bind(this);
+    this.onChangeSortInvoked = this.onChangeSortInvoked.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
     this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
     this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
@@ -82,6 +84,13 @@ class SearchPage extends React.Component {
 
   switchExcludeTrashPagesHandler() {
     this.setState({ excludeTrashPages: !this.state.excludeTrashPages });
+  }
+
+  onChangeSortInvoked(nextSort, nextOrder) {
+    this.setState({
+      sort: nextSort,
+      order: nextOrder,
+    });
   }
 
   changeURL(keyword, refreshHash) {
@@ -152,11 +161,14 @@ class SearchPage extends React.Component {
     });
     const pagingLimit = this.state.pagingLimit;
     const offset = (this.state.activePage * pagingLimit) - pagingLimit;
+    const { sort, order } = this.state;
     try {
       const res = await this.props.appContainer.apiGet('/search', {
         q: this.createSearchQuery(keyword),
         limit: pagingLimit,
         offset,
+        sort,
+        order,
       });
       this.changeURL(keyword);
       if (res.data.length > 0) {
@@ -288,6 +300,8 @@ class SearchPage extends React.Component {
     return (
       <SearchControl
         searchingKeyword={this.state.searchingKeyword}
+        sort={this.state.sort}
+        order={this.state.order}
         searchResultCount={this.state.searchResultCount || 0}
         appContainer={this.props.appContainer}
         onSearchInvoked={this.onSearchInvoked}
@@ -298,6 +312,7 @@ class SearchPage extends React.Component {
         onExcludeTrashPagesSwitched={this.switchExcludeTrashPagesHandler}
         excludeUserPages={this.state.excludeUserPages}
         excludeTrashPages={this.state.excludeTrashPages}
+        onChangeSortInvoked={this.onChangeSortInvoked}
       >
       </SearchControl>
     );

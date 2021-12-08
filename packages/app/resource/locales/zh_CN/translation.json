@@ -855,7 +855,12 @@
     "currently_not_implemented": "这是当前未实现的功能",
     "search_again" : "再次搜索",
     "number_of_list_to_display" : "显示器的数量",
-    "page_number_unit" : "例"
+    "page_number_unit" : "例",
+    "sort_axis": {
+      "relationScore": "按相关性排序",
+      "createdAt": "按创建日期排序",
+      "updatedAt": "按更新日期排序"
+    }
 	},
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {

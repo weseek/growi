@@ -383,68 +383,41 @@ class SearchService implements SearchQueryParser, SearchResolver {
     /*
      * Format ElasticSearch result
      */
-
     const Page = this.crowi.model('Page') as PageModel;
     const User = this.crowi.model('User');
     const result = {} as FormattedSearchResult;
 
-    // create score map for sorting
-    // key: id , value: score
-    const scoreMap = {};
-    for (const esPage of searchResult.data) {
-      scoreMap[esPage._id] = esPage._score;
-    }
+    // get page data
+    const pageIds = searchResult.data.map((page) => { return page._id });
+    const findPageResult = await Page.findListByPageIds(pageIds);
 
-    const ids = searchResult.data.map((page) => { return page._id });
-    const findResult = await Page.findListByPageIds(ids);
+    // set meta data
+    result.meta = searchResult.meta;
+    result.totalCount = findPageResult.totalCount;
 
-    // add tags data to page
-    findResult.pages.map((pageData) => {
-      const data = searchResult.data.find((data) => {
+    // set search result page data
+    result.data = searchResult.data.map((data) => {
+      const pageData = findPageResult.pages.find((pageData) => {
         return pageData.id === data._id;
       });
+
+      // add tags and seenUserCount to pageData
       pageData._doc.tags = data._source.tag_names;
-      return pageData;
+      pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
+
+      // serialize lastUpdateUser
+      if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
+        pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
+      }
+
+      // generate pageMeta data
+      const pageMeta = {
+        bookmarkCount: data._source.bookmark_count || 0,
+        elasticSearchResult: data.elasticSearchResult,
+      };
+
+      return { pageData, pageMeta };
     });
-
-    result.meta = searchResult.meta;
-    result.totalCount = findResult.totalCount;
-    result.data = findResult.pages
-      .map((pageData) => {
-        if (pageData.lastUpdateUser != null && pageData.lastUpdateUser instanceof User) {
-          pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
-        }
-
-        const data = searchResult.data.find((data) => {
-          return pageData.id === data._id;
-        });
-
-        // increment elasticSearchResult
-        let elasticSearchResult;
-        const highlightData = data._highlight;
-        if (highlightData != null) {
-          const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
-          const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
-
-          elasticSearchResult = {
-            snippet: filterXss.process(snippet),
-            highlightedPath: filterXss.process(pathMatch),
-          };
-        }
-
-        const pageMeta = {
-          bookmarkCount: data._source.bookmark_count || 0,
-          elasticSearchResult,
-        };
-
-        pageData._doc.seenUserCount = (pageData.seenUsers && pageData.seenUsers.length) || 0;
-
-        return { pageData, pageMeta };
-      })
-      .sort((page1, page2) => {
-        // note: this do not consider NaN
-        return scoreMap[page2.pageData._id] - scoreMap[page1.pageData._id];
-      });
 
     return result;
   }
