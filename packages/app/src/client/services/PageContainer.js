@@ -374,15 +374,6 @@ export default class PageContainer extends Container {
     }
   }
 
-  // TODO : temporaly use only
-  updateStateAfterTagAdded(page) {
-    const newState = {
-      updatedAt: page.updatedAt,
-      revisionAuthor: page.revision.author,
-    };
-    this.setState(newState);
-  }
-
   /**
    * save success handler
    * @param {object} page Page instance
@@ -398,6 +389,7 @@ export default class PageContainer extends Container {
       revisionId: revision._id,
       revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
       remoteRevisionId: revision._id,
+      revisionAuthor: page.revision.author,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: revision.body,
