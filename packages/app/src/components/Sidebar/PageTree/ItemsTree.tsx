@@ -64,7 +64,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { targetPath, targetId, targetAndAncestorsData } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { data: rootPageData, error: error2 } = useSWRxRootPage(true);
+  const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
   if (error1 != null || error2 != null) {
     // TODO: improve message
