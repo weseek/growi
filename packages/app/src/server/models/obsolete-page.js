@@ -234,7 +234,14 @@ export class PageQueryBuilder {
 
   addConditionAsMigrated() {
     this.query = this.query
-      .and({ parent: { $ne: null } });
+      .and(
+        {
+          $or: [
+            { parent: { $ne: null } },
+            { path: '/' },
+          ],
+        },
+      );
 
     return this;
   }
@@ -249,7 +256,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToMinimizeDataForRendering() {
-    this.query = this.query.select('_id path isEmpty grant');
+    this.query = this.query.select('_id path isEmpty grant revision');
 
     return this;
   }

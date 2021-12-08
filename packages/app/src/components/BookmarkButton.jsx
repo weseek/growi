@@ -42,11 +42,11 @@ class LegacyBookmarkButton extends React.Component {
           ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>
-          {sumOfBookmarks && (
-            <span className="total-bookmarks">
-              {sumOfBookmarks}
-            </span>
-          )}
+          <span className="total-bookmarks">
+            {sumOfBookmarks && (
+              sumOfBookmarks
+            )}
+          </span>
         </button>
 
         {isGuestUser && (
