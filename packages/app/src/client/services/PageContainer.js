@@ -389,7 +389,7 @@ export default class PageContainer extends Container {
       revisionId: revision._id,
       revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
       remoteRevisionId: revision._id,
-      revisionAuthor: page.revision.author,
+      revisionAuthor: revision.author,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: revision.body,
