@@ -3,8 +3,9 @@ import React, { FC } from 'react';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
-import { useTargetAndAncestors, useCurrentPagePath } from '../../../stores/context';
+import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
+import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { toastError } from '~/client/util/apiNotification';
 
 
 /*
@@ -41,53 +42,53 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
+type ItemsTreeProps = {
+  targetPath: string
+  targetId?: string
+  targetAndAncestorsData?: TargetAndAncestors
+}
+
+const renderByInitialNode = (initialNode: ItemNode, targetId?: string): JSX.Element => {
+  return (
+    <div className="grw-pagetree p-3">
+      <Item key={initialNode.page.path} targetId={targetId} itemNode={initialNode} isOpen />
+    </div>
+  );
+};
+
 
 /*
  * ItemsTree
  */
-const ItemsTree: FC = () => {
-  const { data: currentPath } = useCurrentPagePath();
+const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
+  const { targetPath, targetId, targetAndAncestorsData } = props;
 
-  const { data, error } = useTargetAndAncestors();
+  const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
+  const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath || null);
-
-  if (error != null || error2 != null) {
+  if (error1 != null || error2 != null) {
+    // TODO: improve message
+    toastError('Error occurred while fetching pages to render PageTree');
     return null;
   }
 
-  if (data == null) {
-    return null;
+  /*
+   * Render completely
+   */
+  if (ancestorsChildrenData != null && rootPageData != null) {
+    const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
+    return renderByInitialNode(initialNode, targetId);
   }
-
-  const { targetAndAncestors, rootPage } = data;
-
-  let initialNode: ItemNode;
 
   /*
    * Before swr response comes back
    */
-  if (ancestorsChildrenData == null) {
-    initialNode = generateInitialNodeBeforeResponse(targetAndAncestors);
+  if (targetAndAncestorsData != null) {
+    const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
+    return renderByInitialNode(initialNode, targetId);
   }
 
-  /*
-   * When swr request finishes
-   */
-  else {
-    const { ancestorsChildren } = ancestorsChildrenData;
-
-    const rootNode = new ItemNode(rootPage);
-
-    initialNode = generateInitialNodeAfterResponse(ancestorsChildren, rootNode);
-  }
-
-  const isOpen = true;
-  return (
-    <div className="grw-pagetree p-3">
-      <Item key={(initialNode as ItemNode).page.path} itemNode={(initialNode as ItemNode)} isOpen={isOpen} />
-    </div>
-  );
+  return null;
 };
 
 

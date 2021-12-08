@@ -19,13 +19,13 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
   return useStaticSWR<Nullable<any>, Error>('revisionId', initialData ?? null);
 };
 
-export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('currentPagePath', initialData ?? null);
+export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData ?? null);
 };
 
 
-export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageId', initialData ?? null);
+export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('currentPageId', initialData ?? null);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

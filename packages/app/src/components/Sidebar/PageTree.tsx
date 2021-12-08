@@ -2,6 +2,7 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { useCurrentPagePath, useCurrentPageId, useTargetAndAncestors } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
@@ -10,7 +11,13 @@ import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
-  const { data } = useSWRxV5MigrationStatus();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: targetId } = useCurrentPageId();
+  const { data: targetAndAncestorsData } = useTargetAndAncestors();
+
+  const { data: migrationStatus } = useSWRxV5MigrationStatus();
+
+  const path = currentPath || '/';
 
   return (
     <>
@@ -19,12 +26,12 @@ const PageTree: FC = memo(() => {
       </div>
 
       <div className="grw-sidebar-content-body">
-        <ItemsTree />
+        <ItemsTree targetPath={path} targetId={targetId} targetAndAncestorsData={targetAndAncestorsData} />
       </div>
 
       <div className="grw-sidebar-content-footer">
         {
-          data?.migratablePagesCount != null && data.migratablePagesCount !== 0 && (
+          migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
             <PrivateLegacyPages />
           )
         }

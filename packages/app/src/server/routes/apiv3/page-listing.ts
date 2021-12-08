@@ -41,6 +41,20 @@ export default (crowi: Crowi): Router => {
   const router = express.Router();
 
 
+  router.get('/root', accessTokenParser, loginRequiredStrictly, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const Page: PageModel = crowi.model('Page');
+
+    let rootPage;
+    try {
+      rootPage = await Page.findByPathAndViewer('/', req.user, null, true);
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('rootPage not found'));
+    }
+
+    return res.apiv3({ rootPage });
+  });
+
   // eslint-disable-next-line max-len
   router.get('/ancestors-children', accessTokenParser, loginRequiredStrictly, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
