@@ -9,12 +9,15 @@ import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
+import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { toastError } from '~/client/util/apiNotification';
 
 
 interface ItemProps {
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
+  onClickDelete?(page: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -84,7 +87,9 @@ const ItemCount: FC = () => {
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
-  const { itemNode, targetId, isOpen: _isOpen = false } = props;
+  const {
+    itemNode, targetId, isOpen: _isOpen = false, onClickDelete,
+  } = props;
 
   const { page, children } = itemNode;
 
@@ -104,8 +109,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [isOpen]);
 
   const onClickDeleteButtonHandler = useCallback(() => {
-    console.log('Show delete modal');
-  }, []);
+    if (onClickDelete == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId, path } = page;
+
+    if (pageId == null || revisionId == null || path == null) {
+      // TODO: i18n
+      toastError('Any of _id, revision, and path must not be null.');
+      return;
+    }
+
+    const pageToDelete: IPageForPageDeleteModal = {
+      pageId,
+      revisionId: revisionId as string,
+      path,
+    };
+
+    onClickDelete(pageToDelete);
+  }, [page, onClickDelete]);
 
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
@@ -193,6 +216,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             key={node.page._id}
             itemNode={node}
             isOpen={false}
+            onClickDelete={onClickDelete}
           />
         ))
       }

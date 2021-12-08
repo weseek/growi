@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
@@ -6,6 +6,7 @@ import { useCurrentPagePath, useCurrentPageId, useTargetAndAncestors } from '~/s
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
+import { IPageForPageDeleteModal } from '../PageDeleteModal';
 
 
 const PageTree: FC = memo(() => {
@@ -17,6 +18,19 @@ const PageTree: FC = memo(() => {
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
+  // for delete modal
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
+
+  const onClickDelete = (page: IPageForPageDeleteModal) => {
+    setDeleteModalOpen(true);
+    setPagesToDelete([page]);
+  };
+
+  const onCloseDelete = () => {
+    setDeleteModalOpen(false);
+  };
+
   const path = currentPath || '/';
 
   return (
@@ -26,7 +40,17 @@ const PageTree: FC = memo(() => {
       </div>
 
       <div className="grw-sidebar-content-body">
-        <ItemsTree targetPath={path} targetId={targetId} targetAndAncestorsData={targetAndAncestorsData} />
+        <ItemsTree
+          targetPath={path}
+          targetId={targetId}
+          targetAndAncestorsData={targetAndAncestorsData}
+          isDeleteModalOpen={isDeleteModalOpen}
+          pagesToDelete={pagesToDelete}
+          isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
+          isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
+          onCloseDelete={onCloseDelete}
+          onClickDelete={onClickDelete}
+        />
       </div>
 
       <div className="grw-sidebar-content-footer">
