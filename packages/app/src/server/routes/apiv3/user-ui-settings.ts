@@ -26,24 +26,6 @@ module.exports = (crowi) => {
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  router.get('/', loginRequiredStrictly, async(req: any, res: any) => {
-    const { user } = req;
-
-    try {
-      const updatedSettings = await UserUISettings.findOneAndUpdate(
-        { user: user._id },
-        { user: user._id },
-        { upsert: true, new: true },
-      );
-      return res.apiv3(updatedSettings);
-    }
-    catch (err) {
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
-    }
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   router.put('/', loginRequiredStrictly, csrf, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
     const { user } = req;
     const { settings } = req.body;

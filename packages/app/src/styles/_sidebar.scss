@@ -267,7 +267,7 @@
     top: 0;
     width: 0;
   }
-  div.navigation {
+  div.navigation.transition-enabled {
     max-width: 80vw;
 
     // apply transition
@@ -325,22 +325,6 @@
     }
     &:not(.grw-sidebar-drawer) {
       @include dock();
-    }
-  }
-}
-
-// supress transition
-.grw-sidebar {
-  &.grw-sidebar-supress-transitions-to-drawer {
-    div.navigation {
-      transition: none !important;
-    }
-  }
-
-  &.grw-sidebar-supress-transitions-to-dock {
-    div.content,
-    div.contextual-navigation {
-      transition: none !important;
     }
   }
 }
