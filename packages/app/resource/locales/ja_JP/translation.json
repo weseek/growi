@@ -187,6 +187,7 @@
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
   "page_register": {
+    "send_email": "メールを送る",
     "notice": {
       "restricted": "この Wiki への新規登録は制限されています。",
       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。"
@@ -877,6 +878,7 @@
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
+    "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。"
   },
   "grid_edit":{
