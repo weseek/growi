@@ -6,7 +6,7 @@ const { DESC, ASC } = SORT_ORDER;
 
 type Props = {
   sort: SORT_AXIS,
-  order: string,
+  order: SORT_ORDER,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
@@ -21,7 +21,7 @@ const SortControl: FC <Props> = (props: Props) => {
   };
 
   const renderOrderIcon = (order: SORT_ORDER) => {
-    const iconClassName = ASC === order ? 'fa fa-sort-asc' : 'fa fa-sort-desc';
+    const iconClassName = ASC === order ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc';
     return <i className={iconClassName} aria-hidden="true" />;
   };
 
@@ -31,26 +31,35 @@ const SortControl: FC <Props> = (props: Props) => {
 
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-outline-secondary btn-dropdown-toggle dropdown-toggle-no-caret"
-        data-toggle="dropdown"
-      >
-        {renderSortItem(props.sort, props.order)}
-      </button>
-      <div className="dropdown-menu dropdown-menu-right">
-        {Object.values(SORT_AXIS).map((sortAxis) => {
-          const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
-          return (
-            <button
-              className="dropdown-item d-flex justify-content-between"
-              type="button"
-              onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
-            >
-              {renderSortItem(sortAxis, nextOrder)}
-            </button>
-          );
-        })}
+      <div className="input-group">
+        <div className="input-group-prepend">
+          <div className="input-group-text border" id="btnGroupAddon">
+            {renderOrderIcon(props.order)}
+          </div>
+        </div>
+        <div className="btn-group" role="group">
+          <button
+            type="button"
+            className="btn border dropdown-toggle"
+            data-toggle="dropdown"
+          >
+            <span className="mr-4">{t(`search_result.sort_axis.${props.sort}`)}</span>
+          </button>
+          <div className="dropdown-menu dropdown-menu-right">
+            {Object.values(SORT_AXIS).map((sortAxis) => {
+              const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
+              return (
+                <button
+                  className="dropdown-item d-flex justify-content-between"
+                  type="button"
+                  onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
+                >
+                  {renderSortItem(sortAxis, nextOrder)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </>
   );
