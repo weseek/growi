@@ -185,7 +185,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           className={`grw-pagetree-button btn ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
-          <TriangleIcon />
+          <div className="grw-triangle-icon">
+            <TriangleIcon />
+          </div>
         </button>
         <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
           <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>

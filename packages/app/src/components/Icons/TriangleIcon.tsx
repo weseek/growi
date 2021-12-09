@@ -5,7 +5,6 @@ const TriangleIcon = (): JSX.Element => (
     <path
       d="M5.2,1.067a1,1,0,0,1,1.6,0l4,5.333A1,1,0,0,1,10,8H2a1,1,0,0,1-.8-1.6Z"
       transform="translate(12 8) rotate(180)"
-      fill="#bcbcbc"
     />
   </svg>
 );
