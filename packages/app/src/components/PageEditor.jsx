@@ -17,7 +17,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -124,12 +125,19 @@ class PageEditor extends React.Component {
     }
   }
 
+  // TODO: Create mediator and remove this when omitting unstated is completed
+  getCurrentOptionsToSave() {
+    const { isSlackEnabled, slackChannels, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
+  }
+
   /**
    * save and update state of containers
    */
   async onSaveWithShortcut() {
     const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = this.getCurrentOptionsToSave();
 
     try {
       // disable unsaved warning
@@ -360,12 +368,22 @@ const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, P
 const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
 
-  if (isEditable == null || editorMode == null) {
+  if (isEditable == null || editorMode == null || isSlackEnabled == null || slackChannels == null) {
     return null;
   }
 
-  return <PageEditorHOCWrapper {...props} isEditable={isEditable} editorMode={editorMode} />;
+  return (
+    <PageEditorHOCWrapper
+      isEditable={isEditable}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+      {...props}
+    />
+  );
 };
 
 PageEditor.propTypes = {
@@ -377,6 +395,8 @@ PageEditor.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
 };
 
 export default PageEditorWrapper;
