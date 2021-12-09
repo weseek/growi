@@ -30,15 +30,13 @@ appContainer.initApp();
 
 logger.info('AppContainer has been initialized');
 
-const isSearchPage = document.getElementById('search-page') != null;
-
 /**
  * define components
  *  key: id of element
  *  value: React Element
  */
 const componentMappings = {
-
+  'grw-navbar': <GrowiNavbar />,
   'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
   'page-create-modal': <PageCreateModal />,
@@ -46,9 +44,5 @@ const componentMappings = {
   'grw-hotkeys-manager': <HotkeysManager />,
 
 };
-// hide GrowiNavBar when SearchPage is shown
-if (!isSearchPage) {
-  Object.assign(componentMappings, { 'grw-navbar': <GrowiNavbar /> });
-}
 
 export { appContainer, componentMappings };
