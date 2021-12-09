@@ -41,7 +41,7 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
@@ -227,7 +227,7 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
     relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
   }
 
-  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
+  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
 };
 
 /*
@@ -252,7 +252,7 @@ schema.statics.findByPathAndViewer = async function(
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<TargetAndAncestorsResult> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -270,7 +270,10 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
+  await addViewerCondition(queryBuilder, user, userGroups);
+
   const _targetAndAncestors: PageDocument[] = await queryBuilder
+    .addConditionAsMigrated()
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
     .addConditionToSortAncestorPages()
@@ -307,13 +310,14 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 };
 
 schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
-  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path);
+  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
   const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
   // get pages at once
   const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }));
   await addViewerCondition(queryBuilder, user, userGroups);
   const _pages = await queryBuilder
+    .addConditionAsMigrated()
     .addConditionToMinimizeDataForRendering()
     .query
     .lean()
@@ -326,10 +330,18 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
     return page;
   });
 
-  // make map
+  /*
+   * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+   */
   const pathToChildren: Record<string, PageDocument[]> = {};
-  ancestorPaths.forEach((path) => {
-    pathToChildren[path] = pages.filter(page => nodePath.dirname(page.path) === path);
+  const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+  sortedPaths.every((path) => {
+    const children = pages.filter(page => nodePath.dirname(page.path) === path);
+    if (children.length === 0) {
+      return false; // break when children do not exist
+    }
+    pathToChildren[path] = children;
+    return true;
   });
 
   return pathToChildren;

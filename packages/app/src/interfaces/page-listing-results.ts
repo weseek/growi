@@ -1,7 +1,12 @@
-import { IPageForItem } from './page';
+import { IPageForItem, IPageHasId } from './page';
 
 
 type ParentPath = string;
+
+export interface RootPageResult {
+  rootPage: IPageHasId
+}
+
 export interface AncestorsChildrenResult {
   ancestorsChildren: Record<ParentPath, Partial<IPageForItem>[]>
 }

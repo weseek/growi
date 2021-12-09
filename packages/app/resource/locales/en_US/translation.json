@@ -582,8 +582,12 @@
     "currently_not_implemented":"This is not currently implemented",
     "search_again" : "Search again",
     "number_of_list_to_display" : "Display",
-    "page_number_unit" : "pages"
-
+    "page_number_unit" : "pages",
+    "sort_axis": {
+      "relationScore": "Sort by relevance",
+      "createdAt": "Creation date",
+      "updatedAt": "Last update date"
+    }
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",

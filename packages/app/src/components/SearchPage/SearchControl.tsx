@@ -4,10 +4,13 @@ import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
-import { CheckboxType } from '../../interfaces/search';
+import SortControl from './SortControl';
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
+  sort: SORT_AXIS,
+  order: SORT_ORDER,
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
@@ -18,6 +21,7 @@ type Props = {
   onSearchInvoked: (data: {keyword: string}) => boolean,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
+  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -38,6 +42,12 @@ const SearchControl: FC <Props> = (props: Props) => {
   const switchExcludeTrashPagesHandler = () => {
     if (props.onExcludeTrashPagesSwitched != null) {
       props.onExcludeTrashPagesSwitched();
+    }
+  };
+
+  const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
+    if (props.onChangeSortInvoked != null) {
+      props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };
 
@@ -79,9 +89,12 @@ const SearchControl: FC <Props> = (props: Props) => {
             onSearchFormChanged={props.onSearchInvoked}
           />
         </div>
-        <div className="mr-4">
-          {/* TODO: replace the following button */}
-          <button type="button">related pages</button>
+        <div className="mr-4 d-flex">
+          <SortControl
+            sort={props.sort}
+            order={props.order}
+            onChangeSortInvoked={onChangeSortInvoked}
+          />
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
