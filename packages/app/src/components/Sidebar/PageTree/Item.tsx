@@ -5,55 +5,68 @@ import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 
 import { ItemNode } from './ItemNode';
+import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
-import { usePageId } from '../../../stores/context';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import PageItemControl from '../../Common/Dropdown/PageItemControl';
+import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 
 interface ItemProps {
   itemNode: ItemNode
+  targetId?: string
   isOpen?: boolean
+  onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetId: string): void => {
+const markTarget = (children: ItemNode[], targetId?: string): void => {
+  if (targetId == null) {
+    return;
+  }
+
   children.forEach((node) => {
     if (node.page._id === targetId) {
       node.page.isTarget = true;
     }
     return node;
   });
-
-  return;
 };
 
 type ItemControlProps = {
+  page: Partial<IPageHasId>
+  onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
-  const onClickHandler = () => {
-    const { onClickPlusButtonHandler: handler } = props;
-    if (handler == null) {
+  const onClickPlusButton = () => {
+    if (props.onClickPlusButtonHandler == null) {
       return;
     }
 
-    handler();
+    props.onClickPlusButtonHandler();
   };
+
+  const onClickDeleteButton = () => {
+    if (props.onClickDeleteButtonHandler == null) {
+      return;
+    }
+
+    props.onClickDeleteButtonHandler();
+  };
+
+  if (props.page == null) {
+    return <></>;
+  }
 
   return (
     <>
-      <button
-        type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
-        data-toggle="dropdown"
-      >
-        <i className="icon-options-vertical text-muted"></i>
-      </button>
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
-        onClick={onClickHandler}
+        onClick={onClickPlusButton}
       >
         <i className="icon-plus text-muted"></i>
       </button>
@@ -65,7 +78,7 @@ const ItemCount: FC = () => {
   return (
     <>
       <span className="grw-pagetree-count badge badge-pill badge-light">
-        10
+        {/* TODO: consider to show the number of children pages */}
       </span>
     </>
   );
@@ -73,7 +86,9 @@ const ItemCount: FC = () => {
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
-  const { itemNode, isOpen: _isOpen = false } = props;
+  const {
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
+  } = props;
 
   const { page, children } = itemNode;
 
@@ -82,7 +97,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
-  const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasChildren = useCallback((): boolean => {
@@ -92,6 +106,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
+
+  const onClickDeleteButtonHandler = useCallback(() => {
+    if (onClickDeleteByPage == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId, path } = page;
+
+    if (pageId == null || revisionId == null || path == null) {
+      throw Error('Any of _id, revision, and path must not be null.');
+    }
+
+    const pageToDelete: IPageForPageDeleteModal = {
+      pageId,
+      revisionId: revisionId as string,
+      path,
+    };
+
+    onClickDeleteByPage(pageToDelete);
+  }, [page, onClickDeleteByPage]);
 
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
@@ -158,7 +192,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemControl onClickPlusButtonHandler={() => { setNewPageInputShown(true) }} />
+          <ItemControl
+            page={page}
+            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+          />
         </div>
       </div>
 
@@ -175,6 +213,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             key={node.page._id}
             itemNode={node}
             isOpen={false}
+            onClickDeleteByPage={onClickDeleteByPage}
           />
         ))
       }

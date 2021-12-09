@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 
-import { IPage } from '../../../interfaces/page';
+import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren } from '../../../stores/page-listing';
-import { useTargetAndAncestors, useCurrentPagePath } from '../../../stores/context';
-import { HasObjectId } from '../../../interfaces/has-object-id';
-
+import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
+import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { toastError } from '~/client/util/apiNotification';
+import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 /*
  * Utility to generate initial node
  */
-const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[]): ItemNode => {
+const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPageHasId>[]): ItemNode => {
   const nodes = targetAndAncestors.map((page): ItemNode => {
     return new ItemNode(page, []);
   });
@@ -25,7 +25,7 @@ const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPage>[])
   return rootNode;
 };
 
-const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPage & HasObjectId>[]>, rootNode: ItemNode): ItemNode => {
+const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPageHasId>[]>, rootNode: ItemNode): ItemNode => {
   const paths = Object.keys(ancestorsChildren);
 
   let currentNode = rootNode;
@@ -42,53 +42,77 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   return rootNode;
 };
 
+type ItemsTreeProps = {
+  targetPath: string
+  targetId?: string
+  targetAndAncestorsData?: TargetAndAncestors
+
+  // for deleteModal
+  isDeleteModalOpen: boolean
+  pagesToDelete: IPageForPageDeleteModal[]
+  isAbleToDeleteCompletely: boolean
+  isDeleteCompletelyModal: boolean
+  onCloseDelete(): void
+  onClickDeleteByPage(page: IPageForPageDeleteModal): void
+}
+
+const renderByInitialNode = (
+    initialNode: ItemNode, DeleteModal: JSX.Element, targetId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+): JSX.Element => {
+  return (
+    <div className="grw-pagetree p-3">
+      <Item key={initialNode.page.path} targetId={targetId} itemNode={initialNode} isOpen onClickDeleteByPage={onClickDeleteByPage} />
+      {DeleteModal}
+    </div>
+  );
+};
+
 
 /*
  * ItemsTree
  */
-const ItemsTree: FC = () => {
-  const { data: currentPath } = useCurrentPagePath();
+const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
+  const {
+    targetPath, targetId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
+    onClickDeleteByPage,
+  } = props;
 
-  const { data, error } = useTargetAndAncestors();
+  const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
+  const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
-  const { data: ancestorsChildrenData, error: error2 } = useSWRxPageAncestorsChildren(currentPath || null);
+  const DeleteModal = (
+    <PageDeleteModal
+      isOpen={isDeleteModalOpen}
+      pages={pagesToDelete}
+      isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+      isDeleteCompletelyModal={isDeleteCompletelyModal}
+      onClose={onCloseDelete}
+    />
+  );
 
-  if (error != null || error2 != null) {
+  if (error1 != null || error2 != null) {
+    // TODO: improve message
+    toastError('Error occurred while fetching pages to render PageTree');
     return null;
   }
 
-  if (data == null) {
-    return null;
+  /*
+   * Render completely
+   */
+  if (ancestorsChildrenData != null && rootPageData != null) {
+    const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
+    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
   }
-
-  const { targetAndAncestors, rootPage } = data;
-
-  let initialNode: ItemNode;
 
   /*
    * Before swr response comes back
    */
-  if (ancestorsChildrenData == null) {
-    initialNode = generateInitialNodeBeforeResponse(targetAndAncestors);
+  if (targetAndAncestorsData != null) {
+    const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
+    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
   }
 
-  /*
-   * When swr request finishes
-   */
-  else {
-    const { ancestorsChildren } = ancestorsChildrenData;
-
-    const rootNode = new ItemNode(rootPage);
-
-    initialNode = generateInitialNodeAfterResponse(ancestorsChildren, rootNode);
-  }
-
-  const isOpen = true;
-  return (
-    <div className="grw-pagetree p-3">
-      <Item key={(initialNode as ItemNode).page.path} itemNode={(initialNode as ItemNode)} isOpen={isOpen} />
-    </div>
-  );
+  return null;
 };
 
 

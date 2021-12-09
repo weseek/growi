@@ -44,6 +44,7 @@ export * from './middlewares/verify-growi-to-slack-request';
 export * from './middlewares/verify-slack-request';
 export * from './utils/block-kit-builder';
 export * from './utils/check-communicable';
+export * from './utils/generate-last-update-markdown';
 export * from './utils/get-supported-growi-actions-regexps';
 export * from './utils/post-ephemeral-errors';
 export * from './utils/publish-initial-home-view';
