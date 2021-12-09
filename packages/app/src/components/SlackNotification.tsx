@@ -20,7 +20,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
 
   const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
     const value = event.target.checked;
-    if (onChannelChange != null) {
+    if (onEnabledFlagChange != null) {
       onEnabledFlagChange(value);
     }
   };
