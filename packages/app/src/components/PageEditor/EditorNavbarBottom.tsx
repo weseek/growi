@@ -73,7 +73,7 @@ const EditorNavbarBottom = (props) => {
         <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
-              isSlackEnabled={isSlackEnabled || false}
+              isSlackEnabled={isSlackEnabled ?? false}
               slackChannels={props.editorContainer.state.slackChannels}
               onEnabledFlagChange={isSlackEnabledToggleHandler}
               onChannelChange={slackChannelsChangedHandler}
@@ -104,7 +104,7 @@ const EditorNavbarBottom = (props) => {
           ) : (
             <div className="mr-2">
               <SlackNotification
-                isSlackEnabled={isSlackEnabled || false}
+                isSlackEnabled={isSlackEnabled ?? false}
                 slackChannels={props.editorContainer.state.slackChannels}
                 onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
