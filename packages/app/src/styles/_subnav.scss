@@ -93,14 +93,13 @@
       @extend .btn-sm;
 
       height: 30px;
-      font-size: 15px !important;
       border-radius: $border-radius-xl;
     }
 
     .total-likes,
     .total-bookmarks {
-      height: 12px;
-      font-size: 12px;
+      height: auto;
+      font-size: 15px;
     }
   }
 }
