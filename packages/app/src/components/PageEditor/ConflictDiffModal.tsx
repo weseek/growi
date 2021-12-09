@@ -94,19 +94,17 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
-    editorContainer.disableUnsavedWarning();
+
     try {
-      await pageContainer.resolveConflictAndReload(
-        pageContainer.state.pageId,
-        latest.revisionId,
-        codeMirrorVal,
-        editorContainer.getCurrentOptionsToSave(),
-      );
+      await pageContainer.resolveConflict(codeMirrorVal, 'edit');
+      pageContainer.showSuccessToastr();
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
     }
+
   };
 
   return (
