@@ -7,12 +7,13 @@ export enum CheckboxType {
 }
 
 export type IPageSearchResultData = {
-  pageData: IPageHasId,
+  pageData: IPageHasId;
   pageMeta: {
-    bookmarkCount?: number,
+    bookmarkCount?: number;
     elasticSearchResult?: {
-      snippet: string,
-      highlightedPath: string,
-    },
-  },
-}
+      snippet: string;
+      highlightedPath: string;
+      isHtmlInPath: boolean;
+    };
+  };
+};
