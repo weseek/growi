@@ -19,6 +19,7 @@ import OptionsSelector from './OptionsSelector';
 import { useIsSlackEnabled } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
 
+
 const EditorNavbarBottom = (props) => {
 
   const { data: editorMode } = useEditorMode();
@@ -86,8 +87,8 @@ const EditorNavbarBottom = (props) => {
       }
       <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
-          {isDeviceSmallerThanMd && renderDrawerButton()}
-          {isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector />}
+          { isDeviceSmallerThanMd && renderDrawerButton() }
+          { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
         <form className="form-inline flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
@@ -114,11 +115,11 @@ const EditorNavbarBottom = (props) => {
             </div>
           ))}
           <SavePageControls />
-          {isCollapsedOptionsSelectorEnabled && renderExpandButton()}
+          { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
       {/* Collapsed OptionsSelector */}
-      {isCollapsedOptionsSelectorEnabled && (
+      { isCollapsedOptionsSelectorEnabled && (
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
             <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
@@ -128,7 +129,7 @@ const EditorNavbarBottom = (props) => {
             </div>
           </div>
         </Collapse>
-      )}
+      ) }
     </div>
   );
 };
