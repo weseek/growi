@@ -8,8 +8,8 @@ type SlackNotificationProps = {
   id: string;
   isSlackEnabled: boolean;
   slackChannels: string;
-  onEnabledFlagChange: (isSlackEnabled: boolean) => void;
-  onChannelChange: (value: string) => void;
+  onEnabledFlagChange?: (isSlackEnabled: boolean) => void;
+  onChannelChange?: (value: string) => void;
 };
 
 export const SlackNotification: FC<SlackNotificationProps> = ({
@@ -20,7 +20,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
 
   const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
     const value = event.target.checked;
-    if (onChannelChange != null) {
+    if (onEnabledFlagChange != null) {
       onEnabledFlagChange(value);
     }
   };
