@@ -13,12 +13,26 @@ import {
   MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
 } from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
 const BULK_REINDEX_SIZE = 100;
+
+const { RELATION_SCORE, CREATED_AT, UPDATED_AT } = SORT_AXIS;
+const { DESC, ASC } = SORT_ORDER;
+
+const ES_SORT_AXIS = {
+  [RELATION_SCORE]: '_score',
+  [CREATED_AT]: 'created_at',
+  [UPDATED_AT]: 'updated_at',
+};
+const ES_SORT_ORDER = {
+  [DESC]: 'desc',
+  [ASC]: 'asc',
+};
 
 type Data = any;
 
@@ -608,29 +622,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  createSearchQuerySortedByUpdatedAt(option) {
-    // getting path by default is almost for debug
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names'];
-    if (option) {
-      fields = option.fields || fields;
-    }
-
-    // default is only id field, sorted by updated_at
-    const query = {
-      index: this.aliasName,
-      type: 'pages',
-      body: {
-        sort: [{ updated_at: { order: 'desc' } }],
-        query: {}, // query
-        _source: fields,
-      },
-    };
-    this.appendResultSize(query);
-
-    return query;
-  }
-
-  createSearchQuerySortedByScore(option?) {
+  /**
+   * create search query for Elasticsearch
+   *
+   * @param {object | undefined} option optional paramas
+   * @returns {object} query object
+   */
+  createSearchQuery(option?) {
     let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
     if (option) {
       fields = option.fields || fields;
@@ -641,12 +639,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       index: this.aliasName,
       type: 'pages',
       body: {
-        sort: [{ _score: { order: 'desc' } }],
         query: {}, // query
         _source: fields,
       },
     };
-    this.appendResultSize(query);
 
     return query;
   }
@@ -656,8 +652,22 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     query.size = size || DEFAULT_LIMIT;
   }
 
+  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER) {
+    // default sort order is score descending
+    const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
+    const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
+    query.body.sort = { [sort]: { order } };
+  }
+
+  convertSortQuery(sortAxis) {
+    switch (sortAxis) {
+      case RELATION_SCORE:
+        return '_score';
+    }
+  }
+
   initializeBoolQuery(query) {
-    // query is created by createSearchQuerySortedByScore() or createSearchQuerySortedByUpdatedAt()
+    // query is created by createSearchQuery()
     if (!query.body.query.bool) {
       query.body.query.bool = {};
     }
@@ -889,14 +899,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     const from = option.offset || null;
     const size = option.limit || null;
-    const query = this.createSearchQuerySortedByScore();
+    const sort = option.sort || null;
+    const order = option.order || null;
+    const query = this.createSearchQuery();
     this.appendCriteriaForQueryString(query, terms);
 
     await this.filterPagesByViewer(query, user, userGroups);
 
     this.appendResultSize(query, from, size);
 
+    this.appendSortOrder(query, sort, order);
+
     await this.appendFunctionScore(query, queryString);
+    this.appendHighlight(query);
 
     return this.searchKeyword(query);
   }
