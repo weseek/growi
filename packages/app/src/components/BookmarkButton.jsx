@@ -44,7 +44,7 @@ class BookmarkButton extends React.Component {
           type="button"
           id="bookmark-button"
           onClick={this.handleClick}
-          className={`btn btn-bookmark border-0
+          className={`btn btn-bookmark border-0 total-bookmarks
           ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className="icon-star mr-3"></i>

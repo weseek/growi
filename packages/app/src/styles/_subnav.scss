@@ -40,8 +40,7 @@
 
   .btn-like,
   .btn-bookmark {
-    height: 40px;
-    font-size: 20px;
+    height: auto;
     border-radius: $border-radius-xl;
   }
 
@@ -88,14 +87,14 @@
       @extend .btn-sm;
 
       height: 30px;
-      font-size: 15px !important;
       border-radius: $border-radius-xl;
     }
 
     .total-likes,
     .total-bookmarks {
-      height: 12px;
+      height: auto;
       font-size: 12px;
+      vertical-align: text-top;
     }
   }
 }
