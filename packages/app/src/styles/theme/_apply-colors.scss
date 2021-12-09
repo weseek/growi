@@ -534,9 +534,17 @@ body.pathname-sidebar {
 }
 
 // Pagetree
-.grw-triangle-icon {
-  svg {
-    fill: $gray-400;
+.grw-pagetree {
+  .grw-triangle-icon {
+    svg {
+      fill: $gray-400;
+    }
+  }
+
+  .grw-pagetree-item {
+    &:hover {
+      background: #e0e6f7;
+    }
   }
 }
 
