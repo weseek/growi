@@ -310,7 +310,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
 };
 
 schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
-  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path);
+  const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
   const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
   // get pages at once
