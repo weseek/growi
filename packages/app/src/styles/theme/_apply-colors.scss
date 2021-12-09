@@ -20,6 +20,8 @@ $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 $bordercolor-search-item-left-active: $primary;
 $bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%) !default;
 $color-search-item-pagelist-meta: $gray-500 !default;
+$color-search-page-list-title: $color-global !default;
+$color-search-page-list-snippet: $gray-600 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -601,11 +603,6 @@ body.pathname-sidebar {
   .search-result-list {
     .search-control {
       background-color: $bgcolor-global;
-      .search-include-path-btn {
-        // label has 700 weight by default
-        font-weight: initial;
-        color: $secondary;
-      }
     }
     .page-list {
       .highlighted-keyword {
@@ -617,21 +614,24 @@ body.pathname-sidebar {
             background-color: $bgcolor-search-item-active;
             border-color: $bordercolor-search-item-left-active;
           }
-          .search-result-page-title {
-            color: $color-global;
-          }
-          .search-result-list-snippet {
-            color: $gray-600;
-          }
-        }
-      }
-      .page-list-meta {
-        color: $color-search-item-pagelist-meta;
-        svg {
-          fill: $color-search-item-pagelist-meta;
         }
       }
     }
+  }
+}
+
+.search-result-page-title {
+  color: $color-search-page-list-title;
+}
+
+.search-result-list-snippet {
+  color: $color-search-page-list-snippet;
+}
+
+.page-list-meta {
+  color: $color-search-item-pagelist-meta;
+  svg {
+    fill: $color-search-item-pagelist-meta;
   }
 }
 
