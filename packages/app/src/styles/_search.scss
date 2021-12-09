@@ -176,7 +176,8 @@
     top: 0px;
 
     .search-result-list-scroll {
-      height: calc(100vh - 125px); // subtract the height of SearchControl component
+      // subtract the height of SearchControl component + a gap made above #page-wrapper and below #main
+      height: calc(100vh - 117px);
       overflow-y: scroll;
     }
     .nav.nav-pills {

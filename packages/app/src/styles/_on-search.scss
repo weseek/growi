@@ -3,4 +3,8 @@ body.on-search {
     position: fixed !important;
     width: 100vw;
   }
+  .page-wrapper {
+    position: relative;
+    top: $grw-navbar-border-width;
+  }
 }
