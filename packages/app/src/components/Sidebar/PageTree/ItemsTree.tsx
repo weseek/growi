@@ -29,7 +29,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   const paths = Object.keys(ancestorsChildren);
 
   let currentNode = rootNode;
-  paths.reverse().forEach((path) => {
+  paths.forEach((path) => {
     const childPages = ancestorsChildren[path];
     currentNode.children = ItemNode.generateNodesFromPages(childPages);
 
