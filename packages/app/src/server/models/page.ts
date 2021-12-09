@@ -41,7 +41,7 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[]): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>
@@ -227,7 +227,7 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
     relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
   }
 
-  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
+  queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
 };
 
 /*
@@ -252,7 +252,7 @@ schema.statics.findByPathAndViewer = async function(
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string): Promise<TargetAndAncestorsResult> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -270,6 +270,8 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
 
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find());
+  await addViewerCondition(queryBuilder, user, userGroups);
+
   const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionAsMigrated()
     .addConditionToListByPathsArray(ancestorPaths)

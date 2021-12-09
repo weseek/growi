@@ -264,8 +264,8 @@ module.exports = function(crowi, app) {
     renderVars.pages = result.pages;
   }
 
-  async function addRenderVarsForPageTree(renderVars, path) {
-    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(path);
+  async function addRenderVarsForPageTree(renderVars, path, user) {
+    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(path, user);
 
     if (targetAndAncestors.length === 0 && !isTopPage(path)) {
       throw new Error('Ancestors must have at least one page.');
@@ -385,7 +385,7 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForDescendants(renderVars, portalPath, req.user, offset, limit);
 
-    await addRenderVarsForPageTree(renderVars, portalPath);
+    await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
@@ -447,7 +447,7 @@ module.exports = function(crowi, app) {
       await addRenderVarsForUserPage(renderVars, page);
     }
 
-    await addRenderVarsForPageTree(renderVars, path);
+    await addRenderVarsForPageTree(renderVars, path, req.user);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);

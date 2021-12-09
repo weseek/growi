@@ -911,6 +911,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.appendSortOrder(query, sort, order);
 
     await this.appendFunctionScore(query, queryString);
+    this.appendHighlight(query);
 
     return this.searchKeyword(query);
   }

@@ -7,7 +7,7 @@ import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>,
-  onClickDeleteButton?: (pageId: string)=>void,
+  onClickDeleteButton?: (pageId: string) => void,
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {

@@ -4,12 +4,14 @@ import { pagePathUtils } from '@growi/core';
 import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
-  usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
+  useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
 } from '../../stores/context';
 import {
-  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useIsDeviceSmallerThanMd,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -23,6 +25,11 @@ const ContextExtractorOnce: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * UserUISettings from DOM
+   */
+  const userUISettings: Partial<IUserUISettings> = JSON.parse(document.getElementById('growi-user-ui-settings')?.textContent || jsonNull);
 
   /*
    * Page Context from DOM
@@ -61,6 +68,13 @@ const ContextExtractorOnce: FC = () => {
   // App
   useCurrentUser(currentUser);
 
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+
   // Page
   useCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
@@ -75,7 +89,7 @@ const ContextExtractorOnce: FC = () => {
   useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
-  usePageId(pageId);
+  useCurrentPageId(pageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);

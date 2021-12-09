@@ -7,26 +7,30 @@ import { useTranslation } from 'react-i18next';
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
-import { usePageId } from '../../../stores/context';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
+import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 
 interface ItemProps {
   itemNode: ItemNode
+  targetId?: string
   isOpen?: boolean
+  onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetId: string): void => {
+const markTarget = (children: ItemNode[], targetId?: string): void => {
+  if (targetId == null) {
+    return;
+  }
+
   children.forEach((node) => {
     if (node.page._id === targetId) {
       node.page.isTarget = true;
     }
     return node;
   });
-
-  return;
 };
 
 type ItemControlProps = {
@@ -82,7 +86,9 @@ const ItemCount: FC = () => {
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
-  const { itemNode, isOpen: _isOpen = false } = props;
+  const {
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
+  } = props;
 
   const { page, children } = itemNode;
 
@@ -91,7 +97,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
-  const { data: targetId } = usePageId();
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasChildren = useCallback((): boolean => {
@@ -103,8 +108,24 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [isOpen]);
 
   const onClickDeleteButtonHandler = useCallback(() => {
-    console.log('Show delete modal');
-  }, []);
+    if (onClickDeleteByPage == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId, path } = page;
+
+    if (pageId == null || revisionId == null || path == null) {
+      throw Error('Any of _id, revision, and path must not be null.');
+    }
+
+    const pageToDelete: IPageForPageDeleteModal = {
+      pageId,
+      revisionId: revisionId as string,
+      path,
+    };
+
+    onClickDeleteByPage(pageToDelete);
+  }, [page, onClickDeleteByPage]);
 
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
@@ -192,6 +213,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             key={node.page._id}
             itemNode={node}
             isOpen={false}
+            onClickDeleteByPage={onClickDeleteByPage}
           />
         ))
       }
