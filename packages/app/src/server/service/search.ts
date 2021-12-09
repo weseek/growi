@@ -401,10 +401,23 @@ class SearchService implements SearchQueryParser, SearchResolver {
         pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
       }
 
+      // increment elasticSearchResult
+      let elasticSearchResult;
+      const highlightData = data._highlight;
+      if (highlightData != null) {
+        const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
+        const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+
+        elasticSearchResult = {
+          snippet: filterXss.process(snippet),
+          highlightedPath: filterXss.process(pathMatch),
+        };
+      }
+
       // generate pageMeta data
       const pageMeta = {
         bookmarkCount: data._source.bookmark_count || 0,
-        elasticSearchResult: data.elasticSearchResult,
+        elasticSearchResult,
       };
 
       return { pageData, pageMeta };
