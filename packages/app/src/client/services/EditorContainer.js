@@ -27,7 +27,7 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
+      // slackChannels: mainContent.getAttribute('data-slack-channels') || '',
 
       grant: 1, // default: public
       grantGroupId: null,
