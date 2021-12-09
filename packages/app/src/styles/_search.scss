@@ -174,9 +174,11 @@
   .search-result-list {
     position: sticky;
     top: 0px;
-    height: 100vh;
-    overflow-y: scroll;
 
+    .search-result-list-scroll {
+      height: calc(100vh - 125px); // subtract the height of SearchControl component
+      overflow-y: scroll;
+    }
     .nav.nav-pills {
       > .page-list-li {
         &.active {

@@ -264,7 +264,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const linePosition = Math.max(0, line);
 
     editor.setCursor({ line: linePosition }); // leave 'ch' field as null/undefined to indicate the end of line
-    this.setScrollTopByLine(linePosition);
+
+    setTimeout(() => {
+      this.setScrollTopByLine(linePosition);
+    }, 100);
   }
 
   /**
@@ -277,7 +280,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     const editor = this.getCodeMirror();
     // get top position of the line
-    const top = editor.charCoords({ line, ch: 0 }, 'local').top;
+    const top = editor.charCoords({ line: line - 1, ch: 0 }, 'local').top;
     editor.scrollTo(null, top);
   }
 
