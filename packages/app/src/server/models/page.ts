@@ -330,10 +330,18 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
     return page;
   });
 
-  // make map
+  /*
+   * If any non-migrated page is found during creating the pathToChildren map, it will stop incrementing at that moment
+   */
   const pathToChildren: Record<string, PageDocument[]> = {};
-  ancestorPaths.forEach((path) => {
-    pathToChildren[path] = pages.filter(page => nodePath.dirname(page.path) === path);
+  const sortedPaths = ancestorPaths.sort((a, b) => a.length - b.length); // sort paths by path.length
+  sortedPaths.every((path) => {
+    const children = pages.filter(page => nodePath.dirname(page.path) === path);
+    if (children.length === 0) {
+      return false; // break when children do not exist
+    }
+    pathToChildren[path] = children;
+    return true;
   });
 
   return pathToChildren;
