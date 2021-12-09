@@ -19,7 +19,6 @@ import OptionsSelector from './OptionsSelector';
 import { useIsSlackEnabled } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
 
-
 const EditorNavbarBottom = (props) => {
 
   const { data: editorMode } = useEditorMode();
