@@ -416,10 +416,12 @@ class SearchService implements SearchQueryParser, SearchResolver {
         if (highlightData != null) {
           const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
           const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+          const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
           elasticSearchResult = {
             snippet: filterXss.process(snippet),
             highlightedPath: filterXss.process(pathMatch),
+            isHtmlInPath,
           };
         }
 
