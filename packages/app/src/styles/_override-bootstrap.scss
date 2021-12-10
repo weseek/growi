@@ -152,7 +152,8 @@
   }
 
   // label
-  label {
+
+  label:not(.with-no-font-weight) {
     font-weight: 700;
   }
 
