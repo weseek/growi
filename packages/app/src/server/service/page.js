@@ -49,9 +49,9 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, user) => {
+    this.pageEvent.on('rename', async(page, user, isRecursively) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME, isRecursively);
       }
       catch (err) {
         logger.error(err);
@@ -59,9 +59,9 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user) => {
+    this.pageEvent.on('delete', async(page, user, isRecursively) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE, isRecursively);
       }
       catch (err) {
         logger.error(err);
@@ -69,9 +69,9 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
+    this.pageEvent.on('deleteCompletely', async(page, user, isRecursively) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY, isRecursively);
       }
       catch (err) {
         logger.error(err);
@@ -177,7 +177,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename', page, user, isRecursively);
 
     return renamedPage;
   }
@@ -809,7 +809,7 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user, action) {
+  createAndSendNotifications = async function(page, user, action, isRecursively = false) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
@@ -824,7 +824,7 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
 
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
+    const targetUsers = await activity.getNotificationTargetUsers(isRecursively);
 
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);

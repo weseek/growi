@@ -72,14 +72,31 @@ activitySchema.index({
 }, { unique: true });
 
 
-activitySchema.methods.getNotificationTargetUsers = async function() {
+activitySchema.methods.getNotificationTargetUsers = async function(isRecursively: boolean) {
   const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser, target } = this;
+  const {
+    user: actionUser, targetModel, target, user,
+  } = this;
 
-  const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription((target as any) as Types.ObjectId),
-    Subscription.getUnsubscription((target as any) as Types.ObjectId),
-  ]);
+  const subscribeUsers: Array<Types.ObjectId> = [];
+  const unsubscribeUsers: Array<Types.ObjectId> = [];
+
+  if (targetModel === 'Page' && isRecursively) {
+    const Page = getModelSafely('Page') || require('~/server/models/page')();
+    const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
+
+    for (const page of fromPageDescendants) {
+      /* eslint-disable no-await-in-loop */
+      (await Subscription.getSubscription((page as any) as Types.ObjectId)).forEach(subscribe => subscribeUsers.push(subscribe));
+      (await Subscription.getUnsubscription((page as any) as Types.ObjectId)).forEach(unsubscribe => unsubscribeUsers.push(unsubscribe));
+      /* eslint-disable no-await-in-loop */
+    }
+  }
+
+  // const [subscribeUsers, unsubscribeUsers] = await Promise.all([
+  //   Subscription.getSubscription((target as any) as Types.ObjectId),
+  //   Subscription.getUnsubscription((target as any) as Types.ObjectId),
+  // ]);
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
