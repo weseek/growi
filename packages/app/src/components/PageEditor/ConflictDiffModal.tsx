@@ -11,10 +11,9 @@ import { format } from 'date-fns';
 import CodeMirror from 'codemirror/lib/codemirror';
 
 import PageContainer from '../../client/services/PageContainer';
-import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
 
-import { EditorMode } from '~/stores/ui';
+import { useEditorMode } from '~/stores/ui';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -28,9 +27,8 @@ Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 type ConflictDiffModalProps = {
   isOpen: boolean | null;
-  onClose: (() => void) | null;
+  onClose?: (() => void);
   pageContainer: PageContainer;
-  editorContainer: EditorContainer;
   appContainer: AppContainer;
   markdownOnEdit: string;
 };
@@ -45,9 +43,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
+  const { data: editorMode } = useEditorMode();
+
   const uncontrolledRef = useRef<CodeMirror>(null);
 
-  const { pageContainer, editorContainer, appContainer } = props;
+  const { pageContainer, appContainer } = props;
 
   const currentTime: Date = new Date();
 
@@ -100,7 +100,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      await pageContainer.resolveConflict(codeMirrorVal, EditorMode);
+      await pageContainer.resolveConflict(codeMirrorVal, editorMode);
       pageContainer.showSuccessToastr();
       onClose();
     }
@@ -242,7 +242,6 @@ ConflictDiffModal.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer:  PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   markdownOnEdit: PropTypes.string.isRequired,
 };
