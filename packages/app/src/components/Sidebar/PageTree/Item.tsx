@@ -11,6 +11,8 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
+import TriangleIcon from '~/components/Icons/TriangleIcon';
+
 
 interface ItemProps {
   itemNode: ItemNode
@@ -183,7 +185,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           className={`grw-pagetree-button btn ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
-          <i className="icon-control-play"></i>
+          <div className="grw-triangle-icon">
+            <TriangleIcon />
+          </div>
         </button>
         <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
           <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>
