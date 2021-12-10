@@ -406,6 +406,7 @@ export default class PageContainer extends Container {
     if (pageEditor != null) {
       if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
+        // mark
       }
     }
     // PageEditorByHackmd component

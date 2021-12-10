@@ -60,6 +60,11 @@ class TagLabels extends React.Component {
       });
       editorContainer.setState({ tags });
       pageContainer.updateStateAfterSave(savedPage, tags, savedPage.revision);
+      // if drafted
+      const pageEditor = appContainer.getComponentInstance('PageEditor');
+      const markDown = pageEditor.getMarkdown();
+      pageContainer.setState({ markDown });
+
       toastSuccess('updated tags successfully');
     }
     catch (err) {
