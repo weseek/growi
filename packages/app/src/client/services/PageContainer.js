@@ -425,7 +425,7 @@ export default class PageContainer extends Container {
    * update page meta data
    * @param {object} page Page instance
    * @param {object} revision Revision instance
-   * @param {Array[Tag]} tags Array of Tag
+   * @param {String[]} tags Array of Tag
    */
   updatePageMetaData(page, revision, tags) {
 
