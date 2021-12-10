@@ -101,8 +101,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
     try {
       await pageContainer.resolveConflict(codeMirrorVal, editorMode);
-      pageContainer.showSuccessToastr();
       onClose();
+      pageContainer.showSuccessToastr();
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
