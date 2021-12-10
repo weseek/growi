@@ -64,5 +64,8 @@ module.exports = (crowi) => {
     userActivation.validateCompleteRegistration,
     userActivation.completeRegistrationAction(crowi));
 
+  router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
+
+
   return router;
 };

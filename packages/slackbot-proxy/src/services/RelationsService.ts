@@ -50,7 +50,11 @@ export class RelationsService {
 
   private async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
     const res = await this.getSupportedGrowiCommands(relation);
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
+
+    // support both of v4.4.x and v4.5.x
+    // see: https://redmine.weseek.co.jp/issues/82985
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data ?? res.data;
+
     if (relation !== null) {
       relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
       relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
