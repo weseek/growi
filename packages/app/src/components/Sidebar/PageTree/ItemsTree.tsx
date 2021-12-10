@@ -43,6 +43,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
 };
 
 type ItemsTreeProps = {
+  isGuestUser: boolean
   targetPath: string
   targetId?: string
   targetAndAncestorsData?: TargetAndAncestors
@@ -57,11 +58,18 @@ type ItemsTreeProps = {
 }
 
 const renderByInitialNode = (
-    initialNode: ItemNode, DeleteModal: JSX.Element, targetId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode, DeleteModal: JSX.Element, isGuestUser: boolean, targetId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
     <div className="grw-pagetree p-3">
-      <Item key={initialNode.page.path} targetId={targetId} itemNode={initialNode} isOpen onClickDeleteByPage={onClickDeleteByPage} />
+      <Item
+        key={initialNode.page.path}
+        targetId={targetId}
+        itemNode={initialNode}
+        isOpen
+        isGuestUser={isGuestUser}
+        onClickDeleteByPage={onClickDeleteByPage}
+      />
       {DeleteModal}
     </div>
   );
@@ -74,7 +82,7 @@ const renderByInitialNode = (
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
     targetPath, targetId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    onClickDeleteByPage,
+    onClickDeleteByPage, isGuestUser,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
@@ -101,7 +109,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DeleteModal, isGuestUser, targetId, onClickDeleteByPage);
   }
 
   /*
@@ -109,7 +117,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, targetId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DeleteModal, isGuestUser, targetId, onClickDeleteByPage);
   }
 
   return null;

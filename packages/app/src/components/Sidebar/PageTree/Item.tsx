@@ -13,6 +13,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 
 interface ItemProps {
+  isGuestUser: boolean
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
@@ -87,7 +88,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isGuestUser,
   } = props;
 
   const { page, children } = itemNode;
@@ -192,25 +193,30 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          <ItemControl
-            page={page}
-            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
-          />
+          {!isGuestUser && (
+            <ItemControl
+              page={page}
+              onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+              onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            />
+          )}
         </div>
       </div>
 
-      <ClosableTextInput
-        isShown={isNewPageInputShown}
-        placeholder={t('Input title')}
-        onClickOutside={() => { setNewPageInputShown(false) }}
-        onPressEnter={onPressEnterHandler}
-        inputValidator={inputValidator}
-      />
+      {!isGuestUser && (
+        <ClosableTextInput
+          isShown={isNewPageInputShown}
+          placeholder={t('Input title')}
+          onClickOutside={() => { setNewPageInputShown(false) }}
+          onPressEnter={onPressEnterHandler}
+          inputValidator={inputValidator}
+        />
+      )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
           <Item
             key={node.page._id}
+            isGuestUser={isGuestUser}
             itemNode={node}
             isOpen={false}
             onClickDeleteByPage={onClickDeleteByPage}
