@@ -651,11 +651,12 @@ export default class PageContainer extends Container {
 
     const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const options = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = Object.assign({}, options);
 
-    editorContainer.clearDraft(path);
     const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
 
+    editorContainer.clearDraft(path);
     this.updateStateAfterSave(res.page, res.tags, res.revision, editrMode);
 
     editorContainer.setState({ tags: res.tags });
