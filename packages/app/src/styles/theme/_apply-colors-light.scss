@@ -166,6 +166,15 @@ $border-color: $border-color-global;
 .grw-sidebar {
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
+  // Pagetree
+  .grw-pagetree {
+    .grw-triangle-icon {
+      svg {
+        fill: $gray-400;
+      }
+    }
+  }
 }
 
 // Pagetree
