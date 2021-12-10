@@ -34,14 +34,13 @@ const validator = {
  */
 export default (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  // Do not use loginRequired with isGuestAllowed true since page tree may show private page titles
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const router = express.Router();
 
 
-  router.get('/root', accessTokenParser, loginRequiredStrictly, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/root', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const Page: PageModel = crowi.model('Page');
 
     let rootPage;
@@ -56,7 +55,7 @@ export default (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/ancestors-children', accessTokenParser, loginRequiredStrictly, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
@@ -76,7 +75,7 @@ export default (crowi: Crowi): Router => {
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser, loginRequiredStrictly, validator.pageIdOrPathRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const Page: PageModel = crowi.model('Page');
