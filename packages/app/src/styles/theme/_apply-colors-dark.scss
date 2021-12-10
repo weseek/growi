@@ -257,17 +257,6 @@ ul.pagination {
         fill: $gray-500;
       }
     }
-  }
-}
-
-// Pagetree
-.grw-pagetree {
-  .grw-pagetree-item {
-    .grw-triangle-icon {
-      svg {
-        fill: $gray-500;
-      }
-    }
     &:hover {
       background: $bgcolor-list-hover;
     }
