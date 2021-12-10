@@ -441,11 +441,11 @@ export default class PageContainer extends Container {
     if (tags != null) {
       newState.tags = tags;
     }
+
     this.setState(newState);
 
     $('input[name="revision_id"]').val(newState.revisionId);
   }
-
 
   /**
    * Save page
