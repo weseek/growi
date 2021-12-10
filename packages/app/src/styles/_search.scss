@@ -180,6 +180,8 @@
     .nav.nav-pills {
       > .page-list-li {
         &.active {
+          // add this negative margin to avoid inner elements of .page-list-li.active
+          // moving to right side by border-left's px size.
           margin-left: -3px;
           border-left: solid 3px transparent;
         }
