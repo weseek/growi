@@ -14,6 +14,8 @@ import PageContainer from '../../client/services/PageContainer';
 import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
 
+import { EditorMode } from '~/stores/ui';
+
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
@@ -26,7 +28,7 @@ Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 type ConflictDiffModalProps = {
   isOpen: boolean | null;
-  onCancel: (() => void) | null;
+  onClose: (() => void) | null;
   pageContainer: PageContainer;
   editorContainer: EditorContainer;
   appContainer: AppContainer;
@@ -85,9 +87,9 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     }
   }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
 
-  const onCancel = () => {
-    if (props.onCancel != null) {
-      props.onCancel();
+  const onClose = () => {
+    if (props.onClose != null) {
+      props.onClose();
     }
   };
 
@@ -98,8 +100,9 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      await pageContainer.resolveConflict(codeMirrorVal, 'edit');
+      await pageContainer.resolveConflict(codeMirrorVal, EditorMode);
       pageContainer.showSuccessToastr();
+      onClose();
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
@@ -108,8 +111,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   };
 
   return (
-    <Modal isOpen={props.isOpen || false} toggle={onCancel} className="modal-gfm-cheatsheet" size="xl">
-      <ModalHeader tag="h4" toggle={onCancel} className="bg-primary text-light">
+    <Modal isOpen={props.isOpen || false} toggle={onClose} className="modal-gfm-cheatsheet" size="xl">
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
@@ -218,7 +221,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onCancel}
+          onClick={onClose}
         >
           {t('Cancel')}
         </button>
@@ -237,7 +240,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
 ConflictDiffModal.propTypes = {
   isOpen: PropTypes.bool,
-  onCancel: PropTypes.func,
+  onClose: PropTypes.func,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer:  PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,

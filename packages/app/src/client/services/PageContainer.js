@@ -649,17 +649,16 @@ export default class PageContainer extends Container {
 
   async resolveConflict(markdown, editrMode) {
 
-    const { pageId, revisionId, path } = this.state;
+    const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
-
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
-    const res = this.updatePage(pageId, revisionId, markdown, optionsToSave);
-
     editorContainer.clearDraft(path);
-    editorContainer.disableUnsavedWarning();
+    const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
+
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editrMode);
+
     editorContainer.setState({ tags: res.tags });
-    this.updateStateAfterSave(res.page, res.tags, res.revision, 'edit');
 
     return res;
   }
