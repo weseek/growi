@@ -120,7 +120,6 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
         <div className="d-none d-lg-flex align-items-center mr-4">
           <div className="border border-gray mr-3">
-            {/* By defualt font weight is 700 (_override-bootstrap.scss) */}
             <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
               <input
                 className="mr-2"
@@ -132,7 +131,6 @@ const SearchControl: FC <Props> = (props: Props) => {
             </label>
           </div>
           <div className="border border-gray">
-            {/* By defualt font weight is 700 (_override-bootstrap.scss) */}
             <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
               <input
                 className="mr-2"

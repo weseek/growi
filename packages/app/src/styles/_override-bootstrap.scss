@@ -153,8 +153,11 @@
 
   // label
 
-  label:not(.with-no-font-weight) {
-    font-weight: 700;
+  label {
+    // search control include path btn
+    :not(.with-no-font-weight) {
+      font-weight: 700;
+    }
   }
 
   // disabled button (reproduction from bootstrap3.)
