@@ -257,6 +257,12 @@ ul.pagination {
         fill: $gray-500;
       }
     }
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+    &:active {
+      background: lighten($bgcolor-list-hover, 5%);
+    }
   }
 }
 

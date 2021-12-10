@@ -2,8 +2,8 @@
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
-$bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
-$bgcolor-list-active: $primary !default;
+$bgcolor-list-hover: lighten($primary, 72%) !default;
+$bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
@@ -173,6 +173,12 @@ $border-color: $border-color-global;
       svg {
         fill: $gray-400;
       }
+    }
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+    &:active {
+      background: $bgcolor-list-active;
     }
   }
 }
