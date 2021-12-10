@@ -169,16 +169,18 @@ $border-color: $border-color-global;
 
   // Pagetree
   .grw-pagetree {
-    .grw-triangle-icon {
-      svg {
-        fill: $gray-400;
+    .grw-pagetree-item {
+      .grw-triangle-icon {
+        svg {
+          fill: $gray-400;
+        }
       }
-    }
-    &:hover {
-      background: $bgcolor-list-hover;
-    }
-    &:active {
-      background: $bgcolor-list-active;
+      &:hover {
+        background: $bgcolor-list-hover;
+      }
+      &:active {
+        background: $bgcolor-list-active;
+      }
     }
   }
 }
