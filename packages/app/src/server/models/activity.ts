@@ -78,25 +78,32 @@ activitySchema.methods.getNotificationTargetUsers = async function(isRecursively
     user: actionUser, targetModel, target, user,
   } = this;
 
-  const subscribeUsers: Array<Types.ObjectId> = [];
-  const unsubscribeUsers: Array<Types.ObjectId> = [];
+  /* eslint-disable prefer-const */
+  let subscribeUsers: Array<Types.ObjectId> = [];
+  let unsubscribeUsers: Array<Types.ObjectId> = [];
+  /* eslint-disable prefer-const */
 
   if (targetModel === 'Page' && isRecursively) {
     const Page = getModelSafely('Page') || require('~/server/models/page')();
     const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
-
     for (const page of fromPageDescendants) {
       /* eslint-disable no-await-in-loop */
-      (await Subscription.getSubscription((page as any) as Types.ObjectId)).forEach(subscribe => subscribeUsers.push(subscribe));
-      (await Subscription.getUnsubscription((page as any) as Types.ObjectId)).forEach(unsubscribe => unsubscribeUsers.push(unsubscribe));
+      /* eslint-disable no-loop-func */
+      (await Subscription.getSubscription((page as any) as Types.ObjectId)).forEach(user => subscribeUsers.push(user));
+      /* eslint-disable no-loop-func */
       /* eslint-disable no-await-in-loop */
     }
   }
+  else {
+    [subscribeUsers, unsubscribeUsers] = await Promise.all([
+      Subscription.getSubscription((target as any) as Types.ObjectId),
+      Subscription.getUnsubscription((target as any) as Types.ObjectId),
+    ]);
+  }
 
-  // const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-  //   Subscription.getSubscription((target as any) as Types.ObjectId),
-  //   Subscription.getUnsubscription((target as any) as Types.ObjectId),
-  // ]);
+  // (await Subscription.getUnsubscription((page as any) as Types.ObjectId)).forEach(user => unsubscribeUsers.push(user));
+  // subscribeUsers = subscribeUsers.concat(await Subscription.getSubscription((page as any) as Types.ObjectId));
+  // unsubscribeUsers = unsubscribeUsers.concat(await Subscription.getUnsubscription((page as any) as Types.ObjectId));
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
