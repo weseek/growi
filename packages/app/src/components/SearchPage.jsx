@@ -60,7 +60,6 @@ class SearchPage extends React.Component {
   }
 
   componentDidMount() {
-    $('body').addClass('on-search');
     const keyword = this.state.searchingKeyword;
     if (keyword !== '') {
       this.search({ keyword });

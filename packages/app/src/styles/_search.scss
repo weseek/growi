@@ -251,6 +251,18 @@
   }
 }
 
+// class to add to .grw-navbar to hide its navbar above the displaying page
+body.on-search {
+  .grw-navbar {
+    position: fixed !important;
+    width: 100vw;
+  }
+  .page-wrapper {
+    position: relative;
+    top: $grw-navbar-border-width;
+  }
+}
+
 // 2021/9/22 TODO: Remove after moving to SearchResult
 .search-page-input {
   position: sticky;
