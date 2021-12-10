@@ -375,10 +375,9 @@ class Editor extends AbstractEditor {
         </div>
         <ConflictDiffModal
           isOpen={this.props.pageContainer.state.isConflictDiffModalOpen}
-          onCancel={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
+          onClose={() => this.props.pageContainer.setState({ isConflictDiffModalOpen: false })}
           appContainer={this.props.appContainer}
           pageContainer={this.props.pageContainer}
-          editorContainer={this.props.editorContainer}
           markdownOnEdit={this.props.value}
         />
       </>

@@ -11,8 +11,9 @@ import { format } from 'date-fns';
 import CodeMirror from 'codemirror/lib/codemirror';
 
 import PageContainer from '../../client/services/PageContainer';
-import EditorContainer from '../../client/services/EditorContainer';
 import AppContainer from '../../client/services/AppContainer';
+
+import { useEditorMode } from '~/stores/ui';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -26,9 +27,8 @@ Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 
 type ConflictDiffModalProps = {
   isOpen: boolean | null;
-  onCancel: (() => void) | null;
+  onClose?: (() => void);
   pageContainer: PageContainer;
-  editorContainer: EditorContainer;
   appContainer: AppContainer;
   markdownOnEdit: string;
 };
@@ -43,9 +43,11 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
+  const { data: editorMode } = useEditorMode();
+
   const uncontrolledRef = useRef<CodeMirror>(null);
 
-  const { pageContainer, editorContainer, appContainer } = props;
+  const { pageContainer, appContainer } = props;
 
   const currentTime: Date = new Date();
 
@@ -85,33 +87,32 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     }
   }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
 
-  const onCancel = () => {
-    if (props.onCancel != null) {
-      props.onCancel();
+  const onClose = () => {
+    if (props.onClose != null) {
+      props.onClose();
     }
   };
 
   const onResolveConflict = async() : Promise<void> => {
     // disable button after clicked
     setIsRevisionSelected(false);
+
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
-    editorContainer.disableUnsavedWarning();
+
     try {
-      await pageContainer.resolveConflictAndReload(
-        pageContainer.state.pageId,
-        latest.revisionId,
-        codeMirrorVal,
-        editorContainer.getCurrentOptionsToSave(),
-      );
+      await pageContainer.resolveConflict(codeMirrorVal, editorMode);
+      onClose();
+      pageContainer.showSuccessToastr();
     }
     catch (error) {
       pageContainer.showErrorToastr(error);
     }
+
   };
 
   return (
-    <Modal isOpen={props.isOpen || false} toggle={onCancel} className="modal-gfm-cheatsheet" size="xl">
-      <ModalHeader tag="h4" toggle={onCancel} className="bg-primary text-light">
+    <Modal isOpen={props.isOpen || false} toggle={onClose} className="modal-gfm-cheatsheet" size="xl">
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
@@ -220,7 +221,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onCancel}
+          onClick={onClose}
         >
           {t('Cancel')}
         </button>
@@ -239,9 +240,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
 ConflictDiffModal.propTypes = {
   isOpen: PropTypes.bool,
-  onCancel: PropTypes.func,
+  onClose: PropTypes.func,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer:  PropTypes.instanceOf(EditorContainer).isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   markdownOnEdit: PropTypes.string.isRequired,
 };

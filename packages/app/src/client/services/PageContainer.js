@@ -647,32 +647,21 @@ export default class PageContainer extends Container {
   retrieveMyBookmarkList() {
   }
 
-  async resolveConflict(pageId, revisionId, markdown, optionsToSave) {
+  async resolveConflict(markdown, editorMode) {
 
-    if (optionsToSave == null) {
-      const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
-      throw new Error(msg);
-    }
-
-    const { path } = this.state;
-
-    const params = Object.assign(optionsToSave, {
-      page_id: pageId,
-      revision_id: revisionId,
-      body: markdown,
-    });
-
-    const res = await apiPost('/pages.update', params);
-
+    const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const options = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = Object.assign({}, options);
+
+    const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
+
     editorContainer.clearDraft(path);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+
+    editorContainer.setState({ tags: res.tags });
 
     return res;
-  }
-
-  async resolveConflictAndReload(pageId, revisionId, markdown, optionsToSave) {
-    await this.resolveConflict(pageId, revisionId, markdown, optionsToSave);
-    window.location.href = this.state.path;
   }
 
 }
