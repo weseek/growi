@@ -189,7 +189,7 @@ $border-color: $border-color-global;
       background: $bgcolor-list-hover;
     }
     &:active {
-      background: darken($bgcolor-list-hover, 5%);
+      background: $bgcolor-list-active;
     }
   }
 }
