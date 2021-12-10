@@ -168,6 +168,23 @@ $border-color: $border-color-global;
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
 }
 
+// Pagetree
+.grw-pagetree {
+  .grw-pagetree-item {
+    .grw-triangle-icon {
+      svg {
+        fill: $gray-400;
+      }
+    }
+    &:hover {
+      background: $bgcolor-list-hover;
+    }
+    &:active {
+      background: darken($bgcolor-list-hover, 5%);
+    }
+  }
+}
+
 /*
  * GROWI page list
  */
