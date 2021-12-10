@@ -406,7 +406,6 @@ export default class PageContainer extends Container {
     if (pageEditor != null) {
       if (editorMode !== 'edit') {
         pageEditor.updateEditorValue(newState.markdown);
-        // mark
       }
     }
     // PageEditorByHackmd component
@@ -421,6 +420,32 @@ export default class PageContainer extends Container {
     // hidden input
     $('input[name="revision_id"]').val(newState.revisionId);
   }
+
+  /**
+   * update page meta data
+   * @param {object} page Page instance
+   * @param {object} revision Revision instance
+   * @param {Array[Tag]} tags Array of Tag
+   */
+  updatePageMetaData(page, revision, tags) {
+
+    const newState = {
+      revisionId: revision._id,
+      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+      remoteRevisionId: revision._id,
+      revisionAuthor: revision.author,
+      revisionIdHackmdSynced: page.revisionHackmdSynced,
+      hasDraftOnHackmd: page.hasDraftOnHackmd,
+      updatedAt: page.updatedAt,
+    };
+    if (tags != null) {
+      newState.tags = tags;
+    }
+    this.setState(newState);
+
+    $('input[name="revision_id"]').val(newState.revisionId);
+  }
+
 
   /**
    * Save page
