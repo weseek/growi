@@ -647,7 +647,7 @@ export default class PageContainer extends Container {
   retrieveMyBookmarkList() {
   }
 
-  async resolveConflict(markdown, editrMode) {
+  async resolveConflict(markdown, editorMode) {
 
     const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
@@ -657,7 +657,7 @@ export default class PageContainer extends Container {
     const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
 
     editorContainer.clearDraft(path);
-    this.updateStateAfterSave(res.page, res.tags, res.revision, editrMode);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
 
     editorContainer.setState({ tags: res.tags });
 
