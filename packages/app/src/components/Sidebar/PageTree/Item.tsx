@@ -36,6 +36,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 
 type ItemControlProps = {
   page: Partial<IPageHasId>
+  isGuestUser: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -63,7 +64,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isGuestUser={props.isGuestUser} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
@@ -193,13 +194,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
-          {!isGuestUser && (
-            <ItemControl
-              page={page}
-              onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-              onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
-            />
-          )}
+          <ItemControl
+            page={page}
+            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            isGuestUser={isGuestUser}
+          />
         </div>
       </div>
 

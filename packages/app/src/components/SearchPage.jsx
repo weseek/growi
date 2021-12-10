@@ -13,6 +13,7 @@ import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
+import { useIsGuestUser } from '~/stores/context';
 
 export const specificPathNames = {
   user: '/user',
@@ -283,6 +284,7 @@ class SearchPage extends React.Component {
     return (
       <SearchResultList
         pages={this.state.searchResults || []}
+        isGuestUser={this.props.isGuestUser}
         focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
@@ -345,16 +347,30 @@ class SearchPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
+const SearchPageHOCWrapper = withTranslation()(withUnstatedContainers(SearchPage, [AppContainer]));
 
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   query: PropTypes.object,
+  isGuestUser: PropTypes.bool.isRequired,
 };
 SearchPage.defaultProps = {
   // pollInterval: 1000,
   query: SearchPage.getQueryByLocation(window.location || {}),
 };
 
-export default withTranslation()(SearchPageWrapper);
+const SearchPageFCWrapper = (props) => {
+  const { data: isGuestUser } = useIsGuestUser();
+
+  /*
+   * dependencies
+   */
+  if (isGuestUser == null) {
+    return null;
+  }
+
+  return <SearchPageHOCWrapper {...props} isGuestUser={isGuestUser} />;
+};
+
+export default SearchPageFCWrapper;
