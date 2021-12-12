@@ -13,7 +13,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 
 interface ItemProps {
-  isGuestUser: boolean
+  isEnableActions: boolean
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
@@ -36,7 +36,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 
 type ItemControlProps = {
   page: Partial<IPageHasId>
-  isGuestUser: boolean
+  isEnableActions: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -64,7 +64,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isGuestUser={props.isGuestUser} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
@@ -89,7 +89,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isGuestUser,
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -198,12 +198,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             page={page}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
-            isGuestUser={isGuestUser}
+            isEnableActions={isEnableActions}
           />
         </div>
       </div>
 
-      {!isGuestUser && (
+      {!isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
           placeholder={t('Input title')}
@@ -216,7 +216,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isOpen && hasChildren() && currentChildren.map(node => (
           <Item
             key={node.page._id}
-            isGuestUser={isGuestUser}
+            isEnableActions={isEnableActions}
             itemNode={node}
             isOpen={false}
             onClickDeleteByPage={onClickDeleteByPage}

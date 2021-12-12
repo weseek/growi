@@ -51,7 +51,7 @@ const PageTree: FC = memo(() => {
 
       <div className="grw-sidebar-content-body">
         <ItemsTree
-          isGuestUser={isGuestUser}
+          isEnableActions={!isGuestUser}
           targetPath={path}
           targetId={targetId}
           targetAndAncestorsData={targetAndAncestorsData}

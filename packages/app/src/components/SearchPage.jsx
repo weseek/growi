@@ -284,7 +284,7 @@ class SearchPage extends React.Component {
     return (
       <SearchResultList
         pages={this.state.searchResults || []}
-        isGuestUser={this.props.isGuestUser}
+        isEnableActions={!this.props.isGuestUser}
         focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}

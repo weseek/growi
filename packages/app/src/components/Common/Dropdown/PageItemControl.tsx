@@ -7,13 +7,13 @@ import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
-  isGuestUser: boolean
+  isEnableActions: boolean
   onClickDeleteButton?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page, isGuestUser, onClickDeleteButton } = props;
+  const { page, isEnableActions, onClickDeleteButton } = props;
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {
@@ -51,30 +51,30 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         */}
 
         {/* TODO: show dropdown when permalink section is implemented */}
-        {isGuestUser && (
+        {!isEnableActions && (
           <p className="dropdown-item">
             {t('search_result.currently_not_implemented')}
           </p>
         )}
-        {!isGuestUser && (
+        {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
             <i className="icon-fw icon-star"></i>
             {t('Add to bookmark')}
           </button>
         )}
-        {!isGuestUser && (
+        {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
           </button>
         )}
-        {!isGuestUser && (
+        {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </button>
         )}
-        {!isGuestUser && (
+        {isEnableActions && (
           <>
             <div className="dropdown-divider"></div>
             <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>

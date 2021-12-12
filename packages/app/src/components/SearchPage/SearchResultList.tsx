@@ -7,7 +7,7 @@ import { IPageSearchResultData } from '../../interfaces/search';
 type Props = {
   pages: IPageSearchResultData[],
   selectedPagesIdList: Set<string>
-  isGuestUser: boolean,
+  isEnableActions: boolean,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
@@ -20,7 +20,7 @@ type Props = {
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
-  const { focusedSearchResultData, selectedPagesIdList, isGuestUser } = props;
+  const { focusedSearchResultData, selectedPagesIdList, isEnableActions } = props;
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
@@ -32,7 +32,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
           <SearchResultListItem
             key={page.pageData._id}
             page={page}
-            isGuestUser={isGuestUser}
+            isEnableActions={isEnableActions}
             onClickSearchResultItem={props.onClickSearchResultItem}
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}
