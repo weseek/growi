@@ -21,7 +21,12 @@
       background-color: transparent;
 
       &.rotate {
+        transition: 0.5s;
         transform: rotate(90deg);
+      }
+      &.hoge {
+        transition: 0.5s;
+        transform: rotate(0deg);
       }
     }
 
