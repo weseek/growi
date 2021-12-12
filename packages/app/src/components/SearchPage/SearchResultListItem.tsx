@@ -13,6 +13,7 @@ type Props = {
   page: IPageSearchResultData,
   isSelected: boolean,
   isChecked: boolean,
+  isEnableActions: boolean,
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -21,7 +22,7 @@ type Props = {
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -77,7 +78,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} />
+                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
             <div className="my-2">

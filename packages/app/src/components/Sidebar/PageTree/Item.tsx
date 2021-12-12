@@ -15,6 +15,7 @@ import TriangleIcon from '~/components/Icons/TriangleIcon';
 
 
 interface ItemProps {
+  isEnableActions: boolean
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
@@ -37,6 +38,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 
 type ItemControlProps = {
   page: Partial<IPageHasId>
+  isEnableActions: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -64,7 +66,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
@@ -89,7 +91,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -200,21 +202,25 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             page={page}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            isEnableActions={isEnableActions}
           />
         </div>
       </div>
 
-      <ClosableTextInput
-        isShown={isNewPageInputShown}
-        placeholder={t('Input title')}
-        onClickOutside={() => { setNewPageInputShown(false) }}
-        onPressEnter={onPressEnterHandler}
-        inputValidator={inputValidator}
-      />
+      {!isEnableActions && (
+        <ClosableTextInput
+          isShown={isNewPageInputShown}
+          placeholder={t('Input title')}
+          onClickOutside={() => { setNewPageInputShown(false) }}
+          onPressEnter={onPressEnterHandler}
+          inputValidator={inputValidator}
+        />
+      )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
           <Item
             key={node.page._id}
+            isEnableActions={isEnableActions}
             itemNode={node}
             isOpen={false}
             onClickDeleteByPage={onClickDeleteByPage}

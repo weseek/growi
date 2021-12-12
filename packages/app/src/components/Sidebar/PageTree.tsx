@@ -2,7 +2,9 @@ import React, { FC, memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import { useCurrentPagePath, useCurrentPageId, useTargetAndAncestors } from '~/stores/context';
+import {
+  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
+} from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
@@ -12,15 +14,23 @@ import { IPageForPageDeleteModal } from '../PageDeleteModal';
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
+  const { data: isGuestUser } = useIsGuestUser();
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
 
-  const { data: migrationStatus } = useSWRxV5MigrationStatus();
+  const { data: migrationStatus } = useSWRxV5MigrationStatus(!isGuestUser);
 
   // for delete modal
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
+
+  /*
+   * dependencies
+   */
+  if (isGuestUser == null) {
+    return null;
+  }
 
   const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
     setDeleteModalOpen(true);
@@ -41,6 +51,7 @@ const PageTree: FC = memo(() => {
 
       <div className="grw-sidebar-content-body">
         <ItemsTree
+          isEnableActions={!isGuestUser}
           targetPath={path}
           targetId={targetId}
           targetAndAncestorsData={targetAndAncestorsData}
@@ -55,7 +66,7 @@ const PageTree: FC = memo(() => {
 
       <div className="grw-sidebar-content-footer">
         {
-          migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
+          !isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
             <PrivateLegacyPages />
           )
         }
