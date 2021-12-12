@@ -19,13 +19,12 @@
 
     .grw-pagetree-button {
       background-color: transparent;
+      transition: 0.5s;
 
-      &.rotate {
-        transition: 0.5s;
+      &.grw-pagetree-open {
         transform: rotate(90deg);
       }
-      &.hoge {
-        transition: 0.5s;
+      &.grw-pagetree-close {
         transform: rotate(0deg);
       }
     }
