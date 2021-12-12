@@ -18,6 +18,7 @@ $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
+$text-muted: $gray-550;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
@@ -25,6 +26,7 @@ $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
 
+@import 'reboot-bootstrap-text';
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
