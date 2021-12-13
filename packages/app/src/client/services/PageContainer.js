@@ -417,8 +417,6 @@ export default class PageContainer extends Container {
       }
     }
 
-    // hidden input
-    $('input[name="revision_id"]').val(newState.revisionId);
   }
 
   /**
@@ -444,7 +442,6 @@ export default class PageContainer extends Container {
 
     this.setState(newState);
 
-    $('input[name="revision_id"]').val(newState.revisionId);
   }
 
   /**
