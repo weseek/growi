@@ -144,20 +144,21 @@ export default class EditorContainer extends Container {
     }
   }
 
-  getCurrentOptionsToSave() {
-    const opt = {
-      isSlackEnabled: this.state.isSlackEnabled,
-      slackChannels: this.state.slackChannels,
-      grant: this.state.grant,
-      pageTags: this.state.tags,
-    };
+  // TODO: Create mediator and remove this when omitting unstated is completed
+  // getCurrentOptionsToSave() {
+  //   const opt = {
+  //     isSlackEnabled: this.state.isSlackEnabled,
+  //     slackChannels: this.state.slackChannels,
+  //     grant: this.state.grant,
+  //     pageTags: this.state.tags,
+  //   };
 
-    if (this.state.grantGroupId != null) {
-      opt.grantUserGroupId = this.state.grantGroupId;
-    }
+  //   if (this.state.grantGroupId != null) {
+  //     opt.grantUserGroupId = this.state.grantGroupId;
+  //   }
 
-    return opt;
-  }
+  //   return opt;
+  // }
 
   // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {
