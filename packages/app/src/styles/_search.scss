@@ -176,18 +176,19 @@
     top: 0px;
 
     .search-result-list-scroll {
-      height: calc(100vh - 125px); // subtract the height of SearchControl component
+      // subtract the height of SearchControl component + a gap made above #page-wrapper and below #main
+      height: calc(100vh - 117px);
       overflow-y: scroll;
     }
     .nav.nav-pills {
       > .page-list-li {
         &.active {
-          padding-right: 5px;
+          // add this negative margin to avoid inner elements of .page-list-li.active
+          // moving to right side by border-left's px size.
+          margin-left: -3px;
           border-left: solid 3px transparent;
         }
         > a {
-          height: 123px;
-          padding: 2px 4px;
           word-break: break-all;
 
           &:hover {
@@ -247,6 +248,18 @@
         border: solid 1px $gray-300;
       }
     }
+  }
+}
+
+// class to add to .grw-navbar to hide its navbar above the displaying page
+body.on-search {
+  .grw-navbar {
+    position: fixed !important;
+    width: 100vw;
+  }
+  .page-wrapper {
+    position: relative;
+    top: $grw-navbar-border-width;
   }
 }
 
