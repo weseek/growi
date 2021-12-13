@@ -19,7 +19,7 @@
 
     .grw-pagetree-button {
       background-color: transparent;
-      transition: all 0.5s ease;
+      transition: all 0.5s ease-out;
       transform: rotate(0deg);
 
       &:focus {
