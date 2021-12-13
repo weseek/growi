@@ -5,7 +5,7 @@ import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useGrant,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -60,6 +60,7 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
+  const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
 
   /*
    * use static swr
@@ -106,6 +107,9 @@ const ContextExtractorOnce: FC = () => {
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
+
+  // Editor
+  useGrant(grant);
 
   return null;
 };

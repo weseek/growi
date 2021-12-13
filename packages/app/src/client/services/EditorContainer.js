@@ -29,7 +29,7 @@ export default class EditorContainer extends Container {
 
       slackChannels: mainContent.getAttribute('data-slack-channels') || '',
 
-      grant: 1, // default: public
+      // grant: 1, // default: public
       grantGroupId: null,
       grantGroupName: null,
 
@@ -71,6 +71,8 @@ export default class EditorContainer extends Container {
     }
 
     this.state.grant = +mainContent.getAttribute('data-page-grant');
+
+    console.log(mainContent.getAttribute('data-page-grant'));
 
     const grantGroupId = mainContent.getAttribute('data-page-grant-group');
     if (grantGroupId != null && grantGroupId.length > 0) {

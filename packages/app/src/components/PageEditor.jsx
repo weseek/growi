@@ -17,7 +17,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useGrant } from '~/stores/context';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -155,7 +155,7 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
-    const { appContainer, pageContainer, editorContainer } = this.props;
+    const { appContainer, pageContainer, mutateGrant } = this.props;
 
     try {
       let res = await appContainer.apiGet('/attachments.limit', {
@@ -191,7 +191,8 @@ class PageEditor extends React.Component {
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
-        editorContainer.setState({ grant: res.page.grant });
+        // editorContainer.setState({ grant: res.page.grant });
+        mutateGrant(res.page.grant);
       }
     }
     catch (e) {
@@ -360,12 +361,20 @@ const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, P
 const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { mutate: mutateGrant } = useGrant();
 
   if (isEditable == null || editorMode == null) {
     return null;
   }
 
-  return <PageEditorHOCWrapper {...props} isEditable={isEditable} editorMode={editorMode} />;
+  return (
+    <PageEditorHOCWrapper
+      {...props}
+      mutateGrant={mutateGrant}
+      isEditable={isEditable}
+      editorMode={editorMode}
+    />
+  );
 };
 
 PageEditor.propTypes = {
@@ -377,6 +386,7 @@ PageEditor.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  mutateGrant: PropTypes.func.isRequired,
 };
 
 export default PageEditorWrapper;

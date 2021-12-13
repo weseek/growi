@@ -19,7 +19,7 @@ import GrantSelector from './SavePageControls/GrantSelector';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useGrant } from '~/stores/context';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -70,7 +70,9 @@ class SavePageControls extends React.Component {
 
   render() {
 
-    const { t, pageContainer, editorContainer } = this.props;
+    const {
+      t, pageContainer, editorContainer, grant,
+    } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
@@ -84,7 +86,7 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                grant={editorContainer.state.grant}
+                grant={grant}
                 grantGroupId={editorContainer.state.grantGroupId}
                 grantGroupName={editorContainer.state.grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
@@ -117,6 +119,7 @@ const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [App
 const SavePageControlsWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { data: grant } = useGrant();
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -126,7 +129,13 @@ const SavePageControlsWrapper = (props) => {
     return null;
   }
 
-  return <SavePageControlsHOCWrapper {...props} editorMode={editorMode} />;
+  return (
+    <SavePageControlsHOCWrapper
+      {...props}
+      grant={grant}
+      editorMode={editorMode}
+    />
+  );
 };
 
 SavePageControls.propTypes = {
@@ -138,6 +147,7 @@ SavePageControls.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);
