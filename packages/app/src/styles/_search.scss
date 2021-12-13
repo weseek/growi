@@ -231,6 +231,14 @@
       vertical-align: middle;
     }
   }
+  // checkbox
+  .search-item-checkbox {
+    padding: 0 14px;
+    .item-checkbox-input {
+      position: relative; // to apply padding and margin
+      margin: 0;
+    }
+  }
   .search-item-text {
     .item-path {
       margin-bottom: 4px;
