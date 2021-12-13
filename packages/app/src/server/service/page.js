@@ -797,7 +797,7 @@ class PageService {
           {
             $match: filterByViewer,
           },
-          // lookup
+          // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
           {
             $lookup: {
               from: 'revisions',
