@@ -39,7 +39,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-result-item list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-result-item list-group-item-action border-bottom ${isSelected ? 'active' : ''}`}>
       <a
         className="d-block h-100"
         href={pageId}
