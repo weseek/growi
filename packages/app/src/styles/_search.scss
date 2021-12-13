@@ -227,6 +227,8 @@
   .search-result-content {
     padding-bottom: 36px;
 
+    z-index: 0;
+
     .search-result-page {
       padding-top: 64px;
       // adjust for anchor links by the height of fixed .search-page-input

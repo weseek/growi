@@ -22,7 +22,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   if (page == null) return <></>;
   const growiRenderer = props.appContainer.getRenderer('searchresult');
   return (
-    <div key={page._id} className="search-result-page mb-5">
+    <div key={page._id} className="search-result-page grw-page-path-text-muted-container mb-5">
       <SearchResultContentSubNavigation
         pageId={page._id}
         revisionId={page.revision}

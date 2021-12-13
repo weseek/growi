@@ -46,33 +46,35 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const { isSharedUser } = appContainer;
   const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
-    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
-      {/* Left side */}
-      <div className="grw-path-nav-container">
-        {!isSharedUser && !isCompactMode && (
-          <div className="grw-taglabels-container">
-            <TagLabels tags={tagInfoData.tags} tagsUpdateInvoked={tagsUpdatedHandler} />
-          </div>
-        )}
-        <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
-      </div>
-      {/* Right side */}
-      {/*
-        DeleteCompletely is currently disabled
-        TODO : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
-        story: https://redmine.weseek.co.jp/issues/82222
-      */}
-      <div className="d-flex">
-        <SubNavButtons
-          isCompactMode={isCompactMode}
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
-          isDeletable={isPageDeletable}
-          // isAbleToDeleteCompletely={}
-          willShowPageManagement={isAbleToShowPageManagement}
-        >
-        </SubNavButtons>
+    <div className="position-sticky fixed-top shadow">
+      <div className={`grw-subnav container-fluid d-flex align-items-start justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+        {/* Left side */}
+        <div className="grw-path-nav-container">
+          {!isSharedUser && !isCompactMode && (
+            <div className="grw-taglabels-container">
+              <TagLabels tags={tagInfoData.tags} tagsUpdateInvoked={tagsUpdatedHandler} />
+            </div>
+          )}
+          <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
+        </div>
+        {/* Right side */}
+        {/*
+          DeleteCompletely is currently disabled
+          TODO : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
+          story: https://redmine.weseek.co.jp/issues/82222
+        */}
+        <div className="d-flex">
+          <SubNavButtons
+            isCompactMode={isCompactMode}
+            pageId={pageId}
+            revisionId={revisionId}
+            path={path}
+            isDeletable={isPageDeletable}
+            // isAbleToDeleteCompletely={}
+            willShowPageManagement={isAbleToShowPageManagement}
+          >
+          </SubNavButtons>
+        </div>
       </div>
     </div>
   );
