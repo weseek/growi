@@ -41,7 +41,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   return (
     <li key={pageData._id} className={`page-list-li search-result-item w-100 list-group-item-action pl-2 ${isSelected ? 'active' : ''}`}>
       <a
-        className="d-block py-3 h-100"
+        className="d-block h-100"
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
@@ -60,7 +60,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               checked={isChecked}
             />
           </div>
-          <div className="search-item-text">
+          <div className="search-item-text p-3">
             {/* page path */}
             <div className="item-path">
               <i className="icon-fw icon-home"></i>
@@ -86,7 +86,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {
                 pageMeta.elasticSearchResult != null && (
                   <Clamp lines={2}>
-                    <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
+                    <div dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
                   </Clamp>
                 )
               }
