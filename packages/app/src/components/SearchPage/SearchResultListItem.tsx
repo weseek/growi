@@ -60,7 +60,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               checked={isChecked}
             />
           </div>
-          <div className="search-item-text p-3">
+          <div className="search-item-text p-3 flex-grow-1">
             {/* page path */}
             <div className="item-path">
               <i className="icon-fw icon-home"></i>

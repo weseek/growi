@@ -213,6 +213,9 @@
     }
     .search-result-item {
       height: 123px;
+      .form-check-input {
+        margin-top: 0;
+      }
     }
 
     .search-result-meta {
