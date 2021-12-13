@@ -14,8 +14,14 @@
 
     .grw-pagetree-button {
       background-color: transparent;
+      transition: all 0.2s ease-out;
+      transform: rotate(0deg);
 
-      &.rotate {
+      &:focus {
+        box-shadow: none;
+      }
+
+      &.grw-pagetree-open {
         transform: rotate(90deg);
       }
     }
