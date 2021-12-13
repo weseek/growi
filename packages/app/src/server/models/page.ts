@@ -359,3 +359,51 @@ export default (crowi: Crowi): any => {
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema);
 };
+
+/*
+ * Aggregation utilities
+ */
+export const generateGrantConditions = async(
+    user, _userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+): Promise<{[key:string]: any | number | null}[]> => {
+  let userGroups = _userGroups;
+  if (user != null && userGroups == null) {
+    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
+    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+
+  const grantConditions: {[key:string]: any | number | null}[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+  ];
+
+  if (showAnyoneKnowsLink) {
+    grantConditions.push({ grant: GRANT_RESTRICTED });
+  }
+
+  if (showPagesRestrictedByOwner) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED },
+      { grant: GRANT_OWNER },
+    );
+  }
+  else if (user != null) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED, grantedUsers: user._id },
+      { grant: GRANT_OWNER, grantedUsers: user._id },
+    );
+  }
+
+  if (showPagesRestrictedByGroup) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP },
+    );
+  }
+  else if (userGroups != null && userGroups.length > 0) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+    );
+  }
+
+  return grantConditions;
+};
