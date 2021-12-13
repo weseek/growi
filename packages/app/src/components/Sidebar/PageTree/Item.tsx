@@ -177,7 +177,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
 
-  const buttonClass = isOpen ? 'grw-pagetree-open' : 'grw-pagetree-close';
+  const buttonClass = isOpen ? 'grw-pagetree-open' : '';
 
   return (
     <div className="grw-pagetree-item-wrapper">

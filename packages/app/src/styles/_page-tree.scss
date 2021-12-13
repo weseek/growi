@@ -19,7 +19,8 @@
 
     .grw-pagetree-button {
       background-color: transparent;
-      transition: 0.5s;
+      transition: all 0.5s ease;
+      transform: rotate(0deg);
 
       &:focus {
         box-shadow: none;
@@ -27,9 +28,6 @@
 
       &.grw-pagetree-open {
         transform: rotate(90deg);
-      }
-      &.grw-pagetree-close {
-        transform: rotate(0deg);
       }
     }
 
