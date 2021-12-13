@@ -45,9 +45,11 @@ export const useSWRxPageChildren = (
   );
 };
 
-export const useSWRxV5MigrationStatus = (): SWRResponse<V5MigrationStatus, Error> => {
+export const useSWRxV5MigrationStatus = (
+    shouldFetch = true,
+): SWRResponse<V5MigrationStatus, Error> => {
   return useSWR(
-    '/pages/v5-migration-status',
+    shouldFetch ? '/pages/v5-migration-status' : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         migratablePagesCount: response.data.migratablePagesCount,
