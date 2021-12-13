@@ -209,6 +209,9 @@
         }
       }
     }
+    .search-result-item {
+      height: 123px;
+    }
 
     .search-result-meta {
       font-weight: bold;
@@ -223,7 +226,13 @@
       vertical-align: middle;
     }
   }
-
+  .search-item-text {
+    .item-path {
+      margin-bottom: 7px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
   .search-result-content {
     padding-bottom: 36px;
 
@@ -283,10 +292,6 @@ body.on-search {
   caption {
     display: table-header-group;
   }
-}
-
-.search-page-item {
-  height: 130px;
 }
 
 @include media-breakpoint-down(sm) {

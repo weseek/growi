@@ -39,17 +39,17 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-page-item w-100 list-group-item-action pl-2 ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-result-item w-100 list-group-item-action pl-2 ${isSelected ? 'active' : ''}`}>
       <a
-        className="d-block py-4 h-100"
+        className="d-block py-3 h-100"
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
         <div className="d-flex">
           {/* checkbox */}
-          <div className="form-check my-auto mr-3">
+          <div className="form-check d-flex align-items-center justify-content-center">
             <input
-              className="form-check-input my-auto"
+              className="form-check-input"
               type="checkbox"
               id="flexCheckDefault"
               onChange={() => {
@@ -60,12 +60,12 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               checked={isChecked}
             />
           </div>
-          <div className="w-100">
+          <div className="search-item-text">
             {/* page path */}
-            <small className="mb-1">
+            <div className="item-path">
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
-            </small>
+            </div>
             <div className="d-flex my-1 align-items-center">
               {/* page title */}
               <h3 className="mb-0">
