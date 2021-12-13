@@ -201,7 +201,9 @@
         }
         .page-list-meta {
           > span {
-            margin-right: 12px;
+            width: 14px;
+            height: 14px;
+            margin-right: 14px;
           }
           .footstamp-icon {
             margin-right: 2px;
@@ -231,6 +233,20 @@
       margin-bottom: 7px;
       font-size: 12px;
       line-height: 18px;
+    }
+    .user-picture {
+      width: 20px;
+      height: 20px;
+    }
+    .item-title {
+      font-size: 17.5px;
+      line-height: 26px;
+    }
+    .item-meta {
+      padding: 0 4px;
+    }
+    .search-result-list-snippet {
+      line-height: 20px;
     }
   }
   .search-result-content {
