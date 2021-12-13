@@ -75,7 +75,7 @@ activitySchema.index({
 activitySchema.methods.getNotificationTargetUsers = async function(fromPageDescendants: Array<Types.ObjectId> = []) {
   const User = getModelSafely('User') || require('~/server/models/user')();
   const {
-    user: actionUser, target,
+    user: actionUser, targetModel, target,
   } = this;
 
   const [subscribeUsers] = await Promise.all([
@@ -90,7 +90,7 @@ activitySchema.methods.getNotificationTargetUsers = async function(fromPageDesce
 
   // eslint-disable-next-line prefer-const
   let descendantPageSubscribeUsers: Array<Types.ObjectId> = [];
-  if (fromPageDescendants.length > 0) {
+  if (targetModel === 'Page' && fromPageDescendants.length > 0) {
     for (const page of fromPageDescendants) {
       // eslint-disable-next-line  no-await-in-loop
       const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
