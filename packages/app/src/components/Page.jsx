@@ -181,7 +181,7 @@ const PageWrapper = (props) => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
 
-  if (editorMode == null || isSlackEnabled == null || slackChannels == null) {
+  if (editorMode == null) {
     return null;
   }
 

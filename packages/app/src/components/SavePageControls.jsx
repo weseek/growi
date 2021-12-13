@@ -128,7 +128,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
 
-  if (isEditable == null || editorMode == null || isSlackEnabled == null || slackChannels == null) {
+  if (isEditable == null || editorMode == null) {
     return null;
   }
 
