@@ -74,11 +74,11 @@ export default class EditorContainer extends Container {
 
     console.log(mainContent.getAttribute('data-page-grant'));
 
-    const grantGroupId = mainContent.getAttribute('data-page-grant-group');
-    if (grantGroupId != null && grantGroupId.length > 0) {
-      this.state.grantGroupId = grantGroupId;
-      this.state.grantGroupName = mainContent.getAttribute('data-page-grant-group-name');
-    }
+    // const grantGroupId = mainContent.getAttribute('data-page-grant-group');
+    // if (grantGroupId != null && grantGroupId.length > 0) {
+    //   this.state.grantGroupId = grantGroupId;
+    //   this.state.grantGroupName = mainContent.getAttribute('data-page-grant-group-name');
+    // }
   }
 
   /**

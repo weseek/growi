@@ -43,7 +43,11 @@ class SavePageControls extends React.Component {
   }
 
   updateGrantHandler(data) {
-    this.props.editorContainer.setState(data);
+    const { mutateGrant, mutateGrantGroupId, mutateGrantGroupName } = this.props;
+    // this.props.editorContainer.setState(data);
+    mutateGrant(data.grant);
+    mutateGrantGroupId(data.grantGroupId);
+    mutateGrantGroupName(data.grantGroupName);
   }
 
   // TODO: Create mediator and remove this when omitting unstated is completed
@@ -82,7 +86,7 @@ class SavePageControls extends React.Component {
   render() {
 
     const {
-      t, pageContainer, grant, grantGroupId, grantGroupName,
+      t, pageContainer, grant, grantGroupId, grantGroupName, editorContainer,
     } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
@@ -97,6 +101,9 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
+                // grant={editorContainer.state.grant}
+                // grantGroupId={editorContainer.state.grantGroupId}
+                // grantGroupName={editorContainer.state.grantGroupName}
                 grant={grant}
                 grantGroupId={grantGroupId}
                 grantGroupName={grantGroupName}
@@ -132,11 +139,11 @@ const SavePageControlsWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useGrant();
-  const { data: grantGroupId } = useGrantGroupId();
-  const { data: grantGroupName } = useGrantGroupName();
+  const { data: grant, mutate: mutateGrant } = useGrant();
+  const { data: grantGroupId, mutate: mutateGrantGroupId } = useGrantGroupId();
+  const { data: grantGroupName, mutate: mutateGrantGroupName } = useGrantGroupName();
 
-  if (isEditable == null || editorMode == null) {
+  if (isEditable == null || editorMode == null || grant == null || grantGroupId == null || grantGroupName == null) {
     return null;
   }
 
@@ -153,6 +160,9 @@ const SavePageControlsWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+      mutateGrantGroupId={mutateGrantGroupId}
+      mutateGrantGroupName={mutateGrantGroupName}
     />
   );
 };
@@ -171,6 +181,9 @@ SavePageControls.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string.isRequired,
   grantGroupName: PropTypes.string.isRequired,
+  mutateGrant: PropTypes.func.isRequired,
+  mutateGrantGroupId: PropTypes.func.isRequired,
+  mutateGrantGroupName: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);
