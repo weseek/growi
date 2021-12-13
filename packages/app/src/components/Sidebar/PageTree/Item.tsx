@@ -218,7 +218,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div className="ml-3 mt-3">
+          <div className="ml-3 mt-2">
             <Item
               key={node.page._id}
               isEnableActions={isEnableActions}
