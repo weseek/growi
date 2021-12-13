@@ -118,9 +118,9 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center mr-4">
+        <div className="d-none d-lg-flex align-items-center mr-4 search-control-include-options">
           <div className="border border-gray mr-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+            <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
               <input
                 className="mr-2"
                 type="checkbox"
@@ -131,7 +131,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             </label>
           </div>
           <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
+            <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
               <input
                 className="mr-2"
                 type="checkbox"

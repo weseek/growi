@@ -171,6 +171,14 @@
 // TODO : keep the selected list in the same positino as other lists
 // TASK : https://redmine.weseek.co.jp/issues/82470
 .search-result {
+  .search-control-include-options {
+    div {
+      border-radius: 2px;
+    }
+    label {
+      padding: 5px 10px;
+    }
+  }
   .search-result-list {
     position: sticky;
     top: 0px;
