@@ -6,6 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useGrant,
+  useGrantGroupId, useGrantGroupName,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -61,6 +62,8 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group');
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name');
 
   /*
    * use static swr
@@ -110,6 +113,8 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useGrant(grant);
+  useGrantGroupId(grantGroupId);
+  useGrantGroupName(grantGroupName);
 
   return null;
 };

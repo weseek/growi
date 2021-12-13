@@ -122,6 +122,14 @@ export const useGrant = (initialData?: Nullable<any>): SWRResponse<Nullable<any>
   return useStaticSWR<Nullable<any>, Error>('grant', initialData ?? null);
 };
 
+export const useGrantGroupId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('grantGroupId', initialData ?? null);
+};
+
+export const useGrantGroupName = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('grantGroupName', initialData ?? null);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
