@@ -631,7 +631,9 @@ body.pathname-sidebar {
 .page-list-meta {
   color: $color-search-item-pagelist-meta;
   svg {
-    fill: $color-search-item-pagelist-meta;
+    // !important because by default when hover occurs , svg in anchor tag gets 'fill' styling.
+    // In page-list-meta, such styling not needed.
+    fill: $color-search-item-pagelist-meta !important;
   }
 }
 
