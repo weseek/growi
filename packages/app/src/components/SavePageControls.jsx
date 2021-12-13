@@ -19,7 +19,9 @@ import GrantSelector from './SavePageControls/GrantSelector';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable, useGrant } from '~/stores/context';
+import {
+  useIsEditable, useGrant, useGrantGroupId, useGrantGroupName,
+} from '~/stores/context';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -71,7 +73,7 @@ class SavePageControls extends React.Component {
   render() {
 
     const {
-      t, pageContainer, editorContainer, grant,
+      t, pageContainer, grant, grantGroupId, grantGroupName,
     } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
@@ -87,8 +89,8 @@ class SavePageControls extends React.Component {
               <GrantSelector
                 disabled={isRootPage}
                 grant={grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
+                grantGroupId={grantGroupId}
+                grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>
@@ -120,6 +122,8 @@ const SavePageControlsWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: grant } = useGrant();
+  const { data: grantGroupId } = useGrantGroupId();
+  const { data: grantGroupName } = useGrantGroupName();
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -133,6 +137,8 @@ const SavePageControlsWrapper = (props) => {
     <SavePageControlsHOCWrapper
       {...props}
       grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
       editorMode={editorMode}
     />
   );
@@ -148,6 +154,8 @@ SavePageControls.propTypes = {
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string.isRequired,
+  grantGroupName: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

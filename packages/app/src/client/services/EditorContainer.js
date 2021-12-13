@@ -30,8 +30,8 @@ export default class EditorContainer extends Container {
       slackChannels: mainContent.getAttribute('data-slack-channels') || '',
 
       // grant: 1, // default: public
-      grantGroupId: null,
-      grantGroupName: null,
+      // grantGroupId: null,
+      // grantGroupName: null,
 
       editorOptions: {},
       previewOptions: {},
