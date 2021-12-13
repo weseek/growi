@@ -45,7 +45,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
-        <div className="d-flex">
+        <div className="d-flex h-100">
           {/* checkbox */}
           <div className="form-check d-flex align-items-center justify-content-center">
             <input
