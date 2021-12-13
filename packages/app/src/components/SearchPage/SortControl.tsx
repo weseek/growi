@@ -50,6 +50,7 @@ const SortControl: FC <Props> = (props: Props) => {
               const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
               return (
                 <button
+                  key={sortAxis}
                   className="dropdown-item d-flex justify-content-between"
                   type="button"
                   onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
