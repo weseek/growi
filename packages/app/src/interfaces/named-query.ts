@@ -3,7 +3,6 @@ import { IUser } from './user';
 
 export const SearchDelegatorName = {
   DEFAULT: 'FullTextSearch',
-  PRIVATE_LEGACY_PAGES: 'PrivateLegacyPages',
 } as const;
 export type SearchDelegatorName = typeof SearchDelegatorName[keyof typeof SearchDelegatorName];
 

@@ -10,7 +10,6 @@ describe('SearchService test', () => {
   let searchService;
 
   const DEFAULT = 'FullTextSearch';
-  const PRIVATE_LEGACY_PAGES = 'PrivateLegacyPages';
 
   // let NamedQuery;
 
@@ -36,7 +35,6 @@ describe('SearchService test', () => {
     dummyAliasOf = 'match -notmatch "phrase" -"notphrase" prefix:/pre1 -prefix:/pre2 tag:Tag1 -tag:Tag2';
 
     await NamedQuery.insertMany([
-      { name: 'named_query1', delegatorName: PRIVATE_LEGACY_PAGES },
       { name: 'named_query2', aliasOf: dummyAliasOf },
     ]);
 
@@ -66,18 +64,6 @@ describe('SearchService test', () => {
   });
 
   describe('parseSearchQuery()', () => {
-
-    test('should return result with delegatorName', async() => {
-      const queryString = '[nq:named_query1]';
-      const parsedQuery = await searchService.parseSearchQuery(queryString);
-
-      const expected = {
-        queryString,
-        delegatorName: PRIVATE_LEGACY_PAGES,
-      };
-
-      expect(parsedQuery).toStrictEqual(expected);
-    });
 
     test('should return result with expanded aliasOf value', async() => {
       const queryString = '[nq:named_query2]';
