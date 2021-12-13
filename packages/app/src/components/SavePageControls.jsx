@@ -101,12 +101,12 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                // grant={editorContainer.state.grant}
-                // grantGroupId={editorContainer.state.grantGroupId}
-                // grantGroupName={editorContainer.state.grantGroupName}
-                grant={grant}
-                grantGroupId={grantGroupId}
-                grantGroupName={grantGroupName}
+                grant={editorContainer.state.grant}
+                grantGroupId={editorContainer.state.grantGroupId}
+                grantGroupName={editorContainer.state.grantGroupName}
+                // grant={grant}
+                // grantGroupId={grantGroupId}
+                // grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>

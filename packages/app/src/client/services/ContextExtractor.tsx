@@ -63,8 +63,8 @@ const ContextExtractorOnce: FC = () => {
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
-  const grantGroupId = mainContent?.getAttribute('data-page-grant-group');
-  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name');
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || '';
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || '';
 
   /*
    * use static swr

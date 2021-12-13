@@ -29,9 +29,9 @@ export default class EditorContainer extends Container {
 
       slackChannels: mainContent.getAttribute('data-slack-channels') || '',
 
-      // grant: 1, // default: public
-      // grantGroupId: null,
-      // grantGroupName: null,
+      grant: 1, // default: public
+      grantGroupId: null,
+      grantGroupName: null,
 
       editorOptions: {},
       previewOptions: {},
@@ -63,16 +63,16 @@ export default class EditorContainer extends Container {
    * initialize state for page permission
    */
   initStateGrant() {
-    const mainContent = document.getElementById('content-main');
+    // const mainContent = document.getElementById('content-main');
 
-    if (mainContent == null) {
-      logger.debug('#content-main element is not exists');
-      return;
-    }
+    // if (mainContent == null) {
+    //   logger.debug('#content-main element is not exists');
+    //   return;
+    // }
 
-    this.state.grant = +mainContent.getAttribute('data-page-grant');
+    // this.state.grant = +mainContent.getAttribute('data-page-grant');
 
-    console.log(mainContent.getAttribute('data-page-grant'));
+    // console.log(mainContent.getAttribute('data-page-grant'));
 
     // const grantGroupId = mainContent.getAttribute('data-page-grant-group');
     // if (grantGroupId != null && grantGroupId.length > 0) {
@@ -107,6 +107,7 @@ export default class EditorContainer extends Container {
   }
 
   initEditorOptions(stateKey, localStorageKey, defaultOptions) {
+    console.log(defaultOptions);
     // load from localStorage
     const optsStr = window.localStorage[localStorageKey];
 
