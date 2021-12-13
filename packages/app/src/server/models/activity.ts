@@ -86,7 +86,7 @@ activitySchema.methods.getNotificationTargetUsers = async function(isRecursively
   // eslint-disable-next-line prefer-const
   let descendantsPageSubscribeUsers: Array<Types.ObjectId> = [];
 
-  if (isRecursively) {
+  if (isRecursively && targetModel === 'Page') {
     const Page = getModelSafely('Page') || require('~/server/models/page')();
     const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
     const targetPageId = (target as any)._id;
