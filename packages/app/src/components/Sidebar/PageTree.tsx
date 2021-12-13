@@ -19,7 +19,7 @@ const PageTree: FC = memo(() => {
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
 
-  const { data: migrationStatus } = useSWRxV5MigrationStatus(!isGuestUser);
+  const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   // for delete modal
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
