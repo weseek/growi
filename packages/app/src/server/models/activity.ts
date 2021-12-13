@@ -72,50 +72,93 @@ activitySchema.index({
 }, { unique: true });
 
 
-activitySchema.methods.getNotificationTargetUsers = async function(isRecursively: boolean) {
+activitySchema.methods.getNotificationTargetUsers = async function(fromPageDescendants: Array<Types.ObjectId> = []) {
   const User = getModelSafely('User') || require('~/server/models/user')();
   const {
     user: actionUser, targetModel, target, user,
   } = this;
 
-  const [subscribeUsers, unsubscribeUsers] = await Promise.all([
+  // const [subscribeUsers, unsubscribeUsers] = await Promise.all([
+  //   Subscription.getSubscription((target as any) as Types.ObjectId),
+  //   Subscription.getUnsubscription((target as any) as Types.ObjectId),
+  // ]);
+
+  const [subscribeUsers] = await Promise.all([
     Subscription.getSubscription((target as any) as Types.ObjectId),
-    Subscription.getUnsubscription((target as any) as Types.ObjectId),
   ]);
 
+  console.log('subscribeUsers', subscribeUsers);
+  // console.log('unsubscribeUsers', unsubscribeUsers);
+
   // eslint-disable-next-line prefer-const
-  let descendantsPageSubscribeUsers: Array<Types.ObjectId> = [];
+  // let descendantsPageSubscribeUsers: Array<Types.ObjectId> = [];
 
-  if (isRecursively && targetModel === 'Page') {
-    const Page = getModelSafely('Page') || require('~/server/models/page')();
-    const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
-    const targetPageId = (target as any)._id;
+  // if (isRecursively && targetModel === 'Page') {
+  //   const Page = getModelSafely('Page') || require('~/server/models/page')();
+  //   const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
+  //   const targetPageId = (target as any)._id;
 
-    for (const page of fromPageDescendants) {
-      // eslint-disable-next-line eqeqeq
-      if (page._id.toString() != targetPageId) {
-        // eslint-disable-next-line  no-await-in-loop
-        const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
-        subscribeUsers.forEach((user) => {
-          // eslint-disable-next-line eqeqeq
-          if (actionUser.toString() != user.toString()) {
-            descendantsPageSubscribeUsers.push(user);
-          }
-        });
-      }
-    }
-  }
+  //   for (const page of fromPageDescendants) {
+  //     console.log(page);
+  //     // eslint-disable-next-line eqeqeq
+  //     if (page._id.toString() != targetPageId) {
+  //       // eslint-disable-next-line  no-await-in-loop
+  //       const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
+  //       subscribeUsers.forEach((user) => {
+  //         // eslint-disable-next-line eqeqeq
+  //         if (actionUser.toString() != user.toString()) {
+  //           descendantsPageSubscribeUsers.push(user);
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
     const ids = pull.map(object => object.toString());
+    console.log('array', array);
+    console.log('ids', ids);
     return array.filter(object => !ids.includes(object.toString()));
   };
-  const notificationUsers = filter(unique([...subscribeUsers]), [...unsubscribeUsers, actionUser]);
 
-  if (descendantsPageSubscribeUsers.length > 0) {
-    unique(descendantsPageSubscribeUsers).forEach(user => notificationUsers.push(user));
+  // eslint-disable-next-line prefer-const
+  let descendantPageUsers: Array<Types.ObjectId> = [];
+  if (fromPageDescendants.length > 0) {
+    for (const page of fromPageDescendants) {
+      // eslint-disable-next-line  no-await-in-loop
+      const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
+      subscribeUsers.forEach(user => descendantPageUsers.push(user));
+    }
   }
+  console.log('descendantPageUsers', descendantPageUsers);
+
+  const notificationUsers = filter(unique([...subscribeUsers, ...descendantPageUsers]), [actionUser]);
+
+  console.log('notificationUsers', notificationUsers);
+
+  // if (fromPageDescendants.length > 0) {
+  //   const targetPage = (target as any) as IPage;
+  //   fromPageDescendants.forEach(async(page) => {
+  //     const descendantsPage = (page as any) as IPage;
+  //     // eslint-disable-next-line eqeqeq
+  //     if (descendantsPage._id != targetPage._id) {
+  //       console.log('子');
+  //       // eslint-disable-next-line  no-await-in-loop
+  //       const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
+  //       subscribeUsers.forEach((user) => {
+  //         // eslint-disable-next-line eqeqeq
+  //         const isAbleToPush = actionUser.toString() != user.toString() && !notificationUsers.includes(user._id);
+  //         if (isAbleToPush) {
+  //           notificationUsers.push(user);
+  //         }
+  //       });
+  //     }
+  //     else {
+  //       console.og('親');
+  //     }
+  //   });
+  // }
 
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },

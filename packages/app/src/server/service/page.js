@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, getModelSafely } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
@@ -49,9 +49,9 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, user, isRecursively) => {
+    this.pageEvent.on('rename', async(page, user, fromPageDescendants) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME, isRecursively);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME, fromPageDescendants);
       }
       catch (err) {
         logger.error(err);
@@ -156,7 +156,10 @@ class PageService {
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
+    let fromPageDescendants;
     if (isRecursively) {
+      const queryOptions = { offset: 1 };
+      fromPageDescendants = await Page.findManageableListWithDescendants(page, user, queryOptions);
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
@@ -177,7 +180,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user, isRecursively);
+    this.pageEvent.emit('rename', page, user, fromPageDescendants);
 
     return renamedPage;
   }
@@ -809,7 +812,7 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user, action, isRecursively = false) {
+  createAndSendNotifications = async function(page, user, action, fromPageDescendants) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
@@ -824,7 +827,7 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
 
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers(isRecursively);
+    const targetUsers = await activity.getNotificationTargetUsers(fromPageDescendants);
 
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
