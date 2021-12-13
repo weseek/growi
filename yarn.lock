@@ -16955,7 +16955,7 @@ remark-parse@^4.0.0:
     parse-entities "^1.0.2"
     repeat-string "^1.5.4"
     state-toggle "^1.0.0"
-    trim "0.0.1"
+    trim "^0.0.3"
     trim-trailing-lines "^1.0.0"
     unherit "^1.0.4"
     unist-util-remove-position "^1.0.0"
@@ -16976,7 +16976,7 @@ remark-parse@^5.0.0:
     parse-entities "^1.1.0"
     repeat-string "^1.5.4"
     state-toggle "^1.0.0"
-    trim "0.0.1"
+    trim "^0.0.3"
     trim-trailing-lines "^1.0.0"
     unherit "^1.0.4"
     unist-util-remove-position "^1.0.0"
@@ -19875,10 +19875,10 @@ trim-trailing-lines@^1.0.0:
   resolved "https://registry.yarnpkg.com/trim-trailing-lines/-/trim-trailing-lines-1.1.2.tgz#d2f1e153161152e9f02fabc670fb40bec2ea2e3a"
   integrity sha512-MUjYItdrqqj2zpcHFTkMa9WAv4JHTI6gnRQGPFLrt5L9a6tRMiDnIqYl8JBvu2d2Tc3lWJKQwlGCp0K8AvCM+Q==
 
-trim@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
-  integrity sha1-WFhUf2spB1fulczMZm+1AITEYN0=
+trim@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.3.tgz#05243a47a3a4113e6b49367880a9cca59697a20b"
+  integrity sha512-h82ywcYhHK7veeelXrCScdH7HkWfbIT1D/CgYO+nmDarz3SGNssVBMws6jU16Ga60AJCRAvPV6w6RLuNerQqjg==
 
 trough@^1.0.0:
   version "1.0.4"
