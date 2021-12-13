@@ -257,6 +257,9 @@
     }
     .item-meta {
       padding: 0 4px;
+      .top-label {
+        display: none; // not show top label
+      }
     }
     .search-result-list-snippet {
       line-height: 20px;

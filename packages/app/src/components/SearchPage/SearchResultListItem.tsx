@@ -39,9 +39,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-result-item w-100 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-result-item list-group-item-action ${isSelected ? 'active' : ''}`}>
       <a
-        className="d-block h-100 w-100"
+        className="d-block h-100"
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >

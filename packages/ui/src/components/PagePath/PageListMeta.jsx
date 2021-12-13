@@ -14,7 +14,7 @@ export class PageListMeta extends React.Component {
     // top check
     let topLabel;
     if (isTopPage(page.path)) {
-      topLabel = <span className="badge badge-info meta-icon">TOP</span>;
+      topLabel = <span className="badge badge-info meta-icon top-label">TOP</span>;
     }
 
     // template check
