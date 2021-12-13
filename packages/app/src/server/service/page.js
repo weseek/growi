@@ -20,6 +20,7 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.tagEvent = crowi.event('tag');
 
     // init
     this.pageEvent.on('create', this.pageEvent.onCreate);
@@ -271,6 +272,7 @@ class PageService {
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      this.tagEvent.emit('update', createdPage, savedTags);
     }
 
     const result = serializePageSecurely(createdPage);
