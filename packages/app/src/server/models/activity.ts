@@ -89,15 +89,15 @@ activitySchema.methods.getNotificationTargetUsers = async function(fromPageDesce
   };
 
   // eslint-disable-next-line prefer-const
-  let descendantPageUsers: Array<Types.ObjectId> = [];
+  let descendantPageSubscribeUsers: Array<Types.ObjectId> = [];
   if (fromPageDescendants.length > 0) {
     for (const page of fromPageDescendants) {
       // eslint-disable-next-line  no-await-in-loop
       const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
-      subscribeUsers.forEach(user => descendantPageUsers.push(user));
+      subscribeUsers.forEach(user => descendantPageSubscribeUsers.push(user));
     }
   }
-  const notificationUsers = filter(unique([...subscribeUsers, ...descendantPageUsers]), [actionUser]);
+  const notificationUsers = filter(unique([...subscribeUsers, ...descendantPageSubscribeUsers]), [actionUser]);
 
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },
