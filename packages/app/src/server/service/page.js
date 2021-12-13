@@ -771,6 +771,11 @@ class PageService {
     }
   }
 
+  async shortBodiesMapByPageIds(pageIds, user) {
+    // TODO: fetch
+    return {};
+  }
+
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
