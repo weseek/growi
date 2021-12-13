@@ -183,10 +183,12 @@
     .nav.nav-pills {
       > .page-list-li {
         &.active {
-          // add this negative margin to avoid inner elements of .page-list-li.active
-          // moving to right side by border-left's px size.
-          margin-left: -3px;
           border-left: solid 3px transparent;
+          .search-item-checkbox {
+            // subtract 3px from padding left applied by .search-item-checkbox
+            // as 3px of border-left is added above
+            padding-left: 4px;
+          }
         }
         > a {
           word-break: break-all;
@@ -233,7 +235,7 @@
   }
   // checkbox
   .search-item-checkbox {
-    padding: 0 14px;
+    padding-left: 7px;
     .item-checkbox-input {
       position: relative; // to apply padding and margin
       margin: 0;
@@ -258,6 +260,12 @@
     }
     .search-result-list-snippet {
       line-height: 20px;
+    }
+    .item-control {
+      right: 0;
+      .grw-btn-page-management {
+        padding: 7px;
+      }
     }
   }
   .search-result-content {

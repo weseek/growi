@@ -47,7 +47,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       >
         <div className="d-flex h-100">
           {/* checkbox */}
-          <div className="form-check d-flex align-items-center justify-content-center px-2 search-item-checkbox">
+          <div className="form-check d-flex align-items-center justify-content-center pr-2 search-item-checkbox">
             <input
               className="form-check-input item-checkbox-input"
               type="checkbox"
@@ -60,13 +60,13 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               checked={isChecked}
             />
           </div>
-          <div className="search-item-text p-3 flex-grow-1 border">
+          <div className="search-item-text p-3 flex-grow-1">
             {/* page path */}
             <div className="item-path">
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
             </div>
-            <div className="d-flex align-items-center mb-2">
+            <div className="d-flex align-items-center mb-2 position-relative">
               {/* Picture */}
               <span className="user-picture mr-2">
                 <UserPicture user={pageData.lastUpdateUser} />
@@ -78,7 +78,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
               </div>
               {/* doropdown icon includes page control buttons */}
-              <div className="ml-auto">
+              <div className="position-absolute item-control">
                 <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
