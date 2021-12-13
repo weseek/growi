@@ -14,34 +14,34 @@ export class PageListMeta extends React.Component {
     // top check
     let topLabel;
     if (isTopPage(page.path)) {
-      topLabel = <span className="badge badge-info">TOP</span>;
+      topLabel = <span className="badge badge-info meta-icon">TOP</span>;
     }
 
     // template check
     let templateLabel;
     if (checkTemplatePath(page.path)) {
-      templateLabel = <span className="badge badge-info">TMPL</span>;
+      templateLabel = <span className="badge badge-info meta-icon">TMPL</span>;
     }
 
     let commentCount;
     if (page.commentCount != null && page.commentCount > 0) {
-      commentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
+      commentCount = <span className="meta-icon"><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
     let likerCount;
     if (page.liker != null && page.liker.length > 0) {
-      likerCount = <span><i className="icon-like" />{page.liker.length}</span>;
+      likerCount = <span className="meta-icon"><i className="icon-like" />{page.liker.length}</span>;
     }
 
     let locked;
     if (page.grant !== 1) {
-      locked = <span><i className="icon-lock" /></span>;
+      locked = <span className="meta-icon"><i className="icon-lock" /></span>;
     }
 
     let seenUserCount;
     if (page.seenUserCount > 0) {
       seenUserCount = (
-        <span>
+        <span className="meta-icon">
           <i className="footstamp-icon"><FootstampIcon /></i>
           {page.seenUsers.length}
         </span>
@@ -50,7 +50,7 @@ export class PageListMeta extends React.Component {
 
     let bookmarkCount;
     if (this.props.bookmarkCount > 0) {
-      bookmarkCount = <span><i className="icon-star" />{this.props.bookmarkCount}</span>;
+      bookmarkCount = <span className="meta-icon"><i className="icon-star" />{this.props.bookmarkCount}</span>;
     }
 
     return (
