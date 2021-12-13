@@ -377,11 +377,11 @@ const PageEditorWrapper = (props) => {
 
   return (
     <PageEditorHOCWrapper
+      {...props}
       isEditable={isEditable}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
-      {...props}
     />
   );
 };

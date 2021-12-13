@@ -187,10 +187,10 @@ const PageWrapper = (props) => {
 
   return (
     <Page
+      {...props}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
-      {...props}
     />
   );
 };

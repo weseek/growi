@@ -138,10 +138,10 @@ const SavePageControlsWrapper = (props) => {
 
   return (
     <SavePageControlsHOCWrapper
+      {...props}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
-      {...props}
     />
   );
 };
