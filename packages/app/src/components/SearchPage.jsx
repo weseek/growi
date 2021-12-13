@@ -35,7 +35,7 @@ class SearchPage extends React.Component {
       selectedPagesIdList: new Set(),
       searchResultCount: 0,
       activePage: 1,
-      pagingLimit: this.props.appContainer.config.pageLimitationL,
+      pagingLimit: this.props.appContainer.config.pageLimitationL || 50,
       excludeUserPages: true,
       excludeTrashPages: true,
       sort: SORT_AXIS.RELATION_SCORE,
@@ -330,7 +330,8 @@ class SearchPage extends React.Component {
           searchResultMeta={this.state.searchResultMeta}
           searchingKeyword={this.state.searchedKeyword}
           onPagingLimitChanged={this.onPagingLimitChanged}
-          initialPagingLimit={this.props.appContainer.config.pageLimitationL || 50}
+          pagingLimit={this.state.pagingLimit}
+          activePage={this.state.activePage}
         >
         </SearchPageLayout>
         <PageDeleteModal

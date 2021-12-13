@@ -153,7 +153,10 @@
 
   // label
   label {
-    font-weight: 700;
+    // add with-no-font-weight class in case you do not want to apply font-weight 700 to label
+    :not(.with-no-font-weight) {
+      font-weight: 700;
+    }
   }
 
   // disabled button (reproduction from bootstrap3.)
