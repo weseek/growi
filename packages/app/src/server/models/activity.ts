@@ -84,13 +84,25 @@ activitySchema.methods.getNotificationTargetUsers = async function(isRecursively
   ]);
 
   // eslint-disable-next-line prefer-const
-  let descendantsSubscribeUsers: Array<Types.ObjectId> = [];
+  let descendantsPageSubscribeUsers: Array<Types.ObjectId> = [];
 
   if (isRecursively) {
     const Page = getModelSafely('Page') || require('~/server/models/page')();
     const fromPageDescendants = await Page.findManageableListWithDescendants(target, user);
+    const targetPageId = (target as any)._id;
+
     for (const page of fromPageDescendants) {
-      console.log('page', page);
+      // eslint-disable-next-line eqeqeq
+      if (page._id.toString() != targetPageId) {
+        // eslint-disable-next-line  no-await-in-loop
+        const subscribeUsers = await Subscription.getSubscription((page as any) as Types.ObjectId);
+        subscribeUsers.forEach((user) => {
+          // eslint-disable-next-line eqeqeq
+          if (actionUser.toString() != user.toString()) {
+            descendantsPageSubscribeUsers.push(user);
+          }
+        });
+      }
     }
   }
 
@@ -118,19 +130,16 @@ activitySchema.methods.getNotificationTargetUsers = async function(isRecursively
   //   ]);
   // }
 
-  console.log('subscribeUsers', subscribeUsers);
-  console.log('unsubscribeUsers', unsubscribeUsers);
-
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
     const ids = pull.map(object => object.toString());
-    console.log('array', array);
-    console.log('pull', pull);
-    // return Array.from(new Set(ids));
     return array.filter(object => !ids.includes(object.toString()));
   };
   const notificationUsers = filter(unique([...subscribeUsers]), [...unsubscribeUsers, actionUser]);
-  console.log('notificationUsers', notificationUsers);
+
+  if (descendantsPageSubscribeUsers.length > 0) {
+    unique(descendantsPageSubscribeUsers).forEach(user => notificationUsers.push(user));
+  }
 
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },
