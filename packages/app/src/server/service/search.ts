@@ -56,7 +56,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   fullTextSearchDelegator: any & SearchDelegator
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
+  nqDelegators: {[SearchDelegatorName.DEFAULT]: SearchDelegator} // [key in SearchDelegatorName] at dev/5.0.x
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -104,7 +104,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
   }
 
-  generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+  generateNQDelegators(defaultDelegator: SearchDelegator): {[SearchDelegatorName.DEFAULT]: SearchDelegator} { // [key in SearchDelegatorName] at dev/5.0.x
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
     };
