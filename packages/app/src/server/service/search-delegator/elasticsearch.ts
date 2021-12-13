@@ -37,7 +37,7 @@ type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data> {
 
-  name!: SearchDelegatorName.DEFAULT
+  name!: SearchDelegatorName
 
   configManager!: any
 
