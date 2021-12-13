@@ -26,6 +26,7 @@ module.exports = {
   // 'growi:routes:page': 'debug',
   'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
+  'growi:service:search-delegator:elasticsearch': 'debug',
 
   /*
    * configure level for client

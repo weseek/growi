@@ -112,7 +112,9 @@ module.exports = function(crowi, app) {
    */
   api.search = async function(req, res) {
     const user = req.user;
-    const { q: keyword = null, type = null } = req.query;
+    const {
+      q: keyword = null, type = null, sort = null, order = null,
+    } = req.query;
     let paginateOpts;
 
     try {
@@ -137,7 +139,9 @@ module.exports = function(crowi, app) {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const searchOpts = { ...paginateOpts, type };
+    const searchOpts = {
+      ...paginateOpts, type, sort, order,
+    };
 
     let searchResult;
     let delegatorName;

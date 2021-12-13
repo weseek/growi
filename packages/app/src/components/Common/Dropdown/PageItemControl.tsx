@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '~/interfaces/page';
 
 type PageItemControlProps = {
-  page: Partial<IPageHasId>,
-  onClickDeleteButton?: (pageId: string) => void,
+  page: Partial<IPageHasId>
+  isEnableActions: boolean
+  onClickDeleteButton?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page, onClickDeleteButton } = props;
+  const { page, isEnableActions, onClickDeleteButton } = props;
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {
@@ -48,18 +49,40 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
-        <button className="dropdown-item text-danger" type="button" onClick={deleteButtonHandler}>
-          <i className="icon-fw icon-fire"></i>{t('Delete')}
-        </button>
-        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-          <i className="icon-fw icon-star"></i>{t('Add to bookmark')}
-        </button>
-        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-          <i className="icon-fw icon-docs"></i>{t('Duplicate')}
-        </button>
-        <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-          <i className="icon-fw  icon-action-redo"></i>{t('Move/Rename')}
-        </button>
+
+        {/* TODO: show dropdown when permalink section is implemented */}
+        {!isEnableActions && (
+          <p className="dropdown-item">
+            {t('search_result.currently_not_implemented')}
+          </p>
+        )}
+        {isEnableActions && (
+          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw icon-star"></i>
+            {t('Add to bookmark')}
+          </button>
+        )}
+        {isEnableActions && (
+          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw icon-docs"></i>
+            {t('Duplicate')}
+          </button>
+        )}
+        {isEnableActions && (
+          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw  icon-action-redo"></i>
+            {t('Move/Rename')}
+          </button>
+        )}
+        {isEnableActions && (
+          <>
+            <div className="dropdown-divider"></div>
+            <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>
+              <i className="icon-fw icon-trash"></i>
+              {t('Delete')}
+            </button>
+          </>
+        )}
       </div>
     </>
   );

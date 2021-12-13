@@ -582,7 +582,12 @@
     "currently_not_implemented":"現在未実装の機能です",
     "search_again" : "再検索",
     "number_of_list_to_display" : "表示件数",
-    "page_number_unit" : "件"
+    "page_number_unit" : "件",
+    "sort_axis": {
+      "relationScore": "関連度順",
+      "createdAt": "作成日時",
+      "updatedAt": "更新日時"
+    }
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
