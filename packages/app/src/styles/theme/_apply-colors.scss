@@ -616,22 +616,21 @@ body.pathname-sidebar {
           }
         }
       }
+      .page-list-meta {
+        color: $color-search-item-pagelist-meta;
+        svg {
+          fill: $color-search-item-pagelist-meta;
+        }
+      }
     }
   }
-}
 
-.search-result-page-title {
-  color: $color-search-page-list-title;
-}
+  .search-result-page-title {
+    color: $color-search-page-list-title;
+  }
 
-.search-result-list-snippet {
-  color: $color-search-page-list-snippet;
-}
-
-.page-list-meta {
-  color: $color-search-item-pagelist-meta;
-  svg {
-    fill: $color-search-item-pagelist-meta;
+  .search-result-list-snippet {
+    color: $color-search-page-list-snippet;
   }
 }
 
