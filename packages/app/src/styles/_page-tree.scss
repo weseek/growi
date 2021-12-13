@@ -21,6 +21,10 @@
       background-color: transparent;
       transition: 0.5s;
 
+      &:focus {
+        box-shadow: none;
+      }
+
       &.grw-pagetree-open {
         transform: rotate(90deg);
       }
