@@ -28,7 +28,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
         data-toggle="dropdown"
       >
-        <i className="fa fa-ellipsis-v text-muted"></i>
+        <i className="icon-options fa fa-rotate-90 text-muted"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
 
@@ -70,8 +70,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         )}
         {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
+            <i className="icon-fw icon-note"></i>
+            {t('Rename')}
           </button>
         )}
         {isEnableActions && (
