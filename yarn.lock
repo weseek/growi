@@ -16393,7 +16393,7 @@ rc@>=1.2.8, rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-re2@^1.17.1:
+re2@^1.16.0:
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/re2/-/re2-1.17.1.tgz#0202025aa20dd574a8cdb439811761d88b70ae59"
   integrity sha512-TrhxVzakyO/WJsErkc01zjlEiDLCuuRuddbVi2I8YasIbh6MEJfkRoajBRj+ggm00gnGI2EMemE9GrlKrgUZ8Q==

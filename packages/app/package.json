@@ -131,7 +131,7 @@
     "passport-saml": "^3.2.0",
     "passport-twitter": "^1.0.4",
     "prom-client": "^13.0.0",
-    "re2": "^1.17.1",
+    "re2": "^1.16.0",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
     "reconnecting-websocket": "^4.4.0",
