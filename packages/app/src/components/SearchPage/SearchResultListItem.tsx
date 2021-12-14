@@ -66,7 +66,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
             </h6>
-            <div className="d-flex align-items-center mb-2 position-relative">
+            <div className="d-flex align-items-center mb-2">
               {/* Picture */}
               <span className="user-picture mr-2">
                 <UserPicture user={pageData.lastUpdateUser} />
