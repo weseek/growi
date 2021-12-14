@@ -17,7 +17,7 @@ import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
-import { getOptionsToSave } from '~/mediators/editor';
+import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
