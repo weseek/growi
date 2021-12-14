@@ -25,6 +25,21 @@ const PageTree: FC = memo(() => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
+  if (!migrationStatus?.isV5Compatible) {
+    // TODO : improve design
+    // Story : https://redmine.weseek.co.jp/issues/83755
+    return (
+      <>
+        <div className="grw-sidebar-content-header p-3">
+          <h3 className="mb-0">{t('Page Tree')}</h3>
+        </div>
+        <div className="mt-5 mx-2 text-center">
+          <h3 className="text-gray">{t('admin:v5_page_migration.page_tree_not_avaliable')}</h3>
+          <a href="/admin">{t('admin:v5_page_migration.go_to_settings')}</a>
+        </div>
+      </>
+    );
+  }
   /*
    * dependencies
    */
