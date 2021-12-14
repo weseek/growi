@@ -17,7 +17,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';
 
-import { getOptionsToSave } from '~/mediators/editor';
+import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
