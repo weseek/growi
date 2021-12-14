@@ -17,7 +17,7 @@ import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import Editor from '../PageEditor/Editor';
-import SlackNotification from '../SlackNotification';
+import { SlackNotification } from '../SlackNotification';
 
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';

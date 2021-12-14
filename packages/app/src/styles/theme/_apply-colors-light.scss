@@ -173,8 +173,10 @@ $border-color: $border-color-global;
   .grw-pagetree {
     .grw-pagetree-item {
       .grw-triangle-icon {
-        svg {
-          fill: $gray-400;
+        &:not(:hover) {
+          svg {
+            fill: $gray-400;
+          }
         }
       }
       &:hover {
