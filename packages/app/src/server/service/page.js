@@ -952,13 +952,18 @@ class PageService {
             parentPath = parentPath.replace(bracket, `\\${bracket}`);
           });
 
+          const filter = {
+            // regexr.com/6889f
+            // ex. /parent/any_child OR /any_level1
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+          };
+          if (grant != null) {
+            filter.grant = grant;
+          }
+
           return {
             updateMany: {
-              filter: {
-                // regexr.com/6889f
-                // ex. /parent/any_child OR /any_level1
-                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
-              },
+              filter,
               update: {
                 parent: parentId,
               },
