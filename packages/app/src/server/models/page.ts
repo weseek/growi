@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import mongoose, {
-  Schema, Model, Document,
+  Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -358,4 +358,61 @@ export default (crowi: Crowi): any => {
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema);
+};
+
+/*
+ * Aggregation utilities
+ */
+// TODO: use the original type when upgraded https://github.com/Automattic/mongoose/blob/master/index.d.ts#L3090
+type PipelineStageMatch = {
+  $match: AnyObject
+};
+
+export const generateGrantCondition = async(
+    user, _userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+): Promise<PipelineStageMatch> => {
+  let userGroups = _userGroups;
+  if (user != null && userGroups == null) {
+    const UserGroupRelation: any = mongoose.model('UserGroupRelation');
+    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+
+  const grantConditions: AnyObject[] = [
+    { grant: null },
+    { grant: GRANT_PUBLIC },
+  ];
+
+  if (showAnyoneKnowsLink) {
+    grantConditions.push({ grant: GRANT_RESTRICTED });
+  }
+
+  if (showPagesRestrictedByOwner) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED },
+      { grant: GRANT_OWNER },
+    );
+  }
+  else if (user != null) {
+    grantConditions.push(
+      { grant: GRANT_SPECIFIED, grantedUsers: user._id },
+      { grant: GRANT_OWNER, grantedUsers: user._id },
+    );
+  }
+
+  if (showPagesRestrictedByGroup) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP },
+    );
+  }
+  else if (userGroups != null && userGroups.length > 0) {
+    grantConditions.push(
+      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+    );
+  }
+
+  return {
+    $match: {
+      $or: grantConditions,
+    },
+  };
 };

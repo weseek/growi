@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
@@ -13,15 +13,16 @@ type Props = {
   isSelected: boolean,
   isChecked: boolean,
   isEnableActions: boolean,
+  shortBody?: string
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-const SearchResultListItem: FC<Props> = (props:Props) => {
+const SearchResultListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -87,13 +88,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
             </div>
             <div className="my-2 search-result-list-snippet">
-              {
-                pageMeta.elasticSearchResult != null && (
-                  <Clamp lines={2}>
+              <Clamp lines={2}>
+                {
+                  pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (
                     <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
-                  </Clamp>
-                )
-              }
+                  ) : (
+                    <div className="mt-1">{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator
+                  )
+                }
+              </Clamp>
             </div>
           </div>
         </div>
@@ -101,6 +104,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       </a>
     </li>
   );
-};
+});
 
 export default SearchResultListItem;
