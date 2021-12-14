@@ -29,7 +29,12 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
   const paths = Object.keys(ancestorsChildren);
 
   let currentNode = rootNode;
-  paths.forEach((path) => {
+  paths.every((path) => {
+    // stop rendering when non-migrated pages found
+    if (currentNode == null) {
+      return false;
+    }
+
     const childPages = ancestorsChildren[path];
     currentNode.children = ItemNode.generateNodesFromPages(childPages);
 
@@ -37,6 +42,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
       return paths.includes(node.page.path as string);
     })[0];
     currentNode = nextNode;
+    return true;
   });
 
   return rootNode;
