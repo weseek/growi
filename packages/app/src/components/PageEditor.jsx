@@ -163,7 +163,9 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
-    const { appContainer, pageContainer, mutateGrant } = this.props;
+    const {
+      appContainer, pageContainer, mutateGrant, editorContainer,
+    } = this.props;
 
     try {
       let res = await appContainer.apiGet('/attachments.limit', {
@@ -200,6 +202,7 @@ class PageEditor extends React.Component {
         logger.info('Page is created', res.page._id);
         pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
         mutateGrant(res.page.grant);
+        editorContainer.setState({ grant: res.page.grant });
       }
     }
     catch (e) {

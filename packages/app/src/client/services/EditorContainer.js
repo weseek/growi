@@ -105,7 +105,6 @@ export default class EditorContainer extends Container {
   }
 
   initEditorOptions(stateKey, localStorageKey, defaultOptions) {
-    console.log(defaultOptions);
     // load from localStorage
     const optsStr = window.localStorage[localStorageKey];
 

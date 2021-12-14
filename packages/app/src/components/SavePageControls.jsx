@@ -43,8 +43,10 @@ class SavePageControls extends React.Component {
   }
 
   updateGrantHandler(data) {
-    const { mutateGrant, mutateGrantGroupId, mutateGrantGroupName } = this.props;
-    // this.props.editorContainer.setState(data);
+    const {
+      mutateGrant, mutateGrantGroupId, mutateGrantGroupName, editorContainer,
+    } = this.props;
+    editorContainer.setState(data);
     mutateGrant(data.grant);
     mutateGrantGroupId(data.grantGroupId);
     mutateGrantGroupName(data.grantGroupName);
@@ -93,6 +95,13 @@ class SavePageControls extends React.Component {
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
+    console.log('grant', grant);
+    console.log('grantGroupId', grantGroupId);
+    console.log('grantGroupName', grantGroupName);
+    console.log('editorContainer.state.grant', editorContainer.state.grant);
+    console.log('editorContainer.state.grantGroupId', editorContainer.state.grantGroupId);
+    console.log('editorContainer.state.grantGroupName', editorContainer.state.grantGroupName);
+
     return (
       <div className="d-flex align-items-center form-inline flex-nowrap">
 
@@ -101,12 +110,12 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                grant={editorContainer.state.grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
-                // grant={grant}
-                // grantGroupId={grantGroupId}
-                // grantGroupName={grantGroupName}
+                // grant={editorContainer.state.grant}
+                // grantGroupId={editorContainer.state.grantGroupId}
+                // grantGroupName={editorContainer.state.grantGroupName}
+                grant={grant}
+                grantGroupId={grantGroupId}
+                grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>
@@ -143,7 +152,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useGrantGroupName();
 
-  if (isEditable == null || editorMode == null || grant == null || grantGroupId == null || grantGroupName == null) {
+  if (isEditable == null || editorMode == null) {
     return null;
   }
 
@@ -179,8 +188,8 @@ SavePageControls.propTypes = {
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string.isRequired,
-  grantGroupName: PropTypes.string.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
   mutateGrant: PropTypes.func.isRequired,
   mutateGrantGroupId: PropTypes.func.isRequired,
   mutateGrantGroupName: PropTypes.func.isRequired,
