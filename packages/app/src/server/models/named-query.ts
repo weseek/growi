@@ -6,7 +6,7 @@ import mongoose, {
 
 import { getOrCreateModel } from '@growi/core';
 import loggerFactory from '../../utils/logger';
-import { INamedQuery, SearchDelegatorName } from '../../interfaces/named-query';
+import { INamedQuery, SearchDelegatorName } from '~/interfaces/named-query';
 
 const logger = loggerFactory('growi:models:named-query');
 
