@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import mongoose, {
-  Schema, Model, Document,
+  Schema, Model, Document, AnyObject,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -363,9 +363,13 @@ export default (crowi: Crowi): any => {
 /*
  * Aggregation utilities
  */
+type PipelineStageMatch = {
+  $match: AnyObject
+};
+
 export const generateGrantConditions = async(
     user, _userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
-): Promise<{[key:string]: any | number | null}[]> => {
+): Promise<PipelineStageMatch> => {
   let userGroups = _userGroups;
   if (user != null && userGroups == null) {
     const UserGroupRelation: any = mongoose.model('UserGroupRelation');
@@ -405,5 +409,9 @@ export const generateGrantConditions = async(
     );
   }
 
-  return grantConditions;
+  return {
+    $match: {
+      $or: grantConditions,
+    },
+  };
 };

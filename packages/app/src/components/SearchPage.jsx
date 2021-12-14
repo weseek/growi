@@ -14,6 +14,7 @@ import SearchControl from './SearchPage/SearchControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
 import { useIsGuestUser } from '~/stores/context';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
 export const specificPathNames = {
   user: '/user',
@@ -142,7 +143,7 @@ class SearchPage extends React.Component {
   }
 
   async fetchShortBodiesMap(pageIds) {
-    const res = await this.props.appContainer.apiv3Get('/page-listing/short-bodies', { pageIds });
+    const res = await apiv3Get('/page-listing/short-bodies', { pageIds });
     this.setState({ shortBodiesMap: res.data.shortBodiesMap });
   }
 
