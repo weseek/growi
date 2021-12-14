@@ -6,7 +6,7 @@ const PrivateLegacyPages: FC = memo(() => {
 
   return (
     <a href="/private-legacy-pages?q=[nq:PrivateLegacyPages]" className="h5 grw-private-legacy-pages-anchor text-decoration-none">
-      <i className="icon-drawer mr-2"></i> Private Legacy Pages
+      <i className="icon-drawer mr-2"></i> {t('pagetree.private_legacy_pages')}
     </a>
   );
 });
