@@ -6,6 +6,7 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
+import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
 
 
 type Props = {
@@ -84,7 +85,12 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
+                <PageItemControl
+                  page={pageData}
+                  onClickDeleteButton={props.onClickDeleteButton}
+                  isEnableActions={isEnableActions}
+                  isDeletable={!isTopPage(pageData.path)}
+                />
               </div>
             </div>
             <div className="my-2 search-result-list-snippet">
