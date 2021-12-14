@@ -171,14 +171,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(newChildren, targetId);
       setCurrentChildren(newChildren);
     }
-  }, [data]);
+  }, [data, isOpen]);
 
   // TODO: improve style
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
 
   const buttonClass = isOpen ? 'grw-pagetree-open' : '';
-
   return (
     <>
       <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
@@ -218,12 +217,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div className="ml-3 mt-2">
+          <div key={node.page._id} className="ml-3 mt-2">
             <Item
-              key={node.page._id}
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              targetId={targetId}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>
