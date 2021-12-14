@@ -51,15 +51,19 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-      isLiked: false,
-      isBookmarked: false,
-      seenUsers: [],
-      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
-      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
-      likerUsers: [],
-      sumOfLikers: 0,
+      isBookmarked: false,
       sumOfBookmarks: 0,
+
+      seenUsers: [],
+      seenUserIds: [],
+      sumOfSeenUsers: [],
+
+      isLiked: false,
+      likers: [],
+      likerIds: [],
+      sumOfLikers: 0,
+
       createdAt: mainContent.getAttribute('data-page-created-at'),
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
@@ -109,7 +113,7 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+    this.checkAndUpdateImageUrlCached(this.state.likers);
 
     const { isSharedUser } = this.appContainer;
 
@@ -117,14 +121,20 @@ export default class PageContainer extends Container {
     const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
-      this.retrieveSeenUsers();
-      this.retrieveLikeInfo();
+      // We don't retrieve bookmarks in the initial page load
+      // as it is stored in a separate collection to like and seen user
+      // data so it has a separate api endpoint.
+      this.initialPageLoad();
       this.retrieveBookmarkInfo();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
+
+    this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
+    this.emitJoinPageRoomRequest();
+
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
@@ -150,13 +160,6 @@ export default class PageContainer extends Container {
     return 'PageContainer';
   }
 
-
-  get isAbleToOpenPageEditor() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
-
-    return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  }
 
   /**
    * whether to display reaction buttons
@@ -215,7 +218,7 @@ export default class PageContainer extends Container {
    * whether to like button
    * not displayed on user page
    */
-  get isAbleToShowLikeButton() {
+  get isAbleToShowLikeButtons() {
     const { isUserPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
@@ -260,29 +263,54 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async retrieveSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
 
-    this.setState({ seenUsers: users });
-    this.checkAndUpdateImageUrlCached(users);
-  }
+  async initialPageLoad() {
+    {
+      const {
+        data: {
+          likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
+        },
+      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
 
-  async retrieveLikeInfo() {
-    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
-    const { sumOfLikers, isLiked } = res.data;
+      await this.setState({
+        sumOfLikers,
+        isLiked,
+        likerIds,
+        seenUserIds,
+        sumOfSeenUsers,
+        isSeen,
+      });
+    }
 
-    this.setState({
-      sumOfLikers,
-      isLiked,
-    });
+    await this.retrieveLikersAndSeenUsers();
   }
 
   async toggleLike() {
-    const bool = !this.state.isLiked;
-    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
-    this.setState({ isLiked: bool });
+    {
+      const toggledIsLiked = !this.state.isLiked;
+      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
 
-    return this.retrieveLikeInfo();
+      await this.setState(state => ({
+        isLiked: toggledIsLiked,
+        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
+        likerIds: toggledIsLiked
+          ? [...this.state.likerIds, this.appContainer.currentUserId]
+          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
+      }));
+    }
+
+    await this.retrieveLikersAndSeenUsers();
+  }
+
+  async retrieveLikersAndSeenUsers() {
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
+
+    await this.setState({
+      likers: users.filter(({ id }) => this.state.likerIds.includes(id)).slice(0, 15),
+      seenUsers: users.filter(({ id }) => this.state.seenUserIds.includes(id)).slice(0, 15),
+    });
+
+    this.checkAndUpdateImageUrlCached(users);
   }
 
   async retrieveBookmarkInfo() {
@@ -315,10 +343,6 @@ export default class PageContainer extends Container {
     }
   }
 
-  get navigationContainer() {
-    return this.appContainer.getContainer('NavigationContainer');
-  }
-
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
@@ -345,9 +369,7 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags, revision) {
-    const { editorMode } = this.navigationContainer.state;
-
+  updateStateAfterSave(page, tags, revision, editorMode) {
     // update state of PageContainer
     const newState = {
       pageId: page._id,
@@ -391,9 +413,7 @@ export default class PageContainer extends Container {
    * @param {object} optionsToSave
    * @return {object} { page: Page, tags: Tag[] }
    */
-  async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.navigationContainer.state;
-
+  async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
 
@@ -413,19 +433,18 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags, res.revision);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
     return res;
   }
 
-  async saveAndReload(optionsToSave) {
+  async saveAndReload(optionsToSave, editorMode) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
     }
 
-    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
-      logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
+      logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
       return;
     }
 
@@ -467,7 +486,6 @@ export default class PageContainer extends Container {
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: socketIoContainer.getSocketClientId(),
       path: pagePath,
       body: markdown,
     });
@@ -483,7 +501,6 @@ export default class PageContainer extends Container {
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: socketIoContainer.getSocketClientId(),
       page_id: pageId,
       revision_id: revisionId,
       body: markdown,
@@ -508,7 +525,6 @@ export default class PageContainer extends Container {
       completely,
       page_id: this.state.pageId,
       revision_id: this.state.revisionId,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
 
   }
@@ -522,7 +538,6 @@ export default class PageContainer extends Container {
     return this.appContainer.apiPost('/pages.revertRemove', {
       recursively,
       page_id: this.state.pageId,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
@@ -538,7 +553,6 @@ export default class PageContainer extends Container {
       isRemainMetadata,
       newPagePath,
       path,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
@@ -565,6 +579,13 @@ export default class PageContainer extends Container {
     });
   }
 
+  // request to server so the client to join a room for each page
+  emitJoinPageRoomRequest() {
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
+    const socket = socketIoContainer.getSocket();
+    socket.emit('join:page', { socketId: socket.id, pageId: this.state.pageId });
+  }
+
   addWebSocketEventHandlers() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const pageContainer = this;
@@ -572,11 +593,6 @@ export default class PageContainer extends Container {
     const socket = socketIoContainer.getSocket();
 
     socket.on('page:create', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -587,11 +603,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:update', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -602,11 +613,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:delete', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -617,11 +623,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:editingWithHackmd', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
       // update isHackmdDraftUpdatingInRealtime

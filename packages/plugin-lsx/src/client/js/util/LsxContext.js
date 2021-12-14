@@ -1,19 +1,23 @@
 import * as url from 'url';
 
-import { pathUtils } from 'growi-commons';
+import { customTagUtils, pathUtils } from 'growi-commons';
 
-export class LsxContext {
+const { TagContext, ArgsParser, OptionParser } = customTagUtils;
 
-  constructor() {
-    this.currentPagePath = null;
-    this.tagExpression = null;
+export class LsxContext extends TagContext {
+
+  /**
+   * @param {object|TagContext|LsxContext} initArgs
+   */
+  constructor(initArgs) {
+    super(initArgs);
+
     this.fromPagePath = null;
-    this.lsxArgs = null;
 
     // initialized after parse()
     this.isParsed = null;
     this.pagePath = null;
-    this.options = null;
+    this.options = {};
   }
 
   parse() {
@@ -21,40 +25,17 @@ export class LsxContext {
       return;
     }
 
-    // initialize
-    let specifiedPath;
-    this.options = {};
+    const parsedResult = ArgsParser.parse(this.args);
+    this.options = parsedResult.options;
 
-    if (this.lsxArgs.length > 0) {
-      const splittedArgs = this.lsxArgs.split(',');
-      let firstArgsKey; let
-        firstArgsValue;
-
-      splittedArgs.forEach((arg, index) => {
-        const trimedArg = arg.trim();
-
-        // parse string like 'key1=value1, key2=value2, ...'
-        // see https://regex101.com/r/pYHcOM/1
-        const match = trimedArg.match(/([^=]+)=?(.+)?/);
-        const key = match[1];
-        const value = match[2] || true;
-        this.options[key] = value;
-
-        if (index === 0) {
-          firstArgsKey = key;
-          firstArgsValue = value;
-        }
-      });
-
-      // determine specifiedPath
-      // order:
-      //   1: lsx(prefix=..., ...)
-      //   2: lsx(firstArgs, ...)
-      //   3: fromPagePath
-      specifiedPath = this.options.prefix
-          || ((firstArgsValue === true) ? firstArgsKey : undefined)
-          || this.fromPagePath;
-    }
+    // determine specifiedPath
+    // order:
+    //   1: lsx(prefix=..., ...)
+    //   2: lsx(firstArgs, ...)
+    //   3: fromPagePath
+    const specifiedPath = this.options.prefix
+        || ((parsedResult.firstArgsValue === true) ? parsedResult.firstArgsKey : undefined)
+        || this.fromPagePath;
 
     // resolve pagePath
     //   when `fromPagePath`=/hoge and `specifiedPath`=./fuga,
@@ -71,51 +52,10 @@ export class LsxContext {
   }
 
   getOptDepth() {
-    // eslint-disable-next-line eqeqeq
-    if (this.options.depth == undefined) {
+    if (this.options.depth === undefined) {
       return undefined;
     }
-    return this.parseNum(this.options.depth);
-  }
-
-  parseNum(str) {
-    // eslint-disable-next-line eqeqeq
-    if (str == undefined) {
-      return undefined;
-    }
-
-    // see: https://regex101.com/r/w4KCwC/3
-    const match = str.match(/^(-?[0-9]+)(([:+]{1})(-?[0-9]+)?)?$/);
-    if (!match) {
-      return undefined;
-    }
-
-    // determine start
-    let start;
-    let end;
-
-    // has operator
-    // eslint-disable-next-line eqeqeq
-    if (match[3] != undefined) {
-      start = +match[1];
-      const operator = match[3];
-
-      // determine end
-      if (operator === ':') {
-        end = +match[4] || -1; // set last(-1) if undefined
-      }
-      else if (operator === '+') {
-        end = +match[4] || 0; // plus zero if undefined
-        end += start;
-      }
-    }
-    // don't have operator
-    else {
-      start = 1;
-      end = +match[1];
-    }
-
-    return { start, end };
+    return OptionParser.parseRange(this.options.depth);
   }
 
 }

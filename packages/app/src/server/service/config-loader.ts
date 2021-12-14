@@ -6,6 +6,7 @@ import ConfigModel, {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
 } from '../models/config';
 
+
 const logger = loggerFactory('growi:service:ConfigLoader');
 
 enum ValueType { NUMBER, STRING, BOOLEAN }
@@ -312,6 +313,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: true,
   },
+  LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isEmailAuthenticationEnabled',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
@@ -486,6 +493,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:commandPermission',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_WITHOUT_PROXY_EVENT_ACTIONS_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:eventActionsPermission',
+    type:    ValueType.STRING,
+    default: null,
+  },
   SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
     ns:      'crowi',
     key:     'slackbot:withProxy:saltForGtoP',
@@ -559,7 +578,7 @@ export default class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-      config[doc.ns][doc.key] = JSON.parse(doc.value);
+      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);

@@ -27,7 +27,7 @@ const PasswordResetRequestForm = (props) => {
       toastSuccess(t('forgot_password.success_to_send_email'));
     }
     catch (err) {
-      toastError('err', err);
+      toastError(err);
     }
   };
 

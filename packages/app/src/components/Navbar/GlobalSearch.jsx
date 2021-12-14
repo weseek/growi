@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 
 import SearchForm from '../SearchForm';
 
@@ -14,9 +13,11 @@ class GlobalSearch extends React.Component {
   constructor(props) {
     super(props);
 
+    const isSearchScopeChildrenAsDefault = this.props.appContainer.getConfig().isSearchScopeChildrenAsDefault;
+
     this.state = {
       text: '',
-      isScopeChildren: false,
+      isScopeChildren: isSearchScopeChildrenAsDefault,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -95,7 +96,6 @@ class GlobalSearch extends React.Component {
 GlobalSearch.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 
   dropup: PropTypes.bool,
 };
@@ -103,6 +103,6 @@ GlobalSearch.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer, NavigationContainer]);
+const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer]);
 
 export default withTranslation()(GlobalSearchWrapper);

@@ -11,6 +11,7 @@ const path = require('path');
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -330,12 +331,7 @@ module.exports = (crowi) => {
     try {
       const result = await Page.findListByCreator(user, req.user, queryOptions);
 
-      // Delete unnecessary data about users
-      result.pages = result.pages.map((page) => {
-        const user = page.lastUpdateUser.toObject();
-        page.lastUpdateUser = user;
-        return page;
-      });
+      result.pages = result.pages.map(page => serializePageSecurely(page));
 
       return res.apiv3(result);
     }

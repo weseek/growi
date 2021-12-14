@@ -22,6 +22,7 @@ export class PagePathWrapper extends React.Component {
 PagePathWrapper.propTypes = {
   pagePath: PropTypes.string.isRequired,
   isExists: PropTypes.bool.isRequired,
+  excludePathString: PropTypes.string,
 };
 
 PagePathWrapper.defaultProps = {

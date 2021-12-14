@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
+import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
+import { blinkElem } from '~/client/util/blink-section-header';
 
 import RevisionBody from './RevisionBody';
 
-class RevisionRenderer extends React.PureComponent {
+class LegacyRevisionRenderer extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -35,7 +36,7 @@ class RevisionRenderer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
-    const { markdown, highlightKeywords, navigationContainer } = this.props;
+    const { markdown, highlightKeywords } = this.props;
 
     // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
@@ -46,7 +47,7 @@ class RevisionRenderer extends React.PureComponent {
 
     const HeaderLink = document.getElementsByClassName('revision-head-link');
     const HeaderLinkArray = Array.from(HeaderLink);
-    navigationContainer.addSmoothScrollEvent(HeaderLinkArray);
+    addSmoothScrollEvent(HeaderLinkArray, blinkElem);
 
     const { interceptorManager } = this.props.appContainer;
 
@@ -69,7 +70,7 @@ class RevisionRenderer extends React.PureComponent {
         .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-      returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
+      returnBody = returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
     });
 
     return returnBody;
@@ -117,18 +118,30 @@ class RevisionRenderer extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, NavigationContainer]);
-
-RevisionRenderer.propTypes = {
+LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
   additionalClassName: PropTypes.string,
 };
 
-export default RevisionRendererWrapper;
+/**
+ * Wrapper component for using unstated
+ */
+const LegacyRevisionRendererWrapper = withUnstatedContainers(LegacyRevisionRenderer, [AppContainer]);
+
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const RevisionRenderer = (props) => {
+  return <LegacyRevisionRendererWrapper {...props} />;
+};
+
+RevisionRenderer.propTypes = {
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  markdown: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.string,
+  additionalClassName: PropTypes.string,
+};
+
+export default RevisionRenderer;

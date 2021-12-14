@@ -3,7 +3,10 @@ import mongoose from 'mongoose';
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 
-import { generateWebClient, markdownSectionBlock, SlackbotType } from '@growi/slack';
+import {
+  generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
+  RespondUtil, GrowiBotEvent,
+} from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
@@ -12,10 +15,13 @@ import S2sMessage from '../models/vo/s2s-message';
 import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
-
+import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
+import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
+import { EventActionsPermission } from '../interfaces/slack-integration/events';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
+const OFFICIAL_SLACKBOT_PROXY_URI = 'https://slackbot-proxy.growi.org';
 
 type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
 
@@ -29,10 +35,13 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   lastLoadedAt?: Date;
 
+  linkSharedHandler!: LinkSharedEventHandler;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
+    this.linkSharedHandler = new LinkSharedEventHandler(crowi);
 
     this.initialize();
   }
@@ -106,6 +115,25 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return true;
   }
 
+  get proxyUriForCurrentType(): string {
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    // TODO assert currentBotType is not null and CUSTOM_WITHOUT_PROXY
+
+    let proxyUri: string;
+
+    switch (currentBotType) {
+      case SlackbotType.OFFICIAL:
+        proxyUri = OFFICIAL_SLACKBOT_PROXY_URI;
+        break;
+      default:
+        proxyUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
+        break;
+    }
+
+    return proxyUri;
+  }
+
   /**
    * generate WebClient instance for CUSTOM_WITHOUT_PROXY type
    */
@@ -171,8 +199,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     this.isCheckTypeValid();
 
     // connect to proxy
-    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
-    const serverUri = new URL('/g2s', proxyServerUri);
+    const serverUri = new URL('/g2s', this.proxyUriForCurrentType);
     const headers = {
       'x-growi-gtop-tokens': slackAppIntegration.tokenGtoP,
     };
@@ -216,65 +243,82 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommandRequest(command, client, body, ...opt) {
-    let module;
+  async handleCommandRequest(growiCommand: GrowiCommand, client, body, respondUtil: RespondUtil): Promise<void> {
+    const { growiCommandType } = growiCommand;
+    const module = `./slack-command-handler/${growiCommandType}`;
+
+    let handler;
     try {
-      module = `./slack-command-handler/${command}`;
+      handler = require(module)(this.crowi);
     }
     catch (err) {
-      await this.notCommand(client, body);
+      const text = `*No command.*\n \`command: ${growiCommand.text}\``;
+      logger.error(err);
+      throw new SlackCommandHandlerError(text, {
+        respondBody: {
+          text,
+          blocks: [
+            markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
+          ],
+        },
+      });
     }
 
-    try {
-      const handler = require(module)(this.crowi);
-      await handler.handleCommand(client, body, ...opt);
-    }
-    catch (err) {
-      throw err;
-    }
+    // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
+    return handler.handleCommand(growiCommand, client, body, respondUtil);
   }
 
-  async handleBlockActionsRequest(client, payload) {
-    const { action_id: actionId } = payload.actions[0];
+  async handleBlockActionsRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
+  ): Promise<void> {
+    const { actionId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
+
     const module = `./slack-command-handler/${commandName}`;
+
+    let handler;
     try {
-      const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      handler = require(module)(this.crowi);
     }
     catch (err) {
-      throw err;
+      throw new SlackCommandHandlerError(`No interaction.\n \`actionId: ${actionId}\``);
     }
-    return;
+
+    // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
+    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
   }
 
-  async handleViewSubmissionRequest(client, payload) {
-    const { callback_id: callbackId } = payload.view;
+  async handleViewSubmissionRequest(
+      client, interactionPayload: any, interactionPayloadAccessor: InteractionPayloadAccessor, respondUtil: RespondUtil,
+  ): Promise<void> {
+    const { callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
+
     const module = `./slack-command-handler/${commandName}`;
+
+    let handler;
     try {
-      const handler = require(module)(this.crowi);
-      await handler.handleBlockActions(client, payload, handlerMethodName);
+      handler = require(module)(this.crowi);
     }
     catch (err) {
-      throw err;
+      throw new SlackCommandHandlerError(`No interaction.\n \`callbackId: ${callbackId}\``);
     }
-    return;
+
+    // Do not wrap with try-catch. Errors thrown by slack-command-handler modules will be handled in router.
+    return handler.handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil);
   }
 
-  async notCommand(client, body) {
-    logger.error('Invalid first argument');
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
-      text: 'No command',
-      blocks: [
-        markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
-      ],
-    });
-    return;
+  async handleEventsRequest(client: WebClient, growiBotEvent: GrowiBotEvent<any>, permission: EventActionsPermission, data?: any): Promise<void> {
+    const { eventType } = growiBotEvent;
+    const { channel = '' } = growiBotEvent.event; // only channelId
+
+    if (this.linkSharedHandler.shouldHandle(eventType, permission, channel)) {
+      return this.linkSharedHandler.handleEvent(client, growiBotEvent, data);
+    }
+
+    logger.error(`Any event actions are not permitted, or, a handler for '${eventType}' event is not implemented`);
   }
 
 }

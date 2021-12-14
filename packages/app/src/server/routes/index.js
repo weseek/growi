@@ -1,3 +1,11 @@
+import express from 'express';
+
+import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
+import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
+
+import * as forgotPassword from './forgot-password';
+import * as userActivation from './user-activation';
+
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 const rateLimit = require('express-rate-limit');
@@ -21,7 +29,7 @@ module.exports = function(crowi, app) {
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
-  const injectResetOrderByTokenMiddleware = require('../middlewares/inject-reset-order-by-token-middleware')(crowi);
+  const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
@@ -37,7 +45,6 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
-  const forgotPassword = require('./forgot-password')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -47,7 +54,7 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/'                         , applicationInstalled, loginRequired , autoReconnectToSearch, page.showTopPage);
+  app.get('/'                         , applicationInstalled, loginRequired, autoReconnectToSearch, injectUserUISettings, page.showTopPage);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
@@ -127,23 +134,23 @@ module.exports = function(crowi, app) {
   app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
-  app.get('/admin/*'                       , loginRequiredStrictly ,adminRequired, admin.notFound.index);
+  app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
-  app.get('/me'                       , loginRequiredStrictly , me.index);
+  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
-  app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
+  app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
   // my drafts
-  app.get('/me/drafts'                , loginRequiredStrictly, me.drafts.list);
+  app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
-  app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
+  app.get('/:id([0-9a-z]{24})'                  , loginRequired , page.redirector);
+  app.get('/_r/:id([0-9a-z]{24})'               , loginRequired , page.redirector); // alias
+  app.get('/attachment/:id([0-9a-z]{24})'       , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
-  app.get('/attachment/:pageId/:fileName', loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
-  app.get('/download/:id([0-9a-z]{24})'    , loginRequired, attachment.api.download);
+  app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
+  app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
-  app.get('/_search'                 , loginRequired , search.searchPage);
-  app.get('/_api/search'             , accessTokenParser , loginRequired , search.api.search);
+  app.get('/_search'                            , loginRequired, injectUserUISettings, search.searchPage);
+  app.get('/_api/search'                        , accessTokenParser , loginRequired , search.api.search);
 
   app.get('/_api/check_username'           , user.api.checkUsername);
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
@@ -152,7 +159,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
-  app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
@@ -175,9 +181,9 @@ module.exports = function(crowi, app) {
   app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , csrf, attachment.api.removeProfileImage);
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
-  app.get('/trash$'                   , loginRequired , page.trashPageShowWrapper);
-  app.get('/trash/$'                  , loginRequired , page.trashPageListShowWrapper);
-  app.get('/trash/*/$'                , loginRequired , page.deletedPageListShowWrapper);
+  app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
+  app.get('/trash/$'                  , loginRequired, injectUserUISettings, page.trashPageListShowWrapper);
+  app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
   app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
@@ -185,12 +191,19 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.get('/forgot-password/:token'      ,apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword);
+  app.use('/forgot-password', express.Router()
+    .get('/', forgotPassword.forgotPassword)
+    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
+    .use(forgotPassword.handleHttpErrosMiddleware));
+
+  app.use('/user-activation', express.Router()
+    .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
+    .use(userActivation.tokenErrorHandlerMiddeware));
+  app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
+  app.get('/*/$'                   , loginRequired, injectUserUISettings, page.showPageWithEndOfSlash, page.notFound);
+  app.get('/*'                     , loginRequired, autoReconnectToSearch, injectUserUISettings, page.showPage, page.notFound);
 
 };

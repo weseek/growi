@@ -34,7 +34,8 @@ html[dark] {
   $bgcolor-global: white;
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: $gray-50;
-  $bgcolor-highlighted: rgba($primary, 0.5);
+  $bgcolor-blinked-section: rgba($primary, 0.5);
+  $bgcolor-keyword-highlighted: $grw-marker-cyan;
 
   // Font colors
   $color-global: black;

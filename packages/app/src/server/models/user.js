@@ -35,6 +35,7 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
+
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
@@ -480,6 +481,16 @@ module.exports = function(crowi) {
       usernameUsable = false;
     }
     return usernameUsable;
+  };
+
+  userSchema.statics.isRegisterableEmail = async function(email) {
+    let isEmailUsable = true;
+
+    const userData = await this.findOne({ email });
+    if (userData) {
+      isEmailUsable = false;
+    }
+    return isEmailUsable;
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {

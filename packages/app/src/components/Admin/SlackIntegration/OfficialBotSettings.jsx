@@ -95,7 +95,7 @@ const OfficialBotSettings = (props) => {
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
           const {
-            tokenGtoP, tokenPtoG, _id, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+            tokenGtoP, tokenPtoG, _id, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands, permissionsForSlackEventActions,
           } = slackAppIntegration;
           const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
@@ -116,8 +116,9 @@ const OfficialBotSettings = (props) => {
                 slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
-                supportedCommandsForBroadcastUse={supportedCommandsForBroadcastUse}
-                supportedCommandsForSingleUse={supportedCommandsForSingleUse}
+                permissionsForBroadcastUseCommands={permissionsForBroadcastUseCommands}
+                permissionsForSingleUseCommands={permissionsForSingleUseCommands}
+                permissionsForSlackEventActions={permissionsForSlackEventActions}
                 onUpdateTokens={onUpdateTokens}
                 onSubmitForm={onSubmitForm}
               />

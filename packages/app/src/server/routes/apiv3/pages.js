@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
@@ -20,6 +21,36 @@ const LIMIT_FOR_LIST = 10;
  * @swagger
  *  tags:
  *    name: Pages
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Tags:
+ *        description: Tags
+ *        type: array
+ *        items:
+ *          $ref: '#/components/schemas/Tag/properties/name'
+ *        example: ['daily', 'report', 'tips']
+ *
+ *      Tag:
+ *        description: Tag
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: tag ID
+ *            example: 5e2d6aede35da4004ef7e0b7
+ *          name:
+ *            type: string
+ *            description: tag name
+ *            example: daily
+ *          count:
+ *            type: number
+ *            description: Count of tagged pages
+ *            example: 3
  */
 
 /**
@@ -76,7 +107,7 @@ const LIMIT_FOR_LIST = 10;
  *          path:
  *            type: string
  *            description: page path
- *            example: /
+ *            example: /Sandbox/Math
  *          redirectTo:
  *            type: string
  *            description: redirect path
@@ -137,7 +168,6 @@ module.exports = (crowi) => {
       body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
-      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
     renamePage: [
@@ -147,7 +177,6 @@ module.exports = (crowi) => {
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
-      body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
     ],
 
     duplicatePage: [
@@ -176,7 +205,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /pages/create:
+   *    /pages:
    *      post:
    *        tags: [Pages]
    *        operationId: createPage
@@ -193,6 +222,14 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  grantUserGroupId:
+   *                    type: string
+   *                    description: UserGroup ID
+   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                  pageTags:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Tag'
    *                required:
    *                  - body
    *                  - path
@@ -203,14 +240,23 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        tags:
+   *                          type: array
+   *                          items:
+   *                            $ref: '#/components/schemas/Tags'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
    *          409:
    *            description: page path is already existed
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, socketClientId, pageTags,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
 
     let { path } = req.body;
@@ -224,7 +270,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
     }
 
-    const options = { socketClientId };
+    const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -311,6 +357,26 @@ module.exports = (crowi) => {
         }
       });
 
+      const PageTagRelation = mongoose.model('PageTagRelation');
+      const ids = result.pages.map((page) => { return page._id });
+      const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+
+      // { pageId: [{ tag }, ...] }
+      const relationsMap = new Map();
+      // increment relationsMap
+      relations.forEach((relation) => {
+        const pageId = relation.relatedPage.toString();
+        if (!relationsMap.has(pageId)) {
+          relationsMap.set(pageId, []);
+        }
+        relationsMap.get(pageId).push(relation.relatedTag);
+      });
+      // add tags to each page
+      result.pages.forEach((page) => {
+        const pageId = page._id.toString();
+        page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
@@ -379,7 +445,6 @@ module.exports = (crowi) => {
     const options = {
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: !req.body.isRemainMetadata,
-      socketClientId: +req.body.socketClientId || undefined,
     };
 
     if (!isCreatablePage(newPagePath)) {
@@ -429,9 +494,6 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  validator.emptyTrash = [
-    query('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
-  ];
   /**
    * @swagger
    *
@@ -443,9 +505,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, validator.emptyTrash, apiV3FormValidator, async(req, res) => {
-    const socketClientId = parseInt(req.query.socketClientId);
-    const options = { socketClientId };
+  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+    const options = {};
 
     try {
       const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);

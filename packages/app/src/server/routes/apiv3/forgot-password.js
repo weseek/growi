@@ -1,4 +1,8 @@
 import rateLimit from 'express-rate-limit';
+
+import PasswordResetOrder from '~/server/models/password-reset-order';
+import ErrorV3 from '~/server/models/vo/error-apiv3';
+import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
@@ -11,12 +15,10 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const { appService, mailService, configManager } = crowi;
-  const PasswordResetOrder = crowi.model('PasswordResetOrder');
   const User = crowi.model('User');
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const injectResetOrderByTokenMiddleware = require('../../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const validator = {
     password: [
@@ -73,18 +75,13 @@ module.exports = (crowi) => {
       return res.apiv3();
     }
     catch (err) {
-      const msg = 'Error occurred during password reset request procedure';
+      const msg = 'Error occurred during password reset request procedure.';
       logger.error(err);
-      return res.apiv3Err(msg);
+      return res.apiv3Err(`${msg} Cause: ${err}`);
     }
   });
 
-  router.put('/', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
-
-    if (req.error != null) {
-      return res.apiv3Err(req.error.message);
-    }
-
+  router.put('/', injectResetOrderByTokenMiddleware, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -109,6 +106,14 @@ module.exports = (crowi) => {
       logger.error(err);
       return res.apiv3Err('update-password-failed');
     }
+  });
+
+  // middleware to handle error
+  router.use((error, req, res, next) => {
+    if (error != null) {
+      return res.apiv3Err(new ErrorV3(error.message, error.code));
+    }
+    next();
   });
 
   return router;

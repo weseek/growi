@@ -53,7 +53,8 @@ class ElasticsearchManagement extends React.Component {
       });
     });
 
-    socket.on('finishAddPage', (data) => {
+    socket.on('finishAddPage', async(data) => {
+      await this.retrieveIndicesStatus();
       this.setState({
         isRebuildingProcessing: false,
         isRebuildingCompleted: true,
@@ -69,7 +70,8 @@ class ElasticsearchManagement extends React.Component {
     const { appContainer } = this.props;
 
     try {
-      const { info } = await appContainer.apiv3Get('/search/indices');
+      const { data } = await appContainer.apiv3Get('/search/indices');
+      const { info } = data;
 
       this.setState({
         isConnected: true,

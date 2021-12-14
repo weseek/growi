@@ -341,11 +341,11 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const saveOnHackmd = async function(req, res) {
-    const page = req.page;
+    const { page, user } = req;
 
     try {
       await Page.updateHasDraftOnHackmd(page, true);
-      pageEvent.emit('saveOnHackmd', page);
+      pageEvent.emit('saveOnHackmd', page, user);
       return res.json(ApiResponse.success());
     }
     catch (err) {

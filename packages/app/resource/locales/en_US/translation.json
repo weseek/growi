@@ -57,6 +57,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet.": "No users have liked this yet.",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
   "Target page": "Target page",
@@ -184,6 +185,7 @@
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
   "page_register": {
+    "send_email": "Send email",
     "notice": {
       "restricted": "Admin approval required.",
       "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."
@@ -253,6 +255,43 @@
     "item_label": {
       "All pages": "All pages",
       "This tree": "Only children of this tree"
+    }
+  },
+  "editor_settings": {
+    "editor_settings": "Editor Settings",
+    "common_settings": {
+      "common_settings": "Common Settings",
+      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia.",
+      "max_comma": "Textlint rule is that limit maximum ten(,) count of sentence. Default: 4",
+      "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100",
+      "en_capitalization": "Textlint rule that check capitalization in english text.",
+      "no_unmatched_pair": "Textlint rule that check unmatched pairs like （ and ]",
+      "date_weekday_mismatch": "Textlint rule that found mismatch between date and weekday.",
+      "no_kangxi_radicals": "Textlint rule to prevent using kangxi radicals.",
+      "no_surrogate_pair": "Detects surrogate pairs (D800-DBFF and DC00-DFFF)　in sentences.",
+      "no_zero_width_spaces": "Textlint rule that disallow zero width spaces.",
+      "period_in_list_item": "Textlint rule that check with or without period in list item.",
+      "use_si_units": "Use of units other than SI unit units is prohibited."
+
+      },
+    "japanese_settings": {
+      "japanese_settings": "Japanese Settings",
+      "ja_no_abusage": "Textlint rules to check for common misuse.",
+      "ja_hiragana_keishikimeishi": "Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.",
+      "ja_no_inappropriate_words": "Textlint rules to check for inappropriate expressions",
+      "ja_no_mixed_period": "Textlint rules to check that a paragraph always has a punctuation mark at the end.",
+      "ja_no_redundant_expression": "Textlint rules that prohibits redundant expressions. Redundant expressions are expressions that make sense even if they are omitted from the sentence.",
+      "max_kanji_continuous_len": "Textlint rules that limits the maximum number of consecutive Kanji. Default: 5",
+      "max_ten": "Textlint rule is that limit maximum ten(、) count of sentence.",
+      "no_double_negative_ja": "Textlint rules that detects double negation.",
+      "no_doubled_conjunction": "Textlint rules to check duplicated same conjunctions.",
+      "no_doubled_joshi": "Textlint rules that checks that the same particle appears consecutively in one sentence.",
+      "no_dropping_the_ra": "Textlint rules that detects the word dropping the ra.",
+      "no_hankaku_kana": "Textlint rules that disallow to use Half-width kana.",
+      "prefer_tari_tari": "Textlint rules that checks tari tari.",
+      "ja_unnatural_alphabet": "Detects unnatural alphabets.",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
+      "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
   },
   "copy_to_clipboard": {
@@ -416,6 +455,11 @@
       "title": "Comment Form shortcuts",
       "Post": "Post"
     }
+  },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
+    "enable_textlint": "Enable Textlint",
+    "dont_ask_again": "Don't ask again"
   },
   "link_edit": {
     "edit_link": "Edit Link",
@@ -607,7 +651,12 @@
       "enable_local": "Enable ID/Password",
       "password_reset_by_users": "Password reset by users",
       "enable_password_reset_by_users": "Enable password reset by users",
-      "password_reset_desc": "when forgot password, users are able to reset it by themselves."
+      "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
+      "email_authentication": "Email authentication on user registration",
+      "enable_email_authentication": "Enable email authentication",
+      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
+      "please_enable_mailer": "Please setup mailer first.",
+      "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
@@ -652,8 +701,9 @@
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
       "attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
-      "attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>Supported Queries:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>Unsupported Queries:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
-      "attr_based_login_control_rule_example": "<h6>Example</h6>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
+      "attr_based_login_control_rule_help": "<h5>Supported Queries:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>Unsupported Queries:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>Escaping special characters</h5>It is needed to escape following special characters:<br><code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
+      "attr_based_login_control_rule_example1": "<h5>Example for conditions</h5>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
+      "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
@@ -824,7 +874,7 @@
     "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
     "application_already_installed": "Application already installed.",
     "email_address_could_not_be_used": "This email address could not be used. (Make sure the allowed email address)",
-    "user_id_is_not_available.":"This User ID is not available.",
+    "user_id_is_not_available":"This User ID is not available.",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
     "failed_to_register":"Failed to register.",
@@ -834,7 +884,9 @@
     "unable_to_use_this_user":"Unable to use this user.",
     "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
-    "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}"
+    "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
+    "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired."
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",

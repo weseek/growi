@@ -185,6 +185,7 @@
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
 	},
 	"page_register": {
+    "send_email": "发电子邮件",
 		"notice": {
 			"restricted": "需要管理员批准。",
 			"restricted_defail": "一旦管理员批准您的注册，您就可以访问此wiki。"
@@ -236,7 +237,43 @@
 			"All pages": "所有页面",
 			"This tree": "当前分支以下内容"
 		}
-	},
+  },
+  "editor_settings": {
+    "editor_settings": "编辑器设置",
+    "common_settings": {
+      "common_settings": "常用设置",
+      "common_misspellings": "从 Wikipedia 中查找常见拼写错误的 Textlint。",
+      "max_comma": "Textlint 规则是限制句子的最大十（,）个计数。默认：4。",
+      "sentence_length": "限制最大句子长度的 Textlint 默认: 100。",
+      "en_capitalization": "检查英文文本大小写的 Textlint 规则。",
+      "no_unmatched_pair": "检查不匹配对的 Textlint 规则，如 ( 和 ]",
+      "date_weekday_mismatch": "发现日期和工作日之间不匹配的 Textlint 规则。",
+      "no_kangxi_radicals": "防止使用康熙部首的 Textlint 规则。",
+      "no_surrogate_pair": "检测句子中的代理对（D800-DBFF 和 DC00-DFFF）。",
+      "no_zero_width_spaces": "不允许零宽度空格的 Textlint 规则。",
+      "period_in_list_item": "在列表项中检查是否有句点的 Textlint 规则。",
+      "use_si_units": "禁止使用 SI 单位以外的单位。"
+      },
+    "japanese_settings": {
+      "japanese_settings": "日语设置",
+      "ja_no_abusage": "用于检查常见误用的 Textlint 规则。",
+      "ja_hiragana_keishikimeishi": "Textlint 规则检查易于阅读的 Keishikimeishi（代词）用平假名而不是汉字编写。",
+      "ja_no_inappropriate_words": "Textlint 规则来检查不适当的表达",
+      "ja_no_mixed_period": "Textlint 规则用于检查段落末尾是否总是有标点符号。",
+      "ja_no_redundant_expression": "禁止冗余表达式的 Textlint 规则。冗余表达式是即使从句子中省略也有意义的表达式。",
+      "max_kanji_continuous_len": "限制连续汉字的最大数量的 Textlint 规则。默认：5。",
+      "max_ten": "Textlint 规则是限制句子的最大十（、）个计数。",
+      "no_double_negative_ja": "检测双重否定的 Textlint 规则。",
+      "no_doubled_conjunction": "Textlint 规则来检查重复的相同连词。",
+      "no_doubled_joshi": "Textlint 规则，用于检查同一个粒子是否连续出现在一个句子中。",
+      "no_dropping_the_ra": "检测丢弃 ra 的单词的 Textlint 规则。",
+      "no_hankaku_kana": "不允许使用半角假名的 Textlint 规则。",
+      "prefer_tari_tari": "检查 tari tari 的 Textlint 规则。",
+      "ja_unnatural_alphabet": "检测不自然的字母。",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "检查混合的全角和半角字母。",
+      "no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
+    }
+  },
 	"copy_to_clipboard": {
 		"Copy to clipboard": "复制到剪贴板",
 		"Page path": "页面路径",
@@ -397,6 +434,11 @@
 			"Post": "提交"
 		}
 	},
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "您确定要启用 Textlint 吗？这将下载 20MB 的字典文件。",
+    "enable_textlint": "启用Textlint",
+    "dont_ask_again": "不要再问"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",
@@ -595,7 +637,12 @@
       "enable_local": "Enable ID/Password",
       "password_reset_by_users": "用户重置密码",
       "enable_password_reset_by_users": "启用用户重置密码",
-      "password_reset_desc": "忘记密码时，用户可以自行重置"
+      "password_reset_desc": "忘记密码时，用户可以自行重置",
+      "email_authentication": "用户注册时的电子邮件身份验证",
+      "enable_email_authentication": "启用电子邮件身份验证",
+      "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。",
+      "please_enable_mailer": "请先设置邮件程序。",
+      "need_complete_mail_setting_warning": "要使用以下功能，请完成邮件设置。"
 		},
 		"ldap": {
 			"enable_ldap": "Enable LDAP",
@@ -640,9 +687,10 @@
 			"Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
 			"note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
 			"attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
-			"attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>Supported Queries:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>Unsupported Queries:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
-			"attr_based_login_control_rule_example": "<h6>Example</h6>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
-			"updated_saml": "Succeeded to update SAML setting"
+			"attr_based_login_control_rule_help": "<h5>Supported Queries:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>Unsupported Queries:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>Escaping special characters</h5>It is needed to escape following special characters:<br><code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
+			"attr_based_login_control_rule_example1": "<h5>Example for conditions</h5>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
+      "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
+      "updated_saml": "Succeeded to update SAML setting"
 		},
 		"Basic": {
 			"enable_basic": "Enable Basic",
@@ -829,7 +877,7 @@
 		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
 		"application_already_installed": "应用程序已安装。",
 		"email_address_could_not_be_used": "无法使用此电子邮件地址。（确保允许的电子邮件地址）",
-		"user_id_is_not_available.": "此用户ID不可用。",
+		"user_id_is_not_available": "此用户ID不可用。",
 		"email_address_is_already_registered": "此电子邮件地址已注册。",
 		"can_not_register_maximum_number_of_users": "注册的用户数不能超过最大值。",
 		"failed_to_register": "注册失败。",
@@ -839,7 +887,9 @@
 		"unable_to_use_this_user": "无法使用此用户。",
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
-		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
+		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
+    "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
+    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",

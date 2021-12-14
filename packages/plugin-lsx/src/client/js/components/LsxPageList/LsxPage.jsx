@@ -57,7 +57,9 @@ export class LsxPage extends React.Component {
     if (this.state.hasChildren) {
       const pages = pageNode.children.map((pageNode) => {
         return (
-          <LsxPage key={pageNode.pagePath} depth={this.props.depth + 1}
+          <LsxPage
+            key={pageNode.pagePath}
+            depth={this.props.depth + 1}
             pageNode={pageNode}
             lsxContext={this.props.lsxContext}
           />

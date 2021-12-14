@@ -2,6 +2,9 @@ const { customTagUtils } = require('growi-commons');
 
 const { OptionParser } = customTagUtils;
 
+
+const DEFAULT_PAGES_NUM = 50;
+
 class Lsx {
 
   /**
@@ -16,6 +19,11 @@ class Lsx {
    * @memberOf Lsx
    */
   static addDepthCondition(query, pagePath, optionsDepth) {
+    // when option strings is 'depth=', the option value is true
+    if (optionsDepth == null || optionsDepth === true) {
+      throw new Error('The value of depth option is invalid.');
+    }
+
     const range = OptionParser.parseRange(optionsDepth);
     const start = range.start;
     const end = range.end;
@@ -40,12 +48,21 @@ class Lsx {
    * @static
    * @param {any} query
    * @param {any} pagePath
-   * @param {any} optionsNum
+   * @param {number|string} optionsNum
    * @returns
    *
    * @memberOf Lsx
    */
   static addNumCondition(query, pagePath, optionsNum) {
+    // when option strings is 'num=', the option value is true
+    if (optionsNum == null || optionsNum === true) {
+      throw new Error('The value of num option is invalid.');
+    }
+
+    if (typeof optionsNum === 'number') {
+      return query.limit(optionsNum);
+    }
+
     const range = OptionParser.parseRange(optionsNum);
     const start = range.start;
     const end = range.end;
@@ -58,6 +75,47 @@ class Lsx {
     const limit = end - skip;
 
     return query.skip(skip).limit(limit);
+  }
+
+  /**
+   * add filter condition that filter fetched pages
+   *
+   * @static
+   * @param {any} query
+   * @param {any} pagePath
+   * @param {any} optionsFilter
+   * @param {boolean} isExceptFilter
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  static addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = false) {
+    // when option strings is 'filter=', the option value is true
+    if (optionsFilter == null || optionsFilter === true) {
+      throw new Error('filter option require value in regular expression.');
+    }
+
+    let filterPath = '';
+    if (optionsFilter.charAt(0) === '^') {
+      // move '^' to the first of path
+      filterPath = new RegExp(`^${pagePath}${optionsFilter.slice(1, optionsFilter.length)}`);
+    }
+    else {
+      filterPath = new RegExp(`^${pagePath}.*${optionsFilter}`);
+    }
+
+    if (isExceptFilter) {
+      return query.and({
+        path: { $not: filterPath },
+      });
+    }
+    return query.and({
+      path: filterPath,
+    });
+  }
+
+  static addExceptCondition(query, pagePath, optionsFilter) {
+    return this.addFilterCondition(query, pagePath, optionsFilter, true);
   }
 
   /**
@@ -75,7 +133,10 @@ class Lsx {
    *
    * @memberOf Lsx
    */
-  static addSortCondition(query, pagePath, optionsSort = 'path', optionsReverse) {
+  static addSortCondition(query, pagePath, optionsSortArg, optionsReverse) {
+    // init sort key
+    const optionsSort = optionsSortArg || 'path';
+
     // the default sort order
     let isReversed = false;
 
@@ -126,19 +187,18 @@ module.exports = (crowi, app) => {
     }
 
     const builder = new Page.PageQueryBuilder(baseQuery);
-    builder.addConditionToListWithDescendants(pagePath, {})
+    if (builder.addConditionToListOnlyDescendants == null) { // for Backward compatibility (<= GROWI v4.0.x)
+      builder.addConditionToListWithDescendants(pagePath);
+    }
+    else {
+      builder.addConditionToListOnlyDescendants(pagePath);
+    }
+
+    builder
       .addConditionToExcludeTrashed()
       .addConditionToExcludeRedirect();
 
-    let promisifiedBuilder = Promise.resolve(builder);
-
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-      promisifiedBuilder = builder.addConditionToFilteringByViewer(user, userGroups);
-    }
-
-    return promisifiedBuilder;
+    return Page.addConditionToFilteringByViewerForList(builder, user);
   }
 
   actions.listPages = async(req, res) => {
@@ -154,10 +214,16 @@ module.exports = (crowi, app) => {
       if (options.depth != null) {
         query = Lsx.addDepthCondition(query, pagePath, options.depth);
       }
-      // num
-      if (options.num != null) {
-        query = Lsx.addNumCondition(query, pagePath, options.num);
+      // filter
+      if (options.filter != null) {
+        query = Lsx.addFilterCondition(query, pagePath, options.filter);
       }
+      if (options.except != null) {
+        query = Lsx.addExceptCondition(query, pagePath, options.except);
+      }
+      // num
+      const optionsNum = options.num || DEFAULT_PAGES_NUM;
+      query = Lsx.addNumCondition(query, pagePath, optionsNum);
       // sort
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
