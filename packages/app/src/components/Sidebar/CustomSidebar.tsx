@@ -34,7 +34,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   const { data: page, mutate } = useSWRxPageByPath('/Sidebar');
 
   const isLoading = page === undefined;
-  const markdown = (page?.revision as IRevision)?.body;
+  const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
     <>

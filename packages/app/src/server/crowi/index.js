@@ -22,6 +22,7 @@ import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
+import SearchService from '../service/search';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
