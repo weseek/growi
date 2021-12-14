@@ -59,9 +59,9 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user, isRecursively) => {
+    this.pageEvent.on('delete', async(page, user, fromPageDescendants) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE, isRecursively);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE, fromPageDescendants);
       }
       catch (err) {
         logger.error(err);
@@ -69,9 +69,9 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user, isRecursively) => {
+    this.pageEvent.on('deleteCompletely', async(page, user, fromPageDescendants) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY, isRecursively);
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY, fromPageDescendants);
       }
       catch (err) {
         logger.error(err);
@@ -158,8 +158,7 @@ class PageService {
     // create descendants first
     let fromPageDescendants;
     if (isRecursively) {
-      const queryOptions = { offset: 1 };
-      fromPageDescendants = await Page.findManageableListWithDescendants(page, user, queryOptions);
+      fromPageDescendants = await Page.findManageableListWithDescendants(page, user);
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
@@ -493,7 +492,9 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    let fromPageDescendants;
     if (isRecursively) {
+      fromPageDescendants = await Page.findManageableListWithDescendants(page, user);
       this.deleteDescendantsWithStream(page, user, options);
     }
 
@@ -507,7 +508,7 @@ class PageService {
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
-    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('delete', page, user, fromPageDescendants);
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
@@ -619,13 +620,20 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    let fromPageDescendants;
+    if (isRecursively) {
+      const Page = this.crowi.model('Page');
+      const queryOptions = { includeTrashed: true };
+      fromPageDescendants = await Page.findManageableListWithDescendants(page, user, queryOptions);
+    }
+
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('deleteCompletely', page, user); // update as renamed page
+    this.pageEvent.emit('deleteCompletely', page, user, fromPageDescendants); // update as renamed page
 
     return;
   }
