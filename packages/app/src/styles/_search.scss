@@ -187,7 +187,7 @@
           .search-item-checkbox {
             // subtract 3px from padding left applied by .search-item-checkbox
             // as 3px of border-left is added above
-            padding-left: 4px;
+            padding-left: 4px !important;
           }
         }
         > a {
@@ -214,10 +214,7 @@
       }
     }
     .search-result-item {
-      height: 123px;
-      .form-check-input {
-        margin-top: 0;
-      }
+      height: 129.5px;
     }
 
     .search-result-meta {
@@ -233,18 +230,8 @@
       vertical-align: middle;
     }
   }
-  // checkbox
-  .search-item-checkbox {
-    padding-left: 7px;
-    .item-checkbox-input {
-      position: relative; // to apply padding and margin
-      margin: 0;
-    }
-  }
   .search-item-text {
     .item-path {
-      margin-bottom: 4px;
-      font-size: 12px;
       line-height: 18px;
     }
     .user-picture {
@@ -252,11 +239,9 @@
       height: 20px;
     }
     .item-title {
-      font-size: 17.5px;
       line-height: 26px;
     }
     .item-meta {
-      padding: 0 4px;
       .top-label {
         display: none; // not show top label
       }
@@ -265,7 +250,6 @@
       line-height: 20px;
     }
     .item-control {
-      right: 0;
       .grw-btn-page-management {
         padding: 7px;
       }

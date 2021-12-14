@@ -47,9 +47,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       >
         <div className="d-flex h-100">
           {/* checkbox */}
-          <div className="form-check d-flex align-items-center justify-content-center pr-2 search-item-checkbox">
+          <div className="form-check d-flex align-items-center justify-content-center px-2 search-item-checkbox">
             <input
-              className="form-check-input item-checkbox-input"
+              className="form-check-input position-relative m-0"
               type="checkbox"
               id="flexCheckDefault"
               onChange={() => {
@@ -62,23 +62,23 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
           </div>
           <div className="search-item-text p-3 flex-grow-1">
             {/* page path */}
-            <div className="item-path">
+            <h6 className="item-path mb-1">
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
-            </div>
+            </h6>
             <div className="d-flex align-items-center mb-2 position-relative">
               {/* Picture */}
               <span className="user-picture mr-2">
                 <UserPicture user={pageData.lastUpdateUser} />
               </span>
               {/* page title */}
-              <span className="item-title mr-2">{dPagePath.latter}</span>
+              <span className="item-title h5 mr-2 mb-0">{dPagePath.latter}</span>
               {/* page meta */}
-              <div className="d-flex item-meta">
+              <div className="d-flex item-meta py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
               </div>
               {/* doropdown icon includes page control buttons */}
-              <div className="position-absolute item-control">
+              <div className="item-control ml-auto">
                 <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
