@@ -65,7 +65,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               checked={isChecked}
             />
           </div>
-          <div className="search-item-text p-3 flex-grow-1">
+          <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
             <h6 className="item-path mb-1">
               <i className="icon-fw icon-home"></i>
@@ -73,13 +73,15 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
-              <span className="user-picture mr-2">
+              <span className="user-picture mr-2 d-none d-md-block">
                 <UserPicture user={pageData.lastUpdateUser} />
               </span>
               {/* page title */}
-              <span className="item-title h5 mr-2 mb-0">{pageTitle}</span>
+              <span className="item-title h5 mr-2 mb-0">
+                {pageTitle}
+              </span>
               {/* page meta */}
-              <div className="d-flex item-meta py-0 px-1">
+              <div className="d-none d-md-flex item-meta py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
               </div>
               {/* doropdown icon includes page control buttons */}
