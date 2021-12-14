@@ -363,6 +363,7 @@ export default (crowi: Crowi): any => {
 /*
  * Aggregation utilities
  */
+// TODO: use the original type when upgraded https://github.com/Automattic/mongoose/blob/master/index.d.ts#L3090
 type PipelineStageMatch = {
   $match: AnyObject
 };
