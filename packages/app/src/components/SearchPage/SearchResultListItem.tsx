@@ -3,7 +3,6 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
@@ -29,20 +28,26 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
 
-  const isPathIncludedHtml = pageMeta.elasticSearchResult?.highlightedPath != null || pageData.path != null;
-  const dPagePath = new DevidedPagePath(pageData.path, false, true);
+  const pageTitle = (
+    <PagePathLabel
+      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      isLatterOnly
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+    >
+    </PagePathLabel>
+  );
   const pagePathElem = (
     <PagePathLabel
       path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
       isFormerOnly
-      isPathIncludedHtml={isPathIncludedHtml}
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
     />
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-page-item w-100 border-bottom px-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-page-item w-100 list-group-item-action pl-2 ${isSelected ? 'active' : ''}`}>
       <a
-        className="d-block pt-3"
+        className="d-block py-4 h-100"
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
@@ -71,7 +76,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2">{dPagePath.latter}</span>
+                <span className="mx-2 search-result-page-title">{pageTitle}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
@@ -82,7 +87,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
                 <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
-            <div className="my-2">
+            <div className="my-2 search-result-list-snippet">
               <Clamp lines={2}>
                 {
                   pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (

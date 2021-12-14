@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Collapse, Button } from 'reactstrap';
@@ -9,13 +9,14 @@ import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
 
-import SlackNotification from '../SlackNotification';
+import { SlackNotification } from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SavePageControls from '../SavePageControls';
 
 import OptionsSelector from './OptionsSelector';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const EditorNavbarBottom = (props) => {
 
@@ -28,8 +29,12 @@ const EditorNavbarBottom = (props) => {
 
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const additionalClasses = ['grw-editor-navbar-bottom'];
+
+  const isSlackEnabledToggleHandler = useCallback(
+    bool => mutateIsSlackEnabled(bool), [mutateIsSlackEnabled],
+  );
 
   const renderDrawerButton = () => (
     <button
@@ -40,10 +45,6 @@ const EditorNavbarBottom = (props) => {
       <i className="icon-menu"></i>
     </button>
   );
-
-  const slackEnabledFlagChangedHandler = (isSlackEnabled) => {
-    props.editorContainer.setState({ isSlackEnabled });
-  };
 
   const slackChannelsChangedHandler = (slackChannels) => {
     props.editorContainer.setState({ slackChannels });
@@ -69,15 +70,14 @@ const EditorNavbarBottom = (props) => {
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
-        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
+        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
-              isSlackEnabled={props.editorContainer.state.isSlackEnabled}
+              isSlackEnabled={isSlackEnabled ?? false}
               slackChannels={props.editorContainer.state.slackChannels}
-              onEnabledFlagChange={slackEnabledFlagChangedHandler}
+              onEnabledFlagChange={isSlackEnabledToggleHandler}
               onChannelChange={slackChannelsChangedHandler}
               id="idForEditorNavbarBottomForMobile"
-              popUp
             />
           </nav>
         </Collapse>
@@ -104,12 +104,11 @@ const EditorNavbarBottom = (props) => {
           ) : (
             <div className="mr-2">
               <SlackNotification
-                isSlackEnabled={props.editorContainer.state.isSlackEnabled}
+                isSlackEnabled={isSlackEnabled ?? false}
                 slackChannels={props.editorContainer.state.slackChannels}
-                onEnabledFlagChange={slackEnabledFlagChangedHandler}
+                onEnabledFlagChange={isSlackEnabledToggleHandler}
                 onChannelChange={slackChannelsChangedHandler}
                 id="idForEditorNavbarBottom"
-                popUp={false}
               />
             </div>
           ))}

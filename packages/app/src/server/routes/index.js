@@ -1,9 +1,11 @@
 import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
+import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
+import * as userActivation from './user-activation';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -195,6 +197,10 @@ module.exports = function(crowi, app) {
 
   app.use('/private-legacy-pages', express.Router()
     .get('/', privateLegacyPages.renderPrivateLegacyPages));
+  app.use('/user-activation', express.Router()
+    .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
+    .use(userActivation.tokenErrorHandlerMiddeware));
+  app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
 

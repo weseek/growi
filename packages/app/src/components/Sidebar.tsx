@@ -65,7 +65,7 @@ const SidebarContentsWrapper = () => {
         resetKey={resetKey}
       />
 
-      <div id="grw-sidebar-contents-scroll-target">
+      <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
         <div id="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
           <SidebarContents />
         </div>
