@@ -140,7 +140,7 @@ export default class EditorContainer extends Container {
     }
   }
 
-  // TODO: Create mediator and remove this when omitting unstated is completed
+  // TODO: Remove when SWR is complete
   getCurrentOptionsToSave() {
     const opt = {
       // isSlackEnabled: this.state.isSlackEnabled,
