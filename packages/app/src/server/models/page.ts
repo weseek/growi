@@ -368,7 +368,7 @@ type PipelineStageMatch = {
   $match: AnyObject
 };
 
-export const generateGrantConditions = async(
+export const generateGrantCondition = async(
     user, _userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): Promise<PipelineStageMatch> => {
   let userGroups = _userGroups;

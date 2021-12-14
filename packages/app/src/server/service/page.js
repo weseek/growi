@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
-import { generateGrantConditions } from '~/server/models/page';
+import { generateGrantCondition } from '~/server/models/page';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -777,12 +777,9 @@ class PageService {
     const MAX_LENGTH = 350;
 
     // aggregation options
-    const viewerConditions = await generateGrantConditions(user, null);
+    const viewerCondition = await generateGrantCondition(user, null);
     const filterByIds = {
       _id: { $in: pageIds.map(id => mongoose.Types.ObjectId(id)) },
-    };
-    const filterByViewer = {
-      $or: viewerConditions,
     };
 
     let pages;
@@ -794,9 +791,7 @@ class PageService {
             $match: filterByIds,
           },
           // filter by viewer
-          {
-            $match: filterByViewer,
-          },
+          viewerCondition,
           // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
           {
             $lookup: {
