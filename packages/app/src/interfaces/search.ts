@@ -7,15 +7,16 @@ export enum CheckboxType {
 }
 
 export type IPageSearchResultData = {
-  pageData: IPageHasId,
+  pageData: IPageHasId;
   pageMeta: {
-    bookmarkCount?: number,
+    bookmarkCount?: number;
     elasticSearchResult?: {
-      snippet: string,
-      highlightedPath: string,
-    },
-  },
-}
+      snippet: string;
+      highlightedPath: string;
+      isHtmlInPath: boolean;
+    };
+  };
+};
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',

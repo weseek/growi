@@ -483,6 +483,16 @@ module.exports = function(crowi) {
     return usernameUsable;
   };
 
+  userSchema.statics.isRegisterableEmail = async function(email) {
+    let isEmailUsable = true;
+
+    const userData = await this.findOne({ email });
+    if (userData) {
+      isEmailUsable = false;
+    }
+    return isEmailUsable;
+  };
+
   userSchema.statics.isRegisterable = function(email, username, callback) {
     const User = this;
     let emailUsable = true;

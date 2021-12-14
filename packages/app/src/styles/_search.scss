@@ -73,19 +73,17 @@
   .dropdown-toggle {
     min-width: 95px;
     padding-left: 1.5rem;
-    border-top-left-radius: 40px;
-    border-bottom-left-radius: 40px;
   }
 
   .search-typeahead {
     // corner radius
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
     .rbt-input-main {
       padding-right: 58px;
       // corner radius
-      border-top-right-radius: 40px;
-      border-bottom-right-radius: 40px;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
     }
     .rbt-menu {
       @extend .dropdown-menu-right;
@@ -162,9 +160,6 @@
         width: 450px;
       }
     }
-  }
-  .search-typeahead {
-    border-radius: 0 25px 25px 0;
   }
 }
 
