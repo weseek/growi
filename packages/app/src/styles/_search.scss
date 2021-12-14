@@ -177,12 +177,15 @@
     }
     .nav.nav-pills {
       > .page-list-li {
-        &.active {
-          border-left: solid 3px transparent;
-          .search-item-checkbox {
-            // subtract 3px from padding left applied by .search-item-checkbox
-            // as 3px of border-left is added above
-            padding-left: 4px !important;
+        // add border when it's more than md size
+        @include media-breakpoint-up(md) {
+          &.active {
+            border-left: solid 3px transparent;
+            .search-item-checkbox {
+              // subtract 3px from padding left applied by .search-item-checkbox
+              // as 3px of border-left is added above
+              padding-left: 4px !important;
+            }
           }
         }
         > a {

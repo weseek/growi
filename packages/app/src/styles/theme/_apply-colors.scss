@@ -610,9 +610,12 @@ body.pathname-sidebar {
       }
       .page-list-ul {
         .page-list-li {
-          &.active {
-            background-color: $bgcolor-search-item-active;
-            border-color: $bordercolor-search-item-left-active;
+          // change background color and add border whe it's more than md size
+          @include media-breakpoint-up(md) {
+            &.active {
+              background-color: $bgcolor-search-item-active;
+              border-color: $bordercolor-search-item-left-active;
+            }
           }
         }
       }
