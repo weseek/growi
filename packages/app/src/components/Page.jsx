@@ -17,6 +17,8 @@ import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
+import { getOptionsToSave } from '~/mediators/editor';
+
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
@@ -49,13 +51,6 @@ class Page extends React.Component {
     this.props.appContainer.registerComponentInstance('Page', this);
   }
 
-  // TODO: Create mediator and remove this when omitting unstated is completed
-  getCurrentOptionsToSave() {
-    const { isSlackEnabled, slackChannels, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
-    return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
-  }
-
   /**
    * launch HandsontableModal with data specified by arguments
    * @param beginLineNumber
@@ -82,8 +77,10 @@ class Page extends React.Component {
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = this.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -112,8 +109,10 @@ class Page extends React.Component {
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = this.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,

@@ -17,6 +17,8 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';
 
+import { getOptionsToSave } from '~/mediators/editor';
+
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
 
@@ -52,21 +54,17 @@ class SavePageControls extends React.Component {
     mutateGrantGroupName(data.grantGroupName);
   }
 
-  // TODO: Create mediator and remove this when omitting unstated is completed
-  getCurrentOptionsToSave() {
-    const { isSlackEnabled, slackChannels, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
-    return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
-  }
-
   async save() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      await pageContainer.saveAndReload(this.getCurrentOptionsToSave(), this.props.editorMode);
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+      await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -75,11 +73,14 @@ class SavePageControls extends React.Component {
   }
 
   saveAndOverwriteScopesOfDescendants() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const optionsToSave = Object.assign(this.getCurrentOptionsToSave(), {
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
     pageContainer.saveAndReload(optionsToSave, this.props.editorMode);

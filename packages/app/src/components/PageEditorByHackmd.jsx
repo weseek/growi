@@ -11,8 +11,12 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
+import { getOptionsToSave } from '~/mediators/editor';
+
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
+import { useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -166,8 +170,10 @@ class PageEditorByHackmd extends React.Component {
    * @param {string} markdown
    */
   async onSaveWithShortcut(markdown) {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     try {
       // disable unsaved warning
@@ -423,13 +429,22 @@ class PageEditorByHackmd extends React.Component {
 const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
 
 const PageEditorByHackmdWrapper = (props) => {
-  const { data } = useEditorMode();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
 
-  if (data == null) {
+  if (editorMode == null) {
     return null;
   }
 
-  return <PageEditorByHackmdHOCWrapper {...props} editorMode={data} />;
+  return (
+    <PageEditorByHackmdHOCWrapper
+      {...props}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+    />
+  );
 };
 
 PageEditorByHackmd.propTypes = {
@@ -441,6 +456,8 @@ PageEditorByHackmd.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageEditorByHackmdWrapper);
