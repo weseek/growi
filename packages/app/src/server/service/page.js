@@ -1,4 +1,4 @@
-import { pagePathUtils, getModelSafely } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
@@ -49,7 +49,7 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, user, fromPageDescendants) => {
+    this.pageEvent.on('rename', async(page, user, fromPageDescendants = []) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME, fromPageDescendants);
       }
@@ -59,7 +59,7 @@ class PageService {
     });
 
     // delete
-    this.pageEvent.on('delete', async(page, user, fromPageDescendants) => {
+    this.pageEvent.on('delete', async(page, user, fromPageDescendants = []) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE, fromPageDescendants);
       }
@@ -69,7 +69,7 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user, fromPageDescendants) => {
+    this.pageEvent.on('deleteCompletely', async(page, user, fromPageDescendants = []) => {
       try {
         await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY, fromPageDescendants);
       }
@@ -820,7 +820,7 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user, action, fromPageDescendants) {
+  createAndSendNotifications = async function(page, user, action, fromPageDescendants = []) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
