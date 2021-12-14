@@ -54,7 +54,7 @@ class SavePageControls extends React.Component {
 
     try {
       // save
-      const optionsToSave = getOptionsToSave({ isSlackEnabled, slackChannels, editorContainer });
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
@@ -70,7 +70,7 @@ class SavePageControls extends React.Component {
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const currentOptionsToSave = getOptionsToSave({ isSlackEnabled, slackChannels, editorContainer });
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });

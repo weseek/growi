@@ -80,7 +80,7 @@ class Page extends React.Component {
     const {
       isSlackEnabled, slackChannels, pageContainer, editorContainer,
     } = this.props;
-    const optionsToSave = getOptionsToSave({ isSlackEnabled, slackChannels, editorContainer });
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -112,7 +112,7 @@ class Page extends React.Component {
     const {
       isSlackEnabled, slackChannels, pageContainer, editorContainer,
     } = this.props;
-    const optionsToSave = getOptionsToSave({ isSlackEnabled, slackChannels, editorContainer });
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,

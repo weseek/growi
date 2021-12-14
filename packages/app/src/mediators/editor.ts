@@ -8,14 +8,8 @@ type OptionsToSave = {
   grantUserGroupId?: string;
 };
 
-type UseOptionsToSaveProps = {
-  isSlackEnabled: boolean;
-  slackChannels: string;
-  editorContainer: EditorContainer;
-};
-
 // TODO: Remove editorContainer upon migration to SWR
-export const getOptionsToSave = ({ isSlackEnabled, slackChannels, editorContainer }: UseOptionsToSaveProps): OptionsToSave => {
+export const getOptionsToSave = (isSlackEnabled: boolean, slackChannels: string, editorContainer: EditorContainer): OptionsToSave => {
   const optionsToSave = editorContainer.getCurrentOptionsToSave();
   return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
 };
