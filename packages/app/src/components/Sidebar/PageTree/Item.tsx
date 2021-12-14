@@ -12,6 +12,7 @@ import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
 
 
 interface ItemProps {
@@ -39,6 +40,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
+  isDeletable: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -66,7 +68,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
@@ -202,6 +204,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
+            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
           />
         </div>
       </div>
