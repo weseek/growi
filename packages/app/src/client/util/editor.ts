@@ -11,5 +11,5 @@ type OptionsToSave = {
 // TODO: Remove editorContainer upon migration to SWR
 export const getOptionsToSave = (isSlackEnabled: boolean, slackChannels: string, editorContainer: EditorContainer): OptionsToSave => {
   const optionsToSave = editorContainer.getCurrentOptionsToSave();
-  return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
+  return { ...optionsToSave, isSlackEnabled, slackChannels };
 };
