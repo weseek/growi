@@ -3,11 +3,12 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { pagePathUtils } from 'growi-commons';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
-import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
 
+const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,

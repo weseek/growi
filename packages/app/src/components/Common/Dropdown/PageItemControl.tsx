@@ -14,7 +14,9 @@ type PageItemControlProps = {
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page, isEnableActions, onClickDeleteButton, isDeletable } = props;
+  const {
+    page, isEnableActions, onClickDeleteButton, isDeletable,
+  } = props;
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {

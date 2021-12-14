@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
+import { pagePathUtils } from 'growi-commons';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
@@ -12,7 +13,8 @@ import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-import { isTopPage } from '^/../core/dist/cjs/utils/page-path-utils';
+
+const { isTopPage } = pagePathUtils;
 
 
 interface ItemProps {
