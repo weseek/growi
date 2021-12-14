@@ -27,8 +27,6 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
-
       grant: 1, // default: public
       grantGroupId: null,
       grantGroupName: null,
@@ -142,10 +140,11 @@ export default class EditorContainer extends Container {
     }
   }
 
+  // TODO: Create mediator and remove this when omitting unstated is completed
   getCurrentOptionsToSave() {
     const opt = {
-      isSlackEnabled: this.state.isSlackEnabled,
-      slackChannels: this.state.slackChannels,
+      // isSlackEnabled: this.state.isSlackEnabled,
+      // slackChannels: this.state.slackChannels,
       grant: this.state.grant,
       pageTags: this.state.tags,
     };

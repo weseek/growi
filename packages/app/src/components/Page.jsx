@@ -19,6 +19,8 @@ import mdu from './PageEditor/MarkdownDrawioUtil';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
+import { useIsSlackEnabled } from '~/stores/editor';
+import { useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
 
@@ -45,6 +47,13 @@ class Page extends React.Component {
 
   componentWillMount() {
     this.props.appContainer.registerComponentInstance('Page', this);
+  }
+
+  // TODO: Create mediator and remove this when omitting unstated is completed
+  getCurrentOptionsToSave() {
+    const { isSlackEnabled, slackChannels, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
   }
 
   /**
@@ -74,7 +83,7 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = this.getCurrentOptionsToSave();
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -104,7 +113,7 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = this.getCurrentOptionsToSave();
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -163,16 +172,27 @@ Page.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
 };
 
 const PageWrapper = (props) => {
-  const { data } = useEditorMode();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
 
-  if (data == null) {
+  if (editorMode == null) {
     return null;
   }
 
-  return <Page {...props} editorMode={data} />;
+  return (
+    <Page
+      {...props}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+    />
+  );
 };
 
 export default withUnstatedContainers(PageWrapper, [AppContainer, PageContainer, EditorContainer]);
