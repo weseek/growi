@@ -78,9 +78,7 @@ activitySchema.methods.getNotificationTargetUsers = async function(fromPageDesce
     user: actionUser, targetModel, target,
   } = this;
 
-  const [subscribeUsers] = await Promise.all([
-    Subscription.getSubscription((target as any) as Types.ObjectId),
-  ]);
+  const subscribeUsers = await Subscription.getSubscription((target as any) as Types.ObjectId);
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
   const filter = (array, pull) => {
