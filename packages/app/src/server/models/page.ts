@@ -377,7 +377,7 @@ export const generateGrantConditions = async(
     userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
   }
 
-  const grantConditions: PipelineStageMatch[] = [
+  const grantConditions: AnyObject[] = [
     { grant: null },
     { grant: GRANT_PUBLIC },
   ];
