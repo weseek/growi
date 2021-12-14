@@ -2,8 +2,8 @@
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
-$bgcolor-list-hover: darken($bgcolor-global, 3%) !default;
-$bgcolor-list-active: $primary !default;
+$bgcolor-list-hover: lighten($primary, 72%) !default;
+$bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
@@ -18,6 +18,7 @@ $border-color-global: $gray-300 !default;
 $border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
+$text-muted: $gray-500;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
@@ -25,6 +26,7 @@ $table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
 
+@import 'reboot-bootstrap-text';
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
@@ -166,6 +168,25 @@ $border-color: $border-color-global;
 .grw-sidebar {
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
+  // Pagetree
+  .grw-pagetree {
+    .grw-pagetree-item {
+      .grw-triangle-icon {
+        &:not(:hover) {
+          svg {
+            fill: $gray-400;
+          }
+        }
+      }
+      &:hover {
+        background: $bgcolor-list-hover;
+      }
+      &:active {
+        background: $bgcolor-list-active;
+      }
+    }
+  }
 }
 
 /*

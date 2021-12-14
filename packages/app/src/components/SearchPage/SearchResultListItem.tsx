@@ -12,6 +12,7 @@ type Props = {
   page: IPageSearchResultData,
   isSelected: boolean,
   isChecked: boolean,
+  isEnableActions: boolean,
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -20,7 +21,7 @@ type Props = {
 const SearchResultListItem: FC<Props> = (props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
@@ -43,9 +44,9 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-page-item w-100 border-bottom px-4 list-group-item-action ${isSelected ? 'active' : ''}`}>
+    <li key={pageData._id} className={`page-list-li search-page-item w-100 list-group-item-action pl-2 ${isSelected ? 'active' : ''}`}>
       <a
-        className="d-block pt-3"
+        className="d-block py-4 h-100"
         href={pageId}
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
@@ -74,7 +75,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2">{pageTitle}</span>
+                <span className="mx-2 search-result-page-title">{pageTitle}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
@@ -82,10 +83,10 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} />
+                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
-            <div className="my-2">
+            <div className="my-2 search-result-list-snippet">
               {
                 pageMeta.elasticSearchResult != null && (
                   <Clamp lines={2}>

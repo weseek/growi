@@ -154,7 +154,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
           {pages.map((page) => {
-            return <div><code>{ page.path }</code></div>;
+            return <div key={page.pageId}><code>{ page.path }</code></div>;
           })}
         </div>
         {renderDeleteRecursivelyForm()}

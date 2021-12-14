@@ -11,8 +11,11 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
+import TriangleIcon from '~/components/Icons/TriangleIcon';
+
 
 interface ItemProps {
+  isEnableActions: boolean
   itemNode: ItemNode
   targetId?: string
   isOpen?: boolean
@@ -35,6 +38,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 
 type ItemControlProps = {
   page: Partial<IPageHasId>
+  isEnableActions: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -62,7 +66,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
@@ -87,7 +91,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage,
+    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -173,20 +177,22 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
 
-  const buttonClass = isOpen ? 'rotate' : '';
+  const buttonClass = isOpen ? 'grw-pagetree-open' : '';
 
   return (
-    <div className="grw-pagetree-item-wrapper">
+    <>
       <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
         <button
           type="button"
           className={`grw-pagetree-button btn ${buttonClass}`}
           onClick={onClickLoadChildren}
         >
-          <i className="icon-control-play"></i>
+          <div className="grw-triangle-icon">
+            <TriangleIcon />
+          </div>
         </button>
         <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className="grw-pagetree-title m-auto">{nodePath.basename(page.path as string) || '/'}</p>
+          <p className={`grw-pagetree-title m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
         </a>
         <div className="grw-pagetree-count-wrapper">
           <ItemCount />
@@ -196,28 +202,34 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             page={page}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            isEnableActions={isEnableActions}
           />
         </div>
       </div>
 
-      <ClosableTextInput
-        isShown={isNewPageInputShown}
-        placeholder={t('Input title')}
-        onClickOutside={() => { setNewPageInputShown(false) }}
-        onPressEnter={onPressEnterHandler}
-        inputValidator={inputValidator}
-      />
+      {!isEnableActions && (
+        <ClosableTextInput
+          isShown={isNewPageInputShown}
+          placeholder={t('Input title')}
+          onClickOutside={() => { setNewPageInputShown(false) }}
+          onPressEnter={onPressEnterHandler}
+          inputValidator={inputValidator}
+        />
+      )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <Item
-            key={node.page._id}
-            itemNode={node}
-            isOpen={false}
-            onClickDeleteByPage={onClickDeleteByPage}
-          />
+          <div className="ml-3 mt-2">
+            <Item
+              key={node.page._id}
+              isEnableActions={isEnableActions}
+              itemNode={node}
+              isOpen={false}
+              onClickDeleteByPage={onClickDeleteByPage}
+            />
+          </div>
         ))
       }
-    </div>
+    </>
   );
 
 };

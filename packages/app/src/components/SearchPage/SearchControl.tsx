@@ -4,10 +4,13 @@ import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
-import { CheckboxType } from '../../interfaces/search';
+import SortControl from './SortControl';
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
+  sort: SORT_AXIS,
+  order: SORT_ORDER,
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
@@ -18,6 +21,7 @@ type Props = {
   onSearchInvoked: (data: {keyword: string}) => boolean,
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
+  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -38,6 +42,12 @@ const SearchControl: FC <Props> = (props: Props) => {
   const switchExcludeTrashPagesHandler = () => {
     if (props.onExcludeTrashPagesSwitched != null) {
       props.onExcludeTrashPagesSwitched();
+    }
+  };
+
+  const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
+    if (props.onChangeSortInvoked != null) {
+      props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };
 
@@ -70,7 +80,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <>
+    <div className="position-sticky fixed-top">
       <div className="search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
@@ -79,14 +89,17 @@ const SearchControl: FC <Props> = (props: Props) => {
             onSearchFormChanged={props.onSearchInvoked}
           />
         </div>
-        <div className="mr-4">
-          {/* TODO: replace the following button */}
-          <button type="button">related pages</button>
+        <div className="mr-4 d-flex">
+          <SortControl
+            sort={props.sort}
+            order={props.order}
+            onChangeSortInvoked={onChangeSortInvoked}
+          />
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="d-flex align-items-center py-3 border-bottom border-gray">
-        <div className="d-flex mr-auto ml-3">
+      <div className="search-control d-flex align-items-center py-2 border-bottom border-gray">
+        <div className="d-flex mr-auto ml-4">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
             isSelectAllCheckboxDisabled={searchResultCount === 0}
@@ -105,9 +118,9 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center mr-3">
+        <div className="d-none d-lg-flex align-items-center mr-4">
           <div className="border border-gray mr-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckDefault">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
               <input
                 className="mr-2"
                 type="checkbox"
@@ -118,7 +131,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             </label>
           </div>
           <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center" htmlFor="flexCheckChecked">
+            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
               <input
                 className="mr-2"
                 type="checkbox"
@@ -131,7 +144,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
       </div>
       {rednerSearchOptionModal()}
-    </>
+    </div>
   );
 };
 
