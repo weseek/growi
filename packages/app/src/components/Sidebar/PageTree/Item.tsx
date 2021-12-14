@@ -177,10 +177,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const opacityStyle = { opacity: 1.0 };
   if (page.isTarget) opacityStyle.opacity = 0.7;
 
-  const buttonClass = isOpen ? 'rotate' : '';
+  const buttonClass = isOpen ? 'grw-pagetree-open' : '';
 
   return (
-    <div className="grw-pagetree-item-wrapper">
+    <>
       <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
         <button
           type="button"
@@ -218,16 +218,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <Item
-            key={node.page._id}
-            isEnableActions={isEnableActions}
-            itemNode={node}
-            isOpen={false}
-            onClickDeleteByPage={onClickDeleteByPage}
-          />
+          <div className="ml-3 mt-2">
+            <Item
+              key={node.page._id}
+              isEnableActions={isEnableActions}
+              itemNode={node}
+              isOpen={false}
+              onClickDeleteByPage={onClickDeleteByPage}
+            />
+          </div>
         ))
       }
-    </div>
+    </>
   );
 
 };

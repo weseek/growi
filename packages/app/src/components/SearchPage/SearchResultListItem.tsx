@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
@@ -28,13 +27,19 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
 
-  const isPathIncludedHtml = pageMeta.elasticSearchResult?.highlightedPath != null || pageData.path != null;
-  const dPagePath = new DevidedPagePath(pageData.path, false, true);
+  const pageTitle = (
+    <PagePathLabel
+      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      isLatterOnly
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+    >
+    </PagePathLabel>
+  );
   const pagePathElem = (
     <PagePathLabel
       path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
       isFormerOnly
-      isPathIncludedHtml={isPathIncludedHtml}
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
     />
   );
 
@@ -72,7 +77,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
                 <UserPicture user={pageData.lastUpdateUser} />
               </span>
               {/* page title */}
-              <span className="item-title h5 mr-2 mb-0">{dPagePath.latter}</span>
+              <span className="item-title h5 mr-2 mb-0">{pageTitle}</span>
               {/* page meta */}
               <div className="d-flex item-meta py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
