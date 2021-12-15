@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 }
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[]): Promise<void>
+  createEmptyPagesByPaths(paths: string[], publicOnly: boolean): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -141,9 +141,9 @@ const generateChildrenRegExp = (path: string): RegExp => {
 /*
  * Create empty pages if the page in paths didn't exist
  */
-schema.statics.createEmptyPagesByPaths = async function(paths: string[]): Promise<void> {
+schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicOnly = false): Promise<void> {
   // find existing parents
-  const builder = new PageQueryBuilder(this.find({}, { _id: 0, path: 1 }));
+  const builder = new PageQueryBuilder(this.find(publicOnly ? { grant: GRANT_PUBLIC } : {}, { _id: 0, path: 1 }));
   const existingPages = await builder
     .addConditionToListByPathsArray(paths)
     .query

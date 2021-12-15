@@ -996,7 +996,7 @@ class PageService {
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths);
+        await Page.createEmptyPagesByPaths(parentPaths, true);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
