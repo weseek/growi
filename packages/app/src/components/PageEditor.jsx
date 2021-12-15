@@ -15,6 +15,8 @@ import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '~/client/services/EditorContainer';
 
+import { getOptionsToSave } from '~/client/util/editor';
+
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
@@ -125,19 +127,15 @@ class PageEditor extends React.Component {
     }
   }
 
-  // TODO: Create mediator and remove this when omitting unstated is completed
-  getCurrentOptionsToSave() {
-    const { isSlackEnabled, slackChannels, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
-    return { ...optionsToSave, ...{ isSlackEnabled }, ...{ slackChannels } };
-  }
-
   /**
    * save and update state of containers
    */
   async onSaveWithShortcut() {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = this.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, editorContainer, pageContainer,
+    } = this.props;
+
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     try {
       // disable unsaved warning
@@ -371,7 +369,7 @@ const PageEditorWrapper = (props) => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
 
-  if (isEditable == null || editorMode == null || isSlackEnabled == null || slackChannels == null) {
+  if (isEditable == null || editorMode == null) {
     return null;
   }
 
