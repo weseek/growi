@@ -72,7 +72,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
         className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
         onClick={onClickPlusButton}
       >
-        <i className="icon-plus text-muted"></i>
+        <i className="icon-plus text-muted d-block" />
       </button>
     </>
   );
