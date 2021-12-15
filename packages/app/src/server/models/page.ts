@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 }
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
-  createEmptyPagesByPaths(paths: string[], publicOnly: boolean): Promise<void>
+  createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
   getParentIdAndFillAncestors(path: string): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>

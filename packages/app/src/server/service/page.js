@@ -867,22 +867,13 @@ class PageService {
 
   async v5InitialMigration(grant) {
     const socket = this.crowi.socketIoService.getAdminSocket();
-    try {
-      await this._v5RecursiveMigration(grant);
-    }
-    catch (err) {
-      logger.error('V5 initial miration failed.', err);
-      socket.emit('v5InitialMirationFailed', { error: err.message });
-
-      throw err;
-    }
-
     const Page = this.crowi.model('Page');
     const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
     const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
     const isPathIndexExists = pathIndexStatus != null;
     const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
 
+    // drop unique index first
     if (isUnique || !isPathIndexExists) {
       try {
         await this._v5NormalizeIndex(isPathIndexExists);
@@ -893,6 +884,17 @@ class PageService {
 
         throw err;
       }
+    }
+
+    // then migrate
+    try {
+      await this._v5RecursiveMigration(grant);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      socket.emit('v5InitialMirationFailed', { error: err.message });
+
+      throw err;
     }
 
     await this._setIsV5CompatibleTrue();
