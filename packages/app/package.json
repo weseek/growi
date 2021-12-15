@@ -208,7 +208,7 @@
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "penpal": "^4.0.0",
     "plantuml-encoder": "^1.2.5",
-    "postcss-loader": "^4.3.0",
+    "postcss-loader": "^3.0.0",
     "prettier": "^1.19.1",
     "react": "^16.8.3",
     "react-bootstrap-typeahead": "^3.4.7",
