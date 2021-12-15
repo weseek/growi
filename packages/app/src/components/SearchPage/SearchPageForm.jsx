@@ -49,9 +49,8 @@ class SearchPageForm extends React.Component {
             onInputChange={this.onInputChange}
           />
           <div className="btn-group-submit-search">
-            <button
-              className="btn border-0 pb-1"
-              type="button"
+            <span
+              className="text-decoration-none"
               onClick={() => {
                 try {
                   this.search();
@@ -61,8 +60,8 @@ class SearchPageForm extends React.Component {
                 }
               }}
             >
-              <i className="pr-2 icon-magnifier"></i>
-            </button>
+              <i className="icon-magnifier"></i>
+            </span>
           </div>
         </div>
       </div>
