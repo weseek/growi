@@ -41,7 +41,7 @@ class SearchPageForm extends React.Component {
   render() {
     return (
       // TODO: modify design after other component is created
-      <div className="grw-search-form-in-search-result-page d-flex align-items-center">
+      <div className="grw-global-search grw-search-form-in-search-result-page d-flex align-items-center">
         <div className="input-group flex-nowrap">
           <SearchForm
             onSubmit={this.search}
@@ -49,20 +49,9 @@ class SearchPageForm extends React.Component {
             onInputChange={this.onInputChange}
           />
           <div className="btn-group-submit-search">
-            <button
-              className="btn border-0 pb-1"
-              type="button"
-              onClick={() => {
-                try {
-                  this.search();
-                }
-                catch (error) {
-                  logger.error(error);
-                }
-              }}
-            >
-              <i className="pr-2 icon-magnifier"></i>
-            </button>
+            <span className="btn-link text-decoration-none" onClick={this.search}>
+              <i className="icon-magnifier"></i>
+            </span>
           </div>
         </div>
       </div>
