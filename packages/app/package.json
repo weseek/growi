@@ -166,7 +166,7 @@
     "@types/react-dom": "^17.0.9",
     "autoprefixer": "^9.0.0",
     "bootstrap": "^4.5.0",
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.27.7",
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
     "codemirror": "^5.63.0",
