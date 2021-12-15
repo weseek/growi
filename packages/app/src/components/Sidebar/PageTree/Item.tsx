@@ -69,10 +69,10 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
       <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
       <button
         type="button"
-        className="btn-link nav-link border-0 rounded grw-btn-page-management py-0"
+        className="btn-link nav-link border-0 rounded grw-btn-page-management p-0"
         onClick={onClickPlusButton}
       >
-        <i className="icon-plus text-muted d-block" />
+        <i className="icon-plus text-muted d-block grw-pagetree-simple-line-icon grw-pagetree-icon p-1" />
       </button>
     </>
   );
@@ -181,7 +181,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
+      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center p-1">
         <button
           type="button"
           className={`grw-pagetree-button btn ${buttonClass}`}
