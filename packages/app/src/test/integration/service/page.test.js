@@ -871,5 +871,59 @@ describe('PageService', () => {
 
   });
 
+  describe('v5InitialMigration()', () => {
+    test('should migrate all public pages & replace private parents with empty pages', async() => {
+      jest.restoreAllMocks();
+
+      // initialize pages for test
+      const pages = await Page.insertMany([
+        {
+          path: '/publicA',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/publicA/privateB',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/publicA/privateB/publicC',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/parenthesis/(a)[b]{c}d',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+      ]);
+
+      // migrate
+      await crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC);
+
+      const migratedPages = await Page.find({
+        path: {
+          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d'],
+        },
+        isEmpty: false,
+        grant: Page.GRANT_PUBLIC,
+      });
+      const migratedEmptyPages = await Page.find({
+        path: {
+          $in: ['/publicA/privateB', '/parenthesis'],
+        },
+        isEmpty: true,
+        grant: Page.GRANT_PUBLIC,
+      });
+
+      expect(migratedPages.length).toBe(3);
+      expect(migratedEmptyPages.length).toBe(2);
+    });
+  });
 
 });
