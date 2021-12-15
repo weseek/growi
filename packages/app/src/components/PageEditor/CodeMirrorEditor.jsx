@@ -189,6 +189,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = this.props.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // fold drawio section
+    this.foldDrawioSection();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -200,7 +203,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
 
-    // 初期のエディタ表示時やショートカットによる保存を実行したタイミングで drawio セクションを fold する
+    // fold drawio section
     this.foldDrawioSection();
   }
 
@@ -753,11 +756,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const startDrawio = /^::: drawio/;
     const endDrawio = /^:::$/;
     const editor = this.getCodeMirror();
-    for (let l = editor.firstLine(); l <= editor.lastLine(); l++) {
-      const line = editor.getLine(l);
+    // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
+    for (let i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
+      const line = editor.getLine(i);
       const match = startDrawio.exec(line);
       if (match) {
-        editor.foldCode({ line: l, ch: 0 }, null, 'fold');
+        editor.foldCode({ line: i, ch: 0 }, { scanUp: false }, 'fold');
       }
     }
   }
