@@ -18,6 +18,12 @@ const { serializePageSecurely } = require('../models/serializers/page-serializer
 
 const BULK_REINDEX_SIZE = 100;
 
+const RECURSIVERY_ACTIONS = [
+  ActivityDefine.ACTION_PAGE_RECURSIVERY_RENAME,
+  ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE,
+  ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY,
+];
+
 class PageService {
 
   constructor(crowi) {
@@ -49,9 +55,10 @@ class PageService {
     });
 
     // rename
-    this.pageEvent.on('rename', async(page, user) => {
+    this.pageEvent.on('rename', async(page, user, isRecursively) => {
+      const action = isRecursively ? ActivityDefine.ACTION_PAGE_RECURSIVERY_RENAME : ActivityDefine.ACTION_PAGE_RENAME;
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+        await this.createAndSendNotifications(page, user, action);
       }
       catch (err) {
         logger.error(err);
@@ -177,7 +184,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user);
+    this.pageEvent.emit('rename', page, user, isRecursively);
 
     return renamedPage;
   }
@@ -824,7 +831,20 @@ class PageService {
     const activity = await activityService.createByParameters(parameters);
 
     // Get user to be notified
-    const targetUsers = await activity.getNotificationTargetUsers();
+    let targetUsers = [];
+    if (RECURSIVERY_ACTIONS.includes(action)) {
+      const Page = this.crowi.model('Page');
+      const { pages } = await Page.findListWithDescendants(page.path, user);
+      for (const page of pages) {
+        // eslint-disable-next-line no-await-in-loop
+        targetUsers = targetUsers.concat(await activity.getNotificationTargetUsers(page));
+      }
+    }
+    else {
+      targetUsers = await activity.getNotificationTargetUsers(page);
+    }
+
+    console.log('targetUsers', targetUsers);
 
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
