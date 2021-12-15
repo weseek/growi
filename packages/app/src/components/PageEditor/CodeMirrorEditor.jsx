@@ -150,6 +150,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
+
+    this.foldDrawioSection = this.foldDrawioSection.bind(this);
+    this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
   }
 
   init() {
@@ -196,6 +199,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // 初期のエディタ表示時やショートカットによる保存を実行したタイミングで drawio セクションを fold する
+    this.foldDrawioSection();
   }
 
   async initializeTextlint() {
@@ -742,6 +748,27 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
+  // fold draw.io section (::: drawio ~ :::)
+  foldDrawioSection() {
+    const startDrawio = /^::: drawio/;
+    const endDrawio = /^:::$/;
+    const editor = this.getCodeMirror();
+    for (let l = editor.firstLine(); l <= editor.lastLine(); l++) {
+      const line = editor.getLine(l);
+      const match = startDrawio.exec(line);
+      if (match) {
+        editor.foldCode({ line: l, ch: 0 }, null, 'fold');
+      }
+    }
+  }
+
+  onSaveForDrawio(drawioData) {
+    const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
+    // drawio セクション(:::drawio)の更新完了後にセクションを fold する
+    this.foldDrawioSection();
+    return range;
+  }
+
   getNavbarItems() {
     return [
       <Button
@@ -975,7 +1002,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         />
         <DrawioModal
           ref={this.drawioModal}
-          onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
+          onSave={this.onSaveForDrawio}
         />
 
       </React.Fragment>
