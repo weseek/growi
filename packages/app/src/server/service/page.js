@@ -3,6 +3,7 @@ import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import Subscription from '~/server/models/subscription';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -15,6 +16,8 @@ const { createBatchStream } = require('~/server/util/batch-stream');
 
 const { isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
+// const Subscription = require('../models/subscription');
+
 
 const BULK_REINDEX_SIZE = 100;
 
@@ -837,11 +840,11 @@ class PageService {
       const { pages } = await Page.findListWithDescendants(page.path, user);
       for (const page of pages) {
         // eslint-disable-next-line no-await-in-loop
-        targetUsers = targetUsers.concat(await activity.getNotificationTargetUsers(page));
+        targetUsers = targetUsers.concat(await Subscription.getSubscription(page));
       }
     }
     else {
-      targetUsers = await activity.getNotificationTargetUsers(page);
+      targetUsers = await activity.getNotificationTargetUsers();
     }
 
     // Create and send notifications

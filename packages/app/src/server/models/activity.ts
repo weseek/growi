@@ -72,13 +72,13 @@ activitySchema.index({
 }, { unique: true });
 
 
-activitySchema.methods.getNotificationTargetUsers = async function(page: Types.ObjectId) {
+activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser } = this;
+  const { user: actionUser, target } = this;
 
   const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription(page),
-    Subscription.getUnsubscription(page),
+    Subscription.getSubscription((target as any) as Types.ObjectId),
+    Subscription.getUnsubscription((target as any) as Types.ObjectId),
   ]);
 
   const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
