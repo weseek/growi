@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-console.log('drawio fold');
-
 (function(mod) {
   mod(require("codemirror"));
 })(function(CodeMirror) {
