@@ -98,8 +98,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="search-control d-flex align-items-center py-2 border-bottom border-gray px-4">
-        <div className="d-flex mr-auto">
+      <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-3 px-3 border-bottom border-gray">
+        <div className="d-flex pl-md-2">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
             isSelectAllCheckboxDisabled={searchResultCount === 0}
@@ -109,7 +109,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
         {/** filter option */}
-        <div className="d-lg-none mr-4">
+        <div className="d-lg-none ml-auto">
           <button
             type="button"
             className="btn"
@@ -118,7 +118,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center search-control-include-options">
+        <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
           <div className="card mr-3 mb-0">
             <div className="card-body">
               <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
