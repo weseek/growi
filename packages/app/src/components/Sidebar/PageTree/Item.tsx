@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
-import { pagePathUtils } from 'growi-commons';
+import { pagePathUtils } from '@growi/core';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
