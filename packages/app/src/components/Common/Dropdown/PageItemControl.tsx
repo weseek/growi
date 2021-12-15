@@ -25,10 +25,10 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     <>
       <button
         type="button"
-        className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2"
         data-toggle="dropdown"
       >
-        <i className="fa fa-ellipsis-v text-muted"></i>
+        <i className="fa fa-ellipsis-v text-muted p-1"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
 
