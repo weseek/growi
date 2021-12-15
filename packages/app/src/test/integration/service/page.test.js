@@ -901,6 +901,12 @@ describe('PageService', () => {
           creator: testUser1,
           lastUpdateUser: testUser1,
         },
+        {
+          path: '/parenthesis/(a)[b]{c}d/public',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
       ]);
 
       // migrate
@@ -908,7 +914,7 @@ describe('PageService', () => {
 
       const migratedPages = await Page.find({
         path: {
-          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d'],
+          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d', '/parenthesis/(a)[b]{c}d/public'],
         },
         isEmpty: false,
         grant: Page.GRANT_PUBLIC,
@@ -921,7 +927,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
       });
 
-      expect(migratedPages.length).toBe(3);
+      expect(migratedPages.length).toBe(4);
       expect(migratedEmptyPages.length).toBe(2);
     });
   });
