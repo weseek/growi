@@ -249,8 +249,14 @@ export class PageQueryBuilder {
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
-  addConditionToSortAncestorPages() {
+  addConditionToSortPagesByDescPath() {
     this.query = this.query.sort('-path');
+
+    return this;
+  }
+
+  addConditionToSortPagesByAscPath() {
+    this.query = this.query.sort('path');
 
     return this;
   }
