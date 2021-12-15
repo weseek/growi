@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
@@ -25,6 +25,8 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
   } = props;
 
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
 
@@ -45,7 +47,10 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
   );
 
   return (
-    <li key={pageData._id} className={`page-list-li search-result-item list-group-item-action border-bottom ${isSelected ? 'active' : ''}`}>
+    <li
+      key={pageData._id}
+      className={`page-list-li search-result-item list-group-item-action border-bottom ${isSelected && !isDeviceSmallerThanMd ? 'active' : ''}`}
+    >
       <a
         className="d-block h-100"
         href={pageId}
@@ -68,17 +73,17 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
           </div>
           <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
-            <h6 className="item-path mb-1">
+            <h6 className="mb-1 py-1">
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
-              <span className="user-picture mr-2 d-none d-md-block">
-                <UserPicture user={pageData.lastUpdateUser} />
+              <span className="mr-2 d-none d-md-block">
+                <UserPicture user={pageData.lastUpdateUser} size="sm" />
               </span>
               {/* page title */}
-              <span className="item-title h5 mr-2 mb-0">
+              <span className="py-1 h5 mr-2 mb-0">
                 {pageTitle}
               </span>
               {/* page meta */}
@@ -90,7 +95,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
                 <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
               </div>
             </div>
-            <div className="search-result-list-snippet">
+            <div className="search-result-list-snippet py-1">
               <Clamp lines={2}>
                 {
                   pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (

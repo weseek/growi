@@ -80,7 +80,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <div className="position-sticky fixed-top">
+    <div className="position-sticky fixed-top shadow-sm">
       <div className="search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny

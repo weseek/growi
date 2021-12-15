@@ -177,15 +177,12 @@
     }
     .nav.nav-pills {
       > .page-list-li {
-        // add border when it's more than md size
-        @include media-breakpoint-up(md) {
-          &.active {
-            border-left: solid 3px transparent;
-            .search-item-checkbox {
-              // subtract 3px from padding left applied by .search-item-checkbox
-              // as 3px of border-left is added above
-              padding-left: 4px !important;
-            }
+        &.active {
+          border-left: solid 3px transparent;
+          .search-item-checkbox {
+            // subtract 3px from padding left applied by .search-item-checkbox
+            // as 3px of border-left is added above
+            padding-left: 4px !important;
           }
         }
         > a {
@@ -212,7 +209,7 @@
       }
     }
     .search-result-item {
-      min-height: 123px;
+      min-height: 136px;
     }
 
     .search-result-meta {
@@ -229,23 +226,14 @@
     }
   }
   .search-item-text {
-    .item-path {
-      line-height: 18px;
-    }
-    .user-picture {
+    .picture-sm {
       width: 20px;
       height: 20px;
-    }
-    .item-title {
-      line-height: 26px;
     }
     .item-meta {
       .top-label {
         display: none; // not show top label
       }
-    }
-    .search-result-list-snippet {
-      line-height: 20px;
     }
     .item-control {
       .grw-btn-page-management {
