@@ -29,7 +29,6 @@
     .grw-pagetree-title-anchor {
       width: 100%;
       overflow: hidden;
-      color: inherit;
       text-decoration: none;
 
       .grw-pagetree-title {
@@ -50,11 +49,5 @@
         padding: 0.3rem 1rem;
       }
     }
-  }
-}
-
-.grw-pagetree-footer {
-  .h5.grw-private-legacy-pages-anchor {
-    color: inherit;
   }
 }
