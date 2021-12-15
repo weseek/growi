@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
+import { generateGrantCondition } from '~/server/models/page';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -771,6 +772,70 @@ class PageService {
     }
   }
 
+  async shortBodiesMapByPageIds(pageIds = [], user) {
+    const Page = mongoose.model('Page');
+    const MAX_LENGTH = 350;
+
+    // aggregation options
+    const viewerCondition = await generateGrantCondition(user, null);
+    const filterByIds = {
+      _id: { $in: pageIds.map(id => mongoose.Types.ObjectId(id)) },
+    };
+
+    let pages;
+    try {
+      pages = await Page
+        .aggregate([
+          // filter by pageIds
+          {
+            $match: filterByIds,
+          },
+          // filter by viewer
+          viewerCondition,
+          // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
+          {
+            $lookup: {
+              from: 'revisions',
+              let: { localRevision: '$revision' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$_id', '$$localRevision'],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    revision: { $substr: ['$body', 0, MAX_LENGTH] },
+                  },
+                },
+              ],
+              as: 'revisionData',
+            },
+          },
+          // projection
+          {
+            $project: {
+              _id: 1,
+              revisionData: 1,
+            },
+          },
+        ]).exec();
+    }
+    catch (err) {
+      logger.error('Error occurred while generating shortBodiesMap');
+      throw err;
+    }
+
+    const shortBodiesMap = {};
+    pages.forEach((page) => {
+      shortBodiesMap[page._id] = page.revisionData?.[0]?.revision;
+    });
+
+    return shortBodiesMap;
+  }
+
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
@@ -952,13 +1017,18 @@ class PageService {
             parentPath = parentPath.replace(bracket, `\\${bracket}`);
           });
 
+          const filter = {
+            // regexr.com/6889f
+            // ex. /parent/any_child OR /any_level1
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+          };
+          if (grant != null) {
+            filter.grant = grant;
+          }
+
           return {
             updateMany: {
-              filter: {
-                // regexr.com/6889f
-                // ex. /parent/any_child OR /any_level1
-                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
-              },
+              filter,
               update: {
                 parent: parentId,
               },

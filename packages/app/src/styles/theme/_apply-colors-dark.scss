@@ -256,8 +256,10 @@ ul.pagination {
   .grw-pagetree {
     .grw-pagetree-item {
       .grw-triangle-icon {
-        svg {
-          fill: $gray-500;
+        &:not(:hover) {
+          svg {
+            fill: $gray-500;
+          }
         }
       }
       &:hover {

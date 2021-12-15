@@ -96,10 +96,6 @@ Object.assign(componentMappings, {
   'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
-  'not-found-alert': <NotFoundAlert
-    isGuestUserMode={appContainer.isGuestUser}
-    isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
-  />,
 
   'forbidden-page': <ForbiddenPage />,
 
@@ -128,6 +124,10 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'not-found-alert': <NotFoundAlert
+      isGuestUserMode={appContainer.isGuestUser}
+      isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+    />,
   });
 
   // show the Page accessory modal when query of "compare" is requested
