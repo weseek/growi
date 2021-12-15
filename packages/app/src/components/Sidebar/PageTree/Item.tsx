@@ -206,7 +206,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
       </div>
 
-      {!isEnableActions && (
+      {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
           placeholder={t('Input title')}
