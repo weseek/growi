@@ -12,6 +12,7 @@ import CodeMirror from 'codemirror/lib/codemirror';
 
 import PageContainer from '../../client/services/PageContainer';
 import AppContainer from '../../client/services/AppContainer';
+import ExpandOrContractButton from '../ExpandOrContractButton';
 
 import { useEditorMode } from '~/stores/ui';
 
@@ -42,6 +43,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+  const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
 
   const { data: editorMode } = useEditorMode();
 
@@ -110,9 +112,36 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
   };
 
+  const onExpandModal = () => {
+    setIsModalExpanded(true);
+  };
+
+  const onContractModal = () => {
+    setIsModalExpanded(false);
+  };
+
+  const resizeAndCloseButtons = (
+    <div className="d-flex flex-nowrap">
+      <ExpandOrContractButton
+        isWindowExpanded={isModalExpanded}
+        expandWindow={onExpandModal}
+        contractWindow={onContractModal}
+        color="white"
+      />
+      <button type="button" className="close text-white" onClick={onClose} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  );
+
   return (
-    <Modal isOpen={props.isOpen || false} toggle={onClose} className="modal-gfm-cheatsheet" size="xl">
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+    <Modal
+      isOpen={props.isOpen || false}
+      toggle={onClose}
+      className={`modal-gfm-cheatsheet grw-page-accessories-modal${isModalExpanded ? ' grw-modal-expanded' : ''}`}
+      size="xl"
+    >
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center" close={resizeAndCloseButtons}>
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody>
