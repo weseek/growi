@@ -74,7 +74,7 @@ activitySchema.index({
 
 activitySchema.methods.getNotificationTargetUsers = async function(page: Types.ObjectId) {
   const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser, target } = this;
+  const { user: actionUser } = this;
 
   const [subscribeUsers, unsubscribeUsers] = await Promise.all([
     Subscription.getSubscription(page),
