@@ -64,7 +64,7 @@ const PageTree: FC = memo(() => {
         />
       </div>
 
-      <div className="grw-sidebar-content-footer">
+      <div className="grw-pagetree-footer border-top position-absolute fixed-bottom p-3 w-100">
         {
           !isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
             <PrivateLegacyPages />
