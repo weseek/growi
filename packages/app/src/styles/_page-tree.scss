@@ -1,5 +1,5 @@
 .grw-pagetree {
-  min-height: 1050px;
+  min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header + $grw-sidebar-content-footer));
 
   .grw-pagetree-item {
     &:hover {
