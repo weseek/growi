@@ -844,8 +844,6 @@ class PageService {
       targetUsers = await activity.getNotificationTargetUsers(page);
     }
 
-    console.log('targetUsers', targetUsers);
-
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
