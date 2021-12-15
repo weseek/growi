@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { pagePathUtils } from 'growi-commons';
+import { pagePathUtils } from '@growi/core';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
