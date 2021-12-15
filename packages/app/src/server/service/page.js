@@ -16,8 +16,6 @@ const { createBatchStream } = require('~/server/util/batch-stream');
 
 const { isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
-// const Subscription = require('../models/subscription');
-
 
 const BULK_REINDEX_SIZE = 100;
 
