@@ -181,7 +181,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center p-1">
+      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center pr-1">
         <button
           type="button"
           className={`grw-pagetree-button btn ${buttonClass}`}
