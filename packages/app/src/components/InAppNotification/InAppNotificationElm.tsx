@@ -87,6 +87,10 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionMsg = 'completely deleted';
       actionIcon = 'icon-fire';
       break;
+    case 'PAGE_RECURSIVERY_RENAME':
+      actionMsg = 'renamed under';
+      actionIcon = 'icon-action-redo';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
