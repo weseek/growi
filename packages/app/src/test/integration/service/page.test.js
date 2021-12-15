@@ -909,26 +909,44 @@ describe('PageService', () => {
         },
       ]);
 
+      const parent = await Page.find({ path: '/' });
+      await Page.insertMany([
+        {
+          path: '/migratedD',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          parent: parent._id,
+        },
+      ]);
+
       // migrate
       await crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC);
 
-      const migratedPages = await Page.find({
+      const nMigratedPages = await Page.count({
         path: {
-          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d', '/parenthesis/(a)[b]{c}d/public'],
+          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d', '/parenthesis/(a)[b]{c}d/public', '/migratedD'],
         },
         isEmpty: false,
-        grant: Page.GRANT_PUBLIC,
+        parent: { $ne: null },
       });
-      const migratedEmptyPages = await Page.find({
+      const nMigratedEmptyPages = await Page.count({
         path: {
           $in: ['/publicA/privateB', '/parenthesis'],
         },
         isEmpty: true,
-        grant: Page.GRANT_PUBLIC,
+        parent: { $ne: null },
+      });
+      const nNonMigratedPages = await Page.count({
+        path: {
+          $in: ['/publicA/privateB'],
+        },
+        parent: null,
       });
 
-      expect(migratedPages.length).toBe(4);
-      expect(migratedEmptyPages.length).toBe(2);
+      expect(nMigratedPages).toBe(5);
+      expect(nMigratedEmptyPages).toBe(2);
+      expect(nNonMigratedPages).toBe(1);
     });
   });
 
