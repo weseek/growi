@@ -26,7 +26,7 @@ const SortControl: FC <Props> = (props: Props) => {
   };
 
   const renderSortItem = (sort, order) => {
-    return <><span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>{renderOrderIcon(order)}</>;
+    return <div className="d-flex align-items-center"><span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>{renderOrderIcon(order)}</div>;
   };
 
   return (
@@ -43,13 +43,14 @@ const SortControl: FC <Props> = (props: Props) => {
             className="btn border dropdown-toggle"
             data-toggle="dropdown"
           >
-            <span className="mr-4">{t(`search_result.sort_axis.${props.sort}`)}</span>
+            <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${props.sort}`)}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             {Object.values(SORT_AXIS).map((sortAxis) => {
               const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
               return (
                 <button
+                  key={sortAxis}
                   className="dropdown-item d-flex justify-content-between"
                   type="button"
                   onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}

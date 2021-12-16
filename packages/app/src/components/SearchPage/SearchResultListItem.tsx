@@ -1,40 +1,48 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
+const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
   isSelected: boolean,
   isChecked: boolean,
   isEnableActions: boolean,
+  shortBody?: string
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-const SearchResultListItem: FC<Props> = (props:Props) => {
+const SearchResultListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
   } = props;
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
 
-  const isPathIncludedHtml = pageMeta.elasticSearchResult?.highlightedPath != null || pageData.path != null;
-  const dPagePath = new DevidedPagePath(pageData.path, false, true);
+  const pageTitle = (
+    <PagePathLabel
+      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      isLatterOnly
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+    >
+    </PagePathLabel>
+  );
   const pagePathElem = (
     <PagePathLabel
       path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
       isFormerOnly
-      isPathIncludedHtml={isPathIncludedHtml}
+      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
     />
   );
 
@@ -70,7 +78,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
-                <span className="mx-2 search-result-page-title">{dPagePath.latter}</span>
+                <span className="mx-2 search-result-page-title">{pageTitle}</span>
               </h3>
               {/* page meta */}
               <div className="d-flex mx-2">
@@ -78,17 +86,24 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
-                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
+                <PageItemControl
+                  page={pageData}
+                  onClickDeleteButton={props.onClickDeleteButton}
+                  isEnableActions={isEnableActions}
+                  isDeletable={!isTopPage(pageData.path)}
+                />
               </div>
             </div>
             <div className="my-2 search-result-list-snippet">
-              {
-                pageMeta.elasticSearchResult != null && (
-                  <Clamp lines={2}>
+              <Clamp lines={2}>
+                {
+                  pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (
                     <div className="mt-1" dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
-                  </Clamp>
-                )
-              }
+                  ) : (
+                    <div className="mt-1">{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator
+                  )
+                }
+              </Clamp>
             </div>
           </div>
         </div>
@@ -96,6 +111,6 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
       </a>
     </li>
   );
-};
+});
 
 export default SearchResultListItem;

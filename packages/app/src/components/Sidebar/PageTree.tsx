@@ -79,13 +79,11 @@ const PageTree: FC = memo(() => {
         />
       </div>
 
-      <div className="grw-sidebar-content-footer">
-        {
-          !isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
-            <PrivateLegacyPages />
-          )
-        }
-      </div>
+      {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
+        <div className="grw-pagetree-footer border-top p-3 w-100">
+          <PrivateLegacyPages />
+        </div>
+      )}
     </>
   );
 });
