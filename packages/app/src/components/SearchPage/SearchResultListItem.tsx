@@ -71,7 +71,7 @@ const SearchResultListItem: FC<Props> = (props:Props) => {
               <i className="icon-fw icon-home"></i>
               {pagePathElem}
             </small>
-            <div className="d-flex my-1 align-items-center">
+            <div className="d-flex my-1 align-items-center mr-2">
               {/* page title */}
               <h3 className="mb-0">
                 <UserPicture user={pageData.lastUpdateUser} />
