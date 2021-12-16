@@ -168,8 +168,8 @@ class PageService {
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
-      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
+      const childPages = pages.filter(childPage => childPage._id.toString() !== page._id.toString());
+      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_RENAME);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
         await this.createAndSendNotifications(childPage, activity);
@@ -512,7 +512,7 @@ class PageService {
       // create notifications for child pages
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
+      const childPages = pages.filter(childPage => childPage._id.toString() !== page._id.toString());
       const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
@@ -649,8 +649,8 @@ class PageService {
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
-      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
+      const childPages = pages.filter(childPage => childPage._id.toString() !== page._id.toString());
+      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
         await this.createAndSendNotifications(childPage, activity);
