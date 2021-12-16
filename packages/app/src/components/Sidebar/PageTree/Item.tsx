@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
+import { pagePathUtils } from '@growi/core';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
@@ -12,6 +13,8 @@ import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+
+const { isTopPage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -39,6 +42,7 @@ const markTarget = (children: ItemNode[], targetId?: string): void => {
 type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
+  isDeletable: boolean
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -66,7 +70,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} />
+      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
       <button
         type="button"
         className="btn-link nav-link border-0 rounded grw-btn-page-management p-0"
@@ -171,20 +175,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(newChildren, targetId);
       setCurrentChildren(newChildren);
     }
-  }, [data]);
-
-  // TODO: improve style
-  const opacityStyle = { opacity: 1.0 };
-  if (page.isTarget) opacityStyle.opacity = 0.7;
-
-  const buttonClass = isOpen ? 'grw-pagetree-open' : '';
+  }, [data, isOpen]);
 
   return (
     <>
-      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center pr-1">
+      <div className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
         <button
           type="button"
-          className={`grw-pagetree-button btn ${buttonClass}`}
+          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
           onClick={onClickLoadChildren}
         >
           <div className="grw-triangle-icon">
@@ -203,11 +201,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
+            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
           />
         </div>
       </div>
 
-      {!isEnableActions && (
+      {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
           placeholder={t('Input title')}
@@ -218,12 +217,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div className="ml-3 mt-2">
+          <div key={node.page._id} className="ml-3 mt-2">
             <Item
-              key={node.page._id}
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              targetId={targetId}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>

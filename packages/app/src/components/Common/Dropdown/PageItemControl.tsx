@@ -8,12 +8,15 @@ import { IPageHasId } from '~/interfaces/page';
 type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
+  isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page, isEnableActions, onClickDeleteButton } = props;
+  const {
+    page, isEnableActions, onClickDeleteButton, isDeletable,
+  } = props;
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {
@@ -74,7 +77,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
             {t('Move/Rename')}
           </button>
         )}
-        {isEnableActions && (
+        {isDeletable && isEnableActions && (
           <>
             <div className="dropdown-divider"></div>
             <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>
