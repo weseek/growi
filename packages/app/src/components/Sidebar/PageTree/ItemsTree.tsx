@@ -93,7 +93,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
-  const [isRenderedCompletely, setRenderedCompletely] = useState(false);
+  // const [isRenderedCompletely, setRenderedCompletely] = useState(false);
 
   const DeleteModal = (
     <PageDeleteModal
@@ -114,9 +114,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   /*
    * Render completely
    */
-  if (!isRenderedCompletely && ancestorsChildrenData != null && rootPageData != null) {
+  if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    setRenderedCompletely(true); // render once
+    // setRenderedCompletely(true); // render once
     return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetId, onClickDeleteByPage);
   }
 

@@ -60,7 +60,7 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
-  const targetAndAncestors = JSON.parse(mainContent?.getAttribute('data-target-and-ancestors') || jsonNull);
+  const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
 
   /*

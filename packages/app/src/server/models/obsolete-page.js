@@ -595,7 +595,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups, includeEmpty = false) {
     const baseQuery = this.findOne({ _id: id });
 
     let relatedUserGroups = userGroups;
@@ -605,10 +605,10 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery);
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty); // includeEmpty = true
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
-    return await queryBuilder.query.exec();
+    return queryBuilder.query.exec();
   };
 
   // find page by path
