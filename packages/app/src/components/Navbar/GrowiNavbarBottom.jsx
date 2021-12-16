@@ -35,7 +35,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => openCreateModal()}
+              onClick={() => mutateDrawerOpened(true)}
             >
               <i className="icon-menu"></i>
             </a>
