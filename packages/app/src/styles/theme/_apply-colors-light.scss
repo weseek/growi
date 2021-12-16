@@ -172,6 +172,10 @@ $border-color: $border-color-global;
   // Pagetree
   .grw-pagetree {
     .grw-pagetree-item {
+      &.grw-pagetree-is-target {
+        background: $bgcolor-list-hover;
+      }
+
       .grw-triangle-icon {
         &:not(:hover) {
           svg {

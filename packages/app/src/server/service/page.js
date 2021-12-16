@@ -866,33 +866,35 @@ class PageService {
   }
 
   async v5InitialMigration(grant) {
-    const socket = this.crowi.socketIoService.getAdminSocket();
-    try {
-      await this._v5RecursiveMigration(grant);
-    }
-    catch (err) {
-      logger.error('V5 initial miration failed.', err);
-      socket.emit('v5InitialMirationFailed', { error: err.message });
-
-      throw err;
-    }
-
+    // const socket = this.crowi.socketIoService.getAdminSocket();
     const Page = this.crowi.model('Page');
     const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
     const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
     const isPathIndexExists = pathIndexStatus != null;
     const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
 
+    // drop unique index first
     if (isUnique || !isPathIndexExists) {
       try {
         await this._v5NormalizeIndex(isPathIndexExists);
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        socket.emit('v5IndexNormalizationFailed', { error: err.message });
+        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
 
         throw err;
       }
+    }
+
+    // then migrate
+    try {
+      await this._v5RecursiveMigration(grant, null, true);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      // socket.emit('v5InitialMirationFailed', { error: err.message });
+
+      throw err;
     }
 
     await this._setIsV5CompatibleTrue();
@@ -933,7 +935,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps) {
+  async _v5RecursiveMigration(grant, regexps, publicOnly = false) {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -996,7 +998,7 @@ class PageService {
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths);
+        await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
@@ -1071,7 +1073,7 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(filter) && shouldContinue) {
-      return this._v5RecursiveMigration(grant, regexps);
+      return this._v5RecursiveMigration(grant, regexps, publicOnly);
     }
 
   }
