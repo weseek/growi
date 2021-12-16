@@ -4,6 +4,7 @@ import React, {
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
+import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
@@ -149,7 +150,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   // TODO: go to create page page
   const onPressEnterHandler = () => {
-    console.log('Enter key was pressed!');
+    toastWarning(t('search_result.currently_not_implemented'));
   };
 
   // didMount
