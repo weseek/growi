@@ -185,7 +185,7 @@
 
     .search-result-list-scroll {
       // subtract the height of GrowiNavbar + (SearchControl component + other factors)
-      height: calc(100vh - ($grw-navbar-total-height + 110px));
+      height: calc(100vh - (($grw-navbar-height + $grw-navbar-border-width) + 110px));
       overflow-y: scroll;
     }
     .nav.nav-pills {
