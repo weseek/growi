@@ -120,6 +120,9 @@ export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Null
   return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData ?? null);
 };
 
+export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData ?? null);
+};
 
 /** **********************************************************
  *                     Computed contexts
