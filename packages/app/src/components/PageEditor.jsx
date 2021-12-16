@@ -15,9 +15,12 @@ import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '~/client/services/EditorContainer';
 
+import { getOptionsToSave } from '~/client/util/editor';
+
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -128,8 +131,11 @@ class PageEditor extends React.Component {
    * save and update state of containers
    */
   async onSaveWithShortcut() {
-    const { pageContainer, editorContainer } = this.props;
-    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const {
+      isSlackEnabled, slackChannels, editorContainer, pageContainer,
+    } = this.props;
+
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
 
     try {
       // disable unsaved warning
@@ -360,12 +366,22 @@ const PageEditorHOCWrapper = withUnstatedContainers(PageEditor, [AppContainer, P
 const PageEditorWrapper = (props) => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
 
   if (isEditable == null || editorMode == null) {
     return null;
   }
 
-  return <PageEditorHOCWrapper {...props} isEditable={isEditable} editorMode={editorMode} />;
+  return (
+    <PageEditorHOCWrapper
+      {...props}
+      isEditable={isEditable}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+    />
+  );
 };
 
 PageEditor.propTypes = {
@@ -377,6 +393,8 @@ PageEditor.propTypes = {
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
 };
 
 export default PageEditorWrapper;
