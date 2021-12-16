@@ -1,0 +1,52 @@
+{% extends 'layout/layout.html' %}
+
+{% block html_base_css %}invited nologin{% endblock %}
+
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('Registration') }}{% endblock %}
+
+
+
+{#
+# Remove default contents
+#}
+{% block html_head_loading_legacy %}
+{% endblock %}
+{% block html_head_loading_app %}
+{% endblock %}
+{% block layout_head_nav %}
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
+{% block head_warn_alert_siteurl_undefined %}
+{% endblock %}
+{% block fixed-controls %}
+{% endblock %}
+
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+{% endblock %}
+
+{% block layout_main %}
+
+<div class="main container-fluid">
+
+  <div class="row">
+
+    <div class="login-header mx-auto col-sm-3">
+      <div class="logo">{% include 'widget/logo.html' %}</div>
+      <h1>GROWI</h1>
+
+      <div
+        id="user-activation-form"
+        data-message-errors="{{ req.flash('errors') }}"
+        data-inputs="{{ req.flash('inputs') }}"
+        data-email="{{ userRegistrationOrder.email }}"
+        data-token="{{ userRegistrationOrder.token }}"
+        class="col-sm-12"
+      ></div>
+
+  </div>{# /.row #}
+
+</div>{# /.main #}
+
+{% endblock %}

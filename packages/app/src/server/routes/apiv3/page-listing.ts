@@ -27,6 +27,9 @@ const validator = {
     query('id').isMongoId(),
     query('path').isString(),
   ], 'id or path is required'),
+  pageIdsRequired: [
+    query('pageIds').isArray().withMessage('pageIds is required'),
+  ],
 };
 
 /*
@@ -87,6 +90,20 @@ export default (crowi: Crowi): Router => {
     catch (err) {
       logger.error('Error occurred while finding children.', err);
       return res.apiv3Err(new ErrorV3('Error occurred while finding children.'));
+    }
+  });
+
+  // eslint-disable-next-line max-len
+  router.get('/short-bodies', accessTokenParser, loginRequired, validator.pageIdsRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const { pageIds } = req.query;
+
+    try {
+      const shortBodiesMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds, req.user);
+      return res.apiv3({ shortBodiesMap });
+    }
+    catch (err) {
+      logger.error('Error occurred while fetching shortBodiesMap.', err);
+      return res.apiv3Err(new ErrorV3('Error occurred while fetching shortBodiesMap.'));
     }
   });
 

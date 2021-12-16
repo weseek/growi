@@ -49,16 +49,21 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
                 <div className="input-group-prepend">
                   <label className="input-group-text text-secondary" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
                 </div>
-                <select className="custom-select" id="inputGroupSelect01" onChange={(e) => { props.onPagingLimitChanged(Number(e.target.value)) }}>
+                <select
+                  defaultValue={props.pagingLimit}
+                  className="custom-select"
+                  id="inputGroupSelect01"
+                  onChange={(e) => { props.onPagingLimitChanged(Number(e.target.value)) }}
+                >
                   {[20, 50, 100, 200].map((limit) => {
-                    return <option selected={limit === props.pagingLimit} value={limit}>{limit}{t('search_result.page_number_unit')}</option>;
+                    return <option key={limit} value={limit}>{limit}{t('search_result.page_number_unit')}</option>;
                   })}
                 </select>
               </div>
             </div>
 
             <div className="page-list">
-              <ul className="page-list-ul page-list-ul-flat pl-4 nav nav-pills"><SearchResultList></SearchResultList></ul>
+              <ul className="page-list-ul page-list-ul-flat px-md-4 nav nav-pills"><SearchResultList></SearchResultList></ul>
             </div>
           </div>
         </div>

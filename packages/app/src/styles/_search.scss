@@ -31,8 +31,8 @@
 
   .search-clear {
     position: absolute;
-    top: 5px;
-    right: 4px;
+    top: 4px;
+    right: 26px;
     z-index: 3;
     width: 24px;
     height: 24px;
@@ -63,29 +63,32 @@
   }
 }
 
+// styles for admin user search
+.admin-user-page {
+  .search-typeahead {
+    .search-clear {
+      top: 7px;
+      right: 4px;
+    }
+  }
+}
+
 // input styles
 .grw-global-search {
-  .search-clear {
-    top: 3px;
-    right: 26px;
-  }
-
   .dropdown-toggle {
     min-width: 95px;
     padding-left: 1.5rem;
-    border-top-left-radius: 40px;
-    border-bottom-left-radius: 40px;
   }
 
   .search-typeahead {
     // corner radius
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
     .rbt-input-main {
       padding-right: 58px;
       // corner radius
-      border-top-right-radius: 40px;
-      border-bottom-right-radius: 40px;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
     }
     .rbt-menu {
       @extend .dropdown-menu-right;
@@ -163,14 +166,19 @@
       }
     }
   }
-  .search-typeahead {
-    border-radius: 0 25px 25px 0;
-  }
 }
 
 // TODO : keep the selected list in the same positino as other lists
 // TASK : https://redmine.weseek.co.jp/issues/82470
 .search-result {
+  .search-control {
+    padding: 5px 0;
+  }
+  .search-control-include-options {
+    .card-body {
+      padding: 5px 10px;
+    }
+  }
   .search-result-list {
     position: sticky;
     top: 0px;
@@ -183,10 +191,12 @@
     .nav.nav-pills {
       > .page-list-li {
         &.active {
-          // add this negative margin to avoid inner elements of .page-list-li.active
-          // moving to right side by border-left's px size.
-          margin-left: -3px;
           border-left: solid 3px transparent;
+          .search-item-checkbox {
+            // subtract 3px from padding left applied by .search-item-checkbox
+            // as 3px of border-left is added above
+            padding-left: 4px !important;
+          }
         }
         > a {
           word-break: break-all;
@@ -200,14 +210,19 @@
           }
         }
         .page-list-meta {
-          > span {
-            margin-right: 12px;
+          .meta-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 14px;
           }
           .footstamp-icon {
             margin-right: 2px;
           }
         }
       }
+    }
+    .search-result-item {
+      min-height: 136px;
     }
 
     .search-result-meta {
@@ -223,7 +238,17 @@
       vertical-align: middle;
     }
   }
-
+  .search-item-text {
+    .picture-sm {
+      width: 20px;
+      height: 20px;
+    }
+    .item-meta {
+      .top-label {
+        display: none; // not show top label in search result list
+      }
+    }
+  }
   .search-result-content {
     padding-bottom: 36px;
 
@@ -285,10 +310,6 @@ body.on-search {
   caption {
     display: table-header-group;
   }
-}
-
-.search-page-item {
-  height: 130px;
 }
 
 @include media-breakpoint-down(sm) {

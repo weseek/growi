@@ -1,8 +1,8 @@
+$grw-sidebar-content-header-height: 58px;
+$grw-sidebar-content-footer-height: 50px;
+
 .grw-pagetree {
-  .grw-pagetree-item-wrapper {
-    margin-top: 10px;
-    margin-left: 10px;
-  }
+  min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
   .grw-pagetree-item {
     &:hover {
@@ -19,8 +19,14 @@
 
     .grw-pagetree-button {
       background-color: transparent;
+      transition: all 0.2s ease-out;
+      transform: rotate(0deg);
 
-      &.rotate {
+      &:focus {
+        box-shadow: none;
+      }
+
+      &.grw-pagetree-open {
         transform: rotate(90deg);
       }
     }
@@ -28,7 +34,6 @@
     .grw-pagetree-title-anchor {
       width: 100%;
       overflow: hidden;
-      color: inherit;
       text-decoration: none;
 
       .grw-pagetree-title {

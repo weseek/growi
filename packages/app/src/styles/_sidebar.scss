@@ -22,6 +22,8 @@
   position: sticky;
   top: $grw-navbar-border-width;
 
+  height: 100vh;
+
   .grw-navigation-resize-button {
     position: fixed;
 
@@ -232,13 +234,6 @@
     .grw-btn-reload {
       font-size: 18px;
     }
-  }
-
-  .grw-sidebar-content-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    border-top: solid 1px $border-color;
   }
 }
 
