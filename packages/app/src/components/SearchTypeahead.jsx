@@ -169,7 +169,7 @@ class SearchTypeahead extends React.Component {
     return isHidden ? (
       <span />
     ) : (
-      <button type="button" className="btn btn-link search-clear text-decoration-none" onMouseDown={resetForm}>
+      <button type="button" className="btn btn-link search-clear" onMouseDown={resetForm}>
         <i className="icon-close" />
       </button>
     );
