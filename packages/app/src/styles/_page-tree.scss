@@ -95,11 +95,8 @@ $grw-pagetree-item-padding-left: 10px;
                     > .grw-pagetree-item {
                       padding-left: $grw-pagetree-item-padding-left * 9;
                     }
-                    > .grw-pagetree-item-container {
+                    .grw-pagetree-item-container {
                       > .grw-pagetree-item {
-                        padding-left: $grw-pagetree-item-padding-left * 10;
-                      }
-                      .grw-pagetree-item {
                         padding-left: $grw-pagetree-item-padding-left * 10;
                       }
                     }
