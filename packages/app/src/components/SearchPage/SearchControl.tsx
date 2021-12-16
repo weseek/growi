@@ -80,7 +80,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   };
 
   return (
-    <div className="position-sticky fixed-top">
+    <div className="position-sticky fixed-top shadow-sm">
       <div className="search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
@@ -98,8 +98,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="search-control d-flex align-items-center py-2 border-bottom border-gray">
-        <div className="d-flex mr-auto ml-4">
+      <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-3 px-3 border-bottom border-gray">
+        <div className="d-flex pl-md-2">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
             isSelectAllCheckboxDisabled={searchResultCount === 0}
@@ -109,7 +109,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           />
         </div>
         {/** filter option */}
-        <div className="d-lg-none mr-4">
+        <div className="d-lg-none ml-auto">
           <button
             type="button"
             className="btn"
@@ -118,28 +118,32 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center mr-4">
-          <div className="border border-gray mr-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
-              <input
-                className="mr-2"
-                type="checkbox"
-                id="flexCheckDefault"
-                onClick={switchExcludeUserPagesHandler}
-              />
-              {t('Include Subordinated Target Page', { target: '/user' })}
-            </label>
+        <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
+          <div className="card mr-3 mb-0">
+            <div className="card-body">
+              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+                <input
+                  className="mr-2"
+                  type="checkbox"
+                  id="flexCheckDefault"
+                  onClick={switchExcludeUserPagesHandler}
+                />
+                {t('Include Subordinated Target Page', { target: '/user' })}
+              </label>
+            </div>
           </div>
-          <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
-              <input
-                className="mr-2"
-                type="checkbox"
-                id="flexCheckChecked"
-                onClick={switchExcludeTrashPagesHandler}
-              />
-              {t('Include Subordinated Target Page', { target: '/trash' })}
-            </label>
+          <div className="card mb-0">
+            <div className="card-body">
+              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
+                <input
+                  className="mr-2"
+                  type="checkbox"
+                  id="flexCheckChecked"
+                  onClick={switchExcludeTrashPagesHandler}
+                />
+                {t('Include Subordinated Target Page', { target: '/trash' })}
+              </label>
+            </div>
           </div>
         </div>
       </div>

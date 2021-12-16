@@ -8,12 +8,15 @@ import { IPageHasId } from '~/interfaces/page';
 type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
+  isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const { page, isEnableActions, onClickDeleteButton } = props;
+  const {
+    page, isEnableActions, onClickDeleteButton, isDeletable,
+  } = props;
   const { t } = useTranslation('');
 
   const deleteButtonHandler = () => {
@@ -25,13 +28,12 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     <>
       <button
         type="button"
-        className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0"
+        className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2"
         data-toggle="dropdown"
       >
-        <i className="icon-options fa fa-rotate-90 text-muted"></i>
+        <i className="icon-options fa fa-rotate-90  text-muted p-1"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
-
         {/* TODO: if there is the following button in XD add it here
         <button
           type="button"
@@ -51,11 +53,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         */}
 
         {/* TODO: show dropdown when permalink section is implemented */}
-        {!isEnableActions && (
-          <p className="dropdown-item">
-            {t('search_result.currently_not_implemented')}
-          </p>
-        )}
+        {!isEnableActions && <p className="dropdown-item">{t('search_result.currently_not_implemented')}</p>}
         {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
             <i className="icon-fw icon-star"></i>
@@ -74,7 +72,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
             {t('Rename')}
           </button>
         )}
-        {isEnableActions && (
+        {isDeletable && isEnableActions && (
           <>
             <div className="dropdown-divider"></div>
             <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>

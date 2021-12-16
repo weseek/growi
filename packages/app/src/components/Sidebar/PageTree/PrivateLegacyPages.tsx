@@ -5,11 +5,9 @@ const PrivateLegacyPages: FC = memo(() => {
   const { t } = useTranslation();
 
   return (
-    <div className="grw-prvt-legacy-pages p-3">
-      <a href="/private-legacy-pages?q=[nq:PrivateLegacyPages]" className="h5">
-        <i className="icon-drawer mr-2"></i> PrivateLegacyPages
-      </a>
-    </div>
+    <a href="/private-legacy-pages?q=[nq:PrivateLegacyPages]" className="h5 grw-private-legacy-pages-anchor text-decoration-none">
+      <i className="icon-drawer mr-2"></i> {t('pagetree.private_legacy_pages')}
+    </a>
   );
 });
 

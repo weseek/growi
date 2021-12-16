@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
+import { generateGrantCondition } from '~/server/models/page';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -771,6 +772,70 @@ class PageService {
     }
   }
 
+  async shortBodiesMapByPageIds(pageIds = [], user) {
+    const Page = mongoose.model('Page');
+    const MAX_LENGTH = 350;
+
+    // aggregation options
+    const viewerCondition = await generateGrantCondition(user, null);
+    const filterByIds = {
+      _id: { $in: pageIds.map(id => mongoose.Types.ObjectId(id)) },
+    };
+
+    let pages;
+    try {
+      pages = await Page
+        .aggregate([
+          // filter by pageIds
+          {
+            $match: filterByIds,
+          },
+          // filter by viewer
+          viewerCondition,
+          // lookup: https://docs.mongodb.com/v4.4/reference/operator/aggregation/lookup/
+          {
+            $lookup: {
+              from: 'revisions',
+              let: { localRevision: '$revision' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$_id', '$$localRevision'],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    revision: { $substr: ['$body', 0, MAX_LENGTH] },
+                  },
+                },
+              ],
+              as: 'revisionData',
+            },
+          },
+          // projection
+          {
+            $project: {
+              _id: 1,
+              revisionData: 1,
+            },
+          },
+        ]).exec();
+    }
+    catch (err) {
+      logger.error('Error occurred while generating shortBodiesMap');
+      throw err;
+    }
+
+    const shortBodiesMap = {};
+    pages.forEach((page) => {
+      shortBodiesMap[page._id] = page.revisionData?.[0]?.revision;
+    });
+
+    return shortBodiesMap;
+  }
+
   validateCrowi() {
     if (this.crowi == null) {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
@@ -801,33 +866,35 @@ class PageService {
   }
 
   async v5InitialMigration(grant) {
-    const socket = this.crowi.socketIoService.getAdminSocket();
-    try {
-      await this._v5RecursiveMigration(grant);
-    }
-    catch (err) {
-      logger.error('V5 initial miration failed.', err);
-      socket.emit('v5InitialMirationFailed', { error: err.message });
-
-      throw err;
-    }
-
+    // const socket = this.crowi.socketIoService.getAdminSocket();
     const Page = this.crowi.model('Page');
     const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
     const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
     const isPathIndexExists = pathIndexStatus != null;
     const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
 
+    // drop unique index first
     if (isUnique || !isPathIndexExists) {
       try {
         await this._v5NormalizeIndex(isPathIndexExists);
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
-        socket.emit('v5IndexNormalizationFailed', { error: err.message });
+        // socket.emit('v5IndexNormalizationFailed', { error: err.message });
 
         throw err;
       }
+    }
+
+    // then migrate
+    try {
+      await this._v5RecursiveMigration(grant, null, true);
+    }
+    catch (err) {
+      logger.error('V5 initial miration failed.', err);
+      // socket.emit('v5InitialMirationFailed', { error: err.message });
+
+      throw err;
     }
 
     await this._setIsV5CompatibleTrue();
@@ -868,7 +935,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps) {
+  async _v5RecursiveMigration(grant, regexps, publicOnly = false) {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -931,7 +998,7 @@ class PageService {
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
-        await Page.createEmptyPagesByPaths(parentPaths);
+        await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }));
@@ -952,13 +1019,18 @@ class PageService {
             parentPath = parentPath.replace(bracket, `\\${bracket}`);
           });
 
+          const filter = {
+            // regexr.com/6889f
+            // ex. /parent/any_child OR /any_level1
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+          };
+          if (grant != null) {
+            filter.grant = grant;
+          }
+
           return {
             updateMany: {
-              filter: {
-                // regexr.com/6889f
-                // ex. /parent/any_child OR /any_level1
-                path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
-              },
+              filter,
               update: {
                 parent: parentId,
               },
@@ -1001,7 +1073,7 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(filter) && shouldContinue) {
-      return this._v5RecursiveMigration(grant, regexps);
+      return this._v5RecursiveMigration(grant, regexps, publicOnly);
     }
 
   }
