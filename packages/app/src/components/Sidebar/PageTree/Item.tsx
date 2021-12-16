@@ -76,7 +76,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
         className="border-0 rounded grw-btn-page-management p-0"
         onClick={onClickPlusButton}
       >
-        <i className="icon-plus text-muted d-block grw-pagetree-simple-line-icon grw-pagetree-icon p-1" />
+        <i className="icon-plus text-muted d-block p-1" />
       </button>
     </>
   );
