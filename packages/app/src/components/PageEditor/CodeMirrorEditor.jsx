@@ -753,22 +753,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
-    const startDrawio = /^::: drawio/;
-    const endDrawio = /^:::$/;
     const editor = this.getCodeMirror();
-    // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
-    for (let i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
-      const line = editor.getLine(i);
-      const match = startDrawio.exec(line);
-      if (match) {
-        editor.foldCode({ line: i, ch: 0 }, { scanUp: false }, 'fold');
-      }
-    }
+    const lineNumbers = mdu.findAllDrawioSection(editor);
+    lineNumbers.forEach((lineNumber) => {
+      editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
+    });
   }
 
   onSaveForDrawio(drawioData) {
     const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
-    // drawio セクション(:::drawio)の更新完了後にセクションを fold する
+    // Fold the section after the drawio section (:::drawio) has been updated.
     this.foldDrawioSection();
     return range;
   }

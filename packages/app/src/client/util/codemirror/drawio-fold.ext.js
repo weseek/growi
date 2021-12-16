@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import mdu from '../../../components/PageEditor/MarkdownDrawioUtil.js';
+
 (function(mod) {
   mod(require("codemirror"));
 })(function(CodeMirror) {
@@ -8,13 +10,9 @@
   CodeMirror.registerGlobalHelper('fold', 'drawio', function (mode, cm) {
     return true;
   }, function(cm, start) {
-    let startDrawio = /^::: drawio/;
-    let endDrawio = /^:::/;
-    let space = /\s/;
-
     function isBeginningOfDrawio(lineNo) {
       let line = cm.getLine(lineNo);
-      let match = startDrawio.exec(line);
+      let match = mdu.lineBeginPartOfDrawioRE.exec(line);
       if (match) {
         return true;
       }
@@ -22,7 +20,7 @@
     }
     function isEndOfDrawio(lineNo) {
       let line = cm.getLine(lineNo);
-      let match = endDrawio.exec(line);
+      let match = mdu.lineEndPartOfDrawioRE.exec(line);
       if (match) {
         return true;
       }
