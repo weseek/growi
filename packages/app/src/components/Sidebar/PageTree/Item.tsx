@@ -73,7 +73,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
       <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
       <button
         type="button"
-        className="btn-link nav-link border-0 rounded grw-btn-page-management p-0"
+        className="border-0 rounded grw-btn-page-management p-0"
         onClick={onClickPlusButton}
       >
         <i className="icon-plus text-muted d-block grw-pagetree-simple-line-icon grw-pagetree-icon p-1" />
