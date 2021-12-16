@@ -202,7 +202,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('rename', page, user, isRecursively);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
