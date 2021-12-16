@@ -34,7 +34,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
-        className="custom-control custom-checkbox align-self-center"
+        className="custom-control custom-checkbox ml-2 align-self-center"
         disabled={props.isSelectAllCheckboxDisabled}
         onClick={onClickCheckbox}
         checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}

@@ -191,10 +191,12 @@
     .nav.nav-pills {
       > .page-list-li {
         &.active {
-          // add this negative margin to avoid inner elements of .page-list-li.active
-          // moving to right side by border-left's px size.
-          margin-left: -3px;
           border-left: solid 3px transparent;
+          .search-item-checkbox {
+            // subtract 3px from padding left applied by .search-item-checkbox
+            // as 3px of border-left is added above
+            padding-left: 4px !important;
+          }
         }
         > a {
           word-break: break-all;
@@ -208,14 +210,19 @@
           }
         }
         .page-list-meta {
-          > span {
-            margin-right: 12px;
+          .meta-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 14px;
           }
           .footstamp-icon {
             margin-right: 2px;
           }
         }
       }
+    }
+    .search-result-item {
+      min-height: 136px;
     }
 
     .search-result-meta {
@@ -231,7 +238,17 @@
       vertical-align: middle;
     }
   }
-
+  .search-item-text {
+    .picture-sm {
+      width: 20px;
+      height: 20px;
+    }
+    .item-meta {
+      .top-label {
+        display: none; // not show top label in search result list
+      }
+    }
+  }
   .search-result-content {
     padding-bottom: 36px;
 
@@ -291,10 +308,6 @@ body.on-search {
   caption {
     display: table-header-group;
   }
-}
-
-.search-page-item {
-  height: 130px;
 }
 
 @include media-breakpoint-down(sm) {
