@@ -41,7 +41,7 @@ class SearchPageForm extends React.Component {
   render() {
     return (
       // TODO: modify design after other component is created
-      <div className="grw-global-search grw-search-form-in-search-result-page d-flex align-items-center">
+      <div className="grw-search-form-in-search-result-page d-flex align-items-center">
         <div className="input-group flex-nowrap">
           <SearchForm
             onSubmit={this.search}
