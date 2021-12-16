@@ -12,6 +12,7 @@ import CodeMirror from 'codemirror/lib/codemirror';
 
 import PageContainer from '../../client/services/PageContainer';
 import AppContainer from '../../client/services/AppContainer';
+import ExpandOrContractButton from '../ExpandOrContractButton';
 
 import { useEditorMode } from '~/stores/ui';
 
@@ -41,6 +42,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   const { data: editorMode } = useEditorMode();
@@ -110,12 +112,38 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
 
   };
 
+  const onExpandModal = () => {
+    setIsModalExpanded(true);
+  };
+
+  const onContractModal = () => {
+    setIsModalExpanded(false);
+  };
+
+  const resizeAndCloseButtons = (
+    <div className="d-flex flex-nowrap">
+      <ExpandOrContractButton
+        isWindowExpanded={isModalExpanded}
+        expandWindow={onExpandModal}
+        contractWindow={onContractModal}
+      />
+      <button type="button" className="close text-white" onClick={onClose} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  );
+
   return (
-    <Modal isOpen={props.isOpen || false} toggle={onClose} className="modal-gfm-cheatsheet" size="xl">
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+    <Modal
+      isOpen={props.isOpen || false}
+      toggle={onClose}
+      className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
+      size="xl"
+    >
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}>
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="mx-4 my-1">
         { props.isOpen
         && (
           <div className="row">
