@@ -42,8 +42,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const { t } = useTranslation('');
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
-  const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
+  const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   const { data: editorMode } = useEditorMode();
 
