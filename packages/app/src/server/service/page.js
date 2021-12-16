@@ -42,7 +42,8 @@ class PageService {
 
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -53,7 +54,8 @@ class PageService {
     this.pageEvent.on('rename', async(page, user) => {
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RENAME);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -64,7 +66,8 @@ class PageService {
     this.pageEvent.on('delete', async(page, user) => {
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_DELETE);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -75,7 +78,8 @@ class PageService {
     this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -86,7 +90,8 @@ class PageService {
     this.pageEvent.on('like', async(page, user) => {
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_LIKE);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -97,7 +102,8 @@ class PageService {
     this.pageEvent.on('bookmark', async(page, user) => {
       try {
         const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
-        await this.createAndSendNotifications(page, activity);
+        const snapshot = stringifySnapshot(page);
+        await this.createAndSendNotifications(page, snapshot, activity);
       }
       catch (err) {
         logger.error(err);
@@ -165,6 +171,7 @@ class PageService {
     if (isRecursively) {
 
       // create notifications
+      const snapshot = stringifySnapshot(page);
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
@@ -172,7 +179,7 @@ class PageService {
       const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_RENAME);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(childPage, activity);
+        await this.createAndSendNotifications(childPage, snapshot, activity);
       }
 
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
@@ -510,13 +517,14 @@ class PageService {
 
     if (isRecursively) {
       // create notifications for child pages
+      const snapshot = stringifySnapshot(page);
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
       const childPages = pages.filter(childPage => childPage._id.toString() !== page._id.toString());
       const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(childPage, activity);
+        await this.createAndSendNotifications(childPage, snapshot, activity);
       }
 
       this.deleteDescendantsWithStream(page, user, options);
@@ -646,6 +654,7 @@ class PageService {
 
     // create notifications before deleteCompletelyOperation
     if (isRecursively) {
+      const snapshot = stringifySnapshot(page);
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
@@ -653,7 +662,7 @@ class PageService {
       const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY);
       for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(childPage, activity);
+        await this.createAndSendNotifications(childPage, snapshot, activity);
       }
     }
 
@@ -862,10 +871,8 @@ class PageService {
     return activity;
   };
 
-  createAndSendNotifications = async function(page, activity) {
+  createAndSendNotifications = async function(page, snapshot, activity) {
     const { inAppNotificationService } = this.crowi;
-
-    const snapshot = stringifySnapshot(page);
 
     // Get user to be notified
     const targetUsers = await activity.getNotificationTargetUsers(page);
