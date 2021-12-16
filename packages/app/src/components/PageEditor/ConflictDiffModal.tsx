@@ -126,7 +126,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
         isWindowExpanded={isModalExpanded}
         expandWindow={onExpandModal}
         contractWindow={onContractModal}
-        color="white"
       />
       <button type="button" className="close text-white" onClick={onClose} aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -138,13 +137,13 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     <Modal
       isOpen={props.isOpen || false}
       toggle={onClose}
-      className={`modal-gfm-cheatsheet grw-page-accessories-modal${isModalExpanded ? ' grw-modal-expanded' : ''}`}
+      className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
       size="xl"
     >
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center" close={resizeAndCloseButtons}>
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}>
         <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="mx-4 my-1">
         { props.isOpen
         && (
           <div className="row">

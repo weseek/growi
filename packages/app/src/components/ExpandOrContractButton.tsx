@@ -23,15 +23,10 @@ const ExpandOrContractButton: FC<Props> = (props: Props) => {
     }
   };
 
-  let buttonColorClassWithOneSpace: string | null = null;
-  if (props.color != null) {
-    buttonColorClassWithOneSpace = ` text-${props.color}`;
-  }
-
   return (
     <button
       type="button"
-      className={`close${buttonColorClassWithOneSpace || ''}`}
+      className="close"
       onClick={isWindowExpanded ? clickContractButtonHandler : clickExpandButtonHandler}
     >
       <i className={`${isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen'}`} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
