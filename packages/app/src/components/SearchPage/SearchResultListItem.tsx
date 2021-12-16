@@ -46,10 +46,12 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     />
   );
 
+  const responsiveListStyleClass = `${isDeviceSmallerThanMd ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
+
   return (
     <li
       key={pageData._id}
-      className={`page-list-li search-result-item list-group-item-action border-bottom ${isSelected && !isDeviceSmallerThanMd ? 'active' : ''}`}
+      className={`w-100 page-list-li search-result-item border-bottom ${responsiveListStyleClass}`}
     >
       <a
         className="d-block h-100"
