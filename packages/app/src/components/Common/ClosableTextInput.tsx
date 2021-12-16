@@ -83,7 +83,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     const alertMessage = currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value';
 
     return (
-      <p className="alert alert-danger">{alertType}: {alertMessage}</p>
+      <p className="text-danger text-center mt-1">{alertType}: {alertMessage}</p>
     );
   };
 
@@ -93,7 +93,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       <input
         ref={inputRef}
         type="text"
-        className="form-control"
+        className="form-control mt-1"
         placeholder={props.placeholder}
         name="input"
         onChange={onChangeHandler}
