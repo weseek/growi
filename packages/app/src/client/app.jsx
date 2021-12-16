@@ -111,6 +111,10 @@ Object.assign(componentMappings, {
   'duplicated-alert': <DuplicatedAlert />,
   'redirected-alert': <RedirectedAlert />,
   'renamed-alert': <RenamedAlert />,
+  'not-found-alert': <NotFoundAlert
+    isGuestUserMode={appContainer.isGuestUser}
+    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
+  />,
 });
 
 // additional definitions if data exists
@@ -124,10 +128,6 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
-    'not-found-alert': <NotFoundAlert
-      isGuestUserMode={appContainer.isGuestUser}
-      isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
-    />,
   });
 
   // show the Page accessory modal when query of "compare" is requested

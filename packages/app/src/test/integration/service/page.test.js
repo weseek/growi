@@ -871,5 +871,83 @@ describe('PageService', () => {
 
   });
 
+  describe('v5InitialMigration()', () => {
+    test('should migrate all public pages & replace private parents with empty pages', async() => {
+      jest.restoreAllMocks();
+
+      // initialize pages for test
+      const pages = await Page.insertMany([
+        {
+          path: '/publicA',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/publicA/privateB',
+          grant: Page.GRANT_OWNER,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/publicA/privateB/publicC',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/parenthesis/(a)[b]{c}d',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+        {
+          path: '/parenthesis/(a)[b]{c}d/public',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
+      ]);
+
+      const parent = await Page.find({ path: '/' });
+      await Page.insertMany([
+        {
+          path: '/migratedD',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+          parent: parent._id,
+        },
+      ]);
+
+      // migrate
+      await crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC);
+
+      const nMigratedPages = await Page.count({
+        path: {
+          $in: ['/publicA', '/publicA/privateB/publicC', '/parenthesis/(a)[b]{c}d', '/parenthesis/(a)[b]{c}d/public', '/migratedD'],
+        },
+        isEmpty: false,
+        parent: { $ne: null },
+      });
+      const nMigratedEmptyPages = await Page.count({
+        path: {
+          $in: ['/publicA/privateB', '/parenthesis'],
+        },
+        isEmpty: true,
+        parent: { $ne: null },
+      });
+      const nNonMigratedPages = await Page.count({
+        path: {
+          $in: ['/publicA/privateB'],
+        },
+        parent: null,
+      });
+
+      expect(nMigratedPages).toBe(5);
+      expect(nMigratedEmptyPages).toBe(2);
+      expect(nNonMigratedPages).toBe(1);
+    });
+  });
 
 });

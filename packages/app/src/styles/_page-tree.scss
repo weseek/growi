@@ -1,4 +1,9 @@
+$grw-sidebar-content-header-height: 58px;
+$grw-sidebar-content-footer-height: 50px;
+
 .grw-pagetree {
+  min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+
   .grw-pagetree-item {
     &:hover {
       opacity: 0.7;

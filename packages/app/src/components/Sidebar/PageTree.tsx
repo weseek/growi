@@ -64,13 +64,11 @@ const PageTree: FC = memo(() => {
         />
       </div>
 
-      <div className="grw-pagetree-footer border-top position-absolute fixed-bottom p-3 w-100">
-        {
-          !isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
-            <PrivateLegacyPages />
-          )
-        }
-      </div>
+      {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
+        <div className="grw-pagetree-footer border-top p-3 w-100">
+          <PrivateLegacyPages />
+        </div>
+      )}
     </>
   );
 });
