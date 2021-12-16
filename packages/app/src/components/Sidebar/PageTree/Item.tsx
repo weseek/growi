@@ -217,7 +217,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div key={node.page._id} className="ml-3 mt-2">
+          <div key={node.page._id} className="grw-pagetree-item-container mt-2">
             <Item
               isEnableActions={isEnableActions}
               itemNode={node}

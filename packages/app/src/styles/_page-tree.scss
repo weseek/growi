@@ -1,5 +1,6 @@
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
+$grw-pagetree-item-padding-left: 10px;
 
 .grw-pagetree {
   min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
@@ -52,6 +53,59 @@ $grw-sidebar-content-footer-height: 50px;
 
       .grw-pagetree-count {
         padding: 0.3rem 1rem;
+      }
+    }
+  }
+
+  // Set multiplied padding-left to each pagetree-item　to realize a hierarchical structure
+
+  > .grw-pagetree-item-container {
+    > .grw-pagetree-item {
+      padding-left: $grw-pagetree-item-padding-left;
+    }
+    > .grw-pagetree-item-container {
+      > .grw-pagetree-item {
+        padding-left: $grw-pagetree-item-padding-left * 2;
+      }
+      > .grw-pagetree-item-container {
+        > .grw-pagetree-item {
+          padding-left: $grw-pagetree-item-padding-left * 3;
+        }
+        > .grw-pagetree-item-container {
+          > .grw-pagetree-item {
+            padding-left: $grw-pagetree-item-padding-left * 4;
+          }
+          > .grw-pagetree-item-container {
+            > .grw-pagetree-item {
+              padding-left: $grw-pagetree-item-padding-left * 5;
+            }
+            > .grw-pagetree-item-container {
+              > .grw-pagetree-item {
+                padding-left: $grw-pagetree-item-padding-left * 6;
+              }
+              > .grw-pagetree-item-container {
+                > .grw-pagetree-item {
+                  padding-left: $grw-pagetree-item-padding-left * 7;
+                }
+                > .grw-pagetree-item-container {
+                  > .grw-pagetree-item {
+                    padding-left: $grw-pagetree-item-padding-left * 8;
+                  }
+                  > .grw-pagetree-item-container {
+                    > .grw-pagetree-item {
+                      padding-left: $grw-pagetree-item-padding-left * 9;
+                    }
+                    > .grw-pagetree-item-container {
+                      > .grw-pagetree-item {
+                        padding-left: $grw-pagetree-item-padding-left * 10;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
