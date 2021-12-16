@@ -34,7 +34,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
   return (
     <div className="content-main">
       <div className="search-result d-flex" id="search-result">
-        <div className="w-50 flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
+        <div className="mw-0 flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
 
           <SearchControl></SearchControl>
           <div className="search-result-list-scroll">
@@ -67,7 +67,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
             </div>
           </div>
         </div>
-        <div className="w-50 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
+        <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
           <SearchResultContent></SearchResultContent>
         </div>
       </div>
