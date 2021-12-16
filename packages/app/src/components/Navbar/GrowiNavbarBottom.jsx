@@ -53,7 +53,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => openCreateModal(true)}
+              onClick={() => openCreateModal()}
             >
               <i className="icon-pencil"></i>
             </a>
