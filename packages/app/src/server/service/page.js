@@ -168,11 +168,11 @@ class PageService {
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const descendantPages = pages.filter(descendantPage => descendantPage._id.toString() !== page._id.toString());
-      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY);
-      for (const descendantPage of descendantPages) {
+      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
+      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
+      for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(descendantPage, activity);
+        await this.createAndSendNotifications(childPage, activity);
       }
 
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
@@ -509,14 +509,14 @@ class PageService {
     }
 
     if (isRecursively) {
-      // create notifications
+      // create notifications for child pages
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const descendantPages = pages.filter(descendantPage => descendantPage._id.toString() !== page._id.toString());
+      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
       const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
-      for (const descendantPage of descendantPages) {
+      for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(descendantPage, activity);
+        await this.createAndSendNotifications(childPage, activity);
       }
 
       this.deleteDescendantsWithStream(page, user, options);
@@ -649,14 +649,13 @@ class PageService {
       const Page = this.crowi.model('Page');
       const queryOptions = { includeTrashed: true };
       const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
-      const descendantPages = pages.filter(descendantPage => descendantPage._id.toString() !== page._id.toString());
-      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY);
-      for (const descendantPage of descendantPages) {
+      const childPages = pages.filter(childPage => childPages._id.toString() !== page._id.toString());
+      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
+      for (const childPage of childPages) {
         // eslint-disable-next-line no-await-in-loop
-        await this.createAndSendNotifications(descendantPage, activity);
+        await this.createAndSendNotifications(childPage, activity);
       }
     }
-
 
     await this.deleteCompletelyOperation(ids, paths);
 
