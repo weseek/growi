@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 
 type Props = {
   isWindowExpanded: boolean,
-  color?: string,
   contractWindow?: () => void,
   expandWindow?: () => void,
 };
