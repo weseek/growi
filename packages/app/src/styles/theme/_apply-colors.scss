@@ -310,6 +310,19 @@ ul.pagination {
     }
   }
 
+  .grw-pagetree {
+    .grw-pagetree-item {
+      .grw-pagetree-title-anchor {
+        color: inherit;
+      }
+    }
+  }
+  .grw-pagetree-footer {
+    .h5.grw-private-legacy-pages-anchor {
+      color: inherit;
+    }
+  }
+
   .grw-recent-changes {
     .list-group {
       .list-group-item {

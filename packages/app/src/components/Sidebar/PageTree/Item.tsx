@@ -177,17 +177,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
   }, [data, isOpen]);
 
-  // TODO: improve style
-  const opacityStyle = { opacity: 1.0 };
-  if (page.isTarget) opacityStyle.opacity = 0.7;
-
-  const buttonClass = isOpen ? 'grw-pagetree-open' : '';
   return (
     <>
-      <div style={opacityStyle} className="grw-pagetree-item d-flex align-items-center">
+      <div className={`grw-pagetree-item d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
         <button
           type="button"
-          className={`grw-pagetree-button btn ${buttonClass}`}
+          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
           onClick={onClickLoadChildren}
         >
           <div className="grw-triangle-icon">
@@ -211,7 +206,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
       </div>
 
-      {!isEnableActions && (
+      {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
           placeholder={t('Input title')}
