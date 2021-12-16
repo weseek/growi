@@ -18,12 +18,6 @@ const { serializePageSecurely } = require('../models/serializers/page-serializer
 
 const BULK_REINDEX_SIZE = 100;
 
-const RECURSIVERY_ACTIONS = [
-  ActivityDefine.ACTION_PAGE_RECURSIVERY_RENAME,
-  ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE,
-  ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE_COMPLETELY,
-];
-
 class PageService {
 
   constructor(crowi) {
