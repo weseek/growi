@@ -142,7 +142,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         type: AlertType.ERROR,
         message: t('Page title is required'),
       };
-      return;
     }
 
     return null;
