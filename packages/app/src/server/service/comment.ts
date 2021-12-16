@@ -4,6 +4,8 @@ import loggerFactory from '../../utils/logger';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+
 const logger = loggerFactory('growi:service:CommentService');
 
 class CommentService {
@@ -35,8 +37,14 @@ class CommentService {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
 
+        const page = await Page.findById(savedComment.page);
+        if (page == null) {
+          logger.error('Page is not found');
+          return;
+        }
+
         const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity);
+        await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -82,14 +90,15 @@ class CommentService {
     return activity;
   };
 
-  private createAndSendNotifications = async function(activity) {
+  private createAndSendNotifications = async function(activity, page) {
+    const snapshot = stringifySnapshot(page);
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
     targetUsers = await activity.getNotificationTargetUsers();
 
     // Create and send notifications
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity);
+    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await this.inAppNotificationService.emitSocketIo(targetUsers);
   };
 

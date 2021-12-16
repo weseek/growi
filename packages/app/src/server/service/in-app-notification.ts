@@ -52,7 +52,7 @@ export default class InAppNotificationService {
   }
 
   upsertByActivity = async function(
-      users: Types.ObjectId[], activity: ActivityDocument, createdAt?: Date | null,
+      users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
   ): Promise<void> {
     const {
       _id: activityId, targetModel, target, action,
@@ -61,7 +61,7 @@ export default class InAppNotificationService {
     const lastWeek = subDays(now, 7);
     const operations = users.map((user) => {
       const filter = {
-        user, target, action, createdAt: { $gt: lastWeek },
+        user, target, action, createdAt: { $gt: lastWeek }, snapshot,
       };
       const parameters = {
         user,
@@ -70,6 +70,7 @@ export default class InAppNotificationService {
         action,
         status: STATUS_UNREAD,
         createdAt: now,
+        snapshot,
         $addToSet: { activities: activityId },
       };
       return {

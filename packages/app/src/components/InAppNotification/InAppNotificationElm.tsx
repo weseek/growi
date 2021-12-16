@@ -1,21 +1,19 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import { UserPicture, PagePathLabel } from '@growi/ui';
+import { UserPicture } from '@growi/ui';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import { apiv3Post } from '~/client/util/apiv3-client';
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
+// Change the display for each targetmodel
+import PageModelNotification from './PageNotification/PageModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
 }
 
-// TODO 81946 Return to not nullable
-const InAppNotificationElm = (props: Props): JSX.Element | null => {
+const InAppNotificationElm = (props: Props): JSX.Element => {
 
   const { notification } = props;
-
 
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -58,21 +56,7 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
     );
   };
 
-  const notificationClickHandler = useCallback(() => {
-    // set notification status "OPEND"
-    apiv3Post('/in-app-notification/open', { id: notification._id });
-
-    // jump to target page
-    window.location.href = notification.target.path;
-  }, []);
-
   const actionUsers = getActionUsers();
-
-  // TODO 81946 Return to not nullable
-  const pagePath = { path: props.notification.target?.path };
-  if (pagePath.path == null) {
-    return null;
-  }
 
   const actionType: string = notification.action;
   let actionMsg: string;
@@ -99,6 +83,10 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
       actionMsg = 'deleted';
       actionIcon = 'icon-trash';
       break;
+    case 'PAGE_DELETE_COMPLETELY':
+      actionMsg = 'completely deleted';
+      actionIcon = 'icon-fire';
+      break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
@@ -108,27 +96,20 @@ const InAppNotificationElm = (props: Props): JSX.Element | null => {
       actionIcon = '';
   }
 
-
   return (
     <div className="dropdown-item d-flex flex-row mb-3">
       <div className="p-2 mr-2 d-flex align-items-center">
         <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
         {renderActionUserPictures()}
       </div>
-      <div className="p-2">
-        <div onClick={notificationClickHandler}>
-          <div>
-            <b>{actionUsers}</b> {actionMsg} <PagePathLabel page={pagePath} />
-          </div>
-          <i className={`${actionIcon} mr-2`} />
-          <FormattedDistanceDate
-            id={notification._id}
-            date={notification.createdAt}
-            isShowTooltip={false}
-            differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-          />
-        </div>
-      </div>
+      {notification.targetModel === 'Page' && (
+        <PageModelNotification
+          notification={notification}
+          actionMsg={actionMsg}
+          actionIcon={actionIcon}
+          actionUsers={actionUsers}
+        />
+      )}
     </div>
   );
 };
