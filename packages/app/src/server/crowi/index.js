@@ -169,8 +169,9 @@ Crowi.prototype.initForTest = async function() {
     // this.setupExport(),
     // this.setupImport(),
     this.setupPageService(),
-    // this.setupInAppNotificationService(),
-    // this.setupActivityService(),
+    this.setupSocketIoService(),
+    this.setupInAppNotificationService(),
+    this.setupActivityService(),
   ]);
 
   // globalNotification depends on slack and mailer
