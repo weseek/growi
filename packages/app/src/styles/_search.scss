@@ -31,8 +31,8 @@
 
   .search-clear {
     position: absolute;
-    top: 5px;
-    right: 4px;
+    top: 4px;
+    right: 26px;
     z-index: 3;
     width: 24px;
     height: 24px;
@@ -63,13 +63,18 @@
   }
 }
 
+// styles for admin user search
+.admin-user-page {
+  .search-typeahead {
+    .search-clear {
+      top: 7px;
+      right: 4px;
+    }
+  }
+}
+
 // input styles
 .grw-global-search {
-  .search-clear {
-    top: 3px;
-    right: 26px;
-  }
-
   .dropdown-toggle {
     min-width: 95px;
     padding-left: 1.5rem;
@@ -166,6 +171,14 @@
 // TODO : keep the selected list in the same positino as other lists
 // TASK : https://redmine.weseek.co.jp/issues/82470
 .search-result {
+  .search-control {
+    padding: 5px 0;
+  }
+  .search-control-include-options {
+    .card-body {
+      padding: 5px 10px;
+    }
+  }
   .search-result-list {
     position: sticky;
     top: 0px;

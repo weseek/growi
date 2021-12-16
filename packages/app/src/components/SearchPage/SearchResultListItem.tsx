@@ -3,10 +3,13 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
+const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
@@ -94,7 +97,12 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
-                <PageItemControl page={pageData} onClickDeleteButton={props.onClickDeleteButton} isEnableActions={isEnableActions} />
+                <PageItemControl
+                  page={pageData}
+                  onClickDeleteButton={props.onClickDeleteButton}
+                  isEnableActions={isEnableActions}
+                  isDeletable={!isTopPage(pageData.path)}
+                />
               </div>
             </div>
             <div className="search-result-list-snippet py-1">
