@@ -95,7 +95,7 @@ class CommentService {
 
     // Get user to be notified
     let targetUsers: Types.ObjectId[] = [];
-    targetUsers = await activity.getNotificationTargetUsers();
+    targetUsers = await activity.getNotificationTargetUsers(page);
 
     // Create and send notifications
     await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
