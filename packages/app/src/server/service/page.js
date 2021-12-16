@@ -841,25 +841,6 @@ class PageService {
   createAndSendNotifications = async function(page, activity) {
     const { inAppNotificationService } = this.crowi;
 
-    // // Create activity
-    // const parameters = {
-    //   user: user._id,
-    //   targetModel: ActivityDefine.MODEL_PAGE,
-    //   target: page,
-    //   action,
-    // };
-    // const activity = await activityService.createByParameters(parameters);
-
-    // let targetUsers = [];
-    // if (RECURSIVERY_ACTIONS.includes(action)) {
-    //   const Page = this.crowi.model('Page');
-    //   const { pages } = await Page.findListWithDescendants(page.path, user);
-    //   for (const page of pages) {
-    //     // eslint-disable-next-line no-await-in-loop
-    //     targetUsers = targetUsers.concat(await Subscription.getSubscription(page));
-    //   }
-    // }
-
     const snapshot = stringifySnapshot(page);
 
     // Get user to be notified
