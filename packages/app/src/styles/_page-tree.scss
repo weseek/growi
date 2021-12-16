@@ -57,7 +57,7 @@ $grw-pagetree-item-padding-left: 10px;
     }
   }
 
-  // Set multiplied padding-left to each pagetree-item　to realize a hierarchical structure
+  // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
 
   > .grw-pagetree-item-container {
     > .grw-pagetree-item {
@@ -95,7 +95,7 @@ $grw-pagetree-item-padding-left: 10px;
                     > .grw-pagetree-item {
                       padding-left: $grw-pagetree-item-padding-left * 9;
                     }
-                    > .grw-pagetree-item-container {
+                    .grw-pagetree-item-container {
                       > .grw-pagetree-item {
                         padding-left: $grw-pagetree-item-padding-left * 10;
                       }
