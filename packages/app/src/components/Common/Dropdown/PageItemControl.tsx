@@ -31,10 +31,9 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2"
         data-toggle="dropdown"
       >
-        <i className="fa fa-ellipsis-v text-muted p-1"></i>
+        <i className="icon-options fa fa-rotate-90  text-muted p-1"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
-
         {/* TODO: if there is the following button in XD add it here
         <button
           type="button"
@@ -54,11 +53,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         */}
 
         {/* TODO: show dropdown when permalink section is implemented */}
-        {!isEnableActions && (
-          <p className="dropdown-item">
-            {t('search_result.currently_not_implemented')}
-          </p>
-        )}
+        {!isEnableActions && <p className="dropdown-item">{t('search_result.currently_not_implemented')}</p>}
         {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
             <i className="icon-fw icon-star"></i>
@@ -73,8 +68,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         )}
         {isEnableActions && (
           <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
+            <i className="icon-fw icon-note"></i>
+            {t('Rename')}
           </button>
         )}
         {isDeletable && isEnableActions && (
