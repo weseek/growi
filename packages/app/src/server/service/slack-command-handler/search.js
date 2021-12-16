@@ -41,7 +41,7 @@ module.exports = (crowi) => {
 
     const { searchService } = crowi;
     const options = { limit: PAGINGLIMIT, offset };
-    const results = await searchService.searchKeyword(keywords, null, {}, options);
+    const [results, _] = await searchService.searchKeyword(keywords, null, {}, options);
     const resultsTotal = results.meta.total;
 
     const pages = results.data.map((data) => {
