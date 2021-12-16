@@ -25,6 +25,19 @@ const PageTree: FC = memo(() => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
+  if (migrationStatus == null) {
+    return (
+      <>
+        <div className="grw-sidebar-content-header p-3">
+          <h3 className="mb-0">{t('Page Tree')}</h3>
+        </div>
+        <div className="mt-5 mx-2 text-center">
+          <h3 className="text-gray">Page Tree now loading...</h3>
+        </div>
+      </>
+    );
+  }
+
   if (!migrationStatus?.isV5Compatible) {
     // TODO : improve design
     // Story : https://redmine.weseek.co.jp/issues/83755
