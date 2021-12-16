@@ -81,7 +81,6 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
     const alertType = currentAlertInfo.type != null ? currentAlertInfo.type : AlertType.ERROR;
     const alertMessage = currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value';
-
     return (
       <p className="text-danger text-center mt-1">{alertType}: {alertMessage}</p>
     );
@@ -101,11 +100,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         onBlur={onBlurHandler}
         autoFocus={false}
       />
-      <div>
-        {/* {currentAlertInfo != null && ( */}
-        <AlertInfo />
-        {/* // )} */}
-      </div>
+      <AlertInfo />
     </div>
   );
 });
