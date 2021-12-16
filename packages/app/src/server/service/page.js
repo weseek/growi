@@ -69,7 +69,8 @@ class PageService {
     // delete
     this.pageEvent.on('delete', async(page, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+        const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+        await this.createAndSendNotifications(page, activity);
       }
       catch (err) {
         logger.error(err);
@@ -499,6 +500,14 @@ class PageService {
     }
 
     if (isRecursively) {
+      const queryOptions = { includeTrashed: true };
+      const { pages } = await Page.findListWithDescendants(page.path, user, queryOptions);
+      const descendantPages = pages.filter(descendantPage => descendantPage._id.toString() !== page._id.toString());
+      const activity = await this.createActivity(page, user, ActivityDefine.ACTION_PAGE_RECURSIVERY_DELETE);
+      for (const descendantPage of descendantPages) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.createAndSendNotifications(descendantPage, activity);
+      }
       this.deleteDescendantsWithStream(page, user, options);
     }
 
@@ -817,33 +826,44 @@ class PageService {
     }
   }
 
-  createAndSendNotifications = async function(page, user, action) {
-    const { activityService, inAppNotificationService } = this.crowi;
-
-    const snapshot = stringifySnapshot(page);
-
-    // Create activity
+  createActivity = async function(target, user, action) {
+    const { activityService } = this.crowi;
     const parameters = {
       user: user._id,
       targetModel: ActivityDefine.MODEL_PAGE,
-      target: page,
+      target,
       action,
     };
     const activity = await activityService.createByParameters(parameters);
+    return activity;
+  };
+
+  createAndSendNotifications = async function(page, activity) {
+    const { inAppNotificationService } = this.crowi;
+
+    // // Create activity
+    // const parameters = {
+    //   user: user._id,
+    //   targetModel: ActivityDefine.MODEL_PAGE,
+    //   target: page,
+    //   action,
+    // };
+    // const activity = await activityService.createByParameters(parameters);
+
+    // let targetUsers = [];
+    // if (RECURSIVERY_ACTIONS.includes(action)) {
+    //   const Page = this.crowi.model('Page');
+    //   const { pages } = await Page.findListWithDescendants(page.path, user);
+    //   for (const page of pages) {
+    //     // eslint-disable-next-line no-await-in-loop
+    //     targetUsers = targetUsers.concat(await Subscription.getSubscription(page));
+    //   }
+    // }
+
+    const snapshot = stringifySnapshot(page);
 
     // Get user to be notified
-    let targetUsers = [];
-    if (RECURSIVERY_ACTIONS.includes(action)) {
-      const Page = this.crowi.model('Page');
-      const { pages } = await Page.findListWithDescendants(page.path, user);
-      for (const page of pages) {
-        // eslint-disable-next-line no-await-in-loop
-        targetUsers = targetUsers.concat(await Subscription.getSubscription(page));
-      }
-    }
-    else {
-      targetUsers = await activity.getNotificationTargetUsers();
-    }
+    const targetUsers = await activity.getNotificationTargetUsers(page);
 
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
