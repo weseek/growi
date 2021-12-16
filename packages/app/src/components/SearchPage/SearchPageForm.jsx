@@ -50,6 +50,7 @@ class SearchPageForm extends React.Component {
           />
           <div className="btn-group-submit-search">
             <span
+              role="button"
               className="text-decoration-none"
               onClick={() => {
                 try {
