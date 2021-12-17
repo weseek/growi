@@ -251,10 +251,11 @@
   }
   .search-result-content {
     .search-result-content-nav {
+      min-height: 90px;
       overflow: auto;
 
       .grw-subnav {
-        min-height: 90px;
+        min-height: inherit;
       }
     }
 
