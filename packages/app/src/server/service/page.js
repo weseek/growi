@@ -1001,7 +1001,7 @@ class PageService {
         await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
 
         // find parents again
-        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true); // includeEmpty = true
+        const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
         const parents = await builder
           .addConditionToListByPathsArray(parentPaths)
           .query

@@ -143,7 +143,7 @@ const generateChildrenRegExp = (path: string): RegExp => {
  */
 schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicOnly = false): Promise<void> {
   // find existing parents
-  const builder = new PageQueryBuilder(this.find(publicOnly ? { grant: GRANT_PUBLIC } : {}, { _id: 0, path: 1 }), true); // includeEmpty = true
+  const builder = new PageQueryBuilder(this.find(publicOnly ? { grant: GRANT_PUBLIC } : {}, { _id: 0, path: 1 }), true);
   const existingPages = await builder
     .addConditionToListByPathsArray(paths)
     .query
@@ -188,7 +188,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   await this.createEmptyPagesByPaths(ancestorPaths);
 
   // find ancestors
-  const builder = new PageQueryBuilder(this.find({}, { _id: 1, path: 1 }), true); // includeEmpty = true
+  const builder = new PageQueryBuilder(this.find({}, { _id: 1, path: 1 }), true);
   const ancestors = await builder
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortPagesByDescPath()
@@ -271,7 +271,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   ancestorPaths.push(path); // include target
 
   // Do not populate
-  const queryBuilder = new PageQueryBuilder(this.find(), true); // includeEmpty = true
+  const queryBuilder = new PageQueryBuilder(this.find(), true);
   await addViewerCondition(queryBuilder, user, userGroups);
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
@@ -300,11 +300,11 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   if (hasSlash(parentPathOrId)) {
     const path = parentPathOrId;
     const regexp = generateChildrenRE2(path);
-    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }), true); // includeEmpty = true
+    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }), true);
   }
   else {
     const parentId = parentPathOrId;
-    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }), true); // includeEmpty = true
+    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }), true);
   }
   await addViewerCondition(queryBuilder, user, userGroups);
 
@@ -320,7 +320,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
   // get pages at once
-  const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }), true); // includeEmpty = true
+  const queryBuilder = new PageQueryBuilder(this.find({ path: { $in: regexps } }), true);
   await addViewerCondition(queryBuilder, user, userGroups);
   const _pages = await queryBuilder
     .addConditionAsMigrated()

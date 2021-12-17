@@ -611,7 +611,7 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty); // includeEmpty = true
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
     return queryBuilder.query.exec();

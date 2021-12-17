@@ -336,7 +336,7 @@ module.exports = function(crowi, app) {
     const id = req.params.id;
     const { revisionId } = req.query;
 
-    let page = await Page.findByIdAndViewer(id, req.user, null, true, true); // includeEmpty = true
+    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
 
     if (page == null) {
       next();
@@ -397,7 +397,7 @@ module.exports = function(crowi, app) {
     const id = req.params.id;
     const revisionId = req.query.revision;
 
-    let page = await Page.findByIdAndViewer(id, req.user, null, true, true); // includeEmpty = true
+    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
@@ -594,7 +594,7 @@ module.exports = function(crowi, app) {
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const pages = await Page.findByPathAndViewer(path, req.user, null, false, true); // includeEmpty = true
+    const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
