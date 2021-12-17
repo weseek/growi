@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
-const pathUtils = require('growi-commons').pathUtils;
+const { pathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
@@ -715,8 +715,9 @@ module.exports = (crowi) => {
 
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
+      const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
       const migratablePagesCount = await crowi.pageService.v5MigratablePrivatePagesCount(req.user);
-      return res.apiv3({ migratablePagesCount });
+      return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));

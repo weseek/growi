@@ -125,6 +125,11 @@
   {{ userUISettings|json|safe }}
   </script>
 {% endif %}
+{% if targetAndAncestors != null %}
+  <script type="application/json" id="growi-pagetree-target-and-ancestors">
+  {{ targetAndAncestors|json|safe }}
+  </script>
+{% endif %}
 
 
 {% block custom_script %}
