@@ -21,19 +21,19 @@ const { isTopPage } = pagePathUtils;
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetId?: string
+  targetPathOrId?: string
   isOpen?: boolean
   onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetId?: string): void => {
-  if (targetId == null) {
+const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+  if (targetPathOrId == null) {
     return;
   }
 
   children.forEach((node) => {
-    if (node.page._id === targetId) {
+    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
       node.page.isTarget = true;
     }
     return node;
@@ -96,7 +96,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -162,7 +162,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(children, targetId);
+      markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
   }, []);
@@ -173,7 +173,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   useEffect(() => {
     if (isOpen && error == null && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(newChildren, targetId);
+      markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen]);
@@ -223,7 +223,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
-              targetId={targetId}
+              targetPathOrId={targetPathOrId}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>

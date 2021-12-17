@@ -274,6 +274,14 @@ module.exports = function(crowi, app) {
     renderVars.targetAndAncestors = { targetAndAncestors, rootPage };
   }
 
+  function addRenderVarsWhenNotFound(renderVars, pathOrId) {
+    if (pathOrId == null) {
+      return;
+    }
+
+    renderVars.notFoundTargetPathOrId = pathOrId;
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -328,6 +336,7 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
+    addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
   }
