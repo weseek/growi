@@ -27,9 +27,6 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      isSlackEnabled: false,
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
-
       grant: 1, // default: public
       grantGroupId: null,
       grantGroupName: null,
@@ -143,10 +140,11 @@ export default class EditorContainer extends Container {
     }
   }
 
+  // TODO: Remove when SWR is complete
   getCurrentOptionsToSave() {
     const opt = {
-      isSlackEnabled: this.state.isSlackEnabled,
-      slackChannels: this.state.slackChannels,
+      // isSlackEnabled: this.state.isSlackEnabled,
+      // slackChannels: this.state.slackChannels,
       grant: this.state.grant,
       pageTags: this.state.tags,
     };

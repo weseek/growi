@@ -21,6 +21,7 @@ import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
+import SearchService from '../service/search';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -371,7 +372,6 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const SearchService = require('~/server/service/search');
   this.searchService = new SearchService(this);
 };
 
