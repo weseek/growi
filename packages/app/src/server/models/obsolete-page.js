@@ -79,8 +79,17 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 
 export class PageQueryBuilder {
 
-  constructor(query) {
+  constructor(query, includeEmpty = false) {
     this.query = query;
+    if (!includeEmpty) {
+      this.query = this.query
+        .and({
+          $or: [
+            { isEmpty: false },
+            { isEmpty: null }, // for v4 compatibility
+          ],
+        });
+    }
   }
 
   addConditionToExcludeTrashed() {
@@ -592,7 +601,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups, includeEmpty = false) {
     const baseQuery = this.findOne({ _id: id });
 
     let relatedUserGroups = userGroups;
@@ -602,18 +611,21 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery);
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
-    return await queryBuilder.query.exec();
+    return queryBuilder.query.exec();
   };
 
   // find page by path
-  pageSchema.statics.findByPath = function(path) {
+  pageSchema.statics.findByPath = function(path, includeEmpty = false) {
     if (path == null) {
       return null;
     }
-    return this.findOne({ path });
+
+    const builder = new PageQueryBuilder(this.findOne({ path }), includeEmpty);
+
+    return builder.query.exec();
   };
 
   /**
@@ -621,7 +633,7 @@ export const getPageSchema = (crowi) => {
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups) {
+  pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups, includeEmpty = false) {
     if (path == null) {
       throw new Error('path is required.');
     }
@@ -642,10 +654,10 @@ export const getPageSchema = (crowi) => {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const queryBuilder = new PageQueryBuilder(baseQuery);
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
     queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
-    return await queryBuilder.query.exec();
+    return queryBuilder.query.exec();
   };
 
   pageSchema.statics.findByRedirectTo = function(path) {
@@ -655,22 +667,22 @@ export const getPageSchema = (crowi) => {
   /**
    * find pages that is match with `path` and its descendants
    */
-  pageSchema.statics.findListWithDescendants = async function(path, user, option = {}) {
-    const builder = new PageQueryBuilder(this.find());
+  pageSchema.statics.findListWithDescendants = async function(path, user, option = {}, includeEmpty = false) {
+    const builder = new PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(path, option);
 
-    return await findListFromBuilderAndViewer(builder, user, false, option);
+    return findListFromBuilderAndViewer(builder, user, false, option);
   };
 
   /**
    * find pages that is match with `path` and its descendants whitch user is able to manage
    */
-  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}, includeEmpty = false) {
     if (user == null) {
       return null;
     }
 
-    const builder = new PageQueryBuilder(this.find());
+    const builder = new PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(page.path, option);
     builder.addConditionToExcludeRedirect();
 
@@ -691,11 +703,11 @@ export const getPageSchema = (crowi) => {
   /**
    * find pages that start with `path`
    */
-  pageSchema.statics.findListByStartWith = async function(path, user, option) {
-    const builder = new PageQueryBuilder(this.find());
+  pageSchema.statics.findListByStartWith = async function(path, user, option, includeEmpty = false) {
+    const builder = new PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListByStartWith(path, option);
 
-    return await findListFromBuilderAndViewer(builder, user, false, option);
+    return findListFromBuilderAndViewer(builder, user, false, option);
   };
 
   /**
@@ -1102,8 +1114,8 @@ export const getPageSchema = (crowi) => {
     await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
-  pageSchema.statics.findListByPathsArray = async function(paths) {
-    const queryBuilder = new PageQueryBuilder(this.find());
+  pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
+    const queryBuilder = new PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
