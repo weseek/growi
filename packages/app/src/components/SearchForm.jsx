@@ -36,7 +36,7 @@ class SearchForm extends React.Component {
   }
 
   onChange(selected) {
-    const page = selected[0];
+    const page = selected[0]; // should be single page selected
 
     // navigate to page
     if (page != null) {
