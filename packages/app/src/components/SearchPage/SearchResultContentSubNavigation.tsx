@@ -1,11 +1,8 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { pagePathUtils } from '@growi/core';
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
-import TagLabels from '../Page/TagLabels';
-import { toastSuccess, toastError } from '../../client/util/apiNotification';
-import { apiPost } from '../../client/util/apiv1-client';
 import { useSWRTagsInfo } from '../../stores/page';
 import SubNavButtons from '../Navbar/SubNavButtons';
 
@@ -26,18 +23,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
 
   const { isTrashPage, isDeletablePage } = pagePathUtils;
 
-  const { data: tagInfoData, error: tagInfoError, mutate: mutateTagInfo } = useSWRTagsInfo(pageId);
-
-  const tagsUpdatedHandler = useCallback(async(newTags) => {
-    try {
-      await apiPost('/tags.update', { pageId, tags: newTags });
-      toastSuccess('updated tags successfully');
-      mutateTagInfo();
-    }
-    catch (err) {
-      toastError(err, 'fail to update tags');
-    }
-  }, [pageId, mutateTagInfo]);
+  const { data: tagInfoData, error: tagInfoError } = useSWRTagsInfo(pageId);
 
   if (tagInfoError != null || tagInfoData == null) {
     return <></>;
@@ -46,15 +32,10 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const { isSharedUser } = appContainer;
   const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
-    <div className="position-sticky fixed-top shadow">
+    <div className="position-sticky fixed-top shadow-sm search-result-content-nav">
       <div className={`grw-subnav container-fluid d-flex align-items-start justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
         {/* Left side */}
         <div className="grw-path-nav-container">
-          {!isSharedUser && !isCompactMode && (
-            <div className="grw-taglabels-container">
-              <TagLabels tags={tagInfoData.tags} tagsUpdateInvoked={tagsUpdatedHandler} />
-            </div>
-          )}
           <PagePathNav pageId={pageId} pagePath={path} isCompactMode={isCompactMode} isSingleLineMode={isSignleLineMode} />
         </div>
         {/* Right side */}
