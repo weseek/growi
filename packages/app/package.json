@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "4.5.3-RC.0",
+  "version": "4.5.4-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -58,11 +58,11 @@
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/codemirror-textlint": "^4.5.3-RC.0",
-    "@growi/plugin-attachment-refs": "^4.5.3-RC.0",
-    "@growi/plugin-lsx": "^4.5.3-RC.0",
-    "@growi/plugin-pukiwiki-like-linker": "^4.5.3-RC.0",
-    "@growi/slack": "^4.5.3-RC.0",
+    "@growi/codemirror-textlint": "^4.5.4-RC.0",
+    "@growi/plugin-attachment-refs": "^4.5.4-RC.0",
+    "@growi/plugin-lsx": "^4.5.4-RC.0",
+    "@growi/plugin-pukiwiki-like-linker": "^4.5.4-RC.0",
+    "@growi/slack": "^4.5.4-RC.0",
     "@promster/express": "^5.1.0",
     "@promster/server": "^6.0.3",
     "@slack/events-api": "^3.0.0",
@@ -99,7 +99,6 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^5.0.4",
     "helmet": "^4.6.0",
     "http-errors": "~1.8.0",
     "i18next": "^20.3.2",
@@ -147,7 +146,7 @@
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "validator": "^13.6.0",
-    "ws": "^7.4.6",
+    "ws": "^8.3.0",
     "xss": "^1.0.6"
   },
   "// comments for defDependencies": {
@@ -157,7 +156,7 @@
   },
   "devDependencies": {
     "@alienfast/i18next-loader": "^1.1.4",
-    "@growi/ui": "^4.5.3-RC.0",
+    "@growi/ui": "^4.5.4-RC.0",
     "@handsontable/react": "=2.1.0",
     "@types/compression": "^1.7.0",
     "@types/express": "^4.17.11",
