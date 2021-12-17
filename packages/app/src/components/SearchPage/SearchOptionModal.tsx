@@ -49,7 +49,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onExcludeUserPagesSwitched}
+                onChange={props.onExcludeUserPagesSwitched}
                 checked={!excludeUserPages}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
@@ -60,7 +60,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onClick={props.onExcludeTrashPagesSwitched}
+                onChange={props.onExcludeTrashPagesSwitched}
                 checked={!excludeTrashPages}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
