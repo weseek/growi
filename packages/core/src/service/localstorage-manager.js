@@ -1,5 +1,5 @@
 let _instance = null;
-class LocalStorageManager {
+export class LocalStorageManager {
 
   static getInstance() {
     if (_instance == null) {
@@ -52,5 +52,3 @@ class LocalStorageManager {
   }
 
 }
-
-module.exports = LocalStorageManager;

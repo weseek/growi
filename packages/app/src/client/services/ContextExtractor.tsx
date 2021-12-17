@@ -6,6 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useSlackChannels,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -60,7 +61,7 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
-
+  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   /*
    * use static swr
    */
@@ -106,6 +107,9 @@ const ContextExtractorOnce: FC = () => {
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
+
+  // Editor
+  useSlackChannels(slackChannels);
 
   return null;
 };

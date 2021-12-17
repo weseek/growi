@@ -9440,11 +9440,6 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-growi-commons@^5.0.4:
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.4.tgz#1235b7955a3f492803e8c714fef5c4a797e442b7"
-  integrity sha512-K282Pe97SnJgbZWAuMz9pNDTmvmw4JYPf/oYQaPmBsUjaxG4FDwd7+p5UFc5GqZUWcLwXvtJZQZMZEH/xpg+nA==
-
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
@@ -21281,6 +21276,11 @@ ws@^7.4.6:
   version "7.5.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.1.tgz#44fc000d87edb1d9c53e51fbc69a0ac1f6871d66"
   integrity sha512-2c6faOUH/nhoQN6abwMloF7Iyl0ZS2E9HGtsiLrWn0zOOMWlhtDmdf/uihDt6jnuCxgtwGBNy6Onsoy2s2O2Ow==
+
+ws@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.3.0.tgz#7185e252c8973a60d57170175ff55fdbd116070d"
+  integrity sha512-Gs5EZtpqZzLvmIM59w4igITU57lrtYVFneaa434VROv4thzJyV6UjIL3D42lslWlI+D4KzLYnxSwtfuiO79sNw==
 
 ws@~7.4.2:
   version "7.4.6"
