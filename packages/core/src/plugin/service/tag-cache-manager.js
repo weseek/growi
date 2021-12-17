@@ -1,4 +1,4 @@
-const LocalStorageManager = require('../../service/localstorage-manager');
+import { LocalStorageManager } from '../../service/localstorage-manager';
 
 /**
  * Service Class for caching React state and TagContext
