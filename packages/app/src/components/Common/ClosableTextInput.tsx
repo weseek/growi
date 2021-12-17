@@ -74,13 +74,25 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   });
 
 
-  // TODO: improve style
+  const AlertInfo = () => {
+    if (currentAlertInfo == null) {
+      return <></>;
+    }
+
+    const alertType = currentAlertInfo.type != null ? currentAlertInfo.type : AlertType.ERROR;
+    const alertMessage = currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value';
+    return (
+      <p className="text-danger text-center mt-1">{alertType}: {alertMessage}</p>
+    );
+  };
+
+
   return (
     <div className={props.isShown ? 'd-block' : 'd-none'}>
       <input
         ref={inputRef}
         type="text"
-        className="form-control"
+        className="form-control mt-1"
         placeholder={props.placeholder}
         name="input"
         onChange={onChangeHandler}
@@ -88,14 +100,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         onBlur={onBlurHandler}
         autoFocus={false}
       />
-      <div>
-        {currentAlertInfo != null && (
-          <p>
-            {/* eslint-disable-next-line max-len */}
-            {currentAlertInfo.type != null ? currentAlertInfo.type : AlertType.ERROR}: {currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value' }
-          </p>
-        )}
-      </div>
+      <AlertInfo />
     </div>
   );
 });

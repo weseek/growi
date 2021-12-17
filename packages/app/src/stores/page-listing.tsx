@@ -46,12 +46,12 @@ export const useSWRxPageChildren = (
 };
 
 export const useSWRxV5MigrationStatus = (
-    shouldFetch = true,
 ): SWRResponse<V5MigrationStatus, Error> => {
   return useSWR(
-    shouldFetch ? '/pages/v5-migration-status' : null,
+    '/pages/v5-migration-status',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
+        isV5Compatible: response.data.isV5Compatible,
         migratablePagesCount: response.data.migratablePagesCount,
       };
     }),
