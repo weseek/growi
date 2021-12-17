@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const nodePath = require('path');
-const { pathUtils } = require('growi-commons');
+const { pathUtils } = require('@growi/core');
 
 /**
  * parent schema for GlobalNotificationSetting model
