@@ -10,10 +10,10 @@ GROWI Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`4.4.13`, `4.4`, `4`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.13/docker/Dockerfile)
-* [`4.4.13-nocdn`, `4.4-nocdn`, `4-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.13/docker/Dockerfile)
-* [`4.3.3`, `4.3` (Dockerfile)](https://github.com/weseek/growi/blob/v4.3.3/docker/Dockerfile)
-* [`4.3.3-nocdn`, `4.3-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.3.3/docker/Dockerfile)
+* [`4.5.3`, `4.5`, `4`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v4.5.3/docker/Dockerfile)
+* [`4.5.3-nocdn`, `4.5-nocdn`, `4-nocdn`, `latest-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.5.3/docker/Dockerfile)
+* [`4.4.13`, `4.4` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.13/docker/Dockerfile)
+* [`4.4.13-nocdn`, `4.4-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v4.4.13/docker/Dockerfile)
 
 
 What is GROWI?
@@ -22,16 +22,6 @@ What is GROWI?
 GROWI is a team collaboration software and it forked from [crowi](https://github.com/weseek/crowi/crowi)
 
 see: [weseek/growi](https://github.com/weseek/growi)
-
-What is growi-docker?
--------------------
-
-The GROWI official docker image for production use which concludes several official plugins.
-
-- [growi-plugin-lsx](https://www.npmjs.com/package/growi-plugin-lsx)
-- [growi-plugin-pukiwiki-like-linker](https://www.npmjs.com/package/growi-plugin-pukiwiki-like-linker)
-- [growi-plugin-attachment-refs](https://www.npmjs.com/package/growi-plugin-attachment-refs)
-
 
 
 Requirements

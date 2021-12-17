@@ -7,7 +7,7 @@ const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
 
-const { pathUtils } = require('growi-commons');
+const { pathUtils } = require('@growi/core');
 const { listLocaleIds } = require('~/utils/locale-utils');
 
 const router = express.Router();

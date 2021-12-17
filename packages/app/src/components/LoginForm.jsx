@@ -148,12 +148,22 @@ class LoginForm extends React.Component {
     const {
       t,
       appContainer,
+      isEmailAuthenticationEnabled,
       username,
       name,
       email,
       registrationMode,
       registrationWhiteList,
     } = this.props;
+
+    const { isMailerSetup } = appContainer.config;
+    let registerAction = '/register';
+
+    let submitText = t('Sign up');
+    if (isEmailAuthenticationEnabled) {
+      registerAction = '/user-activation/register';
+      submitText = t('page_register.send_email');
+    }
 
     return (
       <React.Fragment>
@@ -164,27 +174,44 @@ class LoginForm extends React.Component {
             {t('page_register.notice.restricted_defail')}
           </p>
         )}
-        <form role="form" action="/register" method="post" id="register-form">
-          <div className="input-group" id="input-group-username">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-user"></i>
-              </span>
-            </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('User ID')} name="registerForm[username]" defaultValue={username} required />
-          </div>
-          <p className="form-text text-danger">
-            <span id="help-block-username"></span>
+        { (!isMailerSetup && isEmailAuthenticationEnabled) && (
+          <p className="alert alert-danger">
+            <span>{t('security_setting.Local.please_enable_mailer')}</span>
           </p>
+        )}
 
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-tag"></i>
-              </span>
+        <form role="form" action={registerAction} method="post" id="register-form">
+
+          {!isEmailAuthenticationEnabled && (
+            <div>
+              <div className="input-group" id="input-group-username">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">
+                    <i className="icon-user"></i>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className="form-control rounded-0"
+                  placeholder={t('User ID')}
+                  name="registerForm[username]"
+                  defaultValue={username}
+                  required
+                />
+              </div>
+              <p className="form-text text-danger">
+                <span id="help-block-username"></span>
+              </p>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">
+                    <i className="icon-tag"></i>
+                  </span>
+                </div>
+                <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
+              </div>
             </div>
-            <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
-          </div>
+          )}
 
           <div className="input-group">
             <div className="input-group-prepend">
@@ -210,23 +237,27 @@ class LoginForm extends React.Component {
             </>
           )}
 
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-lock"></i>
-              </span>
+          {!isEmailAuthenticationEnabled && (
+            <div>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">
+                    <i className="icon-lock"></i>
+                  </span>
+                </div>
+                <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
+              </div>
             </div>
-            <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
-          </div>
+          )}
 
           <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-            <button type="submit" className="btn btn-fill rounded-0" id="register">
+            <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}>
               <div className="eff"></div>
               <span className="btn-label">
                 <i className="icon-user-follow"></i>
               </span>
-              <span className="btn-label-text">{t('Sign up')}</span>
+              <span className="btn-label-text">{submitText}</span>
             </button>
           </div>
         </form>
@@ -314,6 +345,7 @@ LoginForm.propTypes = {
   registrationMode: PropTypes.string,
   registrationWhiteList: PropTypes.array,
   isPasswordResetEnabled: PropTypes.bool,
+  isEmailAuthenticationEnabled: PropTypes.bool,
   isLocalStrategySetup: PropTypes.bool,
   isLdapStrategySetup: PropTypes.bool,
   objOfIsExternalAuthEnableds: PropTypes.object,

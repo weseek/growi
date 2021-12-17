@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
@@ -6,13 +6,19 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useSlackChannels,
 } from '../../stores/context';
+import {
+  useIsDeviceSmallerThanMd,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 const jsonNull = 'null';
 
-const ContextExtractor: FC = () => {
+const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
 
@@ -20,6 +26,11 @@ const ContextExtractor: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * UserUISettings from DOM
+   */
+  const userUISettings: Partial<IUserUISettings> = JSON.parse(document.getElementById('growi-user-ui-settings')?.textContent || jsonNull);
 
   /*
    * Page Context from DOM
@@ -50,12 +61,19 @@ const ContextExtractor: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
-
+  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   /*
    * use static swr
    */
   // App
   useCurrentUser(currentUser);
+
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Page
   useCreatedAt(createdAt);
@@ -85,11 +103,25 @@ const ContextExtractor: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
-  return (
-    <div>
-      {/* Render nothing */}
-    </div>
-  );
+  // Navigation
+  usePreferDrawerModeByUser();
+  usePreferDrawerModeOnEditByUser();
+  useIsDeviceSmallerThanMd();
+
+  // Editor
+  useSlackChannels(slackChannels);
+
+  return null;
 };
+
+const ContextExtractor: FC = React.memo(() => {
+  const [isRunOnce, setRunOnce] = useState(false);
+
+  useEffect(() => {
+    setRunOnce(true);
+  }, []);
+
+  return isRunOnce ? null : <ContextExtractorOnce></ContextExtractorOnce>;
+});
 
 export default ContextExtractor;

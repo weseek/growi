@@ -1,36 +1,39 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useIsEditable } from '~/stores/context';
 
 const EditPage = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   // setup effect
   useEffect(() => {
+    if (!isEditable) {
+      return;
+    }
+
     // ignore when dom that has 'modal in' classes exists
     if (document.getElementsByClassName('modal in').length > 0) {
       return;
     }
 
-    props.navigationContainer.setEditorMode('edit');
+    mutateEditorMode(EditorMode.Editor);
 
     // remove this
     props.onDeleteRender(this);
-  }, [props]);
+  }, [isEditable, mutateEditorMode, props]);
 
-  return <></>;
+  return null;
 };
 
 EditPage.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   onDeleteRender: PropTypes.func.isRequired,
 };
 
-const EditPageWrapper = withUnstatedContainers(EditPage, [NavigationContainer]);
-
-EditPageWrapper.getHotkeyStrokes = () => {
+EditPage.getHotkeyStrokes = () => {
   return [['e']];
 };
 
-export default EditPageWrapper;
+export default EditPage;

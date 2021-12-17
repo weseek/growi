@@ -1,6 +1,6 @@
 import loggerFactory from '../../utils/logger';
 
-const { customTagUtils } = require('growi-commons');
+const { customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
