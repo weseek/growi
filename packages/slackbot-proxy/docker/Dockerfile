@@ -3,7 +3,7 @@
 ##
 ## packages-json-picker
 ##
-FROM node:14-slim AS packages-json-picker
+FROM node:16-slim AS packages-json-picker
 
 ENV optDir /opt
 
@@ -60,7 +60,7 @@ RUN tar -cf dependencies.tar \
 ##
 ## builder
 ##
-FROM node:14-slim AS builder
+FROM node:16-slim AS builder
 
 ENV optDir /opt
 
@@ -95,7 +95,7 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:14-slim
+FROM node:16-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production

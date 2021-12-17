@@ -20,7 +20,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 ##
 ## deps-resolver
 ##
-FROM node:14-slim AS deps-resolver
+FROM node:16-slim AS deps-resolver
 
 ENV optDir /opt
 
@@ -59,7 +59,7 @@ RUN tar -cf node_modules.tar \
 ##
 ## prebuilder-default
 ##
-FROM node:14-slim AS prebuilder-default
+FROM node:16-slim AS prebuilder-default
 
 ENV optDir /opt
 
@@ -128,7 +128,7 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:14-slim
+FROM node:16-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
