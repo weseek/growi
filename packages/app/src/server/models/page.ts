@@ -188,7 +188,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
   const builder = new PageQueryBuilder(this.find({}, { _id: 1, path: 1 }));
   const ancestors = await builder
     .addConditionToListByPathsArray(ancestorPaths)
-    .addConditionToSortAncestorPages()
+    .addConditionToSortPagesByDescPath()
     .query
     .lean()
     .exec();
@@ -276,7 +276,7 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
     .addConditionAsMigrated()
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToMinimizeDataForRendering()
-    .addConditionToSortAncestorPages()
+    .addConditionToSortPagesByDescPath()
     .query
     .lean()
     .exec();
@@ -306,7 +306,11 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   }
   await addViewerCondition(queryBuilder, user, userGroups);
 
-  return queryBuilder.query.lean().exec();
+  return queryBuilder
+    .addConditionToSortPagesByAscPath()
+    .query
+    .lean()
+    .exec();
 };
 
 schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: string, user, userGroups = null): Promise<Record<string, PageDocument[]>> {
@@ -319,6 +323,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   const _pages = await queryBuilder
     .addConditionAsMigrated()
     .addConditionToMinimizeDataForRendering()
+    .addConditionToSortPagesByAscPath()
     .query
     .lean()
     .exec();
