@@ -250,14 +250,16 @@
     }
   }
   .search-result-content {
-    padding-bottom: 36px;
+    .search-result-content-nav {
+      overflow: auto;
 
-    z-index: 0;
+      .grw-subnav {
+        min-height: 90px;
+      }
+    }
 
     .search-result-page {
-      padding-top: 64px;
-      // adjust for anchor links by the height of fixed .search-page-input
-      margin-top: -64px;
+      height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width));
 
       > h2 {
         margin-right: 10px;
@@ -269,10 +271,15 @@
         margin-top: 0;
       }
 
-      .wiki {
-        padding: 16px;
-        font-size: 13px;
-        border: solid 1px $gray-300;
+      .search-result-page-content {
+        overflow-y: auto;
+
+        .wiki {
+          min-height: 50%;
+          padding: 16px;
+          font-size: 13px;
+          border: solid 1px $gray-300;
+        }
       }
     }
   }
