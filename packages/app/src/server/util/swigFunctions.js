@@ -2,7 +2,7 @@ module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
 
-  const { pathUtils } = require('growi-commons');
+  const { pathUtils } = require('@growi/core');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
