@@ -3,7 +3,7 @@ const LocalStorageManager = require('../../service/localstorage-manager');
 /**
  * Service Class for caching React state and TagContext
  */
-class TagCacheManager {
+export class TagCacheManager {
 
   /**
    * @callback generateCacheKey
@@ -67,5 +67,3 @@ class TagCacheManager {
   }
 
 }
-
-module.exports = TagCacheManager;
