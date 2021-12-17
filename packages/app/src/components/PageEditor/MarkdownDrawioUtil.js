@@ -155,6 +155,22 @@ class MarkdownDrawioUtil {
     return newMarkdown;
   }
 
+  /**
+   * return an array of the starting line numbers of the drawio sections found in markdown
+   */
+  findAllDrawioSection(editor) {
+    const lineNumbers = [];
+    // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
+    for (let i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
+      const line = editor.getLine(i);
+      const match = this.lineBeginPartOfDrawioRE.exec(line);
+      if (match) {
+        lineNumbers.push(i);
+      }
+    }
+    return lineNumbers;
+  }
+
 }
 
 // singleton pattern
