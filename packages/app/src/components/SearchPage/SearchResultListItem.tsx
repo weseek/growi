@@ -4,7 +4,7 @@ import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { pagePathUtils } from '@growi/core';
-import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
@@ -28,7 +28,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
   } = props;
 
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
@@ -49,7 +49,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     />
   );
 
-  const responsiveListStyleClass = `${isDeviceSmallerThanMd ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
+  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
 
   return (
     <li
