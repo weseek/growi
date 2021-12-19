@@ -88,9 +88,11 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
                 <UserPicture user={pageData.lastUpdateUser} size="sm" />
               </span>
               {/* page title */}
-              <span className="py-1 h5 mr-2 mb-0">
-                {pageTitle}
-              </span>
+              <Clamp lines={1}>
+                <span className="h5 mr-2 mb-0">
+                  {pageTitle}
+                </span>
+              </Clamp>
               {/* page meta */}
               <div className="d-none d-md-flex item-meta py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
