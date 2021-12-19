@@ -1,8 +1,35 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.3](https://github.com/weseek/growi/compare/v4.5.2...v4.5.3) - 2021-12-17
+
+### 💎 Features
+
+- feat: user activation by email (#4862) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Use SWR for isSlackEnabled (#4827) @stevenfukase
+- imprv: Disable rubber band scroll for Mac & iOS users (#4834) @hakumizuki
+- imprv: Omit atlaskit and implement sidebar only with original codes (#4598) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: GROWI Bot search command after transplanting search service from dev/5.0.x (#4916) @hakumizuki
+- fix: Set min-height to sidebar scroll target (#4884) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: fix dependabot alert for kind-of (#4891) @LuqmanHakim-Grune
+- support: fix dependabot alert for ini (#4892) @LuqmanHakim-Grune
+- support: fix and debug mixin-deep dependabot alert (#4867) @LuqmanHakim-Grune
+- support: dependabot alert xmlhttprequest-ssl (#4878) @mudana-grune
+- support: Transplant search service from dev/5.0.x (#4869) @hakumizuki
+- support: dependabot alert set-value (#4864) @LuqmanHakim-Grune
+- ci(deps): bump aws-sdk from 2.179.0 to 2.1044.0 (#4821) @dependabot
 
 ## [v4.5.2](https://github.com/weseek/growi/compare/v4.5.1...v4.5.2) - 2021-12-06
 

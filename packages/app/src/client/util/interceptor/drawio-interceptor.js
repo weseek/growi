@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
-import { BasicInterceptor } from 'growi-commons';
+import { BasicInterceptor } from '@growi/core';
 
 import Drawio from '~/components/Drawio';
 
