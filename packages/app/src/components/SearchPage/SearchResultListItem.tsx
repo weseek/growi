@@ -31,8 +31,6 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-  const pageId = `#${pageData._id}`;
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
   const pageTitle = (
@@ -58,9 +56,8 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
       key={pageData._id}
       className={`w-100 page-list-li search-result-item border-bottom ${responsiveListStyleClass}`}
     >
-      <a
-        className="d-block h-100"
-        href={pageId}
+      <div
+        className="h-100 text-break"
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
         <div className="d-flex h-100">
@@ -121,7 +118,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
           </div>
         </div>
         {/* TODO: adjust snippet position */}
-      </a>
+      </div>
     </li>
   );
 });
