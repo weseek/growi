@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -93,8 +93,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
-  const [isRenderedCompletely, setRenderedCompletely] = useState(false);
-
   const DeleteModal = (
     <PageDeleteModal
       isOpen={isDeleteModalOpen}
@@ -114,9 +112,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   /*
    * Render completely
    */
-  if (!isRenderedCompletely && ancestorsChildrenData != null && rootPageData != null) {
+  if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    setRenderedCompletely(true); // render once
     return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetId, onClickDeleteByPage);
   }
 

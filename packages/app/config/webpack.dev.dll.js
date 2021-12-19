@@ -17,7 +17,6 @@ module.exports = {
       'diff2html',
       'debug',
       'entities',
-      'growi-commons',
       'i18next', 'i18next-browser-languagedetector',
       'jquery-slimscroll',
       'lodash', 'pako',
