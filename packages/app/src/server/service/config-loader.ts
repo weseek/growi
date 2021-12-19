@@ -1,4 +1,4 @@
-import { envUtils } from 'growi-commons';
+import { envUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 

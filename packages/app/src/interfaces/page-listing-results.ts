@@ -24,5 +24,6 @@ export interface TargetAndAncestors {
 
 
 export interface V5MigrationStatus {
+  isV5Compatible : boolean,
   migratablePagesCount: number
 }
