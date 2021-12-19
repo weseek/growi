@@ -3,11 +3,12 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
+
 
 const { isTopPage } = pagePathUtils;
 
@@ -32,6 +33,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
 
   // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
   const pageId = `#${pageData._id}`;
+  const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
   const pageTitle = (
     <PagePathLabel
@@ -80,7 +82,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
             {/* page path */}
             <h6 className="mb-1 py-1">
               <i className="icon-fw icon-home"></i>
-              {pagePathElem}
+              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>{pagePathElem}</a>
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
@@ -89,7 +91,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
               </span>
               {/* page title */}
               <span className="py-1 h5 mr-2 mb-0">
-                {pageTitle}
+                <a href={`/${pageData._id}`}>{pageTitle}</a>
               </span>
               {/* page meta */}
               <div className="d-none d-md-flex item-meta py-0 px-1">
