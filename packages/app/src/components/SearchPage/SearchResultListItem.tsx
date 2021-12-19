@@ -9,7 +9,6 @@ import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
-
 const { isTopPage } = pagePathUtils;
 
 type Props = {
