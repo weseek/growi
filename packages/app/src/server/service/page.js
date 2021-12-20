@@ -1099,7 +1099,7 @@ class PageService {
     }
     catch (err) {
       logger.warn('Failed to drop unique indexes from pages.path.', err);
-      // DO NOT throw err
+      throw err;
     }
 
     try {
