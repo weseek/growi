@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
-import { envUtils } from 'growi-commons';
+import { envUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';

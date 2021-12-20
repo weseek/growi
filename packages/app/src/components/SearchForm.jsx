@@ -40,7 +40,7 @@ class SearchForm extends React.Component {
 
     // navigate to page
     if (page != null) {
-      window.location = page.path;
+      window.location = page.pageData._id;
     }
   }
 
