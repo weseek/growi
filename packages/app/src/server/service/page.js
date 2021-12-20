@@ -887,6 +887,7 @@ class PageService {
       await this._setV5PathIndexStatus('processing');
       try {
         await this._v5NormalizeIndex();
+        await this._setV5PathIndexStatus('done');
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
@@ -895,7 +896,9 @@ class PageService {
         throw err;
       }
     }
-    await this._setV5PathIndexStatus('done');
+    else if (status === 'processing') {
+      return;
+    }
 
     // then migrate
     try {
