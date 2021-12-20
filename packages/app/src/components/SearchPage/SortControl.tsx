@@ -26,7 +26,12 @@ const SortControl: FC <Props> = (props: Props) => {
   };
 
   const renderSortItem = (sort, order) => {
-    return <div className="d-flex align-items-center"><span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>{renderOrderIcon(order)}</div>;
+    return (
+      <div className="d-flex align-items-center justify-content-between w-100">
+        <span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>
+        {renderOrderIcon(order)}
+      </div>
+    );
   };
 
   return (

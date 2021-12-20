@@ -24,7 +24,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -85,7 +85,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 

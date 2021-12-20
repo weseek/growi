@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -58,15 +58,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     services:
       mongodb:
         image: mongo:4.4
-        ports:
-        - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
         ports:
         - 27017/tcp
 
@@ -94,12 +90,6 @@ jobs:
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
-    - name: yarn test with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        yarn test
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 
     - name: Upload coverage report as artifact
       uses: actions/upload-artifact@v2
@@ -123,7 +113,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     services:
       mongodb:
@@ -173,15 +163,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x, 16.x]
 
     services:
       mongodb:
         image: mongo:4.4
-        ports:
-        - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
         ports:
         - 27017/tcp
 
@@ -209,7 +195,7 @@ jobs:
       run: |
         yarn lerna run build
       env:
-        ANALYZE_BUNDLE_SIZE: ${{ matrix.node-version == '14.x' }}
+        ANALYZE_BUNDLE_SIZE: ${{ matrix.node-version == '16.x' }}
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
@@ -229,13 +215,6 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: yarn server:ci with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2

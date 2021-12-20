@@ -81,9 +81,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## 依存関係
 
-- Node.js v12.x or v14.x
-- npm 6.x
-- yarn
+- Node.js v14.x or v16.x
 - MongoDB 4.x
 
 ### オプションの依存関係
