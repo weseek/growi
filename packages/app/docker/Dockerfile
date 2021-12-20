@@ -7,7 +7,7 @@ ARG flavor=default
 ##
 ## deps-resolver
 ##
-FROM node:16-slim AS deps-resolver
+FROM node:14-slim AS deps-resolver
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
@@ -51,7 +51,7 @@ RUN tar cf node_modules.tar \
 ##
 ## prebuilder-default
 ##
-FROM node:16-slim AS prebuilder-default
+FROM node:14-slim AS prebuilder-default
 
 ENV appDir /opt/growi
 
@@ -124,7 +124,7 @@ RUN tar cf packages.tar \
 ##
 ## release
 ##
-FROM node:16-slim
+FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
