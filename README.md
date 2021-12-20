@@ -82,9 +82,7 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Dependencies
 
-- Node.js v12.x or v14.x
-- npm 6.x
-- yarn
+- Node.js v14.x or v16.x
 - MongoDB 4.x
 
 ### Optional Dependencies
