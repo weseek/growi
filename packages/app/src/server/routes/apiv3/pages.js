@@ -716,7 +716,7 @@ module.exports = (crowi) => {
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
       const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-      const migratablePagesCount = await crowi.pageService.v5MigratablePrivatePagesCount(req.user);
+      const migratablePagesCount = req.user != null ? await crowi.pageService.v5MigratablePrivatePagesCount(req.user) : null;
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
     catch (err) {

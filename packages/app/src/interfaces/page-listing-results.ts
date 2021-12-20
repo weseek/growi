@@ -23,6 +23,11 @@ export interface TargetAndAncestors {
 }
 
 
+export interface NotFoundTargetPathOrId {
+  notFoundTargetPathOrId: string
+}
+
+
 export interface V5MigrationStatus {
   isV5Compatible : boolean,
   migratablePagesCount: number
