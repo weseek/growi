@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch from '@elastic/elasticsearch';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -91,10 +91,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   initClient() {
     const { host, httpAuth, indexName } = this.getConnectionInfo();
+    const httpAuthArr = httpAuth.split(':');
+    const username = httpAuthArr[0];
+    const password = httpAuthArr[1];
+
     this.client = new elasticsearch.Client({
-      host,
-      httpAuth,
-      requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
+      node: host,
+      ssl: { rejectUnauthorized: false }, // TODO: set ssl from global env config
+      auth: { username, password },
+      // requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
     this.indexName = indexName;
@@ -189,8 +194,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // check existence
-    const isExistsMainIndex = await client.indices.exists({ index: indexName });
-    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+    const { body: isExistsMainIndex } = await client.indices.exists({ index: indexName });
+    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
 
     // create indices name list
     const existingIndices: string[] = [];
@@ -206,8 +211,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       };
     }
 
-    const { indices } = await client.indices.stats({ index: existingIndices, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
-    const aliases = await client.indices.getAlias({ index: existingIndices });
+    const { body: indicesBody } = await client.indices.stats({ index: existingIndices, metric: ['docs', 'store', 'indexing'] });
+    const { indices } = indicesBody;
+    const { body: aliases } = await client.indices.getAlias({ index: existingIndices });
 
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
@@ -277,19 +283,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const tmpIndexName = `${indexName}-tmp`;
 
     // remove tmp index
-    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+    const { body: isExistsTmpIndex } = await client.indices.exists({ index: tmpIndexName });
     if (isExistsTmpIndex) {
       await client.indices.delete({ index: tmpIndexName });
     }
 
     // create index
-    const isExistsIndex = await client.indices.exists({ index: indexName });
+    const { body: isExistsIndex } = await client.indices.exists({ index: indexName });
     if (!isExistsIndex) {
       await this.createIndex(indexName);
     }
 
     // create alias
-    const isExistsAlias = await client.indices.existsAlias({ name: aliasName, index: indexName });
+    const { body: isExistsAlias } = await client.indices.existsAlias({ name: aliasName, index: indexName });
     if (!isExistsAlias) {
       await client.indices.putAlias({
         name: aliasName,
@@ -590,7 +596,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   async searchKeyword(query) {
     // for debug
     if (process.env.NODE_ENV === 'development') {
-      const result = await this.client.indices.validateQuery({
+      const { body: result } = await this.client.indices.validateQuery({
         explain: true,
         body: {
           query: query.body.query,
@@ -599,7 +605,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       logger.debug('ES returns explanations: ', result.explanations);
     }
 
-    const result = await this.client.search(query);
+    const { body } = await this.client.search(query);
+    const { body: result } = await this.client.search(query);
 
     // for debug
     logger.debug('ES result: ', result);
