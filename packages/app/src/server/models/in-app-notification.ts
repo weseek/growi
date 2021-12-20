@@ -72,7 +72,7 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: new Date(),
   },
   snapshot: {
     type: String,
