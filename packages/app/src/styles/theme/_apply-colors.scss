@@ -706,13 +706,14 @@ mark.rbt-highlight-text {
 }
 
 // Page Management Dropdown icon
-.grw-btn-page-management:hover,
-.grw-btn-page-management:focus {
-  background-color: rgba($color-link, 0.15);
-}
-
-.grw-btn-page-management:active {
-  background-color: rgba($color-link, 0.2);
+.grw-btn-page-management {
+  :hover,
+  :focus {
+    background-color: rgba($color-link, 0.15);
+  }
+  :active {
+    background-color: rgba($color-link, 0.2);
+  }
 }
 
 /*
