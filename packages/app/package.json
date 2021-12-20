@@ -86,7 +86,7 @@
     "date-fns": "^2.23.0",
     "detect-indent": "^7.0.0",
     "diff": "^5.0.0",
-    "elasticsearch": "^16.0.0",
+    "@elastic/elasticsearch": "^6.8.7",
     "entities": "^2.0.0",
     "esa-nodejs": "^0.0.7",
     "escape-string-regexp": "=4.0.0",
