@@ -28,7 +28,10 @@ const AuthorInfo = (props) => {
       return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
     }
     catch (err) {
-      return <p>{infoLabelForSubNav} <UserPicture user={user} size="sm" /> {userLabel}</p>;
+      if (err instanceof RangeError) {
+        return <p>{infoLabelForSubNav} <UserPicture user={user} size="sm" /> {userLabel}</p>;
+      }
+      return;
     }
   }
 
