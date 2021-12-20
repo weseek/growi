@@ -44,10 +44,7 @@ class SavePageControls extends React.Component {
   }
 
   updateGrantHandler(data) {
-    const { grant, grantGroupId, grantGroupName } = this.props;
-    const { mutate: mutateGrant } = grant;
-    const { mutate: mutateGrantGroupId } = grantGroupId;
-    const { mutate: mutateGrantGroupName } = grantGroupName;
+    const { mutateGrant, mutateGrantGroupId, mutateGrantGroupName } = this.props;
 
     mutateGrant(data.grant);
     mutateGrantGroupId(data.grantGroupId);
@@ -139,9 +136,9 @@ const SavePageControlsWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useGrant();
-  const { data: grantGroupId } = useGrantGroupId();
-  const { data: grantGroupName } = useGrantGroupName();
+  const { data: grant, mutate: mutateGrant } = useGrant();
+  const { data: grantGroupId, mutate: mutateGrantGroupId } = useGrantGroupId();
+  const { data: grantGroupName, mutate: mutateGrantGroupName } = useGrantGroupName();
 
 
   if (isEditable == null || editorMode == null) {
@@ -161,6 +158,9 @@ const SavePageControlsWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+      mutateGrantGroupId={mutateGrantGroupId}
+      mutateGrantGroupName={mutateGrantGroupName}
     />
   );
 };
@@ -177,8 +177,11 @@ SavePageControls.propTypes = {
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string.isRequired,
-  grantGroupName: PropTypes.string.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
+  mutateGrantGroupId: PropTypes.func,
+  mutateGrantGroupName: PropTypes.func,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

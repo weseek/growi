@@ -176,8 +176,8 @@ Page.propTypes = {
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string.isRequired,
-  grantGroupName: PropTypes.string.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
 };
 
 const PageWrapper = (props) => {
