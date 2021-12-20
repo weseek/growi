@@ -70,6 +70,8 @@
   data-csrftoken="{{ csrf() }}"
  >
 
+<div id="growi-context-extractor"></div>
+
 <div id="wrapper">
 
   {% block layout_head_nav %}
@@ -118,6 +120,12 @@
   {{ user|json|safe|preventXss }}
   </script>
 {% endif %}
+{% if userUISettings != null %}
+  <script type="application/json" id="growi-user-ui-settings">
+  {{ userUISettings|json|safe }}
+  </script>
+{% endif %}
+
 
 {% block custom_script %}
 <script>

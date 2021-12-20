@@ -5,7 +5,7 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
-const pathUtils = require('growi-commons').pathUtils;
+const { pathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');

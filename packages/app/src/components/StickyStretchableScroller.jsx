@@ -5,9 +5,6 @@ import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 import loggerFactory from '~/utils/logger';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
-
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');
 
 
@@ -49,9 +46,9 @@ const StickyStretchableScroller = (props) => {
 
   let { scrollTargetSelector } = props;
   const {
-    navigationContainer,
     children, contentsElemSelector, stickyElemSelector,
     calcViewHeightFunc, calcContentsHeightFunc,
+    resetKey,
   } = props;
 
   if (scrollTargetSelector == null && children == null) {
@@ -105,7 +102,7 @@ const StickyStretchableScroller = (props) => {
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
-    resetScrollbar();
+    setTimeout(resetScrollbar, 100);
   }, [resetScrollbar]);
 
   // setup effect by sticky event
@@ -141,17 +138,12 @@ const StickyStretchableScroller = (props) => {
     };
   }, [resetScrollbarDebounced]);
 
-  // setup effect by isScrollTop
+  // setup effect on init
   useEffect(() => {
-    if (navigationContainer.state.isScrollTop) {
-      resetScrollbar();
+    if (resetKey != null) {
+      resetScrollbarDebounced();
     }
-  }, [navigationContainer.state.isScrollTop, resetScrollbar]);
-
-  // setup effect by update props
-  useEffect(() => {
-    resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
+  }, [resetKey, resetScrollbarDebounced]);
 
   return (
     <>
@@ -161,15 +153,16 @@ const StickyStretchableScroller = (props) => {
 };
 
 StickyStretchableScroller.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   contentsElemSelector: PropTypes.string.isRequired,
 
   children: PropTypes.node,
   scrollTargetSelector: PropTypes.string,
   stickyElemSelector: PropTypes.string,
 
+  resetKey: PropTypes.any,
+
   calcViewHeightFunc: PropTypes.func,
   calcContentsHeightFunc: PropTypes.func,
 };
 
-export default withUnstatedContainers(StickyStretchableScroller, [NavigationContainer]);
+export default StickyStretchableScroller;

@@ -17,6 +17,13 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';
 
+import { getOptionsToSave } from '~/client/util/editor';
+
+// TODO: remove this when omitting unstated is completed
+import { useEditorMode } from '~/stores/ui';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
+
 const logger = loggerFactory('growi:SavePageControls');
 
 class SavePageControls extends React.Component {
@@ -31,6 +38,7 @@ class SavePageControls extends React.Component {
 
     this.save = this.save.bind(this);
     this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
+
   }
 
   updateGrantHandler(data) {
@@ -38,13 +46,16 @@ class SavePageControls extends React.Component {
   }
 
   async save() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+      await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -53,14 +64,17 @@ class SavePageControls extends React.Component {
   }
 
   saveAndOverwriteScopesOfDescendants() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const optionsToSave = Object.assign(editorContainer.getCurrentOptionsToSave(), {
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
-    pageContainer.saveAndReload(optionsToSave);
+    pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   }
 
   render() {
@@ -107,7 +121,31 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+
+const SavePageControlsWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  if (!isEditable) {
+    return null;
+  }
+
+  return (
+    <SavePageControlsHOCWrapper
+      {...props}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+    />
+  );
+};
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -115,6 +153,11 @@ SavePageControls.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);
