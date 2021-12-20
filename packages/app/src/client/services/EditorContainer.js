@@ -39,7 +39,6 @@ export default class EditorContainer extends Container {
 
     this.isSetBeforeunloadEventHandler = false;
 
-    // this.initStateGrant();
     this.initDrafts();
 
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
