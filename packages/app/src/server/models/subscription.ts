@@ -52,7 +52,7 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
     require: true,
     enum: STATUSES,
   },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: new Date() },
 });
 
 subscriptionSchema.methods.isSubscribing = function() {

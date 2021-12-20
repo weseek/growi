@@ -18,7 +18,7 @@ export interface ActivityDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId | any
   targetModel: string
-  target: string
+  target: Types.ObjectId
   action: string
   event: Types.ObjectId
   eventModel: string
@@ -63,7 +63,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: new Date(),
   },
 });
 activitySchema.index({ target: 1, action: 1 });

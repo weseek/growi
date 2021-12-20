@@ -90,7 +90,6 @@ function Crowi() {
     comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
-    comment: new (require('../events/comment'))(this),
   };
 }
 
