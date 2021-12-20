@@ -14,10 +14,10 @@ import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
 import {
-  useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
-} from '~/stores/context';
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useSlackChannels } from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
@@ -434,9 +434,9 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useGrant();
-  const { data: grantGroupId } = useGrantGroupId();
-  const { data: grantGroupName } = useGrantGroupName();
+  const { data: grant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
 
   if (editorMode == null) {
     return null;

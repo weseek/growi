@@ -20,10 +20,10 @@ import GrantSelector from './SavePageControls/GrantSelector';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
 import {
-  useIsEditable, useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
-} from '~/stores/context';
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:SavePageControls');
@@ -136,9 +136,9 @@ const SavePageControlsWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant, mutate: mutateGrant } = useGrant();
-  const { data: grantGroupId, mutate: mutateGrantGroupId } = useGrantGroupId();
-  const { data: grantGroupName, mutate: mutateGrantGroupName } = useGrantGroupName();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
 
 
   if (isEditable == null || editorMode == null) {

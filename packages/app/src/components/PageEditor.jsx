@@ -18,10 +18,10 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
 import {
-  useIsEditable, useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
-} from '~/stores/context';
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
@@ -372,9 +372,9 @@ const PageEditorWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant, mutate: mutateGrant } = useGrant();
-  const { data: grantGroupId } = useGrantGroupId();
-  const { data: grantGroupName } = useGrantGroupName();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
 
   if (isEditable == null || editorMode == null) {
     return null;

@@ -20,11 +20,11 @@ import mdu from './PageEditor/MarkdownDrawioUtil';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
-import { useIsSlackEnabled } from '~/stores/editor';
 import {
-  useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
-} from '~/stores/context';
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsSlackEnabled } from '~/stores/editor';
+import { useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
 
@@ -184,9 +184,9 @@ const PageWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useGrant();
-  const { data: grantGroupId } = useGrantGroupId();
-  const { data: grantGroupName } = useGrantGroupName();
+  const { data: grant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
 
 
   if (editorMode == null) {

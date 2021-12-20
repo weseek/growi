@@ -6,11 +6,12 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
-  useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
+  useSlackChannels,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
@@ -113,9 +114,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
-  useGrant(grant);
-  useGrantGroupId(grantGroupId);
-  useGrantGroupName(grantGroupName);
+  useSelectedGrant(grant);
+  useSelectedGrantGroupId(grantGroupId);
+  useSelectedGrantGroupName(grantGroupName);
 
   return null;
 };
