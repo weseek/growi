@@ -21,7 +21,9 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
+import {
+  useIsEditable, useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
+} from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:SavePageControls');
@@ -47,14 +49,14 @@ class SavePageControls extends React.Component {
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
@@ -65,12 +67,12 @@ class SavePageControls extends React.Component {
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
@@ -128,6 +130,10 @@ const SavePageControlsWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
+  const { data: grant } = useGrant();
+  const { data: grantGroupId } = useGrantGroupId();
+  const { data: grantGroupName } = useGrantGroupName();
+
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -143,6 +149,9 @@ const SavePageControlsWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
     />
   );
 };
@@ -158,6 +167,9 @@ SavePageControls.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string.isRequired,
+  grantGroupName: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

@@ -6,7 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
-  useSlackChannels,
+  useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -62,6 +62,9 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
+  const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
   /*
    * use static swr
    */
@@ -110,6 +113,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
+  useGrant(grant);
+  useGrantGroupId(grantGroupId);
+  useGrantGroupName(grantGroupName);
 
   return null;
 };

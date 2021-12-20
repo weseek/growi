@@ -19,7 +19,9 @@ import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
 import { useEditorMode } from '~/stores/ui';
-import { useIsEditable, useSlackChannels } from '~/stores/context';
+import {
+  useIsEditable, useSlackChannels, useGrant, useGrantGroupId, useGrantGroupName,
+} from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
@@ -132,10 +134,10 @@ class PageEditor extends React.Component {
    */
   async onSaveWithShortcut() {
     const {
-      isSlackEnabled, slackChannels, editorContainer, pageContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer, pageContainer,
     } = this.props;
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     try {
       // disable unsaved warning
@@ -368,6 +370,9 @@ const PageEditorWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
+  const { data: grant } = useGrant();
+  const { data: grantGroupId } = useGrantGroupId();
+  const { data: grantGroupName } = useGrantGroupName();
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -380,6 +385,9 @@ const PageEditorWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
     />
   );
 };
@@ -395,6 +403,9 @@ PageEditor.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string.isRequired,
+  grantGroupName: PropTypes.string.isRequired,
 };
 
 export default PageEditorWrapper;

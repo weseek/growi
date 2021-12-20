@@ -27,9 +27,9 @@ export default class EditorContainer extends Container {
     this.state = {
       tags: null,
 
-      grant: 1, // default: public
-      grantGroupId: null,
-      grantGroupName: null,
+      // grant: 1, // default: public
+      // grantGroupId: null,
+      // grantGroupName: null,
 
       editorOptions: {},
       previewOptions: {},
@@ -43,7 +43,7 @@ export default class EditorContainer extends Container {
 
     this.isSetBeforeunloadEventHandler = false;
 
-    this.initStateGrant();
+    // this.initStateGrant();
     this.initDrafts();
 
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
@@ -60,22 +60,22 @@ export default class EditorContainer extends Container {
   /**
    * initialize state for page permission
    */
-  initStateGrant() {
-    const mainContent = document.getElementById('content-main');
+  // initStateGrant() {
+  //   const mainContent = document.getElementById('content-main');
 
-    if (mainContent == null) {
-      logger.debug('#content-main element is not exists');
-      return;
-    }
+  //   if (mainContent == null) {
+  //     logger.debug('#content-main element is not exists');
+  //     return;
+  //   }
 
-    this.state.grant = +mainContent.getAttribute('data-page-grant');
+  //   this.state.grant = +mainContent.getAttribute('data-page-grant');
 
-    const grantGroupId = mainContent.getAttribute('data-page-grant-group');
-    if (grantGroupId != null && grantGroupId.length > 0) {
-      this.state.grantGroupId = grantGroupId;
-      this.state.grantGroupName = mainContent.getAttribute('data-page-grant-group-name');
-    }
-  }
+  //   const grantGroupId = mainContent.getAttribute('data-page-grant-group');
+  //   if (grantGroupId != null && grantGroupId.length > 0) {
+  //     this.state.grantGroupId = grantGroupId;
+  //     this.state.grantGroupName = mainContent.getAttribute('data-page-grant-group-name');
+  //   }
+  // }
 
   /**
    * initialize state for drafts
@@ -145,13 +145,13 @@ export default class EditorContainer extends Container {
     const opt = {
       // isSlackEnabled: this.state.isSlackEnabled,
       // slackChannels: this.state.slackChannels,
-      grant: this.state.grant,
+      // grant: this.state.grant,
       pageTags: this.state.tags,
     };
 
-    if (this.state.grantGroupId != null) {
-      opt.grantUserGroupId = this.state.grantGroupId;
-    }
+    // if (this.state.grantGroupId != null) {
+    //   opt.grantUserGroupId = this.state.grantGroupId;
+    // }
 
     return opt;
   }
