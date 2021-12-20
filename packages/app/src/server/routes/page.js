@@ -138,7 +138,7 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:page');
   const swig = require('swig-templates');
 
-  const pathUtils = require('growi-commons').pathUtils;
+  const { pathUtils } = require('@growi/core');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -264,10 +264,10 @@ module.exports = function(crowi, app) {
     renderVars.pages = result.pages;
   }
 
-  async function addRenderVarsForPageTree(renderVars, path, user) {
-    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(path, user);
+  async function addRenderVarsForPageTree(renderVars, pathOrId, user) {
+    const { targetAndAncestors, rootPage } = await Page.findTargetAndAncestorsByPathOrId(pathOrId, user);
 
-    if (targetAndAncestors.length === 0 && !isTopPage(path)) {
+    if (targetAndAncestors.length === 0 && pathOrId.includes('/') && !isTopPage(pathOrId)) {
       throw new Error('Ancestors must have at least one page.');
     }
 
@@ -291,6 +291,7 @@ module.exports = function(crowi, app) {
 
   async function _notFound(req, res) {
     const path = getPathFromRequest(req);
+    const pathOrId = req.params.id || path;
 
     let view;
     const renderVars = { path };
@@ -326,6 +327,7 @@ module.exports = function(crowi, app) {
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
+    await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
 
     return res.render(view, renderVars);
   }
@@ -334,7 +336,7 @@ module.exports = function(crowi, app) {
     const id = req.params.id;
     const { revisionId } = req.query;
 
-    let page = await Page.findByIdAndViewer(id, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
 
     if (page == null) {
       next();
@@ -395,7 +397,7 @@ module.exports = function(crowi, app) {
     const id = req.params.id;
     const revisionId = req.query.revision;
 
-    let page = await Page.findByIdAndViewer(id, req.user);
+    let page = await Page.findByIdAndViewer(id, req.user, null, true, true);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
@@ -592,7 +594,7 @@ module.exports = function(crowi, app) {
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const pages = await Page.findByPathAndViewer(path, req.user, null, false);
+    const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {

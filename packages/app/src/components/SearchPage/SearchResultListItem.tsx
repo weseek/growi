@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { IPageSearchResultData } from '../../interfaces/search';
@@ -30,8 +30,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-  const pageId = `#${pageData._id}`;
+  const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
   const pageTitle = (
     <PagePathLabel
@@ -56,9 +55,8 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
       key={pageData._id}
       className={`w-100 page-list-li search-result-item border-bottom ${responsiveListStyleClass}`}
     >
-      <a
-        className="d-block h-100"
-        href={pageId}
+      <div
+        className="h-100 text-break"
         onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
       >
         <div className="d-flex h-100">
@@ -80,7 +78,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
             {/* page path */}
             <h6 className="mb-1 py-1">
               <i className="icon-fw icon-home"></i>
-              {pagePathElem}
+              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>{pagePathElem}</a>
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
@@ -88,9 +86,12 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
                 <UserPicture user={pageData.lastUpdateUser} size="sm" />
               </span>
               {/* page title */}
-              <span className="py-1 h5 mr-2 mb-0">
-                {pageTitle}
-              </span>
+              <Clamp lines={1}>
+                <span className="py-1 h5 mr-2 mb-0">
+                  <a href={`/${pageData._id}`}>{pageTitle}</a>
+                </span>
+              </Clamp>
+
               {/* page meta */}
               <div className="d-none d-md-flex item-meta py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
@@ -119,7 +120,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
           </div>
         </div>
         {/* TODO: adjust snippet position */}
-      </a>
+      </div>
     </li>
   );
 });

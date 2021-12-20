@@ -79,6 +79,16 @@ const SearchControl: FC <Props> = (props: Props) => {
     );
   };
 
+  const renderSortControl = () => {
+    return (
+      <SortControl
+        sort={props.sort}
+        order={props.order}
+        onChangeSortInvoked={onChangeSortInvoked}
+      />
+    );
+  };
+
   return (
     <div className="position-sticky fixed-top shadow-sm">
       <div className="search-page-nav d-flex py-3 align-items-center">
@@ -89,16 +99,14 @@ const SearchControl: FC <Props> = (props: Props) => {
             onSearchFormChanged={props.onSearchInvoked}
           />
         </div>
-        <div className="mr-4 d-flex">
-          <SortControl
-            sort={props.sort}
-            order={props.order}
-            onChangeSortInvoked={onChangeSortInvoked}
-          />
+
+        {/* sort option: show when screen is larger than lg */}
+        <div className="mr-4 d-lg-flex d-none">
+          {renderSortControl()}
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
-      <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-3 px-3 border-bottom border-gray">
+      <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
@@ -108,8 +116,12 @@ const SearchControl: FC <Props> = (props: Props) => {
             onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           />
         </div>
-        {/** filter option */}
-        <div className="d-lg-none ml-auto">
+        {/* sort option: show when screen is smaller than lg */}
+        <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
+          {renderSortControl()}
+        </div>
+        {/* filter option */}
+        <div className="d-lg-none">
           <button
             type="button"
             className="btn"
