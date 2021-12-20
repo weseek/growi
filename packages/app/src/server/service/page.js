@@ -879,11 +879,10 @@ class PageService {
 
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
-    const Page = this.crowi.model('Page');
     const status = this.crowi.configManager.getConfig('crowi', 'app:v5PathIndexStatus');
 
     // drop unique index first
-    if (status === 'processable') {
+    if (status === 'processable' || status == null) {
       await this._setV5PathIndexStatus('processing');
       try {
         await this._v5NormalizeIndex();

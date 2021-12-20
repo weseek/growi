@@ -176,7 +176,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:v5PathIndexStatus',
     type:    ValueType.STRING,
-    default: 'processable',
+    default: 'done',
   },
   IS_V5_COMPATIBLE: {
     ns:      'crowi',
