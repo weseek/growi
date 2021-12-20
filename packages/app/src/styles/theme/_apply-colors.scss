@@ -707,11 +707,11 @@ mark.rbt-highlight-text {
 
 // Page Management Dropdown icon
 .grw-btn-page-management {
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     background-color: rgba($color-link, 0.15);
   }
-  :active {
+  &:active {
     background-color: rgba($color-link, 0.2);
   }
 }
