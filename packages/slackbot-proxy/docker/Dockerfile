@@ -3,7 +3,7 @@
 ##
 ## deps-resolver-base
 ##
-FROM node:16-slim AS deps-resolver-base
+FROM node:14-slim AS deps-resolver-base
 
 ENV appDir /opt
 
@@ -46,7 +46,7 @@ RUN tar cf dependencies.tar \
 ##
 ## builder
 ##
-FROM node:16-slim AS builder
+FROM node:14-slim AS builder
 
 ENV appDir /opt
 
@@ -83,7 +83,7 @@ RUN tar cf packages.tar \
 ##
 ## release
 ##
-FROM node:16-slim
+FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
