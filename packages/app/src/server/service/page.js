@@ -865,26 +865,37 @@ class PageService {
     }
   }
 
+  async _setV5PathIndexStatus(status) {
+    try {
+      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+        'app:v5PathIndexStatus': status,
+      });
+    }
+    catch (err) {
+      logger.error(`Failed to update app:v5PathIndexStatus to ${status} .`);
+      throw err;
+    }
+  }
+
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
     const Page = this.crowi.model('Page');
-    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
-    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
-    const isPathIndexExists = pathIndexStatus != null;
-    const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
+    const status = this.crowi.configManager.getConfig('crowi', 'app:v5PathIndexStatus');
 
     // drop unique index first
-    if (isUnique || !isPathIndexExists) {
+    if (status === 'processable') {
+      await this._setV5PathIndexStatus('processing');
       try {
-        await this._v5NormalizeIndex(isPathIndexExists);
+        await this._v5NormalizeIndex();
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
         // socket.emit('v5IndexNormalizationFailed', { error: err.message });
-
+        await this._setV5PathIndexStatus('processable');
         throw err;
       }
     }
+    await this._setV5PathIndexStatus('done');
 
     // then migrate
     try {
@@ -1078,19 +1089,17 @@ class PageService {
 
   }
 
-  async _v5NormalizeIndex(isPathIndexExists) {
+  async _v5NormalizeIndex() {
     const collection = mongoose.connection.collection('pages');
 
-    if (isPathIndexExists) {
-      try {
-        // drop pages.path_1 indexes
-        await collection.dropIndex('path_1');
-        logger.info('Succeeded to drop unique indexes from pages.path.');
-      }
-      catch (err) {
-        logger.warn('Failed to drop unique indexes from pages.path.', err);
-        throw err;
-      }
+    try {
+      // drop pages.path_1 indexes
+      await collection.dropIndex('path_1');
+      logger.info('Succeeded to drop unique indexes from pages.path.');
+    }
+    catch (err) {
+      logger.warn('Failed to drop unique indexes from pages.path.', err);
+      // DO NOT throw err
     }
 
     try {

@@ -172,6 +172,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  V5_PATH_INDEX_STATUS: {
+    ns:      'crowi',
+    key:     'app:v5PathIndexStatus',
+    type:    ValueType.STRING,
+    default: 'processable',
+  },
   IS_V5_COMPATIBLE: {
     ns:      'crowi',
     key:     'app:isV5Compatible',
