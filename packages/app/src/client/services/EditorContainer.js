@@ -17,16 +17,7 @@ export default class EditorContainer extends Container {
     this.appContainer.registerContainer(this);
     this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
 
-    const mainContent = document.querySelector('#content-main');
-
-    if (mainContent == null) {
-      logger.debug('#content-main element is not exists');
-      return;
-    }
-
     this.state = {
-      tags: null,
-
       editorOptions: {},
       previewOptions: {},
 
