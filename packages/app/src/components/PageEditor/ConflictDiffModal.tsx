@@ -137,6 +137,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     <Modal
       isOpen={props.isOpen || false}
       toggle={onClose}
+      backdrop="static"
       className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
       size="xl"
     >
@@ -191,7 +192,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <div className="text-center my-4">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-outline-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
                     setResolvedRevision(request.revisionBody);
@@ -206,7 +207,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <div className="text-center my-4">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-outline-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
                     setResolvedRevision(origin.revisionBody);
@@ -221,7 +222,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
               <div className="text-center my-4">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-outline-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
                     setResolvedRevision(latest.revisionBody);
@@ -232,15 +233,17 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
                 </button>
               </div>
             </div>
-            <div className="col-12 border border-dark">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-              <UncontrolledCodeMirror
-                ref={uncontrolledRef}
-                value={resolvedRevision}
-                options={{
-                  placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                }}
-              />
+            <div className="col-12">
+              <div className="border border-dark">
+                <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+                <UncontrolledCodeMirror
+                  ref={uncontrolledRef}
+                  value={resolvedRevision}
+                  options={{
+                    placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}
