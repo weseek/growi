@@ -44,7 +44,14 @@ class SavePageControls extends React.Component {
   }
 
   updateGrantHandler(data) {
-    this.props.editorContainer.setState(data);
+    const { grant, grantGroupId, grantGroupName } = this.props;
+    const { mutate: mutateGrant } = grant;
+    const { mutate: mutateGrantGroupId } = grantGroupId;
+    const { mutate: mutateGrantGroupName } = grantGroupName;
+
+    mutateGrant(data.grant);
+    mutateGrantGroupId(data.grantGroupId);
+    mutateGrantGroupName(data.grantGroupName);
   }
 
   async save() {
@@ -81,7 +88,9 @@ class SavePageControls extends React.Component {
 
   render() {
 
-    const { t, pageContainer, editorContainer } = this.props;
+    const {
+      t, pageContainer, grant, grantGroupId, grantGroupName,
+    } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
@@ -95,9 +104,9 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                grant={editorContainer.state.grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
+                grant={grant}
+                grantGroupId={grantGroupId}
+                grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>
