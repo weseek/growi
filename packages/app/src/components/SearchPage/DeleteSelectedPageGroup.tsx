@@ -1,4 +1,6 @@
-import React, { FC } from 'react';
+import React, {
+  FC, useMemo, useEffect, useRef,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
@@ -26,10 +28,28 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
+  const isIndeterminate = useMemo(() => {
+    return selectAllCheckboxType === CheckboxType.INDETERMINATE;
+  }, [selectAllCheckboxType]);
+
+  const elm = useRef(null);
+  useEffect(() => {
+    if (elm.current != null) {
+      console.log(elm.current.attributes);
+      const indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
+    }
+  }, [selectAllCheckboxType]);
+
   return (
 
     <div className="d-flex align-items-center">
       {/** todo: implement the design for CheckboxType = INDETERMINATE */}
+      <div className="custom-control custom-checkbox">
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <input type="checkbox" className="custom-control-input" id="customCheck1" ref={elm} indeterminate={isIndeterminate} />
+        <label className="custom-control-label" htmlFor="customCheck1"></label>
+      </div>
       <input
         id="check-all-pages"
         type="checkbox"
