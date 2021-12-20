@@ -185,6 +185,7 @@
       width: $grw-sidebar-nav-width;
       line-height: 1em;
       border-radius: 0;
+      box-shadow: none !important;
 
       // icon opacity
       &:not(.active) {
