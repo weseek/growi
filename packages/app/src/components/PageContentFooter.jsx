@@ -6,13 +6,15 @@ import AuthorInfo from './Navbar/AuthorInfo';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { usePath } from '~/stores/context';
+import { useCurrentUpdatedAt } from '~/stores/context';
 
 const PageContentFooter = (props) => {
   const { pageContainer } = props;
   const {
-    createdAt, creator, updatedAt, revisionAuthor,
+    createdAt, creator, revisionAuthor,
   } = pageContainer.state;
+
+  const { data: updatedAt } = useCurrentUpdatedAt();
 
   return (
     <div className="page-content-footer py-4 d-edit-none d-print-none">

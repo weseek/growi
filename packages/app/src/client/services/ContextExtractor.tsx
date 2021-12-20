@@ -5,7 +5,7 @@ import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
   useSlackChannels,
 } from '../../stores/context';
 import {
@@ -99,7 +99,7 @@ const ContextExtractorOnce: FC = () => {
   useShareLinkId(shareLinkId);
   useShareLinksNumber(shareLinksNumber);
   useTemplateTagData(templateTagData);
-  useUpdatedAt(updatedAt);
+  useCurrentUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 

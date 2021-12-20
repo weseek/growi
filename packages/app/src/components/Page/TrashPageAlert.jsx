@@ -7,6 +7,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { useCurrentUpdatedAt } from '~/stores/context';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';
@@ -15,8 +16,9 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
+  const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
@@ -111,13 +113,13 @@ const TrashPageAlert = (props) => {
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && (
-            <>
-              <br />
-              <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
-              <span className="ml-2">
-                Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
-              </span>
-            </>
+          <>
+            <br />
+            <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
+            <span className="ml-2">
+              Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
+            </span>
+          </>
           )}
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
