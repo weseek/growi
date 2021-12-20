@@ -577,7 +577,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
-    const { subscribeRules } = req.body;
+    const subscribeRules = req.body.subscribeRules;
 
     if (subscribeRules == null) {
       return res.apiv3Err('no-rules-found');
