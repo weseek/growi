@@ -865,14 +865,14 @@ class PageService {
     }
   }
 
-  async _setV5IndexNormalizationStatus(status) {
+  async _setIsV5IndexNormalizationInProgress(status) {
     try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-        'app:v5IndexNormalizationStatus': status,
+        'app:isV5IndexNormalizationInProgress': status,
       });
     }
     catch (err) {
-      logger.error(`Failed to update app:v5IndexNormalizationStatus to ${status} .`);
+      logger.error(`Failed to update app:isV5IndexNormalizationInProgress to ${status} .`);
       throw err;
     }
   }
@@ -908,28 +908,26 @@ class PageService {
 
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
-    const status = this.crowi.configManager.getConfig('crowi', 'app:v5IndexNormalizationStatus');
+    const isProcessing = this.crowi.configManager.getConfig('crowi', 'app:isV5IndexNormalizationInProgress');
 
     // avoid re-running many times
-    const isProcessing = status === 'processing';
     if (isProcessing) {
       return;
     }
 
     const isUnique = await this._isPagePathIndexUnique();
-    const isProcessable = status === 'processable' || status == null;
 
     // drop unique index first
-    if (isUnique && isProcessable) {
-      await this._setV5IndexNormalizationStatus('processing');
+    if (isUnique) {
+      await this._setIsV5IndexNormalizationInProgress(true);
       try {
         await this._v5NormalizeIndex();
-        await this._setV5IndexNormalizationStatus('processable');
+        await this._setIsV5IndexNormalizationInProgress(false);
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
         // socket.emit('v5IndexNormalizationFailed', { error: err.message });
-        await this._setV5IndexNormalizationStatus('processable');
+        await this._setIsV5IndexNormalizationInProgress(false);
         throw err;
       }
     }
