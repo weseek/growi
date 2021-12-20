@@ -113,13 +113,13 @@ const TrashPageAlert = (props) => {
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           {isDeleted && (
-          <>
-            <br />
-            <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
-            <span className="ml-2">
-              Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
-            </span>
-          </>
+            <>
+              <br />
+              <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
+              <span className="ml-2">
+                Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
+              </span>
+            </>
           )}
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
