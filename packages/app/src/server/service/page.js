@@ -877,16 +877,54 @@ class PageService {
     }
   }
 
+  async _isPagePathIndexUnique() {
+    const Page = this.crowi.model('Page');
+    const now = (new Date()).toString();
+    const path = `growi_check_is_path_index_unique_${now}`;
+
+    let isUnique = false;
+
+    try {
+      await Page.insertMany([
+        { path },
+        { path },
+      ]);
+    }
+    catch (err) {
+      if (err?.code === 11000) {
+        isUnique = true;
+        logger.info('Page path index is unique.');
+      }
+      else {
+        logger.error('Error occurred while checking index uniqueness.', err);
+        throw err;
+      }
+    }
+
+    await Page.deleteMany({ path: { $regex: new RegExp('growi_check_is_path_index_unique', 'g') } });
+
+    return isUnique;
+  }
+
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
     const status = this.crowi.configManager.getConfig('crowi', 'app:v5PathIndexStatus');
 
+    // avoid re-running many times
+    const isProcessing = status === 'processing';
+    if (isProcessing) {
+      return;
+    }
+
+    const isUnique = await this._isPagePathIndexUnique();
+    const isProcessable = status === 'processable' || status == null;
+
     // drop unique index first
-    if (status === 'processable' || status == null) {
+    if (isUnique && isProcessable) {
       await this._setV5PathIndexStatus('processing');
       try {
         await this._v5NormalizeIndex();
-        await this._setV5PathIndexStatus('done');
+        await this._setV5PathIndexStatus('processable');
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
@@ -894,9 +932,6 @@ class PageService {
         await this._setV5PathIndexStatus('processable');
         throw err;
       }
-    }
-    else if (status === 'processing') {
-      return;
     }
 
     // then migrate
