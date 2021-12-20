@@ -172,9 +172,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  V5_PATH_INDEX_STATUS: {
+  V5_INDEX_NORMALIZATION_STATUS: {
     ns:      'crowi',
-    key:     'app:v5PathIndexStatus',
+    key:     'app:v5IndexNormalizationStatus',
     type:    ValueType.STRING,
     default: 'processable',
   },
