@@ -175,7 +175,7 @@ class PageEditorByHackmd extends React.Component {
     const {
       isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, useGrant, useGrantGroupId, useGrantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     try {
       // disable unsaved warning

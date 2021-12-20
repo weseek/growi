@@ -163,7 +163,9 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
-    const { appContainer, pageContainer, editorContainer } = this.props;
+    const {
+      appContainer, pageContainer, mutateGrant,
+    } = this.props;
 
     try {
       let res = await appContainer.apiGet('/attachments.limit', {
@@ -199,7 +201,7 @@ class PageEditor extends React.Component {
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
         pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, this.props.editorMode);
-        editorContainer.setState({ grant: res.page.grant });
+        mutateGrant(res.page.grant);
       }
     }
     catch (e) {
@@ -370,7 +372,7 @@ const PageEditorWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
-  const { data: grant } = useGrant();
+  const { data: grant, mutate: mutateGrant } = useGrant();
   const { data: grantGroupId } = useGrantGroupId();
   const { data: grantGroupName } = useGrantGroupName();
 
@@ -388,6 +390,7 @@ const PageEditorWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
     />
   );
 };
@@ -406,6 +409,7 @@ PageEditor.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
 };
 
 export default PageEditorWrapper;
