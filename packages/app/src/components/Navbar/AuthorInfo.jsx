@@ -32,14 +32,14 @@ const AuthorInfo = (props) => {
     }
   }
 
-
-  let parsedDate;
-  if (date == null) {
-    parsedDate = '';
-  }
-  else {
-    parsedDate = format(new Date(date), formatType);
-  }
+  const renderParsedDate = () => {
+    try {
+      return format(new Date(date), formatType);
+    }
+    catch (err) {
+      return '';
+    }
+  };
 
   return (
     <div className="d-flex align-items-center">
@@ -49,7 +49,7 @@ const AuthorInfo = (props) => {
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
         <div className="text-muted text-date">
-          {parsedDate}
+          {renderParsedDate()}
         </div>
       </div>
     </div>
