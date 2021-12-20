@@ -15,6 +15,8 @@ const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
 
+type Nullable<T> = T | null;
+
 
 /** **********************************************************
  *                          Unions
@@ -214,4 +216,16 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
 export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
+};
+
+export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
+  return useStaticSWR<Nullable<number>, Error>('grant', initialData ?? null);
+};
+
+export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData ?? null);
+};
+
+export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData ?? null);
 };
