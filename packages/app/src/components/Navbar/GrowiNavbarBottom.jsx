@@ -17,6 +17,8 @@ const GrowiNavbarBottom = (props) => {
     additionalClasses.push('grw-navbar-bottom-drawer-opened');
   }
 
+  const isNotSearchPage = document.getElementById('search-page') == null;
+
   return (
     <div className="d-md-none d-edit-none fixed-bottom">
 
@@ -41,14 +43,17 @@ const GrowiNavbarBottom = (props) => {
             </a>
           </li>
           <li className="nav-item mx-auto">
-            <a
-              role="button"
-              className="nav-link btn-lg"
-              data-target="#grw-global-search-collapse"
-              data-toggle="collapse"
-            >
-              <i className="icon-magnifier"></i>
-            </a>
+            {isNotSearchPage
+            && (
+              <a
+                role="button"
+                className="nav-link btn-lg"
+                data-target="#grw-global-search-collapse"
+                data-toggle="collapse"
+              >
+                <i className="icon-magnifier"></i>
+              </a>
+            )}
           </li>
           <li className="nav-item">
             <a

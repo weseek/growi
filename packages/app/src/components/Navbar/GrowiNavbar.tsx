@@ -85,6 +85,8 @@ const GrowiNavbar = (props) => {
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
+  const isNotSearchPage = document.getElementById('search-page') == null;
+
   return (
     <>
       {/* Brand Logo  */}
@@ -105,7 +107,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && isNotSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>
