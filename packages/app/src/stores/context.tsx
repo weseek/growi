@@ -122,7 +122,6 @@ export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nulla
   return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData ?? null);
 };
 
-
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
