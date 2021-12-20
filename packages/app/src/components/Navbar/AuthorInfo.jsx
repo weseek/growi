@@ -24,7 +24,21 @@ const AuthorInfo = (props) => {
     : <i>Unknown</i>;
 
   if (locate === 'footer') {
-    return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+    try {
+      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+    }
+    catch (err) {
+      return <p>{infoLabelForSubNav} <UserPicture user={user} size="sm" /> {userLabel}</p>;
+    }
+  }
+
+
+  let parsedDate;
+  if (date == null) {
+    parsedDate = '';
+  }
+  else {
+    parsedDate = format(new Date(date), formatType);
   }
 
   return (
@@ -34,7 +48,9 @@ const AuthorInfo = (props) => {
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date">{format(new Date(date), formatType)}</div>
+        <div className="text-muted text-date">
+          {parsedDate}
+        </div>
       </div>
     </div>
   );
