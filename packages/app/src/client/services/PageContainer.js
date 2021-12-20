@@ -65,7 +65,8 @@ export default class PageContainer extends Container {
       sumOfLikers: 0,
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
-      updatedAt: mainContent.getAttribute('data-page-updated-at'),
+      // please use useCurrentUpdatedAt instead
+      // updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
