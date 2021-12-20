@@ -1,6 +1,6 @@
 import * as url from 'url';
 
-import { customTagUtils, pathUtils } from 'growi-commons';
+import { customTagUtils, pathUtils } from '@growi/core';
 
 const { TagContext, ArgsParser, OptionParser } = customTagUtils;
 
