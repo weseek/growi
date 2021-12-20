@@ -4,6 +4,12 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
+class IndeterminateInputRef implements React.MutableRefObject<null> {
+
+  indeterminate?: boolean;
+
+}
+
 type Props = {
   isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
@@ -28,36 +34,26 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
-  const isIndeterminate = useMemo(() => {
-    return selectAllCheckboxType === CheckboxType.INDETERMINATE;
-  }, [selectAllCheckboxType]);
-
-  const elm = useRef(null);
+  const elm:IndeterminateInputRef = useRef(null);
   useEffect(() => {
     if (elm.current != null) {
-      console.log(elm.current.attributes);
-      const indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
+      // eslint-disable-next-line
+      elm.current.indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
     }
   }, [selectAllCheckboxType]);
 
   return (
 
     <div className="d-flex align-items-center">
-      {/** todo: implement the design for CheckboxType = INDETERMINATE */}
-      <div className="custom-control custom-checkbox">
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
-        <input type="checkbox" className="custom-control-input" id="customCheck1" ref={elm} indeterminate={isIndeterminate} />
-        <label className="custom-control-label" htmlFor="customCheck1"></label>
-      </div>
       <input
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
         className="custom-control custom-checkbox align-self-center"
+        ref={elm}
         disabled={props.isSelectAllCheckboxDisabled}
         onClick={onClickCheckbox}
-        checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}
+        checked={selectAllCheckboxType === CheckboxType.ALL_CHECKED}
       />
       <button
         type="button"
