@@ -29,7 +29,7 @@ const AuthorInfo = (props) => {
     }
     catch (err) {
       if (err instanceof RangeError) {
-        return <p>{infoLabelForSubNav} <UserPicture user={user} size="sm" /> {userLabel}</p>;
+        return <p>Created by <UserPicture user={user} size="sm" /> {userLabel}</p>;
       }
       return;
     }
