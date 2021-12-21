@@ -344,3 +344,11 @@
     }
   }
 }
+
+.grw-sidebar-wrapper {
+  .dropdown-menu {
+    // set larger number of z-index set to .grw-sidebar than the
+    // z-index of .grw-sidebar with and without .grw-sidebar-drawer which are relatively 1032 and 1020
+    z-index: 1040;
+  }
+}

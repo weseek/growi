@@ -1,4 +1,7 @@
 import React, { FC } from 'react';
+import {
+  UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem,
+} from 'reactstrap';
 
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
@@ -25,17 +28,48 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     }
   };
   return (
-    <>
-      <button
-        type="button"
-        className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2"
-        data-toggle="dropdown"
-      >
+    <UncontrolledDropdown direction="down">
+      <DropdownToggle color="transparent" className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2">
         <i className="fa fa-ellipsis-v text-muted p-1"></i>
-      </button>
-      <div className="dropdown-menu dropdown-menu-right">
+      </DropdownToggle>
+      <DropdownMenu container="grw-sidebar-wrapper" right>
+        {!isEnableActions && (
+          <DropdownItem>
+            <p>
+              {t('search_result.currently_not_implemented')}
+            </p>
+          </DropdownItem>
+        )}
+        {isEnableActions && (
+          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw icon-star"></i>
+            {t('Add to bookmark')}
+          </DropdownItem>
+        )}
+        {isEnableActions && (
+          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw icon-docs"></i>
+            {t('Duplicate')}
+          </DropdownItem>
+        )}
+        {isEnableActions && (
+          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw  icon-action-redo"></i>
+            {t('Move/Rename')}
+          </DropdownItem>
+        )}
+        {isDeletable && isEnableActions && (
+          <>
+            <DropdownItem divider />
+            <DropdownItem className="text-danger pt-2" onClick={deleteButtonHandler}>
+              <i className="icon-fw icon-trash"></i>
+              {t('Delete')}
+            </DropdownItem>
+          </>
+        )}
+      </DropdownMenu>
 
-        {/* TODO: if there is the following button in XD add it here
+      {/* TODO: if there is the following button in XD add it here
         <button
           type="button"
           className="btn btn-link p-0"
@@ -48,46 +82,14 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         </button>
         */}
 
-        {/*
+      {/*
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
 
-        {/* TODO: show dropdown when permalink section is implemented */}
-        {!isEnableActions && (
-          <p className="dropdown-item">
-            {t('search_result.currently_not_implemented')}
-          </p>
-        )}
-        {isEnableActions && (
-          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw icon-star"></i>
-            {t('Add to bookmark')}
-          </button>
-        )}
-        {isEnableActions && (
-          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw icon-docs"></i>
-            {t('Duplicate')}
-          </button>
-        )}
-        {isEnableActions && (
-          <button className="dropdown-item" type="button" onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
-          </button>
-        )}
-        {isDeletable && isEnableActions && (
-          <>
-            <div className="dropdown-divider"></div>
-            <button className="dropdown-item text-danger pt-2" type="button" onClick={deleteButtonHandler}>
-              <i className="icon-fw icon-trash"></i>
-              {t('Delete')}
-            </button>
-          </>
-        )}
-      </div>
-    </>
+      {/* TODO: show dropdown when permalink section is implemented */}
+
+    </UncontrolledDropdown>
   );
 
 };
