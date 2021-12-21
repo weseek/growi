@@ -22,7 +22,6 @@ export interface ActivityDocument extends Document {
   action: string
   event: Types.ObjectId
   eventModel: string
-  createdAt: Date
 
   getNotificationTargetUsers(): Promise<any[]>
 }
@@ -61,10 +60,8 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     type: String,
     enum: ActivityDefine.getSupportEventModelNames(),
   },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
+}, {
+  timestamps: true,
 });
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
