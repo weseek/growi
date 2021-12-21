@@ -1,4 +1,8 @@
-import React, { FC, useReducer, useState } from 'react';
+import React, {
+  FC, useCallback, useReducer, useState,
+} from 'react';
+// eslint-disable-next-line no-restricted-imports
+import { AxiosResponse } from 'axios';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
@@ -31,8 +35,8 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 
 
 type Props = {
-  onSearchSuccess?: () => void,
-  onSearchError?: () => void,
+  onSearchSuccess?: (res: IPage[]) => void,
+  onSearchError?: (err: Error) => void,
   onChange?: () => void,
   onBlur?: () => void,
   onFocus?: () => void,
@@ -49,13 +53,55 @@ type Props = {
 };
 
 export const SearchTypeahead: FC<Props> = (props: Props) => {
+  const { onSearchSuccess, onSearchError } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
-  const [pages, setPages] = useState<IPage>();
+  const [pages, setPages] = useState<IPage[]>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [searchError, setSearchError] = useState<any>(null);
+  const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoaded] = useReducer(() => true, false);
+
+  /**
+   * Callback function which is occured when search is exit successfully
+   */
+  const searchSuccessHandler = useCallback((res: AxiosResponse<IPage[]>) => {
+    setLoaded();
+    setPages(res.data);
+
+    if (onSearchSuccess != null) {
+      onSearchSuccess(res.data);
+    }
+  }, [onSearchSuccess]);
+
+  /**
+   * Callback function which is occured when search is exit abnormaly
+   */
+  const searchErrorHandler = useCallback((err: Error) => {
+    setLoaded();
+    setSearchError(err);
+
+    if (onSearchError != null) {
+      onSearchError(err);
+    }
+  }, [onSearchError]);
+
+  const search = useCallback(async(keyword: string) => {
+    if (keyword === '') {
+      return;
+    }
+
+    setLoaded();
+
+    try {
+      const res = await apiGet('/search', { q: keyword }) as AxiosResponse<IPage[]>;
+      searchSuccessHandler(res);
+    }
+    catch (err) {
+      searchErrorHandler(err);
+    }
+  }, [searchErrorHandler, searchSuccessHandler]);
+
 
   const defaultSelected = (props.keywordOnInit !== '')
     ? [{ path: props.keywordOnInit }]
@@ -85,7 +131,7 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
         // emptyLabel={this.getEmptyLabel()}
         align="left"
         submitFormOnEnter
-        // onSearch={this.search}
+        onSearch={search}
         // onInputChange={this.onInputChange}
         // onKeyDown={this.onKeyDown}
         // renderMenuItemChildren={this.renderMenuItemChildren}
