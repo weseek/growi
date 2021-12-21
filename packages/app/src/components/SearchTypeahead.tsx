@@ -64,19 +64,19 @@ type TypeaheadInstanceFactory = {
   getInstance: () => TypeaheadInstance,
 }
 
-export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
+const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
     keywordOnInit,
     onSearchSuccess, onSearchError, onInputChange, onSubmit,
-    emptyLabel, emptyLabelExceptError, helpElement,
+    emptyLabel, helpElement,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
   const [pages, setPages] = useState<IPage[]>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchError, setSearchError] = useState<Error | null>(null);
-  const [isLoading, setLoaded] = useReducer(() => true, false);
+  const [isLoading, setLoading] = useState(false);
 
   const typeaheadRef = useRef<TypeaheadInstanceFactory>();
 
@@ -112,7 +112,7 @@ export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (pro
    * Callback function which is occured when search is exit successfully
    */
   const searchSuccessHandler = useCallback((res: AxiosResponse<IPage[]>) => {
-    setLoaded();
+    setLoading(false);
     setPages(res.data);
 
     if (onSearchSuccess != null) {
@@ -124,7 +124,7 @@ export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (pro
    * Callback function which is occured when search is exit abnormaly
    */
   const searchErrorHandler = useCallback((err: Error) => {
-    setLoaded();
+    setLoading(false);
     setSearchError(err);
 
     if (onSearchError != null) {
@@ -137,7 +137,7 @@ export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (pro
       return;
     }
 
-    setLoaded();
+    setLoading(true);
 
     try {
       const res = await apiGet('/search', { q: keyword }) as AxiosResponse<IPage[]>;
@@ -179,9 +179,7 @@ export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (pro
       return emptyLabel;
     }
 
-    return (searchError !== null)
-      ? 'Error on searching.'
-      : (emptyLabelExceptError ?? 'No matches found on title...');
+    return false;
   };
 
   const defaultSelected = (props.keywordOnInit !== '')
@@ -218,7 +216,6 @@ export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (pro
         promptText={props.helpElement}
         emptyLabel={getEmptyLabel()}
         align="left"
-        submitFormOnEnter
         onSearch={search}
         onInputChange={inputChangeHandler}
         onKeyDown={keyDownHandler}
