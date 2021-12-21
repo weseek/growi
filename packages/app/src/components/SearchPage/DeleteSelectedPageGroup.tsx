@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndeterminateInputElement } from '~/interfaces/indeterminate-checkbox';
+import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
@@ -9,7 +9,6 @@ type Props = {
   onClickDeleteAllButton?: () => void,
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
-
 
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
