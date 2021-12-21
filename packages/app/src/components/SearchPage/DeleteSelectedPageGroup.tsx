@@ -4,12 +4,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
-class IndeterminateInputRef implements React.MutableRefObject<null> {
-
-  indeterminate?: boolean;
-
-}
-
 type Props = {
   isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
@@ -34,9 +28,9 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
-  const elm:IndeterminateInputRef = useRef(null);
+  const elm = useRef({ indeterminate: false });
   useEffect(() => {
-    if (elm.current != null) {
+    if (elm.current != null && elm.current.indeterminate != null) {
       // eslint-disable-next-line
       elm.current.indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
     }
