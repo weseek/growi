@@ -721,12 +721,10 @@ mark.rbt-highlight-text {
   }
 }
 
-.on-search {
-  .search-result {
-    @include media-breakpoint-up(lg) {
-      .page-list-li:hover {
-        background-color: $bgcolor-search-page-list-hover;
-      }
+.search-result {
+  @include media-breakpoint-up(lg) {
+    .page-list-li:hover {
+      background-color: $bgcolor-search-page-list-hover;
     }
   }
 }
