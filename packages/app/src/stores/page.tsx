@@ -46,8 +46,8 @@ export const useSWRxPageList = (
   );
 };
 
-export const useSWRPageInfo = (pageId: string): SWRResponse<IPageInfo, Error> => {
-  return useSWR(`/page/info?pageId=${pageId}`, endpoint => apiv3Get(endpoint).then((response) => {
+export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfo, Error> => {
+  return useSWR(pageId != null ? `/page/info?pageId=${pageId}` : null, endpoint => apiv3Get(endpoint).then((response) => {
     return {
       sumOfLikers: response.data.sumOfLikers,
       likerIds: response.data.likerIds,
