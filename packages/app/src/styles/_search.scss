@@ -190,6 +190,7 @@
     }
     .nav.nav-pills {
       > .page-list-li {
+        min-height: 136px;
         &.active {
           border-left: solid 3px transparent;
           .search-item-checkbox {
@@ -220,9 +221,6 @@
           }
         }
       }
-    }
-    .page-list-li {
-      min-height: 136px;
     }
 
     .search-result-meta {
