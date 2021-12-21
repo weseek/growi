@@ -10,6 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
 import EnvVarsTable from './EnvVarsTable';
@@ -19,6 +20,7 @@ const logger = loggerFactory('growi:admin');
 const AdminHome = (props) => {
   const { adminHomeContainer } = props;
   const { t } = useTranslation();
+  const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   useEffect(() => {
     async function fetchAdminHomeData() {
@@ -34,23 +36,20 @@ const AdminHome = (props) => {
     }
   }, [adminHomeContainer]);
 
-  const { isV5Compatible } = adminHomeContainer.state;
-
-
   return (
     <>
       {
-        // Alert message will be displayed in case that V5 migration has not been compleated
-        (isV5Compatible != null && !isV5Compatible)
-          && (
-          <div className={`alert ${isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
-              {t('admin:v5_page_migration.migration_desc')}
-              <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-                <i className="fa fa-link ml-1" aria-hidden="true"></i>
-                <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
-              </a>
-            </div>
-          )
+      // Alert message will be displayed in case that V5 migration has not been compleated
+        (migrationStatus != null && !migrationStatus.isV5Compatible)
+        && (
+          <div className={`alert ${migrationStatus.isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
+            {t('admin:v5_page_migration.migration_desc')}
+            <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
+              <i className="fa fa-link ml-1" aria-hidden="true"></i>
+              <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
+            </a>
+          </div>
+        )
       }
       <p>
         {t('admin:admin_top.wiki_administrator')}
