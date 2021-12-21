@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Tooltip } from 'reactstrap';
 import loggerFactory from '~/utils/logger';
@@ -17,7 +17,8 @@ import EnvVarsTable from './EnvVarsTable';
 const logger = loggerFactory('growi:admin');
 
 const AdminHome = (props) => {
-  const { t, adminHomeContainer } = props;
+  const { adminHomeContainer } = props;
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchAdminHomeData() {
@@ -116,9 +117,8 @@ const AdminHome = (props) => {
 const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
 
 AdminHome.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
 };
 
-export default withTranslation()(AdminHomeWrapper);
+export default AdminHomeWrapper;
