@@ -723,7 +723,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', [parentForDeleteCompletely], testUser2, false);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', [parentForDeleteCompletely], testUser2);
     });
 
 
@@ -733,7 +733,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', [parentForDeleteCompletely], testUser2, true);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', [parentForDeleteCompletely], testUser2);
     });
   });
 
