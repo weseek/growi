@@ -8,11 +8,11 @@ import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
-  const { hideSearchInput } = props;
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = useCreateModalStatus();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isSearchPage } = useIsSearchPage();
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -22,7 +22,7 @@ const GrowiNavbarBottom = (props) => {
   return (
     <div className="d-md-none d-edit-none fixed-bottom">
 
-      { isDeviceSmallerThanMd && (
+      { isDeviceSmallerThanMd && !isSearchPage && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
           <div className="p-3">
             <GlobalSearch dropup />
@@ -33,7 +33,7 @@ const GrowiNavbarBottom = (props) => {
       <div className={`navbar navbar-expand navbar-dark bg-primary px-0 ${additionalClasses.join(' ')}`}>
 
         <ul className="navbar-nav w-100">
-          <li className="nav-item">
+          <li className="nav-item mr-auto">
             <a
               role="button"
               className="nav-link btn-lg"
@@ -42,9 +42,9 @@ const GrowiNavbarBottom = (props) => {
               <i className="icon-menu"></i>
             </a>
           </li>
-          <li className="nav-item mx-auto">
-            {
-              !hideSearchInput && (
+          {
+            !isSearchPage && (
+              <li className="nav-item">
                 <a
                   role="button"
                   className="nav-link btn-lg"
@@ -53,11 +53,10 @@ const GrowiNavbarBottom = (props) => {
                 >
                   <i className="icon-magnifier"></i>
                 </a>
-
-              )
-            }
-          </li>
-          <li className="nav-item">
+              </li>
+            )
+          }
+          <li className="nav-item ml-auto">
             <a
               role="button"
               className="nav-link btn-lg"
@@ -72,13 +71,5 @@ const GrowiNavbarBottom = (props) => {
     </div>
   );
 };
-GrowiNavbarBottom.propTypes = {
-  hideSearchInput: PropTypes.bool.isRequired,
-};
 
-const GrowiNavbarBottomWrapper = () => {
-  const { data: isSeachPage } = useIsSearchPage();
-  return <GrowiNavbarBottom hideSearchInput={isSeachPage}></GrowiNavbarBottom>;
-};
-
-export default GrowiNavbarBottomWrapper;
+export default GrowiNavbarBottom;

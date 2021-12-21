@@ -8,13 +8,13 @@ import { UncontrolledTooltip } from 'reactstrap';
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
 import { useIsDeviceSmallerThanMd, useCreateModalStatus } from '~/stores/ui';
+import { useIsSearchPage } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
-import { useIsSearchPage } from '~/stores/context';
 
 type NavbarRightProps = {
   currentUser: IUser,
@@ -80,11 +80,12 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
 
 const GrowiNavbar = (props) => {
 
-  const { appContainer, hideSearchInput } = props;
+  const { appContainer } = props;
   const { currentUser } = appContainer;
   const { crowi, isSearchServiceConfigured } = appContainer.config;
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   return (
     <>
@@ -106,7 +107,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !hideSearchInput && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>
@@ -119,19 +120,10 @@ const GrowiNavbar = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiNavbarUnstatedWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
+const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
 
 GrowiNavbar.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  hideSearchInput: PropTypes.bool.isRequired,
 };
 
-const UnstatedWrapperWithProps = (props) => {
-  return <GrowiNavbarUnstatedWrapper {...props}></GrowiNavbarUnstatedWrapper>;
-};
-
-const GrowiNavbarWrapper = () => {
-  const { data: isSearchPage } = useIsSearchPage();
-  return <UnstatedWrapperWithProps hideSearchInput={isSearchPage}></UnstatedWrapperWithProps>;
-};
 export default GrowiNavbarWrapper;
