@@ -1,5 +1,5 @@
 import React, {
-  FC, KeyboardEvent, useCallback, useReducer, useState,
+  FC, KeyboardEvent, useCallback, useMemo, useReducer, useState,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -54,7 +54,9 @@ type Props = {
 
 export const SearchTypeahead: FC<Props> = (props: Props) => {
   const {
+    keywordOnInit,
     onSearchSuccess, onSearchError, onInputChange, onSubmit,
+    emptyLabel, emptyLabelExceptError, helpElement,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -63,6 +65,22 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoaded] = useReducer(() => true, false);
+
+  const changeKeyword = (text) => {
+    // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
+    // const instance = this.typeahead.getInstance();
+    // instance.clear();
+    // instance.setState({ text });
+    console.log('changeKeyword', text);
+  };
+
+  const restoreInitialData = () => {
+    changeKeyword(keywordOnInit);
+  };
+
+  const clearKeyword = () => {
+    changeKeyword('');
+  };
 
   /**
    * Callback function which is occured when search is exit successfully
@@ -124,29 +142,21 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
     }
   }, [input, onSubmit]);
 
-  // getEmptyLabel() {
-  //   const { emptyLabel, helpElement } = this.props;
-  //   const { input } = this.state;
+  const getEmptyLabel = () => {
+    // show help element if empty
+    if (input.length === 0) {
+      return helpElement;
+    }
 
-  //   // show help element if empty
-  //   if (input.length === 0) {
-  //     return helpElement;
-  //   }
+    // use props.emptyLabel as is if defined
+    if (emptyLabel !== undefined) {
+      return emptyLabel;
+    }
 
-  //   // use props.emptyLabel as is if defined
-  //   if (emptyLabel !== undefined) {
-  //     return this.props.emptyLabel;
-  //   }
-
-  //   let emptyLabelExceptError = 'No matches found on title...';
-  //   if (this.props.emptyLabelExceptError !== undefined) {
-  //     emptyLabelExceptError = this.props.emptyLabelExceptError;
-  //   }
-
-  //   return (this.state.searchError !== null)
-  //     ? 'Error on searching.'
-  //     : emptyLabelExceptError;
-  // }
+    return (searchError !== null)
+      ? 'Error on searching.'
+      : (emptyLabelExceptError ?? 'No matches found on title...');
+  };
 
   const defaultSelected = (props.keywordOnInit !== '')
     ? [{ path: props.keywordOnInit }]
@@ -158,8 +168,15 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
   }
 
   const isClearBtn = props.behaviorOfResetBtn === 'clear';
-  // const resetForm = isClearBtn ? this.clearKeyword : this.restoreInitialData;
-  const resetForm = () => {};
+  const resetForm = isClearBtn ? clearKeyword : restoreInitialData;
+
+  const renderMenuItemChildren = (page: IPage) => (
+    <span>
+      <UserPicture user={page.lastUpdateUser} size="sm" noLink />
+      <span className="ml-1 text-break text-wrap"><PagePathLabel page={page} /></span>
+      <PageListMeta page={page} />
+    </span>
+  );
 
   return (
     <div className="search-typeahead">
@@ -173,13 +190,13 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
         minLength={0}
         options={pages} // Search result (Some page names)
         promptText={props.helpElement}
-        // emptyLabel={this.getEmptyLabel()}
+        emptyLabel={getEmptyLabel()}
         align="left"
         submitFormOnEnter
         onSearch={search}
         onInputChange={inputChangeHandler}
         onKeyDown={keyDownHandler}
-        // renderMenuItemChildren={this.renderMenuItemChildren}
+        renderMenuItemChildren={renderMenuItemChildren}
         caseSensitive={false}
         defaultSelected={defaultSelected}
         autoFocus={props.autoFocus}
