@@ -1,6 +1,6 @@
 import React, {
   FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
-  KeyboardEvent, useCallback, useReducer, useRef, useState,
+  KeyboardEvent, useCallback, useRef, useState,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -43,6 +43,7 @@ type Props = TypeaheadProps & {
   onSubmit?: (input: string) => void,
   inputName?: string,
   keywordOnInit?: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpElement?: any,
   behaviorOfResetBtn?: 'restore' | 'clear',
 };
