@@ -42,8 +42,8 @@ class AdminHome extends React.Component {
     return (
       <Fragment>
         {
-          // not show if true
-          !isV5Compatible
+          // Alert message will be displayed in case that V5 migration has not compleated yet
+          (isV5Compatible != null && !isV5Compatible)
           && (
             <div className={`alert ${alertStyle}`}>
               {t('admin:v5_page_migration.migration_desc')}
