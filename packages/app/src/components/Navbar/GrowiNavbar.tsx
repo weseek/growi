@@ -14,6 +14,7 @@ import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
+import { useIsSearchPage } from '~/stores/context';
 
 type NavbarRightProps = {
   currentUser: IUser,
@@ -79,13 +80,11 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
 
 const GrowiNavbar = (props) => {
 
-  const { appContainer } = props;
+  const { appContainer, hideSearchInput } = props;
   const { currentUser } = appContainer;
   const { crowi, isSearchServiceConfigured } = appContainer.config;
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-
-  const isNotSearchPage = document.getElementById('search-page') == null;
 
   return (
     <>
@@ -107,7 +106,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && isNotSearchPage && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !hideSearchInput && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>
@@ -120,11 +119,19 @@ const GrowiNavbar = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
-
+const GrowiNavbarUnstatedWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
 
 GrowiNavbar.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  hideSearchInput: PropTypes.bool.isRequired,
 };
 
+const UnstatedWrapperWithProps = (props) => {
+  return <GrowiNavbarUnstatedWrapper {...props}></GrowiNavbarUnstatedWrapper>;
+};
+
+const GrowiNavbarWrapper = () => {
+  const { data: isSearchPage } = useIsSearchPage();
+  return <UnstatedWrapperWithProps hideSearchInput={isSearchPage}></UnstatedWrapperWithProps>;
+};
 export default GrowiNavbarWrapper;

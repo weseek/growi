@@ -1,12 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 import { useCreateModalStatus, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 
 import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
-
+  const { hideSearchInput } = props;
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = useCreateModalStatus();
@@ -16,8 +18,6 @@ const GrowiNavbarBottom = (props) => {
   if (isDrawerOpened) {
     additionalClasses.push('grw-navbar-bottom-drawer-opened');
   }
-
-  const isNotSearchPage = document.getElementById('search-page') == null;
 
   return (
     <div className="d-md-none d-edit-none fixed-bottom">
@@ -43,17 +43,19 @@ const GrowiNavbarBottom = (props) => {
             </a>
           </li>
           <li className="nav-item mx-auto">
-            {isNotSearchPage
-            && (
-              <a
-                role="button"
-                className="nav-link btn-lg"
-                data-target="#grw-global-search-collapse"
-                data-toggle="collapse"
-              >
-                <i className="icon-magnifier"></i>
-              </a>
-            )}
+            {
+              !hideSearchInput && (
+                <a
+                  role="button"
+                  className="nav-link btn-lg"
+                  data-target="#grw-global-search-collapse"
+                  data-toggle="collapse"
+                >
+                  <i className="icon-magnifier"></i>
+                </a>
+
+              )
+            }
           </li>
           <li className="nav-item">
             <a
@@ -70,6 +72,13 @@ const GrowiNavbarBottom = (props) => {
     </div>
   );
 };
+GrowiNavbarBottom.propTypes = {
+  hideSearchInput: PropTypes.bool.isRequired,
+};
 
+const GrowiNavbarBottomWrapper = () => {
+  const { data: isSeachPage } = useIsSearchPage();
+  return <GrowiNavbarBottom hideSearchInput={isSeachPage}></GrowiNavbarBottom>;
+};
 
-export default GrowiNavbarBottom;
+export default GrowiNavbarBottomWrapper;
