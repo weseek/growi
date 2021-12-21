@@ -33,7 +33,7 @@ const SortControl: FC <Props> = (props: Props) => {
             {renderOrderIcon(props.order)}
           </div>
         </div>
-        <div className="btn-group border rounded-right" role="group">
+        <div className="border rounded-right">
           <button
             type="button"
             className="btn dropdown-toggle"
