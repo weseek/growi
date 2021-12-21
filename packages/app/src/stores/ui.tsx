@@ -154,6 +154,30 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
+export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean|null, Error> => {
+  const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
+
+  const { cache, mutate } = useSWRConfig();
+
+  if (!isServer) {
+    const lgOrAvobeHandler = function(this: MediaQueryList): void {
+      // md -> lg: matches will be true
+      // lg -> md: matches will be false
+      mutate(key, !this.matches);
+    };
+    const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
+
+    // initialize
+    if (cache.get(key) == null) {
+      document.addEventListener('DOMContentLoaded', () => {
+        mutate(key, !mql.matches);
+      });
+    }
+  }
+
+  return useStaticSWR(key);
+};
+
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('preferDrawerModeByUser', initialData ?? null, { fallbackData: false });
 };

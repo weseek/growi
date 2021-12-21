@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
+  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
@@ -18,12 +18,15 @@ const PageTree: FC = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   // for delete modal
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
+
+  const targetPathOrId = targetId || notFoundTargetPathOrId;
 
   if (migrationStatus == null) {
     return (
@@ -81,7 +84,7 @@ const PageTree: FC = memo(() => {
         <ItemsTree
           isEnableActions={!isGuestUser}
           targetPath={path}
-          targetId={targetId}
+          targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
           isDeleteModalOpen={isDeleteModalOpen}
           pagesToDelete={pagesToDelete}

@@ -7,7 +7,7 @@ import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
-import { TargetAndAncestors } from '../interfaces/page-listing-results';
+import { TargetAndAncestors, NotFoundTargetPathOrId } from '../interfaces/page-listing-results';
 
 type Nullable<T> = T | null;
 
@@ -164,4 +164,8 @@ export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
 
 export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
   return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData || null);
+};
+
+export const useNotFoundTargetPathOrId = (initialData?: NotFoundTargetPathOrId): SWRResponse<NotFoundTargetPathOrId, Error> => {
+  return useStaticSWR<NotFoundTargetPathOrId, Error>('notFoundTargetPathOrId', initialData || null);
 };

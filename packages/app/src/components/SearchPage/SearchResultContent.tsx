@@ -22,20 +22,22 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   if (page == null) return <></>;
   const growiRenderer = props.appContainer.getRenderer('searchresult');
   return (
-    <div key={page._id} className="search-result-page mb-5">
+    <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
       <SearchResultContentSubNavigation
         pageId={page._id}
         revisionId={page.revision}
         path={page.path}
       >
       </SearchResultContentSubNavigation>
-      <RevisionLoader
-        growiRenderer={growiRenderer}
-        pageId={page._id}
-        pagePath={page.path}
-        revisionId={page.revision}
-        highlightKeywords={props.searchingKeyword}
-      />
+      <div className="search-result-page-content">
+        <RevisionLoader
+          growiRenderer={growiRenderer}
+          pageId={page._id}
+          pagePath={page.path}
+          revisionId={page.revision}
+          highlightKeywords={props.searchingKeyword}
+        />
+      </div>
     </div>
   );
 };

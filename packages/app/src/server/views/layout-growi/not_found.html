@@ -3,6 +3,11 @@
 {% block html_base_css %}not-found-page{% endblock %}
 
 {% block content_main_before %}
+  <div
+    id="growi-pagetree-not-found-context"
+    data-not-found-target-path-or-id="{% if notFoundTargetPathOrId %}{{notFoundTargetPathOrId|json}}{% endif %}"
+  >
+  </div>
   <div class="grw-container-convertible">
     {% include '../widget/page_alerts.html' %}
   </div>
