@@ -172,12 +172,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  IS_V5_INDEX_NORMALIZATION_IN_PROGRESS: {
-    ns:      'crowi',
-    key:     'app:isV5IndexNormalizationInProgress',
-    type:    ValueType.BOOLEAN,
-    default: false,
-  },
   IS_V5_COMPATIBLE: {
     ns:      'crowi',
     key:     'app:isV5Compatible',
