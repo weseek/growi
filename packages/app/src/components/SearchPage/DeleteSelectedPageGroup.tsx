@@ -1,6 +1,4 @@
-import React, {
-  FC, useMemo, useEffect, useRef,
-} from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckboxType } from '../../interfaces/search';
 
