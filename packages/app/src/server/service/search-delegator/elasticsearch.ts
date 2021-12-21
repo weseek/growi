@@ -957,9 +957,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
-  async syncPagesDeletedCompletely(pages, user) {
+  async syncPageDeleteMultipleCompletely(pages, user) {
     for (let i = 0; i < pages.length; i++) {
-      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
+      logger.debug('SearchClient.syncPageDeleteMultipleCompletely', pages[i].path);
     }
 
     try {

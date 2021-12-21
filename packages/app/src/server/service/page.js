@@ -69,11 +69,9 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(pages, user, isRecursively = false) => {
+    this.pageEvent.on('deleteCompletely', async(page, user) => {
       try {
-        if (!isRecursively) {
-          await this.createAndSendNotifications(pages[0], user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
-        }
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -643,7 +641,7 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteCompletely', pages, user); // update as renamed page
+    this.pageEvent.emit('deleteMultipleCompletely', pages, user); // update as renamed page
 
     return;
   }
@@ -660,7 +658,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('deleteCompletely', [page], user, isRecursively); // update as renamed page
+    this.pageEvent.emit('deleteCompletely', page, user); // update as renamed page
 
     return;
   }
