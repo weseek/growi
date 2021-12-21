@@ -32,7 +32,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management py-0 px-2">
         <i className="fa fa-ellipsis-v text-muted p-1"></i>
       </DropdownToggle>
-      <DropdownMenu container="body" right>
+      <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
 
         {/* TODO: if there is the following button in XD add it here
         <button
