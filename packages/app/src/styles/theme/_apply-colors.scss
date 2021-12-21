@@ -637,6 +637,9 @@ body.pathname-sidebar {
         }
       }
     }
+    .search-result-list-hover-style:hover {
+      background-color: $bgcolor-search-page-list-hover;
+    }
   }
 
   .search-result-page-title {
@@ -723,13 +726,5 @@ mark.rbt-highlight-text {
 .selecting-bot-type {
   .bot-type-disc {
     width: 20px;
-  }
-}
-
-.search-result {
-  @include media-breakpoint-up(lg) {
-    .page-list-li:hover {
-      background-color: $bgcolor-search-page-list-hover;
-    }
   }
 }

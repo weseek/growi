@@ -9,7 +9,7 @@ import {
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage,
 } from '../../stores/context';
 import {
-  useIsDeviceSmallerThanMd,
+  useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -123,6 +123,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
+
+  // SearchResult
+  useIsDeviceSmallerThanLg();
 
   return null;
 };

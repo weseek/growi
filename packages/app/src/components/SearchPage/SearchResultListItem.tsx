@@ -48,7 +48,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     />
   );
 
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
+  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `search-result-list-hover-style list-group-item-action ${isSelected ? 'active' : ''}`}`;
 
   return (
     <li
