@@ -206,7 +206,7 @@ const LegacyPageManagemenet = (props) => {
           className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
           data-toggle="dropdown"
         >
-          <i className="icon-options"></i>
+          <i className="text-muted icon-options"></i>
         </button>
       </>
     );
@@ -220,7 +220,7 @@ const LegacyPageManagemenet = (props) => {
           className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
           id="icon-options-guest-tltips"
         >
-          <i className="icon-options"></i>
+          <i className="text-muted icon-options"></i>
         </button>
         <UncontrolledTooltip placement="top" target="icon-options-guest-tltips" fade={false}>
           {t('Not available for guest')}
