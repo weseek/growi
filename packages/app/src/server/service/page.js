@@ -879,18 +879,18 @@ class PageService {
       ]);
     }
     catch (err) {
-      if (err?.code === 11000) {
+      if (err?.code === 11000) { // Error code 11000 indicates the index is unique
         isUnique = true;
         logger.info('Page path index is unique.');
       }
       else {
-        logger.error('Error occurred while checking index uniqueness.', err);
-        await Page.deleteMany({ path: { $regex: new RegExp('growi_check_is_path_index_unique', 'g') } });
         throw err;
       }
     }
+    finally {
+      await Page.deleteMany({ path: { $regex: new RegExp('growi_check_is_path_index_unique', 'g') } });
+    }
 
-    await Page.deleteMany({ path: { $regex: new RegExp('growi_check_is_path_index_unique', 'g') } });
 
     return isUnique;
   }
@@ -899,7 +899,14 @@ class PageService {
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
 
-    const isUnique = await this._isPagePathIndexUnique();
+    let isUnique;
+    try {
+      isUnique = await this._isPagePathIndexUnique();
+    }
+    catch (err) {
+      logger.error('Failed to check path index status', err);
+      throw err;
+    }
 
     // drop unique index first
     if (isUnique) {
