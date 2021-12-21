@@ -83,6 +83,7 @@ type Props = {
 
   dropup?: boolean,
   keyword?: string,
+  onChange?: (data: unknown[]) => void,
   onSubmit?: (input: string) => void,
   onInputChange?: (text: string) => void,
 };
@@ -91,7 +92,8 @@ type Props = {
 const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const { t } = useTranslation();
   const {
-    isSearchServiceReachable, dropup, onSubmit, onInputChange,
+    isSearchServiceReachable, dropup,
+    onChange, onSubmit, onInputChange,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
@@ -123,6 +125,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
+      onChange={onChange}
       onSubmit={onSubmit}
       onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}

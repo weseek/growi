@@ -3,8 +3,10 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import { IPage } from '~/interfaces/page';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SearchForm from '../SearchForm';
 
@@ -21,6 +23,15 @@ const GlobalSearch: FC<Props> = (props: Props) => {
 
   const [text, setText] = useState('');
   const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
+
+  const gotoPage = useCallback((data: unknown[]) => {
+    const page = data[0] as IPage; // should be single page selected
+
+    // navigate to page
+    if (page != null) {
+      window.location.href = page.path;
+    }
+  }, []);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
@@ -61,6 +72,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
         <SearchForm
           isSearchServiceReachable={isSearchServiceReachable}
           dropup={dropup}
+          onChange={gotoPage}
           onInputChange={text => setText(text)}
           onSubmit={search}
         />
