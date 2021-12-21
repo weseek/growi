@@ -7,8 +7,6 @@ $grw-pagetree-item-padding-left: 10px;
 
   .grw-pagetree-item {
     &:hover {
-      opacity: 0.7;
-
       .grw-pagetree-control {
         display: flex !important;
       }
