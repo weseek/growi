@@ -8,6 +8,7 @@ import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 import GlobalSearch from './GlobalSearch';
 
 const GrowiNavbarBottom = (props) => {
+
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = useCreateModalStatus();
@@ -71,5 +72,6 @@ const GrowiNavbarBottom = (props) => {
     </div>
   );
 };
+
 
 export default GrowiNavbarBottom;

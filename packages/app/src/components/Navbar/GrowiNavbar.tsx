@@ -122,6 +122,7 @@ const GrowiNavbar = (props) => {
  */
 const GrowiNavbarWrapper = withUnstatedContainers(GrowiNavbar, [AppContainer]);
 
+
 GrowiNavbar.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
