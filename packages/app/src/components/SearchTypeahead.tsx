@@ -71,7 +71,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoading] = useState(false);
 
-  const typeaheadRef = useRef<TypeaheadInstanceFactory>();
+  const typeaheadRef = useRef<TypeaheadInstanceFactory>(null);
 
 
   // publish focus()

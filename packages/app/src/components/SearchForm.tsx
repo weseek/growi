@@ -1,5 +1,6 @@
 import React, {
-  FC, ForwardRefRenderFunction, useImperativeHandle, useRef, useState,
+  FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle,
+  useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -99,13 +100,15 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isShownHelp, setShownHelp] = useState(false);
 
+  const searchTyheaheadRef = useRef<IFocusable>(null);
+
   // publish focus()
   useImperativeHandle(ref, () => ({
     focus() {
-      // const instance = ref?.current;
-      // if (instance != null) {
-      //   instance.focus();
-      // }
+      const instance = searchTyheaheadRef?.current;
+      if (instance != null) {
+        instance.focus();
+      }
     },
   }));
 
@@ -122,7 +125,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
 
   return (
     <SearchTypeahead
-      ref={ref}
+      ref={searchTyheaheadRef}
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
@@ -137,9 +140,11 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   );
 };
 
+const ForwardedSearchForm = forwardRef(SearchForm);
+
 /**
  * Wrapper component for using unstated
  */
-const SearchFormWrapper = withUnstatedContainers(SearchForm, [AppContainer]);
+const SearchFormWrapper = withUnstatedContainers(ForwardedSearchForm, [AppContainer]);
 
 export default SearchFormWrapper;
