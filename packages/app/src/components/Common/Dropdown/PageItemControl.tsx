@@ -28,11 +28,11 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     }
   };
   return (
-    <UncontrolledDropdown direction="down">
+    <UncontrolledDropdown>
       <DropdownToggle color="transparent" className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2">
         <i className="fa fa-ellipsis-v text-muted p-1"></i>
       </DropdownToggle>
-      <DropdownMenu container="grw-sidebar-wrapper" right>
+      <DropdownMenu container="body" right>
         {!isEnableActions && (
           <DropdownItem>
             <p>
