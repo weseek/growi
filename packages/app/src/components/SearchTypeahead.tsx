@@ -1,5 +1,5 @@
 import React, {
-  FC, KeyboardEvent, useCallback, useMemo, useReducer, useState,
+  FC, KeyboardEvent, useCallback, useReducer, useRef, useState,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -52,6 +52,16 @@ type Props = {
   behaviorOfResetBtn?: 'restore' | 'clear',
 };
 
+// see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
+type TypeaheadInstance = {
+  clear: () => void,
+  focus: () => void,
+  setState: ({ text: string }) => void,
+}
+type TypeaheadInstanceFactory = {
+  getInstance: () => TypeaheadInstance,
+}
+
 export const SearchTypeahead: FC<Props> = (props: Props) => {
   const {
     keywordOnInit,
@@ -66,12 +76,14 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoaded] = useReducer(() => true, false);
 
-  const changeKeyword = (text) => {
-    // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
-    // const instance = this.typeahead.getInstance();
-    // instance.clear();
-    // instance.setState({ text });
-    console.log('changeKeyword', text);
+  const typeaheadRef = useRef<TypeaheadInstanceFactory>();
+
+  const changeKeyword = (text: string | undefined) => {
+    const instance = typeaheadRef.current?.getInstance();
+    if (instance != null) {
+      instance.clear();
+      instance.setState({ text });
+    }
   };
 
   const restoreInitialData = () => {
@@ -183,7 +195,7 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
       <AsyncTypeahead
         {...props}
         id="search-typeahead-asynctypeahead"
-        // ref={(c) => { this.typeahead = c }}
+        ref={typeaheadRef}
         inputProps={inputProps}
         isLoading={isLoading}
         labelKey="path"
