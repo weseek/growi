@@ -865,23 +865,57 @@ class PageService {
     }
   }
 
+  async _isPagePathIndexUnique() {
+    const Page = this.crowi.model('Page');
+    const now = (new Date()).toString();
+    const path = `growi_check_is_path_index_unique_${now}`;
+
+    let isUnique = false;
+
+    try {
+      await Page.insertMany([
+        { path },
+        { path },
+      ]);
+    }
+    catch (err) {
+      if (err?.code === 11000) { // Error code 11000 indicates the index is unique
+        isUnique = true;
+        logger.info('Page path index is unique.');
+      }
+      else {
+        throw err;
+      }
+    }
+    finally {
+      await Page.deleteMany({ path: { $regex: new RegExp('growi_check_is_path_index_unique', 'g') } });
+    }
+
+
+    return isUnique;
+  }
+
+  // TODO: use socket to send status to the client
   async v5InitialMigration(grant) {
     // const socket = this.crowi.socketIoService.getAdminSocket();
-    const Page = this.crowi.model('Page');
-    const indexStatus = await Page.aggregate([{ $indexStats: {} }]);
-    const pathIndexStatus = indexStatus.filter(status => status.name === 'path_1')?.[0];
-    const isPathIndexExists = pathIndexStatus != null;
-    const isUnique = isPathIndexExists && pathIndexStatus.spec?.unique === true;
+
+    let isUnique;
+    try {
+      isUnique = await this._isPagePathIndexUnique();
+    }
+    catch (err) {
+      logger.error('Failed to check path index status', err);
+      throw err;
+    }
 
     // drop unique index first
-    if (isUnique || !isPathIndexExists) {
+    if (isUnique) {
       try {
-        await this._v5NormalizeIndex(isPathIndexExists);
+        await this._v5NormalizeIndex();
       }
       catch (err) {
         logger.error('V5 index normalization failed.', err);
         // socket.emit('v5IndexNormalizationFailed', { error: err.message });
-
         throw err;
       }
     }
@@ -1078,19 +1112,17 @@ class PageService {
 
   }
 
-  async _v5NormalizeIndex(isPathIndexExists) {
+  async _v5NormalizeIndex() {
     const collection = mongoose.connection.collection('pages');
 
-    if (isPathIndexExists) {
-      try {
-        // drop pages.path_1 indexes
-        await collection.dropIndex('path_1');
-        logger.info('Succeeded to drop unique indexes from pages.path.');
-      }
-      catch (err) {
-        logger.warn('Failed to drop unique indexes from pages.path.', err);
-        throw err;
-      }
+    try {
+      // drop pages.path_1 indexes
+      await collection.dropIndex('path_1');
+      logger.info('Succeeded to drop unique indexes from pages.path.');
+    }
+    catch (err) {
+      logger.warn('Failed to drop unique indexes from pages.path.', err);
+      throw err;
     }
 
     try {

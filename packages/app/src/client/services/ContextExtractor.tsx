@@ -5,7 +5,8 @@ import {
   useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors, useSlackChannels,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
+  useSlackChannels, useNotFoundTargetPathOrId,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -20,6 +21,7 @@ const jsonNull = 'null';
 const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
+  const notFoundContent = document.getElementById('growi-pagetree-not-found-context');
 
   /*
    * App Context from DOM
@@ -61,6 +63,7 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
+  const notFoundTargetPathOrId = JSON.parse(notFoundContent?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
 
   /*
@@ -104,6 +107,7 @@ const ContextExtractorOnce: FC = () => {
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
+  useNotFoundTargetPathOrId(notFoundTargetPathOrId);
 
   // Navigation
   usePreferDrawerModeByUser();
