@@ -33,6 +33,27 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         <i className="fa fa-ellipsis-v text-muted p-1"></i>
       </DropdownToggle>
       <DropdownMenu container="body" right>
+
+        {/* TODO: if there is the following button in XD add it here
+        <button
+          type="button"
+          className="btn btn-link p-0"
+          value={page.path}
+          onClick={(e) => {
+            window.location.href = e.currentTarget.value;
+          }}
+        >
+          <i className="icon-login" />
+        </button>
+        */}
+
+        {/*
+          TODO: add function to the following buttons like using modal or others
+          ref: https://estoc.weseek.co.jp/redmine/issues/79026
+        */}
+
+        {/* TODO: show dropdown when permalink section is implemented */}
+
         {!isEnableActions && (
           <DropdownItem>
             <p>
@@ -69,25 +90,6 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         )}
       </DropdownMenu>
 
-      {/* TODO: if there is the following button in XD add it here
-        <button
-          type="button"
-          className="btn btn-link p-0"
-          value={page.path}
-          onClick={(e) => {
-            window.location.href = e.currentTarget.value;
-          }}
-        >
-          <i className="icon-login" />
-        </button>
-        */}
-
-      {/*
-          TODO: add function to the following buttons like using modal or others
-          ref: https://estoc.weseek.co.jp/redmine/issues/79026
-        */}
-
-      {/* TODO: show dropdown when permalink section is implemented */}
 
     </UncontrolledDropdown>
   );
