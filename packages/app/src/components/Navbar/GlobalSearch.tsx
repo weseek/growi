@@ -1,6 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, {
+  FC, useState, useCallback,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -8,96 +9,69 @@ import AppContainer from '~/client/services/AppContainer';
 import SearchForm from '../SearchForm';
 
 
-class GlobalSearch extends React.Component {
+type Props = {
+  appContainer: AppContainer,
 
-  constructor(props) {
-    super(props);
+  dropup?: boolean,
+}
 
-    const isSearchScopeChildrenAsDefault = this.props.appContainer.getConfig().isSearchScopeChildrenAsDefault;
+const GlobalSearch: FC<Props> = (props: Props) => {
+  const { appContainer, dropup } = props;
+  const { t } = useTranslation();
 
-    this.state = {
-      text: '',
-      isScopeChildren: isSearchScopeChildrenAsDefault,
-    };
+  const [text, setText] = useState('');
+  const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
 
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onClickAllPages = this.onClickAllPages.bind(this);
-    this.onClickChildren = this.onClickChildren.bind(this);
-    this.search = this.search.bind(this);
-  }
-
-  onInputChange(text) {
-    this.setState({ text });
-  }
-
-  onClickAllPages() {
-    this.setState({ isScopeChildren: false });
-  }
-
-  onClickChildren() {
-    this.setState({ isScopeChildren: true });
-  }
-
-  search() {
+  const search = useCallback(() => {
     const url = new URL(window.location.href);
     url.pathname = '/_search';
 
     // construct search query
-    let q = this.state.text;
-    if (this.state.isScopeChildren) {
+    let q = text;
+    if (isScopeChildren) {
       q += ` prefix:${window.location.pathname}`;
     }
     url.searchParams.append('q', q);
 
     window.location.href = url.href;
-  }
+  }, [isScopeChildren, text]);
 
-  render() {
-    const { t, appContainer, dropup } = this.props;
-    const scopeLabel = this.state.isScopeChildren
-      ? t('header_search_box.label.This tree')
-      : t('header_search_box.label.All pages');
+  const scopeLabel = isScopeChildren
+    ? t('header_search_box.label.This tree')
+    : t('header_search_box.label.All pages');
 
-    const config = appContainer.getConfig();
-    const isReachable = config.isSearchServiceReachable;
+  const isSearchServiceReachable = appContainer.getConfig().isSearchServiceReachable;
 
-    return (
-      <div className={`form-group mb-0 d-print-none ${isReachable ? '' : 'has-error'}`}>
-        <div className="input-group flex-nowrap">
-          <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
-            <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
-              {scopeLabel}
+  return (
+    <div className={`form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
+      <div className="input-group flex-nowrap">
+        <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
+          <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
+            {scopeLabel}
+          </button>
+          <div className="dropdown-menu">
+            <button className="dropdown-item" type="button" onClick={() => setScopeChildren(false)}>
+              { t('header_search_box.item_label.All pages') }
             </button>
-            <div className="dropdown-menu">
-              <button className="dropdown-item" type="button" onClick={this.onClickAllPages}>{ t('header_search_box.item_label.All pages') }</button>
-              <button className="dropdown-item" type="button" onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</button>
-            </div>
-          </div>
-          <SearchForm
-            t={this.props.t}
-            crowi={this.props.appContainer}
-            onInputChange={this.onInputChange}
-            onSubmit={this.search}
-            placeholder="Search ..."
-            dropup={dropup}
-          />
-          <div className="btn-group-submit-search">
-            <span className="btn-link text-decoration-none" onClick={this.search}>
-              <i className="icon-magnifier"></i>
-            </span>
+            <button className="dropdown-item" type="button" onClick={() => setScopeChildren(true)}>
+              { t('header_search_box.item_label.This tree') }
+            </button>
           </div>
         </div>
+        <SearchForm
+          isSearchServiceReachable={isSearchServiceReachable}
+          dropup={dropup}
+          onInputChange={text => setText(text)}
+          onSubmit={search}
+        />
+        <div className="btn-group-submit-search">
+          <span className="btn-link text-decoration-none" onClick={search}>
+            <i className="icon-magnifier"></i>
+          </span>
+        </div>
       </div>
-    );
-  }
-
-}
-
-GlobalSearch.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  dropup: PropTypes.bool,
+    </div>
+  );
 };
 
 /**
@@ -105,4 +79,4 @@ GlobalSearch.propTypes = {
  */
 const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer]);
 
-export default withTranslation()(GlobalSearchWrapper);
+export default GlobalSearchWrapper;
