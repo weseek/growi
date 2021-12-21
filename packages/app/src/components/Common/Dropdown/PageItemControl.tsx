@@ -28,10 +28,10 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     <>
       <button
         type="button"
-        className="btn-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management py-0 px-2"
+        className="dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management p-0"
         data-toggle="dropdown"
       >
-        <i className="icon-options fa fa-rotate-90  text-muted p-1"></i>
+        <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
         {/* TODO: if there is the following button in XD add it here
