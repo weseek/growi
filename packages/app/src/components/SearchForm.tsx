@@ -1,4 +1,6 @@
-import React, { FC, ForwardRefRenderFunction, useState } from 'react';
+import React, {
+  FC, ForwardRefRenderFunction, useImperativeHandle, useRef, useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
@@ -97,6 +99,16 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isShownHelp, setShownHelp] = useState(false);
 
+  // publish focus()
+  useImperativeHandle(ref, () => ({
+    focus() {
+      // const instance = ref?.current;
+      // if (instance != null) {
+      //   instance.focus();
+      // }
+    },
+  }));
+
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
 
@@ -110,6 +122,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
 
   return (
     <SearchTypeahead
+      ref={ref}
       dropup={dropup}
       emptyLabel={emptyLabel}
       placeholder={placeholder}
