@@ -36,8 +36,6 @@ const AdminHome = (props) => {
 
   const { isV5Compatible } = adminHomeContainer.state;
 
-  let alertStyle = 'alert-info';
-  if (isV5Compatible == null) alertStyle = 'alert-warning';
 
   return (
     <>
@@ -45,7 +43,7 @@ const AdminHome = (props) => {
         // Alert message will be displayed in case that V5 migration has not been compleated
         (isV5Compatible != null && !isV5Compatible)
           && (
-            <div className={`alert ${alertStyle}`}>
+          <div className={`alert ${isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
               {t('admin:v5_page_migration.migration_desc')}
               <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
                 <i className="fa fa-link ml-1" aria-hidden="true"></i>
