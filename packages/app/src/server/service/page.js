@@ -69,9 +69,9 @@ class PageService {
     });
 
     // delete completely
-    this.pageEvent.on('deleteCompletely', async(page, user) => {
+    this.pageEvent.on('deleteCompletely', async(pages, user) => {
       try {
-        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+        await this.createAndSendNotifications(pages[0], user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
       }
       catch (err) {
         logger.error(err);
@@ -658,7 +658,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('deleteCompletely', page, user); // update as renamed page
+    this.pageEvent.emit('deleteCompletely', [page], user); // update as renamed page
 
     return;
   }
