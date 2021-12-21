@@ -6,12 +6,14 @@ import AuthorInfo from './Navbar/AuthorInfo';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { usePath } from '~/stores/context';
+import { usePath, useCurrentCreatedAt } from '~/stores/context';
 
 const PageContentFooter = (props) => {
   const { pageContainer } = props;
+  const { data: createdAt } = useCurrentCreatedAt();
+
   const {
-    createdAt, creator, updatedAt, revisionAuthor,
+    creator, updatedAt, revisionAuthor,
   } = pageContainer.state;
 
   return (
