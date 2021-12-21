@@ -7,7 +7,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { apiGet } from '~/client/util/apiv1-client';
 
 class SearchTypeahead extends React.Component {
 
@@ -80,7 +80,7 @@ class SearchTypeahead extends React.Component {
 
     this.setState({ isLoading: true });
 
-    this.props.appContainer.apiGet('/search', { q: keyword })
+    apiGet('/search', { q: keyword })
       .then((res) => { this.onSearchSuccess(res) })
       .catch((err) => { this.onSearchError(err) });
   }
@@ -230,11 +230,6 @@ class SearchTypeahead extends React.Component {
 }
 
 /**
- * Wrapper component for using unstated
- */
-const SearchTypeaheadWrapper = withUnstatedContainers(SearchTypeahead, [AppContainer]);
-
-/**
  * Properties
  */
 SearchTypeahead.propTypes = {
@@ -271,4 +266,4 @@ SearchTypeahead.defaultProps = {
   onInputChange: () => {},
 };
 
-export default SearchTypeaheadWrapper;
+export default SearchTypeahead;

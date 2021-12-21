@@ -6,10 +6,13 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useSlackChannels,
 } from '../../stores/context';
 import {
-  useIsDeviceSmallerThanMd, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser,
+  useIsDeviceSmallerThanMd,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -23,6 +26,11 @@ const ContextExtractorOnce: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * UserUISettings from DOM
+   */
+  const userUISettings: Partial<IUserUISettings> = JSON.parse(document.getElementById('growi-user-ui-settings')?.textContent || jsonNull);
 
   /*
    * Page Context from DOM
@@ -56,12 +64,19 @@ const ContextExtractorOnce: FC = () => {
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
-
+  const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   /*
    * use static swr
    */
   // App
   useCurrentUser(currentUser);
+
+  // UserUISettings
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
+  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Page
   useCurrentCreatedAt(createdAt);
@@ -95,6 +110,9 @@ const ContextExtractorOnce: FC = () => {
   usePreferDrawerModeByUser();
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
+
+  // Editor
+  useSlackChannels(slackChannels);
 
   return null;
 };

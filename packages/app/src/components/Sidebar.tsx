@@ -43,20 +43,9 @@ const GlobalNavigation = () => {
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
 
-// dummy skelton contents
-const GlobalNavigationSkelton = () => {
-  return (
-    <div className="grw-sidebar-nav">
-      <div className="grw-sidebar-nav-primary-container">
-      </div>
-      <div className="grw-sidebar-nav-secondary-container">
-      </div>
-    </div>
-  );
-};
-
-
 const SidebarContentsWrapper = () => {
+  const [resetKey, setResetKey] = useState(0);
+
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
 
   const calcViewHeight = useCallback(() => {
@@ -73,23 +62,17 @@ const SidebarContentsWrapper = () => {
         contentsElemSelector="#grw-sidebar-content-container"
         stickyElemSelector=".grw-sidebar"
         calcViewHeightFunc={calcViewHeight}
+        resetKey={resetKey}
       />
 
-      <div id="grw-sidebar-contents-scroll-target">
-        <div id="grw-sidebar-content-container">
+      <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
+        <div id="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
           <SidebarContents />
         </div>
       </div>
 
       <DrawerToggler iconClass="icon-arrow-left" />
     </>
-  );
-};
-
-// dummy skelton contents
-const SidebarSkeltonContents = () => {
-  return (
-    <div>Skelton Contents!!!</div>
   );
 };
 
@@ -104,26 +87,12 @@ const Sidebar: FC<Props> = (props: Props) => {
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
   const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
+  const [isTransitionEnabled, setTransitionEnabled] = useState(false);
+
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  const [isMounted, setMounted] = useState(false);
 
   const isResizableByDrag = !isResizeDisabled && !isDrawerMode && (!isCollapsed || isHover);
-  /**
-   * hack and override UIController.storeState
-   *
-   * Since UIController is an unstated container, setState() in storeState method should be awaited before writing to cache.
-   */
-  // hackUIController() {
-  //   const { navigationUIController } = this.props;
-
-  //   // see: @atlaskit/navigation-next/dist/esm/ui-controller/UIController.js
-  //   const orgStoreState = navigationUIController.storeState;
-  //   navigationUIController.storeState = async(state) => {
-  //     await navigationUIController.setState(state);
-  //     orgStoreState(state);
-  //   };
-  // }
 
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = isResizeDisabled !== bool;
@@ -133,52 +102,24 @@ const Sidebar: FC<Props> = (props: Props) => {
 
     // Drawer <-- Dock
     if (bool) {
-      // // cache state
-      // this.sidebarCollapsedCached = navigationUIController.state.isCollapsed;
-      // this.sidebarWidthCached = navigationUIController.state.productNavWidth;
-
-      // // clear transition temporary
-      // if (this.sidebarCollapsedCached) {
-      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-drawer');
-      // }
-
       // disable resize
       mutateSidebarResizeDisabled(true, false);
     }
     // Drawer --> Dock
     else {
-      // // clear transition temporary
-      // if (this.sidebarCollapsedCached) {
-      //   this.addCssClassTemporary('grw-sidebar-supress-transitions-to-dock');
-      // }
-
       // enable resize
       mutateSidebarResizeDisabled(false, false);
-
-      // // restore width
-      // if (this.sidebarWidthCached != null) {
-      //   navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
-      // }
     }
   }, [isResizeDisabled, mutateSidebarResizeDisabled]);
-
-  // addCssClassTemporary(className) {
-  //   // clear
-  //   this.sidebarElem.classList.add(className);
-
-  //   // restore after 300ms
-  //   setTimeout(() => {
-  //     this.sidebarElem.classList.remove(className);
-  //   }, 300);
-  // }
 
   const backdropClickedHandler = useCallback(() => {
     mutateDrawerOpened(false, false);
   }, [mutateDrawerOpened]);
 
   useEffect(() => {
-    // this.hackUIController();
-    setMounted(true);
+    setTimeout(() => {
+      setTransitionEnabled(true);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -285,10 +226,10 @@ const Sidebar: FC<Props> = (props: Props) => {
     <>
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
-          <div className="navigation" onMouseLeave={hoverOutHandler}>
+          <div className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`} onMouseLeave={hoverOutHandler}>
             <div className="grw-navigation-wrap">
               <div className="grw-global-navigation">
-                { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton></GlobalNavigationSkelton> }
+                <GlobalNavigation></GlobalNavigation>
               </div>
               <div
                 ref={resizableContainer}
@@ -298,7 +239,7 @@ const Sidebar: FC<Props> = (props: Props) => {
               >
                 <div className="grw-contextual-navigation-child">
                   <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
-                    { isMounted ? <SidebarContentsWrapper></SidebarContentsWrapper> : <SidebarSkeltonContents></SidebarSkeltonContents> }
+                    <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>
               </div>
