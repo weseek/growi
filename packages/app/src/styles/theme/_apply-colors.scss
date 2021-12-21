@@ -22,6 +22,7 @@ $bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%) 
 $color-search-item-pagelist-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
 $color-search-page-list-snippet: $gray-600 !default;
+$bgcolor-search-page-list-hover: $gray-50 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -717,5 +718,15 @@ mark.rbt-highlight-text {
 .selecting-bot-type {
   .bot-type-disc {
     width: 20px;
+  }
+}
+
+.on-search {
+  .search-result {
+    @include media-breakpoint-up(lg) {
+      .page-list-li:hover {
+        background-color: $bgcolor-search-page-list-hover;
+      }
+    }
   }
 }
