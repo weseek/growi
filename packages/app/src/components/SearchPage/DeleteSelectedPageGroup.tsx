@@ -9,6 +9,10 @@ type Props = {
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
 
+interface IndeterminateInputElement extends HTMLInputElement {
+  indeterminate:boolean
+}
+
 const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
@@ -26,7 +30,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
-  const elm = useRef({ indeterminate: false });
+  const elm = useRef<IndeterminateInputElement>(null);
   useEffect(() => {
     if (elm.current != null && elm.current.indeterminate != null) {
       // eslint-disable-next-line
@@ -41,7 +45,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
-        className="custom-control custom-checkbox align-self-center"
+        className="grw-indeterminate-checkbox"
         ref={elm}
         disabled={props.isSelectAllCheckboxDisabled}
         onClick={onClickCheckbox}
