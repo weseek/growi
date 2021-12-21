@@ -56,7 +56,7 @@
     .hitarea {
       @extend .rounded-pill;
 
-      $size-hitarea: 80px;
+      $size-hitarea: 55px;
 
       position: absolute;
       top: ($width - $size-hitarea) / 2;
