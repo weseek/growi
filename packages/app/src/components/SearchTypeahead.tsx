@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useReducer, useState,
+  FC, KeyboardEvent, useCallback, useReducer, useState,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -40,8 +40,8 @@ type Props = {
   onChange?: () => void,
   onBlur?: () => void,
   onFocus?: () => void,
-  onSubmit?: () => void,
-  onInputChange?: () => void,
+  onSubmit?: (input: string) => void,
+  onInputChange?: (text: string) => void,
   inputName?: string,
   emptyLabel?: string,
   emptyLabelExceptError?: string,
@@ -53,7 +53,9 @@ type Props = {
 };
 
 export const SearchTypeahead: FC<Props> = (props: Props) => {
-  const { onSearchSuccess, onSearchError } = props;
+  const {
+    onSearchSuccess, onSearchError, onInputChange, onSubmit,
+  } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
@@ -102,6 +104,49 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
     }
   }, [searchErrorHandler, searchSuccessHandler]);
 
+  const inputChangeHandler = useCallback((text: string) => {
+    setInput(text);
+
+    if (onInputChange != null) {
+      onInputChange(text);
+    }
+
+    if (text === '') {
+      setPages([]);
+    }
+  }, [onInputChange]);
+
+  const keyDownHandler = useCallback((event: KeyboardEvent) => {
+    if (event.keyCode === 13) { // Enter key
+      if (onSubmit != null) {
+        onSubmit(input);
+      }
+    }
+  }, [input, onSubmit]);
+
+  // getEmptyLabel() {
+  //   const { emptyLabel, helpElement } = this.props;
+  //   const { input } = this.state;
+
+  //   // show help element if empty
+  //   if (input.length === 0) {
+  //     return helpElement;
+  //   }
+
+  //   // use props.emptyLabel as is if defined
+  //   if (emptyLabel !== undefined) {
+  //     return this.props.emptyLabel;
+  //   }
+
+  //   let emptyLabelExceptError = 'No matches found on title...';
+  //   if (this.props.emptyLabelExceptError !== undefined) {
+  //     emptyLabelExceptError = this.props.emptyLabelExceptError;
+  //   }
+
+  //   return (this.state.searchError !== null)
+  //     ? 'Error on searching.'
+  //     : emptyLabelExceptError;
+  // }
 
   const defaultSelected = (props.keywordOnInit !== '')
     ? [{ path: props.keywordOnInit }]
@@ -132,8 +177,8 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
         align="left"
         submitFormOnEnter
         onSearch={search}
-        // onInputChange={this.onInputChange}
-        // onKeyDown={this.onKeyDown}
+        onInputChange={inputChangeHandler}
+        onKeyDown={keyDownHandler}
         // renderMenuItemChildren={this.renderMenuItemChildren}
         caseSensitive={false}
         defaultSelected={defaultSelected}
