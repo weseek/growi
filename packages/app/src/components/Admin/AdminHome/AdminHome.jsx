@@ -23,9 +23,10 @@ const AdminHome = (props) => {
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
   useEffect(() => {
-    async function fetchAdminHomeData() {
+    const fetchAdminHomeData = async() => {
       await adminHomeContainer.retrieveAdminHomeData();
-    }
+    };
+
     try {
       fetchAdminHomeData();
     }
