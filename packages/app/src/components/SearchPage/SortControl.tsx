@@ -25,15 +25,6 @@ const SortControl: FC <Props> = (props: Props) => {
     return <i className={iconClassName} aria-hidden="true" />;
   };
 
-  const renderSortItem = (sort, order) => {
-    return (
-      <div className="d-flex align-items-center justify-content-between w-100">
-        <span className="mr-3">{t(`search_result.sort_axis.${sort}`)}</span>
-        {renderOrderIcon(order)}
-      </div>
-    );
-  };
-
   return (
     <>
       <div className="input-group">
@@ -42,10 +33,10 @@ const SortControl: FC <Props> = (props: Props) => {
             {renderOrderIcon(props.order)}
           </div>
         </div>
-        <div className="btn-group" role="group">
+        <div className="border rounded-right">
           <button
             type="button"
-            className="btn border dropdown-toggle"
+            className="btn dropdown-toggle"
             data-toggle="dropdown"
           >
             <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${props.sort}`)}</span>
@@ -56,11 +47,11 @@ const SortControl: FC <Props> = (props: Props) => {
               return (
                 <button
                   key={sortAxis}
-                  className="dropdown-item d-flex justify-content-between"
+                  className="dropdown-item"
                   type="button"
                   onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
                 >
-                  {renderSortItem(sortAxis, nextOrder)}
+                  <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
                 </button>
               );
             })}
