@@ -10,6 +10,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 import { IFocusable } from '~/client/interfaces/focusable';
+import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { apiGet } from '~/client/util/apiv1-client';
 import { IPage } from '~/interfaces/page';
 
@@ -36,21 +37,13 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 };
 
 
-type Props = {
+type Props = TypeaheadProps & {
   onSearchSuccess?: (res: IPage[]) => void,
   onSearchError?: (err: Error) => void,
-  onChange?: () => void,
-  onBlur?: () => void,
-  onFocus?: () => void,
   onSubmit?: (input: string) => void,
-  onInputChange?: (text: string) => void,
   inputName?: string,
-  emptyLabel?: string,
-  emptyLabelExceptError?: string,
-  placeholder?: string,
   keywordOnInit?: string,
   helpElement?: any,
-  autoFocus?: boolean,
   behaviorOfResetBtn?: 'restore' | 'clear',
 };
 
