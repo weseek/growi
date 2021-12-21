@@ -1,5 +1,6 @@
 import React, {
-  FC, KeyboardEvent, useCallback, useReducer, useRef, useState,
+  FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
+  KeyboardEvent, useCallback, useReducer, useRef, useState,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -8,6 +9,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
+import { IFocusable } from '~/client/interfaces/focusable';
 import { apiGet } from '~/client/util/apiv1-client';
 import { IPage } from '~/interfaces/page';
 
@@ -62,7 +64,7 @@ type TypeaheadInstanceFactory = {
   getInstance: () => TypeaheadInstance,
 }
 
-export const SearchTypeahead: FC<Props> = (props: Props) => {
+export const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
     keywordOnInit,
     onSearchSuccess, onSearchError, onInputChange, onSubmit,
@@ -77,6 +79,18 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
   const [isLoading, setLoaded] = useReducer(() => true, false);
 
   const typeaheadRef = useRef<TypeaheadInstanceFactory>();
+
+
+  // publish focus()
+  useImperativeHandle(ref, () => ({
+    focus() {
+      const instance = typeaheadRef.current?.getInstance();
+      if (instance != null) {
+        instance.focus();
+      }
+    },
+  }));
+
 
   const changeKeyword = (text: string | undefined) => {
     const instance = typeaheadRef.current?.getInstance();
@@ -227,11 +241,13 @@ export const SearchTypeahead: FC<Props> = (props: Props) => {
   );
 };
 
-SearchTypeahead.defaultProps = {
+const ForwardedSearchTypeahead = forwardRef(SearchTypeahead);
+
+ForwardedSearchTypeahead.defaultProps = {
   placeholder: '',
   keywordOnInit: '',
   behaviorOfResetBtn: 'restore',
   autoFocus: false,
 };
 
-export default SearchTypeahead;
+export default ForwardedSearchTypeahead;
