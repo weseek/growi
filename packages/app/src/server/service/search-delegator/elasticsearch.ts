@@ -99,7 +99,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       node: host,
       ssl: { rejectUnauthorized: false }, // TODO: set ssl from global env config
       auth: { username, password },
-      // requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
+      requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
     this.indexName = indexName;
@@ -527,7 +527,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         try {
           const res = await bulkWrite({
             body,
-            requestTimeout: Infinity,
+            // requestTimeout: Infinity,
           });
 
           count += (res.items || []).length;
