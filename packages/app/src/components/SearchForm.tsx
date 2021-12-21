@@ -4,10 +4,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { IFocusable } from '~/client/interfaces/focusable';
-
-import { withUnstatedContainers } from './UnstatedUtils';
 
 import SearchTypeahead from './SearchTypeahead';
 
@@ -82,7 +79,7 @@ const SearchFormHelp: FC<SearchFormHelpProps> = (props: SearchFormHelpProps) => 
 
 
 type Props = {
-  appContainer: AppContainer,
+  isSearchServiceReachable: boolean,
 
   dropup?: boolean,
   keyword?: string,
@@ -94,7 +91,7 @@ type Props = {
 const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const { t } = useTranslation();
   const {
-    appContainer, dropup, onSubmit, onInputChange,
+    isSearchServiceReachable, dropup, onSubmit, onInputChange,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
@@ -112,10 +109,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
     },
   }));
 
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
-
-  const placeholder = isReachable
+  const placeholder = isSearchServiceReachable
     ? 'Search ...'
     : 'Error on Search Service';
 
@@ -134,17 +128,10 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       onSearchError={err => setSearchError(err)}
       onBlur={() => setShownHelp(false)}
       onFocus={() => setShownHelp(true)}
-      helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isReachable} />}
+      helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
       keywordOnInit={props.keyword}
     />
   );
 };
 
-const ForwardedSearchForm = forwardRef(SearchForm);
-
-/**
- * Wrapper component for using unstated
- */
-const SearchFormWrapper = withUnstatedContainers(ForwardedSearchForm, [AppContainer]);
-
-export default SearchFormWrapper;
+export default forwardRef(SearchForm);
