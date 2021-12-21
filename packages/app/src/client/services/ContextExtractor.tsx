@@ -32,14 +32,8 @@ const ContextExtractorOnce: FC = () => {
   const pageId = mainContent?.getAttribute('data-page-id') || null;
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
-  let createdAt: Date | null;
   const createdAtAttribute = mainContent?.getAttribute('data-page-created-at');
-  if (createdAtAttribute != null) {
-    createdAt = new Date(createdAtAttribute);
-  }
-  else {
-    createdAt = null;
-  }
+  const createdAt: Date | null = (createdAtAttribute != null) ? new Date(createdAtAttribute) : null;
 
   const updatedAt = mainContent?.getAttribute('data-page-updated-at');
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
