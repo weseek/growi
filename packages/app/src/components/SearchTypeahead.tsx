@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiGet } from '~/client/util/apiv1-client';
 
 class SearchTypeahead extends React.Component {
@@ -233,8 +231,6 @@ class SearchTypeahead extends React.Component {
  * Properties
  */
 SearchTypeahead.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
@@ -256,9 +252,6 @@ SearchTypeahead.propTypes = {
  * Properties
  */
 SearchTypeahead.defaultProps = {
-  onSearchSuccess: noop,
-  onSearchError:   noop,
-  onChange:        noop,
   placeholder:     '',
   keywordOnInit:   '',
   behaviorOfResetBtn: 'restore',
