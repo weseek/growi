@@ -146,6 +146,9 @@ Crowi.prototype.initForTest = async function() {
   await this.setupModels();
   await this.setupConfigManager();
 
+  // setup messaging services
+  await this.setupSocketIoService();
+
   // // customizeService depends on AppService and XssService
   // // passportService depends on appService
   await Promise.all([
@@ -170,8 +173,8 @@ Crowi.prototype.initForTest = async function() {
     // this.setupExport(),
     // this.setupImport(),
     this.setupPageService(),
-    // this.setupInAppNotificationService(),
-    // this.setupActivityService(),
+    this.setupInAppNotificationService(),
+    this.setupActivityService(),
   ]);
 
   // globalNotification depends on slack and mailer
