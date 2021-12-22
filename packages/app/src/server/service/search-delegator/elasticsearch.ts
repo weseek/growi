@@ -90,15 +90,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   initClient() {
-    const { host, httpAuth, indexName } = this.getConnectionInfo();
-    const httpAuthArr = httpAuth.split(':');
-    const username = httpAuthArr[0];
-    const password = httpAuthArr[1];
+    const { host, auth, indexName } = this.getConnectionInfo();
 
     this.client = new elasticsearch.Client({
       node: host,
-      ssl: { rejectUnauthorized: false }, // TODO: set ssl from global env config
-      auth: { username, password },
+      ssl: { rejectUnauthorized: false },
+      auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
       // log: 'debug',
     });
@@ -107,12 +104,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   /**
    * return information object to connect to ES
-   * @return {object} { host, httpAuth, indexName}
+   * @return {object} { host, auth, indexName}
    */
   getConnectionInfo() {
     let indexName = 'crowi';
     let host = this.esUri;
-    let httpAuth = '';
+    let auth;
 
     const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
 
@@ -122,13 +119,14 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       indexName = url.pathname.substring(1); // omit heading slash
 
       if (url.username != null && url.password != null) {
-        httpAuth = `${url.username}:${url.password}`;
+        const { username, password } = url;
+        auth = { username, password };
       }
     }
 
     return {
       host,
-      httpAuth,
+      auth,
       indexName,
     };
   }
@@ -525,7 +523,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
         batch.forEach(doc => prepareBodyForCreate(body, doc));
 
         try {
-          const res = await bulkWrite({
+          const { body: res } = await bulkWrite({
             body,
             // requestTimeout: Infinity,
           });
