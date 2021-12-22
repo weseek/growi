@@ -170,7 +170,8 @@
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
-    "invalid_syntax": "%sの構文が不正です"
+    "invalid_syntax": "%sの構文が不正です",
+    "title_required": "タイトルを入力してください"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",

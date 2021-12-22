@@ -139,8 +139,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
       return {
-        type: AlertType.ERROR,
-        message: t('Page title is required'),
+        type: AlertType.WARNING,
+        message: t('form_validation.title_required'),
       };
     }
 

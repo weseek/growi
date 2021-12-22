@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 
 export const AlertType = {
-  WARNING: 'warning',
-  ERROR: 'error',
+  WARNING: 'Warning',
+  ERROR: 'Error',
 } as const;
 
 export type AlertType = typeof AlertType[keyof typeof AlertType];
@@ -81,8 +81,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
     const alertType = currentAlertInfo.type != null ? currentAlertInfo.type : AlertType.ERROR;
     const alertMessage = currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value';
+    const alertTextStyle = alertType === AlertType.ERROR ? 'text-danger' : 'text-warning';
     return (
-      <p className="text-danger text-center mt-1">{alertType}: {alertMessage}</p>
+      <p className={`${alertTextStyle} text-center mt-1`}>{alertType}: {alertMessage}</p>
     );
   };
 
