@@ -53,7 +53,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
   return (
     <li
       key={pageData._id}
-      className={`w-100 page-list-li border-bottom ${responsiveListStyleClass}`}
+      className={`w-100 grw-search-result-item border-bottom ${responsiveListStyleClass}`}
     >
       <div
         className="h-100 text-break"
