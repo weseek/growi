@@ -27,8 +27,8 @@ const AdminHome = (props) => {
       await adminHomeContainer.retrieveAdminHomeData();
     }
     catch (err) {
-      adminHomeContainer.setState({ retrieveError: err });
       toastError(err);
+      adminHomeContainer.setState({ retrieveError: err });
       logger.error(err);
     }
   }, [adminHomeContainer]);
