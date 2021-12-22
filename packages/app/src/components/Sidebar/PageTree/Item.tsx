@@ -86,8 +86,9 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 const ItemCount: FC = () => {
   return (
     <>
-      <span className="grw-pagetree-count badge badge-pill badge-light">
+      <span className="grw-pagetree-count badge badge-pill badge-light text-muted">
         {/* TODO: consider to show the number of children pages */}
+        00
       </span>
     </>
   );
