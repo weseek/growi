@@ -191,7 +191,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         </button>
         <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`grw-pagetree-title m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
         </a>
         <div className="grw-pagetree-count-wrapper">
           <ItemCount />
@@ -218,7 +218,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div key={node.page._id} className="grw-pagetree-item-container mt-2">
+          <div key={node.page._id} className="grw-pagetree-item-container">
             <Item
               isEnableActions={isEnableActions}
               itemNode={node}

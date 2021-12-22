@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
@@ -26,18 +27,25 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
   };
 
+  const selectAllCheckboxElm = useRef<IndeterminateInputElement>(null);
+  useEffect(() => {
+    if (selectAllCheckboxElm.current != null) {
+      selectAllCheckboxElm.current.indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
+    }
+  }, [selectAllCheckboxType]);
+
   return (
 
     <div className="d-flex align-items-center">
-      {/** todo: implement the design for CheckboxType = INDETERMINATE */}
       <input
         id="check-all-pages"
         type="checkbox"
         name="check-all-pages"
-        className="custom-control custom-checkbox align-self-center"
+        className="grw-indeterminate-checkbox"
+        ref={selectAllCheckboxElm}
         disabled={props.isSelectAllCheckboxDisabled}
         onClick={onClickCheckbox}
-        checked={selectAllCheckboxType !== CheckboxType.NONE_CHECKED}
+        checked={selectAllCheckboxType === CheckboxType.ALL_CHECKED}
       />
       <button
         type="button"
