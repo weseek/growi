@@ -60,20 +60,23 @@ class LegacyRevisionRenderer extends React.PureComponent {
    * @param {string} keywords
    */
   getHighlightedBody(body, keywords) {
-    let returnBody = body;
+    const returnBody = body;
 
-    keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
+    const normalizedKeywordsArray = [];
+    keywords.replace(/"/g, '').split(/[\u{20}\u{3000}]/u).forEach((keyword, i) => { // split by both full-with and half-width space
       if (keyword === '') {
         return;
       }
       const k = keyword
-        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // escape regex operators
         .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
-      const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-      returnBody = returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
+      normalizedKeywordsArray.push(k);
     });
 
-    return returnBody;
+    const normalizedKeywords = `(${normalizedKeywordsArray.join('|')})`;
+    const keywordExp = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // exclude html tag as well https://regex101.com/r/dznxyh/1
+
+    return returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
   }
 
   async renderHtml() {
