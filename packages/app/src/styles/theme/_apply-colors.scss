@@ -23,6 +23,7 @@ $color-search-item-pagelist-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
 $color-search-page-list-snippet: $gray-600 !default;
 $bgcolor-search-page-list-hover: $gray-50 !default;
+$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -614,6 +615,12 @@ body.pathname-sidebar {
  * GROWI search result
  */
 .search-result {
+  .grw-search-result-item-hover:hover {
+    background-color: $bgcolor-search-page-list-hover;
+  }
+  .grw-search-page-nav {
+    background-color: $bgcolor-subnav;
+  }
   .search-result-list {
     .search-control {
       background-color: $bgcolor-global;
@@ -637,16 +644,9 @@ body.pathname-sidebar {
         }
       }
     }
-    .search-result-list-hover-style:hover {
-      background-color: $bgcolor-search-page-list-hover;
-    }
   }
 
-  .search-result-page-title {
-    color: $color-search-page-list-title;
-  }
-
-  .search-result-list-snippet {
+  .grw-search-result-list-snippet {
     color: $color-search-page-list-snippet;
   }
 }
