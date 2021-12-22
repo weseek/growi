@@ -41,6 +41,7 @@
 	"Initialize": "初始化",
   "Update": "更新",
 	"Update Page": "更新本页",
+	"Error": "误差",
 	"Warning": "警告",
   "Sign in": "登录",
 	"Sign up is here": "注册",
@@ -168,7 +169,8 @@
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
-		"invalid_syntax": "%s的语法无效。"
+		"invalid_syntax": "%s的语法无效。",
+    "title_required": "标题是必需的。"
   },
   "not_found_page": {
     "Create Page": "创建页面",

@@ -34,11 +34,6 @@ $grw-pagetree-item-padding-left: 10px;
       width: 100%;
       overflow: hidden;
       text-decoration: none;
-
-      .grw-pagetree-title {
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
 
     .grw-pagetree-count-wrapper {
@@ -49,7 +44,7 @@ $grw-pagetree-item-padding-left: 10px;
       }
 
       .grw-pagetree-count {
-        padding: 0.3rem 1rem;
+        padding: 0.1rem 0.3rem;
       }
     }
   }
