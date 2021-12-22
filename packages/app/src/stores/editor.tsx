@@ -8,9 +8,9 @@ export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Err
   );
 };
 
-export const useSelected = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
+export const usePageTags = (tags?: string[]): SWRResponse<string[], Error> => {
+  const initialData = [];
   return (
-    useStaticSWR('isSlackEnabled', isEnabled || null, { fallbackData: initialData })
+    useStaticSWR('selectedTags', tags || null, { fallbackData: initialData })
   );
 };

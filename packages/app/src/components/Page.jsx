@@ -23,7 +23,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
@@ -80,9 +80,9 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -112,9 +112,9 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -178,6 +178,7 @@ Page.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 const PageWrapper = (props) => {
@@ -187,6 +188,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: pageTags } = usePageTags();
 
 
   if (editorMode == null) {
@@ -202,6 +204,7 @@ const PageWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      pageTags={pageTags}
     />
   );
 };

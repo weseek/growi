@@ -18,7 +18,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -173,9 +173,9 @@ class PageEditorByHackmd extends React.Component {
    */
   async onSaveWithShortcut(markdown) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     try {
       // disable unsaved warning
@@ -437,6 +437,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: pageTags } = usePageTags();
 
   if (editorMode == null) {
     return null;
@@ -451,6 +452,7 @@ const PageEditorByHackmdWrapper = (props) => {
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
+      pageTags={pageTags}
     />
   );
 };
@@ -469,6 +471,7 @@ PageEditorByHackmd.propTypes = {
   grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default withTranslation()(PageEditorByHackmdWrapper);

@@ -22,7 +22,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -134,10 +134,10 @@ class PageEditor extends React.Component {
    */
   async onSaveWithShortcut() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer, pageContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer, pageContainer, pageTags,
     } = this.props;
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     try {
       // disable unsaved warning
@@ -375,6 +375,7 @@ const PageEditorWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: pageTags } = usePageTags();
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -391,6 +392,7 @@ const PageEditorWrapper = (props) => {
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
       mutateGrant={mutateGrant}
+      pageTags={pageTags}
     />
   );
 };
@@ -410,6 +412,7 @@ PageEditor.propTypes = {
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
   mutateGrant: PropTypes.func,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default PageEditorWrapper;

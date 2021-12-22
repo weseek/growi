@@ -24,7 +24,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -53,14 +53,14 @@ class SavePageControls extends React.Component {
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
@@ -71,12 +71,12 @@ class SavePageControls extends React.Component {
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
@@ -139,6 +139,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+  const { data: pageTags } = usePageTags();
 
 
   if (isEditable == null || editorMode == null) {
@@ -161,6 +162,7 @@ const SavePageControlsWrapper = (props) => {
       mutateGrant={mutateGrant}
       mutateGrantGroupId={mutateGrantGroupId}
       mutateGrantGroupName={mutateGrantGroupName}
+      pageTags={pageTags}
     />
   );
 };
@@ -182,6 +184,7 @@ SavePageControls.propTypes = {
   mutateGrant: PropTypes.func,
   mutateGrantGroupId: PropTypes.func,
   mutateGrantGroupName: PropTypes.func,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default withTranslation()(SavePageControlsWrapper);
