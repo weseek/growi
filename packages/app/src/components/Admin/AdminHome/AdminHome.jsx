@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -22,20 +22,20 @@ const AdminHome = (props) => {
   const { t } = useTranslation();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  useEffect(() => {
-    const fetchAdminHomeData = async() => {
-      await adminHomeContainer.retrieveAdminHomeData();
-    };
-
+  const fetchAdminHomeData = useCallback(async() => {
     try {
-      fetchAdminHomeData();
+      await adminHomeContainer.retrieveAdminHomeData();
     }
     catch (err) {
-      toastError(err);
       adminHomeContainer.setState({ retrieveError: err });
+      toastError(err);
       logger.error(err);
     }
   }, [adminHomeContainer]);
+
+  useEffect(() => {
+    fetchAdminHomeData();
+  }, [fetchAdminHomeData]);
 
   return (
     <>

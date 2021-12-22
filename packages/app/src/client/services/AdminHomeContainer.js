@@ -69,7 +69,7 @@ export default class AdminHomeContainer extends Container {
     }
     catch (err) {
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to retrive AdminHome data');
     }
   }
 
