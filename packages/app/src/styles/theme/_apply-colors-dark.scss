@@ -61,9 +61,9 @@ textarea.form-control {
     background-color: theme-color('secondary');
     border: 1px solid theme-color('secondary');
     border-right: none;
-  }
-  > .text-muted {
-    color: theme-color('light') !important;
+    &.text-muted {
+      color: theme-color('light') !important;
+    }
   }
 }
 
