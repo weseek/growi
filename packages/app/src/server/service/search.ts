@@ -114,8 +114,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('update', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
-    pageEvent.on('syncDescendantsDeleted', this.fullTextSearchDelegator.syncDescendantsPagesDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('syncDescendantsDeleted', this.fullTextSearchDelegator.syncDescendantsPagesDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
