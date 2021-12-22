@@ -49,6 +49,7 @@ export default class TagContainer extends Container {
     // when the page exists or shared page
     if (pageId != null && shareLinkId == null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
+      console.log(res);
       tags = res.tags;
     }
     // when the page not exist

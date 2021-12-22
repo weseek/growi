@@ -106,21 +106,6 @@ export default class EditorContainer extends Container {
     }
   }
 
-  // TODO: Remove when SWR is complete
-  getCurrentOptionsToSave() {
-    const opt = {
-      // isSlackEnabled: this.state.isSlackEnabled,
-      // slackChannels: this.state.slackChannels,
-      // grant: this.state.grant,
-      pageTags: this.state.tags,
-    };
-
-    // if (this.state.grantGroupId != null) {
-    //   opt.grantUserGroupId = this.state.grantGroupId;
-    // }
-
-    return opt;
-  }
 
   // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {
