@@ -2,8 +2,10 @@ import useSWR, { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { usePageId, useTemplateTagData, useShareLinkId } from '~/stores/context';
-import { IPage } from '~/interfaces/page';
-import { HasObjectId } from '~/interfaces/has-object-id';
+import { GetPageTagResponse } from '~/interfaces/tag';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:services:TagContainer');
 
 
 export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
@@ -20,15 +22,15 @@ export const usePageTags = (pageTags?: string[]): SWRResponse<string[] | void, E
 
 
   if (shareLinkId != null) {
-    return [];
+    return;
   }
 
-  let tags = [];
+  let tags: string[] = [];
   // when the page exists or shared page
   if (pageId != null && shareLinkId == null) {
     return useSWR(
       '/pages.getPageTag',
-      endpoint => apiv3Get<{ pages:(IPage & HasObjectId)[] }>(endpoint).then((res) => { tags = res.tags }),
+      endpoint => apiv3Get<GetPageTagResponse>(endpoint).then((res) => { tags = res.data.tags }),
     );
   }
   // when the page not exist
