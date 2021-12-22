@@ -22,7 +22,6 @@ $bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%) 
 $color-search-item-pagelist-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
 $color-search-page-list-snippet: $gray-600 !default;
-$bgcolor-search-page-list-hover: $gray-50 !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
@@ -615,9 +614,6 @@ body.pathname-sidebar {
  * GROWI search result
  */
 .search-result {
-  .grw-search-result-item-hover:hover {
-    background-color: $bgcolor-search-page-list-hover;
-  }
   .grw-search-page-nav {
     background-color: $bgcolor-subnav;
   }
