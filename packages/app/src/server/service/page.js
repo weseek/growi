@@ -303,7 +303,7 @@ class PageService {
         logger.debug(`Reverting pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
-        pageEvent.emit('syncDescendants', targetPage, user);
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
         callback();
       },
     });
@@ -499,7 +499,7 @@ class PageService {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
-        pageEvent.emit('syncDescendants', page, user);
+        pageEvent.emit('syncDescendantsUpdate', page, user);
         callback();
       },
     });
@@ -596,7 +596,7 @@ class PageService {
       }
     }
     finally {
-      this.pageEvent.emit('syncDescendantsDeleted', pages, user);
+      this.pageEvent.emit('syncDescendantsDelete', pages, user);
     }
   }
 
@@ -644,7 +644,7 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('syncDescendantsDeleted', pages, user); // update as renamed page
+    this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
 
     return;
   }
