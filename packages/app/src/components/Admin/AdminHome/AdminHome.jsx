@@ -28,7 +28,6 @@ const AdminHome = (props) => {
     }
     catch (err) {
       toastError(err);
-      adminHomeContainer.setState({ retrieveError: err });
       logger.error(err);
     }
   }, [adminHomeContainer]);
