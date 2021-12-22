@@ -25,7 +25,6 @@ export default class AdminHomeContainer extends Container {
     this.timer = null;
 
     this.state = {
-      retrieveError: null,
       growiVersion: '',
       nodeVersion: '',
       npmVersion: '',
