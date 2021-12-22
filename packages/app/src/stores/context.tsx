@@ -30,8 +30,8 @@ export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<N
   return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData ?? null);
 };
 
-export const useCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('createdAt', initialData ?? null);
+export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
+  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData ?? null);
 };
 
 export const useUpdatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
