@@ -595,6 +595,9 @@ class PageService {
         throw new Error('Failed to revert pages: ', err);
       }
     }
+    finally {
+      this.pageEvent.emit('syncDescendantsDeleted', pages, user);
+    }
   }
 
   /**
@@ -641,7 +644,7 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteMultipleCompletely', pages, user); // update as renamed page
+    this.pageEvent.emit('syncDescendantsDeleted', pages, user); // update as renamed page
 
     return;
   }
