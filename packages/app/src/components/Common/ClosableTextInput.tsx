@@ -1,10 +1,11 @@
 import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const AlertType = {
-  WARNING: 'Warning',
-  ERROR: 'Error',
+  WARNING: 'warning',
+  ERROR: 'error',
 } as const;
 
 export type AlertType = typeof AlertType[keyof typeof AlertType];
@@ -23,6 +24,7 @@ type ClosableTextInputProps = {
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
@@ -82,8 +84,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     const alertType = currentAlertInfo.type != null ? currentAlertInfo.type : AlertType.ERROR;
     const alertMessage = currentAlertInfo.message != null ? currentAlertInfo.message : 'Invalid value';
     const alertTextStyle = alertType === AlertType.ERROR ? 'text-danger' : 'text-warning';
+    const translation = alertType === AlertType.ERROR ? 'Error' : 'Warning';
     return (
-      <p className={`${alertTextStyle} text-center mt-1`}>{alertType}: {alertMessage}</p>
+      <p className={`${alertTextStyle} text-center mt-1`}>{t(translation)}: {alertMessage}</p>
     );
   };
 
