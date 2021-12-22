@@ -48,7 +48,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     />
   );
 
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `search-result-list-hover-style list-group-item-action ${isSelected ? 'active' : ''}`}`;
+  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `grw-search-result-item-hover list-group-item-action ${isSelected ? 'active' : ''}`}`;
 
   return (
     <li
@@ -77,8 +77,10 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
           <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
             <h6 className="mb-1 py-1">
-              <i className="icon-fw icon-home"></i>
-              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>{pagePathElem}</a>
+              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
+                <i className="icon-fw icon-home"></i>
+                {pagePathElem}
+              </a>
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
@@ -106,7 +108,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
                 />
               </div>
             </div>
-            <div className="search-result-list-snippet py-1">
+            <div className="grw-search-result-list-snippet py-1">
               <Clamp lines={2}>
                 {
                   pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (

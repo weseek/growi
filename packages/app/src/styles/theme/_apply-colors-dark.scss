@@ -55,11 +55,16 @@ textarea.form-control {
   background-color: lighten($bgcolor-global, 5%);
 }
 
-.input-group > .input-group-prepend > .input-group-text {
-  color: theme-color('light');
-  background-color: theme-color('secondary');
-  border: 1px solid theme-color('secondary');
-  border-right: none;
+.input-group > .input-group-prepend {
+  > .input-group-text {
+    color: theme-color('light');
+    background-color: theme-color('secondary');
+    border: 1px solid theme-color('secondary');
+    border-right: none;
+  }
+  > .text-muted {
+    color: theme-color('light') !important;
+  }
 }
 
 .input-group input {
@@ -452,4 +457,23 @@ ul.pagination {
  */
 .grw-modal-head {
   border-color: $border-color-global;
+}
+
+/*
+ * search page
+ */
+.on-search {
+  .grw-search-result-item {
+    &.active {
+      background-color: rgba($gray-700, 0.7) !important;
+      border-color: $bordercolor-search-item-left-active;
+    }
+  }
+  .grw-search-result-item-hover:hover {
+    background-color: $bgcolor-list-hover;
+  }
+
+  .grw-search-result-list-snippet {
+    color: theme-color('light');
+  }
 }
