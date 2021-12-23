@@ -25,25 +25,21 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
 
   return (
     <>
-      <span>
-        <LikeButtons
-          hideTotalNumber={isCompactMode}
-          onLikeClicked={onLikeClicked}
-          sumOfLikers={sumOfLikers}
-          isLiked={isLiked}
-          likers={likers}
-        >
-        </LikeButtons>
-      </span>
-      <span>
-        <BookmarkButton
-          hideTotalNumber={isCompactMode}
-          sumOfBookmarks={sumOfBookmarks}
-          isBookmarked={isBookmarked}
-          onBookMarkClicked={onBookMarkClicked}
-        >
-        </BookmarkButton>
-      </span>
+      <LikeButtons
+        hideTotalNumber={isCompactMode}
+        onLikeClicked={onLikeClicked}
+        sumOfLikers={sumOfLikers}
+        isLiked={isLiked}
+        likers={likers}
+      >
+      </LikeButtons>
+      <BookmarkButton
+        hideTotalNumber={isCompactMode}
+        sumOfBookmarks={sumOfBookmarks}
+        isBookmarked={isBookmarked}
+        onBookMarkClicked={onBookMarkClicked}
+      >
+      </BookmarkButton>
     </>
   );
 };

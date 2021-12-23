@@ -36,7 +36,7 @@ class LegacyBookmarkButton extends React.Component {
           id="bookmark-button"
           onClick={this.handleClick}
           className={`btn btn-bookmark border-0
-          ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
           { !hideTotalNumber && (
@@ -72,12 +72,7 @@ LegacyBookmarkButton.propTypes = {
   hideTotalNumber: PropTypes.bool,
   sumOfBookmarks: PropTypes.number,
   t: PropTypes.func.isRequired,
-  size: PropTypes.string,
   onBookMarkClicked: PropTypes.func,
-};
-
-LegacyBookmarkButton.defaultProps = {
-  size: 'md',
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

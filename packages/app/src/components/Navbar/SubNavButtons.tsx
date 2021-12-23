@@ -77,7 +77,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo;
 
   return (
-    <>
+    <div className="d-flex" style={{ gap: '2px' }}>
       {isViewMode && (
         <PageReactionButtons
           isCompactMode={isCompactMode}
@@ -102,7 +102,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
         >
         </PageManagement>
       )}
-    </>
+    </div>
   );
 };
 
