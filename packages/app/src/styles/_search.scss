@@ -1,39 +1,21 @@
-.search-group-submit-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-}
-
-.search-listpage-clear {
-  position: absolute;
-  right: 8px;
-  display: none;
-  width: 22px;
-  height: 22px;
-  padding: 8px;
-  font-size: 0.6em;
-  color: $gray-300;
-}
-
 .search-typeahead {
   position: relative;
   width: 100%;
-
+  // corner radius
+  border-top-right-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+  .rbt-input-main {
+    padding-right: 36px;
+  }
   .search-clear {
     position: absolute;
     top: 4px;
-    right: 26px;
+    right: 4px;
     z-index: 3;
     width: 24px;
     height: 24px;
     padding: 0;
-    color: $gray-400;
+    line-height: 0;
   }
 
   .rbt-menu {
@@ -77,15 +59,6 @@
   }
 
   .search-typeahead {
-    // corner radius
-    border-top-right-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-    .rbt-input-main {
-      padding-right: 58px;
-      // corner radius
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
-    }
     .rbt-menu {
       @extend .dropdown-menu-right;
       @extend .dropdown-menu-md-left;
@@ -108,22 +81,6 @@
   .form-group:not(.has-error) {
     .rbt-input.form-control {
       border: none;
-    }
-  }
-
-  .btn-group-submit-search {
-    @extend .search-group-submit-button;
-  }
-}
-
-.grw-search-form-in-search-result-page {
-  .btn-group-submit-search {
-    @extend .search-group-submit-button;
-  }
-
-  button {
-    &:focus {
-      box-shadow: none !important;
     }
   }
 }
@@ -169,6 +126,10 @@
 .search-result {
   .search-control {
     padding: 5px 0;
+  }
+  // To fix the sort options position
+  .search-sort-option-btn {
+    min-width: 12rem;
   }
   .search-control-include-options {
     .card-body {

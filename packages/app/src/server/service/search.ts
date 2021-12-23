@@ -2,6 +2,8 @@ import RE2 from 're2';
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import { IFormattedSearchResult } from '~/interfaces/search';
+import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
@@ -10,10 +12,8 @@ import {
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
-import loggerFactory from '~/utils/logger';
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
-import { IPageSearchResultData } from '~/interfaces/search';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -33,18 +33,6 @@ const normalizeQueryString = (_queryString: string): string => {
 
   return queryString;
 };
-
-export type FormattedSearchResult = {
-  data: IPageSearchResultData[]
-
-  totalCount: number
-
-  meta: {
-    total: number
-    took?: number
-    count?: number
-  }
-}
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -355,7 +343,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<FormattedSearchResult> {
+  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
       const data = searchResult.data.map((page) => {
         return {
@@ -376,7 +364,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
      */
     const Page = this.crowi.model('Page') as PageModel;
     const User = this.crowi.model('User');
-    const result = {} as FormattedSearchResult;
+    const result = {} as IFormattedSearchResult;
 
     // get page data
     const pageIds = searchResult.data.map((page) => { return page._id });
