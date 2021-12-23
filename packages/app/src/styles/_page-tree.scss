@@ -21,10 +21,6 @@ $grw-pagetree-item-padding-left: 10px;
       transition: all 0.2s ease-out;
       transform: rotate(0deg);
 
-      &:focus {
-        box-shadow: none;
-      }
-
       &.grw-pagetree-open {
         transform: rotate(90deg);
       }
