@@ -649,7 +649,7 @@ class PageService {
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, isRevertPage = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -661,11 +661,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    // when revertDeletedPage is executed, the revert event is raised
-    if (page.redirectTo != null && isTrashPage(page.redirectTo)) {
-      this.pageEvent.emit('revert', page, user);
-    }
-    else {
+    if (!isRevertPage) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
@@ -770,7 +766,9 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.deleteCompletely(originPage, options);
+
+      await this.deleteCompletely(originPage, user, options, false, true);
+      this.pageEvent.emit('revert', page, user);
     }
 
     if (isRecursively) {
