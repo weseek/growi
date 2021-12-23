@@ -34,7 +34,7 @@ export class DevidedPagePath {
 
     let PATTERN_DEFAULT = /^((.*)\/)?(.+)$/; // https://regex101.com/r/jpZwIe/1
     try { // for non-chrome browsers
-      PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/; // https://regex101.com/r/HJNvMW/1
+      PATTERN_DEFAULT = new RegExp('^((.*)(?<!<)\\/)?(.+)$'); // https://regex101.com/r/HJNvMW/1
     }
     catch (err) {
       // lookbehind regex is not supported on non-chrome browsers
