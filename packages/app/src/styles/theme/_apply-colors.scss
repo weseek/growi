@@ -17,11 +17,11 @@ $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcol
 $color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
-$bordercolor-search-item-left-active: $primary;
-$bgcolor-search-item-active: lighten($bordercolor-search-item-left-active, 76%) !default;
+$bgcolor-search-item-active: lighten($primary, 76%) !default;
 $color-search-item-pagelist-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
 $color-search-page-list-snippet: $gray-600 !default;
+$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -613,6 +613,9 @@ body.pathname-sidebar {
  * GROWI search result
  */
 .search-result {
+  .grw-search-page-nav {
+    background-color: $bgcolor-subnav;
+  }
   .search-result-list {
     .search-control {
       background-color: $bgcolor-global;
@@ -622,10 +625,10 @@ body.pathname-sidebar {
         background-color: $bgcolor-keyword-highlighted;
       }
       .page-list-ul {
-        .page-list-li {
+        .grw-search-result-item {
           &.active {
             background-color: $bgcolor-search-item-active;
-            border-color: $bordercolor-search-item-left-active;
+            border-color: $primary;
           }
         }
       }
@@ -638,11 +641,7 @@ body.pathname-sidebar {
     }
   }
 
-  .search-result-page-title {
-    color: $color-search-page-list-title;
-  }
-
-  .search-result-list-snippet {
+  .grw-search-result-list-snippet {
     color: $color-search-page-list-snippet;
   }
 }

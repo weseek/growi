@@ -1,7 +1,3 @@
-.search-page-nav {
-  background-color: #f7f7f7;
-}
-
 .search-group-submit-button {
   position: absolute;
   top: 0;
@@ -190,7 +186,8 @@
       overflow-y: scroll;
     }
     .nav.nav-pills {
-      > .page-list-li {
+      > .grw-search-result-item {
+        min-height: 136px;
         &.active {
           border-left: solid 3px transparent;
           .search-item-checkbox {
@@ -221,9 +218,6 @@
           }
         }
       }
-    }
-    .search-result-item {
-      min-height: 136px;
     }
 
     .search-result-meta {
