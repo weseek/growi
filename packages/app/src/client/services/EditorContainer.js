@@ -106,7 +106,6 @@ export default class EditorContainer extends Container {
     }
   }
 
-
   // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {
     // Cancel the event
