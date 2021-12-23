@@ -661,6 +661,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
+    // when revertDeletedPage is executed, the revert event is raised
     if (page.redirectTo != null && isTrashPage(page.redirectTo)) {
       this.pageEvent.emit('revert', page, user);
     }
