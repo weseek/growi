@@ -463,7 +463,7 @@ ul.pagination {
 .on-search {
   .grw-search-result-item {
     &.active {
-      background-color: lighten($bgcolor-list, 9%) !important;
+      background-color: lighten($bgcolor-global, 9%) !important;
     }
   }
   .list-group-item-action:hover {
