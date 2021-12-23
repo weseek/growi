@@ -66,6 +66,7 @@ require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
+require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
 require('codemirror/mode/clike/clike');
@@ -149,6 +150,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
+
+    this.foldDrawioSection = this.foldDrawioSection.bind(this);
+    this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
   }
 
   init() {
@@ -185,6 +189,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = this.props.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // fold drawio section
+    this.foldDrawioSection();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -195,6 +202,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+
+    // fold drawio section
+    this.foldDrawioSection();
   }
 
   async initializeTextlint() {
@@ -741,6 +751,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
+  // fold draw.io section (::: drawio ~ :::)
+  foldDrawioSection() {
+    const editor = this.getCodeMirror();
+    const lineNumbers = mdu.findAllDrawioSection(editor);
+    lineNumbers.forEach((lineNumber) => {
+      editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
+    });
+  }
+
+  onSaveForDrawio(drawioData) {
+    const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
+    // Fold the section after the drawio section (:::drawio) has been updated.
+    this.foldDrawioSection();
+    return range;
+  }
+
   getNavbarItems() {
     return [
       <Button
@@ -974,7 +1000,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         />
         <DrawioModal
           ref={this.drawioModal}
-          onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
+          onSave={this.onSaveForDrawio}
         />
 
       </React.Fragment>

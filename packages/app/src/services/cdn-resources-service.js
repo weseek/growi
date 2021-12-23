@@ -4,7 +4,7 @@ import { resolveFromRoot } from '~/utils/project-dir-utils';
 const { URL } = require('url');
 const urljoin = require('url-join');
 
-const { envUtils } = require('growi-commons');
+const { envUtils } = require('@growi/core');
 
 const cdnLocalScriptRoot = 'public/static/js/cdn';
 const cdnLocalScriptWebRoot = '/static/js/cdn';

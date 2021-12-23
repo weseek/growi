@@ -11,6 +11,7 @@ import PageContainer from '~/client/services/PageContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
+import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
 
 import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
@@ -70,12 +71,14 @@ const GrowiSubNavigation = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: createdAt } = useCurrentCreatedAt();
+  const { data: updatedAt } = useCurrentUpdatedAt();
 
   const {
     appContainer, pageContainer, isCompactMode,
   } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
+    pageId, path, creator, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;

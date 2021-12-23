@@ -14,7 +14,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
-const { pathUtils } = require('growi-commons');
+const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
