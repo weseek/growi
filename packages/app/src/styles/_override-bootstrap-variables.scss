@@ -79,12 +79,6 @@ $border-radius: 4px;
 $border-radius-sm: 0;
 $border-radius-lg: 8px;
 
-// Buttons + Forms
-//
-// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
-
-$input-btn-focus-box-shadow: none;
-
 // Buttons
 //
 // For each of Bootstrap's buttons, define text, background, and border color.
@@ -95,7 +89,6 @@ $btn-active-box-shadow: none;
 //== Forms
 //
 $input-border-color: $gray-300;
-
 $input-placeholder-color: $gray-500;
 
 $custom-control-indicator-border-color: $gray-400;

@@ -77,6 +77,7 @@ $theme-colors: map-merge($theme-colors, $colors);
   .btn-#{$color} {
     @include button-variant($value, $value);
     @include button-svg-icon-variant($value, $value);
+    box-shadow: none !important;
   }
 }
 
@@ -89,6 +90,7 @@ $theme-colors: map-merge($theme-colors, $colors);
     .show > &.dropdown-toggle {
       color: $value;
     }
+    box-shadow: none !important;
   }
 }
 
