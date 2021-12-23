@@ -4,36 +4,42 @@ import { IUser } from '../interfaces/user';
 import BookmarkButton from './BookmarkButton';
 
 type Props = {
-  sumOfLikers: number,
+  isCompactMode?: boolean,
+
   isLiked: boolean,
+  sumOfLikers: number,
   likers: IUser[],
   onLikeClicked?: ()=>void,
-  sumOfBookmarks: number,
+
   isBookmarked: boolean,
+  sumOfBookmarks: number,
   onBookMarkClicked: ()=>void,
 }
 
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    sumOfLikers, isLiked, likers, onLikeClicked, sumOfBookmarks, isBookmarked, onBookMarkClicked,
+    isCompactMode, sumOfLikers, isLiked, likers, onLikeClicked, sumOfBookmarks, isBookmarked, onBookMarkClicked,
   } = props;
 
 
   return (
     <>
-      <span>
-        <LikeButtons
-          onLikeClicked={onLikeClicked}
-          sumOfLikers={sumOfLikers}
-          isLiked={isLiked}
-          likers={likers}
-        >
-        </LikeButtons>
-      </span>
-      <span>
-        <BookmarkButton sumOfBookmarks={sumOfBookmarks} isBookmarked={isBookmarked} onBookMarkClicked={onBookMarkClicked}></BookmarkButton>
-      </span>
+      <LikeButtons
+        hideTotalNumber={isCompactMode}
+        onLikeClicked={onLikeClicked}
+        sumOfLikers={sumOfLikers}
+        isLiked={isLiked}
+        likers={likers}
+      >
+      </LikeButtons>
+      <BookmarkButton
+        hideTotalNumber={isCompactMode}
+        sumOfBookmarks={sumOfBookmarks}
+        isBookmarked={isBookmarked}
+        onBookMarkClicked={onBookMarkClicked}
+      >
+      </BookmarkButton>
     </>
   );
 };

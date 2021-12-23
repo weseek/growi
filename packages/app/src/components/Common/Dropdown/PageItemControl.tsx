@@ -63,7 +63,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         )}
         {isEnableActions && (
           <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw icon-star"></i>
+            <i className="fa fa-fw fa-bookmark-o"></i>
             {t('Add to bookmark')}
           </DropdownItem>
         )}

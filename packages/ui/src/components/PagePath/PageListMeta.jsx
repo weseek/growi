@@ -30,7 +30,7 @@ export class PageListMeta extends React.Component {
 
     let likerCount;
     if (page.liker != null && page.liker.length > 0) {
-      likerCount = <span className="meta-icon"><i className="icon-like" />{page.liker.length}</span>;
+      likerCount = <span className="meta-icon"><i className="fa fa-heart-o" />{page.liker.length}</span>;
     }
 
     let locked;
@@ -50,11 +50,11 @@ export class PageListMeta extends React.Component {
 
     let bookmarkCount;
     if (this.props.bookmarkCount > 0) {
-      bookmarkCount = <span className="meta-icon"><i className="icon-star" />{this.props.bookmarkCount}</span>;
+      bookmarkCount = <span className="meta-icon"><i className="fa fa-bookmark-o" />{this.props.bookmarkCount}</span>;
     }
 
     return (
-      <span className="page-list-meta">
+      <span className="page-list-meta ml-2">
         {topLabel}
         {templateLabel}
         {seenUserCount}
