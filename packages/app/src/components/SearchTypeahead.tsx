@@ -2,8 +2,6 @@ import React, {
   FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
   KeyboardEvent, useCallback, useRef, useState,
 } from 'react';
-// eslint-disable-next-line no-restricted-imports
-import { AxiosResponse } from 'axios';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
