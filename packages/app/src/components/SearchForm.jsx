@@ -138,19 +138,21 @@ class SearchForm extends React.Component {
       : t('search.search page bodies');
 
     return (
-      <SearchTypeahead
-        dropup={dropup}
-        onChange={this.onChange}
-        onSubmit={this.props.onSubmit}
-        onInputChange={this.props.onInputChange}
-        onSearchError={this.onSearchError}
-        emptyLabel={emptyLabel}
-        placeholder={placeholder}
-        helpElement={this.getHelpElement()}
-        keywordOnInit={this.props.keyword}
-        onBlur={this.onBlur}
-        onFocus={this.onFocus}
-      />
+      <div className="search-typeahead">
+        <SearchTypeahead
+          dropup={dropup}
+          onChange={this.onChange}
+          onSubmit={this.props.onSubmit}
+          onInputChange={this.props.onInputChange}
+          onSearchError={this.onSearchError}
+          emptyLabel={emptyLabel}
+          placeholder={placeholder}
+          helpElement={this.getHelpElement()}
+          keywordOnInit={this.props.keyword}
+          onBlur={this.onBlur}
+          onFocus={this.onFocus}
+        />
+      </div>
     );
   }
 

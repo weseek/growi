@@ -24,7 +24,15 @@
 .search-typeahead {
   position: relative;
   width: 100%;
-
+  // corner radius
+  border-top-right-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+  .rbt-input-main {
+    padding-right: 58px;
+    // corner radius
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
   .search-clear {
     position: absolute;
     top: 4px;
@@ -77,15 +85,6 @@
   }
 
   .search-typeahead {
-    // corner radius
-    border-top-right-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-    .rbt-input-main {
-      padding-right: 58px;
-      // corner radius
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
-    }
     .rbt-menu {
       @extend .dropdown-menu-right;
       @extend .dropdown-menu-md-left;
