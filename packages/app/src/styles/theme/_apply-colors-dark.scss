@@ -462,7 +462,6 @@ ul.pagination {
   .grw-search-result-item {
     &.active {
       background-color: lighten($bgcolor-list, 9%) !important;
-      border-color: $bordercolor-search-item-left-active;
     }
   }
   .list-group-item-action:hover {
