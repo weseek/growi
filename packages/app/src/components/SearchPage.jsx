@@ -150,6 +150,12 @@ class SearchPage extends React.Component {
   // todo: refactoring
   // refs: https://redmine.weseek.co.jp/issues/82139
   async search(data) {
+    // reset following states when search runs
+    this.setState({
+      selectedPagesIdList: new Set(),
+      selectAllCheckboxType: CheckboxType.NONE_CHECKED,
+    });
+
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
