@@ -649,7 +649,7 @@ class PageService {
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false, isRevertDeletedPage = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -661,7 +661,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    if (!isRevertDeletedPage) {
+    if (!preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
