@@ -16,6 +16,9 @@ const AuthorInfo = (props) => {
   const infoLabelForSubNav = mode === 'create'
     ? 'Created by'
     : 'Updated by';
+  const nullinfoLabelForFooter = mode === 'create'
+    ? 'Created by'
+    : 'Updated by';
   const infoLabelForFooter = mode === 'create'
     ? 'Created at'
     : 'Last revision posted at';
@@ -29,7 +32,7 @@ const AuthorInfo = (props) => {
     }
     catch (err) {
       if (err instanceof RangeError) {
-        return <p>Created by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm" /> {userLabel}</p>;
       }
       return;
     }
