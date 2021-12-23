@@ -76,11 +76,6 @@ const GlobalSearch: FC<Props> = (props: Props) => {
           onInputChange={text => setText(text)}
           onSubmit={search}
         />
-        <div className="btn-group-submit-search">
-          <span className="btn-link text-decoration-none" onClick={search}>
-            <i className="icon-magnifier"></i>
-          </span>
-        </div>
       </div>
     </div>
   );
