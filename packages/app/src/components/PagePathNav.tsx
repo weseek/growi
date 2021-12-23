@@ -36,7 +36,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
   }
 
   const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
-  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
+  const copyDropdownToggleClassName = 'd-block btn-outline-secondary btn-copy border-0 text-muted p-2';
 
   return (
     <div className="grw-page-path-nav">

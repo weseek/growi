@@ -28,7 +28,10 @@
 
 .btn-copy,
 .btn-edit {
-  opacity: 0.3;
+  &:not(:hover):not(:active) {
+    background-color: transparent !important;
+  }
+  opacity: 0.5;
 }
 
 .btn-edit-tags {
