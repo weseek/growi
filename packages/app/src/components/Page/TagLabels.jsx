@@ -1,19 +1,18 @@
 import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import EditorContainer from '~/client/services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 import { EditorMode } from '~/stores/ui';
+import { usePageTags } from '~/stores/editor';
 
-class TagLabels extends React.Component {
+class TagLabelsCore extends React.Component {
 
   constructor(props) {
     super(props);
@@ -33,8 +32,11 @@ class TagLabels extends React.Component {
    *   2. editorContainer.state.tags if editorMode is edit
    */
   getTagData() {
-    const { editorContainer, pageContainer, editorMode } = this.props;
-    return (editorMode === EditorMode.Editor) ? editorContainer.state.tags : pageContainer.state.tags;
+    // TODO: Migrate pageContainer.state.tags to SWR
+    const {
+      pageContainer, editorMode, editorContainerTags,
+    } = this.props;
+    return (editorMode === EditorMode.Editor) ? editorContainerTags : pageContainer.state.tags;
   }
 
   openEditorModal() {
@@ -47,14 +49,14 @@ class TagLabels extends React.Component {
 
   async tagsUpdatedHandler(newTags) {
     const {
-      appContainer, editorContainer, pageContainer, editorMode,
+      appContainer, pageContainer, editorMode, mutateEditorContainerTags,
     } = this.props;
 
     const { pageId } = pageContainer.state;
 
     // It will not be reflected in the DB until the page is refreshed
     if (editorMode === EditorMode.Editor) {
-      return editorContainer.setState({ tags: newTags });
+      return mutateEditorContainerTags(newTags);
     }
 
     try {
@@ -62,8 +64,8 @@ class TagLabels extends React.Component {
 
       // update pageContainer.state
       pageContainer.setState({ tags });
-      // update editorContainer.state
-      editorContainer.setState({ tags });
+      // update editorContainer tags
+      mutateEditorContainerTags(tags);
 
       toastSuccess('updated tags successfully');
     }
@@ -108,16 +110,26 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWrapper = withUnstatedContainers(TagLabels, [AppContainer, PageContainer, EditorContainer]);
+const TagLabelsWithUnstated = withUnstatedContainers(TagLabelsCore, [AppContainer, PageContainer]);
 
-TagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  editorMode: PropTypes.string,
+const TagLabels = (props) => {
+  const { data: editorContainerTags, mutate: mutateEditorContainerTags } = usePageTags();
+  return (
+    <TagLabelsWithUnstated
+      {...props}
+      editorContainerTags={editorContainerTags}
+      mutateEditorContainerTags={mutateEditorContainerTags}
+    />
+  );
 };
 
-export default withTranslation()(TagLabelsWrapper);
+export default TagLabels;
+
+TagLabelsCore.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  editorMode: PropTypes.string,
+  editorContainerTags: PropTypes.arrayOf(PropTypes.string),
+  mutateEditorContainerTags: PropTypes.func,
+};
