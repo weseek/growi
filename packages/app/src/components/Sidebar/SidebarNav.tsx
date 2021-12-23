@@ -81,7 +81,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
         {!isSharedUser && <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
         {!isSharedUser && <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />}
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
-        {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
+        {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}

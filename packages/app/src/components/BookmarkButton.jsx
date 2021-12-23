@@ -38,7 +38,7 @@ class LegacyBookmarkButton extends React.Component {
           className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
-          <i className="icon-star"></i>
+          <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
           { !hideTotalNumber && (
             <span className="total-bookmarks ml-3">
               {sumOfBookmarks && (

@@ -49,7 +49,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className="icon-like"></i>
+        <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
       {isGuestUser && (
         <UncontrolledTooltip placement="top" target="like-button" fade={false}>

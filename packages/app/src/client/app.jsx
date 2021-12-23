@@ -127,7 +127,6 @@ if (pageContainer.state.pageId != null) {
     'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
-    'user-bookmark-icon': <BookmarkIcon />,
   });
 
   // show the Page accessory modal when query of "compare" is requested
