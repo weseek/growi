@@ -8,6 +8,9 @@ import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { blinkElem } from '~/client/util/blink-section-header';
 
 import RevisionBody from './RevisionBody';
+import { loggerFactory } from '^/../codemirror-textlint/src/utils/logger';
+
+const logger = loggerFactory('components:Page:RevisionRenderer');
 
 class LegacyRevisionRenderer extends React.PureComponent {
 
@@ -75,7 +78,15 @@ class LegacyRevisionRenderer extends React.PureComponent {
 
     const normalizedKeywords = `(${normalizedKeywordsArray.join('|')})`;
     const keywordRegxp = new RegExp(`${normalizedKeywords}(?!(.*?"))`, 'ig'); // prior https://regex101.com/r/oX7dq5/1
-    const keywordRegexp2 = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // inferior (this doesn't work well when html tags exist a lot) https://regex101.com/r/Dfi61F/1
+    let keywordRegexp2 = keywordRegxp;
+
+    // for non-chrome browsers compatibility
+    try {
+      keywordRegexp2 = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // inferior (this doesn't work well when html tags exist a lot) https://regex101.com/r/Dfi61F/1
+    }
+    catch (err) {
+      logger.debug('Failed to initialize regex:', err);
+    }
 
     const highlighter = (str) => { return str.replace(keywordRegxp, '<em class="highlighted-keyword">$&</em>') }; // prior
     const highlighter2 = (str) => { return str.replace(keywordRegexp2, '<em class="highlighted-keyword">$&</em>') }; // inferior
