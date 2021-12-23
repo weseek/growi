@@ -33,7 +33,6 @@ import PageStatusAlert from '../components/PageStatusAlert';
 import RecentCreated from '../components/RecentCreated/RecentCreated';
 import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
 import MyDraftList from '../components/MyDraftList/MyDraftList';
-import BookmarkIcon from '../components/Icons/BookmarkIcon';
 import BookmarkList from '../components/PageList/BookmarkList';
 import LikerList from '../components/User/LikerList';
 import Fab from '../components/Fab';
@@ -127,7 +126,6 @@ if (pageContainer.state.pageId != null) {
     'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
-    'user-bookmark-icon': <BookmarkIcon />,
   });
 
   // show the Page accessory modal when query of "compare" is requested

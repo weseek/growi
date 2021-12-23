@@ -55,7 +55,7 @@ const ContentLinkButtons = (props) => {
         className="btn btn-outline-secondary btn-sm px-2"
         onClick={() => smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
       >
-        <i className="mr-2 icon-star"></i>
+        <i className="fa fa-fw fa-bookmark-o"></i>
         <span>Bookmarks</span>
       </button>
 

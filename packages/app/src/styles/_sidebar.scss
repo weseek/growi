@@ -31,6 +31,13 @@
     $width: 27.691px;
     $height: 23.999px;
 
+    @mixin hitarea($size-hitarea) {
+      top: ($width - $size-hitarea) / 2;
+      left: ($height - $size-hitarea) / 2;
+      width: $size-hitarea;
+      height: $size-hitarea;
+    }
+
     // locate to the center of screen
     top: calc(50vh - $height/2);
 
@@ -57,13 +64,8 @@
     .hitarea {
       @extend .rounded-pill;
 
-      $size-hitarea: 55px;
-
       position: absolute;
-      top: ($width - $size-hitarea) / 2;
-      left: ($height - $size-hitarea) / 2;
-      width: $size-hitarea;
-      height: $size-hitarea;
+      @include hitarea(30px);
     }
 
     // reverse and center icon at the time of collapsed
@@ -71,6 +73,9 @@
       opacity: 1;
       .hexagon-container svg {
         transform: rotate(180deg);
+      }
+      .hitarea {
+        @include hitarea(80px);
       }
     }
   }

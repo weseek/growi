@@ -103,17 +103,15 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex">
 
         <div className="d-flex flex-column align-items-end">
-          <div className="d-flex">
-            <SubNavButtons
-              isCompactMode={isCompactMode}
-              pageId={pageId}
-              revisionId={revisionId}
-              path={path}
-              isDeletable={isDeletable}
-              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-              willShowPageManagement={isAbleToShowPageManagement}
-            />
-          </div>
+          <SubNavButtons
+            isCompactMode={isCompactMode}
+            pageId={pageId}
+            revisionId={revisionId}
+            path={path}
+            isDeletable={isDeletable}
+            isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+            willShowPageManagement={isAbleToShowPageManagement}
+          />
           <div className="mt-2">
             {pageContainer.isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
