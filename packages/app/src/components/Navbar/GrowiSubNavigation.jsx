@@ -50,7 +50,7 @@ const GrowiSubNavigation = (props) => {
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
-  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser;
+  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser && !isEditorMode;
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
