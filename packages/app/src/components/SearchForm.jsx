@@ -151,6 +151,7 @@ class SearchForm extends React.Component {
           keywordOnInit={this.props.keyword}
           onBlur={this.onBlur}
           onFocus={this.onFocus}
+          behaviorOfResetBtn={this.props.behaviorOfResetBtn}
         />
       </div>
     );
@@ -171,6 +172,7 @@ SearchForm.propTypes = {
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onInputChange: PropTypes.func,
+  behaviorOfResetBtn: PropTypes.string.isRequired,
 };
 
 SearchForm.defaultProps = {

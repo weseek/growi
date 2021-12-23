@@ -80,6 +80,7 @@ class GlobalSearch extends React.Component {
             onSubmit={this.search}
             placeholder="Search ..."
             dropup={dropup}
+            behaviorOfResetBtn="clear"
           />
           <div className="btn-group-submit-search">
             <span role="button" className="btn-link text-decoration-none" onClick={this.search}>

@@ -47,6 +47,7 @@ class SearchPageForm extends React.Component {
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
+            behaviorOfResetBtn="clear"
           />
           <div className="btn-group-submit-search">
             <span
