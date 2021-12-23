@@ -182,6 +182,7 @@
   .search-result-list {
     position: sticky;
     top: 0px;
+    z-index: 10; // to avoid dropdown menu in this class to be placed behind elements displayed on the right pane
 
     .search-result-list-scroll {
       // subtract the height of GrowiNavbar + (SearchControl component + other factors)

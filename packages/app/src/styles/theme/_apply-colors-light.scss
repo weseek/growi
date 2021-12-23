@@ -176,7 +176,11 @@ $border-color: $border-color-global;
         background: $bgcolor-list-hover;
       }
 
-      .grw-triangle-icon {
+      .grw-pagetree-count {
+        background: $bgcolor-sidebar-list-group;
+      }
+
+      .grw-pagetree-button {
         &:not(:hover) {
           svg {
             fill: $gray-400;
