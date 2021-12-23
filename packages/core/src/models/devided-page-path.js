@@ -3,9 +3,6 @@ import * as pathUtils from '../utils/path-utils';
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 
-// (?<!filename)\.js$
-// ^(?:(?!filename\.js$).)*\.js$
-
 export class DevidedPagePath {
 
   constructor(path, skipNormalize = false, evalDatePath = false) {
@@ -35,7 +32,7 @@ export class DevidedPagePath {
       }
     }
 
-    let PATTERN_DEFAULT = /^((.*)\/)?(.+)$/;
+    let PATTERN_DEFAULT = /^((.*)\/)?(.+)$/; // https://regex101.com/r/jpZwIe/1
     try { // for non-chrome browsers
       PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/; // https://regex101.com/r/HJNvMW/1
     }
