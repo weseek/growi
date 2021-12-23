@@ -461,7 +461,7 @@ ul.pagination {
 .on-search {
   .grw-search-result-item {
     &.active {
-      background-color: rgba($gray-700, 0.7) !important;
+      background-color: lighten($bgcolor-list, 9%) !important;
       border-color: $bordercolor-search-item-left-active;
     }
   }
