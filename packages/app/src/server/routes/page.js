@@ -282,6 +282,10 @@ module.exports = function(crowi, app) {
     renderVars.notFoundTargetPathOrId = pathOrId;
   }
 
+  function addRenderVarsWhenNotCreatableOrForbidden(renderVars) {
+    renderVars.isAlertHidden = true;
+  }
+
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -305,9 +309,11 @@ module.exports = function(crowi, app) {
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
+      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/not_creatable';
     }
     else if (req.isForbidden) {
+      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/forbidden';
     }
     else {
@@ -492,6 +498,7 @@ module.exports = function(crowi, app) {
   actions.showSharedPage = async function(req, res, next) {
     const { linkId } = req.params;
     const revisionId = req.query.revision;
+    const renderVars = {};
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
@@ -500,10 +507,9 @@ module.exports = function(crowi, app) {
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
+      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       return res.render('layout-growi/forbidden');
     }
-
-    const renderVars = {};
 
     renderVars.sharelink = shareLink;
 
@@ -624,6 +630,7 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
+    req.isForbidden = await Page.count({ path }) > 0;
     return _notFound(req, res);
   }
 
