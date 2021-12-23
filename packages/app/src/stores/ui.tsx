@@ -5,11 +5,13 @@ import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
+import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
 import { useCurrentPagePath, useIsEditable } from './context';
+import { IFocusable } from '~/client/interfaces/focusable';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -274,5 +276,12 @@ export const useCreateModalPath = (): SWRResponse<string, Error> => {
     (currentPagePath, status) => {
       return status.path || currentPagePath;
     },
+  );
+};
+
+export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
+  return useStaticSWR(
+    'globalSearchTypeahead',
+    initialData ?? null,
   );
 };

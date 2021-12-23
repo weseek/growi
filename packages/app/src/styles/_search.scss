@@ -83,6 +83,21 @@
       border: none;
     }
   }
+
+  .grw-shortcut-key-indicator {
+    position: absolute;
+    top: 0;
+    right: 4px;
+
+    display: flex;
+    align-items: center;
+    height: 30px;
+
+    code {
+      padding-right: 0.4rem;
+      padding-left: 0.4rem;
+    }
+  }
 }
 
 // layout for GlobalSearch
