@@ -118,12 +118,5 @@ module.exports = function(crowi) {
     return this.distinct('creator', { page }).exec();
   };
 
-  /**
-   * post save hook
-   */
-  commentSchema.post('save', async(savedComment) => {
-    await commentEvent.emit('create', savedComment);
-  });
-
   return mongoose.model('Comment', commentSchema);
 };
