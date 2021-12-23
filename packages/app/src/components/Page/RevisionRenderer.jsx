@@ -74,7 +74,15 @@ class LegacyRevisionRenderer extends React.PureComponent {
     });
 
     const normalizedKeywords = `(${normalizedKeywordsArray.join('|')})`;
-    const keywordExp = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // exclude html tag as well https://regex101.com/r/dznxyh/1
+    const keywordExp = new RegExp(`${normalizedKeywords}(?!(.*?"))`, 'ig');
+
+    // body to dom
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(body, 'text/html');
+
+    // replace innerText
+
+    // dom to body
 
     return returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
   }
