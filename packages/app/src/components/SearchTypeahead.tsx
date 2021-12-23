@@ -25,7 +25,7 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
   return isHidden ? (
     <span />
   ) : (
-    <button type="button" className="btn btn-link search-clear" onMouseDown={props.onReset}>
+    <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={props.onReset}>
       <i className="icon-close" />
     </button>
   );

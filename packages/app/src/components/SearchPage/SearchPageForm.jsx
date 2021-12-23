@@ -43,34 +43,12 @@ class SearchPageForm extends React.Component {
     const isSearchServiceReachable = appContainer.getConfig().isSearchServiceReachable;
 
     return (
-      // TODO: modify design after other component is created
-      <div className="grw-search-form-in-search-result-page d-flex align-items-center">
-        <div className="input-group flex-nowrap">
-          <SearchForm
-            isSearchServiceReachable={isSearchServiceReachable}
-            onSubmit={this.search}
-            keyword={this.state.searchedKeyword}
-            onInputChange={this.onInputChange}
-            behaviorOfResetBtn="clear"
-          />
-          <div className="btn-group-submit-search">
-            <span
-              role="button"
-              className="text-decoration-none"
-              onClick={() => {
-                try {
-                  this.search();
-                }
-                catch (error) {
-                  logger.error(error);
-                }
-              }}
-            >
-              <i className="icon-magnifier"></i>
-            </span>
-          </div>
-        </div>
-      </div>
+      <SearchForm
+        isSearchServiceReachable={isSearchServiceReachable}
+        onSubmit={this.search}
+        keyword={this.state.searchedKeyword}
+        onInputChange={this.onInputChange}
+      />
     );
   }
 
