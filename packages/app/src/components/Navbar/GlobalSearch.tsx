@@ -83,6 +83,9 @@ const GlobalSearch: FC<Props> = (props: Props) => {
           onInputChange={text => setText(text)}
           onSubmit={search}
         />
+        <span className="grw-shortcut-key-indicator">
+          <code className="bg-transparent text-muted">/</code>
+        </span>
       </div>
     </div>
   );
