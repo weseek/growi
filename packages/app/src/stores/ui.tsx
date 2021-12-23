@@ -5,11 +5,13 @@ import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
 
+import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
 import { useIsEditable } from './context';
+import { IFocusable } from '~/client/interfaces/focusable';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -214,4 +216,11 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
 export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   const initialData = false;
   return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
+};
+
+export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
+  return useStaticSWR(
+    'globalSearchTypeahead',
+    initialData ?? null,
+  );
 };
