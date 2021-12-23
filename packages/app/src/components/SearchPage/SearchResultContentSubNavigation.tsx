@@ -32,7 +32,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
   const { isSharedUser } = appContainer;
   const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
   return (
-    <div className="position-sticky fixed-top shadow-sm search-result-content-nav">
+    <div className="shadow-sm search-result-content-nav">
       <div className={`grw-subnav container-fluid d-flex align-items-start justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
         {/* Left side */}
         <div className="grw-path-nav-container">

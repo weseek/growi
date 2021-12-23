@@ -40,6 +40,7 @@
   "account_id": "Account Id",
   "Update": "Update",
   "Update Page": "Update Page",
+  "Error": "Error",
   "Warning": "Warning",
   "Sign in": "Sign in",
   "Sign up is here": "Sign up",
@@ -169,7 +170,8 @@
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid."
+    "invalid_syntax": "The syntax of %s is invalid.",
+    "title_required": "Title is required."
   },
   "not_found_page": {
     "Create Page": "Create Page",
