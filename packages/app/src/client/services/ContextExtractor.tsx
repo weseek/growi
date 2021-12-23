@@ -40,10 +40,13 @@ const ContextExtractorOnce: FC = () => {
   const pageId = mainContent?.getAttribute('data-page-id') || null;
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
+  // createdAt
   const createdAtAttribute = mainContent?.getAttribute('data-page-created-at');
   const createdAt: Date | null = (createdAtAttribute != null) ? new Date(createdAtAttribute) : null;
+  // updatedAt
+  const updatedAtAttribute = mainContent?.getAttribute('data-page-updated-at');
+  const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
 
-  const updatedAt = mainContent?.getAttribute('data-page-updated-at');
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const isTrashPage = _isTrashPage(path);

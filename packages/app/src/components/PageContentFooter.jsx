@@ -11,12 +11,13 @@ import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
 const PageContentFooter = (props) => {
   const { pageContainer } = props;
   const { data: createdAt } = useCurrentCreatedAt();
+  const { data: updatedAt } = useCurrentUpdatedAt();
+
 
   const {
     creator, revisionAuthor,
   } = pageContainer.state;
 
-  const { data: updatedAt } = useCurrentUpdatedAt();
 
   return (
     <div className="page-content-footer py-4 d-edit-none d-print-none">
