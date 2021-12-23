@@ -1,9 +1,11 @@
 import { FC, useEffect } from 'react';
 
 import { useIsEditable } from '~/stores/context';
+import { useGlobalSearchFormRef } from '~/stores/ui';
 
 const FocusToGlobalSearch = (props) => {
   const { data: isEditable } = useIsEditable();
+  const { data: globalSearchFormRef } = useGlobalSearchFormRef();
 
   // setup effect
   useEffect(() => {
@@ -16,11 +18,11 @@ const FocusToGlobalSearch = (props) => {
       return;
     }
 
-    console.log('focus to GlobalSearch');
+    globalSearchFormRef.current.focus();
 
     // remove this
     props.onDeleteRender();
-  }, [isEditable, props]);
+  }, [globalSearchFormRef, isEditable, props]);
 
   return null;
 };

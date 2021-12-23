@@ -1,14 +1,16 @@
 import React, {
-  FC, useState, useCallback,
+  FC, useState, useCallback, useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IPage } from '~/interfaces/page';
+import { IFocusable } from '~/client/interfaces/focusable';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SearchForm from '../SearchForm';
+import { useGlobalSearchFormRef } from '~/stores/ui';
 
 
 type Props = {
@@ -20,6 +22,10 @@ type Props = {
 const GlobalSearch: FC<Props> = (props: Props) => {
   const { appContainer, dropup } = props;
   const { t } = useTranslation();
+
+  const globalSearchFormRef = useRef<IFocusable>(null);
+
+  useGlobalSearchFormRef(globalSearchFormRef);
 
   const [text, setText] = useState('');
   const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
@@ -70,6 +76,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
           </div>
         </div>
         <SearchForm
+          ref={globalSearchFormRef}
           isSearchServiceReachable={isSearchServiceReachable}
           dropup={dropup}
           onChange={gotoPage}
