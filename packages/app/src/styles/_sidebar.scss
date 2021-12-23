@@ -22,7 +22,8 @@
   position: sticky;
   top: $grw-navbar-border-width;
 
-  height: 100vh;
+  // set the max value that should be taken when sticky
+  height: calc(100vh - $grw-navbar-border-width);
 
   .grw-navigation-resize-button {
     position: fixed;
@@ -56,7 +57,7 @@
     .hitarea {
       @extend .rounded-pill;
 
-      $size-hitarea: 80px;
+      $size-hitarea: 55px;
 
       position: absolute;
       top: ($width - $size-hitarea) / 2;

@@ -76,7 +76,7 @@
     {% if isTrashPage() %}
       <div id="trash-page-alert"></div>
     {% endif %}
-    {% if !page %}
+    {% if page == null and !isAlertHidden %}
       <div id="not-found-alert"></div>
     {% endif %}
   </div>

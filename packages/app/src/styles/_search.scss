@@ -169,6 +169,10 @@
   .search-control {
     padding: 5px 0;
   }
+  // To fix the sort options position
+  .search-sort-option-btn {
+    min-width: 12rem;
+  }
   .search-control-include-options {
     .card-body {
       padding: 5px 10px;

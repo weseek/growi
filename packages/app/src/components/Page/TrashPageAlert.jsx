@@ -7,6 +7,7 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { useCurrentUpdatedAt } from '~/stores/context';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';
@@ -15,8 +16,9 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    pageId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
+  const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);

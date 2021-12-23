@@ -60,9 +60,9 @@ class LegacyRevisionRenderer extends React.PureComponent {
    * @param {string} keywords
    */
   getHighlightedBody(body, keywords) {
-    const returnBody = body;
-
     const normalizedKeywordsArray = [];
+    // !!TODO!!: care double quote
+    // !!TODO!!: add test code
     keywords.replace(/"/g, '').split(/[\u{20}\u{3000}]/u).forEach((keyword, i) => { // split by both full-with and half-width space
       if (keyword === '') {
         return;
@@ -74,9 +74,37 @@ class LegacyRevisionRenderer extends React.PureComponent {
     });
 
     const normalizedKeywords = `(${normalizedKeywordsArray.join('|')})`;
-    const keywordExp = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // exclude html tag as well https://regex101.com/r/dznxyh/1
+    const keywordRegxp = new RegExp(`${normalizedKeywords}(?!(.*?"))`, 'ig'); // prior https://regex101.com/r/oX7dq5/1
+    const keywordRegexp2 = new RegExp(`(?<!<)${normalizedKeywords}(?!(.*?("|>)))`, 'ig'); // inferior (this doesn't work well when html tags exist a lot) https://regex101.com/r/Dfi61F/1
 
-    return returnBody.replace(keywordExp, '<em class="highlighted-keyword">$&</em>');
+    const highlighter = (str) => { return str.replace(keywordRegxp, '<em class="highlighted-keyword">$&</em>') }; // prior
+    const highlighter2 = (str) => { return str.replace(keywordRegexp2, '<em class="highlighted-keyword">$&</em>') }; // inferior
+
+    const insideTagRegex = /<[^<>]*>/g;
+    const betweenTagRegex = />([^<>]*)</g; // use (group) to ignore >< around
+
+    const insideTagStrs = body.match(insideTagRegex);
+    const betweenTagMatches = Array.from(body.matchAll(betweenTagRegex));
+
+    let returnBody = body;
+    const isSafeHtml = insideTagStrs.length === betweenTagMatches.length + 1; // to check whether is safe to join
+    if (isSafeHtml) {
+      // highlight
+      const betweenTagStrs = betweenTagMatches.map(match => highlighter(match[1])); // get only grouped part (exclude >< around)
+
+      const arr = [];
+      insideTagStrs.forEach((str, i) => {
+        arr.push(str);
+        arr.push(betweenTagStrs[i]);
+      });
+      returnBody = arr.join('');
+    }
+    else {
+      // inferior highlighter
+      returnBody = highlighter2(body);
+    }
+
+    return returnBody;
   }
 
   async renderHtml() {
