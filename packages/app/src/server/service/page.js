@@ -661,7 +661,12 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('deleteCompletely', page, user); // update as renamed page
+    if (page.redirectTo != null && isTrashPage(page.redirectTo)) {
+      this.pageEvent.emit('revert', page, user);
+    }
+    else {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
 
     return;
   }
