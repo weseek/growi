@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
-  useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
+  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
   useSlackChannels,
 } from '../../stores/context';
 import {
@@ -39,8 +39,14 @@ const ContextExtractorOnce: FC = () => {
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
   const pageId = mainContent?.getAttribute('data-page-id') || null;
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
-  const createdAt = mainContent?.getAttribute('data-page-created-at');
-  const updatedAt = mainContent?.getAttribute('data-page-updated-at');
+
+  // createdAt
+  const createdAtAttribute = mainContent?.getAttribute('data-page-created-at');
+  const createdAt: Date | null = (createdAtAttribute != null) ? new Date(createdAtAttribute) : null;
+  // updatedAt
+  const updatedAtAttribute = mainContent?.getAttribute('data-page-updated-at');
+  const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
+
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const isTrashPage = _isTrashPage(path);
@@ -76,7 +82,7 @@ const ContextExtractorOnce: FC = () => {
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Page
-  useCreatedAt(createdAt);
+  useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);
@@ -99,7 +105,7 @@ const ContextExtractorOnce: FC = () => {
   useShareLinkId(shareLinkId);
   useShareLinksNumber(shareLinksNumber);
   useTemplateTagData(templateTagData);
-  useUpdatedAt(updatedAt);
+  useCurrentUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
