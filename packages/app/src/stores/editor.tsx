@@ -1,8 +1,8 @@
 import useSWR, { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { usePageId, useTemplateTagData, useShareLinkId } from '~/stores/context';
 import { GetPageTagResponse } from '~/interfaces/tag';
+import { apiGet } from '~/client/util/apiv1-client';
 
 
 export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
@@ -25,8 +25,8 @@ export const usePageTags = (): SWRResponse<string[] | undefined, Error> => {
     let tags: string[] = [];
     // when the page exists or is a shared page
     if (pageId != null && shareLinkId == null) {
-      const res = await apiv3Get<GetPageTagResponse>(endpoint, { pageId });
-      tags = res.data.tags;
+      const res = await apiGet<GetPageTagResponse>(endpoint, { pageId });
+      tags = res?.tags;
     }
     // when the page does not exist
     else if (templateTagData != null) {
@@ -38,6 +38,6 @@ export const usePageTags = (): SWRResponse<string[] | undefined, Error> => {
     return tags;
   };
 
-  return useSWR(['/pages.getPageTag', pageId], fetcher);
+  return useSWR('/pages.getPageTag', fetcher);
 
 };
