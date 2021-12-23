@@ -7,9 +7,7 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
-  &:focus {
-    box-shadow: none;
-  }
+  box-shadow: none !important;
 }
 
 .btn.btn-bookmark {
@@ -21,9 +19,7 @@
   &:not(:disabled):not(.disabled):not(:hover) {
     background-color: transparent;
   }
-  &:focus {
-    box-shadow: none;
-  }
+  box-shadow: none !important;
 }
 
 .btn-copy,
