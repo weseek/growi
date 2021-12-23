@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
-import EditorContainer from '~/client/services/EditorContainer';
+import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
 
 import TagLabels from '../Page/TagLabels';
 import SubNavButtons from './SubNavButtons';
@@ -25,6 +26,8 @@ const GrowiSubNavigation = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: createdAt } = useCurrentCreatedAt();
+  const { data: updatedAt } = useCurrentUpdatedAt();
 
   const {
     appContainer, pageContainer, editorContainer, isCompactMode,
@@ -36,9 +39,7 @@ const GrowiSubNavigation = (props) => {
     path,
     isDeletable,
     isAbleToDeleteCompletely,
-    createdAt,
     creator,
-    updatedAt,
     revisionAuthor,
     isPageExist,
     isTrashPage,

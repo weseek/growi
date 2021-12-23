@@ -96,6 +96,10 @@ Object.assign(componentMappings, {
   'trash-page-list': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
+  'not-found-alert': <NotFoundAlert
+    isGuestUserMode={appContainer.isGuestUser}
+    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable ?? pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
+  />,
 
   'forbidden-page': <ForbiddenPage />,
 
