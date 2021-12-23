@@ -85,7 +85,7 @@
   }
 }
 
-// layout
+// layout for GlobalSearch
 .grw-global-search-top {
   // centering on navbar
   top: $grw-navbar-height / 2;
@@ -121,9 +121,12 @@
   }
 }
 
-// TODO : keep the selected list in the same positino as other lists
-// TASK : https://redmine.weseek.co.jp/issues/82470
-.search-result {
+// layout
+.on-search {
+  .page-wrapper {
+    padding-bottom: unset;
+  }
+
   .search-control {
     padding: 5px 0;
   }
@@ -145,7 +148,12 @@
       // subtract the height of GrowiNavbar + (SearchControl component + other factors)
       height: calc(100vh - (($grw-navbar-height + $grw-navbar-border-width) + 110px));
       overflow-y: scroll;
+
+      @include media-breakpoint-down(sm) {
+        height: calc(100vh - (($grw-navbar-height + $grw-navbar-border-width + $grw-navbar-bottom-height) + 123px));
+      }
     }
+
     .nav.nav-pills {
       > .grw-search-result-item {
         min-height: 136px;
