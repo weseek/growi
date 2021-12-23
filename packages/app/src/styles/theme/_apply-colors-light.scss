@@ -5,7 +5,6 @@ $color-list-hover: $color-global !default;
 $bgcolor-list-hover: lighten($primary, 72%) !default;
 $bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
-$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 $color-table: $color-global !default;
 $bgcolor-table: null !default;
 $border-color-table: $gray-200 !default;
@@ -174,6 +173,10 @@ $border-color: $border-color-global;
     .grw-pagetree-item {
       &.grw-pagetree-is-target {
         background: $bgcolor-list-hover;
+      }
+
+      .grw-pagetree-count {
+        background: $bgcolor-sidebar-list-group;
       }
 
       .grw-pagetree-button {

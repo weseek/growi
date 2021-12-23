@@ -60,6 +60,9 @@ textarea.form-control {
   background-color: theme-color('secondary');
   border: 1px solid theme-color('secondary');
   border-right: none;
+  &.text-muted {
+    color: theme-color('light') !important;
+  }
 }
 
 .input-group input {
@@ -259,6 +262,10 @@ ul.pagination {
         background: $bgcolor-list-hover;
       }
 
+      .grw-pagetree-count {
+        background: $bgcolor-sidebar-list-group;
+      }
+
       .grw-pagetree-button {
         &:not(:hover) {
           svg {
@@ -448,4 +455,22 @@ ul.pagination {
  */
 .grw-modal-head {
   border-color: $border-color-global;
+}
+
+/*
+ * search page
+ */
+.on-search {
+  .grw-search-result-item {
+    &.active {
+      background-color: lighten($bgcolor-global, 9%) !important;
+    }
+  }
+  .list-group-item-action:hover {
+    background-color: $bgcolor-list-hover;
+  }
+
+  .grw-search-result-list-snippet {
+    color: theme-color('light');
+  }
 }

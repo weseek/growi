@@ -47,7 +47,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
               </div>
               <div className="input-group search-result-select-group ml-4 d-lg-flex d-none">
                 <div className="input-group-prepend">
-                  <label className="input-group-text text-secondary" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+                  <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
                 </div>
                 <select
                   defaultValue={props.pagingLimit}
