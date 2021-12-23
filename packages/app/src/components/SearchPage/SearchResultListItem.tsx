@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
@@ -48,6 +48,18 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     />
   );
 
+  // click event handler
+  const clickHandler = useCallback(() => {
+    // do nothing if mobile
+    if (isDeviceSmallerThanLg) {
+      return;
+    }
+
+    if (onClickSearchResultItem != null) {
+      onClickSearchResultItem(pageData._id);
+    }
+  }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
+
   const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
   return (
     <li
@@ -56,7 +68,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     >
       <div
         className="h-100 text-break"
-        onClick={() => onClickSearchResultItem != null && onClickSearchResultItem(pageData._id)}
+        onClick={clickHandler}
       >
         <div className="d-flex h-100">
           {/* checkbox */}
