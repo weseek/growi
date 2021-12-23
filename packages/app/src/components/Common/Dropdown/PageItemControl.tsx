@@ -29,8 +29,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   };
   return (
     <UncontrolledDropdown>
-      <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management py-0 px-2">
-        <i className="fa fa-ellipsis-v text-muted p-1"></i>
+      <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
+        <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
       <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
 
