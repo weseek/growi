@@ -6,7 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd,
@@ -65,6 +65,7 @@ const ContextExtractorOnce: FC = () => {
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContent?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
+  const isSearchPage = document.getElementById('search-page') != null;
 
   /*
    * use static swr
@@ -108,6 +109,7 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
+  useIsSearchPage(isSearchPage);
 
   // Navigation
   usePreferDrawerModeByUser();

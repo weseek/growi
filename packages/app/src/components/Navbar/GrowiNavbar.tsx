@@ -8,6 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
 import { useIsDeviceSmallerThanMd, useCreateModalStatus } from '~/stores/ui';
+import { useIsSearchPage } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -84,6 +85,7 @@ const GrowiNavbar = (props) => {
   const { crowi, isSearchServiceConfigured } = appContainer.config;
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   return (
     <>
@@ -105,7 +107,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>

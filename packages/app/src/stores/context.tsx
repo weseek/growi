@@ -124,6 +124,9 @@ export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nulla
   return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData ?? null);
 };
 
+export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData ?? null);
+};
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
