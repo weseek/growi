@@ -60,7 +60,7 @@ const AuthorInfo = (props) => {
 };
 
 AuthorInfo.propTypes = {
-  date: PropTypes.instanceOf(Date),
+  date: PropTypes.instanceOf(Date).isRequired,
   user: PropTypes.object,
   mode: PropTypes.oneOf(['create', 'update']),
   locate: PropTypes.oneOf(['subnav', 'footer']),
