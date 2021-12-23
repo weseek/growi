@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
-
-import { toastError } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv3-client';
 
 import AppContainer from '~/client/services/AppContainer';
 
@@ -28,12 +25,12 @@ class LegacyBookmarkButton extends React.Component {
 
   render() {
     const {
-      appContainer, t, isBookmarked, sumOfBookmarks,
+      appContainer, t, isBookmarked, hideTotalNumber, sumOfBookmarks,
     } = this.props;
     const { isGuestUser } = appContainer;
 
     return (
-      <div>
+      <>
         <button
           type="button"
           id="bookmark-button"
@@ -41,12 +38,14 @@ class LegacyBookmarkButton extends React.Component {
           className={`btn btn-bookmark border-0
           ${`btn-${this.props.size}`} ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
-          <i className="icon-star mr-3"></i>
-          <span className="total-bookmarks">
-            {sumOfBookmarks && (
-              sumOfBookmarks
-            )}
-          </span>
+          <i className="icon-star"></i>
+          { !hideTotalNumber && (
+            <span className="total-bookmarks ml-3">
+              {sumOfBookmarks && (
+                sumOfBookmarks
+              )}
+            </span>
+          ) }
         </button>
 
         {isGuestUser && (
@@ -54,7 +53,7 @@ class LegacyBookmarkButton extends React.Component {
             {t('Not available for guest')}
           </UncontrolledTooltip>
         )}
-      </div>
+      </>
     );
   }
 
@@ -69,6 +68,8 @@ LegacyBookmarkButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isBookmarked: PropTypes.bool.isRequired,
+
+  hideTotalNumber: PropTypes.bool,
   sumOfBookmarks: PropTypes.number,
   t: PropTypes.func.isRequired,
   size: PropTypes.string,
@@ -79,8 +80,10 @@ LegacyBookmarkButton.defaultProps = {
   size: 'md',
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const BookmarkButton = (props) => {
-  return <LegacyBookmarkButtonWrapper {...props}></LegacyBookmarkButtonWrapper>;
+  const { t } = useTranslation();
+  return <LegacyBookmarkButtonWrapper t={t} {...props}></LegacyBookmarkButtonWrapper>;
 };
 
-export default withTranslation()(BookmarkButton);
+export default BookmarkButton;

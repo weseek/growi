@@ -49,7 +49,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     catch (err) {
       toastError(err);
     }
-  }, [pageInfo]);
+  }, [appContainer, mutatePageInfo, pageId, pageInfo]);
 
   const bookmarkClickHandler = useCallback(async() => {
     if (isGuestUser) {
@@ -63,7 +63,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkInfo]);
+  }, [bookmarkInfo, isGuestUser, mutateBookmarkInfo, pageId]);
 
   if (pageInfoError != null || pageInfo == null) {
     return <></>;
@@ -80,6 +80,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     <>
       {isViewMode && (
         <PageReactionButtons
+          isCompactMode={isCompactMode}
           sumOfLikers={sumOfLikers}
           isLiked={isLiked}
           likers={likers || []}
