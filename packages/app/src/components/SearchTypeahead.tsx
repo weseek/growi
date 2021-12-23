@@ -106,7 +106,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
    * Callback function which is occured when search is exit successfully
    */
   const searchSuccessHandler = useCallback((res: AxiosResponse<IPage[]>) => {
-    setLoading(false);
     setPages(res.data);
 
     if (onSearchSuccess != null) {
@@ -118,7 +117,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
    * Callback function which is occured when search is exit abnormaly
    */
   const searchErrorHandler = useCallback((err: Error) => {
-    setLoading(false);
     setSearchError(err);
 
     if (onSearchError != null) {
@@ -140,6 +138,10 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     catch (err) {
       searchErrorHandler(err);
     }
+    finally {
+      setLoading(false);
+    }
+
   }, [searchErrorHandler, searchSuccessHandler]);
 
   const inputChangeHandler = useCallback((text: string) => {
