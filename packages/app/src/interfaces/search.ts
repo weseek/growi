@@ -18,6 +18,18 @@ export type IPageSearchResultData = {
   };
 };
 
+export type IFormattedSearchResult = {
+  data: IPageSearchResultData[]
+
+  totalCount: number
+
+  meta: {
+    total: number
+    took?: number
+    count?: number
+  }
+}
+
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',
   CREATED_AT: 'createdAt',

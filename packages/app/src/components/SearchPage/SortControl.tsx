@@ -36,7 +36,7 @@ const SortControl: FC <Props> = (props: Props) => {
         <div className="border rounded-right">
           <button
             type="button"
-            className="btn dropdown-toggle"
+            className="btn dropdown-toggle search-sort-option-btn"
             data-toggle="dropdown"
           >
             <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${props.sort}`)}</span>
