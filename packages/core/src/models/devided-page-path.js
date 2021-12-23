@@ -2,8 +2,9 @@ import * as pathUtils from '../utils/path-utils';
 
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
-// https://regex101.com/r/HJNvMW/1
-const PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/;
+
+// (?<!filename)\.js$
+// ^(?:(?!filename\.js$).)*\.js$
 
 export class DevidedPagePath {
 
@@ -32,6 +33,14 @@ export class DevidedPagePath {
         this.latter = matchDate[2];
         return;
       }
+    }
+
+    let PATTERN_DEFAULT = /^((.*)\/)?(.+)$/;
+    try { // for non-chrome browsers
+      PATTERN_DEFAULT = /^((.*)(?<!<)\/)?(.+)$/; // https://regex101.com/r/HJNvMW/1
+    }
+    catch (err) {
+      // lookbehind regex is not supported on non-chrome browsers
     }
 
     const matchDefault = pagePath.match(PATTERN_DEFAULT);
