@@ -32,7 +32,7 @@ export default class TagContainer extends Container {
    */
   async init() {
     const pageContainer = this.appContainer.getContainer('PageContainer');
-    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    // const editorContainer = this.appContainer.getContainer('EditorContainer');
 
     if (Object.keys(pageContainer.state).length === 0) {
       logger.debug('There is no need to initialize TagContainer because this is not a Page');
@@ -49,7 +49,6 @@ export default class TagContainer extends Container {
     // when the page exists or shared page
     if (pageId != null && shareLinkId == null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
-      console.log(res);
       tags = res.tags;
     }
     // when the page not exist
@@ -62,7 +61,8 @@ export default class TagContainer extends Container {
     logger.debug('tags data has been initialized');
 
     pageContainer.setState({ tags });
-    editorContainer.setState({ tags });
+    // Migrated to SWR (see: /src/stores/editor.tsx)
+    // editorContainer.setState({ tags });
   }
 
 }

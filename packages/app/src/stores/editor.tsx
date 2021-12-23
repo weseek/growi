@@ -3,9 +3,6 @@ import { useStaticSWR } from './use-static-swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { usePageId, useTemplateTagData, useShareLinkId } from '~/stores/context';
 import { GetPageTagResponse } from '~/interfaces/tag';
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:services:TagContainer');
 
 
 export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Error> => {
@@ -15,34 +12,32 @@ export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Err
   );
 };
 
-export const usePageTags = (pageTags?: string[]): SWRResponse<string[] | void, Error> | undefined => {
+export const usePageTags = (): SWRResponse<string[] | undefined, Error> => {
   const { data: pageId } = usePageId();
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();
 
+  const fetcher = async(endpoint: string) => {
+    if (shareLinkId != null) {
+      return;
+    }
 
-  if (shareLinkId != null) {
-    return;
-  }
+    let tags: string[] = [];
+    // when the page exists or is a shared page
+    if (pageId != null && shareLinkId == null) {
+      const res = await apiv3Get<GetPageTagResponse>(endpoint, { pageId });
+      tags = res.data.tags;
+    }
+    // when the page does not exist
+    else if (templateTagData != null) {
+      tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+    }
 
-  let tags: string[] = [];
-  // when the page exists or shared page
-  if (pageId != null && shareLinkId == null) {
-    return useSWR(
-      '/pages.getPageTag',
-      endpoint => apiv3Get<GetPageTagResponse>(endpoint).then((res) => { tags = res.data.tags }),
-    );
-  }
-  // when the page not exist
-  if (templateTagData != null) {
-    tags = templateTagData.split(',').filter((str) => {
-      return str !== ''; // filter empty values
-    });
-  }
+    return tags;
+  };
 
-  logger.debug('tags data has been initialized');
-
-  pageContainer.setState({ tags });
-  editorContainer.setState({ tags });
+  return useSWR(['/pages.getPageTag', pageId], fetcher);
 
 };
