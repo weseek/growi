@@ -337,10 +337,7 @@
   .grw-sidebar {
     height: $search-page-sidebar-height;
     .data-layout-container {
-      height: $search-page-sidebar-height;
-    }
-    .grw-sidebar-nav {
-      height: $search-page-sidebar-height;
+      height: 100%;
     }
   }
 }
