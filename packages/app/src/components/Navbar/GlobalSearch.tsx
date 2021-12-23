@@ -70,10 +70,24 @@ const GlobalSearch: FC<Props> = (props: Props) => {
             {scopeLabel}
           </button>
           <div className="dropdown-menu">
-            <button className="dropdown-item" type="button" onClick={() => setScopeChildren(false)}>
+            <button
+              className="dropdown-item"
+              type="button"
+              onClick={() => {
+                setScopeChildren(false);
+                globalSearchFormRef.current?.focus();
+              }}
+            >
               { t('header_search_box.item_label.All pages') }
             </button>
-            <button className="dropdown-item" type="button" onClick={() => setScopeChildren(true)}>
+            <button
+              className="dropdown-item"
+              type="button"
+              onClick={() => {
+                setScopeChildren(true);
+                globalSearchFormRef.current?.focus();
+              }}
+            >
               { t('header_search_box.item_label.This tree') }
             </button>
           </div>
