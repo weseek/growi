@@ -1,6 +1,6 @@
 import React, {
   FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
-  KeyboardEvent, useCallback, useRef, useState, MouseEventHandler,
+  KeyboardEvent, useCallback, useRef, useState, MouseEvent,
 } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { AxiosResponse } from 'axios';
@@ -18,7 +18,7 @@ import { IPage } from '~/interfaces/page';
 type ResetFormButtonProps = {
   keywordOnInit: string,
   input: string,
-  onReset: MouseEventHandler,
+  onReset: (e: MouseEvent<HTMLButtonElement>) => void,
 }
 
 const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) => {
@@ -89,7 +89,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     }
   };
 
-  const resetForm = (e: MouseEvent) => {
+  const resetForm = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     setInput('');
