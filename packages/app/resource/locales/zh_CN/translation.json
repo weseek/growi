@@ -244,8 +244,7 @@
     "no_notification": "您没有任何通知",
     "all": "全部",
     "unopend": "未读",
-    "mark_all_as_read" : "标记为已读",
-    "page_not_exist": "该页面不存在"
+    "mark_all_as_read" : "标记为已读"
   },
   "in_app_notification_settings": {
     "in_app_notification_settings": "在应用程序通知设置",
