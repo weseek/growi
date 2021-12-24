@@ -1,20 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+/* eslint-disable react/prop-types */
+import React, { NamedExoticComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-const RenderTagLabels = React.memo((props) => {
-  const {
-    t, tags, isGuestUser,
-  } = props;
+type RenderTagLabelsProps = {
+  tags: string[];
+  isGuestUser: boolean;
+  openEditorModal: () => void;
+};
 
-  function openEditorHandler() {
+const RenderTagLabels: NamedExoticComponent<RenderTagLabelsProps> = React.memo((props) => {
+  const { tags, isGuestUser } = props;
+  const { t } = useTranslation();
+
+  const openEditorHandler = () => {
     if (props.openEditorModal == null) {
       return;
     }
     props.openEditorModal();
-  }
+  };
 
   // activate suspense
   if (tags == null) {
@@ -54,12 +59,4 @@ const RenderTagLabels = React.memo((props) => {
 
 });
 
-RenderTagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  tags: PropTypes.array,
-  openEditorModal: PropTypes.func,
-  isGuestUser: PropTypes.bool.isRequired,
-};
-
-export default withTranslation()(RenderTagLabels);
+export default RenderTagLabels;
