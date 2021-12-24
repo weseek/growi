@@ -268,6 +268,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  USE_ELASTICSEARCH_V6: {
+    ns:      'crowi',
+    key:     'app:useElasticsearchV6',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',

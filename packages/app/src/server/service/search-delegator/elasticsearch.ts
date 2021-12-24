@@ -1,4 +1,5 @@
-import elasticsearch from '@elastic/elasticsearch';
+import elasticsearch6 from '@elastic/elasticsearch6';
+import elasticsearch7 from '@elastic/elasticsearch7';
 import mongoose from 'mongoose';
 
 import { URL } from 'url';
@@ -43,6 +44,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   socketIoService!: any
 
+  elasticsearch: any
+
   client: any
 
   queries: any
@@ -56,6 +59,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 
+    this.elasticsearch = this.configManager.getConfig('crowi', 'app:useElasticsearchV6') ? elasticsearch6 : elasticsearch7;
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -92,7 +96,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    this.client = new elasticsearch.Client({
+    this.client = new this.elasticsearch.Client({
       node: host,
       ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
@@ -303,7 +307,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = require('^/resource/search/mappings.json');
+    const body = require('^/resource/search/mappings-es7.json'); // TODO: Add condition based on elastisearch version
     return this.client.indices.create({ index, body });
   }
 
@@ -340,7 +344,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: 'pages',
+        _type: '_doc', // TODO: Add condition based on elastisearch version
         _id: page._id.toString(),
       },
     };
@@ -376,7 +380,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: 'pages',
+        _type: '_doc', // TODO: Add condition based on elastisearch version
         _id: page._id.toString(),
       },
     };
@@ -641,7 +645,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // sort by score
     const query = {
       index: this.aliasName,
-      type: 'pages',
+      // type: 'pages', // TODO: Add condition based on elastisearch version
       body: {
         query: {}, // query
         _source: fields,
