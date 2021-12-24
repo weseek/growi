@@ -639,7 +639,7 @@ module.exports = (crowi) => {
       logger.error('Create grobal notification failed', err);
     }
 
-    // create subscription
+    // create subscription (parent page only)
     try {
       await crowi.inAppNotificationService.createSubscription(req.user.id, newParentPage._id, subscribeRuleNames.PAGE_CREATE);
     }
