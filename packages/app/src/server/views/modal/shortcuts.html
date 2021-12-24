@@ -27,6 +27,10 @@
                     <td><span class="key">E</span></td>
                   </tr>
                   <tr>
+                    <th>{{ t('modal_shortcuts.global.Search') }}:</th>
+                    <td><span class="key">/</span></td>
+                  </tr>
+                  <tr>
                     <th>{{ t('modal_shortcuts.global.Show Contributors') }}:</th>
                     <td>
                       <a href="{{ t('modal_shortcuts.global.konami_code_url') }}" target="_blank">{{ t('modal_shortcuts.global.Konami Code') }}</a><br>
@@ -79,7 +83,7 @@
               <table class="table">
                 <tr>
                   <th>{{ t('modal_shortcuts.commentform.Post') }}:</th>
-                  <td><span class="key cmd-key"></span> + <span class="key key-longer">{% include '../widget/icon-keyboard-return-enter.html' %}</span></td>
+                  <td class="text-nowrap"><span class="key cmd-key"></span> + <span class="key key-longer">{% include '../widget/icon-keyboard-return-enter.html' %}</span></td>
                 </tr>
                 <tr>
                   <th>{{ t('modal_shortcuts.editor.Delete Line') }}:</th>

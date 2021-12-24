@@ -94,7 +94,13 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
 
     setInput('');
     changeKeyword('');
+    setPages([]);
+
     focusToTypeahead();
+
+    if (onInputChange != null) {
+      onInputChange('');
+    }
   };
 
   /**

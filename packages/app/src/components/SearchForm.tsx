@@ -84,6 +84,8 @@ type Props = {
   dropup?: boolean,
   keyword?: string,
   onChange?: (data: unknown[]) => void,
+  onBlur?: () => void,
+  onFocus?: () => void,
   onSubmit?: (input: string) => void,
   onInputChange?: (text: string) => void,
 };
@@ -93,7 +95,7 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
   const { t } = useTranslation();
   const {
     isSearchServiceReachable, dropup,
-    onChange, onSubmit, onInputChange,
+    onChange, onBlur, onFocus, onSubmit, onInputChange,
   } = props;
 
   const [searchError, setSearchError] = useState<Error | null>(null);
@@ -129,8 +131,18 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       onSubmit={onSubmit}
       onInputChange={onInputChange}
       onSearchError={err => setSearchError(err)}
-      onBlur={() => setShownHelp(false)}
-      onFocus={() => setShownHelp(true)}
+      onBlur={() => {
+        setShownHelp(false);
+        if (onBlur != null) {
+          onBlur();
+        }
+      }}
+      onFocus={() => {
+        setShownHelp(true);
+        if (onFocus != null) {
+          onFocus();
+        }
+      }}
       helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
       keywordOnInit={props.keyword}
     />
