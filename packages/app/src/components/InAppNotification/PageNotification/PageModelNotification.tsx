@@ -1,10 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import { PagePathLabel } from '@growi/ui';
+import { useTranslation } from 'react-i18next';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import FormattedDistanceDate from '../../FormattedDistanceDate';
+import { toastWarning } from '~/client/util/apiNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -14,6 +16,8 @@ interface Props {
 }
 
 const PageModelNotification: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const {
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
@@ -29,6 +33,9 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     const targetPagePath = notification.target?.path;
     if (targetPagePath != null) {
       window.location.href = targetPagePath;
+    }
+    else {
+      toastWarning(t('in_app_notification.page_not_exist'));
     }
   }, []);
 
