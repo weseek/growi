@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 type RenderTagLabelsProps = {
-  tags: string[];
+  tags?: string[] | null;
   isGuestUser: boolean;
   openEditorModal: () => void;
 };
