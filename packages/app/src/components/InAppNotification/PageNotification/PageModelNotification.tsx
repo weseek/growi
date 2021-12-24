@@ -29,7 +29,7 @@ const PageModelNotification: FC<Props> = (props: Props) => {
     // set notification status "OPEND"
     apiv3Post('/in-app-notification/open', { id: notification._id });
 
-    // jump to target page
+    // if target page exists jump to the page
     const targetPagePath = notification.target?.path;
     if (targetPagePath != null) {
       window.location.href = targetPagePath;
