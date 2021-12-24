@@ -48,7 +48,7 @@ export const useSWRxPageList = (
   );
 };
 
-export const useStaticPageTags = (): SWRResponse<string[] | undefined, Error> => {
+export const usePageTags = (): SWRResponse<string[] | undefined, Error> => {
   const { data: pageId } = usePageId();
   const { data: templateTagData } = useTemplateTagData();
   const { data: shareLinkId } = useShareLinkId();

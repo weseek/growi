@@ -1,6 +1,6 @@
 import { SWRResponse } from 'swr';
 import { GetPageTagResponse } from '~/interfaces/tag';
-import { usePageTags } from '~/stores/context';
+import { usePageTags } from '~/stores/page';
 import { useStaticSWR } from './use-static-swr';
 
 
