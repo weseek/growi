@@ -24,7 +24,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
+import { useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
 
 const logger = loggerFactory('growi:SavePageControls');
 
@@ -139,7 +139,7 @@ const SavePageControlsWrapper = (props) => {
   const { data: grant, mutate: mutateGrant } = useSelectedGrant();
   const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
-  const { data: pageTags } = usePageTags();
+  const { data: pageTags } = useStaticPageTags();
 
 
   if (isEditable == null || editorMode == null) {

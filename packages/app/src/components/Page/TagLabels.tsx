@@ -10,7 +10,7 @@ import PageContainer from '~/client/services/PageContainer';
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 import { EditorMode } from '~/stores/ui';
-import { usePageTags } from '~/stores/editor';
+import { useStaticPageTags } from '~/stores/editor';
 
 type TagLabelsCoreProps = {
   appContainer: AppContainer;
@@ -19,7 +19,7 @@ type TagLabelsCoreProps = {
 };
 
 const TagLabelsCore: FC<TagLabelsCoreProps> = (props) => {
-  const { data: editorContainerTags = [], mutate: mutateEditorContainerTags } = usePageTags();
+  const { data: editorContainerTags = [], mutate: mutateEditorContainerTags } = useStaticPageTags();
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const { pageContainer, appContainer, editorMode } = props;

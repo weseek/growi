@@ -23,7 +23,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
+import { useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
 
 const logger = loggerFactory('growi:Page');
@@ -188,7 +188,7 @@ const PageWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
-  const { data: pageTags } = usePageTags();
+  const { data: pageTags } = useStaticPageTags();
 
 
   if (editorMode == null) {

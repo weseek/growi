@@ -18,7 +18,7 @@ import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled, usePageTags } from '~/stores/editor';
+import { useIsSlackEnabled, useStaticPageTags } from '~/stores/editor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -437,7 +437,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
-  const { data: pageTags } = usePageTags();
+  const { data: pageTags } = useStaticPageTags();
 
   if (editorMode == null) {
     return null;
