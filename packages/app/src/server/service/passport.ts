@@ -12,6 +12,7 @@ import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-sa
 import { BasicStrategy } from 'passport-http';
 
 import { IncomingMessage } from 'http';
+import got from 'got';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -627,7 +628,10 @@ class PassportService implements S2sMessageHandlable {
     const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
       ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
       : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
-    const oidcIssuer = await OIDCIssuer.discover(issuerHost);
+    // Check and initialize connection to OIDC issuer host
+    // Prevent request timeout error on app init
+    const oidcHostReady = await this.isOidcHostReachable(issuerHost);
+    const oidcIssuer = oidcHostReady ? await OIDCIssuer.discover(issuerHost) : null;
     logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
     const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
@@ -670,7 +674,9 @@ class PassportService implements S2sMessageHandlable {
       redirect_uris: [redirectUri],
       response_types: ['code'],
     });
-
+    // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
+    // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
+    client.CLOCK_TOLERANCE = 5;
     passport.use('oidc', new OidcStrategy({
       client,
       params: { scope: 'openid email profile' },
@@ -697,6 +703,24 @@ class PassportService implements S2sMessageHandlable {
     logger.debug('OidcStrategy: reset');
     passport.unuse('oidc');
     this.isOidcStrategySetup = false;
+  }
+
+  /**
+ *
+ * Check and initialize connection to OIDC issuer host
+ * Prevent request timeout error on app init
+ *
+ * @param issuerHost
+ * @returns boolean
+ */
+  async isOidcHostReachable(issuerHost) {
+    try {
+      const response = await got(issuerHost, { retry: { limit: 3 } });
+      return response.statusCode === 200;
+    }
+    catch (err) {
+      logger.debug('Issuer host unreachable:', err.code);
+    }
   }
 
   setupSamlStrategy() {
