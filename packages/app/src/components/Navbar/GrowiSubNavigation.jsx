@@ -8,10 +8,10 @@ import LinkedPagePath from '~/models/linked-page-path';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentCreatedAt } from '~/stores/context';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
+import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
 
 import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
@@ -71,15 +71,15 @@ const GrowiSubNavigation = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: createdAt } = useCurrentCreatedAt();
+  const { data: updatedAt } = useCurrentUpdatedAt();
 
   const {
     appContainer, pageContainer, isCompactMode,
   } = props;
   const {
-    pageId, path, creator, updatedAt, revisionAuthor, isPageExist,
+    pageId, path, creator, revisionAuthor, isPageExist,
   } = pageContainer.state;
-
-  const { data: createdAt } = useCurrentCreatedAt();
 
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== EditorMode.View;
