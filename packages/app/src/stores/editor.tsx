@@ -13,5 +13,5 @@ export const useIsSlackEnabled = (isEnabled?: boolean): SWRResponse<boolean, Err
 
 export const useStaticPageTags = (): SWRResponse<GetPageTagResponse['tags'], Error> => {
   const { data: pageId } = usePageTags();
-  return useStaticSWR<GetPageTagResponse['tags'], Error>('pageTags', pageId || null);
+  return useStaticSWR<GetPageTagResponse['tags'], Error>('pageTags', pageId || []);
 };

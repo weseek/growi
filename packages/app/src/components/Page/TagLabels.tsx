@@ -12,14 +12,14 @@ import TagEditModal from './TagEditModal';
 import { EditorMode } from '~/stores/ui';
 import { useStaticPageTags } from '~/stores/editor';
 
-type TagLabelsCoreProps = {
+type TagLabels = {
   appContainer: AppContainer;
   pageContainer: PageContainer;
   editorMode: string;
 };
 
-const TagLabelsCore: FC<TagLabelsCoreProps> = (props) => {
-  const { data: editorContainerTags = [], mutate: mutateEditorContainerTags } = useStaticPageTags();
+const TagLabels: FC<TagLabels> = (props) => {
+  const { data: editorContainerTags, mutate: mutateEditorContainerTags } = useStaticPageTags();
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const { pageContainer, appContainer, editorMode } = props;
@@ -81,6 +81,6 @@ const TagLabelsCore: FC<TagLabelsCoreProps> = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsWithUnstated = withUnstatedContainers(TagLabelsCore, [AppContainer, PageContainer]);
+const TagLabelsWithUnstated = withUnstatedContainers(TagLabels, [AppContainer, PageContainer]);
 
 export default TagLabelsWithUnstated;
