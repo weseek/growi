@@ -1,6 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const { pathUtils } = require('@growi/core');
@@ -293,6 +295,8 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    res.apiv3(result, 201);
+
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
@@ -316,7 +320,13 @@ module.exports = (crowi) => {
       }
     }
 
-    return res.apiv3(result, 201);
+    // create subscription
+    try {
+      await crowi.inAppNotificationService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
+    }
+    catch (err) {
+      logger.error('Failed to create subscription document', err);
+    }
   });
 
 

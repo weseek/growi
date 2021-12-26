@@ -90,5 +90,10 @@ module.exports = function(crowi) {
     }));
   };
 
+  revisionSchema.statics.findAuthorsByPage = async function(page) {
+    const result = await this.distinct('author', { path: page.path }).exec();
+    return result;
+  };
+
   return mongoose.model('Revision', revisionSchema);
 };
