@@ -7,10 +7,11 @@ import {
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
   useSlackChannels,
-} from '../../stores/context';
+} from '~/stores/context';
 import {
   useIsDeviceSmallerThanMd,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
@@ -68,6 +69,9 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
+  const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
   /*
    * use static swr
    */
@@ -116,6 +120,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
+  useSelectedGrant(grant);
+  useSelectedGrantGroupId(grantGroupId);
+  useSelectedGrantGroupName(grantGroupName);
 
   return null;
 };
