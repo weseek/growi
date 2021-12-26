@@ -632,7 +632,7 @@ class PassportService implements S2sMessageHandlable {
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstace(issuerHost);
-    if (oidcIssuer !== undefined) {
+    if (oidcIssuer != null) {
       logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
       const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
@@ -743,17 +743,11 @@ class PassportService implements S2sMessageHandlable {
       return OIDCIssuer.discover(issuerHost);
     }, {
       onFailedAttempt: (error) => {
-        if (error.attemptNumber === 1) {
-          logger.debug('OidcStrategy: setup failed. Retrying ...');
-        }
-        else {
-          logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber - 1} failed. Retrying ...`);
-        }
-
+        logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error.error} Retrying ...`);
       },
-      retries: 3,
-    }).catch(() => {
-      logger.error('OidcStrategy: setup failed: OpenIdConnectError: Not Found');
+      retries: 2,
+    }).catch((error) => {
+      logger.error(`OidcStrategy: setup failed after ${error.atemptNumber} attempts with error: ${error.error} `);
     });
     return oidcIssuer;
   }
