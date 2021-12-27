@@ -745,11 +745,11 @@ class PassportService implements S2sMessageHandlable {
       onFailedAttempt: (error) => {
         // get current OIDCIssuer.defaultHttpOptions.timeout
         const oidcOptionTimeout = OIDCIssuer.defaultHttpOptions.timeout;
-        // Increases OIDCIssuer.defaultHttpOptions.timeout by squaring 1.5 with attempNumber on each attempt
-        OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * (1.5 ** error.attemptNumber) };
+        // Increases OIDCIssuer.defaultHttpOptions.timeout by multiply with 1.5
+        OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * 1.5 };
         logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
       },
-      retries: 2,
+      retries: 3,
     }).catch((error) => {
       logger.error(`OidcStrategy: setup failed with error: ${error} `);
     });
