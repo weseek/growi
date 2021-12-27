@@ -383,14 +383,14 @@ class PassportService implements S2sMessageHandlable {
     const { configManager } = this.crowi;
 
     // get configurations
-    const isUserBind = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
-    const serverUrl = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
-    const bindDN = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
-    const bindCredentials = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
-    const searchFilter = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
-    const groupSearchBase = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
+    const isUserBind        = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
+    const serverUrl         = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
+    const bindDN            = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
+    const bindCredentials   = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
+    const searchFilter      = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
+    const groupSearchBase   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
     const groupSearchFilter = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
-    const groupDnProperty = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
+    const groupDnProperty   = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -682,14 +682,15 @@ class PassportService implements S2sMessageHandlable {
         client,
         params: { scope: 'openid email profile' },
       },
-        ((tokenset, userinfo, done) => {
-          if (userinfo) {
-            return done(null, userinfo);
-          }
+      ((tokenset, userinfo, done) => {
+        if (userinfo) {
+          return done(null, userinfo);
+        }
 
-          return done(null, false);
+        return done(null, false);
 
-        })));
+      }),
+      ));
 
       this.isOidcStrategySetup = true;
       logger.debug('OidcStrategy: setup is done');
@@ -734,8 +735,8 @@ class PassportService implements S2sMessageHandlable {
    * @returns instance of OIDCIssuer
    */
   async getOIDCIssuerInstace(issuerHost) {
-    const OIDC_TIMEOUT_MULTIPLIER = parseInt(process.env.OIDC_TIMEOUT_MULTIPLIER || 'NaN') || 1.5;
-    const OIDC_DISCOVERY_RETRIES = parseInt(process.env.OIDC_DISCOVERY_RETRIES || 'NaN') || 3;
+    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:TimeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:DiscoveryRetries');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
