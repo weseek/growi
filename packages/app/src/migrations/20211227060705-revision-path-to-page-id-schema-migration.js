@@ -12,7 +12,7 @@ module.exports = {
   async up(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
-    const Revision = getModelSafely('Revision');
+    const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
     const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 });
 
@@ -21,10 +21,14 @@ module.exports = {
       return {
         updateMany: {
           filter: { _id: page.revision },
-          update: {
-            $set: { pageId: page._id },
-            $unset: { path: null },
-          },
+          update: [
+            {
+              $unset: ['path'],
+            },
+            {
+              $set: { pageId: page._id },
+            },
+          ],
         },
       };
     });
@@ -39,19 +43,24 @@ module.exports = {
   async down(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
-    const Revision = getModelSafely('Revision');
+    const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
-    const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 });
+
+    const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 });
 
     // make map revisionId to pageId
     const updateManyOperations = pages.map((page) => {
       return {
         updateMany: {
           filter: { _id: page.revision },
-          update: {
-            $set: { path: page.path },
-            $unset: { pageId: null },
-          },
+          update: [
+            {
+              $unset: ['pageId'],
+            },
+            {
+              $set: { path: page.path },
+            },
+          ],
         },
       };
     });
