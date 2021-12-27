@@ -20,7 +20,9 @@ import mdu from './PageEditor/MarkdownDrawioUtil';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
+import {
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
 import { useIsSlackEnabled } from '~/stores/editor';
 import { useSlackChannels } from '~/stores/context';
 
@@ -78,9 +80,9 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -110,9 +112,9 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -173,12 +175,19 @@ Page.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
 };
 
 const PageWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
+  const { data: grant } = useSelectedGrant();
+  const { data: grantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName } = useSelectedGrantGroupName();
+
 
   if (editorMode == null) {
     return null;
@@ -190,6 +199,9 @@ const PageWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
     />
   );
 };
