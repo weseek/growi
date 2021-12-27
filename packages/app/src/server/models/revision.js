@@ -50,7 +50,7 @@ module.exports = function(crowi) {
     }
 
     const newRevision = new Revision();
-    newRevision.path = pageData.path;
+    newRevision.pageId = pageData._id;
     newRevision.body = body;
     newRevision.format = format;
     newRevision.author = user._id;
