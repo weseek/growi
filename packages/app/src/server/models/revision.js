@@ -12,7 +12,8 @@ module.exports = function(crowi) {
 
   const ObjectId = mongoose.Schema.Types.ObjectId;
   const revisionSchema = new mongoose.Schema({
-    path: { type: String, required: true, index: true },
+    // OBSOLETE path: { type: String, required: true, index: true }
+    pageId: { type: ObjectId, required: true, index: true },
     body: {
       type: String,
       required: true,
@@ -29,25 +30,10 @@ module.exports = function(crowi) {
   });
   revisionSchema.plugin(mongoosePaginate);
 
-  revisionSchema.statics.findRevisionIdList = function(path) {
-    return this.find({ path })
-      .select('_id author createdAt hasDiffToPrev')
-      .sort({ createdAt: -1 })
-      .exec();
-  };
-
-  revisionSchema.statics.updateRevisionListByPath = function(path, updateData, options) {
+  revisionSchema.statics.updateRevisionListByPath = async function(path, updateData) {
     const Revision = this;
 
-    return new Promise(((resolve, reject) => {
-      Revision.update({ path }, { $set: updateData }, { multi: true }, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    }));
+    return Revision.updateMany({ path }, { $set: updateData });
   };
 
   revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
@@ -74,20 +60,6 @@ module.exports = function(crowi) {
     }
 
     return newRevision;
-  };
-
-  revisionSchema.statics.removeRevisionsByPath = function(path) {
-    const Revision = this;
-
-    return new Promise(((resolve, reject) => {
-      Revision.remove({ path }, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    }));
   };
 
   return mongoose.model('Revision', revisionSchema);
