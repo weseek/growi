@@ -379,7 +379,7 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, isMarkdown, revision } },
       );
-      commentEvent.emit('create', updatedComment);
+      commentEvent.emit('update', updatedComment);
     }
     catch (err) {
       logger.error(err);
@@ -457,7 +457,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
-      await comment.removeWithReplies();
+      await comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
       commentEvent.emit('delete', comment);
     }

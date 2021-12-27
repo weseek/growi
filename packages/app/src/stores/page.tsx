@@ -1,5 +1,6 @@
 import useSWR, { SWRResponse } from 'swr';
 
+import { Types } from 'mongoose';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
@@ -39,6 +40,21 @@ export const useSWRxPageList = (
         items: response.data.pages,
         totalCount: response.data.totalCount,
         limit: response.data.limit,
+      };
+    }),
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxSubscribeButton = <Data, Error>(
+  pageId: Types.ObjectId,
+
+): SWRResponse<{status: boolean | null}, Error> => {
+  return useSWR(
+    ['/page/subscribe', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
+      return {
+        status: response.data.subscribing,
       };
     }),
   );
