@@ -678,18 +678,19 @@ class PassportService implements S2sMessageHandlable {
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
       client.CLOCK_TOLERANCE = 5;
-      passport.use('oidc', new OidcStrategy({
-        client,
-        params: { scope: 'openid email profile' },
-      },
-        ((tokenset, userinfo, done) => {
+      passport.use('oidc', new OidcStrategy(
+        {
+          client,
+          params: { scope: 'openid email profile' },
+        },
+        (tokenset, userinfo, done) => {
           if (userinfo) {
             return done(null, userinfo);
           }
 
           return done(null, false);
 
-        })));
+        }));
 
       this.isOidcStrategySetup = true;
       logger.debug('OidcStrategy: setup is done');
@@ -734,8 +735,8 @@ class PassportService implements S2sMessageHandlable {
    * @returns instance of OIDCIssuer
    */
   async getOIDCIssuerInstace(issuerHost) {
-    const OIDC_TIMEOUT_MULTIPLIER = parseInt(process.env.OIDC_TIMEOUT_MULTIPLIER || 'NaN') || 1.5;
-    const OIDC_DISCOVERY_RETRIES = parseInt(process.env.OIDC_DISCOVERY_RETRIES || 'NaN') || 3;
+    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:TimeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:DiscoveryRetries');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
