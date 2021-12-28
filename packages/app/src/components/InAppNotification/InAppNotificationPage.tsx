@@ -96,10 +96,19 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
           </button>
         </div>
       )}
-        <InAppNotificationList inAppNotificationData={notificationData} elemClassName="d-flex flex-row" />
+        { notificationData != null && notificationData.docs.length === 0
+          // no items
+          ? t('in_app_notification.mark_all_as_read')
+          // render list-group
+          : (
+            <div className="list-group">
+              <InAppNotificationList inAppNotificationData={notificationData} type="button" elemClassName="list-group-item list-group-item-action" />
+            </div>
+          )
+        }
 
-        {notificationData.totalDocs > 0
-          && (
+        {notificationData.totalDocs > 0 && (
+          <div className="mt-4">
             <PaginationWrapper
               activePage={activePage}
               changePage={setAllNotificationPageNumber}
@@ -108,8 +117,8 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
               align="center"
               size="sm"
             />
-          )
-        }
+          </div>
+        ) }
       </>
     );
   };
@@ -130,7 +139,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   };
 
   return (
-    <CustomNavAndContents navTabMapping={navTabMapping} />
+    <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['mt-4']} />
   );
 };
 

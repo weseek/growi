@@ -79,7 +79,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
       <DropdownMenu right>
-        <InAppNotificationList tag="DropdownItem" inAppNotificationData={inAppNotificationData} />
+        { inAppNotificationData != null && inAppNotificationData.docs.length === 0
+          // no items
+          ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
+          // render DropdownItem
+          : <InAppNotificationList type="dropdown-item" inAppNotificationData={inAppNotificationData} />
+        }
         <DropdownItem divider />
         <DropdownItem tag="a" href="/me/all-in-app-notifications">
           { t('in_app_notification.see_all') }

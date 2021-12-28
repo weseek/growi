@@ -1,20 +1,18 @@
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { DropdownItem } from 'reactstrap';
 import { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
+
 import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
   inAppNotificationData?: PaginateResult<IInAppNotification>,
   elemClassName?: string,
-  tag?: 'div' | 'DropdownItem',
+  type?: 'button' | 'dropdown-item',
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
-  const { t } = useTranslation();
   const { inAppNotificationData } = props;
 
   if (inAppNotificationData == null) {
@@ -29,31 +27,11 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const isDropdownItem = props.tag === 'DropdownItem';
-
-  // determine tag
-  const TagElem = isDropdownItem
-    ? DropdownItem
-  // eslint-disable-next-line react/prop-types
-    : props => <div {...props}>{props.children}</div>;
-
-  if (notifications.length === 0) {
-    return (
-      <TagElem
-        disabled={isDropdownItem ? true : undefined}
-        className={props.elemClassName}
-      >{t('in_app_notification.no_notification')}
-      </TagElem>
-    );
-  }
-
   return (
     <>
       { notifications.map((notification: IInAppNotification & HasObjectId) => {
         return (
-          <TagElem className={props.elemClassName} key={notification._id}>
-            <InAppNotificationElm notification={notification} />
-          </TagElem>
+          <InAppNotificationElm key={notification._id} notification={notification} type={props.type} elemClassName={props.elemClassName} />
         );
       }) }
     </>
