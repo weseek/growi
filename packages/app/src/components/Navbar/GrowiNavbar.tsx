@@ -39,7 +39,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
 
       <li className="nav-item d-none d-md-block">
         <button
-          className="px-md-2 nav-link btn-create-page border-0 bg-transparent"
+          className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
           type="button"
           onClick={() => mutatePageCreateModalOpened(true)}
         >
