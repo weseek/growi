@@ -96,8 +96,10 @@
 
     .total-likes,
     .total-bookmarks {
-      height: 12px;
-      font-size: 12px;
+      height: auto;
+    }
+    .total-bookmarks {
+      font-size: 15px;
     }
   }
 }
