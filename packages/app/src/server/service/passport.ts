@@ -735,8 +735,8 @@ class PassportService implements S2sMessageHandlable {
    * @returns instance of OIDCIssuer
    */
   async getOIDCIssuerInstace(issuerHost) {
-    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:timeoutMultiplier');
-    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-oidc:discoveryRetries');
+    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:timeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
