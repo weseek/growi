@@ -393,13 +393,13 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   OIDC_TIMEOUT_MULTIPLIER: {
     ns:      'crowi',
-    key:     'security:passport-oidc:TimeoutMultiplier',
+    key:     'security:passport-oidc:timeoutMultiplier',
     type:    ValueType.NUMBER,
     default: 1.5,
   },
   OIDC_DISCOVERY_RETRIES: {
     ns:      'crowi',
-    key:     'security:passport-oidc:DiscoveryRetries',
+    key:     'security:passport-oidc:discoveryRetries',
     type:    ValueType.NUMBER,
     default: 3,
   },
