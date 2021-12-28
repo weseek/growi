@@ -1,19 +1,41 @@
-import React from 'react';
+import React, {
+  FC, useRef,
+} from 'react';
+import { DropdownItem } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
+import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
 // Change the display for each targetmodel
 import PageModelNotification from './PageNotification/PageModelNotification';
+import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
+  elemClassName?: string,
+  type?: 'button' | 'dropdown-item',
 }
 
-const InAppNotificationElm = (props: Props): JSX.Element => {
+
+const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const { notification } = props;
+
+  const notificationRef = useRef<IInAppNotificationOpenable>(null);
+
+  const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
+    if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
+      // set notification status "OPEND"
+      await apiv3Post('/in-app-notification/open', { id: notification._id });
+    }
+
+    const currentInstance = notificationRef.current;
+    if (currentInstance != null) {
+      currentInstance.open();
+    }
+  };
 
   const getActionUsers = () => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -96,19 +118,36 @@ const InAppNotificationElm = (props: Props): JSX.Element => {
       actionIcon = '';
   }
 
+  const isDropdownItem = props.type === 'dropdown-item';
+
+  // determine tag
+  const TagElem = isDropdownItem
+    ? DropdownItem
+    // eslint-disable-next-line react/prop-types
+    : props => <button type="button" {...props}>{props.children}</button>;
+
   return (
-    <div className="d-flex align-items-center">
-      <span className={`${notification.status === 'UNOPENED' ? 'grw-unopend-notification' : 'ml-2'} rounded-circle mr-3`}></span>
-      {renderActionUserPictures()}
-      {notification.targetModel === 'Page' && (
-        <PageModelNotification
-          notification={notification}
-          actionMsg={actionMsg}
-          actionIcon={actionIcon}
-          actionUsers={actionUsers}
-        />
-      )}
-    </div>
+    <TagElem className={props.elemClassName} onClick={() => clickHandler(notification)}>
+      <div className="d-flex align-items-center">
+        <span
+          className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
+            ? 'grw-unopend-notification'
+            : 'ml-2'
+          } rounded-circle mr-3`}
+        >
+        </span>
+        {renderActionUserPictures()}
+        {notification.targetModel === 'Page' && (
+          <PageModelNotification
+            ref={notificationRef}
+            notification={notification}
+            actionMsg={actionMsg}
+            actionIcon={actionIcon}
+            actionUsers={actionUsers}
+          />
+        )}
+      </div>
+    </TagElem>
   );
 };
 
