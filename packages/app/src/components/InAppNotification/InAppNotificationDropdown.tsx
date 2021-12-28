@@ -78,10 +78,12 @@ const InAppNotificationDropdown: FC<Props> = (props: Props) => {
       <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparent waves-effect waves-light">
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
-      <DropdownMenu className="px-2" right>
-        <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+      <DropdownMenu right>
+        <InAppNotificationList tag="DropdownItem" inAppNotificationData={inAppNotificationData} />
         <DropdownItem divider />
-        <a className="dropdown-item d-flex justify-content-center" href="/me/all-in-app-notifications">{ t('in_app_notification.see_all') }</a>
+        <DropdownItem tag="a" href="/me/all-in-app-notifications">
+          { t('in_app_notification.see_all') }
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );

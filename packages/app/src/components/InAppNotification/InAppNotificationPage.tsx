@@ -96,7 +96,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
           </button>
         </div>
       )}
-        <InAppNotificationList inAppNotificationData={notificationData} />
+        <InAppNotificationList inAppNotificationData={notificationData} elemClassName="d-flex flex-row" />
 
         {notificationData.totalDocs > 0
           && (

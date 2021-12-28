@@ -1,13 +1,16 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { DropdownItem } from 'reactstrap';
 import { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
-  inAppNotificationData?: PaginateResult<IInAppNotification>;
+  inAppNotificationData?: PaginateResult<IInAppNotification>,
+  elemClassName?: string,
+  tag?: 'div' | 'DropdownItem',
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
@@ -26,21 +29,33 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   const notifications = inAppNotificationData.docs;
 
-  const renderInAppNotificationList = () => {
-    const inAppNotificationList = notifications.map((notification: IInAppNotification & HasObjectId) => {
-      return (
-        <div className="d-flex flex-row" key={notification._id}>
-          <InAppNotificationElm notification={notification} />
-        </div>
-      );
-    });
+  const isDropdownItem = props.tag === 'DropdownItem';
 
-    return inAppNotificationList;
-  };
+  // determine tag
+  const TagElem = isDropdownItem
+    ? DropdownItem
+  // eslint-disable-next-line react/prop-types
+    : props => <div {...props}>{props.children}</div>;
+
+  if (notifications.length === 0) {
+    return (
+      <TagElem
+        disabled={isDropdownItem ? true : undefined}
+        className={props.elemClassName}
+      >{t('in_app_notification.no_notification')}
+      </TagElem>
+    );
+  }
 
   return (
     <>
-      {notifications.length === 0 ? <>{t('in_app_notification.no_notification')}</> : renderInAppNotificationList()}
+      { notifications.map((notification: IInAppNotification & HasObjectId) => {
+        return (
+          <TagElem className={props.elemClassName} key={notification._id}>
+            <InAppNotificationElm notification={notification} />
+          </TagElem>
+        );
+      }) }
     </>
   );
 };
