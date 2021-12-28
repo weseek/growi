@@ -742,7 +742,7 @@ class PassportService implements S2sMessageHandlable {
       logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
       return;
     }
-    const oidcIssuer = await pRetry(async () => {
+    const oidcIssuer = await pRetry(async() => {
       return OIDCIssuer.discover(issuerHost);
     }, {
       onFailedAttempt: (error) => {
