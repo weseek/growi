@@ -4,23 +4,23 @@ import React, { FC } from 'react';
 import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import { withUnstatedContainers } from './UnstatedUtils';
-import { useSWRxSubscribeButton } from '../stores/page';
+import { useSWRxSubscriptionStatus } from '../stores/page';
 
 
 import { toastError } from '~/client/util/apiNotification';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { useIsGuestUser } from '~/stores/context';
 
 type Props = {
-  appContainer: AppContainer,
   pageId: Types.ObjectId,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { appContainer, pageId } = props;
-  const { data: subscriptionData, mutate } = useSWRxSubscribeButton(pageId);
+  const { pageId } = props;
+
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: subscriptionData, mutate } = useSWRxSubscriptionStatus(pageId);
 
   let isSubscribed;
 
@@ -35,16 +35,16 @@ const SubscribeButton: FC<Props> = (props: Props) => {
       isSubscribed = null;
   }
 
-  const buttonClass = `${isSubscribed ? 'active' : ''} ${appContainer.isGuestUser ? 'disabled' : ''}`;
+  const buttonClass = `${isSubscribed ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
   const iconClass = isSubscribed || isSubscribed == null ? 'fa fa-eye' : 'fa fa-eye-slash';
 
   const handleClick = async() => {
-    if (appContainer.isGuestUser) {
+    if (isGuestUser) {
       return;
     }
 
     try {
-      const res = await appContainer.apiv3Put('page/subscribe', { pageId, status: !isSubscribed });
+      const res = await apiv3Put('/page/subscribe', { pageId, status: !isSubscribed });
       if (res) {
         mutate();
       }
@@ -65,7 +65,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         <i className={iconClass}></i>
       </button>
 
-      {appContainer.isGuestUser && (
+      {isGuestUser && (
         <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
@@ -75,8 +75,4 @@ const SubscribeButton: FC<Props> = (props: Props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SubscribeButtonWrapper = withUnstatedContainers(SubscribeButton, [AppContainer, PageContainer]);
-export default SubscribeButtonWrapper;
+export default SubscribeButton;

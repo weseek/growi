@@ -48,11 +48,10 @@ export const useSWRxPageList = (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxSubscribeButton = <Data, Error>(pageId: Types.ObjectId): SWRResponse<{status: boolean | null}, Error> => {
+export const useSWRxSubscriptionStatus = <Data, Error>(pageId: Types.ObjectId): SWRResponse<{status: boolean | null}, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
   const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
-
   return useSWR(
     key,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
