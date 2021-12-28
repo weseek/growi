@@ -678,16 +678,6 @@ class PassportService implements S2sMessageHandlable {
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
       client.CLOCK_TOLERANCE = 5;
-<<<<<<< HEAD
-      passport.use('oidc', new OidcStrategy({
-        client,
-        params: { scope: 'openid email profile' },
-      },
-      ((tokenset, userinfo, done) => {
-        if (userinfo) {
-          return done(null, userinfo);
-        }
-=======
       passport.use('oidc', new OidcStrategy(
         {
           client,
@@ -697,16 +687,10 @@ class PassportService implements S2sMessageHandlable {
           if (userinfo) {
             return done(null, userinfo);
           }
->>>>>>> f954030e6fa5c18db8fa92230f43e65ad193ab42
 
-        return done(null, false);
-
-<<<<<<< HEAD
-      }),
+          return done(null, false);
+        },
       ));
-=======
-        }));
->>>>>>> f954030e6fa5c18db8fa92230f43e65ad193ab42
 
       this.isOidcStrategySetup = true;
       logger.debug('OidcStrategy: setup is done');
