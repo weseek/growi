@@ -38,15 +38,15 @@
 # 機能紹介
 
 - **主な機能**
-  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html))。
-  - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html)。
+  - [HackMD(CodiMd)](https://hackmd.io/) と連携することで同時多人数編集が可能です。
     - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
   - Slack / Mattermost, IFTTT と連携することが可能です。
   - [GROWI Docs: 機能紹介](https://docs.growi.org/ja/guide/features/page_layout.html)
 - **プラグイン**
-  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
+  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [GitHub](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
 - **[Docker の準備][dockerhub]**
 - **[Docker Compose の準備][docker-compose]**
   - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/ja/admin-guide/admin-cookbook/multi-app.html)
