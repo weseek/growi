@@ -51,7 +51,7 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
             revisionId={revisionId}
             path={path}
             isDeletable={isPageDeletable}
-            // isAbleToDeleteCompletely={}
+            isAbleToDeleteCompletely={false}
             willShowPageManagement={isAbleToShowPageManagement}
           >
           </SubNavButtons>
