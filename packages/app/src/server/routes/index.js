@@ -5,6 +5,7 @@ import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-
 
 import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
+import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
 const multer = require('multer');
@@ -139,6 +140,8 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
+  // my in-app-notifications
+  app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
   app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
   // my drafts
   app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);

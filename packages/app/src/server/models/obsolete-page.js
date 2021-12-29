@@ -1184,6 +1184,16 @@ export const getPageSchema = (crowi) => {
     return pageData.save();
   };
 
+  pageSchema.methods.getNotificationTargetUsers = async function() {
+    const Comment = mongoose.model('Comment');
+    const Revision = mongoose.model('Revision');
+
+    const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);
+
+    const targetUsers = new Set([this.creator].concat(commentCreators, revisionAuthors));
+    return Array.from(targetUsers);
+  };
+
   pageSchema.statics.getHistories = function() {
     // TODO
 

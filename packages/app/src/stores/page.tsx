@@ -8,6 +8,8 @@ import { apiGet } from '../client/util/apiv1-client';
 
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 import { IPageInfo } from '../interfaces/page-info';
+import { useIsGuestUser } from './context';
+
 
 export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
@@ -65,4 +67,19 @@ export const useSWRTagsInfo = (pageId: string): SWRResponse<IPageTagsInfo, Error
       tags: response.tags,
     };
   }));
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
+  return useSWR(
+    key,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
+      return {
+        status: response.data.subscribing,
+      };
+    }),
+  );
 };

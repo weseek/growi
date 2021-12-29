@@ -17,6 +17,8 @@ const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
 
+type Nullable<T> = T | null;
+
 
 /** **********************************************************
  *                          Unions
@@ -279,9 +281,19 @@ export const useCreateModalPath = (): SWRResponse<string, Error> => {
   );
 };
 
+
+export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
+  return useStaticSWR<Nullable<number>, Error>('grant', initialData ?? null);
+};
+
+export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData ?? null);
+};
+
+export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData ?? null);
+};
+
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR(
-    'globalSearchTypeahead',
-    initialData ?? null,
-  );
+  return useStaticSWR('globalSearchTypeahead', initialData ?? null);
 };

@@ -11,6 +11,7 @@ import {
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
@@ -73,6 +74,10 @@ const ContextExtractorOnce: FC = () => {
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
   const isSearchPage = document.getElementById('search-page') != null;
 
+  const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
+
   /*
    * use static swr
    */
@@ -129,6 +134,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
+  useSelectedGrant(grant);
+  useSelectedGrantGroupId(grantGroupId);
+  useSelectedGrantGroupName(grantGroupName);
 
   // SearchResult
   useIsDeviceSmallerThanLg();

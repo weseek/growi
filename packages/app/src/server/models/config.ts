@@ -237,6 +237,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isMailerSetup: crowi.mailService.isMailerSetup,
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
+    pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
   };
 
   return localConfig;
