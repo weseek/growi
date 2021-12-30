@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 // eslint-disable-next-line no-unused-vars
 
 const { formatDistanceStrict } = require('date-fns');
-const pathUtils = require('growi-commons').pathUtils;
+const { pathUtils } = require('@growi/core');
 const md5 = require('md5');
 const entities = require('entities');
 

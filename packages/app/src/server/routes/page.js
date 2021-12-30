@@ -137,7 +137,7 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:page');
   const swig = require('swig-templates');
 
-  const pathUtils = require('growi-commons').pathUtils;
+  const { pathUtils } = require('@growi/core');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');

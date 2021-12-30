@@ -292,7 +292,6 @@ class LinkEditModal extends React.PureComponent {
                 inputName="link"
                 placeholder={t('link_edit.placeholder_of_link_input')}
                 keywordOnInit={this.state.linkInputValue}
-                behaviorOfResetBtn="clear"
                 autoFocus
               />
               <div className="d-none d-sm-block input-group-append">

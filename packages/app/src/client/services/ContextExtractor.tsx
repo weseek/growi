@@ -2,15 +2,16 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
-  useCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
+  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   usePageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser,
   useSlackChannels,
-} from '../../stores/context';
+} from '~/stores/context';
 import {
   useIsDeviceSmallerThanMd,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 
@@ -39,8 +40,14 @@ const ContextExtractorOnce: FC = () => {
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
   const pageId = mainContent?.getAttribute('data-page-id') || null;
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
-  const createdAt = mainContent?.getAttribute('data-page-created-at');
-  const updatedAt = mainContent?.getAttribute('data-page-updated-at');
+
+  // createdAt
+  const createdAtAttribute = mainContent?.getAttribute('data-page-created-at');
+  const createdAt: Date | null = (createdAtAttribute != null) ? new Date(createdAtAttribute) : null;
+  // updatedAt
+  const updatedAtAttribute = mainContent?.getAttribute('data-page-updated-at');
+  const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
+
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const isTrashPage = _isTrashPage(path);
@@ -62,6 +69,9 @@ const ContextExtractorOnce: FC = () => {
   const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const slackChannels = mainContent?.getAttribute('data-slack-channels') || '';
+  const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
+  const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
+  const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
   /*
    * use static swr
    */
@@ -76,7 +86,7 @@ const ContextExtractorOnce: FC = () => {
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
   // Page
-  useCreatedAt(createdAt);
+  useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);
@@ -99,7 +109,7 @@ const ContextExtractorOnce: FC = () => {
   useShareLinkId(shareLinkId);
   useShareLinksNumber(shareLinksNumber);
   useTemplateTagData(templateTagData);
-  useUpdatedAt(updatedAt);
+  useCurrentUpdatedAt(updatedAt);
   useCreator(creator);
   useRevisionAuthor(revisionAuthor);
 
@@ -110,6 +120,9 @@ const ContextExtractorOnce: FC = () => {
 
   // Editor
   useSlackChannels(slackChannels);
+  useSelectedGrant(grant);
+  useSelectedGrantGroupId(grantGroupId);
+  useSelectedGrantGroupName(grantGroupName);
 
   return null;
 };

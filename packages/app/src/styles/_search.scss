@@ -55,8 +55,8 @@
 // input styles
 .grw-global-search {
   .search-clear {
-    top: 3px;
-    right: 26px;
+    top: 4px;
+    right: 4px;
   }
 
   .dropdown-toggle {
@@ -71,7 +71,7 @@
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     .rbt-input-main {
-      padding-right: 58px;
+      padding-right: 36px;
       // corner radius
       border-top-right-radius: 40px;
       border-bottom-right-radius: 40px;
@@ -101,18 +101,19 @@
     }
   }
 
-  .btn-group-submit-search {
+  .grw-shortcut-key-indicator {
     position: absolute;
     top: 0;
-    right: 0;
-
-    z-index: 3;
+    right: 10px;
 
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+    height: 30px;
+
+    code {
+      padding-right: 0.4rem;
+      padding-left: 0.4rem;
+    }
   }
 }
 

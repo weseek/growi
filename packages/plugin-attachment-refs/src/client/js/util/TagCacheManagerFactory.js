@@ -1,4 +1,4 @@
-import { TagCacheManager } from 'growi-commons';
+import { TagCacheManager } from '@growi/core';
 
 const STATE_CACHE_NS = 'refs-state-cache';
 

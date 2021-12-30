@@ -1,8 +1,68 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.4](https://github.com/weseek/growi/compare/v4.5.3...v4.5.4) - 2021-12-23
+
+### 💎 Features
+
+- feat: Hotkey to focus to search (#5006) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Omit magnifier icon from global SearchTypeahead (#5005) @yuki-takei
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- imprv: Make updatedAt SWR (#4954) @kaoritokashiki
+- imprv: Make createdAt SWR (#4819) @kaoritokashiki
+- imprv: Performance optimization for large drawio diagrams (#4221) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Sidebar height is a little large (#4988) @yuki-takei
+
+### 🧰 Maintenance
+
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- support: Typescriptize search components (#4982) @yuki-takei
+- fix:  dependabot alert object-path (#4964) @mudana-grune
+- fix: dependabot alert axios (#4960) @mudana-grune
+- fix: dependabot alert elliptic (#4959) @mudana-grune
+- fix: dependabot alert acorn (#4951) @mudana-grune
+- fix: dependabot alert is-svg (#4937) @mudana-grune
+- fix: dependabot alert socket.io-parser (#4934) @mudana-grune
+- fix: dependabot alert serialize-javascript (#4910) @mudana-grune
+- fix: dependabot alert js-yaml (#4906) @mudana-grune
+- ci(deps): bump ws from 7.5.1 to 8.3.0 (#4728) @dependabot
+- support: omit growi-commons (#4938) @yuki-takei
+
+## [v4.5.3](https://github.com/weseek/growi/compare/v4.5.2...v4.5.3) - 2021-12-17
+
+### 💎 Features
+
+- feat: user activation by email (#4862) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Use SWR for isSlackEnabled (#4827) @stevenfukase
+- imprv: Disable rubber band scroll for Mac & iOS users (#4834) @hakumizuki
+- imprv: Omit atlaskit and implement sidebar only with original codes (#4598) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: GROWI Bot search command after transplanting search service from dev/5.0.x (#4916) @hakumizuki
+- fix: Set min-height to sidebar scroll target (#4884) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: fix dependabot alert for kind-of (#4891) @LuqmanHakim-Grune
+- support: fix dependabot alert for ini (#4892) @LuqmanHakim-Grune
+- support: fix and debug mixin-deep dependabot alert (#4867) @LuqmanHakim-Grune
+- support: dependabot alert xmlhttprequest-ssl (#4878) @mudana-grune
+- support: Transplant search service from dev/5.0.x (#4869) @hakumizuki
+- support: dependabot alert set-value (#4864) @LuqmanHakim-Grune
+- ci(deps): bump aws-sdk from 2.179.0 to 2.1044.0 (#4821) @dependabot
 
 ## [v4.5.2](https://github.com/weseek/growi/compare/v4.5.1...v4.5.2) - 2021-12-06
 

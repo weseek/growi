@@ -14,7 +14,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
-const { pathUtils } = require('growi-commons');
+const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
@@ -1157,6 +1157,16 @@ module.exports = function(crowi) {
 
     pageData.hasDraftOnHackmd = newValue;
     return pageData.save();
+  };
+
+  pageSchema.methods.getNotificationTargetUsers = async function() {
+    const Comment = mongoose.model('Comment');
+    const Revision = mongoose.model('Revision');
+
+    const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);
+
+    const targetUsers = new Set([this.creator].concat(commentCreators, revisionAuthors));
+    return Array.from(targetUsers);
   };
 
   pageSchema.statics.getHistories = function() {

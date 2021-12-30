@@ -235,6 +235,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isSearchServiceReachable: crowi.searchService.isReachable,
     isMailerSetup: crowi.mailService.isMailerSetup,
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+    pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
   };
 
   return localConfig;

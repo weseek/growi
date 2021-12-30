@@ -1,5 +1,8 @@
+import loggerFactory from '~/utils/logger';
 
-import util from 'util';
+const logger = loggerFactory('growi:events:comment');
+
+const util = require('util');
 
 const events = require('events');
 
@@ -10,8 +13,14 @@ function CommentEvent(crowi) {
 }
 util.inherits(CommentEvent, events.EventEmitter);
 
-CommentEvent.prototype.onCreate = function(comment) {};
-CommentEvent.prototype.onUpdate = function(comment) {};
-CommentEvent.prototype.onDelete = function(comment) {};
+CommentEvent.prototype.onCreate = function(comment) {
+  logger.info('onCreate comment event fired');
+};
+CommentEvent.prototype.onUpdate = function(comment) {
+  logger.info('onUpdate comment event fired');
+};
+CommentEvent.prototype.onDelete = function(comment) {
+  logger.info('onRemove comment event fired');
+};
 
 module.exports = CommentEvent;
