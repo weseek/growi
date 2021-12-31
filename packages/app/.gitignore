@@ -2,6 +2,10 @@
 /.next/
 /out/
 
+# test
+cypress/screenshots
+cypress/videos
+
 # dist
 /dist/
 /transpiled/
