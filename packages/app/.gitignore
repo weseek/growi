@@ -3,8 +3,8 @@
 /out/
 
 # test
-cypress/screenshots
-cypress/videos
+test/cypress/screenshots
+test/cypress/videos
 
 # dist
 /dist/
