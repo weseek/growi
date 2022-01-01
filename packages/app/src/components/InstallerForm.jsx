@@ -55,8 +55,6 @@ class InstallerForm extends React.Component {
     setTimeout(() => {
       this.setState({ isSubmittingDisabled: false });
     }, 3000);
-
-    document['register-form'].submit();
   }
 
   render() {
