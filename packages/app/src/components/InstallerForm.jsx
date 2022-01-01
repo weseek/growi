@@ -119,6 +119,7 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-user" /></span>
               </div>
               <input
+                data-testid="tiUsername"
                 type="text"
                 className="form-control"
                 placeholder={this.props.t('User ID')}
@@ -135,6 +136,7 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-tag" /></span>
               </div>
               <input
+                data-testid="tiName"
                 type="text"
                 className="form-control"
                 placeholder={this.props.t('Name')}
@@ -149,6 +151,7 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-envelope" /></span>
               </div>
               <input
+                data-testid="tiEmail"
                 type="email"
                 className="form-control"
                 placeholder={this.props.t('Email')}
@@ -163,6 +166,7 @@ class InstallerForm extends React.Component {
                 <span className="input-group-text"><i className="icon-lock" /></span>
               </div>
               <input
+                data-testid="tiPassword"
                 type="password"
                 className="form-control"
                 placeholder={this.props.t('Password')}
@@ -175,6 +179,7 @@ class InstallerForm extends React.Component {
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
               <button
+                data-testid="btnSubmit"
                 type="submit"
                 className="btn-fill btn btn-register"
                 id="register"
