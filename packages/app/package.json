@@ -135,6 +135,7 @@
     "re2": "^1.17.1",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "react-tagcloud": "^2.1.1",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rimraf": "^3.0.0",
