@@ -120,6 +120,14 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
+    try {
+      responsesParams.bookmaekedUsers = await Bookmark.getBookmarkedUsers(pageId);
+    }
+    catch (err) {
+      logger.error('get-bookmarked-users-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
     // guest user only get bookmark count
     if (user == null) {
       return res.apiv3(responsesParams);

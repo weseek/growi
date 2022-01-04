@@ -58,6 +58,25 @@ module.exports = function(crowi) {
     }));
   };
 
+  bookmarkSchema.statics.getBookmarkedUsers = async function(pageId) {
+    const Bookmark = this;
+
+    try {
+      const data = await Bookmark.find({ page: pageId });
+      let bookmarkedUsers = [];
+      if (data.length > 0) {
+        bookmarkedUsers = data.map((bookmark) => {
+          return { _id: bookmark.user };
+        });
+      }
+      return bookmarkedUsers;
+    }
+    catch (err) {
+      debug('Bookmark.find failed', err);
+      throw err;
+    }
+  };
+
   bookmarkSchema.statics.add = async function(page, user) {
     const Bookmark = this;
 
