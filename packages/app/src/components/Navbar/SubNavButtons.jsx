@@ -31,7 +31,10 @@ const SubnavButtons = React.memo((props) => {
           </span>
         )}
         <span>
-          <BookmarkButton />
+          <BookmarkButton
+            isBookmarked={pageContainer.state.isBookmarked}
+            sumOfBookmarks={pageContainer.state.sumOfBookmarks}
+          />
         </span>
       </>
     );
