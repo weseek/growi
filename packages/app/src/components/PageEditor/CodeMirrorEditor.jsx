@@ -5,7 +5,6 @@ import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
 import { Button } from 'reactstrap';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
 import { JSHINT } from 'jshint';
 
