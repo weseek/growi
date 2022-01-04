@@ -12,8 +12,6 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
   pageId: Types.ObjectId,
-  // isBookmarked: boolean
-  // sumOfBookmarks: number
 }
 
 const BookmarkButton: FC<Props> = (props: Props) => {
@@ -34,7 +32,6 @@ const BookmarkButton: FC<Props> = (props: Props) => {
   }, [pageId]);
 
   const handleClick = async() => {
-
     if (isGuestUser) {
       return;
     }
