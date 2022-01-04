@@ -1,9 +1,7 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
@@ -18,6 +16,7 @@ interface Props {
 }
 
 const BookmarkButton: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const {
     appContainer, pageContainer, isBookmarked, sumOfBookmarks,
   } = props;
@@ -56,7 +55,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
 
       {isGuestUser && (
         <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
-          {/* {t('Not available for guest')} */}
+          {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
     </div>
