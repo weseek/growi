@@ -14,27 +14,31 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
-    const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 });
+    const recursiveUpdate = async(offset = 0) => {
+      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 }).skip(offset).limit(100).exec();
+      if (pages.length === 0) {
+        return;
+      }
+      const updateManyOperations = pages.map((page) => {
+        return {
+          updateMany: {
+            filter: { _id: page.revision },
+            update: [
+              {
+                $unset: ['path'],
+              },
+              {
+                $set: { pageId: page._id },
+              },
+            ],
+          },
+        };
+      });
+      await Revision.bulkWrite(updateManyOperations);
+      await recursiveUpdate(offset + 100);
+    };
 
-    // make map revisionId to pageId
-    const updateManyOperations = pages.map((page) => {
-      return {
-        updateMany: {
-          filter: { _id: page.revision },
-          update: [
-            {
-              $unset: ['path'],
-            },
-            {
-              $set: { pageId: page._id },
-            },
-          ],
-        },
-      };
-    });
-
-    // updateMany by array
-    await Revision.bulkWrite(updateManyOperations);
+    await recursiveUpdate();
 
     logger.info('Migration has successfully applied');
   },
@@ -45,28 +49,35 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
+    const recursiveUpdate = async(offset = 0) => {
+      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 }).skip(offset).limit(100).exec();
+      if (pages.length === 0) {
+        return;
+      }
 
-    const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 });
+      // make map revisionId to pageId
+      const updateManyOperations = pages.map((page) => {
+        return {
+          updateMany: {
+            filter: { _id: page.revision },
+            update: [
+              {
+                $unset: ['pageId'],
+              },
+              {
+                $set: { path: page.path },
+              },
+            ],
+          },
+        };
+      });
 
-    // make map revisionId to pageId
-    const updateManyOperations = pages.map((page) => {
-      return {
-        updateMany: {
-          filter: { _id: page.revision },
-          update: [
-            {
-              $unset: ['pageId'],
-            },
-            {
-              $set: { path: page.path },
-            },
-          ],
-        },
-      };
-    });
+      // updateMany by array
+      await Revision.bulkWrite(updateManyOperations);
+      await recursiveUpdate(offset + 100);
+    };
 
-    // updateMany by array
-    await Revision.bulkWrite(updateManyOperations);
+    await recursiveUpdate();
 
     logger.info('Migration down has successfully applied');
   },
