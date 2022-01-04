@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  FC,
 } from 'react';
 
 import { Types } from 'mongoose';
@@ -8,7 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { useSWRxBookmarksInfo } from '~/stores/bookmarks';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
   pageId: Types.ObjectId,
@@ -18,18 +19,11 @@ const BookmarkButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { pageId } = props;
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [sumOfBookmarks, setSumOfBookmarks] = useState(0);
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: bookmarksInfo, mutate } = useSWRxBookmarksInfo(pageId);
 
-  // TODO 84997 Get "/bookmarks/info" with SWR
-  const bookmarksInfo = useCallback(async() => {
-    const { data } = await apiv3Get('/bookmarks/info', { pageId });
-    if (data != null) {
-      setIsBookmarked(data.isBookmarked);
-      setSumOfBookmarks(data.sumOfBookmarks);
-    }
-  }, [pageId]);
+  const isBookmarked = bookmarksInfo?.isBookmarked != null ? bookmarksInfo.isBookmarked : false;
+  const sumOfBookmarks = bookmarksInfo?.sumOfBookmarks != null ? bookmarksInfo.sumOfBookmarks : false;
 
   const handleClick = async() => {
     if (isGuestUser) {
@@ -38,18 +32,14 @@ const BookmarkButton: FC<Props> = (props: Props) => {
 
     try {
       const res = await apiv3Put('/bookmarks', { pageId, bool: !isBookmarked });
-      if (res != null) {
-        await bookmarksInfo();
+      if (res) {
+        mutate();
       }
     }
     catch (err) {
       toastError(err);
     }
   };
-
-  useEffect(() => {
-    bookmarksInfo();
-  }, [bookmarksInfo]);
 
   return (
     <div>
