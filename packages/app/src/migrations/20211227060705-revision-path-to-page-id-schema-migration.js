@@ -37,7 +37,7 @@ module.exports = {
         };
       });
       await Revision.bulkWrite(updateManyOperations);
-      await recursiveUpdate(offset + 100);
+      await recursiveUpdate(offset + LIMIT);
     };
 
     await recursiveUpdate();
@@ -76,7 +76,7 @@ module.exports = {
 
       // updateMany by array
       await Revision.bulkWrite(updateManyOperations);
-      await recursiveUpdate(offset + 100);
+      await recursiveUpdate(offset + LIMIT);
     };
 
     await recursiveUpdate();
