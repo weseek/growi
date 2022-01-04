@@ -1,27 +1,27 @@
 import React, { FC } from 'react';
 
+import { Types } from 'mongoose';
 import { UncontrolledTooltip } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import PageContainer from '~/client/services/PageContainer';
 import AppContainer from '~/client/services/AppContainer';
 
 interface Props {
   pageContainer: PageContainer
   appContainer: AppContainer
+  pageId: Types.ObjectId,
   isBookmarked: boolean
   sumOfBookmarks: number
 }
 
 const BookmarkButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const {
-    appContainer, pageContainer, isBookmarked, sumOfBookmarks,
-  } = props;
+  const { pageId, isBookmarked, sumOfBookmarks } = props;
   const { data: isGuestUser } = useIsGuestUser();
-
 
   const handleClick = async() => {
 
@@ -30,8 +30,8 @@ const BookmarkButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      console.log('bookmark button pushed!');
-      // toggleBookmark();
+      const res = await apiv3Put('/bookmarks', { pageId, bool: true });
+      console.log('bookmark button pushed!', res);
     }
     catch (err) {
       toastError(err);
