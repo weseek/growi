@@ -1,4 +1,6 @@
-import React, { FC } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
 import { Types } from 'mongoose';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -6,18 +8,30 @@ import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
   pageId: Types.ObjectId,
-  isBookmarked: boolean
-  sumOfBookmarks: number
+  // isBookmarked: boolean
+  // sumOfBookmarks: number
 }
 
 const BookmarkButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { pageId, isBookmarked, sumOfBookmarks } = props;
+  const { pageId } = props;
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [sumOfBookmarks, setSumOfBookmarks] = useState(0);
   const { data: isGuestUser } = useIsGuestUser();
+
+  // TODO 84997 Get "/bookmarks/info" with SWR
+  const bookmarksInfo = useCallback(async() => {
+    const { data } = await apiv3Get('/bookmarks/info', { pageId });
+    if (data != null) {
+      setIsBookmarked(data.isBookmarked);
+      setSumOfBookmarks(data.sumOfBookmarks);
+    }
+  }, [pageId]);
 
   const handleClick = async() => {
 
@@ -26,13 +40,19 @@ const BookmarkButton: FC<Props> = (props: Props) => {
     }
 
     try {
-      const res = await apiv3Put('/bookmarks', { pageId, bool: true });
-      console.log('bookmark button pushed!', res);
+      const res = await apiv3Put('/bookmarks', { pageId, bool: !isBookmarked });
+      if (res != null) {
+        await bookmarksInfo();
+      }
     }
     catch (err) {
       toastError(err);
     }
   };
+
+  useEffect(() => {
+    bookmarksInfo();
+  }, [bookmarksInfo]);
 
   return (
     <div>
