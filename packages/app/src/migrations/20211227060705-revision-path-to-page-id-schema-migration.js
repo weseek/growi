@@ -7,6 +7,8 @@ import getPageModel from '~/server/models/page';
 
 const logger = loggerFactory('growi:migrate:revision-path-to-page-id-schema-migration');
 
+const LIMIT = 300;
+
 module.exports = {
   // path => pageId
   async up(db, client) {
@@ -15,7 +17,7 @@ module.exports = {
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
     const recursiveUpdate = async(offset = 0) => {
-      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 }).skip(offset).limit(100).exec();
+      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1 }).skip(offset).limit(LIMIT).exec();
       if (pages.length === 0) {
         return;
       }
@@ -50,7 +52,7 @@ module.exports = {
     const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
     const recursiveUpdate = async(offset = 0) => {
-      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 }).skip(offset).limit(100).exec();
+      const pages = await Page.find({ revision: { $ne: null } }, { _id: 1, revision: 1, path: 1 }).skip(offset).limit(LIMIT).exec();
       if (pages.length === 0) {
         return;
       }
