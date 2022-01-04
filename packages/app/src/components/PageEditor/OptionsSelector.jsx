@@ -22,6 +22,7 @@ export const defaultEditorOptions = {
 
 export const defaultPreviewOptions = {
   renderMathJaxInRealtime: false,
+  renderDrawioInRealtime: true,
 };
 
 class OptionsSelector extends React.Component {
@@ -54,6 +55,7 @@ class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onClickRenderDrawioInRealtime = this.onClickRenderDrawioInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
     this.confirmEnableTextlintHandler = this.confirmEnableTextlintHandler.bind(this);
@@ -102,6 +104,17 @@ class OptionsSelector extends React.Component {
 
     const newValue = !editorContainer.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(editorContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
+    editorContainer.setState({ previewOptions: newOpts });
+
+    // save to localStorage
+    editorContainer.saveOptsToLocalStorage();
+  }
+
+  onClickRenderDrawioInRealtime(event) {
+    const { editorContainer } = this.props;
+
+    const newValue = !editorContainer.state.previewOptions.renderDrawioInRealtime;
+    const newOpts = Object.assign(editorContainer.state.previewOptions, { renderDrawioInRealtime: newValue });
     editorContainer.setState({ previewOptions: newOpts });
 
     // save to localStorage
@@ -249,6 +262,7 @@ class OptionsSelector extends React.Component {
           <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
+            {this.renderRealtimeDrawioMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
             {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
@@ -302,6 +316,28 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
           <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderRealtimeDrawioMenuItem() {
+    const { editorContainer } = this.props;
+
+    const isActive = editorContainer.state.previewOptions.renderDrawioInRealtime;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.onClickRenderDrawioInRealtime}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
+          <span className="menuitem-label">draw.io Rendering</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>

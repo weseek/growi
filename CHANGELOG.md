@@ -1,8 +1,148 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.4.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.4](https://github.com/weseek/growi/compare/v4.5.3...v4.5.4) - 2021-12-23
+
+### 💎 Features
+
+- feat: Hotkey to focus to search (#5006) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Omit magnifier icon from global SearchTypeahead (#5005) @yuki-takei
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- imprv: Make updatedAt SWR (#4954) @kaoritokashiki
+- imprv: Make createdAt SWR (#4819) @kaoritokashiki
+- imprv: Performance optimization for large drawio diagrams (#4221) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Sidebar height is a little large (#4988) @yuki-takei
+
+### 🧰 Maintenance
+
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- support: Typescriptize search components (#4982) @yuki-takei
+- fix:  dependabot alert object-path (#4964) @mudana-grune
+- fix: dependabot alert axios (#4960) @mudana-grune
+- fix: dependabot alert elliptic (#4959) @mudana-grune
+- fix: dependabot alert acorn (#4951) @mudana-grune
+- fix: dependabot alert is-svg (#4937) @mudana-grune
+- fix: dependabot alert socket.io-parser (#4934) @mudana-grune
+- fix: dependabot alert serialize-javascript (#4910) @mudana-grune
+- fix: dependabot alert js-yaml (#4906) @mudana-grune
+- ci(deps): bump ws from 7.5.1 to 8.3.0 (#4728) @dependabot
+- support: omit growi-commons (#4938) @yuki-takei
+
+## [v4.5.3](https://github.com/weseek/growi/compare/v4.5.2...v4.5.3) - 2021-12-17
+
+### 💎 Features
+
+- feat: user activation by email (#4862) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Use SWR for isSlackEnabled (#4827) @stevenfukase
+- imprv: Disable rubber band scroll for Mac & iOS users (#4834) @hakumizuki
+- imprv: Omit atlaskit and implement sidebar only with original codes (#4598) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: GROWI Bot search command after transplanting search service from dev/5.0.x (#4916) @hakumizuki
+- fix: Set min-height to sidebar scroll target (#4884) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: fix dependabot alert for kind-of (#4891) @LuqmanHakim-Grune
+- support: fix dependabot alert for ini (#4892) @LuqmanHakim-Grune
+- support: fix and debug mixin-deep dependabot alert (#4867) @LuqmanHakim-Grune
+- support: dependabot alert xmlhttprequest-ssl (#4878) @mudana-grune
+- support: Transplant search service from dev/5.0.x (#4869) @hakumizuki
+- support: dependabot alert set-value (#4864) @LuqmanHakim-Grune
+- ci(deps): bump aws-sdk from 2.179.0 to 2.1044.0 (#4821) @dependabot
+
+## [v4.5.2](https://github.com/weseek/growi/compare/v4.5.1...v4.5.2) - 2021-12-06
+
+### 🐛 Bug Fixes
+
+- fix: Added scope for unfurl (#4811) @hakumizuki
+
+## [v4.5.1](https://github.com/weseek/growi/compare/v4.5.0...v4.5.1) - 2021-12-06
+
+### 🐛 Bug Fixes
+
+- fix: /admin/slack-integration page dump undefined error (#4806) @yuki-takei
+
+## [v4.5.0](https://github.com/weseek/growi/compare/v4.4.13...v4.5.0) - 2021-12-06
+
+### BREAKING CHANGES
+
+- imprv: APIv3 payload (#4770) @LuqmanHakim-Grune
+
+### 💎 Features
+
+- feat: Slackbot unfurl (#4720) @hakumizuki
+
+### 🚀 Improvement
+
+- imprv: APIv3 payload (#4770) @LuqmanHakim-Grune
+- imprv: upgrade passport from v0.4.x to v0.5.x (#4727) @mudana-grune
+- imprv: Show site url in unfurl footer (#4755) @hakumizuki
+- imprv: SWRize context (#4740) @hakumizuki
+- imprv: Upgrade mongoose from 5.x to 6.x (#4659) @mudana-grune
+
+### 🐛 Bug Fixes
+
+- fix(slackbot-proxy): Support new API v3 data scheme (#4800) @yuki-takei
+- fix(Slackbot): Slash commands response when sent from disabled channels (#4754) @stevenfukase
+
+### 🧰 Maintenance
+
+- ci(deps): bump detect-indent from 6.0.0 to 7.0.0 (#4635) @dependabot
+- ci(deps): bump passport-saml from 2.2.0 to 3.2.0 (#4431) @dependabot
+
+## [v4.4.13](https://github.com/weseek/growi/compare/v4.4.12...v4.4.13) - 2021-11-19
+
+### 💎 Features
+
+- feat: Including comments in full text search (#4703) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix(slackbot): Interactions from private channels not working (#4688) @stevenfukase
+
+## [v4.4.12](https://github.com/weseek/growi/compare/v4.4.11...v4.4.12) - 2021-11-15
+
+### 🐛 Bug Fixes
+
+- fix: Cannot use HackMD (#4667)
+
+### 🧰 Maintenance
+
+- ci(deps): Downgrade passport to 0.4.0 (#4669) @mudana-grune
+
+## [v4.4.11](https://github.com/weseek/growi/compare/v4.4.10...v4.4.11) - 2021-11-12
+
+### 🚀 Improvement
+
+- imprv: SAML settings by DB (#4656) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Unescape Attribute-based Login Control field value (#4651) @haruhikonyan
+- fix: Slack Integration 'note' command causes expired_trigger_id error (#4629) @stevenfukase
+- fix: Timeline was broken (#4639) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump mpath with mongoose (#4638) @yuki-takei
+- ci(deps): bump passport-oauth2 from 1.4.0 to 1.6.1 (#4599) @dependabot
+- ci(deps): bump passport from 0.4.0 to 0.5.0 (#4582) @dependabot
+- ci(deps): bump axios from 0.21.1 to 0.24.0 (#4604) @dependabot
+- ci(deps): bump tar from 4.4.13 to 4.4.19 (#4601) @dependabot
 
 ## [v4.4.10](https://github.com/weseek/growi/compare/v4.4.9...v4.4.10) - 2021-11-08
 

@@ -36,7 +36,7 @@ const apiv3ErrorHandler = (_err) => {
 export async function apiv3Request<T = any>(method: string, path: string, params: unknown): Promise<AxiosResponse<T>> {
   try {
     const res = await axios[method](urljoin(apiv3Root, path), params);
-    return res.data;
+    return res;
   }
   catch (err) {
     const errors = apiv3ErrorHandler(err);

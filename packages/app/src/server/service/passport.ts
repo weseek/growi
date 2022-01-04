@@ -8,10 +8,12 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer } from 'openid-client';
-import { Strategy as SamlStrategy } from 'passport-saml';
+import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
 import { BasicStrategy } from 'passport-http';
 
 import { IncomingMessage } from 'http';
+import got from 'got';
+import pRetry from 'p-retry';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -381,14 +383,14 @@ class PassportService implements S2sMessageHandlable {
     const { configManager } = this.crowi;
 
     // get configurations
-    const isUserBind          = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
-    const serverUrl           = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
-    const bindDN              = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
-    const bindCredentials     = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
-    const searchFilter        = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
-    const groupSearchBase     = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
-    const groupSearchFilter   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
-    const groupDnProperty     = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
+    const isUserBind        = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
+    const serverUrl         = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
+    const bindDN            = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
+    const bindCredentials   = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
+    const searchFilter      = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
+    const groupSearchBase   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
+    const groupSearchFilter = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
+    const groupDnProperty   = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -627,65 +629,73 @@ class PassportService implements S2sMessageHandlable {
     const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
       ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
       : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
-    const oidcIssuer = await OIDCIssuer.discover(issuerHost);
-    logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
-    const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
-    if (authorizationEndpoint) {
-      oidcIssuer.metadata.authorization_endpoint = authorizationEndpoint;
-    }
-    const tokenEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint');
-    if (tokenEndpoint) {
-      oidcIssuer.metadata.token_endpoint = tokenEndpoint;
-    }
-    const revocationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint');
-    if (revocationEndpoint) {
-      oidcIssuer.metadata.revocation_endpoint = revocationEndpoint;
-    }
-    const introspectionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint');
-    if (introspectionEndpoint) {
-      oidcIssuer.metadata.introspection_endpoint = introspectionEndpoint;
-    }
-    const userInfoEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint');
-    if (userInfoEndpoint) {
-      oidcIssuer.metadata.userinfo_endpoint = userInfoEndpoint;
-    }
-    const endSessionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint');
-    if (endSessionEndpoint) {
-      oidcIssuer.metadata.end_session_endpoint = endSessionEndpoint;
-    }
-    const registrationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint');
-    if (registrationEndpoint) {
-      oidcIssuer.metadata.registration_endpoint = registrationEndpoint;
-    }
-    const jwksUri = configManager.getConfig('crowi', 'security:passport-oidc:jwksUri');
-    if (jwksUri) {
-      oidcIssuer.metadata.jwks_uri = jwksUri;
-    }
-    logger.debug('Configured issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+    // Prevent request timeout error on app init
+    const oidcIssuer = await this.getOIDCIssuerInstace(issuerHost);
+    if (oidcIssuer != null) {
+      logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
-    const client = new oidcIssuer.Client({
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uris: [redirectUri],
-      response_types: ['code'],
-    });
-
-    passport.use('oidc', new OidcStrategy({
-      client,
-      params: { scope: 'openid email profile' },
-    },
-    ((tokenset, userinfo, done) => {
-      if (userinfo) {
-        return done(null, userinfo);
+      const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
+      if (authorizationEndpoint) {
+        oidcIssuer.metadata.authorization_endpoint = authorizationEndpoint;
       }
+      const tokenEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint');
+      if (tokenEndpoint) {
+        oidcIssuer.metadata.token_endpoint = tokenEndpoint;
+      }
+      const revocationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint');
+      if (revocationEndpoint) {
+        oidcIssuer.metadata.revocation_endpoint = revocationEndpoint;
+      }
+      const introspectionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint');
+      if (introspectionEndpoint) {
+        oidcIssuer.metadata.introspection_endpoint = introspectionEndpoint;
+      }
+      const userInfoEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint');
+      if (userInfoEndpoint) {
+        oidcIssuer.metadata.userinfo_endpoint = userInfoEndpoint;
+      }
+      const endSessionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint');
+      if (endSessionEndpoint) {
+        oidcIssuer.metadata.end_session_endpoint = endSessionEndpoint;
+      }
+      const registrationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint');
+      if (registrationEndpoint) {
+        oidcIssuer.metadata.registration_endpoint = registrationEndpoint;
+      }
+      const jwksUri = configManager.getConfig('crowi', 'security:passport-oidc:jwksUri');
+      if (jwksUri) {
+        oidcIssuer.metadata.jwks_uri = jwksUri;
+      }
+      logger.debug('Configured issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
-      return done(null, false);
+      const client = new oidcIssuer.Client({
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uris: [redirectUri],
+        response_types: ['code'],
+      });
+      // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
+      // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
+      client.CLOCK_TOLERANCE = 5;
+      passport.use('oidc', new OidcStrategy(
+        {
+          client,
+          params: { scope: 'openid email profile' },
+        },
+        (tokenset, userinfo, done) => {
+          if (userinfo) {
+            return done(null, userinfo);
+          }
 
-    })));
+          return done(null, false);
+        },
+      ));
 
-    this.isOidcStrategySetup = true;
-    logger.debug('OidcStrategy: setup is done');
+      this.isOidcStrategySetup = true;
+      logger.debug('OidcStrategy: setup is done');
+    }
+
   }
 
   /**
@@ -697,6 +707,56 @@ class PassportService implements S2sMessageHandlable {
     logger.debug('OidcStrategy: reset');
     passport.unuse('oidc');
     this.isOidcStrategySetup = false;
+  }
+
+  /**
+ *
+ * Check and initialize connection to OIDC issuer host
+ * Prevent request timeout error on app init
+ *
+ * @param issuerHost
+ * @returns boolean
+ */
+  async isOidcHostReachable(issuerHost) {
+    try {
+      const response = await got(issuerHost, { retry: { limit: 3 } });
+      return response.statusCode === 200;
+    }
+    catch (err) {
+      logger.error('OidcStrategy: issuer host unreachable:', err.code);
+    }
+  }
+
+  /**
+   * Get oidcIssuer object
+   * Utilize p-retry package to retry oidcIssuer initialization 3 times
+   *
+   * @param issuerHost
+   * @returns instance of OIDCIssuer
+   */
+  async getOIDCIssuerInstace(issuerHost) {
+    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:timeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
+    const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
+    if (!oidcIssuerHostReady) {
+      logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
+      return;
+    }
+    const oidcIssuer = await pRetry(async() => {
+      return OIDCIssuer.discover(issuerHost);
+    }, {
+      onFailedAttempt: (error) => {
+        // get current OIDCIssuer.defaultHttpOptions.timeout
+        const oidcOptionTimeout = OIDCIssuer.defaultHttpOptions.timeout;
+        // Increases OIDCIssuer.defaultHttpOptions.timeout by multiply with 1.5
+        OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * OIDC_TIMEOUT_MULTIPLIER };
+        logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
+      },
+      retries: OIDC_DISCOVERY_RETRIES,
+    }).catch((error) => {
+      logger.error(`OidcStrategy: setup failed with error: ${error} `);
+    });
+    return oidcIssuer;
   }
 
   setupSamlStrategy() {
@@ -722,12 +782,12 @@ class PassportService implements S2sMessageHandlable {
           issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
           cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
         },
-        (profile, done) => {
+        (profile: Profile, done: VerifiedCallback) => {
           if (profile) {
             return done(null, profile);
           }
 
-          return done(null, false);
+          return done(null);
         },
       ),
     );
@@ -810,15 +870,16 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const { field, term } = luceneRule;
-    if (field === '<implicit>') {
+    const unescapedField = this.literalUnescape(field);
+    if (unescapedField === '<implicit>') {
       return attributes[term] != null;
     }
 
-    if (attributes[field] == null) {
+    if (attributes[unescapedField] == null) {
       return false;
     }
 
-    return attributes[field].includes(term);
+    return attributes[unescapedField].includes(term);
   }
 
   /**
@@ -971,6 +1032,18 @@ class PassportService implements S2sMessageHandlable {
   isSameEmailTreatedAsIdenticalUser(providerType) {
     const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
     return this.crowi.configManager.getConfig('crowi', key);
+  }
+
+  literalUnescape(string: string) {
+    return string
+      .replace(/\\\\/g, '\\')
+      .replace(/\\\//g, '/')
+      .replace(/\\:/g, ':')
+      .replace(/\\"/g, '"')
+      .replace(/\\0/g, '\0')
+      .replace(/\\t/g, '\t')
+      .replace(/\\n/g, '\n')
+      .replace(/\\r/g, '\r');
   }
 
 }

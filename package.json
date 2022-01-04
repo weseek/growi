@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.4.11-RC.0",
+  "version": "4.5.5-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -35,6 +35,8 @@
     "app:server": "yarn lerna run server --scope @growi/app",
     "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
     "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
+    "bump-versions:premajor": "node ./bin/github-actions/bump-versions -i premajor",
+    "bump-versions:preminor": "node ./bin/github-actions/bump-versions -i preminor",
     "bump-versions:patch": "node ./bin/github-actions/bump-versions -i patch",
     "bump-versions:rc": "node ./bin/github-actions/bump-versions -i prerelease",
     "bump-versions:slackbot-proxy": "node ./bin/github-actions/bump-versions -i prerelease -d packages/slackbot-proxy --preid slackbot-proxy --update-dependencies false",
@@ -66,7 +68,7 @@
     "jest-localstorage-mock": "^2.4.14",
     "lerna": "^4.0.0",
     "rewire": "^5.0.0",
-    "shipjs": "^0.23.3",
+    "shipjs": "^0.24.1",
     "ts-jest": "^27.0.4",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",

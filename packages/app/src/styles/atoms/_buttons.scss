@@ -20,6 +20,17 @@
   }
 }
 
+.btn.btn-subscribe {
+  @include button-outline-variant($secondary, $success, rgba(lighten($success, 10%), 0.15), rgba(lighten($success, 10%), 0.5));
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: lighten($success, 15%);
+  }
+  &:not(:disabled):not(.disabled):not(:hover) {
+    background-color: transparent;
+  }
+}
+
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
@@ -47,9 +58,12 @@
   overflow: hidden;
   color: white;
   text-align: center;
-  cursor: pointer;
   background-color: rgba(lighten(black, 15%), 0.5);
   border: none;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
 
   .btn-label {
     position: relative;

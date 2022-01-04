@@ -11,7 +11,7 @@ export interface ILintRule {
 }
 
 export interface ITextlintSettings {
-  isTexlintEnabled: string;
+  isTextlintEnabled: boolean;
   textlintRules: ILintRule[];
 }
 
@@ -32,8 +32,8 @@ const textlintSettingsSchema = new Schema<ITextlintSettings>({
   },
 });
 
-const editorSettingsSchema = new Schema<IEditorSettings>({
-  userId: { type: String },
+const editorSettingsSchema = new Schema<EditorSettingsDocument, EditorSettingsModel>({
+  userId: { type: Schema.Types.ObjectId },
   textlintSettings: textlintSettingsSchema,
 });
 

@@ -11,6 +11,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
+import { EditorMode } from '~/stores/ui';
 
 class TagLabels extends React.Component {
 
@@ -33,7 +34,7 @@ class TagLabels extends React.Component {
    */
   getTagData() {
     const { editorContainer, pageContainer, editorMode } = this.props;
-    return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
+    return (editorMode === EditorMode.Editor) ? editorContainer.state.tags : pageContainer.state.tags;
   }
 
   openEditorModal() {
@@ -51,7 +52,7 @@ class TagLabels extends React.Component {
 
     const { pageId, revisionId } = pageContainer.state;
     // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === 'edit') {
+    if (editorMode === EditorMode.Editor) {
       return editorContainer.setState({ tags: newTags });
     }
     try {
@@ -112,7 +113,7 @@ TagLabels.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
-  editorMode: PropTypes.string.isRequired,
+  editorMode: PropTypes.string,
 };
 
 export default withTranslation()(TagLabelsWrapper);

@@ -186,6 +186,7 @@
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
 	},
 	"page_register": {
+    "send_email": "发电子邮件",
 		"notice": {
 			"restricted": "需要管理员批准。",
 			"restricted_defail": "一旦管理员批准您的注册，您就可以访问此wiki。"
@@ -237,6 +238,21 @@
 			"All pages": "所有页面",
 			"This tree": "当前分支以下内容"
 		}
+  },
+  "in_app_notification": {
+    "notification_list": "应用内通知列表",
+    "see_all": "查看通知列表",
+    "no_notification": "您没有任何通知",
+    "all": "全部",
+    "unopend": "未读",
+    "mark_all_as_read" : "标记为已读"
+  },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "在应用程序通知设置",
+    "subscribe_settings": "自动订阅（接收通知）页面的设置",
+    "default_subscribe_rules": {
+      "page_create": "创建页面时订阅页面。"
+    }
   },
   "editor_settings": {
     "editor_settings": "编辑器设置",
@@ -418,6 +434,7 @@
 			"Open/Close shortcut help": "打开/关闭快捷方式帮助",
 			"Edit Page": "编辑页面",
 			"Create Page": "创建页面",
+      "Search": "搜索",
 			"Show Contributors": "显示参与者",
 			"Konami Code": "Konami Code",
 			"konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
@@ -637,7 +654,12 @@
       "enable_local": "Enable ID/Password",
       "password_reset_by_users": "用户重置密码",
       "enable_password_reset_by_users": "启用用户重置密码",
-      "password_reset_desc": "忘记密码时，用户可以自行重置"
+      "password_reset_desc": "忘记密码时，用户可以自行重置",
+      "email_authentication": "用户注册时的电子邮件身份验证",
+      "enable_email_authentication": "启用电子邮件身份验证",
+      "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。",
+      "please_enable_mailer": "请先设置邮件程序。",
+      "need_complete_mail_setting_warning": "要使用以下功能，请完成邮件设置。"
 		},
 		"ldap": {
 			"enable_ldap": "Enable LDAP",
@@ -682,9 +704,10 @@
 			"Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
 			"note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
 			"attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
-			"attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>Supported Queries:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>Unsupported Queries:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
-			"attr_based_login_control_rule_example": "<h6>Example</h6>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
-			"updated_saml": "Succeeded to update SAML setting"
+			"attr_based_login_control_rule_help": "<h5>Supported Queries:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>Unsupported Queries:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>Escaping special characters</h5>It is needed to escape following special characters:<br><code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
+			"attr_based_login_control_rule_example1": "<h5>Example for conditions</h5>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
+      "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
+      "updated_saml": "Succeeded to update SAML setting"
 		},
 		"Basic": {
 			"enable_basic": "Enable Basic",
@@ -871,7 +894,7 @@
 		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
 		"application_already_installed": "应用程序已安装。",
 		"email_address_could_not_be_used": "无法使用此电子邮件地址。（确保允许的电子邮件地址）",
-		"user_id_is_not_available.": "此用户ID不可用。",
+		"user_id_is_not_available": "此用户ID不可用。",
 		"email_address_is_already_registered": "此电子邮件地址已注册。",
 		"can_not_register_maximum_number_of_users": "注册的用户数不能超过最大值。",
 		"failed_to_register": "注册失败。",
@@ -881,7 +904,9 @@
 		"unable_to_use_this_user": "无法使用此用户。",
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
-		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
+		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
+    "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
+    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",

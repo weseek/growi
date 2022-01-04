@@ -14,7 +14,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
-const { pathUtils } = require('growi-commons');
+const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
@@ -263,6 +263,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPageIdsArray(pageIds) {
+    this.query = this.query
+      .and({
+        _id: {
+          $in: pageIds,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
@@ -434,8 +445,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
-      .execPopulate();
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   };
 
   pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
@@ -443,7 +453,7 @@ module.exports = function(crowi) {
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    return this.populate('revision').execPopulate();
+    return this.populate('revision');
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
@@ -729,7 +739,7 @@ module.exports = function(crowi) {
 
     // find
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.exec('find');
+    const pages = await builder.query.clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -772,7 +782,7 @@ module.exports = function(crowi) {
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-    const pages = await builder.query.lean().exec('find');
+    const pages = await builder.query.lean().clone().exec('find');
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
@@ -1147,6 +1157,16 @@ module.exports = function(crowi) {
 
     pageData.hasDraftOnHackmd = newValue;
     return pageData.save();
+  };
+
+  pageSchema.methods.getNotificationTargetUsers = async function() {
+    const Comment = mongoose.model('Comment');
+    const Revision = mongoose.model('Revision');
+
+    const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);
+
+    const targetUsers = new Set([this.creator].concat(commentCreators, revisionAuthors));
+    return Array.from(targetUsers);
   };
 
   pageSchema.statics.getHistories = function() {

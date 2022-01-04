@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -169,9 +170,13 @@ module.exports = (crowi) => {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting } = crowi.models;
-  const { exportService } = crowi;
+  const { pageService, exportService } = crowi;
 
   const validator = {
+    getPage: [
+      query('id').if(value => value != null).isMongoId(),
+      query('path').if(value => value != null).isString(),
+    ],
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
@@ -196,7 +201,78 @@ module.exports = (crowi) => {
       query('fromPath').isString(),
       query('toPath').isString(),
     ],
+    subscribe: [
+      body('pageId').isString(),
+      body('status').isBoolean(),
+    ],
+    subscribeStatus: [
+      query('pageId').isString(),
+    ],
   };
+
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      get:
+   *        tags: [Page]
+   *        operationId: getPage
+   *        summary: /page
+   *        description: get page by pagePath or pageId
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - name: path
+   *            in: query
+   *            description: page path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *        responses:
+   *          200:
+   *            description: Page data
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   */
+  router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+    const { pageId, path } = req.query;
+
+    if (pageId == null && path == null) {
+      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
+    }
+
+    let result = {};
+    try {
+      result = await pageService.findPageAndMetaDataByViewer({ pageId, path, user: req.user });
+    }
+    catch (err) {
+      logger.error('get-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    const page = result.page;
+
+    if (page == null) {
+      return res.apiv3(result);
+    }
+
+    try {
+      page.initLatestRevisionField();
+
+      // populate
+      result.page = await page.populateDataToShowRevision();
+    }
+    catch (err) {
+      logger.error('populate-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3(result);
+  });
 
   /**
    * @swagger
@@ -247,6 +323,10 @@ module.exports = (crowi) => {
     res.apiv3({ result });
 
     if (isLiked) {
+      const pageEvent = crowi.event('page');
+      // in-app notification
+      pageEvent.emit('like', page, req.user);
+
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
@@ -504,6 +584,90 @@ module.exports = (crowi) => {
   //   const dummy = 6;
   //   return res.apiv3({ dummy });
   // });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      put:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Update subscription status
+   *        operationId: updateSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.body;
+    const userId = req.user._id;
+    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
+    try {
+      const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+      return res.apiv3({ subscription });
+    }
+    catch (err) {
+      logger.error('Failed to update subscribe status', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Get subscription status
+   *        operationId: getSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+    const userId = req.user._id;
+
+    const page = await Page.findById(pageId);
+    if (!page) throw new Error('Page not found');
+
+    try {
+      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
+      const subscribing = subscription ? subscription.isSubscribing() : null;
+      return res.apiv3({ subscribing });
+    }
+    catch (err) {
+      logger.error('Failed to ge subscribe status', err);
+      return res.apiv3(err, 500);
+    }
+  });
 
   return router;
 };
