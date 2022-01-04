@@ -21,6 +21,7 @@ module.exports = {
       if (pages.length === 0) {
         return;
       }
+
       const updateManyOperations = pages.map((page) => {
         return {
           updateMany: {
@@ -36,7 +37,9 @@ module.exports = {
           },
         };
       });
+
       await Revision.bulkWrite(updateManyOperations);
+
       await recursiveUpdate(offset + LIMIT);
     };
 
@@ -57,7 +60,6 @@ module.exports = {
         return;
       }
 
-      // make map revisionId to pageId
       const updateManyOperations = pages.map((page) => {
         return {
           updateMany: {
@@ -74,8 +76,8 @@ module.exports = {
         };
       });
 
-      // updateMany by array
       await Revision.bulkWrite(updateManyOperations);
+
       await recursiveUpdate(offset + LIMIT);
     };
 
