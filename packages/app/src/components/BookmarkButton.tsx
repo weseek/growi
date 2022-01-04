@@ -21,7 +21,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
   const { data: bookmarksInfo, mutate } = useSWRxBookmarksInfo(pageId);
 
   const isBookmarked = bookmarksInfo?.isBookmarked != null ? bookmarksInfo.isBookmarked : false;
-  const sumOfBookmarks = bookmarksInfo?.sumOfBookmarks != null ? bookmarksInfo.sumOfBookmarks : false;
+  const sumOfBookmarks = bookmarksInfo?.sumOfBookmarks != null ? bookmarksInfo.sumOfBookmarks : 0;
 
   const handleClick = async() => {
     if (isGuestUser) {
