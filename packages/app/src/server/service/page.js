@@ -3,6 +3,10 @@ import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 import { generateGrantCondition } from '~/server/models/page';
 
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+
+import ActivityDefine from '../util/activityDefine';
+
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
@@ -25,10 +29,79 @@ class PageService {
     this.pageEvent = crowi.event('page');
 
     // init
+    this.initPageEvent();
+  }
+
+  initPageEvent() {
+    // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
-    this.pageEvent.on('update', this.pageEvent.onUpdate);
+
+    // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
+
+    // update
+    this.pageEvent.on('update', async(page, user) => {
+
+      this.pageEvent.onUpdate();
+
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // rename
+    this.pageEvent.on('rename', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // delete
+    this.pageEvent.on('delete', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // delete completely
+    this.pageEvent.on('deleteCompletely', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // likes
+    this.pageEvent.on('like', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // bookmark
+    this.pageEvent.on('bookmark', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
   }
 
   async findPageAndMetaDataByViewer({ pageId, path, user }) {
@@ -145,8 +218,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', renamedPage, user);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
@@ -236,7 +308,7 @@ class PageService {
         logger.debug(`Reverting pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
-        pageEvent.emit('syncDescendants', targetPage, user);
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
         callback();
       },
     });
@@ -432,7 +504,7 @@ class PageService {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
-        pageEvent.emit('syncDescendants', page, user);
+        pageEvent.emit('syncDescendantsUpdate', page, user);
         callback();
       },
     });
@@ -528,6 +600,9 @@ class PageService {
         throw new Error('Failed to revert pages: ', err);
       }
     }
+    finally {
+      this.pageEvent.emit('syncDescendantsDelete', pages, user);
+    }
   }
 
   /**
@@ -574,12 +649,12 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteCompletely', pages, user); // update as renamed page
+    this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
 
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -591,7 +666,9 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('delete', page, user); // update as renamed page
+    if (!preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
 
     return;
   }
@@ -694,7 +771,9 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.deleteCompletely(originPage, options);
+
+      await this.deleteCompletely(originPage, user, options, false, true);
+      this.pageEvent.emit('revert', page, user);
     }
 
     if (isRecursively) {
@@ -841,6 +920,28 @@ class PageService {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
     }
   }
+
+  createAndSendNotifications = async function(page, user, action) {
+    const { activityService, inAppNotificationService } = this.crowi;
+
+    const snapshot = stringifySnapshot(page);
+
+    // Create activity
+    const parameters = {
+      user: user._id,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: page,
+      action,
+    };
+    const activity = await activityService.createByParameters(parameters);
+
+    // Get user to be notified
+    const targetUsers = await activity.getNotificationTargetUsers();
+
+    // Create and send notifications
+    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
+    await inAppNotificationService.emitSocketIo(targetUsers);
+  };
 
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');

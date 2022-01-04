@@ -354,8 +354,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename1, testUser2);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+
+        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename1, testUser2);
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
@@ -373,8 +373,8 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+
+        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename2, testUser2);
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.updatedAt).toEqual(dateToUse);
@@ -392,8 +392,7 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename3, testUser2);
 
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
@@ -416,8 +415,7 @@ describe('PageService', () => {
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename4, testUser2);
-        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename4, testUser2);
 
         expect(resultPage.path).toBe('/renamed4');
         expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
@@ -729,7 +727,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
     });
 
 
@@ -739,7 +737,7 @@ describe('PageService', () => {
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
-      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
     });
   });
 
