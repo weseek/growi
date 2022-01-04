@@ -22,6 +22,8 @@ const BookmarkButton: FC<Props> = (props: Props) => {
 
   const isBookmarked = bookmarksInfo?.isBookmarked != null ? bookmarksInfo.isBookmarked : false;
   const sumOfBookmarks = bookmarksInfo?.sumOfBookmarks != null ? bookmarksInfo.sumOfBookmarks : 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const bookmarkedUserIds = bookmarksInfo?.bookmarkedUserIds != null ? bookmarksInfo.bookmarkedUserIds : [];
 
   const handleClick = async() => {
     if (isGuestUser) {

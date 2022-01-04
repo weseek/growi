@@ -121,7 +121,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      responsesParams.bookmaekedUsers = await Bookmark.getBookmarkedUserIds(pageId);
+      responsesParams.bookmarkedUserIds = await Bookmark.getBookmarkedUserIds(pageId);
     }
     catch (err) {
       logger.error('get-bookmarked-users-failed', err);
