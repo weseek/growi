@@ -119,11 +119,12 @@ module.exports = (crowi) => {
    *                      description: A result of `UserGroup.createGroupByName`
    */
   router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
-    const { name } = req.body;
+    const { name, description, parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
-      const userGroup = await UserGroup.createGroupByName(userGroupName);
+      const userGroupDescription = crowi.xss.process(description);
+      const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
 
       return res.apiv3({ userGroup }, 201);
     }

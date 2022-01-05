@@ -110,8 +110,18 @@ class UserGroup {
     return this.estimatedDocumentCount();
   }
 
-  static createGroupByName(name) {
-    return this.create({ name });
+  static createGroup(name, description, parentId) {
+    // create without parent
+    if (parentId == null) {
+      return this.create({ name, description });
+    }
+
+    // create with parent
+    const parent = await this.find({ parent: parentId });
+    if (parent == null) {
+      throw Error('Parent does not exist.');
+    }
+    return this.create({ name, description, parent });
   }
 
   async updateName(name) {
