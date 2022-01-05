@@ -4,6 +4,8 @@ import { Container } from 'unstated';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
+
+import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
 import { toastError } from '../util/apiNotification';
 
@@ -86,12 +88,15 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      remoteRevisionBody: null,
+      remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+      isConflictDiffModalOpen: false,
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
@@ -103,6 +108,7 @@ export default class PageContainer extends Container {
     }
     try {
       this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+      this.state.lastUpdateUser = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
     }
     catch (e) {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
@@ -347,8 +353,12 @@ export default class PageContainer extends Container {
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+      lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
     };
 
     if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
@@ -441,7 +451,6 @@ export default class PageContainer extends Container {
   async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
-
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {
@@ -661,6 +670,23 @@ export default class PageContainer extends Container {
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
+  }
+
+  async resolveConflict(markdown, editorMode) {
+
+    const { pageId, remoteRevisionId, path } = this.state;
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const options = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = Object.assign({}, options);
+
+    const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
+
+    editorContainer.clearDraft(path);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+
+    editorContainer.setState({ tags: res.tags });
+
+    return res;
   }
 
 }
