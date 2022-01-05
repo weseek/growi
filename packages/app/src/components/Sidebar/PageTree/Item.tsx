@@ -221,7 +221,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
-          placeholder={t('Input title')}
+          placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
           onPressEnter={onPressEnterHandler}
           inputValidator={inputValidator}
