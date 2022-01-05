@@ -112,7 +112,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'DND_GROUP',
+    type: 'PAGE_TREE',
     item: { page },
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
@@ -217,7 +217,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         </div>
       </div>
-
 
       {isEnableActions && (
         <ClosableTextInput
