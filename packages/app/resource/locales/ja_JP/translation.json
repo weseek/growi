@@ -137,6 +137,7 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
+  "Check All tags": "全てのタグをチェックする",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -257,6 +258,21 @@
     "item_label": {
       "All pages": "全てのページ",
       "This tree": "この階層下の子ページのみ"
+    }
+  },
+  "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
+    "see_all": "通知一覧を見る",
+    "no_notification": "通知はありません",
+    "all": "全て",
+    "unopend": "未読",
+    "mark_all_as_read": "全て既読にする"
+  },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "アプリ内通知設定",
+    "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
+    "default_subscribe_rules": {
+      "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
   },
   "editor_settings": {
@@ -439,6 +455,7 @@
       "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
+      "Search": "検索",
       "Show Contributors": "コントリビューター<br>を表示",
       "MirrorMode": "ミラーモード",
       "Konami Code": "コナミコマンド",
