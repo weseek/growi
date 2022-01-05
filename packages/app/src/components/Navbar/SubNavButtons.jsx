@@ -7,9 +7,10 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';
 import LikeButtons from '../LikeButtons';
+import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
-const SubnavButtons = (props) => {
+const SubnavButtons = React.memo((props) => {
   const {
     appContainer, pageContainer, isCompactMode,
   } = props;
@@ -21,6 +22,9 @@ const SubnavButtons = (props) => {
 
     return (
       <>
+        <span>
+          <SubscribeButton pageId={pageContainer.state.pageId} />
+        </span>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
             <LikeButtons />
@@ -46,7 +50,7 @@ const SubnavButtons = (props) => {
       )}
     </>
   );
-};
+});
 
 /**
  * Wrapper component for using unstated

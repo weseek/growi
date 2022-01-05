@@ -138,6 +138,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
   "Show latest": "Show latest",
   "Load latest": "Load latest",
@@ -255,6 +256,21 @@
     "item_label": {
       "All pages": "All pages",
       "This tree": "Only children of this tree"
+    }
+  },
+  "in_app_notification": {
+    "notification_list": "In-App Notification List",
+    "see_all": "See All",
+    "no_notification": "You don't have any notificatios.",
+    "all": "All",
+    "unopend": "Unread",
+    "mark_all_as_read": "Mark all as read"
+  },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "In-App Notification Settings",
+    "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
+    "default_subscribe_rules": {
+      "page_create": "Subscribe to the page when you create it."
     }
   },
   "editor_settings": {
