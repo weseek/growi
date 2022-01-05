@@ -127,7 +127,6 @@ module.exports = (options) => {
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new webpack.IgnorePlugin(/mongoose/),
 
       new LodashModuleReplacementPlugin({
         flattening: true,
