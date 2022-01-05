@@ -111,9 +111,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
 
-  const [collected, drag, dragPreview] = useDrag(() => ({
+  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'DND_GROUP',
     item: { page },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging(),
+    }),
   }));
 
   const hasChildren = useCallback((): boolean => {
