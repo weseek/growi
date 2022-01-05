@@ -8,7 +8,7 @@ import { useIsGuestUser } from './context';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxBookmarksInfo = <Data, Error>(
   pageId: Types.ObjectId,
-):SWRResponse<{isBookmarked: boolean | null, sumOfBookmarks: number | null, bookmarkedUserIds: Types.ObjectId[] }, Error> => {
+):SWRResponse<{isBookmarked: boolean | null, sumOfBookmarks: number | null, bookmarkedUserIds: Types.ObjectId[] | null }, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
   const key = isGuestUser === false ? ['/bookmarks/info', pageId] : null;
