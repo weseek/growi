@@ -4,6 +4,7 @@ import React, {
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
+import { useDrag } from 'react-dnd';
 import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
@@ -109,6 +110,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
+
+  const [collected, drag, dragPreview] = useDrag(() => ({
+    type: 'DND_GROUP',
+    item: { page },
+  }));
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -181,32 +187,38 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
-        <button
-          type="button"
-          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
-          onClick={onClickLoadChildren}
-        >
-          <div className="grw-triangle-icon">
-            <TriangleIcon />
+      {collected.isDragging ? (
+        // <div ref={dragPreview}>dragging</div>
+        <></>
+      ) : (
+        <div ref={drag} {...collected} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+          <button
+            type="button"
+            className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+            onClick={onClickLoadChildren}
+          >
+            <div className="grw-triangle-icon">
+              <TriangleIcon />
+            </div>
+          </button>
+          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          </a>
+          <div className="grw-pagetree-count-wrapper">
+            <ItemCount />
           </div>
-        </button>
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
-        </a>
-        <div className="grw-pagetree-count-wrapper">
-          <ItemCount />
+          <div className="grw-pagetree-control d-none">
+            <ItemControl
+              page={page}
+              onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+              onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+              isEnableActions={isEnableActions}
+              isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+            />
+          </div>
         </div>
-        <div className="grw-pagetree-control d-none">
-          <ItemControl
-            page={page}
-            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
-            isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
-          />
-        </div>
-      </div>
+      )}
+
 
       {isEnableActions && (
         <ClosableTextInput
