@@ -110,7 +110,7 @@ class UserGroup {
     return this.estimatedDocumentCount();
   }
 
-  static createGroup(name, description, parentId) {
+  static async createGroup(name, description, parentId) {
     // create without parent
     if (parentId == null) {
       return this.create({ name, description });
