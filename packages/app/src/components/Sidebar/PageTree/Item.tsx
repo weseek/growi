@@ -115,7 +115,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     collect: monitor => ({
-      isDragging: !!monitor.isDragging(),
+      isDragging: monitor.isDragging(),
     }),
   }));
 
