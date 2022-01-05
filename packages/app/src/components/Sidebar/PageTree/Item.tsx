@@ -111,7 +111,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
 
-  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag(() => ({
     type: 'DND_GROUP',
     item: { page },
     collect: monitor => ({
@@ -191,37 +191,32 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      {collected.isDragging ? (
-        // <div ref={dragPreview}>dragging</div>
-        <></>
-      ) : (
-        <div ref={drag} {...collected} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
-          <button
-            type="button"
-            className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
-            onClick={onClickLoadChildren}
-          >
-            <div className="grw-triangle-icon">
-              <TriangleIcon />
-            </div>
-          </button>
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
-          </a>
-          <div className="grw-pagetree-count-wrapper">
-            <ItemCount />
+      <div ref={drag} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+        <button
+          type="button"
+          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+          onClick={onClickLoadChildren}
+        >
+          <div className="grw-triangle-icon">
+            <TriangleIcon />
           </div>
-          <div className="grw-pagetree-control d-none">
-            <ItemControl
-              page={page}
-              onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-              onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
-              isEnableActions={isEnableActions}
-              isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
-            />
-          </div>
+        </button>
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+        </a>
+        <div className="grw-pagetree-count-wrapper">
+          <ItemCount />
         </div>
-      )}
+        <div className="grw-pagetree-control d-none">
+          <ItemControl
+            page={page}
+            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            isEnableActions={isEnableActions}
+            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+          />
+        </div>
+      </div>
 
 
       {isEnableActions && (
