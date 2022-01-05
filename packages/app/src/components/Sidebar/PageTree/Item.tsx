@@ -4,7 +4,7 @@ import React, {
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
@@ -115,7 +115,19 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     collect: monitor => ({
-      isDragging: !!monitor.isDragging(),
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  console.log('isDragging', isDragging);
+
+  const [{ isOver }, dropRef] = useDrop(() => ({
+    accept: 'PAGE_TREE',
+    // TODO: hit an api to rename the page.
+    // eslint-disable-next-line no-console
+    drop: () => console.log('drop!!'),
+    collect: monitor => ({
+      isOver: monitor.isOver(),
     }),
   }));
 
