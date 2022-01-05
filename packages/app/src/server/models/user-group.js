@@ -6,10 +6,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 /*
  * define schema
  */
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 const schema = new mongoose.Schema({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
+  parent: { type: ObjectId, ref: 'UserGroup', index: true },
+  description: { type: String },
 });
 schema.plugin(mongoosePaginate);
 
@@ -23,7 +27,7 @@ class UserGroup {
    * @memberof UserGroup
    */
   static get USER_GROUP_PUBLIC_FIELDS() {
-    return '_id name createdAt';
+    return '_id name createdAt parent description';
   }
 
   /**
@@ -41,16 +45,11 @@ class UserGroup {
    * model static methods
    */
 
-  // グループ画像パスの生成
+  // Generate image path
   static createUserGroupPictureFilePath(userGroup, name) {
     const ext = `.${name.match(/(.*)(?:\.([^.]+$))/)[2]}`;
 
     return `userGroup/${userGroup._id}${ext}`;
-  }
-
-  // すべてのグループを取得（オプション指定可）
-  static findAllGroups(option) {
-    return this.find().exec();
   }
 
   /**
@@ -79,7 +78,7 @@ class UserGroup {
       });
   }
 
-  // 登録可能グループ名確認
+  // Check if registerable
   static isRegisterableName(name) {
     const query = { name };
 
@@ -89,7 +88,7 @@ class UserGroup {
       });
   }
 
-  // グループの完全削除
+  // Delete completely
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
 
@@ -111,14 +110,11 @@ class UserGroup {
     return this.estimatedDocumentCount();
   }
 
-  // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({ name });
   }
 
-  // グループ名の更新
   async updateName(name) {
-    // 名前を設定して更新
     this.name = name;
     await this.save();
   }
