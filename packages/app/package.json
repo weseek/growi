@@ -1,12 +1,12 @@
 {
   "name": "@growi/app",
-  "version": "4.5.5-RC.0",
+  "version": "4.5.6-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
     "start": "yarn build && yarn server",
     "build": "run-p build:*",
-    "build:client": "yarn cross-env NODE_ENV=production webpack --config config/webpack.prod.js --profile --bail",
+    "build:client": "yarn cross-env NODE_ENV=production webpack --config config/webpack.prod.js",
     "build:server": "yarn cross-env NODE_ENV=production tsc -p tsconfig.build.server.json && tsc-alias -p tsconfig.build.server.json",
     "clean": "npx shx rm -rf dist transpiled",
     "prebuild": "yarn cross-env NODE_ENV=production run-p clean resources:*",
@@ -52,18 +52,17 @@
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
     "escape-string-regexp": "5.0.0 or above exports only ESM",
-    "mongoose": "5.13.13 causes an error like 't.versions.node is undefined' about 'browser.umd.js' on browser",
     "string-width": "5.0.0 or above exports only ESM."
   },
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/codemirror-textlint": "^4.5.5-RC.0",
-    "@growi/plugin-attachment-refs": "^4.5.5-RC.0",
-    "@growi/plugin-lsx": "^4.5.5-RC.0",
-    "@growi/plugin-pukiwiki-like-linker": "^4.5.5-RC.0",
-    "@growi/slack": "^4.5.5-RC.0",
+    "@growi/codemirror-textlint": "^4.5.6-RC.0",
+    "@growi/plugin-attachment-refs": "^4.5.6-RC.0",
+    "@growi/plugin-lsx": "^4.5.6-RC.0",
+    "@growi/plugin-pukiwiki-like-linker": "^4.5.6-RC.0",
+    "@growi/slack": "^4.5.6-RC.0",
     "@promster/express": "^5.1.0",
     "@promster/server": "^6.0.3",
     "@slack/events-api": "^3.0.0",
@@ -79,6 +78,7 @@
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "check-node-version": "^4.1.0",
+    "compression": "^1.7.4",
     "connect-flash": "~0.1.1",
     "connect-mongo": "^4.6.0",
     "connect-redis": "^4.0.4",
@@ -87,6 +87,7 @@
     "date-fns": "^2.23.0",
     "detect-indent": "^7.0.0",
     "diff": "^5.0.0",
+    "diff_match_patch": "^0.1.1",
     "elasticsearch": "^16.0.0",
     "entities": "^2.0.0",
     "esa-nodejs": "^0.0.7",
@@ -136,6 +137,7 @@
     "re2": "^1.17.1",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
+    "react-tagcloud": "^2.1.1",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rimraf": "^3.0.0",
@@ -159,7 +161,7 @@
   },
   "devDependencies": {
     "@alienfast/i18next-loader": "^1.1.4",
-    "@growi/ui": "^4.5.5-RC.0",
+    "@growi/ui": "^4.5.6-RC.0",
     "@handsontable/react": "=2.1.0",
     "@testing-library/cypress": "^8.0.2",
     "@types/compression": "^1.7.0",
@@ -247,10 +249,9 @@
     "tsc-alias": "^1.2.9",
     "tsconfig-paths-webpack-plugin": "^3.5.1",
     "unstated": "^2.1.1",
-    "webpack": "^4.39.3",
+    "webpack": "^4.46.0",
     "webpack-assets-manifest": "^3.1.1",
     "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^3.3.7",
-    "webpack-merge": "^4.2.2"
+    "webpack-cli": "^4.9.1"
   }
 }
