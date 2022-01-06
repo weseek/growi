@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -8,39 +8,33 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
+import { useSWRxPageList } from '~/stores/page';
+
 import PaginationWrapper from './PaginationWrapper';
 
 
 const PageList = (props) => {
   const { appContainer, pageContainer, t } = props;
   const { path } = pageContainer.state;
-  const [pages, setPages] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [activePage, setActivePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(Infinity);
+
+  const { data: pagesListData, error: errors } = useSWRxPageList(path, activePage);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
   }
 
-  const updatePageList = useCallback(async() => {
-    const page = activePage;
-    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+  if (errors != null) {
+    return (
+      <div className="my-5">
+        {/* eslint-disable-next-line react/no-array-index-key */}
+        {errors.map((error, index) => <div key={index} className="text-danger">{error.message}</div>)}
+      </div>
+    );
+  }
 
-    setPages(res.data.pages);
-    setIsLoading(false);
-    setTotalPages(res.data.totalCount);
-    setLimit(res.data.limit);
-  }, [appContainer, path, activePage]);
-
-  useEffect(() => {
-    updatePageList();
-  }, [updatePageList]);
-
-
-  if (isLoading) {
+  if (pagesListData == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -51,7 +45,7 @@ const PageList = (props) => {
   }
 
   const liClasses = props.liClasses.join(' ');
-  const pageList = pages.map(page => (
+  const pageList = pagesListData.items.map(page => (
     <li key={page._id} className={liClasses}>
       <Page page={page} />
     </li>
@@ -81,14 +75,12 @@ const PageList = (props) => {
       <PaginationWrapper
         activePage={activePage}
         changePage={setPageNumber}
-        totalItemsCount={totalPages}
-        pagingLimit={limit}
+        totalItemsCount={pagesListData.totalCount}
+        pagingLimit={pagesListData.limit}
         align="center"
       />
     </div>
   );
-
-
 };
 
 const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);

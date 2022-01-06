@@ -137,7 +137,7 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:page');
   const swig = require('swig-templates');
 
-  const pathUtils = require('growi-commons').pathUtils;
+  const { pathUtils } = require('@growi/core');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -513,7 +513,7 @@ module.exports = function(crowi, app) {
       // add scope variables by ancestor page
       const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
       if (ancestor != null) {
-        await ancestor.populate('grantedGroup').execPopulate();
+        await ancestor.populate('grantedGroup');
         addRenderVarsForScope(renderVars, ancestor);
       }
     }
@@ -828,9 +828,17 @@ module.exports = function(crowi, app) {
     }
 
     // check revision
+    const Revision = crowi.model('Revision');
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
+      const latestRevision = await Revision.findById(page.revision).populate('author');
+      const returnLatestRevision = {
+        revisionId: latestRevision._id.toString(),
+        revisionBody: xss.process(latestRevision.body),
+        createdAt: latestRevision.createdAt,
+        user: serializeUserSecurely(latestRevision.author),
+      };
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
     const options = { isSyncRevisionToHackmd };
@@ -839,7 +847,6 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const Revision = crowi.model('Revision');
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
@@ -851,8 +858,10 @@ module.exports = function(crowi, app) {
 
     let savedTags;
     if (pageTags != null) {
+      const tagEvent = crowi.event('tag');
       await PageTagRelation.updatePageTags(pageId, pageTags);
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
+      tagEvent.emit('update', page, savedTags);
     }
 
     const result = {
@@ -889,89 +898,6 @@ module.exports = function(crowi, app) {
         logger.error('Create user notification failed', err);
       }
     }
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.get:
-   *      get:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: getPage
-   *        summary: /pages.get
-   *        description: Get page data
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: path
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/path'
-   *          - in: query
-   *            name: revision_id
-   *            schema:
-   *              $ref: '#/components/schemas/Revision/properties/_id'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get page data.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /pages.get Get page data
-   * @apiName GetPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id
-   * @apiParam {String} path
-   * @apiParam {String} revision_id
-   */
-  api.get = async function(req, res) {
-    const pagePath = req.query.path || null;
-    const pageId = req.query.page_id || null; // TODO: handling
-
-    if (!pageId && !pagePath) {
-      return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
-    }
-
-    let page;
-    try {
-      if (pageId) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, req.user);
-      }
-      else if (pagePath) {
-        page = await Page.findByPathAndViewer(pagePath, req.user);
-      }
-
-      if (page == null) {
-        throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
-      }
-
-      page.initLatestRevisionField();
-
-      // populate
-      page = await page.populateDataToShowRevision();
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
-
-    return res.json(ApiResponse.success(result));
   };
 
   /**

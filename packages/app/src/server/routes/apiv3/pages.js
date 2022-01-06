@@ -1,9 +1,11 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
-const pathUtils = require('growi-commons').pathUtils;
+const { pathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
@@ -195,7 +197,9 @@ module.exports = (crowi) => {
 
   async function saveTagsAction({ createdPage, pageTags }) {
     if (pageTags != null) {
+      const tagEvent = crowi.event('tag');
       await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      tagEvent.emit('update', createdPage, pageTags);
       return PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
@@ -293,6 +297,8 @@ module.exports = (crowi) => {
       Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
     }
 
+    res.apiv3(result, 201);
+
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
@@ -316,7 +322,13 @@ module.exports = (crowi) => {
       }
     }
 
-    return res.apiv3(result, 201);
+    // create subscription
+    try {
+      await crowi.inAppNotificationService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
+    }
+    catch (err) {
+      logger.error('Failed to create subscription document', err);
+    }
   });
 
 
@@ -627,6 +639,14 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
+    }
+
+    // create subscription (parent page only)
+    try {
+      await crowi.inAppNotificationService.createSubscription(req.user.id, newParentPage._id, subscribeRuleNames.PAGE_CREATE);
+    }
+    catch (err) {
+      logger.error('Failed to create subscription document', err);
     }
 
     return res.apiv3(result);

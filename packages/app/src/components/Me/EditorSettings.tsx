@@ -46,10 +46,10 @@ const commonRulesMenuItems = [
     name: 'sentence-length',
     description: 'editor_settings.common_settings.sentence_length',
   },
-  {
-    name: 'en-capitalization',
-    description: 'editor_settings.common_settings.en_capitalization',
-  },
+  // {  // omit because en-pos package is too big
+  //   name: 'en-capitalization',
+  //   description: 'editor_settings.common_settings.en_capitalization',
+  // },
   {
     name: 'no-unmatched-pair',
     description: 'editor_settings.common_settings.no_unmatched_pair',

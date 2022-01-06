@@ -208,6 +208,8 @@ jobs:
     - name: Build
       run: |
         yarn lerna run build
+      env:
+        ANALYZE_BUNDLE_SIZE: ${{ matrix.node-version == '14.x' }}
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
@@ -234,6 +236,12 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Bundle Analyzing Report
+        path: packages/app/report/bundle-analyzer.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

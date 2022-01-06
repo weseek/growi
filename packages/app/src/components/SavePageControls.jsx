@@ -17,6 +17,15 @@ import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';
 
+import { getOptionsToSave } from '~/client/util/editor';
+
+// TODO: remove this when omitting unstated is completed
+import {
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import { useIsEditable, useSlackChannels } from '~/stores/context';
+import { useIsSlackEnabled } from '~/stores/editor';
+
 const logger = loggerFactory('growi:SavePageControls');
 
 class SavePageControls extends React.Component {
@@ -31,41 +40,62 @@ class SavePageControls extends React.Component {
 
     this.save = this.save.bind(this);
     this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
+
   }
 
   updateGrantHandler(data) {
-    this.props.editorContainer.setState(data);
+    const { mutateGrant, mutateGrantGroupId, mutateGrantGroupName } = this.props;
+
+    mutateGrant(data.grant);
+    mutateGrantGroupId(data.grantGroupId);
+    mutateGrantGroupName(data.grantGroupName);
   }
 
   async save() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+      await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
+      if (error.code === 'conflict') {
+        pageContainer.setState({
+          remoteRevisionId: error.data.revisionId,
+          remoteRevisionBody: error.data.revisionBody,
+          remoteRevisionUpdateAt: error.data.createdAt,
+          lastUpdateUser: error.data.user,
+        });
+      }
     }
   }
 
   saveAndOverwriteScopesOfDescendants() {
-    const { pageContainer, editorContainer } = this.props;
+    const {
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
+    } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const optionsToSave = Object.assign(editorContainer.getCurrentOptionsToSave(), {
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
-    pageContainer.saveAndReload(optionsToSave);
+    pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   }
 
   render() {
 
-    const { t, pageContainer, editorContainer } = this.props;
+    const {
+      t, pageContainer, grant, grantGroupId, grantGroupName,
+    } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
@@ -79,9 +109,9 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                grant={editorContainer.state.grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
+                grant={grant}
+                grantGroupId={grantGroupId}
+                grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>
@@ -107,7 +137,41 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+
+const SavePageControlsWrapper = (props) => {
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannels } = useSlackChannels();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+
+
+  if (isEditable == null || editorMode == null) {
+    return null;
+  }
+
+  if (!isEditable) {
+    return null;
+  }
+
+  return (
+    <SavePageControlsHOCWrapper
+      {...props}
+      editorMode={editorMode}
+      isSlackEnabled={isSlackEnabled}
+      slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+      mutateGrantGroupId={mutateGrantGroupId}
+      mutateGrantGroupName={mutateGrantGroupName}
+    />
+  );
+};
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -115,6 +179,17 @@ SavePageControls.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
+  mutateGrantGroupId: PropTypes.func,
+  mutateGrantGroupName: PropTypes.func,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

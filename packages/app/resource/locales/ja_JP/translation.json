@@ -137,6 +137,7 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
+  "Check All tags": "全てのタグをチェックする",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -187,6 +188,7 @@
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
   "page_register": {
+    "send_email": "メールを送る",
     "notice": {
       "restricted": "この Wiki への新規登録は制限されています。",
       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。"
@@ -256,6 +258,21 @@
     "item_label": {
       "All pages": "全てのページ",
       "This tree": "この階層下の子ページのみ"
+    }
+  },
+  "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
+    "see_all": "通知一覧を見る",
+    "no_notification": "通知はありません",
+    "all": "全て",
+    "unopend": "未読",
+    "mark_all_as_read": "全て既読にする"
+  },
+  "in_app_notification_settings": {
+    "in_app_notification_settings": "アプリ内通知設定",
+    "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
+    "default_subscribe_rules": {
+      "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
   },
   "editor_settings": {
@@ -438,6 +455,7 @@
       "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
+      "Search": "検索",
       "Show Contributors": "コントリビューター<br>を表示",
       "MirrorMode": "ミラーモード",
       "Konami Code": "コナミコマンド",
@@ -454,6 +472,22 @@
       "title": "コメントフォームショートカット",
       "Post": "投稿"
     }
+  },
+  "modal_enable_textlint": {
+    "confirm_download_dict_and_enable_textlint": "Textlintを有効にしますか？20MBの辞書ファイルをダウンロードします。",
+    "enable_textlint": "Textlintを有効にする",
+    "dont_ask_again": "常に許可する"
+  },
+  "modal_resolve_conflict": {
+    "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
+    "resolve_conflict_message": "ページ本文を選んでください",
+    "resolve_conflict": "衝突を解消",
+    "resolve_and_save" : "解消し保存する",
+    "select_revision" : "{{revision}}にする",
+    "requested_revision": "送信された本文",
+    "origin_revision": "送信する前の本文",
+    "latest_revision": "最新の本文",
+    "selected_editable_revision": "保存するページ本文(編集可能)"
   },
   "link_edit": {
     "edit_link": "リンク編集",
@@ -642,7 +676,12 @@
       "enable_local": "ID/Password を有効にする",
       "password_reset_by_users": "ユーザーによるパスワード再設定",
       "enable_password_reset_by_users": "ユーザーによるパスワード再設定を有効にする",
-      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。"
+      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。",
+      "email_authentication": "ユーザー登録時のメール認証",
+      "enable_email_authentication": "メール認証を有効にする",
+      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
+      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
+      "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",
@@ -687,8 +726,10 @@
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
       "attr_based_login_control_detail": "SAMLの <code>&lt;saml:AttributeStatement&gt;</code> 要素に含まれる <code>&lt;saml:Attribute&gt;</code> 要素と、その子要素 <code>&lt;saml:AttributeValue&gt;</code> を利用してログインの可否を制御します。",
-      "attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>利用可能なクエリ:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>利用不可なクエリ:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
-      "attr_based_login_control_rule_example": "<h6>Example</h6>ルールに <code>(Department: A || Department: B) && Position: Leader</code> を指定した場合, <code>Department: A</code> または <code>Department: B</code> のどちらかに該当し、かつ <code>Position: Leader</code> を持つユーザーにログインを<strong>許可</strong>します。"
+      "attr_based_login_control_rule_help": "<h5>利用可能なクエリ:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>利用不可なクエリ:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>特殊文字のエスケープ</h5>次の特殊文字はエスケープする必要があります。<code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
+      "attr_based_login_control_rule_example1": "<h5>条件式の例</h5>ルールに <code>(Department: A || Department: B) && Position: Leader</code> を指定した場合, <code>Department: A</code> または <code>Department: B</code> のどちらかに該当し、かつ <code>Position: Leader</code> を持つユーザーにログインを<strong>許可</strong>します。",
+      "attr_based_login_control_rule_exampl2": "<h5>エスケープの例</h5>ルールに URL を利用したい場合は、次のようにエスケープしてください:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
+      "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
       "enable_basic": "Basic を有効にする",
@@ -864,7 +905,9 @@
     "unable_to_use_this_user":"利用できないユーザーIDです。",
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
-    "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+    "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
+    "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
+    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",

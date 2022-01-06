@@ -1,47 +1,52 @@
 import mongoose from 'mongoose';
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
 
-import config from '^/config/migrate';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 
-const logger = loggerFactory('growi:migrate:update-configs-for-slackbot');
+const logger = loggerFactory('growi:migrate:migrate-slack-app-integration-schema');
+
+// create default data
+const defaultDataForBroadcastUse = {};
+defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+  defaultDataForBroadcastUse[commandName] = false;
+});
+const defaultDataForSingleUse = {};
+defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+  defaultDataForSingleUse[commandName] = false;
+});
 
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
-    // create default data
-    const defaultDataForBroadcastUse = {};
-    defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
-      defaultDataForBroadcastUse[commandName] = false;
-    });
-    const defaultDataForSingleUse = {};
-    defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
-      defaultDataForSingleUse[commandName] = false;
-    });
+    if (slackAppIntegrations.length === 0) return;
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
-      const copyForBroadcastUse = { ...defaultDataForBroadcastUse };
-      const copyForSingleUse = { ...defaultDataForSingleUse };
-      // when the document does NOT have supportedCommandsFor... columns
-      if (doc._doc.supportedCommandsForBroadcastUse == null) {
-        defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
-          copyForBroadcastUse[commandName] = true;
-        });
-        defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
-          copyForSingleUse[commandName] = true;
-        });
+      let copyForBroadcastUse = { ...defaultDataForBroadcastUse };
+      let copyForSingleUse = { ...defaultDataForSingleUse };
+      // when the document already has permissionsFor... colums
+      if (doc._doc.permissionsForBroadcastUseCommands != null) {
+        // merge
+        copyForBroadcastUse = {
+          ...defaultDataForBroadcastUse,
+          ...Object.fromEntries(doc._doc.permissionsForBroadcastUseCommands),
+        };
+        copyForSingleUse = {
+          ...defaultDataForSingleUse,
+          ...Object.fromEntries(doc._doc.permissionsForSingleUseCommands),
+        };
       }
-      // // when the document has supportedCommandsFor... columns
-      else {
+      // when the document has supportedCommandsFor... columns
+      else if (doc._doc.supportedCommandsForBroadcastUse != null) {
+        // merge
         doc._doc.supportedCommandsForBroadcastUse.forEach((commandName) => {
           copyForBroadcastUse[commandName] = true;
         });
@@ -49,38 +54,48 @@ module.exports = {
           copyForSingleUse[commandName] = true;
         });
       }
+      // when the document does NOT have supportedCommandsFor... columns
+      else {
+        // turn on all
+        defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+          copyForBroadcastUse[commandName] = true;
+        });
+        defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+          copyForSingleUse[commandName] = true;
+        });
+      }
 
       return {
         updateOne: {
           filter: { _id: doc._id },
-          update: [
-            {
-              $set: {
-                permissionsForBroadcastUseCommands: copyForBroadcastUse,
-                permissionsForSingleUseCommands: copyForSingleUse,
-              },
+          update: {
+            $set: {
+              permissionsForBroadcastUseCommands: copyForBroadcastUse,
+              permissionsForSingleUseCommands: copyForSingleUse,
             },
-            {
-              $unset: ['supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+            $unset: {
+              supportedCommandsForBroadcastUse: '',
+              supportedCommandsForSingleUse: '',
             },
-          ],
+          },
         },
       };
     });
 
-    await SlackAppIntegration.bulkWrite(operations);
+    await db.collection('slackappintegrations').bulkWrite(operations);
 
     logger.info('Migration has successfully applied');
   },
 
   async down(db, next) {
     logger.info('Rollback migration');
-    // return next();
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
+
+    if (slackAppIntegrations.length === 0) return next();
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
@@ -100,22 +115,21 @@ module.exports = {
       return {
         updateOne: {
           filter: { _id: doc._id },
-          update: [
-            {
-              $set: {
-                supportedCommandsForBroadcastUse: dataForBroadcastUse,
-                supportedCommandsForSingleUse: dataForSingleUse,
-              },
+          update: {
+            $set: {
+              supportedCommandsForBroadcastUse: dataForBroadcastUse,
+              supportedCommandsForSingleUse: dataForSingleUse,
             },
-            {
-              $unset: ['permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
+            $unset: {
+              permissionsForBroadcastUseCommands: '',
+              permissionsForSingleUseCommands: '',
             },
-          ],
+          },
         },
       };
     });
 
-    await SlackAppIntegration.bulkWrite(operations);
+    await db.collection('slackappintegrations').bulkWrite(operations);
 
     next();
     logger.info('Migration has successfully applied');

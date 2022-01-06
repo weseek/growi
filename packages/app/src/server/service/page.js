@@ -1,16 +1,19 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+import ActivityDefine from '../util/activityDefine';
+
+import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
 const streamToPromise = require('stream-to-promise');
 
-const logger = loggerFactory('growi:models:page');
-const debug = require('debug')('growi:models:page');
+const logger = loggerFactory('growi:service:page');
+const debug = require('debug')('growi:service:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
-const { isTrashPage } = pagePathUtils;
+const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -20,11 +23,118 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.tagEvent = crowi.event('tag');
 
     // init
+    this.initPageEvent();
+  }
+
+  initPageEvent() {
+    // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
-    this.pageEvent.on('update', this.pageEvent.onUpdate);
+
+    // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
+
+    // update
+    this.pageEvent.on('update', async(page, user) => {
+
+      this.pageEvent.onUpdate();
+
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_UPDATE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // rename
+    this.pageEvent.on('rename', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_RENAME);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // delete
+    this.pageEvent.on('delete', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // delete completely
+    this.pageEvent.on('deleteCompletely', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_DELETE_COMPLETELY);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // likes
+    this.pageEvent.on('like', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_LIKE);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+
+    // bookmark
+    this.pageEvent.on('bookmark', async(page, user) => {
+      try {
+        await this.createAndSendNotifications(page, user, ActivityDefine.ACTION_PAGE_BOOKMARK);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    });
+  }
+
+  async findPageAndMetaDataByViewer({ pageId, path, user }) {
+
+    const Page = this.crowi.model('Page');
+
+    let page;
+    if (pageId != null) { // prioritized
+      page = await Page.findByIdAndViewer(pageId, user);
+    }
+    else {
+      page = await Page.findByPathAndViewer(path, user);
+    }
+
+    const result = {};
+
+    if (page == null) {
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      result.isForbidden = isExist;
+      result.isNotFound = !isExist;
+      result.isCreatable = isCreatablePage(path);
+      result.isDeletable = false;
+      result.canDeleteCompletely = false;
+      result.page = page;
+
+      return result;
+    }
+
+    result.page = page;
+    result.isForbidden = false;
+    result.isNotFound = false;
+    result.isCreatable = false;
+    result.isDeletable = isDeletablePage(path);
+    result.isDeleted = page.isDeleted();
+    result.canDeleteCompletely = user != null && user.canDeleteCompletely(page.creator);
+
+    return result;
   }
 
   /**
@@ -104,8 +214,7 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', renamedPage, user);
+    this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
   }
@@ -195,7 +304,7 @@ class PageService {
         logger.debug(`Reverting pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
-        pageEvent.emit('syncDescendants', targetPage, user);
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
         callback();
       },
     });
@@ -247,7 +356,7 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
-    await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
     const options = { page };
@@ -271,6 +380,7 @@ class PageService {
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      this.tagEvent.emit('update', createdPage, savedTags);
     }
 
     const result = serializePageSecurely(createdPage);
@@ -391,7 +501,7 @@ class PageService {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
-        pageEvent.emit('syncDescendants', page, user);
+        pageEvent.emit('syncDescendantsUpdate', page, user);
         callback();
       },
     });
@@ -405,6 +515,7 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -429,6 +540,7 @@ class PageService {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
@@ -487,6 +599,9 @@ class PageService {
         throw new Error('Failed to revert pages: ', err);
       }
     }
+    finally {
+      this.pageEvent.emit('syncDescendantsDelete', pages, user);
+    }
   }
 
   /**
@@ -533,12 +648,12 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    this.pageEvent.emit('deleteCompletely', pages, user); // update as renamed page
+    this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
 
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -550,7 +665,9 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    this.pageEvent.emit('delete', page, user); // update as renamed page
+    if (!preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
 
     return;
   }
@@ -617,7 +734,7 @@ class PageService {
       // So, it's ok to delete the page
       // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).remove();
+          removePageBulkOp.find({ path: toPath }).delete();
         }
       }
       revertPageBulkOp.find({ _id: page._id }).update({
@@ -642,6 +759,7 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
@@ -653,7 +771,9 @@ class PageService {
       if (originPage.redirectTo !== page.path) {
         throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
       }
-      await this.deleteCompletely(originPage, options);
+
+      await this.deleteCompletely(originPage, user, options, false, true);
+      this.pageEvent.emit('revert', page, user);
     }
 
     if (isRecursively) {
@@ -668,6 +788,7 @@ class PageService {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
     await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
@@ -736,6 +857,28 @@ class PageService {
       throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
     }
   }
+
+  createAndSendNotifications = async function(page, user, action) {
+    const { activityService, inAppNotificationService } = this.crowi;
+
+    const snapshot = stringifySnapshot(page);
+
+    // Create activity
+    const parameters = {
+      user: user._id,
+      targetModel: ActivityDefine.MODEL_PAGE,
+      target: page,
+      action,
+    };
+    const activity = await activityService.createByParameters(parameters);
+
+    // Get user to be notified
+    const targetUsers = await activity.getNotificationTargetUsers();
+
+    // Create and send notifications
+    await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
+    await inAppNotificationService.emitSocketIo(targetUsers);
+  };
 
 }
 

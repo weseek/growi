@@ -15,8 +15,7 @@ $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 $color-seen-user: #549c79 !default;
-$reload-btn-rc-color: $gray-500;
-$reload-btn-cs-color: $gray-500;
+$color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 
 // override bootstrap variables
@@ -218,25 +217,35 @@ ul.pagination {
 }
 
 .grw-sidebar {
-  // override @atlaskit/navigation-next styles
-  .ak-navigation-resize-button {
+  .grw-navigation-resize-button {
     $color-resize-button: $color-global !default;
     $bgcolor-resize-button: white !default;
     $color-resize-button-hover: $color-reversal !default;
     $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
 
-    @include override-hexagon-color($color-resize-button, $bgcolor-resize-button);
-
-    &:hover {
-      @include override-hexagon-color($color-resize-button-hover, $bgcolor-resize-button-hover);
+    .hexagon-container svg {
+      .background {
+        fill: $bgcolor-resize-button;
+      }
+      .icon {
+        fill: $color-resize-button;
+      }
+    }
+    &:hover .hexagon-container svg {
+      .background {
+        fill: $bgcolor-resize-button-hover;
+      }
+      .icon {
+        fill: $color-resize-button-hover;
+      }
     }
   }
-  div[data-testid='GlobalNavigation'] {
+  div.grw-global-navigation {
     > div {
       background-color: $bgcolor-sidebar;
     }
   }
-  div[data-testid='ContextualNavigation'] {
+  div.grw-contextual-navigation {
     > div {
       color: $color-sidebar-context;
       background-color: $bgcolor-sidebar-context;
@@ -268,11 +277,8 @@ ul.pagination {
   }
 
   .grw-sidebar-content-header {
-    .grw-btn-reload-rc {
-      color: $reload-btn-rc-color;
-    }
-    .grw-btn-reload-cs {
-      color: $reload-btn-cs-color;
+    .grw-btn-reload {
+      color: $color-btn-reload-in-sidebar;
     }
 
     .grw-recent-changes-resize-button {
@@ -680,4 +686,13 @@ mark.rbt-highlight-text {
   .bot-type-disc {
     width: 20px;
   }
+}
+
+/*
+  In App Notification
+*/
+.grw-unopend-notification {
+  width: 7px;
+  height: 7px;
+  background-color: $primary;
 }

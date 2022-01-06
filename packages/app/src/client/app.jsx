@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
-import loggerFactory from '~/utils/logger';
+import { SWRConfig } from 'swr';
 
+import loggerFactory from '~/utils/logger';
+import { swrGlobalConfiguration } from '~/utils/swr-utils';
+
+import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
@@ -38,7 +42,7 @@ import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
+import ContextExtractor from '~/client/services/ContextExtractor';
 import PageContainer from '~/client/services/PageContainer';
 import PageHistoryContainer from '~/client/services/PageHistoryContainer';
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
@@ -58,7 +62,6 @@ const { i18n } = appContainer;
 const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
-const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
@@ -68,7 +71,7 @@ const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
+  appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
   commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
@@ -83,6 +86,7 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
+  'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
@@ -95,9 +99,8 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
   'not-found-alert': <NotFoundAlert
-    onPageCreateClicked={navigationContainer.setEditorMode}
     isGuestUserMode={appContainer.isGuestUser}
-    isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable ?? pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
   />,
 
   'forbidden-page': <ForbiddenPage />,
@@ -150,21 +153,40 @@ if (pageContainer.state.path != null) {
   });
 }
 
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <I18nextProvider i18n={i18n}>
-        <ErrorBoundary>
-          <Provider inject={injectableContainers}>
-            {componentMappings[key]}
-          </Provider>
-        </ErrorBoundary>
-      </I18nextProvider>,
-      elem,
-    );
-  }
-});
+const renderMainComponents = () => {
+  Object.keys(componentMappings).forEach((key) => {
+    const elem = document.getElementById(key);
+    if (elem) {
+      ReactDOM.render(
+        <I18nextProvider i18n={i18n}>
+          <ErrorBoundary>
+            <SWRConfig value={swrGlobalConfiguration}>
+              <Provider inject={injectableContainers}>
+                {componentMappings[key]}
+              </Provider>
+            </SWRConfig>
+          </ErrorBoundary>
+        </I18nextProvider>,
+        elem,
+      );
+    }
+  });
+};
+
+// extract context before rendering main components
+const elem = document.getElementById('growi-context-extractor');
+if (elem != null) {
+  ReactDOM.render(
+    <SWRConfig value={swrGlobalConfiguration}>
+      <ContextExtractor></ContextExtractor>
+    </SWRConfig>,
+    elem,
+    renderMainComponents,
+  );
+}
+else {
+  renderMainComponents();
+}
 
 // initialize scrollpos-styler
 ScrollPosStyler.init();

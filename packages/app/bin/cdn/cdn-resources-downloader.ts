@@ -4,9 +4,7 @@ import urljoin from 'url-join';
 import { Transform } from 'stream';
 import replaceStream from 'replacestream';
 
-import {
-  cdnLocalScriptRoot, cdnLocalDictRoot, cdnLocalStyleRoot, cdnLocalStyleWebRoot,
-} from '^/config/cdn';
+import { cdnLocalScriptRoot, cdnLocalStyleRoot, cdnLocalStyleWebRoot } from '^/config/cdn';
 import * as cdnManifests from '^/resource/cdn-manifests';
 
 import { CdnResource, CdnManifest } from '~/interfaces/cdn';
@@ -22,14 +20,6 @@ export default class CdnResourcesDownloader {
       return { manifest, outDir: cdnLocalScriptRoot };
     });
 
-    const cdnDictResources: CdnResource[] = cdnManifests.dict.map((manifest: CdnManifest) => {
-      return { manifest, outDir: cdnLocalDictRoot };
-    });
-
-    const dictExtensionOptions = {
-      ext: 'gz',
-    };
-
     const cdnStyleResources: CdnResource[] = cdnManifests.style.map((manifest) => {
       return { manifest, outDir: cdnLocalStyleRoot };
     });
@@ -42,7 +32,6 @@ export default class CdnResourcesDownloader {
 
     return Promise.all([
       this.downloadScripts(cdnScriptResources),
-      this.downloadScripts(cdnDictResources, dictExtensionOptions),
       this.downloadStyles(cdnStyleResources, dlStylesOptions),
     ]);
   }

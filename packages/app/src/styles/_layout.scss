@@ -1,5 +1,6 @@
 body {
   overflow-y: scroll !important;
+  overscroll-behavior: none;
 }
 
 body:not(.growi-layout-fluid) .grw-container-convertible {
@@ -99,11 +100,14 @@ body.growi-layout-fluid .grw-container-convertible {
 
 // printable style
 @media print {
-  padding: 30px;
+  body {
+    padding: 30px;
+  }
 
   a:after {
     display: none !important;
   }
+
   .main {
     header {
       border-bottom: solid 1px $secondary;

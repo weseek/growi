@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import config from '^/config/migrate';
+import { getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:drop-configs-indices');
@@ -14,7 +14,7 @@ async function dropIndexIfExists(collection, indexName) {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
+    mongoose.connect(getMongoUri(), mongoOptions);
 
     const collection = db.collection('configs');
     await dropIndexIfExists(collection, 'ns_1');

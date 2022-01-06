@@ -72,15 +72,14 @@ RUN rm node_modules.tar
 ##
 FROM prebuilder-default AS prebuilder-nocdn
 
-# replace env.prod.js for NO_CDN
-COPY docker/nocdn/env.prod.js ${appDir}/config/
+# add dotenv file for NO_CDN
+COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
 
 
 
 ##
 ## builder
 ##
-# FROM prebuilder-${flavor}
 FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
@@ -113,7 +112,8 @@ RUN tar cf packages.tar \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/.env.production \
+  packages/app/migrate-mongo-config.js \
+  packages/app/.env.production* \
   packages/app/tsconfig.base.json \
   packages/app/tsconfig.json \
   packages/*/package.json \
@@ -140,11 +140,6 @@ RUN set -eux; \
 # verify that the binary works
 	gosu nobody true
 
-# Add Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-
 COPY --from=deps-resolver-prod --chown=node:node \
   ${appDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
@@ -168,5 +163,5 @@ WORKDIR ${appDir}/packages/app
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
-CMD ["node", "-r", "dotenv-flow/config", "--expose_gc", "dist/server/app.js"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]

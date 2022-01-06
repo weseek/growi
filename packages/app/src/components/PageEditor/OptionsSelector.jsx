@@ -11,6 +11,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { DownloadDictModal } from './DownloadDictModal';
 
 
 export const defaultEditorOptions = {
@@ -21,6 +22,7 @@ export const defaultEditorOptions = {
 
 export const defaultPreviewOptions = {
   renderMathJaxInRealtime: false,
+  renderDrawioInRealtime: true,
 };
 
 class OptionsSelector extends React.Component {
@@ -34,6 +36,8 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      isDownloadDictModalShown: false,
+      isSkipAskingAgainChecked: false,
     };
 
     this.availableThemes = [
@@ -51,8 +55,11 @@ class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onClickRenderDrawioInRealtime = this.onClickRenderDrawioInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
+    this.confirmEnableTextlintHandler = this.confirmEnableTextlintHandler.bind(this);
+    this.toggleTextlint = this.toggleTextlint.bind(this);
     this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
@@ -103,6 +110,17 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
+  onClickRenderDrawioInRealtime(event) {
+    const { editorContainer } = this.props;
+
+    const newValue = !editorContainer.state.previewOptions.renderDrawioInRealtime;
+    const newOpts = Object.assign(editorContainer.state.previewOptions, { renderDrawioInRealtime: newValue });
+    editorContainer.setState({ previewOptions: newOpts });
+
+    // save to localStorage
+    editorContainer.saveOptsToLocalStorage();
+  }
+
   onClickMarkdownTableAutoFormatting(event) {
     const { editorContainer } = this.props;
 
@@ -124,11 +142,29 @@ class OptionsSelector extends React.Component {
     }
   }
 
-  async switchTextlintEnabledHandler() {
+  toggleTextlint() {
     const { editorContainer } = this.props;
     const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
-    this.updateIsTextlintEnabledToDB(newVal);
+    if (this.state.isSkipAskingAgainChecked) {
+      this.updateIsTextlintEnabledToDB(newVal);
+    }
+  }
+
+  switchTextlintEnabledHandler() {
+    const { editorContainer } = this.props;
+    if (editorContainer.state.isTextlintEnabled === null) {
+      this.setState({ isDownloadDictModalShown: true });
+      return;
+    }
+    this.toggleTextlint();
+  }
+
+  confirmEnableTextlintHandler(isSkipAskingAgainChecked) {
+    this.setState(
+      { isSkipAskingAgainChecked, isDownloadDictModalShown: false },
+      () => this.toggleTextlint(),
+    );
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -226,6 +262,7 @@ class OptionsSelector extends React.Component {
           <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
+            {this.renderRealtimeDrawioMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
             {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
@@ -279,6 +316,28 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
           <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderRealtimeDrawioMenuItem() {
+    const { editorContainer } = this.props;
+
+    const isActive = editorContainer.state.previewOptions.renderDrawioInRealtime;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.onClickRenderDrawioInRealtime}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
+          <span className="menuitem-label">draw.io Rendering</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>
@@ -359,12 +418,22 @@ class OptionsSelector extends React.Component {
 
   render() {
     return (
-      <div className="d-flex flex-row">
-        <span>{this.renderThemeSelector()}</span>
-        <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
-      </div>
+      <>
+        <div className="d-flex flex-row">
+          <span>{this.renderThemeSelector()}</span>
+          <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
+          <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
+        </div>
+
+        {!this.state.isSkipAskingAgainChecked && (
+          <DownloadDictModal
+            isModalOpen={this.state.isDownloadDictModalShown}
+            onConfirmEnableTextlint={this.confirmEnableTextlintHandler}
+            onCancel={() => this.setState({ isDownloadDictModalShown: false })}
+          />
+        )}
+      </>
     );
   }
 

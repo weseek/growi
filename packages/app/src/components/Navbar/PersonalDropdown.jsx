@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -6,9 +6,12 @@ import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
+import { scheduleToPutUserUISettings } from '~/client/services/user-ui-settings';
 import AppContainer from '~/client/services/AppContainer';
-import NavigationContainer from '~/client/services/NavigationContainer';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 import {
   isUserPreferenceExists,
@@ -28,11 +31,14 @@ import SunIcon from '../Icons/SunIcon';
 
 const PersonalDropdown = (props) => {
 
-  const { t, appContainer, navigationContainer } = props;
+  const { t, appContainer } = props;
   const user = appContainer.currentUser || {};
 
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
   const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil());
+
+  const { data: isPreferDrawerMode, mutate: mutatePreferDrawerMode } = usePreferDrawerModeByUser();
+  const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
 
   const logoutHandler = () => {
     const { interceptorManager } = appContainer;
@@ -46,13 +52,15 @@ const PersonalDropdown = (props) => {
     window.location.href = '/logout';
   };
 
-  const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreference(bool);
-  };
+  const preferDrawerModeSwitchModifiedHandler = useCallback((bool) => {
+    mutatePreferDrawerMode(bool);
+    scheduleToPutUserUISettings({ preferDrawerModeByUser: bool });
+  }, [mutatePreferDrawerMode]);
 
-  const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreferenceOnEdit(bool);
-  };
+  const preferDrawerModeOnEditSwitchModifiedHandler = useCallback((bool) => {
+    mutatePreferDrawerModeOnEdit(bool);
+    scheduleToPutUserUISettings({ preferDrawerModeOnEditByUser: bool });
+  }, [mutatePreferDrawerModeOnEdit]);
 
   const followOsCheckboxModifiedHandler = (bool) => {
     if (bool) {
@@ -77,13 +85,6 @@ const PersonalDropdown = (props) => {
   };
 
 
-  /*
-   * render
-   */
-  const {
-    preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-  } = navigationContainer.state;
-
   /* eslint-disable react/prop-types */
   const IconWithTooltip = ({
     id, label, children, additionalClasses,
@@ -100,8 +101,8 @@ const PersonalDropdown = (props) => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <a className="px-md-2 nav-link waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} noLink noTooltip /><span className="d-none d-lg-inline-block">&nbsp;{user.name}</span>
+      <a className="px-md-3 nav-link waves-effect waves-light" data-toggle="dropdown">
+        <UserPicture user={user} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{user.name}</span>
       </a>
 
       {/* Menu */}
@@ -144,7 +145,7 @@ const PersonalDropdown = (props) => {
                   id="swSidebarMode"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={!preferDrawerModeByUser}
+                  checked={!isPreferDrawerMode}
                   onChange={e => preferDrawerModeSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarMode"></label>
@@ -169,7 +170,7 @@ const PersonalDropdown = (props) => {
                   id="swSidebarModeOnEditor"
                   className="custom-control-input"
                   type="checkbox"
-                  checked={!preferDrawerModeOnEditByUser}
+                  checked={!isPreferDrawerModeOnEdit}
                   onChange={e => preferDrawerModeOnEditSwitchModifiedHandler(!e.target.checked)}
                 />
                 <label className="custom-control-label" htmlFor="swSidebarModeOnEditor"></label>
@@ -236,13 +237,12 @@ const PersonalDropdown = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer, NavigationContainer]);
+const PersonalDropdownWrapper = withUnstatedContainers(PersonalDropdown, [AppContainer]);
 
 
 PersonalDropdown.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default withTranslation()(PersonalDropdownWrapper);

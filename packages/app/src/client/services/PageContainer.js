@@ -4,6 +4,8 @@ import { Container } from 'unstated';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
+
+import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
 import { toastError } from '../util/apiNotification';
 
@@ -51,16 +53,21 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-      isLiked: false,
-      isBookmarked: false,
-      seenUsers: [],
-      seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
-      countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
 
-      likerUsers: [],
-      sumOfLikers: 0,
+      isBookmarked: false,
       sumOfBookmarks: 0,
+
+      seenUsers: [],
+      seenUserIds: [],
+      sumOfSeenUsers: [],
+
+      isLiked: false,
+      likers: [],
+      likerIds: [],
+      sumOfLikers: 0,
+
       createdAt: mainContent.getAttribute('data-page-created-at'),
+      // please use useCurrentUpdatedAt instead
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
 
@@ -81,12 +88,15 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      remoteRevisionBody: null,
+      remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+      isConflictDiffModalOpen: false,
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
@@ -98,6 +108,7 @@ export default class PageContainer extends Container {
     }
     try {
       this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+      this.state.lastUpdateUser = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
     }
     catch (e) {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
@@ -109,7 +120,7 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.checkAndUpdateImageUrlCached(this.state.likerUsers);
+    this.checkAndUpdateImageUrlCached(this.state.likers);
 
     const { isSharedUser } = this.appContainer;
 
@@ -117,8 +128,10 @@ export default class PageContainer extends Container {
     const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
 
     if (isAbleToGetAttachedInformationAboutPages) {
-      this.retrieveSeenUsers();
-      this.retrieveLikeInfo();
+      // We don't retrieve bookmarks in the initial page load
+      // as it is stored in a separate collection to like and seen user
+      // data so it has a separate api endpoint.
+      this.initialPageLoad();
       this.retrieveBookmarkInfo();
     }
 
@@ -154,13 +167,6 @@ export default class PageContainer extends Container {
     return 'PageContainer';
   }
 
-
-  get isAbleToOpenPageEditor() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
-
-    return (!isNotCreatable && !isTrashPage && !isGuestUser);
-  }
 
   /**
    * whether to display reaction buttons
@@ -219,7 +225,7 @@ export default class PageContainer extends Container {
    * whether to like button
    * not displayed on user page
    */
-  get isAbleToShowLikeButton() {
+  get isAbleToShowLikeButtons() {
     const { isUserPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
@@ -264,29 +270,54 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async retrieveSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: this.state.seenUserIds });
 
-    this.setState({ seenUsers: users });
-    this.checkAndUpdateImageUrlCached(users);
-  }
+  async initialPageLoad() {
+    {
+      const {
+        data: {
+          likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
+        },
+      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
 
-  async retrieveLikeInfo() {
-    const res = await this.appContainer.apiv3Get('/page/like-info', { _id: this.state.pageId });
-    const { sumOfLikers, isLiked } = res.data;
+      await this.setState({
+        sumOfLikers,
+        isLiked,
+        likerIds,
+        seenUserIds,
+        sumOfSeenUsers,
+        isSeen,
+      });
+    }
 
-    this.setState({
-      sumOfLikers,
-      isLiked,
-    });
+    await this.retrieveLikersAndSeenUsers();
   }
 
   async toggleLike() {
-    const bool = !this.state.isLiked;
-    await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool });
-    this.setState({ isLiked: bool });
+    {
+      const toggledIsLiked = !this.state.isLiked;
+      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
 
-    return this.retrieveLikeInfo();
+      await this.setState(state => ({
+        isLiked: toggledIsLiked,
+        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
+        likerIds: toggledIsLiked
+          ? [...this.state.likerIds, this.appContainer.currentUserId]
+          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
+      }));
+    }
+
+    await this.retrieveLikersAndSeenUsers();
+  }
+
+  async retrieveLikersAndSeenUsers() {
+    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
+
+    await this.setState({
+      likers: users.filter(({ id }) => this.state.likerIds.includes(id)).slice(0, 15),
+      seenUsers: users.filter(({ id }) => this.state.seenUserIds.includes(id)).slice(0, 15),
+    });
+
+    this.checkAndUpdateImageUrlCached(users);
   }
 
   async retrieveBookmarkInfo() {
@@ -319,15 +350,15 @@ export default class PageContainer extends Container {
     }
   }
 
-  get navigationContainer() {
-    return this.appContainer.getContainer('NavigationContainer');
-  }
-
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+      lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
     };
 
     if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
@@ -349,15 +380,14 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    * @param {object} revision Revision instance
    */
-  updateStateAfterSave(page, tags, revision) {
-    const { editorMode } = this.navigationContainer.state;
-
+  updateStateAfterSave(page, tags, revision, editorMode) {
     // update state of PageContainer
     const newState = {
       pageId: page._id,
       revisionId: revision._id,
       revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
       remoteRevisionId: revision._id,
+      revisionAuthor: revision.author,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: revision.body,
@@ -385,8 +415,31 @@ export default class PageContainer extends Container {
       }
     }
 
-    // hidden input
-    $('input[name="revision_id"]').val(newState.revisionId);
+  }
+
+  /**
+   * update page meta data
+   * @param {object} page Page instance
+   * @param {object} revision Revision instance
+   * @param {String[]} tags Array of Tag
+   */
+  updatePageMetaData(page, revision, tags) {
+
+    const newState = {
+      revisionId: revision._id,
+      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+      remoteRevisionId: revision._id,
+      revisionAuthor: revision.author,
+      revisionIdHackmdSynced: page.revisionHackmdSynced,
+      hasDraftOnHackmd: page.hasDraftOnHackmd,
+      updatedAt: page.updatedAt,
+    };
+    if (tags != null) {
+      newState.tags = tags;
+    }
+
+    this.setState(newState);
+
   }
 
   /**
@@ -395,12 +448,9 @@ export default class PageContainer extends Container {
    * @param {object} optionsToSave
    * @return {object} { page: Page, tags: Tag[] }
    */
-  async save(markdown, optionsToSave = {}) {
-    const { editorMode } = this.navigationContainer.state;
-
+  async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
-
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {
@@ -417,19 +467,18 @@ export default class PageContainer extends Container {
       res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    this.updateStateAfterSave(res.page, res.tags, res.revision);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
     return res;
   }
 
-  async saveAndReload(optionsToSave) {
+  async saveAndReload(optionsToSave, editorMode) {
     if (optionsToSave == null) {
       const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
       throw new Error(msg);
     }
 
-    const { editorMode } = this.navigationContainer.state;
     if (editorMode == null) {
-      logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
+      logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
       return;
     }
 
@@ -621,6 +670,23 @@ export default class PageContainer extends Container {
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
+  }
+
+  async resolveConflict(markdown, editorMode) {
+
+    const { pageId, remoteRevisionId, path } = this.state;
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const options = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = Object.assign({}, options);
+
+    const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
+
+    editorContainer.clearDraft(path);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+
+    editorContainer.setState({ tags: res.tags });
+
+    return res;
   }
 
 }

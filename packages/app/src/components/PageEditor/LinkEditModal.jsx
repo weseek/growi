@@ -162,7 +162,8 @@ class LinkEditModal extends React.PureComponent {
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
+        const { data } = await this.props.appContainer.apiv3Get('/page', { path: pathWithoutFragment, page_id: pageId });
+        const { page } = data;
         markdown = page.revision.body;
         permalink = page.id;
       }
@@ -291,7 +292,6 @@ class LinkEditModal extends React.PureComponent {
                 inputName="link"
                 placeholder={t('link_edit.placeholder_of_link_input')}
                 keywordOnInit={this.state.linkInputValue}
-                behaviorOfResetBtn="clear"
                 autoFocus
               />
               <div className="d-none d-sm-block input-group-append">

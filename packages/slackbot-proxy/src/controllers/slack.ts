@@ -10,9 +10,9 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
+  InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
   parseSlackInteractionRequest, verifySlackRequest,
-  respond,
+  respond, supportedGrowiCommands, IChannelOptionalId,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -26,13 +26,14 @@ import {
 } from '~/middlewares/slack-to-growi/authorizer';
 import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
-import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
+import { LinkSharedService } from '~/services/LinkSharedService';
 import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
+import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -90,6 +91,9 @@ export class SlackCtrl {
   @Inject()
   unregisterService: UnregisterService;
 
+  @Inject()
+  linkSharedService: LinkSharedService;
+
   /**
    * Send command to specified GROWIs
    * @param growiCommand
@@ -130,7 +134,7 @@ export class SlackCtrl {
 
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
@@ -178,6 +182,7 @@ export class SlackCtrl {
       return this.unregisterService.processCommand(growiCommand, authorizeResult);
     }
 
+    // get relations
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -205,28 +210,42 @@ export class SlackCtrl {
       });
     }
 
-    await respond(growiCommand.responseUrl, {
-      blocks: [
-        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.text}"* ...`),
-      ],
-    });
+    // not supported commands
+    if (!supportedGrowiCommands.includes(growiCommand.growiCommandType)) {
+      return respond(growiCommand.responseUrl, {
+        text: 'Command is not supported',
+        blocks: [
+          markdownSectionBlock('*Command is not supported*'),
+          // eslint-disable-next-line max-len
+          markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+        ],
+      });
+    }
 
-    const baseDate = new Date();
+    // help
+    if (growiCommand.growiCommandType === 'help') {
+      return this.sendCommand(growiCommand, relations, body);
+    }
 
     const allowedRelationsForSingleUse:Relation[] = [];
     const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
+    const channel: IChannelOptionalId = {
+      id: body.channel_id,
+      name: body.channel_name,
+    };
+
     // check permission
     await Promise.all(relations.map(async(relation) => {
       const isSupportedForSingleUse = await this.relationsService.isPermissionsForSingleUseCommands(
-        relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+        relation, growiCommand.growiCommandType, channel,
       );
 
       let isSupportedForBroadcastUse = false;
       if (!isSupportedForSingleUse) {
         isSupportedForBroadcastUse = await this.relationsService.isPermissionsUseBroadcastCommands(
-          relation, growiCommand.growiCommandType, body.channel_name, baseDate,
+          relation, growiCommand.growiCommandType, channel,
         );
       }
 
@@ -285,7 +304,7 @@ export class SlackCtrl {
     logger.debug('receive interaction', req.body);
 
     const {
-      body, authorizeResult, interactionPayload, interactionPayloadAccessor,
+      body, authorizeResult, interactionPayload, interactionPayloadAccessor, growiUri,
     } = req;
 
     // pass
@@ -319,6 +338,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
+      .andWhere('relation.growiUri = :uri', { uri: growiUri })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
@@ -335,8 +355,13 @@ export class SlackCtrl {
 
     const privateMeta = interactionPayloadAccessor.getViewPrivateMetaData();
 
-    const channelName = interactionPayload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    const channelFromMeta = {
+      name: privateMeta?.body?.channel_name || privateMeta?.channelName,
+    };
+
+    const channel: IChannelOptionalId = interactionPayload.channel || channelFromMeta;
+    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channel);
+
     const {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     } = permission;
@@ -375,14 +400,25 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  @UseBefore(UrlVerificationMiddleware, AuthorizeEventsMiddleware)
+  @UseBefore(UrlVerificationMiddleware, AddSigningSecretToReq, verifySlackRequest, AuthorizeEventsMiddleware)
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
-
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
+    const { event } = req.body;
 
-    if (req.body.event.type === 'app_home_opened') {
-      await postWelcomeMessage(client, req.body.event.channel);
+    // send welcome message
+    if (event.type === 'app_home_opened') {
+      try {
+        await postWelcomeMessageOnce(client, event.channel);
+      }
+      catch (err) {
+        logger.error('Failed to post welcome message', err);
+      }
+    }
+
+    // unfurl
+    if (this.linkSharedService.shouldHandleEvent(event.type)) {
+      await this.linkSharedService.processEvent(client, event);
     }
 
     return;
@@ -437,9 +473,9 @@ export class SlackCtrl {
 
         await Promise.all([
           // post message
-          postWelcomeMessage(client, userId),
+          postInstallSuccessMessage(client, userId),
           // publish home
-          // TODO When Home tab show off, use bellow.
+          // TODO: When Home tab show off, use bellow.
           // publishInitialHomeView(client, userId),
         ]);
       }

@@ -25,8 +25,6 @@ import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
 import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 
-import NavigationContainer from '~/client/services/NavigationContainer';
-
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
@@ -57,7 +55,6 @@ appContainer.initContents();
 const { i18n } = appContainer;
 
 // create unstated container instance
-const navigationContainer = new NavigationContainer(appContainer);
 const adminAppContainer = new AdminAppContainer(appContainer);
 const adminImportContainer = new AdminImportContainer(appContainer);
 const adminSocketIoContainer = new AdminSocketIoContainer(appContainer);
@@ -69,9 +66,9 @@ const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const injectableContainers = [
   appContainer,
-  navigationContainer,
   adminAppContainer,
   adminImportContainer,
   adminSocketIoContainer,
@@ -83,6 +80,7 @@ const injectableContainers = [
   adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
+  socketIoContainer,
 ];
 
 logger.info('unstated containers have been initialized');
