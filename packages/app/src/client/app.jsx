@@ -12,6 +12,7 @@ import InAppNotificationPage from '../components/InAppNotification/InAppNotifica
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
+import LegacyPage from '../components/LegacyPage';
 import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
@@ -85,6 +86,7 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
+  'legacy-page': <LegacyPage crowi={appContainer}></LegacyPage>,
   'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,

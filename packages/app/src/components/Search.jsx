@@ -1,5 +1,3 @@
-// This is the root component for #search-page
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -20,7 +18,7 @@ export const specificPathNames = {
   user: '/user',
   trash: '/trash',
 };
-class SearchPage extends React.Component {
+class Search extends React.Component {
 
   constructor(props) {
     super(props);
@@ -375,17 +373,17 @@ class SearchPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SearchPageHOCWrapper = withTranslation()(withUnstatedContainers(SearchPage, [AppContainer]));
+const SearchPageHOCWrapper = withTranslation()(withUnstatedContainers(Search, [AppContainer]));
 
-SearchPage.propTypes = {
+Search.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   query: PropTypes.object,
   isGuestUser: PropTypes.bool.isRequired,
 };
-SearchPage.defaultProps = {
+Search.defaultProps = {
   // pollInterval: 1000,
-  query: SearchPage.getQueryByLocation(window.location || {}),
+  query: Search.getQueryByLocation(window.location || {}),
 };
 
 const SearchPageFCWrapper = (props) => {
