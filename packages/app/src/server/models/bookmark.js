@@ -65,9 +65,7 @@ module.exports = function(crowi) {
       const data = await Bookmark.find({ page: pageId });
       let bookmarkedUserIds = [];
       if (data.length > 0) {
-        bookmarkedUserIds = data.map((bookmark) => {
-          return { _id: bookmark.user };
-        });
+        bookmarkedUserIds = data.map(bookmark => bookmark.user);
       }
       return bookmarkedUserIds;
     }
