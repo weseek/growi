@@ -25,6 +25,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
 
   const isBookmarked = bookmarksInfo?.isBookmarked != null ? bookmarksInfo.isBookmarked : false;
   const sumOfBookmarks = bookmarksInfo?.sumOfBookmarks != null ? bookmarksInfo.sumOfBookmarks : 0;
+  const bookmarkedUsers = bookmarksInfo?.bookmarkedUsers != null ? bookmarksInfo.bookmarkedUsers : [];
 
   const togglePopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -70,7 +71,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {[0].length ? <UserPictureList users={[{ _id: '61d4279c0ffbc6a1235c07f3' }]} /> : t('No users have bookmarked this yet.')}
+            {bookmarkedUsers.length ? <UserPictureList users={bookmarkedUsers} /> : t('No users have bookmarked this yet.')}
           </div>
         </PopoverBody>
       </Popover>
