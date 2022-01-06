@@ -25,7 +25,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
 
   // TODO: To be used in UserPictureList
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const bookmarkedUserIds = bookmarksInfo?.bookmarkedUserIds != null ? bookmarksInfo.bookmarkedUserIds : [];
+  const bookmarkedUsers = bookmarksInfo?.bookmarkedUsers != null ? bookmarksInfo.bookmarkedUsers : [];
 
   const handleClick = async() => {
     if (isGuestUser) {
