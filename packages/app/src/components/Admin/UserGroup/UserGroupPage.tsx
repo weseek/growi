@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
@@ -8,8 +7,23 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { IUserGroup, IUserGroupRelation } from '~/interfaces/user';
+import Xss from '~/services/xss';
+import { CustomWindow } from '~/interfaces/global';
 
-class UserGroupPage extends React.Component {
+type Props = {
+  appContainer: AppContainer,
+};
+type State = {
+  userGroups: IUserGroup[],
+  userGroupRelations: IUserGroupRelation[],
+  selectedUserGroup: IUserGroup | undefined,
+  isDeleteModalShow: boolean,
+};
+
+class UserGroupPage extends React.Component<Props, State> {
+
+  xss: Xss;
 
   constructor(props) {
     super(props);
@@ -21,7 +35,7 @@ class UserGroupPage extends React.Component {
       isDeleteModalShow: false,
     };
 
-    this.xss = window.xss;
+    this.xss = (window as CustomWindow).xss;
 
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
@@ -67,7 +81,7 @@ class UserGroupPage extends React.Component {
     });
   }
 
-  async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
+  async deleteUserGroupById(deleteGroupId: string, actionName: string, transferToUserGroupId: string) {
     try {
       const res = await this.props.appContainer.apiv3.delete(`/user-groups/${deleteGroupId}`, {
         actionName,
@@ -144,9 +158,5 @@ class UserGroupPage extends React.Component {
  * Wrapper component for using unstated
  */
 const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
-
-UserGroupPage.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
 
 export default UserGroupPageWrapper;

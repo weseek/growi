@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-import React from 'react';
+import React, { ForwardRefExoticComponent } from 'react';
 import { Subscribe } from 'unstated';
 
 /**
