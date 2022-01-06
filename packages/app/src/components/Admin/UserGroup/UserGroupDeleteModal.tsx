@@ -45,6 +45,8 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
 
   xss: Xss;
 
+  state: State;
+
   constructor(props) {
     super(props);
 
