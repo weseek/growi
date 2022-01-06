@@ -6,14 +6,13 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 /*
  * define schema
  */
-const ObjectIdType = mongoose.Schema.Types.ObjectId;
-const ObjectId = mongoose.Types.ObjectId;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new mongoose.Schema({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
-  parent: { type: ObjectIdType, ref: 'UserGroup', index: true },
+  parent: { type: ObjectId, ref: 'UserGroup', index: true },
   description: { type: String },
 });
 schema.plugin(mongoosePaginate);
