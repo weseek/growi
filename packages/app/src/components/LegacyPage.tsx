@@ -6,10 +6,9 @@ type Props = {
 }
 
 const LegacyPage: FC<Props> = (props: Props) => {
-
-
+  const actionToPages = () => {};
   return (
-    <Search></Search>
+    <Search disableControlOptions actionToPages={actionToPages}></Search>
   );
 };
 

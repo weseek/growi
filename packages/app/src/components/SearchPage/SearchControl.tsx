@@ -22,6 +22,7 @@ type Props = {
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
+  disableControlOptions: boolean,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {

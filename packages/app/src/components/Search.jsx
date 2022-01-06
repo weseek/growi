@@ -20,6 +20,10 @@ export const specificPathNames = {
 };
 class Search extends React.Component {
 
+  // memo
+  // disableControlOptions　-> show warning
+  // move states and delete method etc to upper component
+
   constructor(props) {
     super(props);
     // NOTE : selectedPages is deletion related state, will be used later in story 77535, 77565.
@@ -340,6 +344,7 @@ class Search extends React.Component {
         excludeUserPages={this.state.excludeUserPages}
         excludeTrashPages={this.state.excludeTrashPages}
         onChangeSortInvoked={this.onChangeSortInvoked}
+        disableControlOptions={this.props.disableControlOptions}
       >
       </SearchControl>
     );
@@ -380,6 +385,9 @@ Search.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   query: PropTypes.object,
   isGuestUser: PropTypes.bool.isRequired,
+  // Once sorting and include user/trash functionality is ready in legacy-page, this props will be removed
+  disableControlOptions: PropTypes.bool.isRequired,
+  actionToPages: PropTypes.func.isRequired,
 };
 Search.defaultProps = {
   // pollInterval: 1000,

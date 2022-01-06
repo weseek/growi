@@ -5,7 +5,10 @@ type Props = {
 
 }
 const SearchPage: FC<Props> = (props: Props) => {
-  return <Search></Search>;
+  const actionToPages = () => {
+
+  };
+  return <Search actionToPages={actionToPages}></Search>;
 };
 
 
