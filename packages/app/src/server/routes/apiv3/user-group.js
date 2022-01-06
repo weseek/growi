@@ -86,6 +86,8 @@ module.exports = (crowi) => {
 
   validator.create = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+    body('description', 'Description must be a string').optional().isString(),
+    body('parentId', 'ParentId must be a string').optional().isString(),
   ];
 
   /**
@@ -119,7 +121,7 @@ module.exports = (crowi) => {
    *                      description: A result of `UserGroup.createGroupByName`
    */
   router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
-    const { name, description, parentId } = req.body;
+    const { name, description = '', parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
