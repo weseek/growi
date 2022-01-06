@@ -112,19 +112,17 @@ module.exports = (crowi) => {
 
     const responsesParams = {};
 
-    const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
-
-    responsesParams.sumOfBookmarks = bookmarks.length;
-
     try {
+      const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
       let users = [];
       if (bookmarks.length > 0) {
         users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
       }
+      responsesParams.sumOfBookmarks = bookmarks.length;
       responsesParams.bookmarkedUsers = users;
     }
     catch (err) {
-      logger.error('get-bookmarked-users-failed', err);
+      logger.error('get-bookmark-document-failed', err);
       return res.apiv3Err(err, 500);
     }
 
