@@ -71,7 +71,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {bookmarkedUsers.length ? <UserPictureList users={bookmarkedUsers} /> : t('No users have bookmarked this yet.')}
+            {bookmarkedUsers.length ? <UserPictureList users={bookmarkedUsers} /> : t('No users have bookmarked yet')}
           </div>
         </PopoverBody>
       </Popover>
