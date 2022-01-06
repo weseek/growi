@@ -1242,7 +1242,7 @@ class PageService {
       throw Error('user is required');
     }
     const Page = this.crowi.model('Page');
-    return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
+    return Page.count({ parent: null, creator: user });
   }
 
 }
