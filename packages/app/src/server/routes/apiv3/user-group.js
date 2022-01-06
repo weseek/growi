@@ -86,6 +86,8 @@ module.exports = (crowi) => {
 
   validator.create = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+    body('description', 'Description must be a string').optional().isString(),
+    body('parentId', 'ParentId must be a string').optional().isString(),
   ];
 
   /**
