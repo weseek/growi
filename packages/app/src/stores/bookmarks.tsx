@@ -14,6 +14,7 @@ export const useSWRxBookmarksInfo = <Data, Error>(pageId: Types.ObjectId):SWRRes
       return {
         isBookmarked: response.data.isBookmarked,
         sumOfBookmarks: response.data.sumOfBookmarks,
+        bookmarkedUsers: response.data.bookmarkedUsers,
       };
     }),
   );
