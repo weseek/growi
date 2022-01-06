@@ -44,6 +44,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   socketIoService!: any
 
+  isElasticsearchV6: boolean
+
   elasticsearch: any
 
   client: any
@@ -59,7 +61,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.configManager = configManager;
     this.socketIoService = socketIoService;
 
-    this.elasticsearch = this.configManager.getConfig('crowi', 'app:useElasticsearchV6') ? elasticsearch6 : elasticsearch7;
+    this.isElasticsearchV6 = this.configManager.getConfig('crowi', 'app:useElasticsearchV6');
+
+    this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -307,7 +311,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = require('^/resource/search/mappings-es7.json'); // TODO: Add condition based on elastisearch version
+    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings.json') : require('^/resource/search/mappings-es7.json');
     return this.client.indices.create({ index, body });
   }
 
@@ -344,7 +348,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: '_doc', // TODO: Add condition based on elastisearch version
+        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
         _id: page._id.toString(),
       },
     };
@@ -380,7 +384,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: '_doc', // TODO: Add condition based on elastisearch version
+        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
         _id: page._id.toString(),
       },
     };
@@ -643,14 +647,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     }
 
     // sort by score
-    const query = {
+    // eslint-disable-next-line prefer-const
+    let query = {
       index: this.aliasName,
-      // type: 'pages', // TODO: Add condition based on elastisearch version
       body: {
         query: {}, // query
         _source: fields,
       },
     };
+
+    if (this.isElasticsearchV6) {
+      Object.assign(query, { type: 'pages' });
+    }
 
     return query;
   }
@@ -722,7 +730,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     if (parsedKeywords.phrase.length > 0) {
       const phraseQueries: any[] = [];
       parsedKeywords.phrase.forEach((phrase) => {
-        phraseQueries.push({
+        const phraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words like "This is GROWI"
             type: 'phrase',
@@ -733,16 +741,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'comments',
             ],
           },
-        });
+        };
+        if (this.isElasticsearchV6) {
+          phraseQueries.push(phraseQuery);
+        }
+        else {
+          query.body.query.bool.must.push(phraseQuery);
+        }
       });
 
-      query.body.query.bool.must.push(phraseQueries);
+      if (this.isElasticsearchV6) {
+        query.body.query.bool.must.push(phraseQueries);
+      }
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
       const notPhraseQueries: any[] = [];
       parsedKeywords.not_phrase.forEach((phrase) => {
-        notPhraseQueries.push({
+        const notPhraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words
             type: 'phrase',
@@ -752,10 +768,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
               'body',
             ],
           },
-        });
+        };
+
+        if (this.isElasticsearchV6) {
+          notPhraseQueries.push(notPhraseQuery);
+        }
+        else {
+          query.body.query.bool.must_not.push(notPhraseQuery);
+        }
       });
 
-      query.body.query.bool.must_not.push(notPhraseQueries);
+      if (this.isElasticsearchV6) {
+        query.body.query.bool.must_not.push(notPhraseQueries);
+      }
     }
 
     if (parsedKeywords.prefix.length > 0) {
