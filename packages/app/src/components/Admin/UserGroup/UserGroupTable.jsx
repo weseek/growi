@@ -141,7 +141,7 @@ class UserGroupTable extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupTableWrapper = withUnstatedContainers(UserGroupTable, [AppContainer]);
+const UserGroupTableWrapper = withUnstatedContainers(withTranslation()(UserGroupTable), [AppContainer]);
 
 
 UserGroupTable.propTypes = {
@@ -154,4 +154,4 @@ UserGroupTable.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupTableWrapper);
+export default UserGroupTableWrapper;

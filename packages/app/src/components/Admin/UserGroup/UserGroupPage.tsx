@@ -47,7 +47,7 @@ class UserGroupPage extends React.Component<Props, State> {
     await this.syncUserGroupAndRelations();
   }
 
-  async showDeleteModal(group) {
+  async showDeleteModal(group: IUserGroup) {
     try {
       await this.syncUserGroupAndRelations();
 
@@ -141,6 +141,7 @@ class UserGroupPage extends React.Component<Props, State> {
           userGroupRelations={this.state.userGroupRelations}
         />
         <UserGroupDeleteModal
+          appContainer={this.props.appContainer}
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}
           onDelete={this.deleteUserGroupById}
