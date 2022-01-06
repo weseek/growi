@@ -1,3 +1,5 @@
+import { Ref } from './common';
+
 export type IUser = {
   name: string;
   username: string;
@@ -12,7 +14,9 @@ export type IUserGroupRelation = {
 }
 
 export type IUserGroup = {
-  userGroupId:string;
+  _id: string;
   name: string;
   createdAt: Date;
+  description: string;
+  parent: Ref<IUserGroup>;
 }

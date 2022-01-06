@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -7,6 +6,9 @@ import {
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import { IUserGroup } from '~/interfaces/user';
+import { CustomWindow } from '~/interfaces/global';
+import Xss from '~/services/xss';
 
 /**
  * Delete User Group Select component
@@ -15,7 +17,33 @@ import AppContainer from '~/client/services/AppContainer';
  * @class GrantSelector
  * @extends {React.Component}
  */
-class UserGroupDeleteModal extends React.Component {
+type Props = {
+  t: any, // i18next
+  appContainer: AppContainer,
+
+  userGroups: IUserGroup[],
+  deleteUserGroup: IUserGroup,
+  onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => any,
+  isShow: boolean,
+  onShow?: () => any,
+  onHide?: () => any,
+};
+type State = {
+  actionName: string,
+  transferToUserGroupId: string,
+};
+const initialState = {
+  actionName: '',
+  transferToUserGroupId: '',
+};
+
+class UserGroupDeleteModal extends React.Component<Props, State> {
+
+  actionForPages: any;
+
+  availableOptions: any;
+
+  xss: Xss;
 
   constructor(props) {
     super(props);
@@ -53,14 +81,9 @@ class UserGroupDeleteModal extends React.Component {
       },
     ];
 
-    this.initialState = {
-      actionName: '',
-      transferToUserGroupId: '',
-    };
+    this.state = initialState;
 
-    this.state = this.initialState;
-
-    this.xss = window.xss;
+    this.xss = (window as CustomWindow).xss;
 
     this.onHide = this.onHide.bind(this);
     this.handleActionChange = this.handleActionChange.bind(this);
@@ -72,7 +95,11 @@ class UserGroupDeleteModal extends React.Component {
   }
 
   onHide() {
-    this.setState(this.initialState);
+    if (this.props.onHide == null) {
+      return;
+    }
+
+    this.setState(initialState);
     this.props.onHide();
   }
 
@@ -87,13 +114,17 @@ class UserGroupDeleteModal extends React.Component {
   }
 
   handleSubmit(e) {
+    if (this.props.onDelete == null) {
+      return;
+    }
+
     e.preventDefault();
 
-    this.props.onDelete({
-      deleteGroupId: this.props.deleteUserGroup._id,
-      actionName: this.state.actionName,
-      transferToUserGroupId: this.state.transferToUserGroupId,
-    });
+    this.props.onDelete(
+      this.props.deleteUserGroup._id,
+      this.state.actionName,
+      this.state.transferToUserGroupId,
+    );
   }
 
   renderPageActionSelector() {
@@ -195,22 +226,6 @@ class UserGroupDeleteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupDeleteModalWrapper = withUnstatedContainers(UserGroupDeleteModal, [AppContainer]);
+const UserGroupDeleteModalWrapper = withUnstatedContainers(withTranslation()(UserGroupDeleteModal), [AppContainer]);
 
-UserGroupDeleteModal.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  deleteUserGroup: PropTypes.object,
-  onDelete: PropTypes.func.isRequired,
-  isShow: PropTypes.bool.isRequired,
-  onShow: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired,
-};
-
-UserGroupDeleteModal.defaultProps = {
-  deleteUserGroup: {},
-};
-
-export default withTranslation()(UserGroupDeleteModalWrapper);
+export default UserGroupDeleteModalWrapper;
