@@ -15,7 +15,7 @@ export type IPage = {
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
   parent: Ref<IPage> | null,
-  childCount: number,
+  descendantCount: number,
   isEmpty: boolean,
   redirectTo: string,
   grant: number,

@@ -64,7 +64,7 @@ const schema = new Schema<PageDocument, PageModel>({
   parent: {
     type: ObjectId, ref: 'Page', index: true, default: null,
   },
-  childCount: { type: Number, default: 0 },
+  descendantCount: { type: Number, default: 0 },
   isEmpty: { type: Boolean, default: false },
   path: {
     type: String, required: true, index: true,
