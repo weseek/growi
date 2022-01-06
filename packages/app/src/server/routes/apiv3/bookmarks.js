@@ -112,16 +112,11 @@ module.exports = (crowi) => {
 
     const responsesParams = {};
 
-    try {
-      responsesParams.sumOfBookmarks = await Bookmark.countByPageId(pageId);
-    }
-    catch (err) {
-      logger.error('get-bookmark-count-failed', err);
-      return res.apiv3Err(err, 500);
-    }
+    const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
+
+    responsesParams.sumOfBookmarks = bookmarks.length;
 
     try {
-      const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
       let users = [];
       if (bookmarks.length > 0) {
         users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
