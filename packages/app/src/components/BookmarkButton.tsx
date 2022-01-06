@@ -56,7 +56,7 @@ const BookmarkButton: FC<Props> = (props: Props) => {
         className={`btn btn-bookmark border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className="icon-star mr-3"></i>
+        <i className="icon-star"></i>
       </button>
 
       {isGuestUser && (
