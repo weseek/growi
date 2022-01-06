@@ -13,7 +13,7 @@ const schema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
   parent: { type: ObjectId, ref: 'UserGroup', index: true },
-  description: { type: String },
+  description: { type: String, default: '' },
 });
 schema.plugin(mongoosePaginate);
 
@@ -110,8 +110,18 @@ class UserGroup {
     return this.estimatedDocumentCount();
   }
 
-  static createGroupByName(name) {
-    return this.create({ name });
+  static async createGroup(name, description, parentId) {
+    // create without parent
+    if (parentId == null) {
+      return this.create({ name, description });
+    }
+
+    // create with parent
+    const parent = await this.findOne({ _id: parentId });
+    if (parent == null) {
+      throw Error('Parent does not exist.');
+    }
+    return this.create({ name, description, parent });
   }
 
   async updateName(name) {
