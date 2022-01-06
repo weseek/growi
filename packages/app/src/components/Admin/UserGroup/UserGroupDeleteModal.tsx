@@ -1,10 +1,10 @@
 import React from 'react';
+import { TFunction } from 'i18next';
 import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { IUserGroup } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
@@ -18,15 +18,15 @@ import Xss from '~/services/xss';
  * @extends {React.Component}
  */
 type Props = {
-  t: any, // i18next
+  t: TFunction, // i18next
   appContainer: AppContainer,
 
   userGroups: IUserGroup[],
-  deleteUserGroup: IUserGroup,
-  onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => any,
+  deleteUserGroup?: IUserGroup,
+  onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
-  onShow?: () => any,
-  onHide?: () => any,
+  onShow?: (group: IUserGroup) => Promise<void> | void,
+  onHide?: () => Promise<void> | void,
 };
 type State = {
   actionName: string,
@@ -114,7 +114,7 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
   }
 
   handleSubmit(e) {
-    if (this.props.onDelete == null) {
+    if (this.props.onDelete == null || this.props.deleteUserGroup == null) {
       return;
     }
 
@@ -153,7 +153,7 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
     const { t } = this.props;
 
     const groups = this.props.userGroups.filter((group) => {
-      return group._id !== this.props.deleteUserGroup._id;
+      return group._id !== this.props?.deleteUserGroup?._id;
     });
 
     const options = groups.map((group) => {
@@ -200,7 +200,7 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
         </ModalHeader>
         <ModalBody>
           <div>
-            <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
+            <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{this.props?.deleteUserGroup?.name || ''}&quot;
           </div>
           <div className="text-danger mt-5">
             {t('admin:user_group_management.delete_modal.desc')}
@@ -223,9 +223,4 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupDeleteModalWrapper = withUnstatedContainers(withTranslation()(UserGroupDeleteModal), [AppContainer]);
-
-export default UserGroupDeleteModalWrapper;
+export default withTranslation()(UserGroupDeleteModal);

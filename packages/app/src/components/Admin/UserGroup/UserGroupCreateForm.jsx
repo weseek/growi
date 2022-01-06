@@ -105,7 +105,7 @@ class UserGroupCreateForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupCreateFormWrapper = withUnstatedContainers(UserGroupCreateForm, [AppContainer]);
+const UserGroupCreateFormWrapper = withUnstatedContainers(withTranslation()(UserGroupCreateForm), [AppContainer]);
 
 UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -115,4 +115,4 @@ UserGroupCreateForm.propTypes = {
   onCreate: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupCreateFormWrapper);
+export default UserGroupCreateFormWrapper;
