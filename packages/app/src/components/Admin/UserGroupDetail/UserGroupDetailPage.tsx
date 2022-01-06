@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
@@ -9,7 +8,9 @@ import UserGroupPageList from './UserGroupPageList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
-class UserGroupDetailPage extends React.Component {
+interface Props extends WithTranslation {};
+
+class UserGroupDetailPage extends React.Component<Props> {
 
   render() {
     const { t } = this.props;
@@ -20,6 +21,7 @@ class UserGroupDetailPage extends React.Component {
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
           {t('admin:user_group_management.back_to_list')}
         </a>
+        {/* TODO 85062: Link to the ancestors group */}
         <div className="mt-4 form-box">
           <UserGroupEditForm />
         </div>
@@ -36,14 +38,10 @@ class UserGroupDetailPage extends React.Component {
 
 }
 
-UserGroupDetailPage.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupDetailPageWrapper = withUnstatedContainers(UserGroupDetailPage, [AppContainer]);
+const UserGroupDetailPageWrapper = withUnstatedContainers(withTranslation()(UserGroupDetailPage), [AppContainer]);
 
-export default withTranslation()(UserGroupDetailPageWrapper);
+export default UserGroupDetailPageWrapper;

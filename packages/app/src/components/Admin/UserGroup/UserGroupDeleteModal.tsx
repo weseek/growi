@@ -1,6 +1,5 @@
 import React from 'react';
-import { TFunction } from 'i18next';
-import { withTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -17,8 +16,7 @@ import Xss from '~/services/xss';
  * @class GrantSelector
  * @extends {React.Component}
  */
-type Props = {
-  t: TFunction, // i18next
+interface Props extends WithTranslation {
   appContainer: AppContainer,
 
   userGroups: IUserGroup[],
@@ -27,7 +25,8 @@ type Props = {
   isShow: boolean,
   onShow?: (group: IUserGroup) => Promise<void> | void,
   onHide?: () => Promise<void> | void,
-};
+}
+
 type State = {
   actionName: string,
   transferToUserGroupId: string,

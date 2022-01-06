@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
  * Service container for admin user group detail page (UserGroupDetailPage.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminAdminUserGroupDetailContainer extends Container {
+export default class AdminUserGroupDetailContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -27,6 +27,7 @@ export default class AdminAdminUserGroupDetailContainer extends Container {
     this.state = {
       // TODO: [SPA] get userGroup from props
       userGroup: JSON.parse(rootElem.getAttribute('data-user-group')),
+      childUserGroups: JSON.parse(rootElem.getAttribute('data-child-user-groups')), // TODO 85062: pass data via swig
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
