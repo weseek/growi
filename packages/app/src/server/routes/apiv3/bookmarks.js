@@ -121,7 +121,9 @@ module.exports = (crowi) => {
     }
 
     try {
-      responsesParams.bookmarkedUserIds = await Bookmark.getBookmarkedUserIds(pageId);
+      const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
+      const bookmarkedUsers = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
+      responsesParams.bookmarkedUserIds = bookmarkedUsers;
     }
     catch (err) {
       logger.error('get-bookmarked-users-failed', err);

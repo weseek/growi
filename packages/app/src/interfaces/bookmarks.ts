@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
+import { IUser } from '~/interfaces/user';
 
 export interface IBookmarksInfo {
   isBookmarked: boolean
   sumOfBookmarks: number
-  bookmarkedUserIds: Types.ObjectId[]
+  bookmarkedUserIds: IUser[]
 }
