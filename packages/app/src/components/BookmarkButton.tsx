@@ -31,6 +31,10 @@ const BookmarkButton: FC<Props> = (props: Props) => {
     setIsPopoverOpen(!isPopoverOpen);
   };
 
+  // TODO: To be used in UserPictureList
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const bookmarkedUsers = bookmarksInfo?.bookmarkedUsers != null ? bookmarksInfo.bookmarkedUsers : [];
+
   const handleClick = async() => {
     if (isGuestUser) {
       return;
