@@ -52,9 +52,6 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
 
-      isBookmarked: false,
-      sumOfBookmarks: 0,
-
       seenUsers: [],
       seenUserIds: [],
       sumOfSeenUsers: [],
