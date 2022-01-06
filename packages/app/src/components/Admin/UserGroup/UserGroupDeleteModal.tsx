@@ -155,10 +155,14 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
   }
 
   renderGroupSelector() {
-    const { t } = this.props;
+    const { t, deleteUserGroup } = this.props;
+
+    if (deleteUserGroup == null) {
+      return;
+    }
 
     const groups = this.props.userGroups.filter((group) => {
-      return group._id !== this.props?.deleteUserGroup?._id;
+      return group._id !== deleteUserGroup._id;
     });
 
     const options = groups.map((group) => {
