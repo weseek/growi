@@ -5,7 +5,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import BookmarkButton from '../BookmarkButton';
+import BookmarkButtons from '../BookmarkButtons';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
@@ -31,7 +31,7 @@ const SubnavButtons = React.memo((props) => {
           </span>
         )}
         <span>
-          <BookmarkButton
+          <BookmarkButtons
             pageId={pageContainer.state.pageId}
           />
         </span>
