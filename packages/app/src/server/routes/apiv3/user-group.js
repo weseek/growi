@@ -118,7 +118,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
+  router.post('/', /*loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator,*/ async(req, res) => {
     const { name, description, parentId } = req.body;
 
     try {

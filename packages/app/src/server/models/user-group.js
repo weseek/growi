@@ -6,13 +6,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 /*
  * define schema
  */
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectIdType = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 
 const schema = new mongoose.Schema({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
-  parent: { type: ObjectId, ref: 'UserGroup', index: true },
+  parent: { type: ObjectIdType, ref: 'UserGroup', index: true },
   description: { type: String },
 });
 schema.plugin(mongoosePaginate);
@@ -117,7 +118,7 @@ class UserGroup {
     }
 
     // create with parent
-    const parent = await this.find({ parent: parentId });
+    const parent = await this.findOne({ _id: parentId });
     if (parent == null) {
       throw Error('Parent does not exist.');
     }
