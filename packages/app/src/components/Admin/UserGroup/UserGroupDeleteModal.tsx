@@ -32,10 +32,6 @@ type State = {
   actionName: string,
   transferToUserGroupId: string,
 };
-const initialState = {
-  actionName: '',
-  transferToUserGroupId: '',
-};
 
 class UserGroupDeleteModal extends React.Component<Props, State> {
 
@@ -46,6 +42,8 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
   xss: Xss;
 
   state: State;
+
+  private initialState: State;
 
   constructor(props) {
     super(props);
@@ -83,7 +81,12 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
       },
     ];
 
-    this.state = initialState;
+    this.initialState = {
+      actionName: '',
+      transferToUserGroupId: '',
+    };
+
+    this.state = this.initialState;
 
     this.xss = (window as CustomWindow).xss;
 
@@ -101,7 +104,7 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(initialState);
+    this.setState(this.initialState);
     this.props.onHide();
   }
 
