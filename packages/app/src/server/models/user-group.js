@@ -13,7 +13,7 @@ const schema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
   parent: { type: ObjectId, ref: 'UserGroup', index: true },
-  description: { type: String },
+  description: { type: String, default: '' },
 });
 schema.plugin(mongoosePaginate);
 
