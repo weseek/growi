@@ -18,7 +18,7 @@ type State = {
   userGroups: IUserGroup[],
   userGroupRelations: IUserGroupRelation[],
   selectedUserGroup: IUserGroup | undefined,
-  isDeleteModalShow: boolean,
+  isDeleteModalShown: boolean,
 };
 
 class UserGroupPage extends React.Component<Props, State> {
@@ -32,7 +32,7 @@ class UserGroupPage extends React.Component<Props, State> {
       userGroups: [],
       userGroupRelations: [],
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
-      isDeleteModalShow: false,
+      isDeleteModalShown: false,
     };
 
     this.xss = (window as CustomWindow).xss;
@@ -53,7 +53,7 @@ class UserGroupPage extends React.Component<Props, State> {
 
       this.setState({
         selectedUserGroup: group,
-        isDeleteModalShow: true,
+        isDeleteModalShown: true,
       });
     }
     catch (err) {
@@ -64,7 +64,7 @@ class UserGroupPage extends React.Component<Props, State> {
   hideDeleteModal() {
     this.setState({
       selectedUserGroup: undefined,
-      isDeleteModalShow: false,
+      isDeleteModalShown: false,
     });
   }
 
@@ -99,7 +99,7 @@ class UserGroupPage extends React.Component<Props, State> {
           userGroups,
           userGroupRelations: prevState.userGroupRelations,
           selectedUserGroup: undefined,
-          isDeleteModalShow: false,
+          isDeleteModalShown: false,
         };
       });
 
@@ -145,7 +145,7 @@ class UserGroupPage extends React.Component<Props, State> {
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}
           onDelete={this.deleteUserGroupById}
-          isShow={this.state.isDeleteModalShow}
+          isShow={this.state.isDeleteModalShown}
           onShow={this.showDeleteModal}
           onHide={this.hideDeleteModal}
         />
