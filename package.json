@@ -51,11 +51,13 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.35",
     "@types/rewire": "^2.5.28",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
+    "cypress": "^9.2.0",
     "eslint": "^7.31.0",
     "eslint-config-weseek": "^1.1.0",
     "eslint-import-resolver-typescript": "^2.4.0",
