@@ -26,12 +26,9 @@ class Search extends React.Component {
 
   constructor(props) {
     super(props);
-    // NOTE : selectedPages is deletion related state, will be used later in story 77535, 77565.
-    // deletionModal, deletion related functions are all removed, add them back when necessary.
-    // i.e ) in story 77525 or any tasks implementing deletion functionalities
     this.state = {
       searchingKeyword: decodeURI(this.props.query.q) || '',
-      searchedKeyword: '',
+      searchedKeyword: props.searchedKeyword,
       searchResults: [],
       searchResultMeta: {},
       focusedSearchResultData: null,
@@ -49,7 +46,7 @@ class Search extends React.Component {
       deleteTargetPageIds: new Set(),
     };
 
-    this.changeURL = this.changeURL.bind(this);
+    // this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.onSearchInvoked = this.onSearchInvoked.bind(this);
     this.selectPage = this.selectPage.bind(this);
@@ -99,13 +96,16 @@ class Search extends React.Component {
   }
 
   changeURL(keyword, refreshHash) {
-    let hash = window.location.hash || '';
-    // TODO 整理する
-    if (refreshHash || this.state.searchedKeyword !== '') {
-      hash = '';
-    }
-    if (window.history && window.history.pushState) {
-      window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
+    // let hash = window.location.hash || '';
+    // // TODO 整理する
+    // if (refreshHash || this.state.searchedKeyword !== '') {
+    //   hash = '';
+    // }
+    // if (window.history && window.history.pushState) {
+    //   window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
+    // }
+    if (this.props.onChnageURLInvoked != null) {
+      this.props.onChnageURLInvoked(keyword, refreshHash);
     }
   }
 
@@ -387,7 +387,9 @@ Search.propTypes = {
   isGuestUser: PropTypes.bool.isRequired,
   // Once sorting and include user/trash functionality is ready in legacy-page, this props will be removed
   disableControlOptions: PropTypes.bool.isRequired,
-  actionToPages: PropTypes.func.isRequired,
+  searchedKeyword: PropTypes.string.isRequired,
+  onActionToPagesInvoked: PropTypes.func.isRequired,
+  onChnageURLInvoked: PropTypes.func.isRequired,
 };
 Search.defaultProps = {
   // pollInterval: 1000,
