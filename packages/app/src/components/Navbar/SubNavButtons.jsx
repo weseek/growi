@@ -27,7 +27,7 @@ const SubnavButtons = React.memo((props) => {
         </span>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
-            <LikeButtons pageId={pageContainer.state.pageId} />
+            <LikeButtons />
           </span>
         )}
         <span>
