@@ -31,7 +31,6 @@ const LikeButtons: FC<Props> = (props: Props) => {
   };
 
   const handleClick = async() => {
-
     if (isGuestUser) {
       return;
     }
