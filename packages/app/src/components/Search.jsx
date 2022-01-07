@@ -21,7 +21,7 @@ export const specificPathNames = {
 class Search extends React.Component {
 
   // memo
-  // disableControlOptions　-> show warning
+  // disableControlOptions-> show warning
   // move states and delete method etc to upper component
 
   constructor(props) {
