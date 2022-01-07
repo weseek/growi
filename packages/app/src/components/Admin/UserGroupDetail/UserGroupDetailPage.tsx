@@ -8,7 +8,8 @@ import UserGroupPageList from './UserGroupPageList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 
-interface Props extends WithTranslation {};
+interface Props extends WithTranslation {
+}
 
 class UserGroupDetailPage extends React.Component<Props> {
 
