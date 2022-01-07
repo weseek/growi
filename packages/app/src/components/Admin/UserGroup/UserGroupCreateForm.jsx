@@ -68,7 +68,7 @@ class UserGroupCreateForm extends React.Component {
     return (
       <div>
         <p>
-          {this.props.isAclEnabled
+          {this.props.isAclEnabled // TODO 85062: put this condition out side the form
             ? (
               <button type="button" data-toggle="collapse" className="btn btn-outline-secondary" href="#createGroupForm">
                 {t('admin:user_group_management.create_group')}
