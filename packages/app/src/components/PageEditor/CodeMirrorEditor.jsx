@@ -1006,7 +1006,6 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
   isTextlintEnabled: PropTypes.bool,
   textlintRules: PropTypes.array,
-  emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,

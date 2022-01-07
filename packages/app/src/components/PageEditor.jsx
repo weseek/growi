@@ -326,7 +326,6 @@ class PageEditor extends React.Component {
 
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
-    const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
       <div className="d-flex flex-wrap">
@@ -338,7 +337,6 @@ class PageEditor extends React.Component {
             isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
-            emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}

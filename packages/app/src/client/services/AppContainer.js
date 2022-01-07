@@ -8,7 +8,6 @@ import {
 import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '../util/apiv3-client';
-import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 import GrowiRenderer from '../util/GrowiRenderer';
 
 import {
@@ -266,9 +265,6 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-  getEmojiStrategy() {
-    return emojiStrategy;
-  }
 
   removeOldUserCache() {
     if (window.localStorage.userByName == null) {
