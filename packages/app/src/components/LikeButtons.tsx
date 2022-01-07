@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
-import { usePageId, useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser } from '~/stores/context';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
@@ -15,10 +15,10 @@ interface Props {
 
 const LikeButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { pageId } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { data: pageId } = usePageId();
   const { data: isGuestUser } = useIsGuestUser();
 
   // TODO: Get the following values in SWR
