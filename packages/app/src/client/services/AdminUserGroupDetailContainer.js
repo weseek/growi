@@ -27,9 +27,14 @@ export default class AdminUserGroupDetailContainer extends Container {
     this.state = {
       // TODO: [SPA] get userGroup from props
       userGroup: JSON.parse(rootElem.getAttribute('data-user-group')),
-      childUserGroups: JSON.parse(rootElem.getAttribute('data-child-user-groups')), // TODO 85062: pass data via swig
-      userGroupRelations: [],
-      relatedPages: [],
+      userGroupRelations: [], // For user list
+
+      // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
+      childUserGroups: [], // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
+      grandChildUserGroups: [], // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
+
+      childUserGroupUsers: [], // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list
+      relatedPages: [], // For page list
       isUserGroupUserModalOpen: false,
       searchType: 'partial',
       isAlsoMailSearched: false,

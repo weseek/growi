@@ -41,7 +41,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: contains arrays user objects related
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: enable groupIds to filter
     try {
       const relations = await UserGroupRelation.find().populate('relatedUser');
 
