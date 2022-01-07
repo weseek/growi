@@ -1,11 +1,12 @@
 function ApiResponse() {
 }
 
-ApiResponse.error = function(err, code) {
+ApiResponse.error = function(err, code, data) {
   const result = {};
 
   result.ok = false;
   result.code = code;
+  result.data = data;
 
   if (err instanceof Error) {
     result.error = err.toString();
