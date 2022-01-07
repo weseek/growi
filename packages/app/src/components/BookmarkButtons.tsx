@@ -64,6 +64,7 @@ const BookmarkButton: FC = () => {
       <button type="button" id="po-total-bookmarks" className={`btn btn-bookmark border-0 total-bookmarks ${isBookmarked ? 'active' : ''}`}>
         {sumOfBookmarks}
       </button>
+
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
