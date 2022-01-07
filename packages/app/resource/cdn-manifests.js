@@ -139,14 +139,6 @@ module.exports = {
       },
     },
     {
-      name: 'emojione',
-      url: 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css',
-      groups: ['basis'],
-      args: {
-        integrity: '',
-      },
-    },
-    {
       name: 'animate.css',
       url: 'https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css',
       groups: ['basis'],
