@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
+
+### 💎 Features
+
+- feat: Resolve conflict with 3-way merge like editor (#5012) @yuto-oweseek
+
+### 🚀 Improvement
+
+- imprv: Subnavigation behavior (#5047) @yuki-takei
+- imprv: Switching editor mode behavior (#5043) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- Bug: Error: The specified instance couldn't register because same id has already been registered (#5031) by #5043 @yuki-takei
 
 ## [v4.5.5](https://github.com/weseek/growi/compare/v4.5.4...v4.5.5) - 2022-01-05
 
