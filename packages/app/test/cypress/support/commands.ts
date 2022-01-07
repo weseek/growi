@@ -27,4 +27,13 @@
 
 Cypress.Commands.add('getByTestid', (selector, options?) => {
   return cy.get(`[data-testid=${selector}]`, options);
-})
+});
+
+Cypress.Commands.add('login', (username, password) => {
+  cy.session(username, () => {
+    cy.visit('/login');
+    cy.getByTestid('tiUsernameForLogin').type(username);
+    cy.getByTestid('tiPasswordForLogin').type(password);
+    cy.getByTestid('btnSubmitForLogin').click();
+  });
+});

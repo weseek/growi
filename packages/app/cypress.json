@@ -8,5 +8,7 @@
   "videosFolder": "test/cypress/videos",
   "supportFile": "test/cypress/support/index.ts",
   "pluginsFile": "test/cypress/plugins/index.ts",
-  "testFiles": "**/*.spec.ts"
+  "testFiles": "**/*.spec.ts",
+
+  "experimentalSessionSupport": true
 }
