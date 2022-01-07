@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import PropTypes from 'prop-types';
+import { Types } from 'mongoose';
 
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
@@ -10,10 +10,15 @@ import { toastError } from '~/client/util/apiNotification';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { useIsGuestUser } from '~/stores/context';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
+interface Props {
+  pageId: Types.ObjectId,
+}
 
-const LikeButtons: FC = () => {
+const LikeButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { pageId } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -34,7 +39,8 @@ const LikeButtons: FC = () => {
     }
 
     try {
-      // pageContainer.toggleLike();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const res = await apiv3Put('/page/likes', { pageId, bool: isLiked });
     }
     catch (err) {
       toastError(err);
