@@ -42,10 +42,12 @@ context('Installing', () => {
   })
 
   it('has succeeded', () => {
-    cy.getByTestid('tiUsername').type('admin');
-    cy.getByTestid('tiName').type('Admin');
-    cy.getByTestid('tiEmail').type('admin@example.com');
-    cy.getByTestid('tiPassword').type('adminadmin');
+    cy.fixture("user-admin.json").then(user => {
+      cy.getByTestid('tiUsername').type(user.username);
+      cy.getByTestid('tiName').type(user.name);
+      cy.getByTestid('tiEmail').type(user.email);
+      cy.getByTestid('tiPassword').type(user.password);
+    });
     cy.screenshot(`${ssPrefix}-before-submit`);
 
     cy.getByTestid('btnSubmit').click();
