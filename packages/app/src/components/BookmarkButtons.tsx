@@ -1,25 +1,21 @@
 import React, { FC, useState } from 'react';
 
-import { Types } from 'mongoose';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
 import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
-import { useIsGuestUser } from '~/stores/context';
+import { usePageId, useIsGuestUser } from '~/stores/context';
 import { useSWRxBookmarksInfo } from '~/stores/bookmarks';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
-interface Props {
-  pageId: Types.ObjectId,
-}
 
-const BookmarkButton: FC<Props> = (props: Props) => {
+const BookmarkButton: FC = () => {
   const { t } = useTranslation();
-  const { pageId } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  const { data: pageId } = usePageId();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: bookmarksInfo, mutate } = useSWRxBookmarksInfo(pageId);
 
