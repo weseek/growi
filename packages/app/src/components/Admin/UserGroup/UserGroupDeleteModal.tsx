@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IUserGroup } from '~/interfaces/user';
+import { IUserGroupHasObjectId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
@@ -21,11 +21,11 @@ type Props = {
   t: TFunction, // i18next
   appContainer: AppContainer,
 
-  userGroups: IUserGroup[],
-  deleteUserGroup?: IUserGroup,
+  userGroups: IUserGroupHasObjectId[],
+  deleteUserGroup?: IUserGroupHasObjectId,
   onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
-  onShow?: (group: IUserGroup) => Promise<void> | void,
+  onShow?: (group: IUserGroupHasObjectId) => Promise<void> | void,
   onHide?: () => Promise<void> | void,
 };
 type State = {
