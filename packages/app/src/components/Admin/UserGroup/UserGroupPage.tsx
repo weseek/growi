@@ -91,8 +91,9 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * componentDidMount
    */
   useEffect(() => {
+    console.log('UseEffect !!')
     syncUserGroupAndRelations();
-  });
+  }, []);
 
   return (
     <Fragment>
