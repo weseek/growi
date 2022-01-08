@@ -1,4 +1,6 @@
-import React, { Fragment } from 'react';
+import React, {
+  FC, Fragment, useState, useCallback, useEffect,
+} from 'react';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
@@ -7,155 +9,115 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroup, IUserGroupRelation } from '~/interfaces/user';
+import { IUserGroupHasObjectId, IUserGroupRelation } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
+import { apiv3Get, apiv3Delete } from '~/client/util/apiv3-client';
 
 type Props = {
   appContainer: AppContainer,
 };
-type State = {
-  userGroups: IUserGroup[],
-  userGroupRelations: IUserGroupRelation[],
-  selectedUserGroup: IUserGroup | undefined,
-  isDeleteModalShown: boolean,
-};
 
-class UserGroupPage extends React.Component<Props, State> {
+const UserGroupPage: FC<Props> = (props: Props) => {
+  const xss: Xss = (window as CustomWindow).xss;
+  const { isAclEnabled } = props.appContainer.config;
 
-  xss: Xss;
+  /*
+   * State
+   */
+  const [userGroups, setUserGroups] = useState<IUserGroupHasObjectId[]>([]);
+  const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelation[]>([]);
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasObjectId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
-  state: State;
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      userGroups: [],
-      userGroupRelations: [],
-      selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
-      isDeleteModalShown: false,
-    };
-
-    this.xss = (window as CustomWindow).xss;
-
-    this.showDeleteModal = this.showDeleteModal.bind(this);
-    this.hideDeleteModal = this.hideDeleteModal.bind(this);
-    this.addUserGroup = this.addUserGroup.bind(this);
-    this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
-  }
-
-  async componentDidMount() {
-    await this.syncUserGroupAndRelations();
-  }
-
-  async showDeleteModal(group: IUserGroup) {
+  /*
+   * Functions
+   */
+  const syncUserGroupAndRelations = useCallback(async() => {
     try {
-      await this.syncUserGroupAndRelations();
+      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
+      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
 
-      this.setState({
-        selectedUserGroup: group,
-        isDeleteModalShown: true,
-      });
+      setUserGroups(userGroupsRes.data.userGroups);
+      setUserGroupRelations(userGroupRelationsRes.data.userGroupRelations);
     }
     catch (err) {
       toastError(err);
     }
-  }
+  }, []);
 
-  hideDeleteModal() {
-    this.setState({
-      selectedUserGroup: undefined,
-      isDeleteModalShown: false,
-    });
-  }
-
-  addUserGroup(userGroup, users) {
-    this.setState((prevState) => {
-      const userGroupRelations = Object.assign(prevState.userGroupRelations, {
-        [userGroup._id]: users,
-      });
-
-      return {
-        userGroups: [...prevState.userGroups, userGroup],
-        userGroupRelations,
-      };
-    });
-  }
-
-  async deleteUserGroupById(deleteGroupId: string, actionName: string, transferToUserGroupId: string) {
+  const showDeleteModal = useCallback(async(group: IUserGroupHasObjectId) => {
     try {
-      const res = await this.props.appContainer.apiv3.delete(`/user-groups/${deleteGroupId}`, {
+      await syncUserGroupAndRelations();
+
+      setSelectedUserGroup(group);
+      setDeleteModalShown(true);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, []);
+
+  const hideDeleteModal = useCallback(() => {
+    setSelectedUserGroup(undefined);
+    setDeleteModalShown(false);
+  }, []);
+
+  const addUserGroup = useCallback((userGroup: IUserGroupHasObjectId, userGroupRelations: IUserGroupRelation[]) => {
+    setUserGroups(prev => [...prev, userGroup]);
+    setUserGroupRelations(prev => ([...prev, ...userGroupRelations]));
+  }, []);
+
+  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+    try {
+      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
 
-      this.setState((prevState) => {
-        const userGroups = prevState.userGroups.filter((userGroup) => {
-          return userGroup._id !== deleteGroupId;
-        });
+      setUserGroups(prev => prev.filter(userGroup => userGroup._id !== deleteGroupId));
+      setUserGroupRelations(prev => prev.filter(relation => relation.relatedGroup !== deleteGroupId));
+      setSelectedUserGroup(undefined);
+      setDeleteModalShown(false);
 
-        delete prevState.userGroupRelations[deleteGroupId];
-
-        return {
-          userGroups,
-          userGroupRelations: prevState.userGroupRelations,
-          selectedUserGroup: undefined,
-          isDeleteModalShown: false,
-        };
-      });
-
-      toastSuccess(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
+      toastSuccess(`Deleted a group "${xss.process(res.data.userGroup.name)}"`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the group'));
     }
-  }
+  }, []);
 
-  async syncUserGroupAndRelations() {
-    try {
-      const userGroupsRes = await this.props.appContainer.apiv3.get('/user-groups', { pagination: false });
-      const userGroupRelationsRes = await this.props.appContainer.apiv3.get('/user-group-relations');
+  /*
+   * componentDidMount
+   */
+  useEffect(() => {
+    syncUserGroupAndRelations();
+  }, []);
 
-      this.setState({
-        userGroups: userGroupsRes.data.userGroups,
-        userGroupRelations: userGroupRelationsRes.data.userGroupRelations,
-      });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  render() {
-    const { isAclEnabled } = this.props.appContainer.config;
-
-    return (
-      <Fragment>
-        <UserGroupCreateForm
-          isAclEnabled={isAclEnabled}
-          onCreate={this.addUserGroup}
-        />
-        <UserGroupTable
-          userGroups={this.state.userGroups}
-          isAclEnabled={isAclEnabled}
-          onDelete={this.showDeleteModal}
-          userGroupRelations={this.state.userGroupRelations}
-        />
-        <UserGroupDeleteModal
-          appContainer={this.props.appContainer}
-          userGroups={this.state.userGroups}
-          deleteUserGroup={this.state.selectedUserGroup}
-          onDelete={this.deleteUserGroupById}
-          isShow={this.state.isDeleteModalShown}
-          onShow={this.showDeleteModal}
-          onHide={this.hideDeleteModal}
-        />
-      </Fragment>
-    );
-  }
-
-}
+  return (
+    <Fragment>
+      <UserGroupCreateForm
+        isAclEnabled={isAclEnabled}
+        onCreate={addUserGroup}
+      />
+      <UserGroupTable
+        userGroups={userGroups}
+        isAclEnabled={isAclEnabled}
+        onDelete={showDeleteModal}
+        userGroupRelations={userGroupRelations}
+      />
+      <UserGroupDeleteModal
+        appContainer={props.appContainer}
+        userGroups={userGroups}
+        deleteUserGroup={selectedUserGroup}
+        onDelete={deleteUserGroupById}
+        isShow={isDeleteModalShown}
+        onShow={showDeleteModal}
+        onHide={hideDeleteModal}
+      />
+    </Fragment>
+  );
+};
 
 /**
  * Wrapper component for using unstated
