@@ -1,18 +1,19 @@
 import React, {
   FC, Fragment, useState, useCallback, useEffect,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import UserGroupTable from './UserGroupTable';
-import UserGroupCreateForm from './UserGroupCreateForm';
+import UserGroupForm from './UserGroupForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
+import { IUserGroup, IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
-import { apiv3Get, apiv3Delete } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 
 type Props = {
   appContainer: AppContainer,
@@ -20,6 +21,7 @@ type Props = {
 
 const UserGroupPage: FC<Props> = (props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
+  const { t } = useTranslation();
   const { isAclEnabled } = props.appContainer.config;
 
   /*
@@ -63,9 +65,20 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setDeleteModalShown(false);
   }, []);
 
-  const addUserGroup = useCallback((userGroup: IUserGroupHasId, userGroupRelations: IUserGroupRelation[]) => {
-    setUserGroups(prev => [...prev, userGroup]);
-    setUserGroupRelations(prev => ([...prev, ...userGroupRelations]));
+  const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
+    try {
+      const res = await apiv3Post('/user-groups', {
+        name: userGroupData.name,
+        description: userGroupData.description,
+        parent: userGroupData.parent,
+      });
+
+      const newUserGroup = res.data.userGroup;
+      setUserGroups(prev => [...prev, newUserGroup]);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }, []);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
@@ -96,10 +109,25 @@ const UserGroupPage: FC<Props> = (props: Props) => {
 
   return (
     <Fragment>
-      <UserGroupCreateForm
-        isAclEnabled={isAclEnabled}
-        onCreate={addUserGroup}
-      />
+      {
+        isAclEnabled ? (
+          <div className="mb-2">
+            <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createGroupForm">
+              {t('admin:user_group_management.create_group')}
+            </button>
+            <div id="createGroupForm" className="collapse">
+              <UserGroupForm
+                successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
+                failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
+                submitButtonLabel={t('Create')}
+                onSubmit={addUserGroup}
+              />
+            </div>
+          </div>
+        ) : (
+          t('admin:user_group_management.deny_create_group')
+        )
+      }
       <UserGroupTable
         userGroups={userGroups}
         isAclEnabled={isAclEnabled}

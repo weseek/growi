@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import UserGroupEditForm from './UserGroupEditForm';
+import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
@@ -141,7 +141,13 @@ const UserGroupDetailPage: FC = () => {
       </a>
       {/* TODO 85062: Link to the ancestors group */}
       <div className="mt-4 form-box">
-        <UserGroupEditForm />
+        <UserGroupForm
+          userGroup={userGroup}
+          successedMessage={t('toaster.update_successed', { target: t('UserGroup') })}
+          failedMessage={t('toaster.update_failed', { target: t('UserGroup') })}
+          submitButtonLabel={t('Update')}
+          onSubmit={updateUserGroup}
+        />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />

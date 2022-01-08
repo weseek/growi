@@ -21,6 +21,7 @@
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
+  "Description": "説明",
   "Admin": "管理",
   "administrator": "管理者",
   "Tag": "タグ",
@@ -119,6 +120,7 @@
   "Legacy_Slack_Integration": "Slack連携 (レガシー)",
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
+  "UserGroup": "グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
@@ -501,7 +503,10 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
+    "create_succeeded": "新しい{{target}}が作成されました",
+    "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
+    "update_failed": "{{target}}の更新に失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",

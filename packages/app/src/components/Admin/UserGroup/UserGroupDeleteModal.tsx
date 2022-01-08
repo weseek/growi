@@ -1,7 +1,7 @@
 import React, {
   FC, useCallback, useState, useMemo,
 } from 'react';
-import { TFunction } from 'i18next';
+import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -35,7 +35,7 @@ type AvailableOption = {
   actionForPages: string,
   iconClass: string,
   styleClass: string,
-  label: ReturnType<TFunction>,
+  label: TFunctionResult,
 };
 
 // actionName master constants
