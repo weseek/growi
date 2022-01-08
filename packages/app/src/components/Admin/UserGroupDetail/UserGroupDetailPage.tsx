@@ -9,10 +9,14 @@ import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import { apiv3Get, apiv3Put, apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import {
+  apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
+} from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
-import { IUserGroup, IUserGroupHasId, IUserGroupRelation, IUserGroupRelationHasId } from '~/interfaces/user';
+import {
+  IUserGroup, IUserGroupHasId, IUserGroupRelation, IUserGroupRelationHasId,
+} from '~/interfaces/user';
 
 const UserGroupDetailPage: FC = () => {
   const rootElem = document.getElementById('admin-user-group-detail');
@@ -77,7 +81,7 @@ const UserGroupDetailPage: FC = () => {
     setUserGroup(newUserGroup);
 
     return newUserGroup;
-  }, [userGroup])
+  }, [userGroup]);
 
   const openUserGroupUserModal = useCallback(() => {
     setUserGroupUserModalOpen(true);
@@ -112,7 +116,7 @@ const UserGroupDetailPage: FC = () => {
   const removeUserByUsername = useCallback(async(username: string) => {
     const res = await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
 
-    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id))
+    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id));
   }, [userGroup]);
 
   /*
