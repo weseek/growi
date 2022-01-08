@@ -1,119 +1,95 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { CustomWindow } from '~/interfaces/global';
+import Xss from '~/services/xss';
 
 type Props = {
-
+  userGroup: IUserGroupHasId,
+  onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId>
 };
 
-const UserGroupForm: FC = () => {};
+const UserGroupForm: FC<Props> = (props: Props) => {
+  const xss: Xss = (window as CustomWindow).xss;
+  const { t } = useTranslation();
 
-class UserGroupEditForm extends React.Component {
+  /*
+   * State
+   */
+  const [currentName, setName] = useState(props.userGroup.name);
+  const [nameCache, setNameCache] = useState(props.userGroup.name); // to validate the same name
 
-  constructor(props) {
-    super(props);
+  /*
+   * Function
+   */
+  const onChangeNameHandler = useCallback((e) => {
+    setName(e.target.value);
+  }, []);
 
-    const { adminUserGroupDetailContainer } = props;
-    const { userGroup } = adminUserGroupDetailContainer.state;
+  const onSubmitHandler = useCallback(async(e) => {
+    e.preventDefault(); // no reload
 
-    this.state = {
-      name: userGroup.name,
-      nameCache: userGroup.name, // cache for name. update every submit
-    };
-
-    this.xss = window.xss;
-
-    this.changeUserGroupName = this.changeUserGroupName.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.validateForm = this.validateForm.bind(this);
-  }
-
-  changeUserGroupName(event) {
-    this.setState({
-      name: event.target.value,
-    });
-  }
-
-  // OUT
-  async handleSubmit(e) {
-    e.preventDefault();
+    if (props.onSubmit == null) {
+      return;
+    }
 
     try {
-      const res = await this.props.adminUserGroupDetailContainer.updateUserGroup({
-        name: this.state.name,
-      });
+      const newUserGroup = await props.onSubmit({ name: currentName });
 
-      toastSuccess(`Updated the group name to "${this.xss.process(res.data.userGroup.name)}"`);
-      this.setState({ nameCache: this.state.name });
+      toastSuccess(`Updated the group name to "${xss.process(newUserGroup.name)}"`);
+      setNameCache(currentName);
     }
     catch (err) {
       toastError(new Error('Unable to update the group name'));
     }
-  }
+  }, [currentName, props.onSubmit]);
 
-  // OUT
-  validateForm() {
-    return (
-      this.state.name !== this.state.nameCache
-      && this.state.name !== ''
-    );
-  }
+  const validateForm = useCallback(() => { return currentName !== nameCache && currentName !== '' }, [currentName, nameCache]);
 
-  render() {
-    const { t, adminUserGroupDetailContainer } = this.props;
 
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <fieldset>
-          <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
-          <div className="form-group row">
-            <label htmlFor="name" className="col-md-2 col-form-label">
-              {t('Name')}
-            </label>
-            <div className="col-md-4">
-              <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.changeUserGroupName} />
-            </div>
+  return (
+    <form onSubmit={onSubmitHandler}>
+      <fieldset>
+        <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+        <div className="form-group row">
+          <label htmlFor="name" className="col-md-2 col-form-label">
+            {t('Name')}
+          </label>
+          <div className="col-md-4">
+            <input className="form-control" type="text" name="name" value={currentName} onChange={onChangeNameHandler} />
           </div>
-          <div className="form-group row">
-            <label className="col-md-2 col-form-label">{t('Created')}</label>
-            <div className="col-md-4">
-              <input
-                type="text"
-                className="form-control"
-                value={dateFnsFormat(new Date(adminUserGroupDetailContainer.state.userGroup.createdAt), 'yyyy-MM-dd')}
-                disabled
-              />
-            </div>
+        </div>
+        <div className="form-group row">
+          <label className="col-md-2 col-form-label">{t('Created')}</label>
+          <div className="col-md-4">
+            <input
+              type="text"
+              className="form-control"
+              value={dateFnsFormat(new Date(props.userGroup.createdAt), 'yyyy-MM-dd')}
+              disabled
+            />
           </div>
-          <div className="form-group row">
-            <div className="offset-md-2 col-md-10">
-              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
-                {t('Update')}
-              </button>
-            </div>
+        </div>
+        <div className="form-group row">
+          <div className="offset-md-2 col-md-10">
+            <button type="submit" className="btn btn-primary" disabled={!validateForm()}>
+              {t('Update')}
+            </button>
           </div>
-        </fieldset>
-      </form>
-    );
-  }
-
-}
-
-UserGroupEditForm.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+        </div>
+      </fieldset>
+    </form>
+  );
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupFormWrapper = withUnstatedContainers(UserGroupForm, [AppContainer]);
 
-export default withTranslation()(UserGroupEditFormWrapper);
+export default UserGroupFormWrapper;

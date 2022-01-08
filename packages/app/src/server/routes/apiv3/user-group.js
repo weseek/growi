@@ -202,10 +202,6 @@ module.exports = (crowi) => {
     }
   });
 
-  // return one group with the id
-  // router.get('/:id', async(req, res) => {
-  // });
-
   validator.update = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
   ];

@@ -21,4 +21,5 @@ export type IUserGroup = {
   parent: Ref<IUserGroup>;
 }
 
-export type IUserGroupHasObjectId = IUserGroup & HasObjectId;
+export type IUserGroupHasId = IUserGroup & HasObjectId;
+export type IUserGroupRelationHasId = IUserGroupRelation & HasObjectId;

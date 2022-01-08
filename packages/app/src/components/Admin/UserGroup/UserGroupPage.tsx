@@ -9,7 +9,7 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroupHasObjectId, IUserGroupRelation } from '~/interfaces/user';
+import { IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
 import { apiv3Get, apiv3Delete } from '~/client/util/apiv3-client';
@@ -25,9 +25,9 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [userGroups, setUserGroups] = useState<IUserGroupHasObjectId[]>([]);
+  const [userGroups, setUserGroups] = useState<IUserGroupHasId[]>([]);
   const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelation[]>([]);
-  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasObjectId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
@@ -46,7 +46,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     }
   }, []);
 
-  const showDeleteModal = useCallback(async(group: IUserGroupHasObjectId) => {
+  const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     try {
       await syncUserGroupAndRelations();
 
@@ -63,7 +63,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setDeleteModalShown(false);
   }, []);
 
-  const addUserGroup = useCallback((userGroup: IUserGroupHasObjectId, userGroupRelations: IUserGroupRelation[]) => {
+  const addUserGroup = useCallback((userGroup: IUserGroupHasId, userGroupRelations: IUserGroupRelation[]) => {
     setUserGroups(prev => [...prev, userGroup]);
     setUserGroupRelations(prev => ([...prev, ...userGroupRelations]));
   }, []);

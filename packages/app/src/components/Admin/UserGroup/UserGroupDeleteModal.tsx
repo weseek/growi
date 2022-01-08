@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IUserGroupHasObjectId } from '~/interfaces/user';
+import { IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
@@ -22,11 +22,11 @@ import Xss from '~/services/xss';
 type Props = {
   appContainer: AppContainer,
 
-  userGroups: IUserGroupHasObjectId[],
-  deleteUserGroup?: IUserGroupHasObjectId,
+  userGroups: IUserGroupHasId[],
+  deleteUserGroup?: IUserGroupHasId,
   onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
-  onShow?: (group: IUserGroupHasObjectId) => Promise<void> | void,
+  onShow?: (group: IUserGroupHasId) => Promise<void> | void,
   onHide?: () => Promise<void> | void,
 };
 
