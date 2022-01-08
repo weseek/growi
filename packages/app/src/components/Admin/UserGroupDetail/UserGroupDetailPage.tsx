@@ -31,7 +31,7 @@ const UserGroupDetailPage: FC = () => {
     </div>
   );
 
-}
+};
 
 
 /**
