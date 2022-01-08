@@ -9,8 +9,8 @@ export type IUser = {
 }
 
 export type IUserGroupRelation = {
-  relatedGroup: IUserGroup,
-  relatedUser: IUser,
+  relatedGroup: Ref<IUserGroup>,
+  relatedUser: Ref<IUser>,
   createdAt: Date,
 }
 
