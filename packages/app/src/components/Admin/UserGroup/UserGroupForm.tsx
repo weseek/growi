@@ -8,6 +8,12 @@ import AppContainer from '~/client/services/AppContainer';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
+type Props = {
+
+};
+
+const UserGroupForm: FC = () => {};
+
 class UserGroupEditForm extends React.Component {
 
   constructor(props) {
