@@ -1,11 +1,14 @@
-import React from 'react';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import React, {
+  FC, useCallback, useState, useMemo,
+} from 'react';
+import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IUserGroup } from '~/interfaces/user';
+import { IUserGroupHasObjectId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
@@ -16,125 +19,112 @@ import Xss from '~/services/xss';
  * @class GrantSelector
  * @extends {React.Component}
  */
-interface Props extends WithTranslation {
+type Props = {
   appContainer: AppContainer,
 
-  userGroups: IUserGroup[],
-  deleteUserGroup?: IUserGroup,
+  userGroups: IUserGroupHasObjectId[],
+  deleteUserGroup?: IUserGroupHasObjectId,
   onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
-  onShow?: (group: IUserGroup) => Promise<void> | void,
+  onShow?: (group: IUserGroupHasObjectId) => Promise<void> | void,
   onHide?: () => Promise<void> | void,
-}
-
-type State = {
-  actionName: string,
-  transferToUserGroupId: string,
 };
 
-class UserGroupDeleteModal extends React.Component<Props, State> {
+type AvailableOption = {
+  id: number,
+  actionForPages: string,
+  iconClass: string,
+  styleClass: string,
+  label: ReturnType<TFunction>,
+};
 
-  actionForPages: any;
+// actionName master constants
+const actionForPages = {
+  public: 'public',
+  delete: 'delete',
+  transfer: 'transfer',
+};
 
-  availableOptions: any;
+const UserGroupDeleteModal: FC<Props> = (props: Props) => {
+  const xss: Xss = (window as CustomWindow).xss;
 
-  xss: Xss;
+  const { t } = useTranslation();
 
-  state: State;
-
-  private initialState: State;
-
-  constructor(props) {
-    super(props);
-
-    const { t } = this.props;
-
-    // actionName master constants
-    this.actionForPages = {
-      public: 'public',
-      delete: 'delete',
-      transfer: 'transfer',
-    };
-
-    this.availableOptions = [
+  const availableOptions = useMemo<AvailableOption[]>(() => {
+    return [
       {
         id: 1,
-        actionForPages: this.actionForPages.public,
+        actionForPages: actionForPages.public,
         iconClass: 'icon-people',
         styleClass: '',
         label: t('admin:user_group_management.delete_modal.publish_pages'),
       },
       {
         id: 2,
-        actionForPages: this.actionForPages.delete,
+        actionForPages: actionForPages.delete,
         iconClass: 'icon-trash',
         styleClass: 'text-danger',
         label: t('admin:user_group_management.delete_modal.delete_pages'),
       },
       {
         id: 3,
-        actionForPages: this.actionForPages.transfer,
+        actionForPages: actionForPages.transfer,
         iconClass: 'icon-options',
         styleClass: '',
         label: t('admin:user_group_management.delete_modal.transfer_pages'),
       },
     ];
+  }, []);
 
-    this.initialState = {
-      actionName: '',
-      transferToUserGroupId: '',
-    };
+  /*
+   * State
+   */
+  const [actionName, setActionName] = useState<string>('');
+  const [transferToUserGroupId, setTransferToUserGroupId] = useState<string>('');
 
-    this.state = this.initialState;
+  /*
+   * Function
+   */
+  const resetStates = useCallback(() => {
+    setActionName('');
+    setTransferToUserGroupId('');
+  }, []);
 
-    this.xss = (window as CustomWindow).xss;
-
-    this.onHide = this.onHide.bind(this);
-    this.handleActionChange = this.handleActionChange.bind(this);
-    this.handleGroupChange = this.handleGroupChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.renderPageActionSelector = this.renderPageActionSelector.bind(this);
-    this.renderGroupSelector = this.renderGroupSelector.bind(this);
-    this.validateForm = this.validateForm.bind(this);
-  }
-
-  onHide() {
-    if (this.props.onHide == null) {
+  const onHide = useCallback(() => {
+    if (props.onHide == null) {
       return;
     }
 
-    this.setState(this.initialState);
-    this.props.onHide();
-  }
+    resetStates();
+    props.onHide();
+  }, [props.onHide]);
 
-  handleActionChange(e) {
+  const handleActionChange = useCallback((e) => {
     const actionName = e.target.value;
-    this.setState({ actionName });
-  }
+    setActionName(actionName);
+  }, []);
 
-  handleGroupChange(e) {
+  const handleGroupChange = useCallback((e) => {
     const transferToUserGroupId = e.target.value;
-    this.setState({ transferToUserGroupId });
-  }
+    setTransferToUserGroupId(transferToUserGroupId);
+  }, []);
 
-  handleSubmit(e) {
-    if (this.props.onDelete == null || this.props.deleteUserGroup == null) {
+  const handleSubmit = useCallback((e) => {
+    if (props.onDelete == null || props.deleteUserGroup == null) {
       return;
     }
 
     e.preventDefault();
 
-    this.props.onDelete(
-      this.props.deleteUserGroup._id,
-      this.state.actionName,
-      this.state.transferToUserGroupId,
+    props.onDelete(
+      props.deleteUserGroup._id,
+      actionName,
+      transferToUserGroupId,
     );
-  }
+  }, [props.onDelete, props.deleteUserGroup]);
 
-  renderPageActionSelector() {
-    const { t } = this.props;
-
-    const optoins = this.availableOptions.map((opt) => {
+  const renderPageActionSelector = useCallback(() => {
+    const optoins = availableOptions.map((opt) => {
       const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${opt.label}</span>`;
       return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{opt.label}</option>;
     });
@@ -144,29 +134,29 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
         name="actionName"
         className="form-control"
         placeholder="select"
-        value={this.state.actionName}
-        onChange={this.handleActionChange}
+        value={actionName}
+        onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
         {optoins}
       </select>
     );
-  }
+  }, [handleActionChange]);
 
-  renderGroupSelector() {
-    const { t, deleteUserGroup } = this.props;
+  const renderGroupSelector = useCallback(() => {
+    const { deleteUserGroup } = props;
 
     if (deleteUserGroup == null) {
       return;
     }
 
-    const groups = this.props.userGroups.filter((group) => {
+    const groups = props.userGroups.filter((group) => {
       return group._id !== deleteUserGroup._id;
     });
 
     const options = groups.map((group) => {
-      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.xss.process(group.name)}`;
-      return <option key={group._id} value={group._id} data-content={dataContent}>{this.xss.process(group.name)}</option>;
+      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${xss.process(group.name)}`;
+      return <option key={group._id} value={group._id} data-content={dataContent}>{xss.process(group.name)}</option>;
     });
 
     const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups')
@@ -175,60 +165,55 @@ class UserGroupDeleteModal extends React.Component<Props, State> {
     return (
       <select
         name="transferToUserGroupId"
-        className={`form-control ${this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}`}
-        value={this.state.transferToUserGroupId}
-        onChange={this.handleGroupChange}
+        className={`form-control ${actionName === actionForPages.transfer ? '' : 'd-none'}`}
+        value={transferToUserGroupId}
+        onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
         {options}
       </select>
     );
-  }
+  }, [actionName, transferToUserGroupId, props.userGroups, props.deleteUserGroup]);
 
-  validateForm() {
+  const validateForm = useCallback(() => {
     let isValid = true;
 
-    if (this.state.actionName === '') {
+    if (actionName === '') {
       isValid = false;
     }
-    else if (this.state.actionName === this.actionForPages.transfer) {
-      isValid = this.state.transferToUserGroupId !== '';
+    else if (actionName === actionForPages.transfer) {
+      isValid = transferToUserGroupId !== '';
     }
 
     return isValid;
-  }
+  }, [actionName, transferToUserGroupId]);
 
-  render() {
-    const { t } = this.props;
-
-    return (
-      <Modal className="modal-md" isOpen={this.props.isShow} toggle={this.props.onHide}>
-        <ModalHeader tag="h4" toggle={this.props.onHide} className="bg-danger text-light">
-          <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
-        </ModalHeader>
-        <ModalBody>
-          <div>
-            <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{this.props?.deleteUserGroup?.name || ''}&quot;
+  return (
+    <Modal className="modal-md" isOpen={props.isShow} toggle={onHide}>
+      <ModalHeader tag="h4" toggle={onHide} className="bg-danger text-light">
+        <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
+      </ModalHeader>
+      <ModalBody>
+        <div>
+          <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
+        </div>
+        <div className="text-danger mt-5">
+          {t('admin:user_group_management.delete_modal.desc')}
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
+          <div className="d-flex form-group mb-0">
+            {renderPageActionSelector()}
+            {renderGroupSelector()}
           </div>
-          <div className="text-danger mt-5">
-            {t('admin:user_group_management.delete_modal.desc')}
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <form className="d-flex justify-content-between w-100" onSubmit={this.handleSubmit}>
-            <div className="d-flex form-group mb-0">
-              {this.renderPageActionSelector()}
-              {this.renderGroupSelector()}
-            </div>
-            <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!this.validateForm()}>
-              <i className="icon icon-fire"></i> {t('Delete')}
-            </button>
-          </form>
-        </ModalFooter>
-      </Modal>
-    );
-  }
+          <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!validateForm()}>
+            <i className="icon icon-fire"></i> {t('Delete')}
+          </button>
+        </form>
+      </ModalFooter>
+    </Modal>
+  );
+};
 
-}
-
-export default withTranslation()(UserGroupDeleteModal);
+export default UserGroupDeleteModal;

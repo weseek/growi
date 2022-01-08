@@ -43,11 +43,11 @@ class UserGroupCreateForm extends React.Component {
       const userGroup = res.data.userGroup;
       const userGroupId = userGroup._id;
 
-      const res2 = await this.props.appContainer.apiv3.get(`/user-groups/${userGroupId}/users`);
+      const res2 = await this.props.appContainer.apiv3.get(`/user-groups/${userGroupId}/users`); // TODO 85062: fetch userGroupRelationsById instead
 
       const { users } = res2.data;
 
-      this.props.onCreate(userGroup, users);
+      this.props.onCreate(userGroup, users); // TODO 85062: pass userGroupRelations instead of users
 
       this.setState({ name: '' });
 
