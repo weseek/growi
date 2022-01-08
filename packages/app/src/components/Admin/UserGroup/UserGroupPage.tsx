@@ -7,7 +7,7 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroup, IUserGroupRelation } from '~/interfaces/user';
+import { IUserGroupHasObjectId, IUserGroupRelation } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
 
@@ -15,9 +15,9 @@ type Props = {
   appContainer: AppContainer,
 };
 type State = {
-  userGroups: IUserGroup[],
+  userGroups: IUserGroupHasObjectId[],
   userGroupRelations: IUserGroupRelation[],
-  selectedUserGroup: IUserGroup | undefined,
+  selectedUserGroup: IUserGroupHasObjectId | undefined,
   isDeleteModalShown: boolean,
 };
 
@@ -49,7 +49,7 @@ class UserGroupPage extends React.Component<Props, State> {
     await this.syncUserGroupAndRelations();
   }
 
-  async showDeleteModal(group: IUserGroup) {
+  async showDeleteModal(group: IUserGroupHasObjectId) {
     try {
       await this.syncUserGroupAndRelations();
 

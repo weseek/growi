@@ -1,4 +1,5 @@
 import { Ref } from './common';
+import { HasObjectId } from './has-object-id';
 
 export type IUser = {
   name: string;
@@ -14,9 +15,10 @@ export type IUserGroupRelation = {
 }
 
 export type IUserGroup = {
-  _id: string;
   name: string;
   createdAt: Date;
   description: string;
   parent: Ref<IUserGroup>;
 }
+
+export type IUserGroupHasObjectId = IUserGroup & HasObjectId;
