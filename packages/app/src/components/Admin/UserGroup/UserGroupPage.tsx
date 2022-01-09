@@ -129,6 +129,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         )
       }
       <UserGroupTable
+        appContainer={props.appContainer}
         userGroups={userGroups}
         isAclEnabled={isAclEnabled}
         onDelete={showDeleteModal}
