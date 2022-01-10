@@ -61,7 +61,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: userGroups with no parent
     const { query } = req;
 
     // TODO: filter with querystring
