@@ -180,6 +180,7 @@
     "csv-to-markdown-table": "^1.0.1",
     "diff2html": "^3.1.2",
     "eazy-logger": "^3.1.0",
+    "emoji-mart": "^3.0.1",
     "file-loader": "^5.0.2",
     "handsontable": "=6.2.2",
     "hard-source-webpack-plugin": "^0.13.1",

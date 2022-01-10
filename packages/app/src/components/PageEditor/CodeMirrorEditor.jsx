@@ -12,6 +12,7 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
+import emojiData from 'emoji-mart/data/all.json';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +33,6 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
-
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
@@ -170,10 +170,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    if (this.props.emojiStrategy != null) {
-      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({ isEnabledEmojiAutoComplete: true });
-    }
+    // if (this.props.emojiStrategy != null) {
+    // this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
+    this.setState({ isEnabledEmojiAutoComplete: true });
+    // }
 
     this.initializeTextlint();
   }
@@ -767,6 +767,69 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return range;
   }
 
+  getEmojiList() {
+    const emojiList = [];
+    emojiData.forEach((key) => {
+      emojiList.push({
+        text: `${key}`,
+        render: (element) => {
+          element.innerHTML = `<img width="15" height="15" src="${emojiData[key]}" alt="icon" async></img> ${key}`;
+        },
+      });
+    });
+    return emojiList;
+  }
+
+  emojiComplete(cm) {
+    codemirror.showHint(cm, () => {
+
+      const cur = cm.getCursor(); const
+        token = cm.getTokenAt(cur);
+
+      const start = token.start; const end = cur.ch; const
+        word = token.string.slice(0, end - start);
+
+      let ch = cur.ch; const
+        line = cur.line;
+
+      let currentWord = token.string;
+
+      while (ch-- > -1) {
+
+        const t = cm.getTokenAt({ ch, line }).string;
+
+        if (t === ':') {
+          const emojiList = this.getEmojiList();
+          // eslint-disable-next-line no-loop-func
+          const filteredList = emojiList.filter((item) => {
+
+            return item.text.indexOf(currentWord) === 0;
+
+          });
+
+          if (filteredList.length >= 1) {
+
+            return {
+
+              list: filteredList,
+
+              from: codemirror.Pos(line, ch),
+
+              to: codemirror.Pos(line, end),
+
+            };
+
+          }
+
+        }
+
+        currentWord = t + currentWord;
+
+      }
+
+    }, { completeSingle: false });
+  }
+
   getNavbarItems() {
     return [
       <Button
@@ -940,6 +1003,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             autoCloseTags: true,
             placeholder,
             matchBrackets: true,
+            emoji: true,
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
