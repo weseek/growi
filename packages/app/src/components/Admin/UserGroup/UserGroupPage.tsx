@@ -29,6 +29,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    */
   const [userGroups, setUserGroups] = useState<IUserGroupHasId[]>([]);
   const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelation[]>([]);
+  const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
@@ -36,11 +37,14 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * Functions
    */
   const syncUserGroupAndRelations = useCallback(async() => {
+    // TODO 85062: SWRize
     try {
       const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
       const userGroupRelationsRes = await apiv3Get('/user-group-relations');
+      const childUserGroupsRes = await apiv3Get('/user-group-relations/children', { parentIds: userGroupsRes.data.userGroups.map(group => group._id) });
 
       setUserGroups(userGroupsRes.data.userGroups);
+      setChildUserGroups(childUserGroupsRes.data.childUserGroups);
       setUserGroupRelations(userGroupRelationsRes.data.userGroupRelations);
     }
     catch (err) {
@@ -131,6 +135,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       <UserGroupTable
         appContainer={props.appContainer}
         userGroups={userGroups}
+        childUserGroups={childUserGroups}
         isAclEnabled={isAclEnabled}
         onDelete={showDeleteModal}
         userGroupRelations={userGroupRelations}
