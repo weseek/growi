@@ -15,6 +15,7 @@ type Props = {
 
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
+  childUserGroups: IUserGroupHasId[],
   isAclEnabled: boolean,
   onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
 };
@@ -22,7 +23,7 @@ type Props = {
 /*
  * Utility
  */
-const generateUserGroupMap = (userGroupRelations: IUserGroupRelation[]): Record<string, Partial<IUserHasId>[]> => {
+const generateGroupIdToUsersMap = (userGroupRelations: IUserGroupRelation[]): Record<string, Partial<IUserHasId>[]> => {
   const userGroupMap = {};
   userGroupRelations.forEach((relation) => {
     const group = relation.relatedGroup as string; // must be an id of related group
@@ -37,6 +38,21 @@ const generateUserGroupMap = (userGroupRelations: IUserGroupRelation[]): Record<
   return userGroupMap;
 };
 
+const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Record<string, IUserGroupHasId[]> => {
+  const map = {};
+  childUserGroups.forEach((group) => {
+    const parentId = group.parent as string; // must be an id
+
+    const groups: Partial<IUserGroupHasId>[] = map[parentId] || [];
+    groups.push(group);
+
+    // register
+    map[parentId] = groups;
+  });
+
+  return map;
+};
+
 
 const UserGroupTable: FC<Props> = (props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
@@ -45,7 +61,8 @@ const UserGroupTable: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateUserGroupMap(props.userGroupRelations));
+  const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateGroupIdToUsersMap(props.userGroupRelations));
+  const [groupIdToChildGroupsMap, setGroupIdToChildGroupsMap] = useState(generateGroupIdToChildGroupsMap(props.childUserGroups));
 
   /*
    * Function
@@ -71,8 +88,9 @@ const UserGroupTable: FC<Props> = (props: Props) => {
    * useEffect
    */
   useEffect(() => {
-    setGroupIdToUsersMap(generateUserGroupMap(props.userGroupRelations));
-  }, [props.userGroupRelations]);
+    setGroupIdToUsersMap(generateGroupIdToUsersMap(props.userGroupRelations));
+    setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(props.childUserGroups));
+  }, [props.userGroupRelations, props.childUserGroups]);
 
   return (
     <>
@@ -82,7 +100,9 @@ const UserGroupTable: FC<Props> = (props: Props) => {
         <thead>
           <tr>
             <th>{t('Name')}</th>
+            <th>{t('Description')}</th>
             <th>{t('User')}</th>
+            <th>{t('Child groups')}</th>
             <th width="100px">{t('Created')}</th>
             <th width="70px"></th>
           </tr>
@@ -101,10 +121,29 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                     <td>{xss.process(group.name)}</td>
                   )
                 }
+                <td>{xss.process(group.description)}</td>
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
                       return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{xss.process(user.username)}</li>;
+                    })}
+                  </ul>
+                </td>
+                <td>
+                  <ul className="list-inline">
+                    {groupIdToChildGroupsMap[group._id].map((group) => {
+                      return (
+                        <li key={group._id} className="list-inline-item badge badge-pill badge-warning">
+                          {props.isAclEnabled
+                            ? (
+                              <td><a href={`/admin/user-group-detail/${group._id}`}>{xss.process(group.name)}</a></td>
+                            )
+                            : (
+                              <td>{xss.process(group.name)}</td>
+                            )
+                          },&nbsp;
+                        </li>
+                      );
                     })}
                   </ul>
                 </td>
