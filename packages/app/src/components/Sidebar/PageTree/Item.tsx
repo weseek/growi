@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, FC, useEffect, memo,
+  useCallback, useState, FC, useEffect, memo, useRef,
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
@@ -109,6 +109,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
+  const timerId = useRef(0);
 
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -133,10 +134,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  useEffect(() => {
-    if (isOver) {
+  if (isOver) {
+    timerId.current = window.setInterval(() => {
       setIsOpen(true);
-    }
+    }, 3000);
+  }
+
+  useEffect(() => {
+    if (isOver) return;
+
+    clearTimeout(timerId.current);
+
   }, [isOpen, isOver]);
 
   const hasChildren = useCallback((): boolean => {
