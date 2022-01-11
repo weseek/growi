@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, FC, useEffect, memo,
+  useCallback, useState, FC, useEffect, memo, useRef,
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
@@ -109,6 +109,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
+  const timerId = useRef(0);
 
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -132,6 +133,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       isOver: monitor.isOver(),
     }),
   }));
+
+  // variable "isOpen" will be true when a drag item is overlapped more than 1 sec
+  useEffect(() => {
+    if (isOver) {
+      timerId.current = window.setInterval(() => {
+        setIsOpen(true);
+      }, 1000);
+    }
+    else {
+      clearTimeout(timerId.current);
+    }
+  }, [isOpen, isOver]);
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
