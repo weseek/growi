@@ -32,7 +32,7 @@ const GrowiSubNavigationSwitcher = (props) => {
   const fixedContainerRef = useRef();
   const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
 
-  const resetWidth = useCallback(() => {
+  const initWidth = useCallback(() => {
     const instance = fixedContainerRef.current;
 
     if (instance == null || instance.parentNode == null) {
@@ -45,9 +45,22 @@ const GrowiSubNavigationSwitcher = (props) => {
     setWidth(clientWidth);
   }, []);
 
+  const initVisible = useCallback(() => {
+    const elements = stickyEvents.stickyElements;
+
+    for (const elem of elements) {
+      const bool = stickyEvents.isSticking(elem);
+      if (bool) {
+        setVisible(bool);
+        break;
+      }
+    }
+
+  }, [stickyEvents]);
+
   // setup effect by resizing event
   useEffect(() => {
-    const resizeHandler = debounce(100, resetWidth);
+    const resizeHandler = debounce(100, initWidth);
 
     window.addEventListener('resize', resizeHandler);
 
@@ -55,7 +68,7 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, [resetWidth]);
+  }, [initWidth]);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -79,19 +92,20 @@ const GrowiSubNavigationSwitcher = (props) => {
   // update width when sidebar collapsing changed
   useEffect(() => {
     if (isSidebarCollapsed != null) {
-      setTimeout(resetWidth, 300);
+      setTimeout(initWidth, 300);
     }
-  }, [isSidebarCollapsed, resetWidth]);
+  }, [isSidebarCollapsed, initWidth]);
 
   // initialize
   useEffect(() => {
-    resetWidth();
-    setTimeout(() => {
-      stickyEvents.state.values((sticky) => {
-        setVisible(sticky.isSticky);
-      });
-    }, 100);
-  }, [resetWidth, stickyEvents]);
+    initWidth();
+
+    // check sticky state several times
+    setTimeout(initVisible, 100);
+    setTimeout(initVisible, 300);
+    setTimeout(initVisible, 2000);
+
+  }, [initWidth, initVisible]);
 
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
