@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
+import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
@@ -20,11 +21,12 @@ const LikeButtons: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
 
-  // TODO: Get the following values in SWR
-  const isLiked = false;
-  const sumOfLikers = 0;
-  const likers = [];
+  const isLiked = pageInfo?.isLiked != null ? pageInfo.isLiked : false;
+  const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
+
 
   const togglePopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -36,7 +38,10 @@ const LikeButtons: FC<Props> = (props: Props) => {
     }
 
     try {
-      await apiv3Put('/page/likes', { pageId, bool: isLiked });
+      const res = await apiv3Put('/page/likes', { pageId, bool: !isLiked });
+      if (res) {
+        mutate();
+      }
     }
     catch (err) {
       toastError(err);
@@ -68,7 +73,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet.')}
+            {likerIds.length ? <UserPictureList users={likerIds} /> : t('No users have liked this yet.')}
           </div>
         </PopoverBody>
       </Popover>

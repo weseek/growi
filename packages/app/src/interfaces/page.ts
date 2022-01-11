@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
@@ -29,6 +30,14 @@ export type IPage = {
   hasDraftOnHackmd: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
+}
+
+export type IPageInfo = {
+  sumOfLikers: number
+  likerIds: Types.ObjectId[]
+  seenUserIds: Types.ObjectId[]
+  isSeen: boolean
+  isLiked: boolean
 }
 
 export type IPageHasId = IPage & HasObjectId;
