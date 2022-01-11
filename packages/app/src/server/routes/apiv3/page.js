@@ -366,17 +366,24 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findById(pageId).populate('liker');
+      const page = await Page.findById(pageId)
+        .populate('liker')
+        .populate('seenUsers');
 
-      let users = [];
+      let liker = [];
       if (page.liker.length > 0) {
-        users = page.liker.map(user => serializeUserSecurely(user));
+        liker = page.liker.map(user => serializeUserSecurely(user));
+      }
+
+      let seenUsers = [];
+      if (page.seenUsers.length > 0) {
+        seenUsers = page.seenUsers.map(user => serializeUserSecurely(user));
       }
 
       const guestUserResponse = {
         sumOfLikers: page.liker.length,
-        liker: users,
-        seenUserIds: page.seenUsers.slice(0, 15),
+        liker,
+        seenUsers,
         sumOfSeenUsers: page.seenUsers.length,
         isSeen: page.seenUsers.length > 0,
       };

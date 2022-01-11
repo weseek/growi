@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
@@ -35,7 +34,7 @@ export type IPage = {
 export type IPageInfo = {
   sumOfLikers: number
   liker: IUser[]
-  seenUserIds: Types.ObjectId[]
+  seenUsers: IUser[]
   isSeen: boolean
   isLiked: boolean
 }

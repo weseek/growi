@@ -70,7 +70,7 @@ export const useSWRxPageInfo = <Data, Error>(pageId: Types.ObjectId): SWRRespons
       return {
         sumOfLikers: response.data.sumOfLikers,
         liker: response.data.liker,
-        seenUserIds: response.data.seenUserIds,
+        seenUsers: response.data.seenUsers,
         isSeen: response.data.isSeen,
         isLiked: response.data.isLiked,
       };
