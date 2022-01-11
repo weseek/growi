@@ -134,17 +134,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  if (isOver) {
-    timerId.current = window.setInterval(() => {
-      setIsOpen(true);
-    }, 3000);
-  }
-
+  // variable "isOpen" will be true when a drag item is overlapped more than 1 sec
   useEffect(() => {
-    if (isOver) return;
-
-    clearTimeout(timerId.current);
-
+    if (isOver) {
+      timerId.current = window.setInterval(() => {
+        setIsOpen(true);
+      }, 1000);
+    }
+    else {
+      clearTimeout(timerId.current);
+    }
   }, [isOpen, isOver]);
 
   const hasChildren = useCallback((): boolean => {
