@@ -1,5 +1,5 @@
 import React, {
-  FC, Fragment, useState, useCallback, useEffect,
+  FC, Fragment, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,10 +10,11 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserGroup, IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
-import { apiv3Get, apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
+import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
 type Props = {
   appContainer: AppContainer,
@@ -25,11 +26,23 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   const { isAclEnabled } = props.appContainer.config;
 
   /*
+   * Fetch
+   */
+  const { data: userGroupsData, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroupIds = userGroupsData?.userGroups?.map(group => group._id);
+  const { data: _userGroupRelationsData, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
+  const { data: _childUserGroupsData } = useSWRxChildUserGroupList(userGroupIds);
+
+  const childUserGroupsData = {
+    childUserGroups: [],
+  };
+  const userGroupRelationsData = {
+    userGroupRelations: [],
+  };
+
+  /*
    * State
    */
-  const [userGroups, setUserGroups] = useState<IUserGroupHasId[]>([]);
-  const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelation[]>([]);
-  const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
@@ -37,20 +50,13 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * Functions
    */
   const syncUserGroupAndRelations = useCallback(async() => {
-    // TODO 85062: SWRize
     try {
-      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
-      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
-      const childUserGroupsRes = await apiv3Get('/user-group-relations/children', { parentIds: userGroupsRes.data.userGroups.map(group => group._id) });
-
-      setUserGroups(userGroupsRes.data.userGroups);
-      setChildUserGroups(childUserGroupsRes.data.childUserGroups);
-      setUserGroupRelations(userGroupRelationsRes.data.userGroupRelations);
+      await mutateUserGroups(undefined, true);
     }
     catch (err) {
       toastError(err);
     }
-  }, []);
+  }, [mutateUserGroups]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     try {
@@ -62,7 +68,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  }, []);
+  }, [syncUserGroupAndRelations]);
 
   const hideDeleteModal = useCallback(() => {
     setSelectedUserGroup(undefined);
@@ -78,12 +84,18 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       });
 
       const newUserGroup = res.data.userGroup;
-      setUserGroups(prev => [...prev, newUserGroup]);
+      mutateUserGroups((current) => {
+        if (current == null) {
+          return undefined;
+        }
+
+        return { userGroups: [...current?.userGroups, newUserGroup] };
+      }, false);
     }
     catch (err) {
       toastError(err);
     }
-  }, []);
+  }, [mutateUserGroups]);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -92,8 +104,22 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         transferToUserGroupId,
       });
 
-      setUserGroups(prev => prev.filter(userGroup => userGroup._id !== deleteGroupId));
-      setUserGroupRelations(prev => prev.filter(relation => relation.relatedGroup !== deleteGroupId));
+      mutateUserGroups((current) => {
+        if (current == null) {
+          return undefined;
+        }
+
+        return { userGroups: current.userGroups.filter(userGroup => userGroup._id !== deleteGroupId) };
+      }, false);
+
+      mutateUserGroupRelations((current) => {
+        if (current == null) {
+          return undefined;
+        }
+
+        return { userGroupRelations: current.userGroupRelations.filter(relation => relation.relatedGroup !== deleteGroupId) };
+      }, false);
+
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
 
@@ -102,14 +128,11 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(new Error('Unable to delete the group'));
     }
-  }, []);
+  }, [mutateUserGroups, mutateUserGroupRelations]);
 
-  /*
-   * componentDidMount
-   */
-  useEffect(() => {
-    syncUserGroupAndRelations();
-  }, []);
+  if (userGroupsData == null || userGroupRelationsData == null || childUserGroupsData == null) {
+    return <></>;
+  }
 
   return (
     <Fragment>
@@ -134,15 +157,15 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       }
       <UserGroupTable
         appContainer={props.appContainer}
-        userGroups={userGroups}
-        childUserGroups={childUserGroups}
+        userGroups={userGroupsData.userGroups}
+        childUserGroups={childUserGroupsData.childUserGroups}
         isAclEnabled={isAclEnabled}
         onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelations}
+        userGroupRelations={userGroupRelationsData.userGroupRelations}
       />
       <UserGroupDeleteModal
         appContainer={props.appContainer}
-        userGroups={userGroups}
+        userGroups={userGroupsData.userGroups}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}
