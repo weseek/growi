@@ -272,6 +272,11 @@ class UserGroupRelation {
       });
   }
 
+  static async findWithUserByGroupIds(groupIds = null) {
+    return this.find(Array.isArray(groupIds) ? { relatedGroup: { $in: groupIds } } : {})
+      .populate('relatedUser');
+  }
+
 }
 
 module.exports = function(crowi) {

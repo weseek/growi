@@ -40,6 +40,11 @@ module.exports = (crowi) => {
     Page,
   } = crowi.models;
 
+  validator.listChildren = [
+    query('parentIds', 'parentIds must be an array').optional().isArray(),
+    query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+  ];
+
   /**
    * @swagger
    *
@@ -61,10 +66,10 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: userGroups with no parent
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { query } = req;
 
-    // TODO: filter with querystring
+    // TODO 85062: improve sort
     try {
       const page = query.page != null ? parseInt(query.page) : undefined;
       const limit = query.limit != null ? parseInt(query.limit) : undefined;
@@ -84,10 +89,23 @@ module.exports = (crowi) => {
     }
   });
 
-  /*
-   * TODO 85062: GET /children ?include-grand-children=boolean fetch all children by parent ids
-   * if include-grand-children=true, return grand children as well
-   */
+  // TODO 85062: improve sort
+  router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
+    try {
+      const { parentIds, includeGrandChildren = false } = req.query;
+
+      const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
+      return res.apiv3({
+        childUserGroups: userGroupsResult.childUserGroups,
+        grandChildUserGroups: userGroupsResult.grandChildUserGroups,
+      });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching child user group list';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'child-user-group-list-fetch-failed'));
+    }
+  });
 
   validator.create = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
