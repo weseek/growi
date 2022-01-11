@@ -30,15 +30,8 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    */
   const { data: userGroupsData, mutate: mutateUserGroups } = useSWRxUserGroupList();
   const userGroupIds = userGroupsData?.userGroups?.map(group => group._id);
-  const { data: _userGroupRelationsData, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: _childUserGroupsData } = useSWRxChildUserGroupList(userGroupIds);
-
-  const childUserGroupsData = {
-    childUserGroups: [],
-  };
-  const userGroupRelationsData = {
-    userGroupRelations: [],
-  };
+  const { data: userGroupRelationsData, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
+  const { data: childUserGroupsData } = useSWRxChildUserGroupList(userGroupIds);
 
   /*
    * State
