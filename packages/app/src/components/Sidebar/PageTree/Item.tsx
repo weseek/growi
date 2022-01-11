@@ -126,25 +126,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     console.log('pageItem was droped!!');
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
-    collect: monitor => ({
-      isOver: monitor.isOver(),
-    }),
+    hover: (item, monitor) => {
+      if (monitor.isOver()) {
+        setTimeout(() => {
+          if (monitor.isOver()) {
+            setIsOpen(true);
+          }
+        }, 1000);
+      }
+    },
   }));
 
-  // variable "isOpen" will be true when a drag item is overlapped more than 1 sec
-  useEffect(() => {
-    if (isOver) {
-      timerId.current = window.setInterval(() => {
-        setIsOpen(true);
-      }, 1000);
-    }
-    else {
-      clearTimeout(timerId.current);
-    }
-  }, [isOpen, isOver]);
 
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
