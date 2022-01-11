@@ -133,7 +133,7 @@
     "passport-twitter": "^1.0.4",
     "p-retry": "^4.0.0",
     "prom-client": "^13.0.0",
-    "re2": "^1.17.1",
+    "re2": "^1.17.2",
     "react-card-flip": "^1.0.10",
     "react-image-crop": "^8.3.0",
     "react-tagcloud": "^2.1.1",
