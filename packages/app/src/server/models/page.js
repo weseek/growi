@@ -360,7 +360,7 @@ module.exports = function(crowi) {
     }
 
     return this.liker.some((likedUserId) => {
-      return likedUserId.toString() === user._id.toString();
+      return likedUserId._id.toString() === user._id.toString();
     });
   };
 

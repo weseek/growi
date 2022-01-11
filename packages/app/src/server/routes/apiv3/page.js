@@ -365,7 +365,7 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findById(pageId);
+      const page = await Page.findById(pageId).populate('liker');
 
       const guestUserResponse = {
         sumOfLikers: page.liker.length,
