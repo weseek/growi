@@ -73,7 +73,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {liker.length ? <UserPictureList users={liker} /> : t('No users have liked this yet.')}
+            {liker.length ? <UserPictureList users={liker} /> : t('No users have liked this yet')}
           </div>
         </PopoverBody>
       </Popover>
