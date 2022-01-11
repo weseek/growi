@@ -97,16 +97,6 @@ class UserGroup {
     };
   }
 
-  // Check if registerable
-  static isRegisterableName(name) {
-    const query = { name };
-
-    return this.findOne(query)
-      .then((userGroupData) => {
-        return (userGroupData == null);
-      });
-  }
-
   // Delete completely
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
@@ -143,9 +133,69 @@ class UserGroup {
     return this.create({ name, description, parent });
   }
 
-  async updateName(name) {
-    this.name = name;
-    await this.save();
+  static async findAllAncestorGroups(parent, ancestors = [parent]) {
+    if (parent == null) {
+      return ancestors;
+    }
+
+    const nextParent = await this.findOne({ _id: parent.parent });
+    if (nextParent == null) {
+      return ancestors;
+    }
+
+    ancestors.push(nextParent);
+
+    return this.findAllAncestorGroups(nextParent, ancestors);
+  }
+
+  // TODO 85062: write test code
+  static async updateGroup(id, name, description, parentId, forceUpdateParents = false) {
+    const userGroup = await this.findById(id);
+    if (userGroup == null) {
+      throw new Error('The group does not exist');
+    }
+
+    // check if the new group name is available
+    const isExist = (await this.countDocuments({ name })) > 0;
+    if (userGroup.name !== name && isExist) {
+      throw new Error('The group name is already taken');
+    }
+
+    userGroup.name = name;
+    userGroup.description = description;
+
+    // return when not update parent
+    if (userGroup.parent === parentId) {
+      return userGroup.save();
+    }
+
+    const parent = await this.findById(parentId);
+
+    // find users for comparison
+    const UserGroupRelation = mongoose.model('UserGroupRelation');
+    const [targetGroupUsers, parentGroupUsers] = await Promise.all(
+      [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent._id)],
+    );
+
+    const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
+    // add the target group's users to all ancestors
+    if (forceUpdateParents) {
+      const ancestorGroups = await this.findAllAncestorGroups(parent);
+      const ancestorGroupIds = ancestorGroups.map(group => group._id);
+
+      await UserGroupRelation.createByGroupIdsAndUserIds(ancestorGroupIds, usersBelongsToTargetButNotParent);
+
+      userGroup.parent = parent._id;
+    }
+    // validate related users
+    else {
+      const isUpdatable = usersBelongsToTargetButNotParent.length === 0;
+      if (!isUpdatable) {
+        throw Error('The parent group does not contain the users in this group.');
+      }
+    }
+
+    return userGroup.save();
   }
 
 }
