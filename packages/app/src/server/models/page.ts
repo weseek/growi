@@ -355,6 +355,26 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   return pathToChildren;
 };
 
+schema.statics.findAllDescendantsByPath = async function(path, grant = 1) {
+  return this.aggregate(
+    [
+      { $match: { path: { $regex: `^${path}.*` }, grant } },
+      // https://regex101.com/r/8R3Meh/1
+      {
+        $project: {
+          path: 1,
+          parent: 1,
+          descendantCount: 1,
+          field_length: { $strLenCP: '$path' },
+        },
+      },
+
+      { $sort: { field_length: -1 } },
+      { $project: { field_length: 0 } },
+    ],
+  );
+};
+
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance

@@ -30,6 +30,8 @@ class PageService {
 
     // init
     this.initPageEvent();
+    // this code is written to check if method works. will delete in the end.
+    this.updateAllDescendantCount().then(res => logger.info(res)).catch(err => logger.warn(err));
   }
 
   initPageEvent() {
@@ -1243,6 +1245,63 @@ class PageService {
     }
     const Page = this.crowi.model('Page');
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
+  }
+
+
+  async updateAllDescendantCount(path = '/', grant = 1) {
+    const Page = mongoose.model('Page');
+
+    /**
+     * retrieve all public descendants pages starting from path arg sorted descending order
+     * /A/B/C
+     * /A/B
+     * /A
+     */
+    const publicPages = await Page.findAllDescendantsByPath(path, grant);
+    for (const parentPage of publicPages) {
+
+      // find pages with parentPage._id set in the parent field
+      const childrenPages = publicPages.filter((childPage) => {
+        if (childPage.parent == null) return;
+        return childPage.parent.toString() === parentPage._id.toString();
+      });
+
+      // if children not exist, set descendantCount to 0
+      if (childrenPages.length === 0) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await Page.findOneAndUpdate({ _id: parentPage._id }, { $set: { descendantCount: 0 } });
+        }
+        catch (err) {
+          logger.warn(err);
+        }
+      }
+      else {
+        // if children exist, set descendantCount of parent page by following fomula.
+        // sum of children + sum of descendantCount that each children have in descendantCount field
+        try {
+          // aggregate the sum of descendantCount of parent page
+          // eslint-disable-next-line no-await-in-loop
+          const res = await Page.aggregate([
+            { $match: { parent: parentPage._id } },
+            {
+              $group: {
+                _id: null,
+                sumOfDescendantCount: { $sum: '$descendantCount' },
+              },
+            },
+          ]);
+          const sumOfDescendantCountArray = res.map(res => res.sumOfDescendantCount);
+          const totalDescendantCount = sumOfDescendantCountArray.reduce((prev, current) => prev + current);
+
+          // eslint-disable-next-line no-await-in-loop
+          await Page.findOneAndUpdate({ _id: parentPage._id }, { $set: { descendantCount: childrenPages.length + totalDescendantCount } });
+        }
+        catch (err) {
+          logger.warn(err);
+        }
+      }
+    }
   }
 
 }
