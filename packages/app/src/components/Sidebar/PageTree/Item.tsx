@@ -121,11 +121,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   console.log('isDragging', isDragging);
 
-  const [{ isOver }, dropRef] = useDrop(() => ({
-    accept: 'PAGE_TREE',
-    // TODO: hit an api to rename the page.
+  const pageItemDropHandler = () => {
+    // TODO: hit an api to rename the page by 85175
     // eslint-disable-next-line no-console
-    drop: () => console.log('drop!!'),
+    console.log('pageItem was droped!!');
+  };
+
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'PAGE_TREE',
+    // eslint-disable-next-line no-console
+    drop: pageItemDropHandler,
     collect: monitor => ({
       isOver: monitor.isOver(),
     }),
