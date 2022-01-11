@@ -84,6 +84,11 @@ module.exports = (crowi) => {
     }
   });
 
+  /*
+   * TODO 85062: GET /children ?include-grand-children=boolean fetch all children by parent ids
+   * if include-grand-children=true, return grand children as well
+   */
+
   validator.create = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
     body('description', 'Description must be a string').optional().isString(),
