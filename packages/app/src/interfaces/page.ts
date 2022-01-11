@@ -34,7 +34,7 @@ export type IPage = {
 
 export type IPageInfo = {
   sumOfLikers: number
-  liker: Types.ObjectId[]
+  liker: IUser[]
   seenUserIds: Types.ObjectId[]
   isSeen: boolean
   isLiked: boolean
