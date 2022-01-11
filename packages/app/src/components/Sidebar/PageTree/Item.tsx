@@ -4,7 +4,7 @@ import React, {
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
@@ -119,6 +119,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
+  const pageItemDropHandler = () => {
+    // TODO: hit an api to rename the page by 85175
+    // eslint-disable-next-line no-console
+    console.log('pageItem was droped!!');
+  };
+
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'PAGE_TREE',
+    drop: pageItemDropHandler,
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -191,7 +205,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div ref={drag} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+      <div ref={(c) => { drag(c); drop(c) }} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
         <button
           type="button"
           className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
