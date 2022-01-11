@@ -359,8 +359,8 @@ module.exports = function(crowi) {
       return false;
     }
 
-    return this.liker.some((likedUserId) => {
-      return likedUserId._id.toString() === user._id.toString();
+    return this.liker.some((likedUser) => {
+      return likedUser._id.toString() === user._id.toString();
     });
   };
 
