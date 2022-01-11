@@ -133,6 +133,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
+  useEffect(() => {
+    if (isOver) {
+      setIsOpen(true);
+    }
+  }, [isOpen, isOver]);
+
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
