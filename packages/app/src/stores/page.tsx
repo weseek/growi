@@ -69,7 +69,7 @@ export const useSWRxPageInfo = <Data, Error>(pageId: Types.ObjectId): SWRRespons
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
       return {
         sumOfLikers: response.data.sumOfLikers,
-        likerIds: response.data.likerIds,
+        liker: response.data.liker,
         seenUserIds: response.data.seenUserIds,
         isSeen: response.data.isSeen,
         isLiked: response.data.isLiked,

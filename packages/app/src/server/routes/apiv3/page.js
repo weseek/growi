@@ -369,7 +369,7 @@ module.exports = (crowi) => {
 
       const guestUserResponse = {
         sumOfLikers: page.liker.length,
-        likerIds: page.liker.slice(0, 15),
+        liker: page.liker,
         seenUserIds: page.seenUsers.slice(0, 15),
         sumOfSeenUsers: page.seenUsers.length,
         isSeen: page.seenUsers.length > 0,
