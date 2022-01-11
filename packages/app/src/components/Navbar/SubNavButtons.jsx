@@ -33,7 +33,7 @@ const SubnavButtons = React.memo((props) => {
           </span>
         )}
         <span>
-          <BookmarkButtons page={pageId} />
+          <BookmarkButtons pageId={pageId} />
         </span>
       </>
     );
