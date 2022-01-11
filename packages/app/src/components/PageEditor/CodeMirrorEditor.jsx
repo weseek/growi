@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
+import { UnControlled as UncontrolledCodeMirror } from 'react-codemirror2';
 
 import { Button } from 'reactstrap';
 
@@ -31,7 +32,7 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+// import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -109,7 +110,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
-      isGfmMode: this.props.isGfmMode,
+      isGfmMode: this.props.isGfmMode ?? true,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -908,6 +909,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
+    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
@@ -934,6 +936,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
+            mode,
+            theme: this.props.editorOptions.theme,
+            styleActiveLine: this.props.editorOptions.styleActiveLine,
+            lineNumbers: this.props.lineNumbers,
+            tabSize: 4,
+            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
