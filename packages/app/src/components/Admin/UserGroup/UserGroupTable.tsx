@@ -131,7 +131,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                 </td>
                 <td>
                   <ul className="list-inline">
-                    {groupIdToChildGroupsMap[group._id].map((group) => {
+                    {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
                       return (
                         <li key={group._id} className="list-inline-item badge badge-pill badge-warning">
                           {props.isAclEnabled
