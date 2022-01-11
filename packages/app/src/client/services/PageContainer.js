@@ -54,9 +54,6 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
 
-      isBookmarked: false,
-      sumOfBookmarks: 0,
-
       seenUsers: [],
       seenUserIds: [],
       sumOfSeenUsers: [],
@@ -132,7 +129,6 @@ export default class PageContainer extends Container {
       // as it is stored in a separate collection to like and seen user
       // data so it has a separate api endpoint.
       this.initialPageLoad();
-      this.retrieveBookmarkInfo();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -318,20 +314,6 @@ export default class PageContainer extends Container {
     });
 
     this.checkAndUpdateImageUrlCached(users);
-  }
-
-  async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
-    this.setState({
-      sumOfBookmarks: response.data.sumOfBookmarks,
-      isBookmarked: response.data.isBookmarked,
-    });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
   }
 
   async checkAndUpdateImageUrlCached(users) {
