@@ -41,6 +41,14 @@ const getQueryByLocation = (location: Location) => {
   return query;
 };
 
+
+// TODO
+// Task : https://redmine.weseek.co.jp/issues/85465
+// 1. set excluded hoge based on props
+// 2. hide sort bar when this component is used in legacyPage
+// 3. disable search form when this component is used in LegacyPage
+// 4. refactor DeleteSelectedPageGroup component in a way that  SearchPage and LegacyPage can get actionToPage through props
+// 5. onAfterSearchInvoked should be refactored in LegacyPage
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
@@ -91,14 +99,11 @@ const SearchCore: FC<Props> = (props: Props) => {
 
   const switchExcludeUserPagesHandler = useCallback(() => {
     setExcludeUserPages(prev => !prev);
-    console.log('switch called');
-    console.log(excludeUserPages);
   }, [excludeUserPages]);
 
   const switchExcludeTrashPagesHandler = useCallback(() => {
     setExcludeTrashPages(prevState => !prevState);
-    console.log('switch called');
-    console.log(excludeTrashPages);
+
   }, [excludeTrashPages]);
 
   const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
