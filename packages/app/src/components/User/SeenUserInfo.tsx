@@ -20,7 +20,6 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   const { data: pageInfo } = useSWRxPageInfo(pageId);
 
   const seenUsers = pageInfo?.seenUsers ? pageInfo.seenUsers : [];
-  const sumOfSeenUsers = pageInfo?.seenUsers ? pageInfo.seenUsers.length : 0;
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
@@ -30,7 +29,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
-        <span className="seen-user-count">{sumOfSeenUsers}</span>
+        <span className="seen-user-count">{seenUsers.length}</span>
       </Button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="seen-user-popover">
