@@ -4,6 +4,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import { UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult } from '~/interfaces/user-group-response';
+import { serializeKey } from './middlewares/serialize';
 
 
 export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRResponse<UserGroupListResult, Error> => {
@@ -24,6 +25,7 @@ export const useSWRxChildUserGroupList = (
     (endpoint, parentIds, includeGrandChildren) => apiv3Get(endpoint, { parentIds, includeGrandChildren }).then(result => result.data),
     {
       fallbackData: initialData,
+      use: [serializeKey],
     },
   );
 };
@@ -36,6 +38,7 @@ export const useSWRxUserGroupRelationList = (
     (endpoint, parentIds, childGroupIds) => apiv3Get(endpoint, { parentIds, childGroupIds }).then(result => result.data),
     {
       fallbackData: initialData,
+      use: [serializeKey],
     },
   );
 };
