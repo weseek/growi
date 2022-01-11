@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
+
+### 🐛 Bug Fixes
+
+- fix: Subnavigation sticking initialization (#5062) @yuki-takei
+- fix: Built-in editor was broken (#5061) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump re2 to 1.17.2 (#5059) @yuki-takei
 
 ## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
 
