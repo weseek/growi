@@ -26,7 +26,7 @@ class Apiv1ErrorHandler extends Error {
 
 }
 
-export async function apiRequest(method: string, path: string, params: unknown): Promise<unknown> {
+export async function apiRequest<T = unknown>(method: string, path: string, params: unknown): Promise<T> {
   const res = await axios[method](urljoin(apiv1Root, path), params);
 
   if (res.data.ok) {
@@ -42,8 +42,8 @@ export async function apiRequest(method: string, path: string, params: unknown):
   throw new Error(res.data.error);
 }
 
-export async function apiGet(path: string, params: unknown = {}): Promise<unknown> {
-  return apiRequest('get', path, { params });
+export async function apiGet<T = unknown>(path: string, params: unknown = {}): Promise<T> {
+  return apiRequest<T>('get', path, { params });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

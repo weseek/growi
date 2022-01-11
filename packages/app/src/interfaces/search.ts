@@ -42,3 +42,9 @@ export const SORT_ORDER = {
   ASC: 'asc',
 } as const;
 export type SORT_ORDER = typeof SORT_ORDER[keyof typeof SORT_ORDER];
+
+export type SearchResultMeta = {
+  took?: number,
+  total?: number,
+  results?: number
+};

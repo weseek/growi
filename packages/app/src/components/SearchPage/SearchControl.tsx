@@ -18,7 +18,7 @@ type Props = {
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
   excludeTrashPages: boolean,
-  onSearchInvoked: (data: {keyword: string}) => boolean,
+  onSearchInvoked: (data: {keyword: string}) => Promise<void>
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
@@ -135,6 +135,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <div className="card-body">
               <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                 <input
+                  checked={props.excludeUserPages}
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckDefault"
@@ -152,6 +153,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   type="checkbox"
                   id="flexCheckChecked"
                   onClick={switchExcludeTrashPagesHandler}
+                  checked={props.excludeTrashPages}
                 />
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
