@@ -208,7 +208,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div ref={drag} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+      <div ref={(c) => { drag(c); drop(c) }} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
         <button
           type="button"
           className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
