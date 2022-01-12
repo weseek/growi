@@ -171,7 +171,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   componentWillMount() {
     // if (this.props.emojiStrategy != null) {
-    // this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
+    this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper();
     this.setState({ isEnabledEmojiAutoComplete: true });
     // }
 
@@ -767,68 +767,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return range;
   }
 
-  getEmojiList() {
-    const emojiList = [];
-    emojiData.forEach((key) => {
-      emojiList.push({
-        text: `${key}`,
-        render: (element) => {
-          element.innerHTML = `<img width="15" height="15" src="${emojiData[key]}" alt="icon" async></img> ${key}`;
-        },
-      });
-    });
-    return emojiList;
-  }
-
-  emojiComplete(cm) {
-    codemirror.showHint(cm, () => {
-
-      const cur = cm.getCursor(); const
-        token = cm.getTokenAt(cur);
-
-      const start = token.start; const end = cur.ch; const
-        word = token.string.slice(0, end - start);
-
-      let ch = cur.ch; const
-        line = cur.line;
-
-      let currentWord = token.string;
-
-      while (ch-- > -1) {
-
-        const t = cm.getTokenAt({ ch, line }).string;
-
-        if (t === ':') {
-          const emojiList = this.getEmojiList();
-          // eslint-disable-next-line no-loop-func
-          const filteredList = emojiList.filter((item) => {
-
-            return item.text.indexOf(currentWord) === 0;
-
-          });
-
-          if (filteredList.length >= 1) {
-
-            return {
-
-              list: filteredList,
-
-              from: codemirror.Pos(line, ch),
-
-              to: codemirror.Pos(line, end),
-
-            };
-
-          }
-
-        }
-
-        currentWord = t + currentWord;
-
-      }
-
-    }, { completeSingle: false });
-  }
 
   getNavbarItems() {
     return [
