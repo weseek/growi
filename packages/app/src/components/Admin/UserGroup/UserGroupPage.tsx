@@ -70,20 +70,14 @@ const UserGroupPage: FC<Props> = (props: Props) => {
 
   const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
-      const res = await apiv3Post('/user-groups', {
+      await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
         parent: userGroupData.parent,
       });
 
-      const newUserGroup = res.data.userGroup;
-      mutateUserGroups((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroups: [...current?.userGroups, newUserGroup] };
-      }, false);
+      // sync
+      await mutateUserGroups(undefined, true);
     }
     catch (err) {
       toastError(err);
@@ -97,21 +91,8 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         transferToUserGroupId,
       });
 
-      mutateUserGroups((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroups: current.userGroups.filter(userGroup => userGroup._id !== deleteGroupId) };
-      }, false);
-
-      mutateUserGroupRelations((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroupRelations: current.userGroupRelations.filter(relation => relation.relatedGroup !== deleteGroupId) };
-      }, false);
+      // sync
+      await mutateUserGroups(undefined, true);
 
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
