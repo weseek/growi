@@ -1,12 +1,17 @@
 import React, { FC } from 'react';
 
-import UserPictureList from './UserPictureList';
+import { Types } from 'mongoose';
 
-import { usePageId } from '~/stores/context';
+import UserPictureList from './UserPictureList';
 import { useSWRxPageInfo } from '~/stores/page';
 
-const LikerList: FC = () => {
-  const { data: pageId } = usePageId();
+interface Props {
+  pageId: Types.ObjectId,
+}
+
+const LikerList: FC<Props> = (props: Props) => {
+  const { pageId } = props;
+
   const { data: pageInfo } = useSWRxPageInfo(pageId);
 
   const liker = pageInfo?.liker ? pageInfo.liker : 0;
