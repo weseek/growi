@@ -285,15 +285,6 @@ class SearchResult extends React.Component {
 
     const listView = this.renderListView(this.props.pages);
 
-    let totalValue;
-
-    if (typeof this.props.searchResultMeta.total === 'string') {
-      totalValue = this.props.searchResultMeta.total; // elasticsearch V6
-    }
-    else {
-      totalValue = this.props.searchResultMeta.total.value; // elasticsearch v7
-    }
-
     /*
     UI あとで考える
     <span className="search-result-meta">Found: {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</span>
@@ -305,7 +296,7 @@ class SearchResult extends React.Component {
             <nav>
               <div className="d-flex align-items-start justify-content-between mt-1">
                 <div className="search-result-meta">
-                  <i className="icon-magnifier" /> Found {totalValue} pages with &quot;{this.props.searchingKeyword}&quot;
+                  <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
                 </div>
                 <div className="text-nowrap">
                   {deletionModeButtons}
