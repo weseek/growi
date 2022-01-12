@@ -130,6 +130,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
     hover: (item, monitor) => {
+      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
       if (monitor.isOver()) {
         setTimeout(() => {
           if (monitor.isOver()) {
