@@ -109,7 +109,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
-  const timerId = useRef(0);
 
 
   const [{ isDragging }, drag] = useDrag(() => ({
