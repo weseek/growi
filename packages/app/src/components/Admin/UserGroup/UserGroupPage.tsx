@@ -28,10 +28,10 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   /*
    * Fetch
    */
-  const { data: userGroupsData, mutate: mutateUserGroups } = useSWRxUserGroupList();
-  const userGroupIds = userGroupsData?.userGroups?.map(group => group._id);
-  const { data: userGroupRelationsData, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: childUserGroupsData } = useSWRxChildUserGroupList(userGroupIds);
+  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroupIds = userGroups?.map(group => group._id);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
+  const { data: childUserGroups } = useSWRxChildUserGroupList(userGroupIds);
 
   /*
    * State
@@ -104,7 +104,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     }
   }, [mutateUserGroups, mutateUserGroupRelations]);
 
-  if (userGroupsData == null || userGroupRelationsData == null || childUserGroupsData == null) {
+  if (userGroups == null || userGroupRelations == null || childUserGroups == null) {
     return <></>;
   }
 
@@ -131,15 +131,15 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       }
       <UserGroupTable
         appContainer={props.appContainer}
-        userGroups={userGroupsData.userGroups}
-        childUserGroups={childUserGroupsData.childUserGroups}
+        userGroups={userGroups}
+        childUserGroups={childUserGroups}
         isAclEnabled={isAclEnabled}
         onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelationsData.userGroupRelations}
+        userGroupRelations={userGroupRelations}
       />
       <UserGroupDeleteModal
         appContainer={props.appContainer}
-        userGroups={userGroupsData.userGroups}
+        userGroups={userGroups}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}
