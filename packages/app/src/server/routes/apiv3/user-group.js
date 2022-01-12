@@ -255,14 +255,12 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  // TODO 85062: enable description & parentId
-  router.put('/:id', /*loginRequiredStrictly, adminRequired, csrf,*/ validator.update, apiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       name, description, parentId, forceUpdateParents = false,
     } = req.body;
 
-    // TODO 85062: move this process into updateGroup
     try {
       const userGroup = await UserGroup.updateGroup(id, name, description, parentId, forceUpdateParents);
 
