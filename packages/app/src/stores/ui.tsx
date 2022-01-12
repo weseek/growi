@@ -269,14 +269,14 @@ export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useCreateModalPath = (): SWRResponse<Nullable<string | undefined>, Error> => {
+export const useCreateModalPath = (): SWRResponse<string, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useCreateModalStatus();
 
   return useSWR(
-    [currentPagePath, status],
+    currentPagePath != null && status != null ? [currentPagePath, status] : null,
     (currentPagePath, status) => {
-      return status?.path || currentPagePath;
+      return status.path || currentPagePath;
     },
   );
 };
