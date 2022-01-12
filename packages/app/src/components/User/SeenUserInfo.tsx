@@ -1,22 +1,22 @@
 import React, { FC, useState } from 'react';
+
+import { Types } from 'mongoose';
 import { Button, Popover, PopoverBody } from 'reactstrap';
+
 import UserPictureList from './UserPictureList';
-
 import FootstampIcon from '../FootstampIcon';
-
-import { usePageId } from '~/stores/context';
 import { useSWRxPageInfo } from '~/stores/page';
 
 interface Props {
+  pageId: Types.ObjectId
   disabled: boolean
 }
 
 const SeenUserInfo: FC<Props> = (props: Props) => {
-  const { disabled } = props;
+  const { pageId, disabled } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { data: pageId } = usePageId();
   const { data: pageInfo } = useSWRxPageInfo(pageId);
 
   const seenUsers = pageInfo?.seenUsers ? pageInfo.seenUsers : [];

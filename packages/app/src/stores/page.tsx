@@ -66,14 +66,6 @@ export const useSWRxSubscriptionStatus = <Data, Error>(pageId: Types.ObjectId): 
 export const useSWRxPageInfo = <Data, Error>(pageId: Types.ObjectId): SWRResponse<IPageInfo, Error> => {
   return useSWR(
     ['page/info', pageId],
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
-      return {
-        sumOfLikers: response.data.sumOfLikers,
-        liker: response.data.liker,
-        seenUsers: response.data.seenUsers,
-        isSeen: response.data.isSeen,
-        isLiked: response.data.isLiked,
-      };
-    }),
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
