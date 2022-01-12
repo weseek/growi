@@ -1,8 +1,24 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
+
+### 💎 Features
+
+- feat: Display a list of bookmarked users (#5044) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Built-in editor scroll position is reset after save (Introduced by v4.5.3) (#5074) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump y18n to v4.0.3 (#5071) @yuki-takei
+- support: Omit prettier-stylelint (#5070) @yuki-takei
+- support: Bump tar to 6.1.11 (#5069) @yuki-takei
 
 ## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
 
