@@ -28,10 +28,10 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   /*
    * Fetch
    */
-  const { data: userGroupsData, mutate: mutateUserGroups } = useSWRxUserGroupList();
-  const userGroupIds = userGroupsData?.userGroups?.map(group => group._id);
-  const { data: userGroupRelationsData, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: childUserGroupsData } = useSWRxChildUserGroupList(userGroupIds);
+  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroupIds = userGroups?.map(group => group._id);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
+  const { data: childUserGroups } = useSWRxChildUserGroupList(userGroupIds);
 
   /*
    * State
@@ -70,20 +70,14 @@ const UserGroupPage: FC<Props> = (props: Props) => {
 
   const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
-      const res = await apiv3Post('/user-groups', {
+      await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
         parent: userGroupData.parent,
       });
 
-      const newUserGroup = res.data.userGroup;
-      mutateUserGroups((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroups: [...current?.userGroups, newUserGroup] };
-      }, false);
+      // sync
+      await mutateUserGroups(undefined, true);
     }
     catch (err) {
       toastError(err);
@@ -97,21 +91,8 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         transferToUserGroupId,
       });
 
-      mutateUserGroups((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroups: current.userGroups.filter(userGroup => userGroup._id !== deleteGroupId) };
-      }, false);
-
-      mutateUserGroupRelations((current) => {
-        if (current == null) {
-          return undefined;
-        }
-
-        return { userGroupRelations: current.userGroupRelations.filter(relation => relation.relatedGroup !== deleteGroupId) };
-      }, false);
+      // sync
+      await mutateUserGroups(undefined, true);
 
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
@@ -123,7 +104,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     }
   }, [mutateUserGroups, mutateUserGroupRelations]);
 
-  if (userGroupsData == null || userGroupRelationsData == null || childUserGroupsData == null) {
+  if (userGroups == null || userGroupRelations == null || childUserGroups == null) {
     return <></>;
   }
 
@@ -150,15 +131,15 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       }
       <UserGroupTable
         appContainer={props.appContainer}
-        userGroups={userGroupsData.userGroups}
-        childUserGroups={childUserGroupsData.childUserGroups}
+        userGroups={userGroups}
+        childUserGroups={childUserGroups}
         isAclEnabled={isAclEnabled}
         onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelationsData.userGroupRelations}
+        userGroupRelations={userGroupRelations}
       />
       <UserGroupDeleteModal
         appContainer={props.appContainer}
-        userGroups={userGroupsData.userGroups}
+        userGroups={userGroups}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}

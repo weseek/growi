@@ -274,7 +274,7 @@ export const useCreateModalPath = (): SWRResponse<string, Error> => {
   const { data: status } = useCreateModalStatus();
 
   return useSWR(
-    [currentPagePath, status],
+    currentPagePath != null && status != null ? [currentPagePath, status] : null,
     (currentPagePath, status) => {
       return status.path || currentPagePath;
     },
