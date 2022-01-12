@@ -2,6 +2,7 @@
   "extends": [
     "stylelint-config-recess-order"
   ],
+  "customSyntax": "postcss-scss",
   "rules": {
     "indentation": 2,
     "string-quotes": "single",
