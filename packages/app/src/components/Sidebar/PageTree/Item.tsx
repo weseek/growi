@@ -141,7 +141,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
   }));
 
-
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
