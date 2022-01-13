@@ -317,11 +317,13 @@ jobs:
       with:
         name: Built Files
 
+    - run: |
+        ls -R packages/core
+
     - name: yarn server:ci
       working-directory: ./packages/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        ls -R packages/core
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
