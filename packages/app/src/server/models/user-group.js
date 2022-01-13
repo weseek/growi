@@ -63,7 +63,7 @@ class UserGroup {
    * @memberof UserGroup
    */
   static findUserGroupsWithPagination(opts) {
-    const query = {};
+    const query = { parent: null };
     const options = Object.assign({}, opts);
     if (options.page == null) {
       options.page = 1;
@@ -76,6 +76,25 @@ class UserGroup {
       .catch((err) => {
         debug('Error on pagination:', err);
       });
+  }
+
+  static async findChildUserGroupsByParentIds(parentIds, includeGrandChildren = false) {
+    if (!Array.isArray(parentIds)) {
+      throw Error('parentIds must be an array.');
+    }
+
+    const childUserGroups = await this.find({ parent: { $in: parentIds } });
+
+    let grandChildUserGroups = null;
+    if (includeGrandChildren) {
+      const childUserGroupIds = childUserGroups.map(group => group._id);
+      grandChildUserGroups = await this.find({ parent: { $in: childUserGroupIds } });
+    }
+
+    return {
+      childUserGroups,
+      grandChildUserGroups,
+    };
   }
 
   // Check if registerable

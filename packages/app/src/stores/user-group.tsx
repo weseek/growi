@@ -17,11 +17,13 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRRespon
 };
 
 export const useSWRxChildUserGroupList = (
-    parentIds: string[] | undefined, initialData?: IUserGroupHasId[],
+    parentIds: string[] | undefined, includeGrandChildren?: boolean, initialData?: IUserGroupHasId[],
 ): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable<IUserGroupHasId[], Error>(
-    parentIds != null ? ['/user-groups/children', parentIds] : null,
-    (endpoint, parentIds) => apiv3Get<ChildUserGroupListResult>(endpoint, { parentIds }).then(result => result.data.childUserGroups),
+    parentIds != null ? ['/user-groups/children', parentIds, includeGrandChildren] : null,
+    (endpoint, parentIds, includeGrandChildren) => apiv3Get<ChildUserGroupListResult>(
+      endpoint, { parentIds, includeGrandChildren },
+    ).then(result => result.data.childUserGroups),
     {
       fallbackData: initialData,
     },
@@ -29,11 +31,13 @@ export const useSWRxChildUserGroupList = (
 };
 
 export const useSWRxUserGroupRelationList = (
-    groupIds: string[] | undefined, initialData?: IUserGroupRelationHasId[],
+    groupIds: string[] | undefined, childGroupIds?: string[], initialData?: IUserGroupRelationHasId[],
 ): SWRResponse<IUserGroupRelationHasId[], Error> => {
   return useSWRImmutable<IUserGroupRelationHasId[], Error>(
-    groupIds != null ? ['/user-group-relations', groupIds] : null,
-    (endpoint, parentIds) => apiv3Get<UserGroupRelationListResult>(endpoint, { parentIds }).then(result => result.data.userGroupRelations),
+    groupIds != null ? ['/user-group-relations', groupIds, childGroupIds] : null,
+    (endpoint, parentIds, childGroupIds) => apiv3Get<UserGroupRelationListResult>(
+      endpoint, { parentIds, childGroupIds },
+    ).then(result => result.data.userGroupRelations),
     {
       fallbackData: initialData,
     },
