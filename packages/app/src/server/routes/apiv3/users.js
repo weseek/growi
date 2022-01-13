@@ -922,7 +922,6 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3(data);
-
   });
 
   return router;

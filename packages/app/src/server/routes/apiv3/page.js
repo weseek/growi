@@ -7,7 +7,6 @@ const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line 
 
 const express = require('express');
 const { body, query } = require('express-validator');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 const { convertToNewAffiliationPath } = pagePathUtils;
@@ -367,6 +366,7 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findById(pageId);
+
       const guestUserResponse = {
         sumOfLikers: page.liker.length,
         likerIds: page.liker.slice(0, 15),
