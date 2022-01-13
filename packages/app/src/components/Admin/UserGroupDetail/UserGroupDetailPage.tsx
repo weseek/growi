@@ -116,7 +116,7 @@ const UserGroupDetailPage: FC = () => {
   const removeUserByUsername = useCallback(async(username: string) => {
     const res = await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
 
-    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id));
+    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id)); // TODO 85062: use swr to sync
   }, [userGroup]);
 
   /*

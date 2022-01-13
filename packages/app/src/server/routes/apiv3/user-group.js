@@ -504,13 +504,16 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
-      const userGroupRelation = await UserGroupRelation.findOneAndDelete({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+      const res = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: res.deletedCount });
     }
     catch (err) {
-      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      const msg = 'Error occurred while removing the user from groups.';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
