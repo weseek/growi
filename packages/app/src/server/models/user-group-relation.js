@@ -272,8 +272,12 @@ class UserGroupRelation {
       });
   }
 
-  static async findWithUserByGroupIds(groupIds = null) {
-    return this.find(Array.isArray(groupIds) ? { relatedGroup: { $in: groupIds } } : {})
+  static async findWithUserByGroupIds(groupIds) {
+    if (!Array.isArray(groupIds)) {
+      throw Error('groupIds must be an array');
+    }
+
+    return this.find({ relatedGroup: { $in: groupIds } })
       .populate('relatedUser');
   }
 
