@@ -46,6 +46,7 @@ const getQueryByLocation = (location: Location) => {
 // 1. implement PageDeleteModal
 // 2. disable search form when this component is used in LegacyPage
 // 3. onAfterSearchInvoked should be refactored in LegacyPage
+// 4. text in ActionToPageGroup
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
