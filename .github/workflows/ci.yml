@@ -254,7 +254,7 @@ jobs:
     - name: Upload built artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Built Files
+        name: Built Packages
         path: packages/**/dist
 
     - name: Upload report as artifact
@@ -315,12 +315,8 @@ jobs:
     - name: Download built artifact
       uses: actions/download-artifact@v2
       with:
-        name: Built Files
-
-    - run: |
-        ls -l
-        ls -l packages
-        ls -l packages/core
+        name: Built Packages
+        path: packages
 
     - name: yarn server:ci
       working-directory: ./packages/app
