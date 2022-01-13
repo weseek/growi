@@ -48,7 +48,7 @@ export const useSWRxPageList = (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxSubscriptionStatus = <Data, Error>(pageId: Types.ObjectId): SWRResponse<{status: boolean | null}, Error> => {
+export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
   const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
