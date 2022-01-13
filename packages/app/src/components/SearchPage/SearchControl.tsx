@@ -14,7 +14,7 @@ type Props = {
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
-  onClickDeleteAllButton?: () => void
+  onClickActionButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
   excludeTrashPages: boolean,
@@ -112,7 +112,7 @@ const SearchControl: FC <Props> = (props: Props) => {
           <DeleteSelectedPageGroup
             isSelectAllCheckboxDisabled={searchResultCount === 0}
             selectAllCheckboxType={props.selectAllCheckboxType}
-            onClickDeleteAllButton={props.onClickDeleteAllButton}
+            onClickActionButton={props.onClickActionButton}
             onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
           />
         </div>

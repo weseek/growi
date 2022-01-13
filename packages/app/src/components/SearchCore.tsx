@@ -15,7 +15,6 @@ import SearchControl from './SearchPage/SearchControl';
 import {
   CheckboxType, IPageSearchResultData, SearchResultMeta, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
-import PageDeleteModal from './PageDeleteModal';
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -44,14 +43,13 @@ const getQueryByLocation = (location: Location) => {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 1. set excluded hoge based on props
-// 2. hide sort bar when this component is used in legacyPage
-// 3. disable search form when this component is used in LegacyPage
-// 4. refactor DeleteSelectedPageGroup component in a way that  SearchPage and LegacyPage can get actionToPage through props
-// 5. onAfterSearchInvoked should be refactored in LegacyPage
+// 1. implement PageDeleteModal
+// 2. disable search form when this component is used in LegacyPage
+// 3. onAfterSearchInvoked should be refactored in LegacyPage
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
+  renderActionToPagesModal: (isDeleteConfirmModalShown, getSelectedPagesToDelete, closeDeleteConfirmModalHandler) => React.FunctionComponent,
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -81,8 +79,8 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
-  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
-  const [deleteTargetPageIds, setDeleteTargetPageIds] = useState<Set<unknown>>(new Set());
+  const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
+  const [actionTargetPageIds, sestActionToTargetPageIds] = useState<Set<unknown>>(new Set());
 
 
   /*
@@ -246,32 +244,32 @@ const SearchCore: FC<Props> = (props: Props) => {
   }, [searchResults, selectedPagesIdList]);
 
 
-  const getSelectedPagesToDelete = useCallback(() => {
+  const getSelectedPagesToAction = useCallback(() => {
     const filteredPages = searchResults.filter((page) => {
-      return Array.from(deleteTargetPageIds).find(id => id === page.pageData._id);
+      return Array.from(actionTargetPageIds).find(id => id === page.pageData._id);
     });
     return filteredPages.map(page => ({
       pageId: page.pageData._id,
       revisionId: page.pageData.revision,
       path: page.pageData.path,
     }));
-  }, [deleteTargetPageIds, searchResults]);
+  }, [actionTargetPageIds, searchResults]);
 
 
-  const deleteSinglePageButtonHandler = useCallback((pageId) => {
-    setDeleteTargetPageIds(new Set([pageId]));
-    setIsDeleteConfirmModalShown(true);
+  const actionToSinglePageButtonHandler = useCallback((pageId) => {
+    sestActionToTargetPageIds(new Set([pageId]));
+    setIsActionToPageModalShown(true);
   }, []);
 
-  const deleteAllPagesButtonHandler = useCallback(() => {
+  const actionToAllPagesButtonHandler = useCallback(() => {
     if (selectedPagesIdList.size === 0) { return }
-    setDeleteTargetPageIds(selectedPagesIdList);
-    setIsDeleteConfirmModalShown(true);
+    sestActionToTargetPageIds(selectedPagesIdList);
+    setIsActionToPageModalShown(true);
   }, [selectedPagesIdList]);
 
 
-  const closeDeleteConfirmModalHandler = useCallback(() => {
-    setIsDeleteConfirmModalShown(false);
+  const closeActionConfirmModalHandler = useCallback(() => {
+    setIsActionToPageModalShown(false);
   }, []);
 
   /*
@@ -311,7 +309,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onClickSearchResultItem={selectPage}
         onClickCheckbox={toggleCheckBox}
         onPagingNumberChanged={onPagingNumberChanged}
-        onClickDeleteButton={deleteSinglePageButtonHandler}
+        onClickDeleteButton={actionToSinglePageButtonHandler}
       />
     );
   };
@@ -327,7 +325,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onSearchInvoked={onSearchInvoked}
         onClickSelectAllCheckbox={toggleAllCheckBox}
         selectAllCheckboxType={selectAllCheckboxType}
-        onClickDeleteAllButton={deleteAllPagesButtonHandler}
+        onClickActionButton={actionToAllPagesButtonHandler}
         onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
         excludeUserPages={excludeUserPages}
@@ -357,13 +355,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         activePage={activePage}
       >
       </SearchPageLayout>
-      <PageDeleteModal
-        isOpen={isDeleteConfirmModalShown}
-        pages={getSelectedPagesToDelete()}
-        onClose={closeDeleteConfirmModalHandler}
-        isDeleteCompletelyModal={false}
-        isAbleToDeleteCompletely={false}
-      />
+      {props.renderActionToPagesModal(isActionToPageModalShown, getSelectedPagesToAction, closeActionConfirmModalHandler)}
     </div>
   );
 };
