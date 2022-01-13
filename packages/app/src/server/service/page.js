@@ -31,7 +31,8 @@ class PageService {
     // init
     this.initPageEvent();
     // this code is written to check if method works. will delete in the end.
-    this.updateAllDescendantCount().then(res => logger.info(res)).catch(err => logger.warn(err));
+    this.updateDescendantCount('/', 1).then(res => logger.info(res)).catch(err => logger.warn(err));
+    // this.recountPage().then(res => logger.info(res)).catch(err => logger.warn(err));
   }
 
   initPageEvent() {
@@ -1247,60 +1248,108 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
+  async findSelfAndDescendant(path, grant = null) {
+    const Page = this.crowi.model('Page');
+    return Page.aggregate(
+      [
+        { $match: { path: { $regex: `^${path}.*` }, grant } },
+        {
+          $project: {
+            path: 1,
+            parent: 1,
+            field_length: { $strLenCP: '$path' },
+          },
+        },
+        { $sort: { field_length: -1 } },
+        { $project: { field_length: 0 } },
+      ],
+    );
+  }
 
-  async updateAllDescendantCount(path = '/', grant = 1) {
-    const Page = mongoose.model('Page');
+  async recountPage(targetIds) {
+    const Page = this.crowi.model('Page');
+    const res = await Page.aggregate(
+      [
+        {
+          $match: {
+            parent: { $in: targetIds },
+          },
 
-    /**
-     * retrieve all public descendants pages starting from path arg sorted descending order
-     * /A/B/C
-     * /A/B
-     * /A
-     */
-    const publicPages = await Page.findAllDescendantsByPath(path, grant);
-    for (const parentPage of publicPages) {
+        },
+        {
+          $project: {
+            path: 1,
+            parent: 1,
+            descendantCount: 1,
+          },
+        },
+        {
+          $group: {
+            _id: '$parent',
+            sumOfDescendantCount: {
+              $sum: '$descendantCount',
+            },
+            sumOfDocsCount: {
+              $sum: 1,
+            },
+          },
+        },
+        {
+          $set: {
+            descendantCount: {
+              $sum: ['$sumOfDescendantCount', '$sumOfDocsCount'],
+            },
+          },
+        },
+      ],
+    );
+    const idWithChildren = res.map(data => data._id.toString());
+    const pageIdsWithNoChildren = targetIds.filter((targetId) => {
+      return !idWithChildren.includes(targetId.toString());
+    });
 
-      // find pages with parentPage._id set in the parent field
-      const childrenPages = publicPages.filter((childPage) => {
-        if (childPage.parent == null) return;
-        return childPage.parent.toString() === parentPage._id.toString();
+    const operationForPageWithChildren = res.map((data) => {
+      return {
+        updateOne: {
+          filter: { _id: data._id },
+          update: { $set: { descendantCount: data.descendantCount } },
+        },
+      };
+
+    });
+    const operationsForPageWithoutChildren = pageIdsWithNoChildren.map((data) => {
+      return {
+        updateOne: {
+          filter: { _id: data._id },
+          update: { $set: { descendantCount: 0 } },
+        },
+      };
+    });
+
+    const operations = operationForPageWithChildren.concat(operationsForPageWithoutChildren);
+    await Page.bulkWrite(operations);
+  }
+
+  async updateDescendantCount(path = '/', grant = 1) {
+    const findSelfAndDescendant = await this.findSelfAndDescendant(path, grant);
+    const updatedPageIds = []; // 既に更新されたページ
+    for (const page of findSelfAndDescendant) {
+
+      // find pages that have the same parent
+      const pagesWithSameParentIds = findSelfAndDescendant.filter((p) => {
+        return page.parent?.toString() === p.parent?.toString();
+      }).map(p => p._id);
+
+      // filter out pages that are already updated
+      const recountTargetIds = pagesWithSameParentIds.filter((id) => {
+        return !updatedPageIds.map(_ => _.toString()).includes(id.toString());
       });
 
-      // if children not exist, set descendantCount to 0
-      if (childrenPages.length === 0) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          await Page.findOneAndUpdate({ _id: parentPage._id }, { $set: { descendantCount: 0 } });
-        }
-        catch (err) {
-          logger.warn(err);
-        }
-      }
-      else {
-        // if children exist, set descendantCount of parent page by following fomula.
-        // sum of children + sum of descendantCount that each children have in descendantCount field
-        try {
-          // aggregate the sum of descendantCount of parent page
-          // eslint-disable-next-line no-await-in-loop
-          const res = await Page.aggregate([
-            { $match: { parent: parentPage._id } },
-            {
-              $group: {
-                _id: null,
-                sumOfDescendantCount: { $sum: '$descendantCount' },
-              },
-            },
-          ]);
-          const sumOfDescendantCountArray = res.map(res => res.sumOfDescendantCount);
-          const totalDescendantCount = sumOfDescendantCountArray.reduce((prev, current) => prev + current);
+      // eslint-disable-next-line no-await-in-loop
+      await this.recountPage(pagesWithSameParentIds);
 
-          // eslint-disable-next-line no-await-in-loop
-          await Page.findOneAndUpdate({ _id: parentPage._id }, { $set: { descendantCount: childrenPages.length + totalDescendantCount } });
-        }
-        catch (err) {
-          logger.warn(err);
-        }
-      }
+      updatedPageIds.push(...recountTargetIds);
+
     }
   }
 
