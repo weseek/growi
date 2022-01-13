@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
