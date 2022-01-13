@@ -22,8 +22,8 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
 };
 
 
-export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageId', initialData ?? null);
+export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('pageId', initialData ?? null);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

@@ -5,10 +5,10 @@ import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
 
-import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
-import { toastError } from '../util/apiNotification';
+import { EditorMode } from '~/stores/ui';
 
+import { toastError } from '../util/apiNotification';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -53,9 +53,6 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-
-      isBookmarked: false,
-      sumOfBookmarks: 0,
 
       seenUsers: [],
       seenUserIds: [],
@@ -132,7 +129,6 @@ export default class PageContainer extends Container {
       // as it is stored in a separate collection to like and seen user
       // data so it has a separate api endpoint.
       this.initialPageLoad();
-      this.retrieveBookmarkInfo();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -320,20 +316,6 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(users);
   }
 
-  async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
-    this.setState({
-      sumOfBookmarks: response.data.sumOfBookmarks,
-      isBookmarked: response.data.isBookmarked,
-    });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
-  }
-
   async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
@@ -402,7 +384,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'edit') {
+      if (editorMode !== EditorMode.Editor) {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
@@ -410,7 +392,7 @@ export default class PageContainer extends Container {
     const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
       // reset
-      if (editorMode !== 'hackmd') {
+      if (editorMode !== EditorMode.HackMD) {
         pageEditorByHackmd.reset();
       }
     }
