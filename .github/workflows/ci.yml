@@ -10,30 +10,75 @@ on:
 
 jobs:
 
-  lint:
+  install-node14:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
 
     steps:
     - uses: actions/checkout@v2
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
 
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
+
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - install-node14*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  lint:
+    needs: install-node14
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap
 
     - name: lerna run lint for plugins
       run: |
@@ -47,18 +92,16 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - lint (14.x)*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
   test:
-    runs-on: ubuntu-latest
+    needs: install-node14
 
-    strategy:
-      matrix:
-        node-version: [14.x]
+    runs-on: ubuntu-latest
 
     services:
       mongodb:
@@ -79,14 +122,19 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
+
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
-    - name: Print dependencies
-      run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --depth=0
 
     - name: yarn test
       working-directory: ./packages/app
@@ -112,18 +160,16 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - test (14.x)*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
   launch-dev:
-    runs-on: ubuntu-latest
+    needs: install-node14
 
-    strategy:
-      matrix:
-        node-version: [14.x]
+    runs-on: ubuntu-latest
 
     services:
       mongodb:
@@ -140,14 +186,19 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
+
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
-    - name: Print dependencies
-      run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --depth=0
 
     - name: yarn dev:ci
       working-directory: ./packages/app
@@ -162,28 +213,16 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - build-dev (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - launch-dev (14.x)*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  launch-prod:
+  build-prod:
+    needs: install-node14
+
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-        - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
-        ports:
-        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -194,30 +233,89 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
+
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap
-    - name: Print dependencies
-      run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --depth=0
     - name: Build
       run: |
         yarn lerna run build
       env:
-        ANALYZE_BUNDLE_SIZE: ${{ matrix.node-version == '14.x' }}
+        ANALYZE_BUNDLE_SIZE: 1
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
-    - name: Print dependencies
+
+    - name: Upload built artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Built Files
+        path: packages/**/dist
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Bundle Analyzing Report
+        path: packages/app/report/bundle-analyzer.html
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - build-prod (14.x)*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  launch-prod:
+    needs: build-prod
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-
+
+    - name: Remove unnecessary packages
       run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --production --depth=0
+        rm -rf packages/slackbot-proxy
+    - name: lerna bootstrap --production
+      run: |
+        npx lerna bootstrap -- --production
+
+    - name: Download built artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: Built Files
+
     - name: Get DB name
       id: getdbname
       run: |
@@ -236,12 +334,6 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Bundle Analyzing Report
-        path: packages/app/report/bundle-analyzer.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
