@@ -6,6 +6,7 @@ import { Button, Popover, PopoverBody } from 'reactstrap';
 import UserPictureList from './UserPictureList';
 import FootstampIcon from '../FootstampIcon';
 import { useSWRxPageInfo } from '~/stores/page';
+import { useSWRxUsersList } from '~/stores/user';
 
 interface Props {
   pageId: Types.ObjectId
@@ -18,8 +19,11 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { data: pageInfo } = useSWRxPageInfo(pageId);
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
+  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
 
-  const seenUsers = pageInfo?.seenUsers ? pageInfo.seenUsers : [];
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
+  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
