@@ -1,9 +1,11 @@
 import React, {
   FC, useState, useCallback,
 } from 'react';
-import { apiGet } from '~/client/util/apiv1-client';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
+import SearchControl from './SearchPage/SearchControl';
+import { ActionToPagesType } from '../interfaces/search';
+
 
 type Props = {
 
@@ -39,12 +41,36 @@ const SearchPage : FC<Props> = (props: Props) => {
     }
   };
 
+  // eslint-disable-next-line max-len
+  const renderSearchControl = (searchingKeyword, sort, order, searchResultCount, appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked) => {
+    return (
+      <SearchControl
+        searchingKeyword={searchingKeyword}
+        sort={sort}
+        order={order}
+        searchResultCount={searchResultCount || 0}
+        appContainer={appContainer}
+        onSearchInvoked={onSearchInvoked}
+        onClickSelectAllCheckbox={toggleAllCheckBox}
+        selectAllCheckboxType={selectAllCheckboxType}
+        onClickActionButton={actionToAllPagesButtonHandler}
+        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
+        excludeUserPages={excludeUserPages}
+        excludeTrashPages={excludeTrashPages}
+        onChangeSortInvoked={onChangeSortInvoked}
+        actionType={ActionToPagesType.DELETE}
+      >
+      </SearchControl>
+    );
+  };
 
   return (
     <>
       <SearchCore
         onAfterSearchInvoked={onAfterSearchHandler}
-        renderActionToPagesModal={renderActionsToPageModal}
+        onRenderSearchControlInvoked={renderSearchControl}
+        renderSearchControl={renderActionsToPageModal}
       />
     </>
   );

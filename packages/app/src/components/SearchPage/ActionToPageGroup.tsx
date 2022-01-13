@@ -1,9 +1,11 @@
 import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
-import { CheckboxType } from '../../interfaces/search';
+import { CheckboxType, ActionToPagesType } from '../../interfaces/search';
+
 
 type Props = {
+  actionType : ActionToPagesType,
   isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
   onClickActionButton?: () => void,
@@ -53,8 +55,23 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         disabled={selectAllCheckboxType === CheckboxType.NONE_CHECKED}
         onClick={onClickDeleteButton}
       >
-        {/* <i className="icon-trash"></i>
-        {t('search_result.delete_all_selected_page')} */}
+        {props.actionType === ActionToPagesType.DELETE
+        && (
+          <>
+            <i className="icon-trash"></i>
+            {t('search_result.delete_all_selected_page')}
+          </>
+        )}
+
+        {props.actionType === ActionToPagesType.MIGRATE
+        && (
+          <>
+            {/* TODO migrate text and icon here */}
+            {/* https://redmine.weseek.co.jp/issues/85465 */}
+            migrate all
+          </>
+        )}
+
       </button>
     </div>
   );

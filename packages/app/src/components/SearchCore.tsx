@@ -50,6 +50,9 @@ type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isDeleteConfirmModalShown, getSelectedPagesToDelete, closeDeleteConfirmModalHandler) => React.FunctionComponent,
+  // eslint-disable-next-line max-len
+  renderSearchControl:any, // (searchingKeyword, sort, order, searchResultCount, appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked) => React.FunctionComponent,
+
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -315,25 +318,11 @@ const SearchCore: FC<Props> = (props: Props) => {
   };
 
   const renderSearchControl = () => {
-    return (
-      <SearchControl
-        searchingKeyword={searchingKeyword}
-        sort={sort}
-        order={order}
-        searchResultCount={searchResultCount || 0}
-        appContainer={props.appContainer}
-        onSearchInvoked={onSearchInvoked}
-        onClickSelectAllCheckbox={toggleAllCheckBox}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={actionToAllPagesButtonHandler}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={excludeUserPages}
-        excludeTrashPages={excludeTrashPages}
-        onChangeSortInvoked={onChangeSortInvoked}
-      >
-      </SearchControl>
-    );
+    if (props.renderSearchControl == null) {
+      return <></>;
+    }
+    // eslint-disable-next-line max-len
+    return props.renderSearchControl(searchingKeyword, sort, order, searchResultCount, props.appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked);
   };
   /*
    * Dependencies

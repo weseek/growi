@@ -3,6 +3,8 @@ import React, {
 } from 'react';
 import PageMigrateModal from './PageMigrateModal';
 import SearchCore from './SearchCore';
+import SearchControl from './SearchPage/SearchControl';
+import { ActionToPagesType } from '../interfaces/search';
 
 type Props = {
 
@@ -28,11 +30,35 @@ const LegacyPage : FC<Props> = (props: Props) => {
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
   };
 
+  // eslint-disable-next-line max-len
+  const renderSearchControl = (searchingKeyword, sort, order, searchResultCount, appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked) => {
+    return (
+      <SearchControl
+        searchingKeyword={searchingKeyword}
+        sort={sort}
+        order={order}
+        searchResultCount={searchResultCount || 0}
+        appContainer={appContainer}
+        onSearchInvoked={onSearchInvoked}
+        onClickSelectAllCheckbox={toggleAllCheckBox}
+        selectAllCheckboxType={selectAllCheckboxType}
+        onClickActionButton={actionToAllPagesButtonHandler}
+        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
+        excludeUserPages={excludeUserPages}
+        excludeTrashPages={excludeTrashPages}
+        onChangeSortInvoked={onChangeSortInvoked}
+        actionType={ActionToPagesType.MIGRATE}
+      >
+      </SearchControl>
+    );
+  };
 
   return (
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
+      renderSearchControl={renderSearchControl}
     />
   );
 };
