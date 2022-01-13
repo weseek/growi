@@ -864,36 +864,37 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
+   *
    *    paths:
    *      /users/list:
-   *      get:
-   *        tags: [Users]
-   *        summary: /users/list
-   *        operationId: getUsersList
-   *        description: Get list of users
-   *        parameters:
-   *          - in: query
-   *            name: userIds
-   *            schema:
-   *              type: string
-   *              description: user IDs
-   *              example: 5e06fcc7516d64004dbf4da6,5e098d53baa2ac004e7d24ad
-   *        responses:
-   *          200:
-   *            description: Succeeded to get list of users.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    users:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/User'
-   *                      description: user list
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
+   *        get:
+   *          tags: [Users]
+   *          summary: /users/list
+   *          operationId: getUsersList
+   *          description: Get list of users
+   *          parameters:
+   *            - in: query
+   *              name: userIds
+   *              schema:
+   *                type: string
+   *                description: user IDs
+   *                example: 5e06fcc7516d64004dbf4da6,5e098d53baa2ac004e7d24ad
+   *          responses:
+   *            200:
+   *              description: Succeeded to get list of users.
+   *              content:
+   *                application/json:
+   *                  schema:
+   *                    properties:
+   *                      users:
+   *                        type: array
+   *                        items:
+   *                          $ref: '#/components/schemas/User'
+   *                        description: user list
+   *            403:
+   *              $ref: '#/components/responses/403'
+   *            500:
+   *              $ref: '#/components/responses/500'
    */
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const userIds = req.query.userIds || null;
