@@ -25,7 +25,7 @@ module.exports = (crowi) => {
   const { UserGroupRelation } = crowi.models;
 
   validator.list = [
-    query('groupIds', 'groupIds must be an array').optional().isArray(),
+    query('groupIds', 'groupIds is required and must be an array').isArray(),
     query('childGroupIds', 'childGroupIds must be an array').optional().isArray(),
   ];
 
