@@ -215,8 +215,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div className={`hogehoge ${isOver ? 'grw-pagetree-is-over' : ''}`}>
-
+      <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
         <div
           ref={(c) => { drag(c); drop(c) }}
           className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
@@ -258,7 +257,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         )}
         {
           isOpen && hasChildren() && currentChildren.map(node => (
-            <div key={node.page._id} className="grw-pagetree-item-container">
+            <div key={node.page._id} className="grw-pagetree-item-children">
               <Item
                 isEnableActions={isEnableActions}
                 itemNode={node}
