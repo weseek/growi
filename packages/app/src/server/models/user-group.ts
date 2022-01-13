@@ -119,4 +119,4 @@ schema.statics.findAllAncestorGroups = async function(parent, ancestors = [paren
   return this.findAllAncestorGroups(nextParent, ancestors);
 };
 
-return getOrCreateModel<UserGroupDocument, UserGroupModel>('UserGroup', schema);
+export default getOrCreateModel<UserGroupDocument, UserGroupModel>('UserGroup', schema);
