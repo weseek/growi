@@ -258,11 +258,11 @@ ul.pagination {
   // Pagetree
   .grw-pagetree {
     .grw-pagetree-item {
+      .grw-pagetree-is-over {
+        background: $gray-900;
+      }
       &.grw-pagetree-is-target {
         background: $bgcolor-list-hover;
-      }
-      &.grw-pagetree-is-over {
-        background: $gray-900;
       }
 
       .grw-pagetree-count {
