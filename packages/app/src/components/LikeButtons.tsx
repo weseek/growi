@@ -34,6 +34,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
   const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
   const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
 
+  // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
   const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
 
