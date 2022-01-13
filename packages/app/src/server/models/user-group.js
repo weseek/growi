@@ -1,3 +1,5 @@
+import { compareObjectId, includesObjectId } from '~/server/util/compare-objectId';
+
 const debug = require('debug')('growi:models:userGroup');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -183,6 +185,13 @@ class UserGroup {
     }
 
     const parent = await this.findById(parentId);
+
+    // throw if parent was in its descendants
+    const descendantsWithTarget = await this.findGroupsWithDescendantsRecursively([userGroup]);
+    const descendants = descendantsWithTarget.filter(d => compareObjectId(d._id, userGroup._id));
+    if (includesObjectId(descendants, parent._id)) {
+      throw Error('It is not allowed to choose parent from descendant groups.');
+    }
 
     // find users for comparison
     const UserGroupRelation = mongoose.model('UserGroupRelation');
