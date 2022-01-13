@@ -1,4 +1,3 @@
-import debugFactory from 'debug';
 import mongoose, {
   Types, Schema, Model, Document,
 } from 'mongoose';
@@ -6,8 +5,6 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { getOrCreateModel } from '@growi/core';
 
 import { IUserGroup } from '~/interfaces/user';
-
-const debug = debugFactory('growi:models:userGroup');
 
 
 export interface UserGroupDocument extends IUserGroup, Document {}
@@ -45,7 +42,7 @@ schema.statics.findUserGroupsWithPagination = function(opts) {
 
   return this.paginate(query, options)
     .catch((err) => {
-      debug('Error on pagination:', err);
+      // debug('Error on pagination:', err); TODO: add logger
     });
 };
 
