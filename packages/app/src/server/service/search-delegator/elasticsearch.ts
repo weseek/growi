@@ -311,7 +311,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings.json') : require('^/resource/search/mappings-es7.json');
+    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
     return this.client.indices.create({ index, body });
   }
 
@@ -617,10 +617,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // for debug
     logger.debug('ES result: ', result);
 
+    const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
+
     return {
       meta: {
         took: result.took,
-        total: result.hits.total,
+        total: totalValue,
         results: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
