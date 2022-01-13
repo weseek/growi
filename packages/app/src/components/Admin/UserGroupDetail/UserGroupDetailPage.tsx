@@ -42,7 +42,7 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Function
    */
-  const init = useCallback(async() => {
+  const sync = useCallback(async() => {
     try {
       const [
         userGroupRelations,
@@ -52,13 +52,13 @@ const UserGroupDetailPage: FC = () => {
         apiv3Get(`/user-groups/${userGroup._id}/pages`).then(res => res.data.pages),
       ]);
 
-      setUserGroup(userGroupRelations);
-      setUserGroupRelations(relatedPages);
+      setUserGroupRelations(userGroupRelations);
+      setRelatedPages(relatedPages);
     }
     catch (err) {
       toastError(new Error('Failed to fetch data'));
     }
-  }, []); // no deps
+  }, [userGroup]);
 
   // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
@@ -110,8 +110,8 @@ const UserGroupDetailPage: FC = () => {
     // do not add users for ducaplicate
     if (res.data.userGroupRelation == null) { return }
 
-    await init();
-  }, [userGroup]);
+    await sync();
+  }, [userGroup, sync]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
     const res = await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
@@ -123,7 +123,7 @@ const UserGroupDetailPage: FC = () => {
    * componentDidMount
    */
   useEffect(() => {
-    init();
+    sync();
   }, []);
 
   /*
