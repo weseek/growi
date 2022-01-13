@@ -254,9 +254,6 @@ jobs:
         yarn lerna run build
       env:
         ANALYZE_BUNDLE_SIZE: 1
-    - name: lerna bootstrap --production
-      run: |
-        npx lerna bootstrap -- --production
 
     - name: Upload built artifact
       uses: actions/upload-artifact@v2
@@ -284,6 +281,16 @@ jobs:
     needs: build-prod
 
     runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+      mongodb36:
+        image: mongo:3.6
+        ports:
+        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
