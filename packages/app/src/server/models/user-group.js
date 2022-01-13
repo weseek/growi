@@ -79,8 +79,8 @@ class UserGroup {
   }
 
   static async findChildUserGroupsByParentIds(parentIds, includeGrandChildren = false) {
-    if (parentIds == null) {
-      throw Error('parentIds must not be null.');
+    if (!Array.isArray(parentIds)) {
+      throw Error('parentIds must be an array.');
     }
 
     const childUserGroups = await this.find({ parent: { $in: parentIds } });
