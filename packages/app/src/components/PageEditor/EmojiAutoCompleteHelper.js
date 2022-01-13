@@ -1,13 +1,12 @@
 
-import { emojiIndex } from 'emoji-mart';
+import emojiData from 'emoji-mart/data/all.json';
+import { NimbleEmojiIndex } from 'emoji-mart';
 import UpdateDisplayUtil from '~/client/util/codemirror/update-display-util.ext';
 // This class will be deleted by GW-7652
 class EmojiAutoCompleteHelper {
 
   constructor() {
-
     this.showHint = this.showHint.bind(this);
-
   }
 
 
@@ -54,8 +53,8 @@ class EmojiAutoCompleteHelper {
         const term = matched.replace(':', ''); // remove ':' in the head
 
         // get a list of shortnames
-        // TODO 13 Jan 2022
-        const shortnames = emojiIndex.search(term).map(emoji => emoji.colons);
+        const emojiIndex = new NimbleEmojiIndex(emojiData);
+        const shortnames = emojiIndex.search(term);
         if (shortnames.length >= 1) {
           return {
             list: this.generateEmojiRenderer(shortnames),
@@ -73,7 +72,7 @@ class EmojiAutoCompleteHelper {
    */
   // TODO 13 Jan 2022
   generateEmojiRenderer(emojiShortnames) {
-    return emojiIndex.search(emojiShortnames).map((emoji) => {
+    return emojiShortnames.map((emoji) => {
       return {
         text: emoji.colons,
         className: 'crowi-emoji-autocomplete',
@@ -83,57 +82,6 @@ class EmojiAutoCompleteHelper {
         },
       };
     });
-  }
-
-  /**
-   * transplanted from https://github.com/emojione/emojione/blob/master/examples/OTHER.md
-   * @param {string} term
-   * @returns {string[]} a list of shortname
-   */
-  searchEmojiShortnames(term) {
-    const maxLength = 12;
-
-    const results1 = [];
-    const results2 = [];
-    const results3 = [];
-    const results4 = [];
-    const countLen1 = () => { return results1.length };
-    const countLen2 = () => { return countLen1() + results2.length };
-    const countLen3 = () => { return countLen2() + results3.length };
-    const countLen4 = () => { return countLen3() + results4.length };
-
-    // TODO performance tune
-    // when total length of all results is less than `maxLength`
-    for (const data of Object.values(this.emojiStrategy)) {
-      if (maxLength <= countLen1()) { break }
-      // prefix match to shortname
-      else if (data.shortname.indexOf(`:${term}`) > -1) {
-        results1.push(data.shortname);
-        continue;
-      }
-      else if (maxLength <= countLen2()) { continue }
-      // partial match to shortname
-      else if (data.shortname.indexOf(term) > -1) {
-        results2.push(data.shortname);
-        continue;
-      }
-      else if (maxLength <= countLen3()) { continue }
-      // partial match to elements of aliases
-      else if ((data.aliases != null) && data.aliases.find((elem) => { return elem.indexOf(term) > -1 })) {
-        results3.push(data.shortname);
-        continue;
-      }
-      else if (maxLength <= countLen4()) { continue }
-      // partial match to elements of keywords
-      else if ((data.keywords != null) && data.keywords.find((elem) => { return elem.indexOf(term) > -1 })) {
-        results4.push(data.shortname);
-      }
-    }
-
-    let results = results1.concat(results2).concat(results3).concat(results4);
-    results = results.slice(0, maxLength);
-
-    return results;
   }
 
 }

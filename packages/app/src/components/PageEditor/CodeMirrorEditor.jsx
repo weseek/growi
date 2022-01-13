@@ -12,7 +12,6 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import emojiData from 'emoji-mart/data/all.json';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -170,11 +169,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    // if (this.props.emojiStrategy != null) {
     this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper();
     this.setState({ isEnabledEmojiAutoComplete: true });
-    // }
-
     this.initializeTextlint();
   }
 
