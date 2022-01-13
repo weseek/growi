@@ -97,10 +97,10 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
 
-      toastSuccess(`Deleted a group "${xss.process(res.data.userGroup.name)}"`);
+      toastSuccess(`Deleted ${xss.process(res.data.userGroups.length)} groups.`);
     }
     catch (err) {
-      toastError(new Error('Unable to delete the group'));
+      toastError(new Error('Unable to delete the groups'));
     }
   }, [mutateUserGroups, mutateUserGroupRelations]);
 

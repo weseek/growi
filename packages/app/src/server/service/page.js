@@ -829,22 +829,19 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({ grantedGroup: deletedGroup });
+    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
+    let operationsToPublicize;
     switch (action) {
       case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
+        await Page.publicizePages(pages);
         break;
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
+        await Page.transferPagesToGroup(pages, transferToUserGroupId);
         break;
       default:
         throw new Error('Unknown action for private pages');

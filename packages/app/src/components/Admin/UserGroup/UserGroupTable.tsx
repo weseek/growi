@@ -133,15 +133,15 @@ const UserGroupTable: FC<Props> = (props: Props) => {
                   <ul className="list-inline">
                     {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
                       return (
-                        <li key={group._id} className="list-inline-item badge badge-pill badge-warning">
+                        <li key={group._id} className="list-inline-item badge badge-success">
                           {props.isAclEnabled
                             ? (
-                              <td><a href={`/admin/user-group-detail/${group._id}`}>{xss.process(group.name)}</a></td>
+                              <a href={`/admin/user-group-detail/${group._id}`}>{xss.process(group.name)}</a>
                             )
                             : (
-                              <td>{xss.process(group.name)}</td>
+                              <p>{xss.process(group.name)}</p>
                             )
-                          },&nbsp;
+                          }
                         </li>
                       );
                     })}

@@ -35,8 +35,8 @@ export const useSWRxUserGroupRelationList = (
 ): SWRResponse<IUserGroupRelationHasId[], Error> => {
   return useSWRImmutable<IUserGroupRelationHasId[], Error>(
     groupIds != null ? ['/user-group-relations', groupIds, childGroupIds] : null,
-    (endpoint, parentIds, childGroupIds) => apiv3Get<UserGroupRelationListResult>(
-      endpoint, { parentIds, childGroupIds },
+    (endpoint, groupIds, childGroupIds) => apiv3Get<UserGroupRelationListResult>(
+      endpoint, { groupIds, childGroupIds },
     ).then(result => result.data.userGroupRelations),
     {
       fallbackData: initialData,

@@ -97,22 +97,35 @@ class UserGroup {
     };
   }
 
+  static async findGroupsWithDescendantsRecursively(groups, descendants = groups) {
+    const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
+
+    if (nextGroups.length === 0) {
+      return descendants;
+    }
+
+    return this.findAllAncestorGroups(nextGroups, descendants.concat(nextGroups));
+  }
+
   // Delete completely
-  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
+  static async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
 
-    const groupToDelete = await this.findById(deleteGroupId);
-    if (groupToDelete == null) {
-      throw new Error('UserGroup data is not exists. id:', deleteGroupId);
+    const rootGroup = await this.findById(deleteRootGroupId);
+    if (rootGroup == null) {
+      throw new Error('UserGroup data is not exists. id:', rootGroup._id);
     }
-    const deletedGroup = await groupToDelete.remove();
 
-    await Promise.all([
-      UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      UserGroup.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user),
-    ]);
+    const groupsToDelete = await this.findGroupsWithDescendantsRecursively([rootGroup]);
 
-    return deletedGroup;
+    // 1. update page & remove all groups
+    await UserGroup.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user);
+    // 2. remove all groups
+    const deletedGroups = await this.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
+    // 3. remove all relations
+    await UserGroupRelation.removeAllByUserGroups(groupsToDelete);
+
+    return deletedGroups;
   }
 
   static countUserGroups() {
