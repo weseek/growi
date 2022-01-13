@@ -318,7 +318,9 @@ jobs:
         name: Built Files
 
     - run: |
-        ls -R packages/core
+        ls -l
+        ls -l packages
+        ls -l packages/core
 
     - name: yarn server:ci
       working-directory: ./packages/app
