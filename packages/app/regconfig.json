@@ -1,0 +1,26 @@
+{
+  "core": {
+    "workingDir": "test/cypress/screenshots",
+    "actualDir": "test/cypress/screenshots-actual",
+    "thresholdRate": 0.001,
+    "addIgnore": true,
+    "ximgdiff": {
+      "invocationType": "client"
+    }
+  },
+  "plugins": {
+    "reg-keygen-git-hash-plugin": true,
+    "reg-notify-github-plugin": {
+      "prComment": true,
+      "prCommentBehavior": "default",
+      "setCommitStatus": false,
+      "clientId": "$REG_NOTIFY_GITHUB_PLUGIN_CLIENTID"
+    },
+    "reg-notify-slack-plugin": {
+      "webhookUrl": "$SLACK_WEBHOOK_URL"
+    },
+    "reg-publish-s3-plugin": {
+      "bucketName": "growi-vrt-snapshots"
+    }
+  }
+}
