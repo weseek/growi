@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, FC, useEffect, memo, useRef,
+  useCallback, useState, FC, useEffect, memo,
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
