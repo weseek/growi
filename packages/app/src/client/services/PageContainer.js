@@ -5,10 +5,10 @@ import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
 
-import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
-import { toastError } from '../util/apiNotification';
+import { EditorMode } from '~/stores/ui';
 
+import { toastError } from '../util/apiNotification';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -384,7 +384,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'edit') {
+      if (editorMode !== EditorMode.Editor) {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
@@ -392,7 +392,7 @@ export default class PageContainer extends Container {
     const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
       // reset
-      if (editorMode !== 'hackmd') {
+      if (editorMode !== EditorMode.HackMD) {
         pageEditorByHackmd.reset();
       }
     }
