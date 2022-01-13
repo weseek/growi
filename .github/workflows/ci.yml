@@ -255,7 +255,9 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Built Packages
-        path: packages/**/dist
+        path: |
+          packages/**/dist
+          packages/app/public
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
