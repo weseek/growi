@@ -125,7 +125,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     console.log('pageItem was droped!!');
   };
 
-  const [, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop(() => ({
     accept: 'PAGE_TREE',
     drop: pageItemDropHandler,
     hover: (item, monitor) => {
@@ -138,6 +138,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         }, 1000);
       }
     },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
   }));
 
   const hasChildren = useCallback((): boolean => {
@@ -212,7 +215,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <>
-      <div ref={(c) => { drag(c); drop(c) }} className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+      <div
+        ref={(c) => { drag(c); drop(c) }}
+        className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''} ${isOver ? 'grw-pagetree-is-over' : ''}`}
+      >
         <button
           type="button"
           className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}

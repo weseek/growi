@@ -261,6 +261,9 @@ ul.pagination {
       &.grw-pagetree-is-target {
         background: $bgcolor-list-hover;
       }
+      &.grw-pagetree-is-over {
+        background: $gray-900;
+      }
 
       .grw-pagetree-count {
         background: $bgcolor-sidebar-list-group;
