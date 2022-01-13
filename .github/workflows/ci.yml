@@ -118,7 +118,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -182,7 +182,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -229,7 +229,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -290,7 +290,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -316,31 +316,27 @@ jobs:
       with:
         name: Built Files
 
-    - name: Get DB name
-      id: getdbname
-      run: |
-        echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
     - name: yarn server:ci
       working-directory: ./packages/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
         yarn server:ci
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
     - name: yarn server:ci with MongoDB 3.6
       working-directory: ./packages/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
         yarn server:ci
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - build-prod (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-prod (14.x)*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
