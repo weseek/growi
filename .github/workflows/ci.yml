@@ -10,97 +10,7 @@ on:
 
 jobs:
 
-  install-node14:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 14.x
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          **/node_modules
-        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node_modules-14.x-
-
-    - name: lerna bootstrap
-      run: |
-        npx lerna bootstrap
-
-    - name: Print dependencies
-      run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --depth=0
-
-    - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
-      if: failure()
-      with:
-        type: ${{ job.status }}
-        job_name: '*Node CI for growi - install-node14*'
-        channel: '#ci'
-        isCompactMode: true
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  install-prod-node14:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 14.x
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          **/node_modules
-        key: ${{ runner.OS }}-node_modules-14.x-prod-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node_modules-14.x-prod-
-          ${{ runner.os }}-node_modules-14.x-
-
-    - name: Remove unnecessary packages
-      run: |
-        rm -rf packages/slackbot-proxy
-    - name: lerna bootstrap --production
-      run: |
-        npx lerna bootstrap -- --production
-
-    - name: Print dependencies
-      run: |
-        echo -n "node " && node -v
-        echo -n "npm " && npm -v
-        yarn list --depth=0
-
-    - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
-      if: failure()
-      with:
-        type: ${{ job.status }}
-        job_name: '*Node CI for growi - install-prod-node14*'
-        channel: '#ci'
-        isCompactMode: true
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   lint:
-    needs: install-node14
-
     runs-on: ubuntu-latest
 
     steps:
@@ -145,8 +55,6 @@ jobs:
 
 
   test:
-    needs: install-node14
-
     runs-on: ubuntu-latest
 
     services:
@@ -213,8 +121,6 @@ jobs:
 
 
   launch-dev:
-    needs: install-node14
-
     runs-on: ubuntu-latest
 
     services:
@@ -264,6 +170,51 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  install-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.OS }}-node_modules-14.x-launch-prod-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-launch-prod-
+          ${{ runner.os }}-node_modules-14.x-
+
+    - name: Remove unnecessary packages
+      run: |
+        rm -rf packages/slackbot-proxy
+    - name: lerna bootstrap --production
+      run: |
+        npx lerna bootstrap -- --production
+
+    - name: Print dependencies
+      run: |
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
+        yarn list --depth=0
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - install-prod-node14*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-prod:
     needs: install-node14
@@ -285,8 +236,9 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: ${{ runner.OS }}-node_modules-14.x-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-14.x-build-prod-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
+          ${{ runner.os }}-node_modules-14.x-build-prod-
           ${{ runner.os }}-node_modules-14.x-
 
     - name: Remove unnecessary packages
@@ -324,7 +276,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   launch-prod:
-    needs: [install-prod-node14, build-prod]
+    needs: [install-prod, build-prod]
 
     runs-on: ubuntu-latest
 
@@ -353,9 +305,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: ${{ runner.OS }}-node_modules-14.x-prod-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-14.x-launch-prod-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-node_modules-14.x-prod-
+          ${{ runner.os }}-node_modules-14.x-launch-prod-
+          ${{ runner.os }}-node_modules-14.x-
 
     - name: Remove unnecessary packages
       run: |
@@ -370,6 +323,7 @@ jobs:
       working-directory: ./packages/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
+        ls -R packages/core
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
