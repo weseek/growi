@@ -217,8 +217,6 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-prod:
-    needs: install-node14
-
     runs-on: ubuntu-latest
 
     steps:
