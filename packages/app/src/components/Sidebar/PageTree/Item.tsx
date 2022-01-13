@@ -214,62 +214,60 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen]);
 
   return (
-    <>
-      <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
-        <div
-          ref={(c) => { drag(c); drop(c) }}
-          className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+    <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
+      <div
+        ref={(c) => { drag(c); drop(c) }}
+        className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+      >
+        <button
+          type="button"
+          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+          onClick={onClickLoadChildren}
         >
-          <button
-            type="button"
-            className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
-            onClick={onClickLoadChildren}
-          >
-            <div className="grw-triangle-icon">
-              <TriangleIcon />
-            </div>
-          </button>
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
-          </a>
-          <div className="grw-pagetree-count-wrapper">
-            <ItemCount />
+          <div className="grw-triangle-icon">
+            <TriangleIcon />
           </div>
-          <div className="grw-pagetree-control d-none">
-            <ItemControl
-              page={page}
-              onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-              onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+        </button>
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+        </a>
+        <div className="grw-pagetree-count-wrapper">
+          <ItemCount />
+        </div>
+        <div className="grw-pagetree-control d-none">
+          <ItemControl
+            page={page}
+            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            isEnableActions={isEnableActions}
+            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+          />
+        </div>
+      </div>
+
+      {isEnableActions && (
+        <ClosableTextInput
+          isShown={isNewPageInputShown}
+          placeholder={t('Input page name')}
+          onClickOutside={() => { setNewPageInputShown(false) }}
+          onPressEnter={onPressEnterHandler}
+          inputValidator={inputValidator}
+        />
+      )}
+      {
+        isOpen && hasChildren() && currentChildren.map(node => (
+          <div key={node.page._id} className="grw-pagetree-item-children">
+            <Item
               isEnableActions={isEnableActions}
-              isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+              itemNode={node}
+              isOpen={false}
+              targetPathOrId={targetPathOrId}
+              onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>
-        </div>
-
-        {isEnableActions && (
-          <ClosableTextInput
-            isShown={isNewPageInputShown}
-            placeholder={t('Input page name')}
-            onClickOutside={() => { setNewPageInputShown(false) }}
-            onPressEnter={onPressEnterHandler}
-            inputValidator={inputValidator}
-          />
-        )}
-        {
-          isOpen && hasChildren() && currentChildren.map(node => (
-            <div key={node.page._id} className="grw-pagetree-item-children">
-              <Item
-                isEnableActions={isEnableActions}
-                itemNode={node}
-                isOpen={false}
-                targetPathOrId={targetPathOrId}
-                onClickDeleteByPage={onClickDeleteByPage}
-              />
-            </div>
-          ))
-        }
-      </div>
-    </>
+        ))
+      }
+    </div>
   );
 
 };
