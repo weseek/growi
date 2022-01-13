@@ -12,6 +12,7 @@ import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfo } from '~/stores/page';
+import { useSWRxUsersList } from '~/stores/user';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 const logger = loggerFactory('growi:LikeButtons');
@@ -26,11 +27,15 @@ const LikeButtons: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
 
+  const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
   const isLiked = pageInfo?.isLiked != null ? pageInfo.isLiked : false;
   const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
-  const liker = pageInfo?.liker != null ? pageInfo.liker : [];
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
+  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
+
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
+  const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
 
   const checkAndUpdateImageUrlCached = async(users: IUser[]) => {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
@@ -61,7 +66,6 @@ const LikeButtons: FC<Props> = (props: Props) => {
       const res = await apiv3Put('/page/likes', { pageId, bool: !isLiked });
       if (res) {
         mutate();
-        checkAndUpdateImageUrlCached(liker);
       }
     }
     catch (err) {
@@ -94,7 +98,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {liker.length ? <UserPictureList users={liker} /> : t('No users have liked this yet')}
+            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet')}
           </div>
         </PopoverBody>
       </Popover>

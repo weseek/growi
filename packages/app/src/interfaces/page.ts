@@ -1,9 +1,10 @@
+import { Types } from 'mongoose';
+
 import { Ref } from './common';
 import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
-
 
 export type IPage = {
   path: string,
@@ -33,8 +34,8 @@ export type IPage = {
 
 export type IPageInfo = {
   sumOfLikers: number
-  liker: IUser[]
-  seenUsers: IUser[]
+  likerIds: string[]
+  seenUserIds: string[]
   isSeen: boolean
   isLiked: boolean
 }

@@ -864,7 +864,6 @@ module.exports = (crowi) => {
 
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const userIds = req.query.userIds || null;
-    console.log('ユーザアイディーズ！', userIds);
 
     let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
