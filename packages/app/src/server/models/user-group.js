@@ -97,24 +97,6 @@ class UserGroup {
     };
   }
 
-  // Check if registerable
-  static isRegisterableName(name) {
-    const query = { name };
-
-    const childUserGroups = await this.find({ parent: { $in: parentIds } });
-
-    let grandChildUserGroups = null;
-    if (includeGrandChildren) {
-      const childUserGroupIds = childUserGroups.map(group => group._id);
-      grandChildUserGroups = await this.find({ parent: { $in: childUserGroupIds } });
-    }
-
-    return {
-      childUserGroups,
-      grandChildUserGroups,
-    };
-  }
-
   // Delete completely
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
