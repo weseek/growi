@@ -149,6 +149,7 @@ class UserGroup {
   }
 
   // TODO 85062: write test code
+  // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
   static async updateGroup(id, name, description, parentId, forceUpdateParents = false) {
     const userGroup = await this.findById(id);
     if (userGroup == null) {
