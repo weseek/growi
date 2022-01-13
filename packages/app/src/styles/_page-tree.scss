@@ -47,54 +47,67 @@ $grw-pagetree-item-padding-left: 10px;
 
   // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
   > .hogehoge {
-    // > .grw-pagetree-item {
-    //   background: blue;
     > .grw-pagetree-item-container {
       > .hogehoge {
         > .grw-pagetree-item {
           padding-left: $grw-pagetree-item-padding-left;
-          background: red;
-        }
-      }
-    }
-    // }
-  }
-
-  > .grw-pagetree-item-container {
-    > .grw-pagetree-item {
-      padding-left: $grw-pagetree-item-padding-left * 2;
-    }
-    > .grw-pagetree-item-container {
-      > .grw-pagetree-item {
-        padding-left: $grw-pagetree-item-padding-left * 3;
-      }
-      > .grw-pagetree-item-container {
-        > .grw-pagetree-item {
-          padding-left: $grw-pagetree-item-padding-left * 4;
         }
         > .grw-pagetree-item-container {
-          > .grw-pagetree-item {
-            padding-left: $grw-pagetree-item-padding-left * 5;
-          }
-          > .grw-pagetree-item-container {
+          > .hogehoge {
             > .grw-pagetree-item {
-              padding-left: $grw-pagetree-item-padding-left * 6;
+              padding-left: $grw-pagetree-item-padding-left * 2;
             }
             > .grw-pagetree-item-container {
-              > .grw-pagetree-item {
-                padding-left: $grw-pagetree-item-padding-left * 7;
-              }
-              > .grw-pagetree-item-container {
+              > .hogehoge {
                 > .grw-pagetree-item {
-                  padding-left: $grw-pagetree-item-padding-left * 8;
+                  padding-left: $grw-pagetree-item-padding-left * 3;
                 }
                 > .grw-pagetree-item-container {
-                  > .grw-pagetree-item {
-                    padding-left: $grw-pagetree-item-padding-left * 9;
-                  }
-                  .grw-pagetree-item-container {
+                  > .hogehoge {
                     > .grw-pagetree-item {
-                      padding-left: $grw-pagetree-item-padding-left * 10;
+                      padding-left: $grw-pagetree-item-padding-left * 4;
+                    }
+                    > .grw-pagetree-item-container {
+                      > .hogehoge {
+                        > .grw-pagetree-item {
+                          padding-left: $grw-pagetree-item-padding-left * 5;
+                        }
+                        > .grw-pagetree-item-container {
+                          > .hogehoge {
+                            > .grw-pagetree-item {
+                              padding-left: $grw-pagetree-item-padding-left * 6;
+                            }
+                            > .grw-pagetree-item-container {
+                              > .hogehoge {
+                                > .grw-pagetree-item {
+                                  padding-left: $grw-pagetree-item-padding-left * 7;
+                                }
+                                > .grw-pagetree-item-container {
+                                  > .hogehoge {
+                                    > .grw-pagetree-item {
+                                      padding-left: $grw-pagetree-item-padding-left * 8;
+                                    }
+                                    > .grw-pagetree-item-container {
+                                      > .hogehoge {
+                                        > .grw-pagetree-item {
+                                          padding-left: $grw-pagetree-item-padding-left * 9;
+                                        }
+                                        .grw-pagetree-item-container {
+                                          > .hogehoge {
+                                            > .grw-pagetree-item {
+                                              padding-left: $grw-pagetree-item-padding-left * 10;
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
