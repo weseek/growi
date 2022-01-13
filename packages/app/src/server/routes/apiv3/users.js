@@ -862,5 +862,36 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const userIds = req.query.userIds || null;
+    console.log('ユーザアイディーズ！', userIds);
+
+    let userFetcher;
+    if (!userIds || userIds.split(',').length <= 0) {
+      userFetcher = User.findAllUsers();
+    }
+    else {
+      userFetcher = User.findUsersByIds(userIds.split(','));
+    }
+
+    const data = {};
+    try {
+      const users = await userFetcher;
+      data.users = users.map((user) => {
+        // omit email
+        if (user.isEmailPublished !== true) { // compare to 'true' because Crowi original data doesn't have 'isEmailPublished'
+          user.email = undefined;
+        }
+        return user.toObject({ virtuals: true });
+      });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(err));
+    }
+
+    return res.apiv3(data);
+
+  });
+
   return router;
 };

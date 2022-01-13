@@ -111,40 +111,40 @@ module.exports = function(crowi, app) {
    *            $ref: '#/components/responses/500'
    */
   /**
-   * @api {get} /users.list Get user list
-   * @apiName GetUserList
-   * @apiGroup User
-   *
-   * @apiParam {String} user_ids
-   */
-  api.list = async function(req, res) {
-    const userIds = req.query.user_ids || null; // TODO: handling
+  //  * @api {get} /users.list Get user list
+  //  * @apiName GetUserList
+  //  * @apiGroup User
+  //  *
+  //  * @apiParam {String} user_ids
+  //  */
+  // api.list = async function(req, res) {
+  //   const userIds = req.query.user_ids || null; // TODO: handling
 
-    let userFetcher;
-    if (!userIds || userIds.split(',').length <= 0) {
-      userFetcher = User.findAllUsers();
-    }
-    else {
-      userFetcher = User.findUsersByIds(userIds.split(','));
-    }
+  //   let userFetcher;
+  //   if (!userIds || userIds.split(',').length <= 0) {
+  //     userFetcher = User.findAllUsers();
+  //   }
+  //   else {
+  //     userFetcher = User.findUsersByIds(userIds.split(','));
+  //   }
 
-    const data = {};
-    try {
-      const users = await userFetcher;
-      data.users = users.map((user) => {
-        // omit email
-        if (user.isEmailPublished !== true) { // compare to 'true' because Crowi original data doesn't have 'isEmailPublished'
-          user.email = undefined;
-        }
-        return user.toObject({ virtuals: true });
-      });
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
+  //   const data = {};
+  //   try {
+  //     const users = await userFetcher;
+  //     data.users = users.map((user) => {
+  //       // omit email
+  //       if (user.isEmailPublished !== true) { // compare to 'true' because Crowi original data doesn't have 'isEmailPublished'
+  //         user.email = undefined;
+  //       }
+  //       return user.toObject({ virtuals: true });
+  //     });
+  //   }
+  //   catch (err) {
+  //     return res.json(ApiResponse.error(err));
+  //   }
 
-    return res.json(ApiResponse.success(data));
-  };
+  //   return res.json(ApiResponse.success(data));
+  // };
 
   return actions;
 };
