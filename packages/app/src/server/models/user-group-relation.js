@@ -240,6 +240,18 @@ class UserGroupRelation {
     });
   }
 
+  static createRelations(userGroupIds, user) {
+    const documentsToInsertMany = userGroupIds.map((groupId) => {
+      return {
+        relatedGroup: groupId,
+        relatedUser: user._id,
+        createdAt: new Date(),
+      };
+    });
+
+    return this.insertMany(documentsToInsertMany);
+  }
+
   /**
    * remove all relation for UserGroup
    *

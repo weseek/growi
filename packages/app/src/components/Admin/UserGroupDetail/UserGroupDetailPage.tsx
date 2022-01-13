@@ -105,10 +105,7 @@ const UserGroupDetailPage: FC = () => {
   }, [searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
   const addUserByUsername = useCallback(async(username: string) => {
-    const res = await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
-
-    // do not add users for ducaplicate
-    if (res.data.userGroupRelation == null) { return }
+    await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
 
     await sync();
   }, [userGroup, sync]);

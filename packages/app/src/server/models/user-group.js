@@ -136,19 +136,19 @@ class UserGroup {
     return this.create({ name, description, parent });
   }
 
-  static async findAllAncestorGroups(parent, ancestors = [parent]) {
+  static async findGroupsWithAncestorsRecursively(group, ancestors = [group]) {
+    if (group == null) {
+      return ancestors;
+    }
+
+    const parent = await this.findOne({ _id: group.parent });
     if (parent == null) {
       return ancestors;
     }
 
-    const nextParent = await this.findOne({ _id: parent.parent });
-    if (nextParent == null) {
-      return ancestors;
-    }
+    ancestors.push(parent);
 
-    ancestors.push(nextParent);
-
-    return this.findAllAncestorGroups(nextParent, ancestors);
+    return this.findGroupsWithAncestorsRecursively(parent, ancestors);
   }
 
   static async findGroupsWithDescendantsRecursively(groups, descendants = groups) {
@@ -193,7 +193,7 @@ class UserGroup {
     const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
     // add the target group's users to all ancestors
     if (forceUpdateParents) {
-      const ancestorGroups = await this.findAllAncestorGroups(parent);
+      const ancestorGroups = await this.findGroupsWithAncestorsRecursively(parent);
       const ancestorGroupIds = ancestorGroups.map(group => group._id);
 
       await UserGroupRelation.createByGroupIdsAndUserIds(ancestorGroupIds, usersBelongsToTargetButNotParent);
