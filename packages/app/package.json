@@ -234,7 +234,7 @@
     "style-loader": "^1.0.0",
     "styled-components": "^5.0.1",
     "swagger2openapi": "^5.3.1",
-    "swr": "^1.0.1",
+    "swr": "^1.1.2",
     "terser-webpack-plugin": "^4.1.0",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
