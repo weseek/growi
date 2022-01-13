@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-type TObjectId = mongoose.Types.ObjectId;
+type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const filterIdsByIds = (_arr1: TObjectId[], _arr2: TObjectId[]): TObjectId[] => {
+export const filterIdsByIds = (_arr1: IObjectId[], _arr2: IObjectId[]): IObjectId[] => {
   // cast to string
   const arr1 = _arr1.map(e => e.toString());
   const arr2 = _arr2.map(e => e.toString());
