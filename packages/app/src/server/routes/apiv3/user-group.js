@@ -262,7 +262,7 @@ module.exports = (crowi) => {
     } = req.body;
 
     try {
-      const userGroup = await UserGroup.updateGroup(id, name, description, parentId, forceUpdateParents);
+      const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
       res.apiv3({ userGroup });
     }
