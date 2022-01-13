@@ -97,16 +97,6 @@ class UserGroup {
     };
   }
 
-  static async findGroupsWithDescendantsRecursively(groups, descendants = groups) {
-    const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
-
-    if (nextGroups.length === 0) {
-      return descendants;
-    }
-
-    return this.findAllAncestorGroups(nextGroups, descendants.concat(nextGroups));
-  }
-
   // Delete completely
   static async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
@@ -159,6 +149,16 @@ class UserGroup {
     ancestors.push(nextParent);
 
     return this.findAllAncestorGroups(nextParent, ancestors);
+  }
+
+  static async findGroupsWithDescendantsRecursively(groups, descendants = groups) {
+    const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
+
+    if (nextGroups.length === 0) {
+      return descendants;
+    }
+
+    return this.findGroupsWithDescendantsRecursively(nextGroups, descendants.concat(nextGroups));
   }
 
   // TODO 85062: write test code
