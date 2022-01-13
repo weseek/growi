@@ -256,7 +256,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', /*loginRequiredStrictly, adminRequired, csrf,*/ validator.update, apiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       name, description, parentId, forceUpdateParents = false,
