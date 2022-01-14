@@ -323,7 +323,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   run-cypress-node14:
-    needs: [install-prod, launch-prod]
+    needs: [install-prod-node14, launch-prod-node14]
 
     runs-on: ubuntu-latest
     container: cypress/base:14.18.1
