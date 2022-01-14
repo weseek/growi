@@ -384,6 +384,7 @@ jobs:
       with:
         working-directory: ./packages/app
         cache-key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        install-command: npx lerna bootstrap -- --frozen-lockfile
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
