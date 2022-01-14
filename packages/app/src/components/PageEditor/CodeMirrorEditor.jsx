@@ -12,6 +12,8 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
+import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -114,6 +116,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
+      isEmojiPickerShown: false,
     };
 
     this.gridEditModal = React.createRef();
@@ -564,7 +567,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
-
+    this.searchEmojiPattern();
     // Emoji AutoComplete
     if (this.state.isEnabledEmojiAutoComplete) {
       this.emojiAutoCompleteHelper.showHint(editor);
@@ -904,6 +907,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
+  searchEmojiPattern() {
+    const cm = this.getCodeMirror();
+    const pattern = /:[^:\s]+/;
+    const currentPos = cm.getCursor();
+    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
+    if (sc.findPrevious()) {
+      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+      // return if it isn't inputting emoji
+      this.isEmojiPickerShown = isInputtingEmoji;
+      if (!isInputtingEmoji) {
+        return;
+      }
+    }
+    else {
+      return;
+    }
+
+  }
+
+
   render() {
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
@@ -972,6 +995,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
+        {/* Todo: Show emoji-mart picker */}
+        {/* <Picker
+          set="apple"
+        /> */}
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
