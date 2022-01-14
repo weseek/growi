@@ -276,15 +276,6 @@ class UserGroupRelation {
       });
   }
 
-  static async findWithUserByGroupIds(groupIds) {
-    if (!Array.isArray(groupIds)) {
-      throw Error('groupIds must be an array');
-    }
-
-    return this.find({ relatedGroup: { $in: groupIds } })
-      .populate('relatedUser');
-  }
-
   static async findUserIdsByGroupId(groupId) {
     const relations = await this.find({ relatedGroup: groupId }, { _id: 0, relatedUser: 1 }).lean().exec(); // .lean() to get not ObjectId but string
 

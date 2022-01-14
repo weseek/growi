@@ -53,11 +53,11 @@ module.exports = (crowi) => {
     const { query } = req;
 
     try {
-      const relations = await UserGroupRelation.findWithUserByGroupIds(query.groupIds);
+      const relations = await UserGroupRelation.find({ relatedGroup: { $in: query.groupIds } }).populate('relatedUser');
 
       let relationsOfChildGroups = null;
       if (Array.isArray(query.childGroupIds)) {
-        const _relationsOfChildGroups = await UserGroupRelation.findWithUserByGroupIds(query.childGroupIds);
+        const _relationsOfChildGroups = await UserGroupRelation.find({ relatedGroup: { $in: query.childGroupIds } }).populate('relatedUser');
         relationsOfChildGroups = _relationsOfChildGroups.map(relation => serializeUserGroupRelationSecurely(relation)); // serialize
       }
 

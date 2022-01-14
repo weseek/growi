@@ -209,7 +209,7 @@ module.exports = (crowi) => {
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
-      const userGroups = await UserGroup.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
 
       return res.apiv3({ userGroups });
     }
@@ -262,7 +262,7 @@ module.exports = (crowi) => {
     } = req.body;
 
     try {
-      const userGroup = await UserGroup.updateGroup(id, name, description, parentId, forceUpdateParents);
+      const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
       res.apiv3({ userGroup });
     }
