@@ -7,7 +7,7 @@ export const compareObjectId = (id1: IObjectId, id2: IObjectId): boolean => {
   return id1.toString() === id2.toString();
 };
 
-export const includesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
+export const isIncludesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
   const _arr = arr.map(i => i.toString());
   const _id = id.toString();
 
