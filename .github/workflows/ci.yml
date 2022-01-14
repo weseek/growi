@@ -58,6 +58,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
+
   test:
     runs-on: ubuntu-latest
 
@@ -128,6 +129,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
+
   launch-dev:
     runs-on: ubuntu-latest
 
@@ -182,6 +184,8 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+
+
   launch-prod-node14:
     runs-on: ubuntu-latest
 
@@ -230,9 +234,6 @@ jobs:
           node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ steps.get-date.outputs.dateYm }}
           node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: Remove unnecessary packages
-      run: |
-        rm -rf packages/slackbot-proxy
     - name: lerna bootstrap
       run: |
         npx lerna bootstrap -- --frozen-lockfile
@@ -242,6 +243,10 @@ jobs:
         yarn lerna run build
       env:
         ANALYZE_BUNDLE_SIZE: 1
+
+    - name: Remove unnecessary packages
+      run: |
+        rm -rf packages/slackbot-proxy
 
     - name: lerna bootstrap --production
       run: |
@@ -290,6 +295,8 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+
+
   run-cypress-node14:
     needs: [launch-prod-node14]
 
@@ -311,10 +318,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Remove unnecessary packages
-      run: |
-        rm -rf packages/slackbot-proxy
-
     - name: Download production files artifact
       uses: actions/download-artifact@v2
       with:
@@ -328,6 +331,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
+        install: false
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
