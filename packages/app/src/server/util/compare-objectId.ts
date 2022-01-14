@@ -3,18 +3,18 @@ import mongoose from 'mongoose';
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const compareObjectId = (_id1: IObjectId, _id2: IObjectId): boolean => {
-  const id1 = _id1.toString();
-  const id2 = _id2.toString();
+export const compareObjectId = (id1: IObjectId, id2: IObjectId): boolean => {
+  const _id1 = id1.toString();
+  const _id2 = id2.toString();
 
-  return id1 === id2;
+  return _id1 === _id2;
 };
 
-export const includesObjectId = (_arr: IObjectId[], _id: IObjectId): boolean => {
-  const arr = _arr.map(i => i.toString());
-  const id = _id.toString();
+export const includesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
+  const _arr = arr.map(i => i.toString());
+  const _id = id.toString();
 
-  return arr.includes(id);
+  return _arr.includes(_id);
 };
 
 export const filterArr1ByArr2 = (arr1: IObjectId[], arr2: IObjectId[]): IObjectId[] => {
