@@ -896,7 +896,7 @@ module.exports = (crowi) => {
    *            500:
    *              $ref: '#/components/responses/500'
    */
-  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds || null;
 
     let userFetcher;
