@@ -270,7 +270,7 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar node_modules packages/**/node_modules packages/**/dist packages/app/public
+        tar -cf production.tar packages/**/dist packages/app/public
         echo ::set-output name=file::production.tar
 
     - name: Upload production files as artifact
@@ -318,6 +318,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
     - name: Download production files artifact
       uses: actions/download-artifact@v2
       with:
@@ -331,7 +341,6 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
-        install: false
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
