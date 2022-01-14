@@ -186,7 +186,7 @@ jobs:
 
 
 
-  launch-prod-node14:
+  build-prod-node14:
     runs-on: ubuntu-latest
 
     strategy:
@@ -195,6 +195,77 @@ jobs:
 
     outputs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
+
+    - name: Remove unnecessary packages
+      run: |
+        rm -rf packages/slackbot-proxy
+
+    - name: Build
+      run: |
+        yarn lerna run build
+      env:
+        ANALYZE_BUNDLE_SIZE: 1
+
+    - name: Archive production files
+      id: archive-prod-files
+      run: |
+        tar -cf production.tar packages/**/dist packages/app/public
+        echo ::set-output name=file::production.tar
+
+    - name: Upload production files as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Production Files
+        path: ${{ steps.archive-prod-files.outputs.file }}
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Bundle Analyzing Report
+        path: packages/app/report/bundle-analyzer.html
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - build-prod (${{ matrix.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+
+  launch-prod-node14:
+    needs: [build-prod-node14]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
 
     services:
       mongodb:
@@ -234,16 +305,6 @@ jobs:
           node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ steps.get-date.outputs.dateYm }}
           node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-    - name: lerna bootstrap
-      run: |
-        npx lerna bootstrap -- --frozen-lockfile
-
-    - name: Build
-      run: |
-        yarn lerna run build
-      env:
-        ANALYZE_BUNDLE_SIZE: 1
-
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
@@ -251,6 +312,15 @@ jobs:
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
+
+    - name: Download production files artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: Production Files
+
+    - name: Extract procution files artifact
+      run: |
+        tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
 
     - name: yarn server:ci
       working-directory: ./packages/app
@@ -267,24 +337,6 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi
 
-    - name: Archive production files
-      id: archive-prod-files
-      run: |
-        tar -cf production.tar packages/**/dist packages/app/public
-        echo ::set-output name=file::production.tar
-
-    - name: Upload production files as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Production Files
-        path: ${{ steps.archive-prod-files.outputs.file }}
-
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Bundle Analyzing Report
-        path: packages/app/report/bundle-analyzer.html
-
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -298,7 +350,7 @@ jobs:
 
 
   run-cypress-node14:
-    needs: [launch-prod-node14]
+    needs: [build-prod-node14]
 
     runs-on: ubuntu-latest
     container: cypress/base:14.18.1
