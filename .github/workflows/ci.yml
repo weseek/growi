@@ -211,16 +211,26 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Get Date
+      id: get-date
+      run: |
+        echo "::set-output name=dateYmd::$(/bin/date -u "+%Y%m%d")"
+        echo "::set-output name=dateYm::$(/bin/date -u "+%Y%m")"
+        echo "::set-output name=dateY::$(/bin/date -u "+%Y")"
+
     - name: Cache/Restore node_modules for build
       id: cache-dependencies
       uses: actions/cache@v2
       with:
         path: |
           **/node_modules
-        key: node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ steps.get-date.outputs.dateYmd }}
         restore-keys: |
-          node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+          node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ steps.get-date.outputs.dateYm }}
+          node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-${{ steps.get-date.outputs.dateY }}
+          node_modules-build-prod-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Remove unnecessary packages
       run: |
