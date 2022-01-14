@@ -14,6 +14,7 @@ import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
 } from '../../interfaces/search';
+import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -100,14 +101,17 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    this.client = new this.elasticsearch.Client({
+    this.client = new ElasticsearchClient(new this.elasticsearch.Client({
       node: host,
       ssl: { rejectUnauthorized: this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized') },
       auth,
       requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
-      // log: 'debug',
-    });
+    }));
     this.indexName = indexName;
+  }
+
+  getType() {
+    return this.isElasticsearchV6 ? 'pages' : '_doc';
   }
 
   /**
@@ -348,7 +352,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       index: {
         _index: this.indexName,
-        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
@@ -384,7 +388,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const command = {
       delete: {
         _index: this.indexName,
-        _type: this.isElasticsearchV6 ? 'pages' : '_doc',
+        _type: this.getType(),
         _id: page._id.toString(),
       },
     };
