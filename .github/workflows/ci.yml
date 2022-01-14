@@ -314,7 +314,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Built Packages
-        path: ${{ steps.archive-built-artifact.outputs.file }}
+        path: ${{ steps.archive-built-packages.outputs.file }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
