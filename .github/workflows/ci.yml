@@ -307,7 +307,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x]
-        containers: [1, 2]
+        containers: [1]
 
     services:
       mongodb:
@@ -318,16 +318,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
-
     - name: Download production files artifact
       uses: actions/download-artifact@v2
       with:
@@ -335,12 +325,13 @@ jobs:
 
     - name: Extract procution files artifact
       run: |
-        tar -xf ${{ needs.launch-prod-node14.outputs.PROD_FILES }}
+        tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
 
     - name: Cypress Run
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
+        cache-key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
