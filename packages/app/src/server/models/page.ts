@@ -200,7 +200,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string, parent
     .exec();
 
   const ancestorsMap = new Map(); // Map<path, _id>
-  ancestors.forEach(page => ancestorsMap.set(page.path, page._id));
+  ancestors.forEach(page => !ancestorsMap.has(page.path) && ancestorsMap.set(page.path, page._id)); // the earlier element should be the true ancestor
 
   // bulkWrite to update ancestors
   const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
