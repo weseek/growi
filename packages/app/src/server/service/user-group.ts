@@ -2,10 +2,7 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import UserGroup from '~/server/models/user-group';
-<<<<<<< HEAD
 import { compareObjectId, includesObjectId } from '~/server/util/compare-objectId';
-=======
->>>>>>> feat/user-group-v5
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -30,11 +27,7 @@ class UserGroupService {
 
   // TODO 85062: write test code
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
-<<<<<<< HEAD
   async updateGroup(id, name: string, description: string, parentId?: string, forceUpdateParents = false) {
-=======
-  async updateGroup(id, name, description, parentId, forceUpdateParents = false) {
->>>>>>> feat/user-group-v5
     const userGroup = await UserGroup.findById(id);
     if (userGroup == null) {
       throw new Error('The group does not exist');
