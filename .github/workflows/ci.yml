@@ -242,6 +242,16 @@ jobs:
     outputs:
       BUILT_PACKAGES: ${{ steps.archive-built-packages.outputs.file }}
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+      mongodb36:
+        image: mongo:3.6
+        ports:
+        - 27017/tcp
+
     steps:
     - uses: actions/checkout@v2
 
