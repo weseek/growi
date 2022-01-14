@@ -60,18 +60,18 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
   return (
     <form onSubmit={onSubmitHandler}>
-      {/* TODO 85062: improve style */}
-      {
-        props.userGroup != null && (
-          <div className="row mb-2">
-            <p className="col-md-4">{t('Created')}</p>
-            <p className="col">{dateFnsFormat(new Date(props.userGroup.createdAt), 'yyyy-MM-dd')}</p>
-          </div>
-        )
-      }
 
       <fieldset>
         <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+        {/* TODO 85062: improve style */}
+        {
+          props.userGroup?.createdAt != null && (
+            <div className="form-group row">
+              <p className="col-md-2 col-form-label">{t('Created')}</p>
+              <p className="col-md-4 my-auto">{dateFnsFormat(new Date(props.userGroup.createdAt), 'yyyy-MM-dd')}</p>
+            </div>
+          )
+        }
         <div className="form-group row">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('admin:user_group_management.group_name')}
