@@ -26,8 +26,8 @@ export const excludeTestIdsFromTargetIds = (targetIds: IObjectId[], testIds: IOb
   const arr2 = testIds.map(e => e.toString());
 
   // filter
-  const filtered = arr2.filter(e => !arr1.includes(e));
+  const excluded = arr2.filter(e => !arr1.includes(e));
 
   // cast to ObjectId
-  return filtered.map(e => new ObjectId(e));
+  return excluded.map(e => new ObjectId(e));
 };
