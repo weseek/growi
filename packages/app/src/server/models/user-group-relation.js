@@ -272,6 +272,31 @@ class UserGroupRelation {
       });
   }
 
+  static async findUserIdsByGroupId(groupId) {
+    const relations = await this.find({ relatedGroup: groupId }, { _id: 0, relatedUser: 1 }).lean().exec(); // .lean() to get not ObjectId but string
+
+    return relations.map(relation => relation.relatedUser);
+  }
+
+  static async createByGroupIdsAndUserIds(groupIds, userIds) {
+    const insertOperations = [];
+
+    groupIds.forEach((groupId) => {
+      userIds.forEach((userId) => {
+        insertOperations.push({
+          insertOne: {
+            document: {
+              relatedGroup: groupId,
+              relatedUser: userId,
+            },
+          },
+        });
+      });
+    });
+
+    await this.bulkWrite(insertOperations);
+  }
+
 }
 
 module.exports = function(crowi) {

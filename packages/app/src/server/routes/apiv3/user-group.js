@@ -222,6 +222,9 @@ module.exports = (crowi) => {
 
   validator.update = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+    body('description', 'Group description must be a string').optional().isString(),
+    body('parentId', 'parentId must be a string').optional().isString(),
+    body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
   ];
 
   /**
@@ -254,21 +257,12 @@ module.exports = (crowi) => {
    */
   router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const {
+      name, description, parentId, forceUpdateParents = false,
+    } = req.body;
 
     try {
-      const userGroup = await UserGroup.findById(id);
-      if (userGroup == null) {
-        throw new Error('The group does not exist');
-      }
-
-      // check if the new group name is available
-      const isRegisterableName = await UserGroup.isRegisterableName(name);
-      if (!isRegisterableName) {
-        throw new Error('The group name is already taken');
-      }
-
-      await userGroup.updateName(name);
+      const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
       res.apiv3({ userGroup });
     }
