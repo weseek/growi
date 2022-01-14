@@ -74,6 +74,24 @@ class UserGroupService {
     return userGroup.save();
   }
 
+  async removeCompletelyByRootGroupId(deleteRootGroupId, action, transferToUserGroupId, user) {
+    const rootGroup = await UserGroup.findById(deleteRootGroupId);
+    if (rootGroup == null) {
+      throw new Error(`UserGroup data does not exist. id: ${deleteRootGroupId}`);
+    }
+
+    const groupsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([rootGroup]);
+
+    // 1. update page & remove all groups
+    await this.crowi.pageService.handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user);
+    // 2. remove all groups
+    const deletedGroups = await UserGroup.deleteMany({ _id: { $in: groupsToDelete.map(g => g._id) } });
+    // 3. remove all relations
+    await UserGroupRelation.removeAllByUserGroups(groupsToDelete);
+
+    return deletedGroups;
+  }
+
 }
 
 module.exports = UserGroupService;

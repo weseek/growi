@@ -66,23 +66,6 @@ schema.statics.findChildUserGroupsByParentIds = async function(parentIds, includ
   };
 };
 
-// schema.statics.removeCompletelyById = async function(deleteGroupId, action, transferToUserGroupId, user) { // TODO 85062: move this to the service layer
-//   const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO 85062: Typescriptize model
-
-//   const groupToDelete = await this.findById(deleteGroupId);
-//   if (groupToDelete == null) {
-//     throw Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
-//   }
-//   const deletedGroup = await groupToDelete.remove();
-
-//   await Promise.all([
-//     UserGroupRelation.removeAllByUserGroup(deletedGroup),
-//     crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user),
-//   ]);
-
-//   return deletedGroup;
-// };
-
 schema.statics.countUserGroups = function() {
   return this.estimatedDocumentCount();
 };
@@ -114,6 +97,16 @@ schema.statics.findAllAncestorGroups = async function(parent, ancestors = [paren
   ancestors.push(nextParent);
 
   return this.findAllAncestorGroups(nextParent, ancestors);
+};
+
+schema.statics.findGroupsWithDescendantsRecursively = async function(groups, descendants = groups) {
+  const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
+
+  if (nextGroups.length === 0) {
+    return descendants;
+  }
+
+  return this.findGroupsWithDescendantsRecursively(nextGroups, descendants.concat(nextGroups));
 };
 
 export default getOrCreateModel<UserGroupDocument, UserGroupModel>('UserGroup', schema);

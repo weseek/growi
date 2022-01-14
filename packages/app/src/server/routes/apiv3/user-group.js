@@ -209,14 +209,14 @@ module.exports = (crowi) => {
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
-      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
 
-      return res.apiv3({ userGroup });
+      return res.apiv3({ userGroups });
     }
     catch (err) {
-      const msg = 'Error occurred in deleting a user group';
+      const msg = 'Error occurred while deleting user groups';
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-delete-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-delete-failed'));
     }
   });
 

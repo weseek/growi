@@ -248,8 +248,12 @@ class UserGroupRelation {
    * @returns {Promise<any>}
    * @memberof UserGroupRelation
    */
-  static removeAllByUserGroup(userGroup) {
-    return this.deleteMany({ relatedGroup: userGroup });
+  static removeAllByUserGroups(groupsToDelete) {
+    if (!Array.isArray(groupsToDelete)) {
+      throw Error('groupsToDelete must be an array.');
+    }
+
+    return this.deleteMany({ relatedGroup: { $in: groupsToDelete } });
   }
 
   /**

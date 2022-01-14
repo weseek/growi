@@ -102,7 +102,7 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   const handleActionChange = useCallback((e) => {
     const actionName = e.target.value;
     setActionName(actionName);
-  }, []);
+  }, [setActionName]);
 
   const handleGroupChange = useCallback((e) => {
     const transferToUserGroupId = e.target.value;
@@ -121,10 +121,10 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       actionName,
       transferToUserGroupId,
     );
-  }, [props.onDelete, props.deleteUserGroup]);
+  }, [props.onDelete, props.deleteUserGroup, actionName, transferToUserGroupId]);
 
   const renderPageActionSelector = useCallback(() => {
-    const optoins = availableOptions.map((opt) => {
+    const options = availableOptions.map((opt) => {
       const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${opt.label}</span>`;
       return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{opt.label}</option>;
     });
@@ -138,10 +138,10 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
-        {optoins}
+        {options}
       </select>
     );
-  }, [handleActionChange]);
+  }, [handleActionChange, actionName, availableOptions]);
 
   const renderGroupSelector = useCallback(() => {
     const { deleteUserGroup } = props;
