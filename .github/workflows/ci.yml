@@ -38,7 +38,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: lerna run lint for plugins
       run: |
@@ -96,7 +96,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn test
       working-directory: ./packages/app
@@ -162,7 +162,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn dev:ci
       working-directory: ./packages/app
@@ -267,7 +267,7 @@ jobs:
         rm -rf packages/slackbot-proxy
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: Build
       run: |
@@ -277,7 +277,7 @@ jobs:
 
     - name: lerna bootstrap --production
       run: |
-        yarn lerna bootstrap -- --production
+        npx lerna bootstrap -- --production
 
     - name: yarn server:ci
       working-directory: ./packages/app
