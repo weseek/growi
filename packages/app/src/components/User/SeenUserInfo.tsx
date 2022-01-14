@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 
-import { Types } from 'mongoose';
 import { Button, Popover, PopoverBody } from 'reactstrap';
 
 import UserPictureList from './UserPictureList';
@@ -9,7 +8,7 @@ import { useSWRxPageInfo } from '~/stores/page';
 import { useSWRxUsersList } from '~/stores/user';
 
 interface Props {
-  pageId: Types.ObjectId
+  pageId: string,
   disabled: boolean
 }
 
@@ -19,12 +18,12 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { data: pageInfo } = useSWRxPageInfo(pageId);
-  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
-  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
+  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
-  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
-  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
+  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 30) : [];
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 

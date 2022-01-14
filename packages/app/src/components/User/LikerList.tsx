@@ -1,13 +1,11 @@
 import React, { FC } from 'react';
 
-import { Types } from 'mongoose';
-
 import UserPictureList from './UserPictureList';
 import { useSWRxPageInfo } from '~/stores/page';
 import { useSWRxUsersList } from '~/stores/user';
 
 interface Props {
-  pageId: Types.ObjectId,
+  pageId: string,
 }
 
 const LikerList: FC<Props> = (props: Props) => {
@@ -19,7 +17,7 @@ const LikerList: FC<Props> = (props: Props) => {
   const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
-  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
   const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
 
   return (

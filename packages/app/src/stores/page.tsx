@@ -64,7 +64,7 @@ export const useSWRxSubscriptionStatus = <Data, Error>(pageId: Types.ObjectId): 
 
 // TODO: 85860
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageInfo = <Data, Error>(pageId: Types.ObjectId): SWRResponse<IPageInfo, Error> => {
+export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageInfo, Error> => {
   return useSWR(
     ['/page/info', pageId],
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),

@@ -12,7 +12,7 @@ import { useSWRxUsersList } from '~/stores/user';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
-  pageId: Types.ObjectId,
+  pageId: string,
 }
 
 const LikeButtons: FC<Props> = (props: Props) => {
@@ -24,13 +24,13 @@ const LikeButtons: FC<Props> = (props: Props) => {
   const { data: isGuestUser } = useIsGuestUser();
 
   const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
-  const isLiked = pageInfo?.isLiked != null ? pageInfo.isLiked : false;
+  const isLiked = pageInfo?.isLiked ?? false;
   const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
   const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
   const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
-  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
   const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
