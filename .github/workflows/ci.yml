@@ -257,7 +257,7 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar packages/**/dist packages/app/public **/node_modules
+        tar -cf production.tar node_modules packages/**/node_modules packages/**/dist packages/app/public
         echo ::set-output name=file::production.tar
 
     - name: Upload production files as artifact
