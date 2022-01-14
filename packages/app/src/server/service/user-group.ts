@@ -27,7 +27,7 @@ class UserGroupService {
 
   // TODO 85062: write test code
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
-  async updateGroup(id, name, description, parentId, forceUpdateParents = false) {
+  async updateGroup(id, name: string, description: string, parentId?: string, forceUpdateParents = false) {
     const userGroup = await UserGroup.findById(id);
     if (userGroup == null) {
       throw new Error('The group does not exist');
@@ -46,11 +46,21 @@ class UserGroupService {
     if (userGroup.parent === parentId) {
       return userGroup.save();
     }
+    // set parent to null and return when parentId is null
+    if (parentId == null) {
+      userGroup.parent = null;
+      return userGroup.save();
+    }
 
     const parent = await UserGroup.findById(parentId);
 
+    if (parent == null) { // it should not be null
+      throw Error('parent does not exist.');
+    }
+
+
     // throw if parent was in its descendants
-    const descendantsWithTarget = await this.findGroupsWithDescendantsRecursively([userGroup]);
+    const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
     const descendants = descendantsWithTarget.filter(d => compareObjectId(d._id, userGroup._id));
     if (includesObjectId(descendants, parent._id)) {
       throw Error('It is not allowed to choose parent from descendant groups.');
