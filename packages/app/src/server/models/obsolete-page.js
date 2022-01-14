@@ -976,7 +976,7 @@ export const getPageSchema = (crowi) => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', redirectTo, grantUserGroupId, parentId,
+      format = 'markdown', redirectTo, grantUserGroupId, parentId: _parentId,
     } = options;
 
     // sanitize path
@@ -988,10 +988,17 @@ export const getPageSchema = (crowi) => {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({ path, isEmpty: false }); // not validate empty page
+    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
     }
+
+    const parentPath = nodePath.dirname(path);
+    const parent = await this.findOneParentByParentPath(parentPath);
+
+    /*
+     * UserGroup & Owner validation
+     */
 
     /*
      * update empty page if exists, if not, create a new page
@@ -1008,9 +1015,9 @@ export const getPageSchema = (crowi) => {
 
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
-    let parent = parentId;
-    if (isV5Compatible && parent == null && !isTopPage(path)) {
-      parent = await Page.getParentIdAndFillAncestors(path);
+    let parentId = _parentId;
+    if (isV5Compatible && parentId == null && !isTopPage(path)) {
+      parentId = await Page.getParentIdAndFillAncestors(path, parent);
     }
 
     page.path = path;
@@ -1018,7 +1025,7 @@ export const getPageSchema = (crowi) => {
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
-    page.parent = parent;
+    page.parent = parentId;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);

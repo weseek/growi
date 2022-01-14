@@ -40,7 +40,7 @@ type TargetAndAncestorsResult = {
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
-  getParentIdAndFillAncestors(path: string): Promise<string | null>
+  getParentIdAndFillAncestors(path: string, parent: PageDocument): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -164,6 +164,10 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
   }
 };
 
+schema.statics.findOneParentByParentPath = async function(parentPath: string): Promise<PageDocument | null> {
+  return this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
+};
+
 /*
  * Find the parent and update if the parent exists.
  * If not,
@@ -171,10 +175,9 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
  *   - second  update ancestor pages' parent
  *   - finally return the target's parent page id
  */
-schema.statics.getParentIdAndFillAncestors = async function(path: string): Promise<Schema.Types.ObjectId> {
+schema.statics.getParentIdAndFillAncestors = async function(path: string, parent: PageDocument): Promise<Schema.Types.ObjectId> {
   const parentPath = nodePath.dirname(path);
 
-  const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
   if (parent != null) {
     return parent._id;
   }
