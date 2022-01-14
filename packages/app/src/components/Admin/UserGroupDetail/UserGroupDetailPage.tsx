@@ -104,11 +104,9 @@ const UserGroupDetailPage: FC = () => {
     return users;
   }, [searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
+  // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
-    const res = await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
-
-    // do not add users for ducaplicate
-    if (res.data.userGroupRelation == null) { return }
+    await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
 
     await sync();
   }, [userGroup, sync]);
@@ -116,7 +114,7 @@ const UserGroupDetailPage: FC = () => {
   const removeUserByUsername = useCallback(async(username: string) => {
     const res = await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
 
-    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id));
+    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id)); // TODO 85062: use swr to sync
   }, [userGroup]);
 
   /*

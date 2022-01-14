@@ -56,7 +56,7 @@ class UserGroupService {
     const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
     // add the target group's users to all ancestors
     if (forceUpdateParents) {
-      const ancestorGroups = await UserGroup.findAllAncestorGroups(parent);
+      const ancestorGroups = await UserGroup.findGroupsWithAncestorsRecursively(parent);
       const ancestorGroupIds = ancestorGroups.map(group => group._id);
 
       await UserGroupRelation.createByGroupIdsAndUserIds(ancestorGroupIds, usersBelongsToTargetButNotParent);

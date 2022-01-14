@@ -84,19 +84,19 @@ schema.statics.createGroup = async function(name, description, parentId) {
   return this.create({ name, description, parent });
 };
 
-schema.statics.findAllAncestorGroups = async function(parent, ancestors = [parent]) {
+schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancestors = [group]) {
+  if (group == null) {
+    return ancestors;
+  }
+
+  const parent = await this.findOne({ _id: group.parent });
   if (parent == null) {
     return ancestors;
   }
 
-  const nextParent = await this.findOne({ _id: parent.parent });
-  if (nextParent == null) {
-    return ancestors;
-  }
+  ancestors.push(parent);
 
-  ancestors.push(nextParent);
-
-  return this.findAllAncestorGroups(nextParent, ancestors);
+  return this.findGroupsWithAncestorsRecursively(parent, ancestors);
 };
 
 schema.statics.findGroupsWithDescendantsRecursively = async function(groups, descendants = groups) {

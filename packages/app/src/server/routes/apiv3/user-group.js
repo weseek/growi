@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { filterIdsByIds } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -435,18 +436,19 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
+      const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      const userGroupIds = userGroups.map(g => g._id);
+
       // check for duplicate users in groups
-      const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
+      const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
+      const existingGroupIds = existingRelations.map(r => r.relatedGroup);
 
-      if (isRelatedUserForGroup) {
-        logger.warn('The user is already joined');
-        return res.apiv3();
-      }
+      const groupIdsOfRelationToCreate = filterIdsByIds(userGroupIds, existingGroupIds);
 
-      const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
+      const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
     }
     catch (err) {
       const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
@@ -504,13 +506,16 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
-      const userGroupRelation = await UserGroupRelation.findOneAndDelete({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
     }
     catch (err) {
-      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      const msg = 'Error occurred while removing the user from groups.';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
