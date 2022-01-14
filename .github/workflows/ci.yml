@@ -324,11 +324,14 @@ jobs:
       run: |
         tar -xf ${{ needs.launch-prod-node14.outputs.PROD_FILES }}
 
-    - name: yarn server:ci
-      working-directory: ./packages/app
-      run: |
-        cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
+    - name: Cypress Run
+      uses: cypress-io/github-action@v2
+      with:
+        working-directory: ./packages/app
+        build: |
+          cp config/ci/.env.local.for-ci .env.production.local
+        start: yarn server
+        wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
 
