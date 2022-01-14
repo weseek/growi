@@ -17,13 +17,13 @@ export const includesObjectId = (_arr: IObjectId[], _id: IObjectId): boolean => 
   return arr.includes(id);
 };
 
-export const filterIdsByIds = (_arr1: IObjectId[], _arr2: IObjectId[]): IObjectId[] => {
+export const filterArr1ByArr2 = (arr1: IObjectId[], arr2: IObjectId[]): IObjectId[] => {
   // cast to string
-  const arr1 = _arr1.map(e => e.toString());
-  const arr2 = _arr2.map(e => e.toString());
+  const arrToBeFiltered = arr1.map(e => e.toString());
+  const arrToFilter = arr2.map(e => e.toString());
 
   // filter
-  const filtered = arr1.filter(e => !arr2.includes(e));
+  const filtered = arrToBeFiltered.filter(e => !arrToFilter.includes(e));
 
   // cast to ObjectId
   return filtered.map(e => new ObjectId(e));

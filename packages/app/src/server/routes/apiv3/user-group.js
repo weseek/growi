@@ -1,5 +1,5 @@
 import loggerFactory from '~/utils/logger';
-import { filterIdsByIds } from '~/server/util/compare-objectId';
+import { filterArr1ByArr2 } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -443,7 +443,7 @@ module.exports = (crowi) => {
       const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
       const existingGroupIds = existingRelations.map(r => r.relatedGroup);
 
-      const groupIdsOfRelationToCreate = filterIdsByIds(userGroupIds, existingGroupIds);
+      const groupIdsOfRelationToCreate = filterArr1ByArr2(userGroupIds, existingGroupIds);
 
       const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
