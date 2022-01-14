@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 
-import { Types } from 'mongoose';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
