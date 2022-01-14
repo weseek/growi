@@ -374,7 +374,7 @@ jobs:
 
     - name: Extract built artifact
       run: |
-        tar -x ${{ needs.launch-prod-node14.outputs.BUILT_PACKAGES }}
+        tar -xf ${{ needs.launch-prod-node14.outputs.BUILT_PACKAGES }}
 
     - name: yarn server:ci
       working-directory: ./packages/app
