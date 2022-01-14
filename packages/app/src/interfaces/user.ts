@@ -18,7 +18,7 @@ export type IUserGroup = {
   name: string;
   createdAt: Date;
   description: string;
-  parent: Ref<IUserGroup>;
+  parent: Ref<IUserGroup> | null;
 }
 
 export type IUserHasId = IUser & HasObjectId;
