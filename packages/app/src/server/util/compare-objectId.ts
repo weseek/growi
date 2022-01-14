@@ -4,10 +4,7 @@ type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
 export const compareObjectId = (id1: IObjectId, id2: IObjectId): boolean => {
-  const _id1 = id1.toString();
-  const _id2 = id2.toString();
-
-  return _id1 === _id2;
+  return id1.toString() === id2.toString();
 };
 
 export const includesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
