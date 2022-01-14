@@ -4,10 +4,6 @@ import { Types } from 'mongoose';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-import loggerFactory from '~/utils/logger';
-
-import { IUser } from '~/interfaces/user';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
@@ -15,7 +11,6 @@ import { useSWRxPageInfo } from '~/stores/page';
 import { useSWRxUsersList } from '~/stores/user';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
-const logger = loggerFactory('growi:LikeButtons');
 interface Props {
   pageId: Types.ObjectId,
 }
@@ -38,25 +33,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds].join());
   const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
 
-  const checkAndUpdateImageUrlCached = async(users: IUser[]) => {
-    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
-    if (noImageCacheUsers.length === 0) {
-      return;
-    }
-
-    const noImageCacheUserIds = noImageCacheUsers.map((user: IUser & HasObjectId) => { return user._id });
-    try {
-      await apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-    }
-    catch (err) {
-      // Error alert doesn't apear, because user don't need to notice this error.
-      logger.error(err);
-    }
-  };
-
-  const togglePopover = () => {
-    setIsPopoverOpen(!isPopoverOpen);
-  };
+  const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
   const handleClick = async() => {
     if (isGuestUser) {
