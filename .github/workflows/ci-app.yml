@@ -1,4 +1,4 @@
-name: Node CI for growi
+name: Node CI for app development
 
 on:
   push:

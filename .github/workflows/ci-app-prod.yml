@@ -1,4 +1,4 @@
-name: Node CI for growi production
+name: Node CI for app production
 
 on:
   pull_request:
