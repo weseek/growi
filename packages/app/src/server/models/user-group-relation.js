@@ -240,7 +240,7 @@ class UserGroupRelation {
     });
   }
 
-  static createRelations(userGroupIds, user) {
+  static async createRelations(userGroupIds, user) {
     const documentsToInsertMany = userGroupIds.map((groupId) => {
       return {
         relatedGroup: groupId,
