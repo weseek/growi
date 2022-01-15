@@ -389,6 +389,9 @@ jobs:
       run: |
         tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
 
+    - name: Setup yarn cache settings
+      run: yarn config set cache-folder ~/.cache/yarn
+
     - name: Cypress Run
       uses: cypress-io/github-action@v2
       with:
