@@ -1,9 +1,5 @@
 import loggerFactory from '~/utils/logger';
-<<<<<<< HEAD
-import { filterIdsByIds } from '~/server/util/compare-objectId';
-=======
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
->>>>>>> feat/user-group-v5
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
