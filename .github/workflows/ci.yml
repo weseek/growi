@@ -397,6 +397,7 @@ jobs:
       run: |
         tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
 
+    # workaround by https://github.com/cypress-io/github-action/issues/407
     - name: Setup yarn cache settings
       run: yarn config set cache-folder ~/.cache/yarn
 
@@ -405,7 +406,7 @@ jobs:
       with:
         working-directory: ./packages/app
         install: false
-        # install-command: npx lerna bootstrap -- --frozen-lockfile
+        install-command: npx lerna bootstrap -- --frozen-lockfile
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
