@@ -359,7 +359,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x]
-        containers: ['**/1-*','**/2-*']
+        # List string expressions that is comma separated ids of tests in "test/cypress/integration"
+        containers: ['1', '2']
 
     services:
       mongodb:
@@ -399,18 +400,32 @@ jobs:
     - name: Setup yarn cache settings
       run: yarn config set cache-folder ~/.cache/yarn
 
+    - name: Determine spec expression
+      id: determine-spec-exp
+      run: |
+        SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.containers }}"`
+        echo "::set-output name=value::$SPEC"
+
     - name: Cypress Run
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
         install-command: ${{ (steps.cache-dependencies.outputs.cache-hit == 'true' && 'yarn') || 'npx' }} lerna bootstrap
-        spec: '${{ matrix.containers }}'
+        spec: '${{ steps.determine-spec-exp.outputs.value }}'
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
         wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
+
+    - name: Upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Cypress Report
+        path: |
+          packages/app/test/cypress/screenshots
+          packages/app/test/cypress/videos
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
