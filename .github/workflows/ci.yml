@@ -360,7 +360,7 @@ jobs:
       matrix:
         node-version: [14.x]
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        containers: ['1', '2']
+        spec-group: ['1', '2']
 
     services:
       mongodb:
@@ -403,7 +403,7 @@ jobs:
     - name: Determine spec expression
       id: determine-spec-exp
       run: |
-        SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.containers }}"`
+        SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
         echo "::set-output name=value::$SPEC"
 
     - name: Cypress Run
@@ -422,7 +422,7 @@ jobs:
     - name: Upload results
       uses: actions/upload-artifact@v2
       with:
-        name: Cypress Report
+        name: Cypress Report ${{ matrix.spec-group }}
         path: |
           packages/app/test/cypress/screenshots
           packages/app/test/cypress/videos
