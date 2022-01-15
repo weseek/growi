@@ -197,8 +197,11 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    # workaround by https://github.com/cypress-io/github-action/issues/407
+    - name: Setup yarn cache settings
+      run: yarn config set cache-folder ~/.cache/yarn
+
     - name: Cache/Restore node_modules
-      id: cache-dependencies
       uses: actions/cache@v2
       with:
         path: |
@@ -206,6 +209,10 @@ jobs:
         key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download production files artifact
       uses: actions/download-artifact@v2
@@ -215,10 +222,6 @@ jobs:
     - name: Extract procution files artifact
       run: |
         tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
-
-    # workaround by https://github.com/cypress-io/github-action/issues/407
-    - name: Setup yarn cache settings
-      run: yarn config set cache-folder ~/.cache/yarn
 
     - name: Determine spec expression
       id: determine-spec-exp
@@ -230,7 +233,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
-        install-command: ${{ (steps.cache-dependencies.outputs.cache-hit == 'true' && 'yarn') || 'npx' }} lerna bootstrap
+        install: false
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
