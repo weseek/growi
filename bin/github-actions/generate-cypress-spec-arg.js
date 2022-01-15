@@ -45,7 +45,7 @@ if (value.length === 0) {
 }
 
 const result = value[0]
-  .split(',')
+  .toString().split(',')
   .map(v => v.trim())
   .map(v => `${prefix}${v}${suffix}`)
   .join(',');
