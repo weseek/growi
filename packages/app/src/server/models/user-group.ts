@@ -84,6 +84,13 @@ schema.statics.createGroup = async function(name, description, parentId) {
   return this.create({ name, description, parent });
 };
 
+/**
+ * Find all ancestor groups starting from the UserGroup of the initial "group".
+ * Set "ancestors" as "[]" if the initial group is unnecessary as result.
+ * @param groups UserGroupDocument
+ * @param ancestors UserGroupDocument[]
+ * @returns UserGroupDocument[]
+ */
 schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancestors = [group]) {
   if (group == null) {
     return ancestors;
@@ -99,6 +106,13 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
   return this.findGroupsWithAncestorsRecursively(parent, ancestors);
 };
 
+/**
+ * Find all descendant groups starting from the UserGroups in the initial groups in "groups".
+ * Set "descendants" as "[]" if the initial groups are unnecessary as result.
+ * @param groups UserGroupDocument[] including at least one UserGroup
+ * @param descendants UserGroupDocument[]
+ * @returns UserGroupDocument[]
+ */
 schema.statics.findGroupsWithDescendantsRecursively = async function(groups, descendants = groups) {
   const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
 

@@ -156,6 +156,21 @@ export class PageQueryBuilder {
 
   }
 
+  addConditionToListOnlyAncestors(path) {
+    const pathNormalized = pathUtils.normalizePath(path);
+    const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
+
+    this.query = this.query
+      .and({
+        path: {
+          $in: ancestorsPaths,
+        },
+      });
+
+    return this;
+
+  }
+
   /**
    * generate the query to find pages that start with `path`
    *

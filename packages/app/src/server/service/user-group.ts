@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import UserGroup from '~/server/models/user-group';
+import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
 import { compareObjectId, isIncludesObjectId } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
