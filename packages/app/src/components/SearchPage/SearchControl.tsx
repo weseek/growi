@@ -6,7 +6,7 @@ import ActionToPageGroup from './ActionToPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 import {
-  CheckboxType, SORT_AXIS, SORT_ORDER, ActionToPagesType,
+  CheckboxType, SORT_AXIS, SORT_ORDER,
 } from '../../interfaces/search';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
-  actionType: ActionToPagesType
+  actionTypeIconAndText: any
   onClickActionButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
@@ -117,7 +117,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             selectAllCheckboxType={props.selectAllCheckboxType}
             onClickActionButton={props.onClickActionButton}
             onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-            actionType={props.actionType}
+            actionTypeIconAndText={props.actionTypeIconAndText}
           />
         </div>
         {/* sort option: show when screen is smaller than lg */}

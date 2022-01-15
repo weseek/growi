@@ -1,10 +1,10 @@
 import React, {
   FC,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageMigrateModal from './PageMigrateModal';
 import SearchCore from './SearchCore';
 import SearchControl from './SearchPage/SearchControl';
-import { ActionToPagesType } from '../interfaces/search';
 
 type Props = {
 
@@ -17,13 +17,20 @@ type Props = {
 // 3. onAfterSearchInvoked should be refactored in LegacyPage
 const LegacyPage : FC<Props> = (props: Props) => {
 
+  const { t } = useTranslation();
+  const actionTypeAndText = (
+    <>
+      <i className="icon-trash"></i>
+      migrate
+    </>
+  );
   // migrate modal
-  const renderActionsToPageModal = (isDeleteConfirmModalShown, getSelectedPagesToDelete, closeDeleteConfirmModalHandler) => {
+  const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
       <PageMigrateModal
-        isOpen={isDeleteConfirmModalShown}
-        pages={getSelectedPagesToDelete()}
-        onClose={closeDeleteConfirmModalHandler}
+        isOpen={isActionConfirmModalShown}
+        pages={getSelectedPagesForAction()}
+        onClose={closeActionConfirmModalHandler}
       />
     );
   };
@@ -48,7 +55,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
         excludeUserPages={excludeUserPages}
         excludeTrashPages={excludeTrashPages}
         onChangeSortInvoked={onChangeSortInvoked}
-        actionType={ActionToPagesType.MIGRATE}
+        actionTypeIconAndText={actionTypeAndText}
       >
       </SearchControl>
     );

@@ -70,7 +70,7 @@ const SearchCore: FC<Props> = (props: Props) => {
    */
   const [searchingKeyword, setSearchingKeyword] = useState<string>(decodeURI(query.q) || '');
   const [currentSearchedKeyword, setSearchedKeyword] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<any>([]);
+  const [searchResults, setSearchResults] = useState<[IPageSearchResultData] | []>([]);
   const [searchResultMeta, setSearchResultMeta] = useState<SearchResultMeta>({});
   const [focusedSearchResultData, setFocusedSearchResultData] = useState<IPageSearchResultData | null>(null);
   const [selectedPagesIdList, setSelectedPagesIdList] = useState<Set<string>>(new Set());
@@ -84,7 +84,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
   const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
-  const [actionTargetPageIds, sestActionToTargetPageIds] = useState<Set<unknown>>(new Set());
+  const [actionTargetPageIds, sestActionToTargetPageIds] = useState<Set<string>>(new Set());
 
 
   /*
@@ -101,17 +101,17 @@ const SearchCore: FC<Props> = (props: Props) => {
 
   const switchExcludeUserPagesHandler = useCallback(() => {
     setExcludeUserPages(prev => !prev);
-  }, [excludeUserPages]);
+  }, [setExcludeUserPages]);
 
   const switchExcludeTrashPagesHandler = useCallback(() => {
     setExcludeTrashPages(prevState => !prevState);
 
-  }, [excludeTrashPages]);
+  }, [setExcludeTrashPages]);
 
   const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
     setSort(nextSort);
     setOrder(nextOrder);
-  }, []);
+  }, [setSort, setOrder]);
 
   const onAfterSearchHandler = useCallback((keyword) => {
     if (props.onAfterSearchInvoked == null) {
@@ -198,12 +198,12 @@ const SearchCore: FC<Props> = (props: Props) => {
   const onPagingNumberChanged = useCallback(async(activePage) => {
     setActivePage(activePage);
     await search({ keyword: currentSearchedKeyword });
-  }, [currentSearchedKeyword, search]);
+  }, [setActivePage, currentSearchedKeyword, search]);
 
   const onSearchInvoked = useCallback(async(data) => {
     setActivePage(1);
     await search(data);
-  }, [search]);
+  }, [setActivePage, search]);
 
   const onPagingLimitChanged = useCallback(async(limit) => {
     setPagingLimit(limit);

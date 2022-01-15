@@ -1,10 +1,10 @@
 import React, {
   FC, useState, useCallback,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
 import SearchControl from './SearchPage/SearchControl';
-import { ActionToPagesType } from '../interfaces/search';
 
 
 type Props = {
@@ -18,13 +18,21 @@ type Props = {
 // 3. onAfterSearchInvoked should be refactored in LegacyPage
 const SearchPage : FC<Props> = (props: Props) => {
 
+  const { t } = useTranslation();
+  const actionTypeAndText = (
+    <>
+      <i className="icon-trash"></i>
+      {t('search_result.delete_all_selected_page')}
+    </>
+  );
+
   // Delete modal
-  const renderActionsToPageModal = (isDeleteConfirmModalShown, getSelectedPagesToDelete, closeDeleteConfirmModalHandler) => {
+  const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
       <PageDeleteModal
-        isOpen={isDeleteConfirmModalShown}
-        pages={getSelectedPagesToDelete()}
-        onClose={closeDeleteConfirmModalHandler}
+        isOpen={isActionConfirmModalShown}
+        pages={getSelectedPagesForAction()}
+        onClose={closeActionConfirmModalHandler}
         isDeleteCompletelyModal={false}
         isAbleToDeleteCompletely={false}
       />
@@ -59,20 +67,18 @@ const SearchPage : FC<Props> = (props: Props) => {
         excludeUserPages={excludeUserPages}
         excludeTrashPages={excludeTrashPages}
         onChangeSortInvoked={onChangeSortInvoked}
-        actionType={ActionToPagesType.DELETE}
+        actionTypeIconAndText={actionTypeAndText}
       >
       </SearchControl>
     );
   };
 
   return (
-    <>
-      <SearchCore
-        onAfterSearchInvoked={onAfterSearchHandler}
-        onRenderSearchControlInvoked={renderSearchControl}
-        renderSearchControl={renderActionsToPageModal}
-      />
-    </>
+    <SearchCore
+      onAfterSearchInvoked={onAfterSearchHandler}
+      renderActionToPagesModal={renderActionsToPageModal}
+      renderSearchControl={renderSearchControl}
+    />
   );
 };
 export default SearchPage;

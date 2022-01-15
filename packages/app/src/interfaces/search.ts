@@ -48,8 +48,3 @@ export type SearchResultMeta = {
   total?: number,
   results?: number
 };
-
-export enum ActionToPagesType {
-  MIGRATE = 'migration',
-  DELETE = 'delete',
-}
