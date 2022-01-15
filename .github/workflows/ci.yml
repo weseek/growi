@@ -13,6 +13,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
+    if: ${{ false }}
+
     strategy:
       matrix:
         node-version: [14.x]
@@ -61,6 +63,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+
+    if: ${{ false }}
 
     strategy:
       matrix:
@@ -132,6 +136,8 @@ jobs:
 
   launch-dev:
     runs-on: ubuntu-latest
+
+    if: ${{ false }}
 
     strategy:
       matrix:
@@ -225,7 +231,9 @@ jobs:
 
     - name: Build
       run: |
-        yarn lerna run build
+        # yarn lerna run build
+        mkdir packages/app/dist
+        touch packages/app/dist/dummy
       env:
         ANALYZE_BUNDLE_SIZE: 1
 
@@ -262,6 +270,8 @@ jobs:
   launch-prod-node14:
     needs: [build-prod-node14]
     runs-on: ubuntu-latest
+
+    if: ${{ false }}
 
     strategy:
       matrix:
