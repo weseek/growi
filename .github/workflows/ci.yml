@@ -359,7 +359,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x]
-        containers: [1]
+        containers: ['**/1-*','**/2-*']
 
     services:
       mongodb:
@@ -404,6 +404,7 @@ jobs:
       with:
         working-directory: ./packages/app
         install-command: ${{ (steps.cache-dependencies.outputs.cache-hit == 'true' && 'yarn') || 'npx' }} lerna bootstrap
+        spec: '${{ matrix.containers }}'
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
         start: yarn server
