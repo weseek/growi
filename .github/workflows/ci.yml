@@ -231,9 +231,7 @@ jobs:
 
     - name: Build
       run: |
-        # yarn lerna run build
-        mkdir packages/app/dist
-        touch packages/app/dist/dummy
+        yarn lerna run build
       env:
         ANALYZE_BUNDLE_SIZE: 1
 
@@ -408,12 +406,10 @@ jobs:
         working-directory: ./packages/app
         install: false
         # install-command: npx lerna bootstrap -- --frozen-lockfile
-        runTests: false
-        # WIP
-        # build: |
-        #   cp config/ci/.env.local.for-ci .env.production.local
-        # start: yarn server
-        # wait-on: 'http://localhost:3000'
+        build: |
+          cp config/ci/.env.local.for-ci .env.production.local
+        start: yarn server
+        wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
         DEBUG: '@cypress/github-action'
