@@ -292,7 +292,7 @@ jobs:
         echo "::set-output name=dateYmdHM::$(/bin/date -u "+%Y%m%d%H%M")"
         echo "::set-output name=dateYm::$(/bin/date -u "+%Y%m")"
 
-    - name: Cache/Restore node_modules for build
+    - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
       uses: actions/cache@v2
       with:
