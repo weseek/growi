@@ -971,13 +971,91 @@ export const getPageSchema = (crowi) => {
   }
 
   pageSchema.statics.create = async function(path, body, user, options = {}) {
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    if (isV5Compatible) {
+      validateCrowi();
+
+      const Page = this;
+      const Revision = crowi.model('Revision');
+      const {
+        format = 'markdown', redirectTo, grantUserGroupId,
+      } = options;
+
+      // sanitize path
+      path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
+
+      let grant = options.grant;
+      // force public
+      if (isTopPage(path)) {
+        grant = GRANT_PUBLIC;
+      }
+
+      const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
+      if (isExist) {
+        throw new Error('Cannot create new page to existed path');
+      }
+
+      const parentPath = nodePath.dirname(path);
+      const parent = await this.findOneParentByParentPath(parentPath);
+
+      /*
+       * UserGroup & Owner validation
+       */
+      // if parent is null, find ancestors by ancestorsPath and check the grant of the page has the longest path
+      // if parent is not null, check the grant of it
+      // note: I think empty pages should also be grant private
+
+
+      /*
+       * update empty page if exists, if not, create a new page
+       */
+      let page;
+      const emptyPage = await Page.findOne({ path, isEmpty: true });
+      if (emptyPage != null) {
+        page = emptyPage;
+        page.isEmpty = false;
+      }
+      else {
+        page = new Page();
+      }
+
+      let parentId = null;
+      if (parent == null && !isTopPage(path)) {
+        parentId = await Page.getParentIdAndFillAncestors(path, parent);
+      }
+
+      page.path = path;
+      page.creator = user;
+      page.lastUpdateUser = user;
+      page.redirectTo = redirectTo;
+      page.status = STATUS_PUBLISHED;
+      page.parent = parentId;
+
+      await validateAppliedScope(user, grant, grantUserGroupId);
+      page.applyScope(user, grant, grantUserGroupId);
+
+      let savedPage = await page.save();
+      const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+      const revision = await pushRevision(savedPage, newRevision, user);
+      savedPage = await this.findByPath(revision.path);
+      await savedPage.populateDataToShowRevision();
+
+      pageEvent.emit('create', savedPage, user);
+
+      return savedPage;
+    }
+
+    /*
+     * v4 compatible process
+     */
     validateCrowi();
 
     const Page = this;
     const Revision = crowi.model('Revision');
-    const {
-      format = 'markdown', redirectTo, grantUserGroupId, parentId: _parentId,
-    } = options;
+    const format = options.format || 'markdown';
+    const redirectTo = options.redirectTo || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -988,44 +1066,18 @@ export const getPageSchema = (crowi) => {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
+    const isExist = await this.count({ path });
+
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
     }
 
-    const parentPath = nodePath.dirname(path);
-    const parent = await this.findOneParentByParentPath(parentPath);
-
-    /*
-     * UserGroup & Owner validation
-     */
-
-    /*
-     * update empty page if exists, if not, create a new page
-     */
-    let page;
-    const emptyPage = await Page.findOne({ path, isEmpty: true });
-    if (emptyPage != null) {
-      page = emptyPage;
-      page.isEmpty = false;
-    }
-    else {
-      page = new Page();
-    }
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    let parentId = _parentId;
-    if (isV5Compatible && parentId == null && !isTopPage(path)) {
-      parentId = await Page.getParentIdAndFillAncestors(path, parent);
-    }
-
+    const page = new Page();
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
-    page.parent = parentId;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
