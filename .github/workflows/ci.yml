@@ -13,8 +13,6 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    if: ${{ false }}
-
     strategy:
       matrix:
         node-version: [14.x]
@@ -63,8 +61,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
-    if: ${{ false }}
 
     strategy:
       matrix:
@@ -136,8 +132,6 @@ jobs:
 
   launch-dev:
     runs-on: ubuntu-latest
-
-    if: ${{ false }}
 
     strategy:
       matrix:
@@ -269,8 +263,6 @@ jobs:
     needs: [build-prod-node14]
     runs-on: ubuntu-latest
 
-    if: ${{ false }}
-
     strategy:
       matrix:
         node-version: [14.x]
@@ -390,7 +382,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-cypress-base-3-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
@@ -418,8 +410,6 @@ jobs:
         wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
-        DEBUG: '@cypress/github-action'
-
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
