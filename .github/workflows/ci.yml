@@ -7,6 +7,10 @@ on:
       - rc/**
       - chore/**
       - support/prepare-v**
+  pull_request:
+    branches:
+      - master
+    types: [opened, reopened, synchronize]
 
 jobs:
 
@@ -351,6 +355,8 @@ jobs:
 
   run-cypress-node14:
     needs: [build-prod-node14]
+
+    if: ${{ github.base_ref != null || github.ref_name == 'master' }}
 
     runs-on: ubuntu-latest
     container: cypress/base:14.18.1
