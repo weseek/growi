@@ -31,8 +31,7 @@ class PageService {
     // init
     this.initPageEvent();
     // this code is written to check if method works. will delete in the end.
-    this.updateDescendantCount('/', 1).then(res => logger.info(res)).catch(err => logger.warn(err));
-    // this.recountPage().then(res => logger.info(res)).catch(err => logger.warn(err));
+    // this.updateDescendantCount('/').then(res => logger.info(res)).catch(err => logger.warn(err));
   }
 
   initPageEvent() {
@@ -1248,109 +1247,46 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
-  async findSelfAndDescendant(path, grant = null) {
+  async updateDescendantCount(path = '/') {
+    const BATCH_SIZE = 2;
+
+
     const Page = this.crowi.model('Page');
-    return Page.aggregate(
-      [
-        { $match: { path: { $regex: `^${path}.*` }, grant } },
-        {
-          $project: {
-            path: 1,
-            parent: 1,
-            field_length: { $strLenCP: '$path' },
-          },
-        },
-        { $sort: { field_length: -1 } },
-        { $project: { field_length: 0 } },
-      ],
-    );
-  }
+    const aggregation = Page.getAggrationForPagesByMatchConditionInDescOrder(path);
+    const aggregatedPages = await Page.aggregate(aggregation).cursor({ batchSize: BATCH_SIZE });
 
-  async recountPage(targetIds) {
-    const Page = this.crowi.model('Page');
-    const res = await Page.aggregate(
-      [
-        {
-          $match: {
-            parent: { $in: targetIds },
-          },
+    const recountWriteStream = new Writable({
+      objectMode: true,
+      async write(pages, encoding, callback) {
+        for (const singlePage of pages) {
+          // skip page tagged as sibling. Tagged ones are already updated with other pages.
+          if (singlePage.isTaggedAsSibling) {
+            continue;
+          }
 
-        },
-        {
-          $project: {
-            path: 1,
-            parent: 1,
-            descendantCount: 1,
-          },
-        },
-        {
-          $group: {
-            _id: '$parent',
-            sumOfDescendantCount: {
-              $sum: '$descendantCount',
-            },
-            sumOfDocsCount: {
-              $sum: 1,
-            },
-          },
-        },
-        {
-          $set: {
-            descendantCount: {
-              $sum: ['$sumOfDescendantCount', '$sumOfDocsCount'],
-            },
-          },
-        },
-      ],
-    );
-    const idWithChildren = res.map(data => data._id.toString());
-    const pageIdsWithNoChildren = targetIds.filter((targetId) => {
-      return !idWithChildren.includes(targetId.toString());
+          // filter out pages with different parent
+          const pagesWithSameParent = pages.filter((page) => {
+            const hasSameParent = singlePage.parent === page.parent;
+            // if page with same parent found, tag it as sibling to skip updating from the next iteration.
+            if (hasSameParent) {
+              page.isTaggedAsSibling = true;
+              return true;
+            }
+            return false;
+          });
+          const idsToRecount = pagesWithSameParent.map(page => page._id);
+          // eslint-disable-next-line no-await-in-loop
+          await Page.recountPage(idsToRecount);
+        }
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
     });
-
-    const operationForPageWithChildren = res.map((data) => {
-      return {
-        updateOne: {
-          filter: { _id: data._id },
-          update: { $set: { descendantCount: data.descendantCount } },
-        },
-      };
-
-    });
-    const operationsForPageWithoutChildren = pageIdsWithNoChildren.map((data) => {
-      return {
-        updateOne: {
-          filter: { _id: data._id },
-          update: { $set: { descendantCount: 0 } },
-        },
-      };
-    });
-
-    const operations = operationForPageWithChildren.concat(operationsForPageWithoutChildren);
-    await Page.bulkWrite(operations);
-  }
-
-  async updateDescendantCount(path = '/', grant = 1) {
-    const findSelfAndDescendant = await this.findSelfAndDescendant(path, grant);
-    const updatedPageIds = []; // 既に更新されたページ
-    for (const page of findSelfAndDescendant) {
-
-      // find pages that have the same parent
-      const pagesWithSameParentIds = findSelfAndDescendant.filter((p) => {
-        return page.parent?.toString() === p.parent?.toString();
-      }).map(p => p._id);
-
-      // filter out pages that are already updated
-      const recountTargetIds = pagesWithSameParentIds.filter((id) => {
-        return !updatedPageIds.map(_ => _.toString()).includes(id.toString());
-      });
-
-      // eslint-disable-next-line no-await-in-loop
-      await this.recountPage(pagesWithSameParentIds);
-
-      updatedPageIds.push(...recountTargetIds);
-
-    }
+    aggregatedPages
+      .pipe(createBatchStream(BATCH_SIZE))
+      .pipe(recountWriteStream);
   }
 
 }

@@ -355,24 +355,101 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   return pathToChildren;
 };
 
-schema.statics.findAllDescendantsByPath = async function(path, grant = 1) {
-  return this.aggregate(
+/**
+ * Aggregate pages with paths starting with the provided string
+ */
+schema.statics.getAggrationForPagesByMatchConditionInDescOrder = function(path) {
+  const match = {
+    $match: {
+      $or: [
+        {
+          path: { $regex: `^${path}.*` },
+          parent: { $ne: null },
+        },
+        { path: '/' },
+      ],
+    },
+  };
+  return [
+    match,
+    // https://regex101.com/r/Nax9Ms/1
+    {
+      $project: {
+        path: 1,
+        parent: 1,
+        field_length: { $strLenCP: '$path' },
+      },
+    },
+    { $sort: { field_length: -1 } },
+    { $project: { field_length: 0 } },
+  ];
+};
+
+schema.statics.recountPage = async function(idsToRecount) {
+  const res = await this.aggregate(
     [
-      { $match: { path: { $regex: `^${path}.*` }, grant } },
-      // https://regex101.com/r/8R3Meh/1
+      {
+        $match: {
+          parent: { $in: idsToRecount },
+        },
+
+      },
       {
         $project: {
           path: 1,
           parent: 1,
           descendantCount: 1,
-          field_length: { $strLenCP: '$path' },
         },
       },
-
-      { $sort: { field_length: -1 } },
-      { $project: { field_length: 0 } },
+      {
+        $group: {
+          _id: '$parent',
+          sumOfDescendantCount: {
+            $sum: '$descendantCount',
+          },
+          sumOfDocsCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $set: {
+          descendantCount: {
+            $sum: ['$sumOfDescendantCount', '$sumOfDocsCount'],
+          },
+        },
+      },
     ],
   );
+
+  const idWithChildren = res.map(data => data._id.toString());
+  const pageIdsWithNoChildren = idsToRecount.filter((targetId) => {
+    return !idWithChildren.includes(targetId.toString());
+  });
+
+  const operationForPageWithChildren = res.map((data) => {
+    return {
+      updateOne: {
+        filter: { _id: data._id },
+        update: { $set: { descendantCount: data.descendantCount } },
+      },
+    };
+
+  });
+  const operationsForPageWithoutChildren = pageIdsWithNoChildren.map((data) => {
+    return {
+      updateOne: {
+        filter: { _id: data._id },
+        update: { $set: { descendantCount: 0 } },
+      },
+    };
+  });
+
+  const operations = operationForPageWithChildren.concat(operationsForPageWithoutChildren);
+  operations.forEach((e) => {
+    console.log(e.updateOne);
+  });
+  await this.bulkWrite(operations);
 };
 
 
