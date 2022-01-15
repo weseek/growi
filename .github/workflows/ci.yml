@@ -405,7 +405,6 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./packages/app
-        install: false
         install-command: npx lerna bootstrap -- --frozen-lockfile
         build: |
           cp config/ci/.env.local.for-ci .env.production.local
