@@ -1002,9 +1002,6 @@ export const getPageSchema = (crowi) => {
       /*
        * UserGroup & Owner validation
        */
-      // if parent is null, find ancestors by ancestorsPath and check the grant of the page has the longest path
-      // if parent is not null, check the grant of it
-      // note: I think empty pages should also be grant private
 
 
       /*
