@@ -175,7 +175,7 @@ schema.statics.findOneParentByParentPath = async function(parentPath: string): P
  *   - second  update ancestor pages' parent
  *   - finally return the target's parent page id
  */
-schema.statics.getParentIdAndFillAncestors = async function(path: string, parent: PageDocument): Promise<Schema.Types.ObjectId> {
+schema.statics.getParentIdAndFillAncestors = async function(path: string, parent: PageDocument | null): Promise<Schema.Types.ObjectId> {
   const parentPath = nodePath.dirname(path);
 
   if (parent != null) {

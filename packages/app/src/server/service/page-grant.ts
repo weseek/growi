@@ -4,7 +4,7 @@ import { pagePathUtils } from '@growi/core';
 import UserGroup from '~/server/models/user-group';
 import { PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
-import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { excludeTestIdsFromTargetIds, removeDuplicates } from '~/server/util/compare-objectId';
 
 const { isTopPage } = pagePathUtils;
 
@@ -18,16 +18,16 @@ class PageGrantService {
     this.crowi = crowi;
   }
 
-  private validateGrantValues(grant, grantedUserId: ObjectId, grantedGroupId: ObjectId) {
+  private validateGrantValues(grant, grantedUserIds, grantedGroupId) {
     const Page = mongoose.model('Page') as PageModel;
 
     if (grant === Page.GRANT_USER_GROUP && grantedGroupId == null) {
       throw Error('grantedGroupId is not specified');
     }
-    if (grant === Page.GRANT_OWNER && grantedUserId == null) {
+    if (grant === Page.GRANT_OWNER && grantedUserIds == null) {
       throw Error('grantedUserId is not specified');
     }
-    if (grant === Page.GRANT_SPECIFIED && grantedUserId == null) {
+    if (grant === Page.GRANT_SPECIFIED && grantedUserIds == null) {
       throw Error('grantedUserId is not specified');
     }
   }
@@ -50,33 +50,46 @@ class PageGrantService {
     return true;
   }
 
-  async generateTargetsGrantedUsers(grant, grantedUserId: ObjectId, grantedGroupId: ObjectId): Promise<ObjectId[]> {
+  private async generateTargetsGrantedUsersForCreate(user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<ObjectId[]> {
     // validate values
-    this.validateGrantValues(grant, grantedUserId, grantedGroupId);
+    this.validateGrantValues(grant, grantedUserIds, grantedGroupId);
 
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+    let targetGrantedUsers: ObjectId[] = [];
 
-    const targetGroup = await UserGroup.findOne({ _id: grantedGroupId });
-    if (targetGroup == null) {
-      throw Error('The group of grantedGroupId does not exist.');
-    }
-
-    const targetRelations = await UserGroupRelation.find({ relatedGroup: grantedGroupId }, { _id: 0, relatedUser: 1 });
-    return targetRelations.map(r => r.relatedUser) as ObjectId[];
-  }
-
-  async generateAncestorsGrantedUsers(pathToCreate: string): Promise<ObjectId[]> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-    let ancestorUsers: ObjectId[] | null = null;
+    if (grant === Page.GRANT_USER_GROUP) {
+      const targetGroup = await UserGroup.findOne({ _id: grantedGroupId });
+      if (targetGroup == null) {
+        throw Error('The group of grantedGroupId does not exist.');
+      }
+
+      const targetRelations = await UserGroupRelation.find({ relatedGroup: grantedGroupId }, { _id: 0, relatedUser: 1 });
+      targetGrantedUsers = targetRelations.map(r => r.relatedUser) as ObjectId[];
+    }
+    if (grant === Page.GRANT_OWNER) {
+      targetGrantedUsers = [user._id];
+    }
+    if (grant === Page.GRANT_SPECIFIED) {
+      targetGrantedUsers = grantedUserIds;
+    }
+
+    return targetGrantedUsers;
+  }
+
+  private async generateAncestorsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
+    const Page = mongoose.model('Page') as PageModel;
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+
+    let ancestorUsers: ObjectId[] = [];
 
     /*
      * make granted users list of ancestor's
      */
     const builderForAncestors = new PageQueryBuilder(Page.find({}, { _id: 0, grantedGroup: 1 }), false);
     const ancestors = await builderForAncestors
-      .addConditionToListOnlyAncestors(pathToCreate)
+      .addConditionToListOnlyAncestors(targetPath)
       .addConditionToSortPagesByDescPath()
       .query
       .exec();
@@ -99,14 +112,10 @@ class PageGrantService {
       ancestorUsers = testAncestor.grantedUsers;
     }
 
-    if (ancestorUsers == null || Array.isArray(ancestorUsers)) {
-      throw Error('ancestorUsers is unexpectedly non-array type value.');
-    }
-
     return ancestorUsers;
   }
 
-  async generateDescendantsGrantedUsers(pathToCreate: string): Promise<ObjectId[]> {
+  private async generateDescendantsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
@@ -114,23 +123,32 @@ class PageGrantService {
      * make granted users list of descendant's
      */
     // find all descendants excluding empty pages
-    const builderForDescendants = new PageQueryBuilder(Page.find({}, { _id: 0, grantedGroup: 1 }), false);
+    const builderForDescendants = new PageQueryBuilder(Page.find({}, { _id: 0, grantedUsers: 1, grantedGroup: 1 }), false);
     const descendants = await builderForDescendants
-      .addConditionToListOnlyDescendants(pathToCreate)
+      .addConditionToListOnlyDescendants(targetPath)
       .query
       .exec();
+    // users of GRANT_OWNER
+    let grantedUsersOfGrantOwner = [];
+    descendants.forEach((d) => {
+      if (d.grantedUsers == null) {
+        return;
+      }
+      grantedUsersOfGrantOwner = grantedUsersOfGrantOwner.concat(d.grantedUsers);
+    });
     // make a set of all users
-    const descendantsGrantedGroups = Array.from(new Set(descendants.map(d => d.grantedGroup)));
-    const descendantsGrantedRelations = await UserGroupRelation.find({ relatedGroup: { $in: descendantsGrantedGroups } }, { _id: 0, relatedUser: 1 });
-    return Array.from(new Set(descendantsGrantedRelations.map(r => r.relatedUser)));
+    const grantedGroups = removeDuplicates(descendants.map(d => d.grantedGroup));
+    const grantedRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedGroups } }, { _id: 0, relatedUser: 1 });
+    const grantedUsersOfGrantUserGroup = grantedRelations.map(r => r.relatedUser);
+    return removeDuplicates([...grantedUsersOfGrantOwner, ...grantedUsersOfGrantUserGroup]);
   }
 
-  async pageCreateValidation(pathToCreate: string, grant, grantedUserId: ObjectId, grantedGroupId: ObjectId) {
+  async pageValidationForCreate(pathToCreate: string, user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
     if (isTopPage(pathToCreate)) {
       return true;
     }
 
-    const targetUsers = await this.generateTargetsGrantedUsers(grant, grantedUserId, grantedGroupId);
+    const targetUsers = await this.generateTargetsGrantedUsersForCreate(user, grant, grantedUserIds, grantedGroupId);
     const ancestorUsers = await this.generateAncestorsGrantedUsers(pathToCreate);
 
     // find existing empty page at target path

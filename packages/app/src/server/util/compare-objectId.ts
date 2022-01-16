@@ -31,3 +31,12 @@ export const excludeTestIdsFromTargetIds = (targetIds: IObjectId[], testIds: IOb
   // cast to ObjectId
   return excluded.map(e => new ObjectId(e));
 };
+
+export const removeDuplicates = (objectIds: IObjectId[]): IObjectId[] => {
+  // cast to string
+  const strs = objectIds.map(id => id.toString());
+  const uniqueArr = Array.from(new Set(strs));
+
+  // cast to ObjectId
+  return uniqueArr.map(str => new ObjectId(str));
+};

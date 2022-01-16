@@ -994,7 +994,7 @@ export const getPageSchema = (crowi) => {
       const Page = this;
       const Revision = crowi.model('Revision');
       const {
-        format = 'markdown', redirectTo, grantUserGroupId,
+        format = 'markdown', redirectTo, grantedUserIds, grantUserGroupId,
       } = options;
 
       // sanitize path
@@ -1017,6 +1017,17 @@ export const getPageSchema = (crowi) => {
       /*
        * UserGroup & Owner validation
        */
+      let isGrantNormalized = false;
+      try {
+        isGrantNormalized = await crowi.pageGrantService.pageValidationForCreate(path, grant, grantedUserIds, grantUserGroupId);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
 
 
       /*
@@ -1033,7 +1044,7 @@ export const getPageSchema = (crowi) => {
       }
 
       let parentId = null;
-      if (parent == null && !isTopPage(path)) {
+      if (!isTopPage(path)) {
         parentId = await Page.getParentIdAndFillAncestors(path, parent);
       }
 
@@ -1042,7 +1053,7 @@ export const getPageSchema = (crowi) => {
       page.lastUpdateUser = user;
       page.redirectTo = redirectTo;
       page.status = STATUS_PUBLISHED;
-      page.parent = parentId;
+      page.parent = options.grant === GRANT_RESTRICTED ? null : parentId;
 
       await validateAppliedScope(user, grant, grantUserGroupId);
       page.applyScope(user, grant, grantUserGroupId);
