@@ -208,7 +208,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const onPagingLimitChanged = useCallback(async(limit) => {
     setPagingLimit(limit);
     await search({ keyword: currentSearchedKeyword });
-  }, [currentSearchedKeyword, search]);
+  }, [search, currentSearchedKeyword, setPagingLimit]);
 
   const selectPage = useCallback((pageId) => {
     const index = searchResults.findIndex(({ pageData }) => {
