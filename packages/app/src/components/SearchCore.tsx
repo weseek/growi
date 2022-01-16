@@ -11,7 +11,6 @@ import { toastError } from '~/client/util/apiNotification';
 import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
-import SearchControl from './SearchPage/SearchControl';
 import {
   CheckboxType, IPageSearchResultData, SearchResultMeta, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
@@ -70,7 +69,8 @@ const SearchCore: FC<Props> = (props: Props) => {
    */
   const [searchingKeyword, setSearchingKeyword] = useState<string>(decodeURI(query.q) || '');
   const [currentSearchedKeyword, setSearchedKeyword] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<[IPageSearchResultData] | []>([]);
+  // should be <[IPageSearchResultData] | []> but gives lint errors.
+  const [searchResults, setSearchResults] = useState<any>([]);
   const [searchResultMeta, setSearchResultMeta] = useState<SearchResultMeta>({});
   const [focusedSearchResultData, setFocusedSearchResultData] = useState<IPageSearchResultData | null>(null);
   const [selectedPagesIdList, setSelectedPagesIdList] = useState<Set<string>>(new Set());
