@@ -24,6 +24,13 @@ const schema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Tag',
     required: true,
+    index: true,
+  },
+  isPageTrashed: {
+    type: Boolean,
+    default: false,
+    required: true,
+    index: true,
   },
 });
 // define unique compound index
@@ -39,27 +46,34 @@ schema.plugin(uniqueValidator);
 class PageTagRelation {
 
   static async createTagListWithCount(option) {
-    const Tag = mongoose.model('Tag');
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
-    const offset = opt.offset || 0;
-    const limit = opt.limit || 50;
+    const offset = opt.offset;
+    const limit = opt.limit;
 
-    const existTagIds = await Tag.find().distinct('_id');
     const tags = await this.aggregate()
-      .match({ relatedTag: { $in: existTagIds } })
-      .group({ _id: '$relatedTag', count: { $sum: 1 } })
-      .sort(sortOpt);
+      .match({ isPageTrashed: false })
+      .lookup({
+        from: 'tags',
+        localField: 'relatedTag',
+        foreignField: '_id',
+        as: 'tag',
+      })
+      .unwind('$tag')
+      .group({ _id: '$relatedTag', count: { $sum: 1 }, name: { $first: '$tag.name' } })
+      .sort(sortOpt)
+      .skip(offset)
+      .limit(limit);
 
-    const list = tags.slice(offset, offset + limit);
-    const totalCount = tags.length;
+    const totalCount = (await this.find({ isPageTrashed: false }).distinct('relatedTag')).length;
 
-    return { list, totalCount };
+    return { data: tags, totalCount };
   }
 
-  static async findByPageId(pageId) {
-    const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
-    return relations.filter((relation) => { return relation.relatedTag !== null });
+  static async findByPageId(pageId, options = {}) {
+    const isAcceptRelatedTagNull = options.nullable || null;
+    const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('relatedTag');
+    return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
   }
 
   static async listTagNamesByPage(pageId) {
@@ -125,17 +139,23 @@ class PageTagRelation {
     const Tag = mongoose.model('Tag');
 
     // get relations for this page
-    const relations = await this.findByPageId(pageId);
+    const relations = await this.findByPageId(pageId, { nullable: true });
 
-    // unlink relations
-    const unlinkTagRelations = relations.filter((relation) => { return !tags.includes(relation.relatedTag.name) });
-    const bulkDeletePromise = this.deleteMany({
-      relatedPage: pageId,
-      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
+    const unlinkTagRelationIds = [];
+    const relatedTagNames = [];
+
+    relations.forEach((relation) => {
+      if (relation.relatedTag == null) {
+        unlinkTagRelationIds.push(relation._id);
+      }
+      else {
+        relatedTagNames.push(relation.relatedTag.name);
+        if (!tags.includes(relation.relatedTag.name)) {
+          unlinkTagRelationIds.push(relation._id);
+        }
+      }
     });
-
-    // filter tags to create
-    const relatedTagNames = relations.map((relation) => { return relation.relatedTag.name });
+    const bulkDeletePromise = this.deleteMany({ _id: { $in: unlinkTagRelationIds } });
     // find or create tags
     const tagsToCreate = tags.filter((tag) => { return !relatedTagNames.includes(tag) });
     const tagEntities = await Tag.findOrCreateMany(tagsToCreate);

@@ -1,36 +1,40 @@
-# syntax = docker/dockerfile:experimental
+# syntax = docker/dockerfile:1
 
 ARG flavor=default
 
+
+##
+## packages-json-picker
+##
+FROM node:14-slim AS packages-json-picker
+
+ENV optDir /opt
+
+WORKDIR ${optDir}
+COPY ["package.json", "yarn.lock", "lerna.json", "./"]
+COPY packages packages
+# Find and remove non-package.json files
+RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
 
 
 ##
 ## deps-resolver
 ##
 FROM node:14-slim AS deps-resolver
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-ENV appDir /opt/growi
+ENV optDir /opt
 
-WORKDIR ${appDir}
-COPY ./package.json .
-COPY ./yarn.lock .
-COPY ./lerna.json .
-COPY ./packages/app/package.json packages/app/
-COPY ./packages/core/package.json packages/core/
-COPY ./packages/codemirror-textlint/package.json packages/codemirror-textlint/
-COPY ./packages/plugin-attachment-refs/package.json packages/plugin-attachment-refs/
-COPY ./packages/plugin-lsx/package.json packages/plugin-lsx/
-COPY ./packages/plugin-pukiwiki-like-linker/package.json packages/plugin-pukiwiki-like-linker/
-COPY ./packages/slack/package.json packages/slack/
-COPY ./packages/ui/package.json packages/ui/
+WORKDIR ${optDir}
+
+# copy files
+COPY --from=packages-json-picker ${optDir} .
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN npx lerna bootstrap
+RUN npx lerna bootstrap -- --frozen-lockfile
 
 # make artifacts
-RUN tar cf node_modules.tar \
+RUN tar -cf node_modules.tar \
   node_modules \
   packages/*/node_modules
 
@@ -40,9 +44,13 @@ RUN tar cf node_modules.tar \
 ## deps-resolver-prod
 ##
 FROM deps-resolver AS deps-resolver-prod
+
+# remove unnecessary packages
+RUN rm -rf packages/slackbot-proxy
+
 RUN npx lerna bootstrap -- --production
 # make artifacts
-RUN tar cf node_modules.tar \
+RUN tar -cf node_modules.tar \
   node_modules \
   packages/*/node_modules
 
@@ -53,16 +61,16 @@ RUN tar cf node_modules.tar \
 ##
 FROM node:14-slim AS prebuilder-default
 
-ENV appDir /opt/growi
+ENV optDir /opt
 
-WORKDIR ${appDir}
+WORKDIR ${optDir}
 
 # copy dependent packages
 COPY --from=deps-resolver \
-  ${appDir}/node_modules.tar ${appDir}/
+  ${optDir}/node_modules.tar ${optDir}/
 
 # extract node_modules.tar
-RUN tar xf node_modules.tar
+RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
 
@@ -73,7 +81,7 @@ RUN rm node_modules.tar
 FROM prebuilder-default AS prebuilder-nocdn
 
 # add dotenv file for NO_CDN
-COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
+COPY packages/app/docker/nocdn/.env.production.local ${optDir}/packages/app/
 
 
 
@@ -82,14 +90,11 @@ COPY packages/app/docker/nocdn/.env.production.local ${appDir}/packages/app/
 ##
 FROM prebuilder-${flavor} AS builder
 
-ENV appDir /opt/growi
+ENV optDir /opt
 
-WORKDIR ${appDir}
+WORKDIR ${optDir}
 
-COPY ./package.json ./
-COPY ./yarn.lock ./
-COPY ./lerna.json ./
-COPY ./tsconfig.base.json ./
+COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 # copy all related packages
 COPY packages/app packages/app
 COPY packages/core packages/core
@@ -104,9 +109,8 @@ COPY packages/ui packages/ui
 RUN yarn lerna run build
 
 # make artifacts
-RUN tar cf packages.tar \
+RUN tar -cf packages.tar \
   package.json \
-  yarn.lock \
   tsconfig.base.json \
   packages/app/config \
   packages/app/public \
@@ -129,7 +133,8 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production
 
-ENV appDir /opt/growi
+ENV optDir /opt
+ENV appDir ${optDir}/growi
 
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
@@ -141,15 +146,15 @@ RUN set -eux; \
 	gosu nobody true
 
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${appDir}/node_modules.tar ${appDir}/
+  ${optDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
-  ${appDir}/packages.tar ${appDir}/
+  ${optDir}/packages.tar ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar xf node_modules.tar
-RUN tar xf packages.tar
+RUN tar -xf node_modules.tar
+RUN tar -xf packages.tar
 RUN rm node_modules.tar packages.tar
 
 USER root

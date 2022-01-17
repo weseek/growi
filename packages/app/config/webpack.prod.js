@@ -35,10 +35,10 @@ module.exports = require('./webpack.common')({
             loader: 'postcss-loader',
             options: {
               sourceMap: false,
-              plugins: () => {
-                return [
+              postcssOptions: {
+                plugins: [
                   require('autoprefixer')(),
-                ];
+                ],
               },
             },
           },

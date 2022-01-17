@@ -112,33 +112,6 @@ Crowi.initClassesByOS = function() {
   });
 };
 
-// window.addEventListener('load', () => {
-//   const { appContainer } = window;
-//   const pageContainer = appContainer.getContainer('PageContainer');
-
-//   // Do nothing if the page does not exist
-//   // ex.) admin page,login page
-//   if (pageContainer == null) {
-//     return null;
-//   }
-//   const { isAbleToOpenPageEditor } = pageContainer;
-
-//   // hash on page
-//   if (window.location.hash) {
-//     const navigationContainer = appContainer.getContainer('NavigationContainer');
-
-//     if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
-//       navigationContainer.setEditorMode('edit');
-
-//       // focus
-//       Crowi.setCaretLineAndFocusToEditor();
-//     }
-//     else if (window.location.hash === '#hackmd') {
-//       navigationContainer.setEditorMode('hackmd');
-//     }
-//   }
-// });
-
 window.addEventListener('load', () => {
   const crowi = window.crowi;
   if (crowi && crowi.users && crowi.users.length !== 0) {
