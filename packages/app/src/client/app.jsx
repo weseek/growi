@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { SWRConfig } from 'swr';
 
@@ -160,7 +162,9 @@ const renderMainComponents = () => {
           <ErrorBoundary>
             <SWRConfig value={swrGlobalConfiguration}>
               <Provider inject={injectableContainers}>
-                {componentMappings[key]}
+                <DndProvider backend={HTML5Backend}>
+                  {componentMappings[key]}
+                </DndProvider>
               </Provider>
             </SWRConfig>
           </ErrorBoundary>

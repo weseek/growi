@@ -6,7 +6,6 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import nodePath from 'path';
-import RE2 from 're2';
 
 import { getOrCreateModel, pagePathUtils } from '@growi/core';
 import loggerFactory from '../../utils/logger';
@@ -64,6 +63,7 @@ const schema = new Schema<PageDocument, PageModel>({
   parent: {
     type: ObjectId, ref: 'Page', index: true, default: null,
   },
+  descendantCount: { type: Number, default: 0 },
   isEmpty: { type: Boolean, default: false },
   path: {
     type: String, required: true, index: true,
@@ -110,19 +110,6 @@ const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): strin
 
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
-};
-
-/*
- * Generate RE2 instance for one level lower path
- */
-const generateChildrenRE2 = (path: string): RE2 => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RE2(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RE2(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /*
@@ -299,8 +286,8 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   let queryBuilder: PageQueryBuilder;
   if (hasSlash(parentPathOrId)) {
     const path = parentPathOrId;
-    const regexp = generateChildrenRE2(path);
-    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp.source } }), true);
+    const regexp = generateChildrenRegExp(path);
+    queryBuilder = new PageQueryBuilder(this.find({ path: { $regex: regexp } }), true);
   }
   else {
     const parentId = parentPathOrId;

@@ -4,6 +4,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   const path = require('path');
   const express = require('express');
+  const compression = require('compression');
   const helmet = require('helmet');
   const bodyParser = require('body-parser');
   const cookieParser = require('cookie-parser');
@@ -52,6 +53,8 @@ module.exports = function(crowi, app) {
       // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
       nsSeparator: '::',
     });
+
+  app.use(compression());
 
   app.use(helmet({
     contentSecurityPolicy: false,
