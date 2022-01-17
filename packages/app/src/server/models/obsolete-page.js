@@ -1121,24 +1121,29 @@ export const getPageSchema = (crowi) => {
     return await queryBuilder.query.exec();
   };
 
-  pageSchema.statics.publicizePage = async function(page) {
-    page.grantedGroup = null;
-    page.grant = GRANT_PUBLIC;
-    await page.save();
+  pageSchema.statics.publicizePages = async function(pages) {
+    const operationsToPublicize = pages.map((page) => {
+      return {
+        updateOne: {
+          filter: { _id: page._id },
+          update: {
+            grantedGroup: null,
+            grant: this.GRANT_PUBLIC,
+          },
+        },
+      };
+    });
+    await this.bulkWrite(operationsToPublicize);
   };
 
-  pageSchema.statics.transferPageToGroup = async function(page, transferToUserGroupId) {
+  pageSchema.statics.transferPagesToGroup = async function(pages, transferToUserGroupId) {
     const UserGroup = mongoose.model('UserGroup');
 
-    // check page existence
-    const isExist = await UserGroup.count({ _id: transferToUserGroupId }) > 0;
-    if (isExist) {
-      page.grantedGroup = transferToUserGroupId;
-      await page.save();
+    if ((await UserGroup.count({ _id: transferToUserGroupId })) === 0) {
+      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
     }
-    else {
-      throw new Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
-    }
+
+    await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroup: transferToUserGroupId });
   };
 
   /**

@@ -22,6 +22,7 @@
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
+  "Description": "描述",
 	"Admin": "管理",
 	"administrator": "管理员",
 	"Tag": "标签",
@@ -128,6 +129,7 @@
   "Legacy_Slack_Integration": "旧版Slack一体化",
 	"User_Management": "用户管理",
 	"external_account_management": "外部账户管理",
+  "UserGroup": "用户组",
 	"UserGroup Management": "用户组管理",
 	"Full Text Search Management": "全文搜索管理",
 	"Import Data": "导入数据",
@@ -492,7 +494,10 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
 		"update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}",
     "initialize_successed": "Succeeded to initialize {{target}}",
 		"give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin ",

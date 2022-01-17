@@ -1,3 +1,6 @@
+import { Ref } from './common';
+import { HasObjectId } from './has-object-id';
+
 export type IUser = {
   name: string;
   username: string;
@@ -6,13 +9,18 @@ export type IUser = {
 }
 
 export type IUserGroupRelation = {
-  relatedGroup: IUserGroup,
-  relatedUser: IUser,
+  relatedGroup: Ref<IUserGroup>,
+  relatedUser: Ref<IUser>,
   createdAt: Date,
 }
 
 export type IUserGroup = {
-  userGroupId:string;
   name: string;
   createdAt: Date;
+  description: string;
+  parent: Ref<IUserGroup> | null;
 }
+
+export type IUserHasId = IUser & HasObjectId;
+export type IUserGroupHasId = IUserGroup & HasObjectId;
+export type IUserGroupRelationHasId = IUserGroupRelation & HasObjectId;
