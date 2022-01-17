@@ -31,6 +31,29 @@ class TagLabels extends React.Component {
     this.setState({ isTagEditModalShown: false });
   }
 
+  async tagsUpdatedHandler(newTags) {
+    const {
+      appContainer, editorContainer, pageContainer, editorMode,
+    } = this.props;
+
+    const { pageId, revisionId } = pageContainer.state;
+    // It will not be reflected in the DB until the page is refreshed
+    if (editorMode === EditorMode.Editor) {
+      return editorContainer.setState({ tags: newTags });
+    }
+    try {
+      const { tags, savedPage } = await appContainer.apiPost('/tags.update', {
+        pageId, tags: newTags, revisionId,
+      });
+      editorContainer.setState({ tags });
+      pageContainer.updatePageMetaData(savedPage, savedPage.revision, tags);
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err, 'fail to update tags');
+    }
+  }
+
 
   render() {
     const { appContainer, tagsUpdateInvoked, tags } = this.props;
