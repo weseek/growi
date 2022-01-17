@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-export type IPageForPageDeleteModal = {
+export type IPageForPageMigrateModal = {
   pageId: string,
   revisionId: string,
   path: string
@@ -30,7 +30,7 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageForPageDeleteModal[],
+  pages: IPageForPageMigrateModal[],
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,

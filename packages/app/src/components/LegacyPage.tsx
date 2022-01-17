@@ -46,6 +46,8 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
+    // TODO
+    // Task : https://redmine.weseek.co.jp/issues/85465
   };
 
 
