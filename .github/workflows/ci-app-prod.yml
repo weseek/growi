@@ -206,9 +206,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          ~/.cache/Cypress
+        key: node_modules-and-cypress-bin-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+          node_modules-and-cypress-bin-${{ runner.OS }}-node${{ matrix.node-version }}
 
     - name: lerna bootstrap
       run: |
