@@ -345,20 +345,22 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
  * return aggregate condition to get following pages
  * - page that has the same path as the provided path
  * - pages that are descendants of the above page
+ * pages without parent will be ignored
  */
 schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
-  const match = {
-    $match: {
-      $or: [
-        {
-          // https://regex101.com/r/ncnxaR/1
-          path: { $regex: `^${path}(/.*|$)` },
-          parent: { $ne: null },
-        },
-        { path: '/' },
-      ],
-    },
-  };
+  let match;
+  if (isTopPage(path)) {
+    match = {
+      // https://regex101.com/r/Kip2rV/1
+      $match: { $or: [{ path: { $regex: '^/.*' }, parent: { $ne: null } }, { path: '/' }] },
+    };
+  }
+  else {
+    match = {
+      // https://regex101.com/r/mJvGrG/1
+      $match: { path: { $regex: `^${path}(/.*|$)` }, parent: { $ne: null } },
+    };
+  }
   return [
     match,
     {

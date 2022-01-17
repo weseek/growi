@@ -1248,7 +1248,11 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
-  // update descendantCount of all pages with path starting with provided string
+  /**
+   * update descendantCount of the following pages
+   * - page that has the same path as the provided path
+   * - pages that are descendants of the above page
+   */
   async updateSelfAndDescendantCount(path = '/') {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
