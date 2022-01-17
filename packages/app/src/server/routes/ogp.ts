@@ -7,8 +7,12 @@ import { promises as fsPromise } from 'fs';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+import ApiResponse from '../util/apiResponse';
+import convertStreamToBuffer from '../util/convertFileStreamToBuffer';
 
 const logger = loggerFactory('growi:routes:ogp');
+
+const DEFAULT_IMAGE_PATH = 'public/images/icons/user.svg';
 
 module.exports = function(crowi) {
   const { configManager, aclService } = crowi;
@@ -25,22 +29,6 @@ module.exports = function(crowi) {
   return {
     async renderOgp(req: Request, res: Response) {
 
-      // this closure will be moved
-      function stream2buffer(stream): Promise<Buffer> {
-
-        return new Promise((resolve, reject) => {
-
-          const _buf: Buffer[] = [];
-
-          stream.on('data', (chunk) => {
-            _buf.push(chunk);
-          });
-          stream.on('end', () => resolve(Buffer.concat(_buf)));
-          stream.on('error', err => reject(err));
-
-        });
-      }
-
       if (!aclService.isGuestAllowedToRead()) {
         return res.status(400).send('This GROWI is not public');
       }
@@ -52,7 +40,7 @@ module.exports = function(crowi) {
 
 
       let user;
-      let pageTitle;
+      let pageTitle: string;
       let bufferedUserImage: Buffer = Buffer.from('');
 
       try {
@@ -67,7 +55,6 @@ module.exports = function(crowi) {
         user = await User.findById(page.creator._id.toString());
 
         if (/^https:\/\/gravatar\.com\/avatar\/.+/.test(user.imageUrlCached)) {
-          // user image is gravatar
           bufferedUserImage = (await axios.get(
             user.imageUrlCached, {
               responseType: 'arraybuffer',
@@ -79,11 +66,11 @@ module.exports = function(crowi) {
           const Attachment = crowi.model('Attachment');
           const attachment = await Attachment.findById(user.imageAttachment);
           const fileStream = await fileUploadService.findDeliveryFile(attachment);
-          bufferedUserImage = await stream2buffer(fileStream);
+          bufferedUserImage = await convertStreamToBuffer(fileStream);
         }
-        else if (user.imageUrlCached === '/images/icons/user.svg') {
+        else if (user.imageUrlCached === DEFAULT_IMAGE_PATH) {
           bufferedUserImage = await fsPromise.readFile(
-            path.join(projectRoot, 'public/images/icons/user.svg'),
+            path.join(projectRoot, DEFAULT_IMAGE_PATH),
           );
         }
         else {
@@ -95,7 +82,7 @@ module.exports = function(crowi) {
       }
       catch (err) {
         logger.error(err);
-        return res.status(400).send('the page does not exist');
+        return res.status(500).send(ApiResponse.error(`error: ${err}`));
       }
 
 
@@ -114,10 +101,8 @@ module.exports = function(crowi) {
         );
       }
       catch (err) {
-        // const { status, statusText } = err.response;
-        // console.log(`Error! HTTP Status: ${status} ${statusText}`);
         logger.error(err);
-        return res.status(500).send();
+        return res.status(500).send(ApiResponse.error(`error: ${err}`));
       }
 
       res.writeHead(200, {
