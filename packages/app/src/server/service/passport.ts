@@ -729,7 +729,7 @@ class PassportService implements S2sMessageHandlable {
       // Check for valid OIDC Issuer configuration
       if (!response.data.issuer) {
         logger.debug('OidcStrategy: Invalid OIDC Issuer configurations');
-        return;
+        return false;
       }
       return true;
     }
