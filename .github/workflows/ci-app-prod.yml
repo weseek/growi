@@ -245,7 +245,7 @@ jobs:
     - name: Upload results
       uses: actions/upload-artifact@v2
       with:
-        name: Cypress Report ${{ matrix.spec-group }}
+        name: Cypress Report
         path: |
           packages/app/test/cypress/screenshots
           packages/app/test/cypress/videos
@@ -256,6 +256,60 @@ jobs:
       with:
         type: ${{ job.status }}
         job_name: '*Node CI for growi - run-cypress (${{ matrix.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+
+  run-reg-suit:
+    needs: [run-cypress-node14]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # List string expressions that is comma separated ids of tests in "test/cypress/integration"
+        spec-group: ['1', '2']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
+
+    - name: Download screenshots taken by cypress
+      uses: actions/download-artifact@v2
+      with:
+        name: Cypress Report
+
+    - name: Run reg-suit
+      run: |
+        yarn reg:run
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - run-reg-suit (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
