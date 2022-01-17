@@ -52,6 +52,7 @@ class SearchPage extends React.Component {
       deleteTargetPageIds: new Set(),
     };
 
+    // TODO: Move this code to the right place after completing the "omit unstated" initiative.
     const { interceptorManager } = props.appContainer;
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(props.appContainer), 10); // process as soon as possible
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(props.appContainer), 900); // process as late as possible
