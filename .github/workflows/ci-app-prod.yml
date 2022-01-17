@@ -269,6 +269,10 @@ jobs:
 
     if: always()
 
+    # use secrets for "VRT" environment
+    # https://github.com/weseek/growi/settings/environments/376165508/edit
+    environment: VRT
+
     runs-on: ubuntu-latest
 
     strategy:
