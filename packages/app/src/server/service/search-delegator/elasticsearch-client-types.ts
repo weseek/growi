@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export type NodesInfoResponse = {
   nodes: Record<
     string,
@@ -11,6 +12,8 @@ export type NodesInfoResponse = {
 export type CatIndicesResponse = {
   index: string
 }[]
+
+export type IndicesExistsResponse = boolean
 
 export type IndicesExistsAliasResponse = boolean
 
@@ -28,7 +31,6 @@ export type BulkResponse = {
 
 export type SearchResponse = {
   took: number
-  // eslint-disable-next-line camelcase
   timed_out: boolean
   _shards: {
     total: number
@@ -41,7 +43,6 @@ export type SearchResponse = {
       value: number
       relation: string
     } // 6.x.x | 7.x.x
-    // eslint-disable-next-line camelcase
     max_score: number | null
     hits: Record<string, {
       _index: string
@@ -51,4 +52,32 @@ export type SearchResponse = {
       _source: any
     }>[]
   }
+}
+
+export type ValidateQueryResponse = {
+  valid: boolean,
+  _shards: {
+    total: number,
+    successful: number,
+    failed: number
+  },
+  explanations: Record<string, any>[]
+}
+
+export type ClusterHealthResponse = {
+  cluster_name: string,
+  status: string,
+  timed_out: boolean,
+  number_of_nodes: number,
+  number_of_data_nodes: number,
+  active_primary_shards: number,
+  active_shards: number,
+  relocating_shards: number,
+  initializing_shards: number,
+  unassigned_shards: number,
+  delayed_unassigned_shards: number,
+  number_of_pending_tasks: number,
+  number_of_in_flight_fetch: number,
+  task_max_waiting_in_queue_millis: number,
+  active_shards_percent_as_number: number
 }

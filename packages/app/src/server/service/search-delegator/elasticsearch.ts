@@ -615,7 +615,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       logger.debug('ES returns explanations: ', result.explanations);
     }
 
-    const { body } = await this.client.search(query);
     const { body: result } = await this.client.search(query);
 
     // for debug
