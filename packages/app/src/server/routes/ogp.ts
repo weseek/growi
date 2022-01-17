@@ -7,8 +7,11 @@ import { promises as fsPromise } from 'fs';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+import { generatePageTitleFromPagePath } from '~/utils/page-title-utils';
 import ApiResponse from '../util/apiResponse';
-import convertStreamToBuffer from '../util/convertFileStreamToBuffer';
+import convertStreamToBuffer from '../util/stream';
+import { isUserImageGravatar, isUserImageAttachment, isUserImageDefault } from '../util/user-image-url';
+
 
 const logger = loggerFactory('growi:routes:ogp');
 
@@ -54,21 +57,21 @@ module.exports = function(crowi) {
         const User = crowi.model('User');
         user = await User.findById(page.creator._id.toString());
 
-        if (/^https:\/\/gravatar\.com\/avatar\/.+/.test(user.imageUrlCached)) {
+        if (isUserImageGravatar(user.imageUrlCached)) {
           bufferedUserImage = (await axios.get(
             user.imageUrlCached, {
               responseType: 'arraybuffer',
             },
           )).data;
         }
-        else if (/^\/attachment\/.+/.test(user.imageUrlCached)) {
+        else if (isUserImageAttachment(user.imageUrlCached)) {
           const { fileUploadService } = crowi;
           const Attachment = crowi.model('Attachment');
           const attachment = await Attachment.findById(user.imageAttachment);
           const fileStream = await fileUploadService.findDeliveryFile(attachment);
           bufferedUserImage = await convertStreamToBuffer(fileStream);
         }
-        else if (user.imageUrlCached === DEFAULT_IMAGE_PATH) {
+        else if (isUserImageDefault(user.imageUrlCached)) {
           bufferedUserImage = await fsPromise.readFile(
             path.join(projectRoot, DEFAULT_IMAGE_PATH),
           );
@@ -77,7 +80,7 @@ module.exports = function(crowi) {
           throw new Error('imageUrlCached is invalid value');
         }
 
-        pageTitle = (page.path).replace(/^(.)*\//, '');
+        pageTitle = generatePageTitleFromPagePath(page.path);
 
       }
       catch (err) {
