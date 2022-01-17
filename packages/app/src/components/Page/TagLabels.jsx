@@ -5,6 +5,10 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import { EditorMode } from '~/stores/ui';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -89,12 +93,15 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
+const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer, EditorContainer, PageContainer]);
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorMode: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(String),
   tagsUpdateInvoked: PropTypes.func,
 };
