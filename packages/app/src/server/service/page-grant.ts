@@ -69,6 +69,11 @@ class PageGrantService {
     return targetGrantedUsers;
   }
 
+  /**
+   * It finds the nearest ancestor page from the targetPath. Then returns an array of grantedUsers of the ancestor page.
+   * @param targetPath string of the target path
+   * @returns Promise<ObjectId[]>
+   */
   private async generateAncestorsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
@@ -106,6 +111,11 @@ class PageGrantService {
     return ancestorUsers;
   }
 
+  /**
+   * It calculates and returns the set of the all grantedUsers of all descendant pages of the targetPath.
+   * @param targetPath string of the target path
+   * @returns Promise<ObjectId[]>
+   */
   private async generateDescendantsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
