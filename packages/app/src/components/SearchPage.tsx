@@ -4,7 +4,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
-import ActionToPageGroup from './SearchPage/ActionToPageGroup';
 
 
 type Props = {
@@ -21,6 +20,12 @@ const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
+  const actionIconAndText = (
+    <>
+      <i className="icon-trash"></i>
+      delete
+    </>
+  );
   // Delete modal
   const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
@@ -31,25 +36,6 @@ const SearchPage : FC<Props> = (props: Props) => {
         isDeleteCompletelyModal={false}
         isAbleToDeleteCompletely={false}
       />
-    );
-  };
-
-  const renderActionToPageGroup = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox) => {
-    const actionTypeAndText = (
-      <>
-        <i className="icon-trash"></i>
-        delete
-      </>
-    );
-    return (
-      <ActionToPageGroup
-        actionTypeIconAndText={actionTypeAndText}
-        isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={onClickActionButton}
-        onClickSelectAllCheckbox={onClickSelectAllCheckbox}
-      >
-      </ActionToPageGroup>
     );
   };
 
@@ -73,7 +59,7 @@ const SearchPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
-      renderActionToPageGroup={renderActionToPageGroup}
+      actionIconAndText={actionIconAndText}
     />
   );
 };

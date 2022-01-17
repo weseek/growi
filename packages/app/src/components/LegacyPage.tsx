@@ -4,7 +4,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import PageMigrateModal from './PageMigrateModal';
 import SearchCore from './SearchCore';
-import ActionToPageGroup from './SearchPage/ActionToPageGroup';
 
 type Props = {
 
@@ -19,6 +18,15 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
+  // TODO
+  // Task : https://redmine.weseek.co.jp/issues/85465
+  const actionIconAndText = (
+    <>
+      <i className=""></i>
+      migrate
+    </>
+  );
+
   // migrate modal
   const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
@@ -27,27 +35,6 @@ const LegacyPage : FC<Props> = (props: Props) => {
         pages={getSelectedPagesForAction()}
         onClose={closeActionConfirmModalHandler}
       />
-    );
-  };
-
-  const renderActionToPageGroup = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox) => {
-    // TODO
-    // Task : https://redmine.weseek.co.jp/issues/85465
-    const actionTypeAndText = (
-      <>
-        <i className=""></i>
-        migrate
-      </>
-    );
-    return (
-      <ActionToPageGroup
-        actionTypeIconAndText={actionTypeAndText}
-        isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={onClickActionButton}
-        onClickSelectAllCheckbox={onClickSelectAllCheckbox}
-      >
-      </ActionToPageGroup>
     );
   };
 
@@ -66,7 +53,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
-      renderActionToPageGroup={renderActionToPageGroup}
+      actionIconAndText={actionIconAndText}
     />
   );
 };

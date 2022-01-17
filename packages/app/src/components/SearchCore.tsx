@@ -50,7 +50,7 @@ type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
-  renderActionToPageGroup: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox)=>React.FunctionComponent,
+  actionIconAndText: JSX.Element
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -333,7 +333,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         excludeUserPages={excludeUserPages}
         excludeTrashPages={excludeTrashPages}
         onChangeSortInvoked={onChangeSortInvoked}
-        renderActionToPageGroup={props.renderActionToPageGroup}
+        actionIconAndText={props.actionIconAndText}
       >
       </SearchControl>
     );

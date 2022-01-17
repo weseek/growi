@@ -15,7 +15,7 @@ type Props = {
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
-  renderActionToPageGroup: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox)=> React.FunctionComponent,
+  actionIconAndText: JSX.Element,
   onClickActionButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
@@ -67,6 +67,15 @@ const SearchControl: FC <Props> = (props: Props) => {
     }
   };
 
+  const onClickCheckbox = () => {
+    if (props.onClickSelectAllCheckbox == null) {
+      return;
+    }
+    const next = props.selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
+    props.onClickSelectAllCheckbox(next);
+  };
+
+
   const rednerSearchOptionModal = () => {
     return (
       <SearchOptionModal
@@ -110,8 +119,25 @@ const SearchControl: FC <Props> = (props: Props) => {
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
-          {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
-          {props.renderActionToPageGroup(searchResultCount === 0, props.selectAllCheckboxType, props.onClickActionButton, props.onClickSelectAllCheckbox)}
+          <div className="d-flex align-items-center">
+            <input
+              id="check-all-pages"
+              type="checkbox"
+              name="check-all-pages"
+              className="grw-indeterminate-checkbox"
+              disabled={searchResultCount === 0}
+              onClick={onClickCheckbox}
+              checked={props.selectAllCheckboxType === CheckboxType.ALL_CHECKED}
+            />
+            <button
+              type="button"
+              className="btn text-danger font-weight-light p-0 ml-2"
+              disabled={props.selectAllCheckboxType === CheckboxType.NONE_CHECKED}
+              onClick={props.onClickActionButton}
+            >
+              {props.actionIconAndText}
+            </button>
+          </div>
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
