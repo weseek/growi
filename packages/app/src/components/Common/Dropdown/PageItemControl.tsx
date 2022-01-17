@@ -37,13 +37,17 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const addBookmarkClickHandler = (async() => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await apiv3Put('/bookmarks', { pageId: page._id, bool: true });
+      await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
       mutateBookmarkInfo();
     }
     catch (err) {
       toastError(err);
     }
   });
+
+  if (bookmarkInfoError != null || bookmarkInfo == null) {
+    return <></>;
+  }
 
 
   return (
@@ -82,9 +86,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         )}
         {isEnableActions && (
           <DropdownItem onClick={addBookmarkClickHandler}>
-            {/* <DropdownItem onClick={() => { console.log('hogehoge') }}> */}
             <i className="fa fa-fw fa-bookmark-o"></i>
-            {t('Add to bookmark')}
+            { bookmarkInfo.isBookmarked ? t('delete_bookmark') : t('add_bookmark') }
           </DropdownItem>
         )}
         {isEnableActions && (
