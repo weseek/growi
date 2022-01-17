@@ -1034,7 +1034,7 @@ class PageService {
 
       throw err;
     }
-
+    await this.updateSelfAndDescendantCount('/');
     await this._setIsV5CompatibleTrue();
   }
 
