@@ -7,6 +7,9 @@ import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '~/interfaces/page';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/apiNotification';
+import { useSWRBookmarkInfo } from '~/stores/bookmark';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
@@ -20,13 +23,29 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const {
     page, isEnableActions, onClickDeleteButton, isDeletable,
   } = props;
+  console.log('page', page);
   const { t } = useTranslation('');
+  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
 
   const deleteButtonHandler = () => {
     if (onClickDeleteButton != null && page._id != null) {
       onClickDeleteButton(page._id);
     }
   };
+
+
+  const addBookmarkClickHandler = (async() => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await apiv3Put('/bookmarks', { pageId: page._id, bool: true });
+      mutateBookmarkInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  });
+
+
   return (
     <UncontrolledDropdown>
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
@@ -62,7 +81,8 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <DropdownItem onClick={addBookmarkClickHandler}>
+            {/* <DropdownItem onClick={() => { console.log('hogehoge') }}> */}
             <i className="fa fa-fw fa-bookmark-o"></i>
             {t('Add to bookmark')}
           </DropdownItem>
