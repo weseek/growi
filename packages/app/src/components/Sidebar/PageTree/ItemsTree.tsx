@@ -67,7 +67,7 @@ const renderByInitialNode = (
     initialNode: ItemNode, DeleteModal: JSX.Element, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
-    <div className="grw-pagetree p-3">
+    <ul className="grw-pagetree list-group p-3">
       <Item
         key={initialNode.page.path}
         targetPathOrId={targetPathOrId}
@@ -77,7 +77,7 @@ const renderByInitialNode = (
         onClickDeleteByPage={onClickDeleteByPage}
       />
       {DeleteModal}
-    </div>
+    </ul>
   );
 };
 
