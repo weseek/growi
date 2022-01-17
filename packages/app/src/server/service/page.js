@@ -1036,7 +1036,14 @@ class PageService {
     }
 
     // update descendantCount of all public pages
-    await this.updateSelfAndDescendantCount('/');
+    try {
+      await this.updateSelfAndDescendantCount('/');
+      logger.info('Successfully updated all descendantCountd of public pages.');
+    }
+    catch (err) {
+      logger.error('updating descendantCount on public pages failed.', err);
+    }
+
     await this._setIsV5CompatibleTrue();
   }
 
