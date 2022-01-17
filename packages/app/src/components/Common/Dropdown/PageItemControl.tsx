@@ -86,7 +86,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         {isEnableActions && (
           <DropdownItem onClick={bookmarkClickHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
-            { bookmarkInfo.isBookmarked ? t('delete_bookmark') : t('add_bookmark') }
+            { bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         )}
         {isEnableActions && (

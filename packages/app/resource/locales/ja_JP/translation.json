@@ -158,7 +158,7 @@
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "ブックマークに追加",
-  "delete_bookmark": "ブックマークを削除",
+  "remove_bookmark": "ブックマークから削除",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
