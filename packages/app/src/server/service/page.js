@@ -1253,7 +1253,7 @@ class PageService {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 
-    const aggregateCondition = Page.getAggrConditionForPagesStartingWithProvidedPath(path);
+    const aggregateCondition = Page.getAggrConditionForPageWithProvidedPathAndDescendants(path);
     const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
 
     const recountWriteStream = new Writable({

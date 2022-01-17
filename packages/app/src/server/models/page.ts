@@ -342,14 +342,17 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 };
 
 /**
- * return aggregation to get pages with paths starting with the provided path
+ * return aggregate condition to get following pages
+ * - page that has the same path as the provided path
+ * - pages that are descendants of the above page
  */
-schema.statics.getAggrConditionForPagesStartingWithProvidedPath = function(path:string) {
+schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
   const match = {
     $match: {
       $or: [
         {
-          path: { $regex: `^${path}.*` },
+          // https://regex101.com/r/ncnxaR/1
+          path: { $regex: `^${path}(/.*|$)` },
           parent: { $ne: null },
         },
         { path: '/' },
@@ -358,7 +361,6 @@ schema.statics.getAggrConditionForPagesStartingWithProvidedPath = function(path:
   };
   return [
     match,
-    // https://regex101.com/r/Nax9Ms/1
     {
       $project: {
         path: 1,
