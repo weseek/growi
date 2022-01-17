@@ -4,6 +4,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import {
+  DetachCodeBlockInterceptor,
+  RestoreCodeBlockInterceptor,
+} from '../client/util/interceptor/detach-code-blocks';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -46,6 +51,10 @@ class SearchPage extends React.Component {
       isDeleteConfirmModalShown: false,
       deleteTargetPageIds: new Set(),
     };
+
+    const { interceptorManager } = props.appContainer;
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(props.appContainer), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(props.appContainer), 900); // process as late as possible
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
