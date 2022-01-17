@@ -214,7 +214,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen]);
 
   return (
-    <div className={`grw-pagetree-item-container  ${isOver ? 'grw-pagetree-is-over' : ''}`}>
+    <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item border-0 py-1 grw-pagetree-item d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
