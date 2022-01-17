@@ -274,8 +274,6 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
-        # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['1', '2']
 
     steps:
     - uses: actions/checkout@v2
