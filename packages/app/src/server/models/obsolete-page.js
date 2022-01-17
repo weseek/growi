@@ -1011,9 +1011,6 @@ export const getPageSchema = (crowi) => {
         throw new Error('Cannot create new page to existed path');
       }
 
-      const parentPath = nodePath.dirname(path);
-      const parent = await this.findOneParentByParentPath(parentPath);
-
       /*
        * UserGroup & Owner validation
        */
@@ -1044,6 +1041,8 @@ export const getPageSchema = (crowi) => {
       }
 
       let parentId = null;
+      const parentPath = nodePath.dirname(path);
+      const parent = await this.findOneParentByParentPath(parentPath);
       if (!isTopPage(path)) {
         parentId = await Page.getParentIdAndFillAncestors(path, parent);
       }
