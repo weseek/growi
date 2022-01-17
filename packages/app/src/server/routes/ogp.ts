@@ -12,7 +12,6 @@ import ApiResponse from '../util/apiResponse';
 import { convertStreamToBuffer } from '../util/stream';
 import { isUserImageGravatar, isUserImageAttachment, isUserImageDefault } from '../util/user-image-url';
 
-
 const logger = loggerFactory('growi:routes:ogp');
 
 const DEFAULT_IMAGE_PATH = 'public/images/icons/user.svg';
