@@ -341,6 +341,77 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   return pathToChildren;
 };
 
+/**
+ * return aggregate condition to get following pages
+ * - page that has the same path as the provided path
+ * - pages that are descendants of the above page
+ */
+schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
+  const match = {
+    $match: {
+      $or: [
+        {
+          // https://regex101.com/r/ncnxaR/1
+          path: { $regex: `^${path}(/.*|$)` },
+          parent: { $ne: null },
+        },
+        { path: '/' },
+      ],
+    },
+  };
+  return [
+    match,
+    {
+      $project: {
+        path: 1,
+        parent: 1,
+        field_length: { $strLenCP: '$path' },
+      },
+    },
+    { $sort: { field_length: -1 } },
+    { $project: { field_length: 0 } },
+  ];
+};
+
+schema.statics.recountPage = async function(id:mongoose.Types.ObjectId):Promise<void> {
+  const res = await this.aggregate(
+    [
+      {
+        $match: {
+          parent: id,
+        },
+      },
+      {
+        $project: {
+          path: 1,
+          parent: 1,
+          descendantCount: 1,
+        },
+      },
+      {
+        $group: {
+          _id: '$parent',
+          sumOfDescendantCount: {
+            $sum: '$descendantCount',
+          },
+          sumOfDocsCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $set: {
+          descendantCount: {
+            $sum: ['$sumOfDescendantCount', '$sumOfDocsCount'],
+          },
+        },
+      },
+    ],
+  );
+
+  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
+  await this.findByIdAndUpdate(id, query);
+};
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
