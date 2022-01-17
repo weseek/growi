@@ -1248,35 +1248,18 @@ class PageService {
   }
 
   async updateDescendantCount(path = '/') {
-    const BATCH_SIZE = 2;
-
-
+    const BATCH_SIZE = 10;
     const Page = this.crowi.model('Page');
-    const aggregation = Page.getAggrationForPagesByMatchConditionInDescOrder(path);
+
+    const aggregation = Page.getAggrationForPagesByPathInDescOrder(path);
     const aggregatedPages = await Page.aggregate(aggregation).cursor({ batchSize: BATCH_SIZE });
 
     const recountWriteStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
-        for (const singlePage of pages) {
-          // skip page tagged as sibling. Tagged ones are already updated with other pages.
-          if (singlePage.isTaggedAsSibling) {
-            continue;
-          }
-
-          // filter out pages with different parent
-          const pagesWithSameParent = pages.filter((page) => {
-            const hasSameParent = singlePage.parent === page.parent;
-            // if page with same parent found, tag it as sibling to skip updating from the next iteration.
-            if (hasSameParent) {
-              page.isTaggedAsSibling = true;
-              return true;
-            }
-            return false;
-          });
-          const idsToRecount = pagesWithSameParent.map(page => page._id);
+      async write(pageDocuments, encoding, callback) {
+        for (const document of pageDocuments) {
           // eslint-disable-next-line no-await-in-loop
-          await Page.recountPage(idsToRecount);
+          await Page.recountPage(document);
         }
         callback();
       },

@@ -358,7 +358,7 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 /**
  * Aggregate pages with paths starting with the provided string
  */
-schema.statics.getAggrationForPagesByMatchConditionInDescOrder = function(path) {
+schema.statics.getAggrationForPagesByPathInDescOrder = function(path) {
   const match = {
     $match: {
       $or: [
@@ -385,14 +385,13 @@ schema.statics.getAggrationForPagesByMatchConditionInDescOrder = function(path) 
   ];
 };
 
-schema.statics.recountPage = async function(idsToRecount) {
+schema.statics.recountPage = async function(document) {
   const res = await this.aggregate(
     [
       {
         $match: {
-          parent: { $in: idsToRecount },
+          parent: document._id,
         },
-
       },
       {
         $project: {
@@ -422,34 +421,16 @@ schema.statics.recountPage = async function(idsToRecount) {
     ],
   );
 
-  const idWithChildren = res.map(data => data._id.toString());
-  const pageIdsWithNoChildren = idsToRecount.filter((targetId) => {
-    return !idWithChildren.includes(targetId.toString());
-  });
-
-  const operationForPageWithChildren = res.map((data) => {
-    return {
-      updateOne: {
-        filter: { _id: data._id },
-        update: { $set: { descendantCount: data.descendantCount } },
-      },
-    };
-
-  });
-  const operationsForPageWithoutChildren = pageIdsWithNoChildren.map((data) => {
-    return {
-      updateOne: {
-        filter: { _id: data._id },
-        update: { $set: { descendantCount: 0 } },
-      },
-    };
-  });
-
-  const operations = operationForPageWithChildren.concat(operationsForPageWithoutChildren);
-  operations.forEach((e) => {
-    console.log(e.updateOne);
-  });
-  await this.bulkWrite(operations);
+  if (res.length === 0) {
+    await this.findByIdAndUpdate(document._id, {
+      descendantCount: 0,
+    });
+  }
+  else {
+    await this.findByIdAndUpdate(document._id, {
+      descendantCount: res[0].descendantCount,
+    });
+  }
 };
 
 
