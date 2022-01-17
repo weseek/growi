@@ -100,7 +100,6 @@
     "express-session": "^1.16.1",
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
-    "got": "^8.3.2",
     "graceful-fs": "^4.1.11",
     "helmet": "^4.6.0",
     "http-errors": "~1.8.0",
