@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 import { generatePageTitleFromPagePath } from '~/utils/page-title-utils';
 import ApiResponse from '../util/apiResponse';
-import convertStreamToBuffer from '../util/stream';
+import { convertStreamToBuffer } from '../util/stream';
 import { isUserImageGravatar, isUserImageAttachment, isUserImageDefault } from '../util/user-image-url';
 
 

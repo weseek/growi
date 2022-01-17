@@ -1,9 +1,11 @@
+const HOME_PAGE_TITLE = 'HOME';
+
 export const generatePageTitleFromPagePath = (pagePath: string): string => {
   let pageTitle: string;
 
   switch (pagePath) {
     case '/':
-      pageTitle = 'HOME';
+      pageTitle = HOME_PAGE_TITLE;
       break;
     default:
       // /Sandbox → pageTitle is Sandbox

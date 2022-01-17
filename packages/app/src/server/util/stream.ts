@@ -1,17 +1,14 @@
-function convertStreamToBuffer(stream: any): Promise<Buffer> {
+export const convertStreamToBuffer = (stream: any): Promise<Buffer> => {
 
   return new Promise((resolve, reject) => {
 
-    const _buf: Uint8Array[] = [];
+    const buffer: Uint8Array[] = [];
 
     stream.on('data', (chunk: Uint8Array) => {
-      _buf.push(chunk);
+      buffer.push(chunk);
     });
-    stream.on('end', () => resolve(Buffer.concat(_buf)));
+    stream.on('end', () => resolve(Buffer.concat(buffer)));
     stream.on('error', err => reject(err));
 
   });
-}
-
-
-export default convertStreamToBuffer;
+};
