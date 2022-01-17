@@ -342,9 +342,9 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
 };
 
 /**
- * Aggregate pages with paths starting with the provided string
+ * return aggregation to get pages with paths starting with the provided path
  */
-schema.statics.getAggrationForPagesByPathInDescOrder = function(path) {
+schema.statics.getAggrConditionForPagesStartingWithProvidedPath = function(path:string) {
   const match = {
     $match: {
       $or: [
@@ -371,12 +371,12 @@ schema.statics.getAggrationForPagesByPathInDescOrder = function(path) {
   ];
 };
 
-schema.statics.recountPage = async function(document) {
+schema.statics.recountPage = async function(id:mongoose.Types.ObjectId):Promise<void> {
   const res = await this.aggregate(
     [
       {
         $match: {
-          parent: document._id,
+          parent: id,
         },
       },
       {
@@ -407,18 +407,9 @@ schema.statics.recountPage = async function(document) {
     ],
   );
 
-  if (res.length === 0) {
-    await this.findByIdAndUpdate(document._id, {
-      descendantCount: 0,
-    });
-  }
-  else {
-    await this.findByIdAndUpdate(document._id, {
-      descendantCount: res[0].descendantCount,
-    });
-  }
+  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
+  await this.findByIdAndUpdate(id, query);
 };
-
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance

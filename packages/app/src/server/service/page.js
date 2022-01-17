@@ -1248,19 +1248,20 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
-  async updateDescendantCount(path = '/') {
-    const BATCH_SIZE = 10;
+  // update descendantCount of all pages with path starting with provided string
+  async updateSelfAndDescendantCount(path = '/') {
+    const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 
-    const aggregation = Page.getAggrationForPagesByPathInDescOrder(path);
-    const aggregatedPages = await Page.aggregate(aggregation).cursor({ batchSize: BATCH_SIZE });
+    const aggregateCondition = Page.getAggrConditionForPagesStartingWithProvidedPath(path);
+    const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
 
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
         for (const document of pageDocuments) {
           // eslint-disable-next-line no-await-in-loop
-          await Page.recountPage(document);
+          await Page.recountPage(document._id);
         }
         callback();
       },
