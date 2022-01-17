@@ -2,6 +2,7 @@
   "extends": [
     "stylelint-config-recess-order"
   ],
+  "customSyntax": "postcss-scss",
   "ignoreFiles": [
     "src/styles/_override-bootstrap-variables.scss",
     "src/linter-checker/test.scss"

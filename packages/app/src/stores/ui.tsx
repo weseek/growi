@@ -51,15 +51,13 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
   return useStaticSWR(key, null, configuration);
 };
 
-
-const updateBodyClassesForEditorMode = (newEditorMode: EditorMode) => {
+const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
   switch (newEditorMode) {
     case EditorMode.View:
       $('body').removeClass('on-edit');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
       $('body').removeClass('pathname-sidebar');
-      window.history.replaceState(null, '', window.location.pathname);
       break;
     case EditorMode.Editor:
       $('body').addClass('on-edit');
@@ -69,38 +67,50 @@ const updateBodyClassesForEditorMode = (newEditorMode: EditorMode) => {
       if (window.location.pathname === '/Sidebar') {
         $('body').addClass('pathname-sidebar');
       }
-      window.location.hash = '#edit';
       break;
     case EditorMode.HackMD:
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('pathname-sidebar');
-      window.location.hash = '#hackmd';
       break;
   }
 };
 
-export const useEditorModeByHash = (): SWRResponse<EditorMode, Error> => {
-  return useSWRImmutable(
-    ['initialEditorMode', window.location.hash],
-    (key: Key, hash: string) => {
-      switch (hash) {
-        case '#edit':
-          return EditorMode.Editor;
-        case '#hackmd':
-          return EditorMode.HackMD;
-        default:
-          return EditorMode.View;
-      }
-    },
-  );
+const updateHashByEditorMode = (newEditorMode: EditorMode) => {
+  const { pathname } = window.location;
+
+  switch (newEditorMode) {
+    case EditorMode.View:
+      window.history.replaceState(null, '', pathname);
+      break;
+    case EditorMode.Editor:
+      window.history.replaceState(null, '', `${pathname}#edit`);
+      break;
+    case EditorMode.HackMD:
+      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      break;
+  }
+};
+
+export const determineEditorModeByHash = (): EditorMode => {
+  const { hash } = window.location;
+
+  switch (hash) {
+    case '#edit':
+      return EditorMode.Editor;
+    case '#hackmd':
+      return EditorMode.HackMD;
+    default:
+      return EditorMode.View;
+  }
 };
 
 let isEditorModeLoaded = false;
 export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const { data: _isEditable } = useIsEditable();
-  const { data: editorModeByHash } = useEditorModeByHash();
+
+  const editorModeByHash = determineEditorModeByHash();
 
   const isLoading = _isEditable === undefined;
   const isEditable = !isLoading && _isEditable;
@@ -115,7 +125,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   // initial updating
   if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
     if (isEditable) {
-      updateBodyClassesForEditorMode(swrResponse.data);
+      updateBodyClassesByEditorMode(swrResponse.data);
     }
     isEditorModeLoaded = true;
   }
@@ -128,7 +138,8 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
       if (!isEditable) {
         return Promise.resolve(EditorMode.View); // fixed if not editable
       }
-      updateBodyClassesForEditorMode(editorMode);
+      updateBodyClassesByEditorMode(editorMode);
+      updateHashByEditorMode(editorMode);
       return swrResponse.mutate(editorMode, shouldRevalidate);
     },
   };
@@ -269,14 +280,14 @@ export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useCreateModalPath = (): SWRResponse<string, Error> => {
+export const useCreateModalPath = (): SWRResponse<string | null | undefined, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useCreateModalStatus();
 
   return useSWR(
-    [currentPagePath, status],
+    currentPagePath != null && status != null ? [currentPagePath, status] : null,
     (currentPagePath, status) => {
-      return status.path || currentPagePath;
+      return status?.path || currentPagePath;
     },
   );
 };

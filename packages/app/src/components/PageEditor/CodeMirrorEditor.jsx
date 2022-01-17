@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
+import { UnControlled as UncontrolledCodeMirror } from 'react-codemirror2';
 
 import { Button } from 'reactstrap';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
 import { JSHINT } from 'jshint';
 
@@ -32,6 +32,7 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
+// import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -109,7 +110,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
-      isGfmMode: this.props.isGfmMode,
+      isGfmMode: this.props.isGfmMode ?? true,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -924,7 +925,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return (
       <React.Fragment>
 
-        <ReactCodeMirror
+        <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
           className={additionalClasses}
           placeholder="search"

@@ -27,6 +27,7 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.tagEvent = crowi.event('tag');
 
     // init
     this.initPageEvent();
@@ -386,6 +387,7 @@ class PageService {
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      this.tagEvent.emit('update', createdPage, savedTags);
     }
 
     const result = serializePageSecurely(createdPage);
@@ -520,6 +522,7 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -544,6 +547,7 @@ class PageService {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
@@ -762,6 +766,7 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
@@ -790,6 +795,7 @@ class PageService {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
     await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
@@ -831,22 +837,19 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({ grantedGroup: deletedGroup });
+    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
+    let operationsToPublicize;
     switch (action) {
       case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
+        await Page.publicizePages(pages);
         break;
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
+        await Page.transferPagesToGroup(pages, transferToUserGroupId);
         break;
       default:
         throw new Error('Unknown action for private pages');

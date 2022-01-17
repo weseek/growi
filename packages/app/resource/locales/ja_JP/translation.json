@@ -21,6 +21,7 @@
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
+  "Description": "説明",
   "Admin": "管理",
   "administrator": "管理者",
   "Tag": "タグ",
@@ -60,6 +61,7 @@
   "Presentation Mode": "プレゼンテーション",
   "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
   "Target page": "対象ページ",
   "File type": "ファイル形式",
@@ -119,6 +121,7 @@
   "Legacy_Slack_Integration": "Slack連携 (レガシー)",
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
+  "UserGroup": "グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
@@ -141,6 +144,7 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Add tags for this page": "タグを付ける",
+  "Check All tags": "全てのタグをチェックする",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -484,6 +488,17 @@
     "enable_textlint": "Textlintを有効にする",
     "dont_ask_again": "常に許可する"
   },
+  "modal_resolve_conflict": {
+    "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
+    "resolve_conflict_message": "ページ本文を選んでください",
+    "resolve_conflict": "衝突を解消",
+    "resolve_and_save" : "解消し保存する",
+    "select_revision" : "{{revision}}にする",
+    "requested_revision": "送信された本文",
+    "origin_revision": "送信する前の本文",
+    "latest_revision": "最新の本文",
+    "selected_editable_revision": "保存するページ本文(編集可能)"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
@@ -501,7 +516,10 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
+    "create_succeeded": "新しい{{target}}が作成されました",
+    "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
+    "update_failed": "{{target}}の更新に失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
