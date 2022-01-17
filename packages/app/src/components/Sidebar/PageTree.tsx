@@ -18,7 +18,7 @@ const PageTree: FC = memo(() => {
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
@@ -26,7 +26,7 @@ const PageTree: FC = memo(() => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
-  const targetPathOrId = targetId || notFoundTargetPathOrId;
+  const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
 
   if (migrationStatus == null) {
     return (
