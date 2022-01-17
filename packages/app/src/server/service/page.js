@@ -31,8 +31,6 @@ class PageService {
 
     // init
     this.initPageEvent();
-    // this code is written to check if method works. will delete in the end.
-    // this.updateDescendantCount('/').then(res => logger.info(res)).catch(err => logger.warn(err));
   }
 
   initPageEvent() {
