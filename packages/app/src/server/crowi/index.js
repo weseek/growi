@@ -142,47 +142,6 @@ Crowi.prototype.init = async function() {
   ]);
 };
 
-Crowi.prototype.initForTest = async function() {
-  await this.setupModels();
-  await this.setupConfigManager();
-
-  // setup messaging services
-  await this.setupSocketIoService();
-
-  // // customizeService depends on AppService and XssService
-  // // passportService depends on appService
-  await Promise.all([
-    this.setUpApp(),
-    this.setUpXss(),
-    // this.setUpGrowiBridge(),
-  ]);
-
-  await Promise.all([
-    // this.scanRuntimeVersions(),
-    this.setupPassport(),
-    // this.setupSearcher(),
-    // this.setupMailer(),
-    // this.setupSlackIntegrationService(),
-    // this.setupCsrf(),
-    // this.setUpFileUpload(),
-    this.setupAttachmentService(),
-    this.setUpAcl(),
-    // this.setUpCustomize(),
-    // this.setUpRestQiitaAPI(),
-    // this.setupUserGroup(),
-    // this.setupExport(),
-    // this.setupImport(),
-    this.setupPageService(),
-    this.setupInAppNotificationService(),
-    this.setupActivityService(),
-  ]);
-
-  // globalNotification depends on slack and mailer
-  // await Promise.all([
-  //   this.setUpGlobalNotification(),
-  // ]);
-};
-
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
     return false;
