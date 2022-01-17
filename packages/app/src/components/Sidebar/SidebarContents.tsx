@@ -20,6 +20,7 @@ const SidebarContents: FC<Props> = (props: Props) => {
       break;
     case SidebarContentsType.TREE:
       Contents = PageTree;
+      break;
     case SidebarContentsType.TAG:
       Contents = Tag;
       break;
