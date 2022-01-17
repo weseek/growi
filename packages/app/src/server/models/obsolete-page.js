@@ -1016,7 +1016,7 @@ export const getPageSchema = (crowi) => {
        */
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await crowi.pageGrantService.pageValidationForCreate(path, user, grant, grantedUserIds, grantUserGroupId);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, user, grant, grantedUserIds, grantUserGroupId);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);

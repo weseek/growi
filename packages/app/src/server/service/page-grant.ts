@@ -4,11 +4,30 @@ import { pagePathUtils } from '@growi/core';
 import UserGroup from '~/server/models/user-group';
 import { PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
-import { excludeTestIdsFromTargetIds, removeDuplicates } from '~/server/util/compare-objectId';
+import { isIncludesObjectId, removeDuplicates, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { isTopPage } = pagePathUtils;
 
 type ObjectId = mongoose.Types.ObjectId;
+
+type ComparableTarget = {
+  grant: number,
+  grantedUserIds: ObjectId[],
+  grantedGroupId: ObjectId,
+  applicableGroupIds?: ObjectId[],
+};
+
+type ComparableAncestor = {
+  grant: number,
+  grantedUserIds: ObjectId[],
+  applicableUserIds: ObjectId[],
+  applicableGroupIds: ObjectId[],
+};
+
+type ComparableDescendants = {
+  grantedUserIds: ObjectId[],
+  descendantGroupIds: ObjectId[],
+};
 
 class PageGrantService {
 
@@ -18,63 +37,133 @@ class PageGrantService {
     this.crowi = crowi;
   }
 
-  private validateGrantValues(grant, grantedGroupId) {
+  private validateComparableTarget(comparable: ComparableTarget) {
     const Page = mongoose.model('Page') as PageModel;
 
+    const { grant, grantedUserIds, grantedGroupId } = comparable;
+
+    if (grant === Page.GRANT_OWNER && (grantedUserIds == null || grantedUserIds.length !== 1)) {
+      throw Error('grantedUserIds must not be null and must have 1 length');
+    }
     if (grant === Page.GRANT_USER_GROUP && grantedGroupId == null) {
       throw Error('grantedGroupId is not specified');
     }
   }
 
-  validateByGrantUsers(targetUsers: ObjectId[], ancestorsUsers: ObjectId[], descendantsUsers?: ObjectId[]): boolean {
-    const usersShouldNotExist1 = excludeTestIdsFromTargetIds(targetUsers, ancestorsUsers);
-    if (usersShouldNotExist1.length > 0) {
-      return false;
+  /**
+   * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
+   * @returns boolean
+   */
+  private processValidation(target: ComparableTarget, ancestor: ComparableAncestor, descendants?: ComparableDescendants): boolean {
+    this.validateComparableTarget(target);
+
+    const Page = mongoose.model('Page') as PageModel;
+
+    /*
+     * ancestor side
+     */
+    // GRANT_PUBLIC
+    if (ancestor.grant === Page.GRANT_PUBLIC) {
+      // DO NOTHING
+    }
+    // GRANT_OWNER
+    if (ancestor.grant === Page.GRANT_OWNER) {
+      if (target.grant !== Page.GRANT_OWNER) {
+        return false;
+      }
+
+      if (ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) {
+        return false;
+      }
+    }
+    // GRANT_USER_GROUP
+    if (ancestor.grant === Page.GRANT_USER_GROUP) {
+      if (target.grant === Page.GRANT_PUBLIC) {
+        return false;
+      }
+
+      if (target.grant === Page.GRANT_OWNER) {
+        if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) {
+          return false;
+        }
+      }
+
+      if (target.grant === Page.GRANT_USER_GROUP) {
+        if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) {
+          return false;
+        }
+      }
     }
 
-    if (descendantsUsers == null) {
+    if (descendants == null) {
       return true;
     }
+    /*
+     * descendant side
+     */
 
-    const usersShouldNotExist2 = excludeTestIdsFromTargetIds(descendantsUsers, targetUsers);
-    if (usersShouldNotExist2.length > 0) {
-      return false;
+    if (target.applicableGroupIds == null) {
+      throw Error('applicableGroupIds must not be null');
+    }
+
+    // GRANT_PUBLIC
+    if (target.grant === Page.GRANT_PUBLIC) {
+      if (descendants.descendantGroupIds.length !== 0 || descendants.descendantGroupIds.length !== 0) {
+        return false;
+      }
+    }
+    // GRANT_OWNER
+    if (target.grant === Page.GRANT_OWNER) {
+      if (descendants.descendantGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) {
+        return false;
+      }
+
+      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].equals(target.grantedGroupId)) {
+        return false;
+      }
+    }
+    // GRANT_USER_GROUP
+    if (target.grant === Page.GRANT_USER_GROUP) {
+      const shouldNotExistIds = excludeTestIdsFromTargetIds(descendants.descendantGroupIds, target.applicableGroupIds);
+      if (shouldNotExistIds.length !== 0) {
+        return false;
+      }
     }
 
     return true;
   }
 
-  private async generateTargetsGrantedUsersForCreate(user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<ObjectId[]> {
-    // validate values
-    this.validateGrantValues(grant, grantedGroupId);
-
-    let targetGrantedUsers: ObjectId[] = [];
-
-    const Page = mongoose.model('Page') as PageModel;
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-
-    if (grant === Page.GRANT_USER_GROUP) {
-      const targetGroup = await UserGroup.findOne({ _id: grantedGroupId });
-      if (targetGroup == null) {
-        throw Error('The group of grantedGroupId does not exist.');
+  private async generateComparableTarget(
+      grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, hasChild: boolean,
+  ): Promise<ComparableTarget> {
+    if (hasChild) {
+      const root = await UserGroup.findOne({ _id: grantedGroupId });
+      if (root == null) {
+        throw Error('The userGroup to compare does not exist');
       }
+      const applicableGroupIds = await UserGroup.findGroupsWithDescendantsRecursively(root);
 
-      const targetRelations = await UserGroupRelation.find({ relatedGroup: grantedGroupId }, { _id: 0, relatedUser: 1 });
-      targetGrantedUsers = targetRelations.map(r => r.relatedUser) as ObjectId[];
-    }
-    if (grant === Page.GRANT_OWNER) {
-      targetGrantedUsers = [user._id];
+      return {
+        grant,
+        grantedUserIds,
+        grantedGroupId,
+        applicableGroupIds,
+      };
     }
 
-    return targetGrantedUsers;
+    return {
+      grant,
+      grantedUserIds,
+      grantedGroupId,
+    };
   }
 
   /**
-   * It finds the nearest ancestor page from the targetPath. Then returns an array of grantedUsers of the ancestor page.
+   * WIP
    * @param targetPath string of the target path
-   * @returns Promise<ObjectId[]>
+   * @returns Promise<ComparableAncestor>
    */
-  private async generateAncestorsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
+  private async generateComparableAncestor(targetPath: string): Promise<ComparableAncestor> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
@@ -93,8 +182,6 @@ class PageGrantService {
     if (testAncestor == null) {
       throw Error('testAncestor must exist');
     }
-    // validate values
-    this.validateGrantValues(testAncestor.grant, testAncestor.grantedGroup);
 
     if (testAncestor.grant === Page.GRANT_PUBLIC) {
       ancestorUsers = [];
@@ -112,11 +199,11 @@ class PageGrantService {
   }
 
   /**
-   * It calculates and returns the set of the all grantedUsers of all descendant pages of the targetPath.
+   * WIP
    * @param targetPath string of the target path
-   * @returns Promise<ObjectId[]>
+   * @returns ComparableDescendants
    */
-  private async generateDescendantsGrantedUsers(targetPath: string): Promise<ObjectId[]> {
+  private async generateComparableDescendants(targetPath: string): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
@@ -148,25 +235,31 @@ class PageGrantService {
     return removeDuplicates([...grantedUsersOfGrantOwner, ...grantedUsersOfGrantUserGroup]);
   }
 
-  async pageValidationForCreate(pathToCreate: string, user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
-    if (isTopPage(pathToCreate)) {
+  /**
+   * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
+   * @returns Promise<boolean>
+   */
+  async isGrantNormalized(targetPath: string, user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
+    if (isTopPage(targetPath)) {
       return true;
     }
 
-    const targetUsers = await this.generateTargetsGrantedUsersForCreate(user, grant, grantedUserIds, grantedGroupId);
-    const ancestorUsers = await this.generateAncestorsGrantedUsers(pathToCreate);
+    const Page = mongoose.model('Page') as PageModel;
+
+    const comparableAncestor = await this.generateComparableAncestor(targetPath);
 
     // find existing empty page at target path
     // it will be unnecessary to check the descendant if emptyTarget is null
-    const Page = mongoose.model('Page') as PageModel;
-    const emptyTarget = await Page.findOne({ path: pathToCreate });
+    const emptyTarget = await Page.findOne({ path: targetPath });
     if (emptyTarget == null) { // checking the parent is enough
-      return this.validateByGrantUsers(targetUsers, ancestorUsers);
+      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
+      return this.processValidation(comparableTarget, comparableAncestor);
     }
 
-    const descendantUsers = await this.generateDescendantsGrantedUsers(pathToCreate);
+    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
+    const comparableDescendants = await this.generateComparableDescendants(targetPath);
 
-    return this.validateByGrantUsers(targetUsers, ancestorUsers, descendantUsers);
+    return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
   }
 
 }
