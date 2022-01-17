@@ -622,7 +622,7 @@ class PassportService implements S2sMessageHandlable {
 
     // setup client
     // extend oidc request timeouts
-    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcClientClockTolerance');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
     OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
     const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
