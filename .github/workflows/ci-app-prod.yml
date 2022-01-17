@@ -243,6 +243,7 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
 
     - name: Upload results
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: Cypress Report
@@ -264,6 +265,8 @@ jobs:
 
   run-reg-suit:
     needs: [run-cypress-node14]
+
+    if: always()
 
     runs-on: ubuntu-latest
 
