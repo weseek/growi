@@ -18,17 +18,11 @@ class PageGrantService {
     this.crowi = crowi;
   }
 
-  private validateGrantValues(grant, grantedUserIds, grantedGroupId) {
+  private validateGrantValues(grant, grantedGroupId) {
     const Page = mongoose.model('Page') as PageModel;
 
     if (grant === Page.GRANT_USER_GROUP && grantedGroupId == null) {
       throw Error('grantedGroupId is not specified');
-    }
-    if (grant === Page.GRANT_OWNER && grantedUserIds == null) {
-      throw Error('grantedUserId is not specified');
-    }
-    if (grant === Page.GRANT_SPECIFIED && grantedUserIds == null) {
-      throw Error('grantedUserId is not specified');
     }
   }
 
@@ -52,7 +46,7 @@ class PageGrantService {
 
   private async generateTargetsGrantedUsersForCreate(user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<ObjectId[]> {
     // validate values
-    this.validateGrantValues(grant, grantedUserIds, grantedGroupId);
+    this.validateGrantValues(grant, grantedGroupId);
 
     let targetGrantedUsers: ObjectId[] = [];
 
@@ -71,9 +65,6 @@ class PageGrantService {
     if (grant === Page.GRANT_OWNER) {
       targetGrantedUsers = [user._id];
     }
-    if (grant === Page.GRANT_SPECIFIED) {
-      targetGrantedUsers = grantedUserIds;
-    }
 
     return targetGrantedUsers;
   }
@@ -87,7 +78,7 @@ class PageGrantService {
     /*
      * make granted users list of ancestor's
      */
-    const builderForAncestors = new PageQueryBuilder(Page.find({}, { _id: 0, grantedGroup: 1 }), false);
+    const builderForAncestors = new PageQueryBuilder(Page.find(), false);
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)
       .addConditionToSortPagesByDescPath()
@@ -98,7 +89,7 @@ class PageGrantService {
       throw Error('testAncestor must exist');
     }
     // validate values
-    this.validateGrantValues(testAncestor.grant, testAncestor.grantedUsers, testAncestor.grantedGroup);
+    this.validateGrantValues(testAncestor.grant, testAncestor.grantedGroup);
 
     if (testAncestor.grant === Page.GRANT_PUBLIC) {
       ancestorUsers = [];
@@ -108,7 +99,7 @@ class PageGrantService {
       const ancestorsGrantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
       ancestorUsers = Array.from(new Set(ancestorsGrantedRelations.map(r => r.relatedUser))) as ObjectId[];
     }
-    else if (testAncestor.grant === Page.GRANT_SPECIFIED || testAncestor.grant === Page.GRANT_OWNER) {
+    else if (testAncestor.grant === Page.GRANT_OWNER) {
       ancestorUsers = testAncestor.grantedUsers;
     }
 
@@ -128,18 +119,22 @@ class PageGrantService {
       .addConditionToListOnlyDescendants(targetPath)
       .query
       .exec();
-    // users of GRANT_OWNER
-    let grantedUsersOfGrantOwner = [];
+
+    let grantedUsersOfGrantOwner: ObjectId[] = []; // users of GRANT_OWNER
+    const grantedUsersOfGrantUserGroup: ObjectId[] = []; // users of GRANT_GROUP
+    const grantedGroups: ObjectId[] = [];
     descendants.forEach((d) => {
-      if (d.grantedUsers == null) {
-        return;
+      if (d.grantedUsers != null) {
+        grantedUsersOfGrantOwner = grantedUsersOfGrantOwner.concat(d.grantedUsers);
       }
-      grantedUsersOfGrantOwner = grantedUsersOfGrantOwner.concat(d.grantedUsers);
+      if (d.grantedGroup != null) {
+        grantedGroups.push(d.grantedGroup);
+      }
     });
-    // make a set of all users
-    const grantedGroups = removeDuplicates(descendants.map(d => d.grantedGroup));
-    const grantedRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedGroups } }, { _id: 0, relatedUser: 1 });
-    const grantedUsersOfGrantUserGroup = grantedRelations.map(r => r.relatedUser);
+
+    const uniqueGrantedGroups = removeDuplicates(grantedGroups);
+    const grantedRelations = await UserGroupRelation.find({ relatedGroup: { $in: uniqueGrantedGroups } }, { _id: 0, relatedUser: 1 });
+    grantedRelations.forEach(r => grantedUsersOfGrantUserGroup.push(r.relatedUser));
     return removeDuplicates([...grantedUsersOfGrantOwner, ...grantedUsersOfGrantUserGroup]);
   }
 
