@@ -4,6 +4,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
+import ActionToPageGroup from './SearchPage/ActionToPageGroup';
 import SearchControl from './SearchPage/SearchControl';
 
 
@@ -13,18 +14,12 @@ type Props = {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 1. implement PageDeleteModal
-// 2. disable search form when this component is used in LegacyPage
-// 3. onAfterSearchInvoked should be refactored in LegacyPage
+// 1. disable search form when this component is used in LegacyPage
+// 2. icon migrate
+// 2. onAfterSearchInvoked should be refactored in LegacyPage
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
-  const actionTypeAndText = (
-    <>
-      <i className="icon-trash"></i>
-      {t('search_result.delete_all_selected_page')}
-    </>
-  );
 
   // Delete modal
   const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
@@ -39,6 +34,25 @@ const SearchPage : FC<Props> = (props: Props) => {
     );
   };
 
+  const renderActionToPageGroup = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox) => {
+    const actionTypeAndText = (
+      <>
+        <i className="icon-trash"></i>
+        delete
+      </>
+    );
+    return (
+      <ActionToPageGroup
+        actionTypeIconAndText={actionTypeAndText}
+        isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
+        selectAllCheckboxType={selectAllCheckboxType}
+        onClickActionButton={onClickActionButton}
+        onClickSelectAllCheckbox={onClickSelectAllCheckbox}
+      >
+      </ActionToPageGroup>
+    );
+  };
+
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
     let hash = window.location.hash || '';
     if (searchedKeyword !== '') {
@@ -49,35 +63,11 @@ const SearchPage : FC<Props> = (props: Props) => {
     }
   };
 
-  // eslint-disable-next-line max-len
-  const renderSearchControl = (searchingKeyword, sort, order, searchResultCount, appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked) => {
-    return (
-      <SearchControl
-        searchingKeyword={searchingKeyword}
-        sort={sort}
-        order={order}
-        searchResultCount={searchResultCount || 0}
-        appContainer={appContainer}
-        onSearchInvoked={onSearchInvoked}
-        onClickSelectAllCheckbox={toggleAllCheckBox}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={actionToAllPagesButtonHandler}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={excludeUserPages}
-        excludeTrashPages={excludeTrashPages}
-        onChangeSortInvoked={onChangeSortInvoked}
-        actionTypeIconAndText={actionTypeAndText}
-      >
-      </SearchControl>
-    );
-  };
-
   return (
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
-      renderSearchControl={renderSearchControl}
+      renderActionToPageGroup={renderActionToPageGroup}
     />
   );
 };

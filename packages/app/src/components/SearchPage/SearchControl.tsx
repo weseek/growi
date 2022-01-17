@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
-import ActionToPageGroup from './ActionToPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 import {
@@ -16,7 +15,7 @@ type Props = {
   appContainer: AppContainer,
   searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
-  actionTypeIconAndText: any
+  renderActionToPageGroup: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox)=> React.FunctionComponent,
   onClickActionButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
@@ -112,13 +111,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
-          <ActionToPageGroup
-            isSelectAllCheckboxDisabled={searchResultCount === 0}
-            selectAllCheckboxType={props.selectAllCheckboxType}
-            onClickActionButton={props.onClickActionButton}
-            onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-            actionTypeIconAndText={props.actionTypeIconAndText}
-          />
+          {props.renderActionToPageGroup(searchResultCount === 0, props.selectAllCheckboxType, props.onClickActionButton, props.onClickSelectAllCheckbox)}
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">

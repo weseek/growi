@@ -17,6 +17,7 @@ import {
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import SearchControl from './SearchPage/SearchControl';
 
 
 export const specificPathNames = {
@@ -49,10 +50,8 @@ const getQueryByLocation = (location: Location) => {
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
-  renderActionToPagesModal: (isDeleteConfirmModalShown, getSelectedPagesToDelete, closeDeleteConfirmModalHandler) => React.FunctionComponent,
-  // eslint-disable-next-line max-len
-  renderSearchControl:any, // (searchingKeyword, sort, order, searchResultCount, appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked) => React.FunctionComponent,
-
+  renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
+  renderActionToPageGroup: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox)=>React.FunctionComponent,
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -319,11 +318,26 @@ const SearchCore: FC<Props> = (props: Props) => {
   };
 
   const renderSearchControl = () => {
-    if (props.renderSearchControl == null) {
-      return <></>;
-    }
-    // eslint-disable-next-line max-len
-    return props.renderSearchControl(searchingKeyword, sort, order, searchResultCount, props.appContainer, onSearchInvoked, toggleAllCheckBox, selectAllCheckboxType, actionToAllPagesButtonHandler, switchExcludeUserPagesHandler, switchExcludeTrashPagesHandler, excludeUserPages, excludeTrashPages, onChangeSortInvoked);
+    return (
+      <SearchControl
+        searchingKeyword={searchingKeyword}
+        sort={sort}
+        order={order}
+        searchResultCount={searchResultCount || 0}
+        appContainer={props.appContainer}
+        onSearchInvoked={onSearchInvoked}
+        onClickSelectAllCheckbox={toggleAllCheckBox}
+        selectAllCheckboxType={selectAllCheckboxType}
+        onClickActionButton={actionToAllPagesButtonHandler}
+        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
+        excludeUserPages={excludeUserPages}
+        excludeTrashPages={excludeTrashPages}
+        onChangeSortInvoked={onChangeSortInvoked}
+        renderActionToPageGroup={props.renderActionToPageGroup}
+      >
+      </SearchControl>
+    );
   };
   /*
    * Dependencies
