@@ -1066,6 +1066,8 @@ class PageService {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
         'app:isV5Compatible': true,
       });
+      // update descendantCount of all public pages
+      await this.updateDescendantCount();
       logger.info('Successfully migrated all public pages.');
     }
     catch (err) {
