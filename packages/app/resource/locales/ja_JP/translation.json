@@ -484,6 +484,9 @@
     "enable_textlint": "Textlintを有効にする",
     "dont_ask_again": "常に許可する"
   },
+  "modal_migrate":{
+    "migrating_page": "Migrating page"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",

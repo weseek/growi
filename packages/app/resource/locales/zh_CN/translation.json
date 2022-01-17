@@ -462,6 +462,9 @@
     "enable_textlint": "启用Textlint",
     "dont_ask_again": "不要再问"
   },
+  "modal_migrate":{
+    "migrating_page": "Migrating page"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

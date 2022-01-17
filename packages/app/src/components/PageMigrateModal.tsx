@@ -23,15 +23,35 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
     isOpen, onClose, pages,
   } = props;
 
+  const migratePage = async() => {
+    alert('Migrate page run!');
+  };
+
+  const migrateButtonHandler = async() => {
+    migratePage();
+  };
+
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={onClose}>
-        <h1>not implemented yet</h1>
+      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+        <i className="">
+          {/* icon if requested */}
+        </i>
+        {t('V5 Page Migration')}
       </ModalHeader>
       <ModalBody>
+        <div className="form-group grw-scrollable-modal-body pb-1">
+          <label>{t('modal_migrate.migrating_page')}:</label><br />
+          {/* Todo: change the way to show path on modal when too many pages are selected */}
+          {/* https://redmine.weseek.co.jp/issues/82787 */}
+          {pages.map((page) => {
+            return <div key={page.pageId}><code>{ page.path }</code></div>;
+          })}
+        </div>
       </ModalBody>
       <ModalFooter>
+
       </ModalFooter>
     </Modal>
   );
