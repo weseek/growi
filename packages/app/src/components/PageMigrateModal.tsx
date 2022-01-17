@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-export type IPageForPageDeleteModal = {
+export type IPageForPageMigrateModal = {
   pageId: string,
   revisionId: string,
   path: string
@@ -13,7 +13,7 @@ export type IPageForPageDeleteModal = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageForPageDeleteModal[],
+  pages: IPageForPageMigrateModal[],
   onClose?: () => void,
 }
 // TODO : migration modal : https://redmine.weseek.co.jp/issues/84858
