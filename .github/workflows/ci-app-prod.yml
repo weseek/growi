@@ -303,6 +303,7 @@ jobs:
         name: Cypress Report
 
     - name: Run reg-suit
+      working-directory: ./packages/app
       run: |
         yarn reg:run
 
