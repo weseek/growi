@@ -23,7 +23,6 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const {
     page, isEnableActions, onClickDeleteButton, isDeletable,
   } = props;
-  console.log('page', page);
   const { t } = useTranslation('');
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
 
@@ -34,7 +33,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   };
 
 
-  const addBookmarkClickHandler = (async() => {
+  const bookmarkClickHandler = (async() => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
@@ -85,7 +84,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={addBookmarkClickHandler}>
+          <DropdownItem onClick={bookmarkClickHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
             { bookmarkInfo.isBookmarked ? t('delete_bookmark') : t('add_bookmark') }
           </DropdownItem>
