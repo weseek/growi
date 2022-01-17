@@ -677,7 +677,8 @@ class PassportService implements S2sMessageHandlable {
       });
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
-      client.CLOCK_TOLERANCE = 5;
+      const OIDC_CLIENT_CLOCK_TOLERANCE = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcClientClockTolerance');
+      client.CLOCK_TOLERANCE = OIDC_CLIENT_CLOCK_TOLERANCE;
       passport.use('oidc', new OidcStrategy(
         {
           client,

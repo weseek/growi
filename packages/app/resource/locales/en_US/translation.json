@@ -61,6 +61,7 @@
   "The end": "The end",
   "Not available for guest": "Not available for guest",
   "No users have liked this yet.": "No users have liked this yet.",
+  "No users have bookmarked yet": "No users have bookmarked yet",
   "Create Archive Page": "Create Archive Page",
   "File type": "File type",
   "Target page": "Target page",
@@ -144,6 +145,7 @@
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
   "Add tags for this page": "Add tags for this page",
+  "Check All tags": "check all tags",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
   "Show latest": "Show latest",
   "Load latest": "Load latest",
@@ -485,6 +487,17 @@
     "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
     "enable_textlint": "Enable Textlint",
     "dont_ask_again": "Don't ask again"
+  },
+  "modal_resolve_conflict": {
+    "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",
+    "resolve_conflict_message": "Please select page body",
+    "resolve_conflict": "Resolve Conflict",
+    "resolve_and_save" : "Resolve and save",
+    "select_revision" : "Select {{revision}}",
+    "requested_revision": "mine",
+    "origin_revision": "origin",
+    "latest_revision": "theirs",
+    "selected_editable_revision": "Selected Page Body (Editable)"
   },
   "link_edit": {
     "edit_link": "Edit Link",
