@@ -7,8 +7,11 @@ import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
+import { generateConfigsForInstalling } from '../models/config';
+
 import AppService from './app';
 import SearchService from './search';
+import ConfigManager from './config-manager';
 
 const logger = loggerFactory('growi:service:installer');
 
@@ -74,10 +77,19 @@ export class InstallerService {
     }
   }
 
-  async install(firstAdminUserToSave: IUser, language: string): Promise<IUser> {
-    const appService: AppService = this.crowi.appService;
+  /**
+   * Execute only once for installing application
+   */
+  private async initDB(globalLang: string): Promise<void> {
+    const configManager: ConfigManager = this.crowi.configManager;
 
-    await appService.initDB(language);
+    const initialConfig = generateConfigsForInstalling();
+    initialConfig['app:globalLang'] = globalLang;
+    return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
+  }
+
+  async install(firstAdminUserToSave: IUser, language: string): Promise<IUser> {
+    await this.initDB(language);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,8 +112,14 @@ export class InstallerService {
     // create initial pages
     await this.createInitialPages(adminUser, language);
 
+    const pluginService = this.crowi.pluginService;
+    await pluginService.autoDetectAndLoadPlugins();
+
+    this.crowi.setupRoutesAtLast();
+    this.crowi.setupGlobalErrorHandlers();
+
+    const appService: AppService = this.crowi.appService;
     appService.setupAfterInstall();
-    appService.publishPostInstallationMessage();
 
     return adminUser;
   }
