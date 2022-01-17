@@ -1,11 +1,10 @@
 import React, {
-  FC, useState, useCallback,
+  FC,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
 import ActionToPageGroup from './SearchPage/ActionToPageGroup';
-import SearchControl from './SearchPage/SearchControl';
 
 
 type Props = {
@@ -14,9 +13,10 @@ type Props = {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 1. disable search form when this component is used in LegacyPage
+// 1. renderSearchForm
 // 2. icon migrate
-// 2. onAfterSearchInvoked should be refactored in LegacyPage
+// 3.. onAfterSearchInvoked should be refactored in LegacyPage
+
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
@@ -51,6 +51,12 @@ const SearchPage : FC<Props> = (props: Props) => {
       >
       </ActionToPageGroup>
     );
+  };
+
+  const renderSearchForm = () => {
+    // TODO
+    // Task : https://redmine.weseek.co.jp/issues/85465
+    // return <SearchForm />
   };
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {

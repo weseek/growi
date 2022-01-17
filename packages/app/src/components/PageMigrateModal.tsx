@@ -16,7 +16,7 @@ type Props = {
   pages: IPageForPageDeleteModal[],
   onClose?: () => void,
 }
-
+// TODO : migration modal : https://redmine.weseek.co.jp/issues/84858
 const PageMigrateModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
