@@ -12,7 +12,7 @@ import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-sa
 import { BasicStrategy } from 'passport-http';
 
 import { IncomingMessage } from 'http';
-import got from 'got';
+import axiosRetry from 'axios-retry';
 import pRetry from 'p-retry';
 import loggerFactory from '~/utils/logger';
 
@@ -622,7 +622,8 @@ class PassportService implements S2sMessageHandlable {
 
     // setup client
     // extend oidc request timeouts
-    OIDCIssuer.defaultHttpOptions = { timeout: 5000 };
+    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
+    OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
     const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
     const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret');
@@ -720,8 +721,17 @@ class PassportService implements S2sMessageHandlable {
  */
   async isOidcHostReachable(issuerHost) {
     try {
-      const response = await got(issuerHost, { retry: { limit: 3 } });
-      return response.statusCode === 200;
+      const client = require('axios').default;
+      axiosRetry(client, {
+        retries: 3,
+      });
+      const response = await client.get(`${issuerHost}/.well-known/openid-configuration`);
+      // Check for valid OIDC Issuer configuration
+      if (!response.data.issuer) {
+        logger.debug('OidcStrategy: Invalid OIDC Issuer configurations');
+        return false;
+      }
+      return true;
     }
     catch (err) {
       logger.error('OidcStrategy: issuer host unreachable:', err.code);
@@ -740,7 +750,7 @@ class PassportService implements S2sMessageHandlable {
     const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
-      logger.error('OidcStrategy: setup failed: OIDC Issur host unreachable');
+      logger.error('OidcStrategy: setup failed');
       return;
     }
     const oidcIssuer = await pRetry(async() => {
