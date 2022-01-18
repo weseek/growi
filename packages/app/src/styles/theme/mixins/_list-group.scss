@@ -17,3 +17,44 @@
     }
   }
 }
+
+@mixin override-list-group-item-for-pagetree(
+  $color,
+  $bgcolor,
+  $color-hover: $color,
+  $bgcolor-hover: $bgcolor,
+  $color-active: $color,
+  $bgcolor-active: $bgcolor
+) {
+  .grw-pagetree-is-over {
+    background: $bgcolor-hover;
+  }
+  .list-group-item {
+    color: $color;
+    background-color: transparent;
+    border-color: $border-color-global;
+
+    &.grw-pagetree-is-target {
+      background: $bgcolor-hover;
+    }
+    .grw-pagetree-count {
+      background: $bgcolor;
+    }
+    .grw-pagetree-button {
+      &:not(:hover) {
+        svg {
+          fill: $gray-400;
+        }
+      }
+    }
+
+    &.list-group-item-action {
+      &:hover {
+        background-color: $bgcolor-hover;
+      }
+      &.active {
+        background-color: $bgcolor-active;
+      }
+    }
+  }
+}
