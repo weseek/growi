@@ -99,7 +99,7 @@ schema.plugin(uniqueValidator);
 /*
  * Methods
  */
-const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
+export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
   if (isTopPage(path)) return ancestorPaths;
 
   const parentPath = nodePath.dirname(path);
@@ -375,9 +375,8 @@ schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(
   ];
 };
 
-// update descendantCount of ancestors of the provided path by count
-schema.statics.recountDescendantCountOfAncestors = async function(path:string, count: number):Promise<void> {
-  const paths = collectAncestorPaths(path);
+// update descendantCount of pages with provided paths by count
+schema.statics.recountDescendantCountOfPathsByCount = async function(paths:string[], count: number):Promise<void> {
   const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
   const operations = pages.map((page) => {
     return {
