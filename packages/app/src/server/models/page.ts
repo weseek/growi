@@ -375,7 +375,7 @@ schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(
   ];
 };
 
-// update descendantCount of ancestors of path by count
+// update descendantCount of ancestors of the provided path by count
 schema.statics.recountDescendantCountOfAncestors = async function(path:string, count: number):Promise<void> {
   const paths = collectAncestorPaths(path);
   const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
