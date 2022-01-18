@@ -60,9 +60,6 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
   return (
     <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
       <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
-        <i className="">
-          {/* icon if requested */}
-        </i>
         {t('V5 Page Migration')}
       </ModalHeader>
       <ModalBody>
