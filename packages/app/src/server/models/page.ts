@@ -412,8 +412,8 @@ export default (crowi: Crowi): any => {
 
 
     /*
-      * update empty page if exists, if not, create a new page
-      */
+     * update empty page if exists, if not, create a new page
+     */
     let page;
     const emptyPage = await Page.findOne({ path, isEmpty: true });
     if (emptyPage != null) {
