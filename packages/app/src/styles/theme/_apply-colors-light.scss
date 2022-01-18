@@ -170,7 +170,15 @@ $border-color: $border-color-global;
 
   // Pagetree
   .grw-pagetree {
-    @include override-list-group-item-for-pagetree($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, red);
+    @include override-list-group-item-for-pagetree(
+      $color-list,
+      $bgcolor-sidebar-list-group,
+      $color-list-hover,
+      $bgcolor-list-hover,
+      $color-list-active,
+      $bgcolor-list-active,
+      $gray-400
+    );
   }
 }
 
