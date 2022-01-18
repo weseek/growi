@@ -23,7 +23,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
-  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 30) : [];
+  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 

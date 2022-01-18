@@ -13,8 +13,8 @@ const LikerList: FC<Props> = (props: Props) => {
 
   const { data: pageInfo } = useSWRxPageInfo(pageId);
   const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
-  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds : [];
-  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds : [];
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
+  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
