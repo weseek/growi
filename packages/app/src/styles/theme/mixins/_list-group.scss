@@ -24,7 +24,8 @@
   $color-hover: $color,
   $bgcolor-hover: $bgcolor,
   $color-active: $color,
-  $bgcolor-active: $bgcolor
+  $bgcolor-active: $bgcolor,
+  $button-color
 ) {
   .grw-pagetree-is-over {
     background: $bgcolor-hover;
@@ -43,7 +44,7 @@
     .grw-pagetree-button {
       &:not(:hover) {
         svg {
-          fill: $gray-400;
+          fill: $button-color;
         }
       }
     }
