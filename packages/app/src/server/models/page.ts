@@ -381,7 +381,7 @@ export default (crowi: Crowi): any => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', redirectTo, grantedUserIds, grantUserGroupId,
+      format = 'markdown', redirectTo, grantedUserIds = [user._id], grantUserGroupId,
     } = options;
 
     // sanitize path
