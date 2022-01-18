@@ -141,7 +141,9 @@ class PageGrantService {
       grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
-      const applicableGroupIds = await UserGroup.findGroupsWithDescendantsById(grantedGroupId);
+      const applicableGroups = await UserGroup.findGroupsWithDescendantsById(grantedGroupId);
+      const applicableGroupIds = applicableGroups.map(g => g._id);
+
 
       return {
         grant,
@@ -187,7 +189,8 @@ class PageGrantService {
     if (testAncestor.grant === Page.GRANT_USER_GROUP) {
       // make a set of all users
       const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
-      applicableGroupIds = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
+      const grantedGroups = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
+      applicableGroupIds = grantedGroups.map(g => g._id);
       applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectId[];
     }
 

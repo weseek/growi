@@ -3,13 +3,21 @@ import mongoose from 'mongoose';
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const compareObjectId = (id1: IObjectId, id2: IObjectId): boolean => {
-  return id1.toString() === id2.toString();
+const castToString = (val: string | IObjectId) => {
+  if (typeof val === 'string') {
+    return val;
+  }
+
+  return val.toString();
 };
 
-export const isIncludesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
-  const _arr = arr.map(i => i.toString());
-  const _id = id.toString();
+export const compareObjectId = (id1: IObjectId | string, id2: IObjectId | string): boolean => {
+  return castToString(id1) === castToString(id2);
+};
+
+export const isIncludesObjectId = (arr: (IObjectId | string)[], id: IObjectId | string): boolean => {
+  const _arr = arr.map(i => castToString(i));
+  const _id = castToString(id);
 
   return _arr.includes(_id);
 };
@@ -20,21 +28,21 @@ export const isIncludesObjectId = (arr: IObjectId[], id: IObjectId): boolean => 
  * @param testIds Array of mongoose.Types.ObjectId
  * @returns Array of mongoose.Types.ObjectId
  */
-export const excludeTestIdsFromTargetIds = (targetIds: IObjectId[], testIds: IObjectId[]): IObjectId[] => {
+export const excludeTestIdsFromTargetIds = (targetIds: (IObjectId | string)[], testIds: (IObjectId | string)[]): IObjectId[] => {
   // cast to string
-  const arr1 = targetIds.map(e => e.toString());
-  const arr2 = testIds.map(e => e.toString());
+  const arr1 = targetIds.map(e => castToString(e));
+  const arr2 = testIds.map(e => castToString(e));
 
   // filter
-  const excluded = arr2.filter(e => !arr1.includes(e));
+  const excluded = arr1.filter(e => !arr2.includes(e));
 
   // cast to ObjectId
   return excluded.map(e => new ObjectId(e));
 };
 
-export const removeDuplicates = (objectIds: IObjectId[]): IObjectId[] => {
+export const removeDuplicates = (objectIds: (IObjectId | string)[]): IObjectId[] => {
   // cast to string
-  const strs = objectIds.map(id => id.toString());
+  const strs = objectIds.map(id => castToString(id));
   const uniqueArr = Array.from(new Set(strs));
 
   // cast to ObjectId
