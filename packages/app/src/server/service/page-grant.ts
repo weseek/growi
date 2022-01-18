@@ -137,6 +137,10 @@ class PageGrantService {
     return true;
   }
 
+  /**
+   * Prepare ComparableTarget
+   * @returns Promise<ComparableAncestor>
+   */
   private async generateComparableTarget(
       grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
@@ -161,7 +165,7 @@ class PageGrantService {
   }
 
   /**
-   * WIP
+   * Prepare ComparableAncestor
    * @param targetPath string of the target path
    * @returns Promise<ComparableAncestor>
    */
@@ -203,7 +207,7 @@ class PageGrantService {
   }
 
   /**
-   * WIP
+   * Prepare ComparableDescendants
    * @param targetPath string of the target path
    * @returns ComparableDescendants
    */
