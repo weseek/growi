@@ -4,8 +4,8 @@
 
 # test
 test/cypress/screenshots
-test/cypress/screenshots-actual
 test/cypress/videos
+.reg
 
 # dist
 /dist/
