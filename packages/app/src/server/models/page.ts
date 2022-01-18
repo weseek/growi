@@ -375,6 +375,21 @@ schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(
   ];
 };
 
+// update descendantCount of ancestors of path by count
+schema.statics.recountDescendantCountOfAncestors = async function(path:string, count: number):Promise<void> {
+  const paths = collectAncestorPaths(path);
+  const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
+  const operations = pages.map((page) => {
+    return {
+      updateOne: {
+        filter: { path: page.path },
+        update: { descendantCount: page.descendantCount + count },
+      },
+    };
+  });
+  await this.bulkWrite(operations);
+};
+
 schema.statics.recountPage = async function(id:mongoose.Types.ObjectId):Promise<void> {
   const res = await this.aggregate(
     [
