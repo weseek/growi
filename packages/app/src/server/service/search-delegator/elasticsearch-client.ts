@@ -30,7 +30,7 @@ export default class ElasticsearchClient {
     return this.client instanceof ES6Client ? this.client.bulk(params) : this.client.bulk(params);
   }
 
-  // cat is not used in current Implementation
+  // TODO: cat is not used in current Implementation, remove cat?
   cat = {
     aliases: (params: ES6RequestParams.CatAliases & ES7RequestParams.CatAliases): Promise<ApiResponse<CatAliasesResponse>> =>
       this.client instanceof ES6Client ? this.client.cat.aliases(params) : this.client.cat.aliases(params),
