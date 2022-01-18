@@ -13,23 +13,29 @@ const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
-  isSelected: boolean,
-  isChecked: boolean,
   isEnableActions: boolean,
+  isSelected?: boolean,
+  isChecked?: boolean,
   shortBody?: string
-  showCheckbox: boolean, // whether you show checkbox on the left side of an item
-  changeBgColorOnSelected: boolean, // whether you change background color of an item on selected
-  showPageUpdatedTime: boolean, // whether you show page's updatedAt at the top-right corner of an item
+  showCheckbox?: boolean, // whether you show checkbox on the left side of an item
+  showPageUpdatedTime?: boolean, // whether you show page's updatedAt at the top-right corner of an item
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
+const defaultProps = {
+  isSelected: false,
+  isChecked: false,
+  showCheckbox: false,
+  showPageUpdatedTime: false,
+};
+
 const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox,
-    isChecked, isEnableActions, shortBody, showCheckbox, changeBgColorOnSelected, showPageUpdatedTime,
+    isChecked, isEnableActions, shortBody, showCheckbox, showPageUpdatedTime,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -64,7 +70,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
     }
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${changeBgColorOnSelected && isSelected ? 'active' : ''}`}`;
+  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
   return (
     <li
       key={pageData._id}
@@ -147,4 +153,5 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   );
 });
 
+PageListItem.defaultProps = defaultProps;
 export default PageListItem;

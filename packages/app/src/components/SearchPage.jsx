@@ -327,6 +327,7 @@ class SearchPage extends React.Component {
         shortBodiesMap={this.state.shortBodiesMap}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
+        showPagenation
         onClickSearchResultItem={this.selectPage}
         onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
