@@ -485,8 +485,8 @@
     "dont_ask_again": "常に許可する"
   },
   "modal_migrate":{
-    "migrating_page": "Migrating page",
-    "migrate_recursively": "Migrate child pages recursively"
+    "migrating_page": "ページをマイグレート",
+    "migrate_recursively": "全ての子ページもマイグレート"
   },
   "link_edit": {
     "edit_link": "リンク編集",
