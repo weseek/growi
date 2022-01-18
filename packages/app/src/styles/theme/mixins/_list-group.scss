@@ -53,7 +53,7 @@
       &:hover {
         background-color: $bgcolor-hover;
       }
-      &.active {
+      &:active {
         background-color: $bgcolor-active;
       }
     }
