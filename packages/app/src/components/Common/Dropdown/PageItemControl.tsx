@@ -25,7 +25,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
+  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
   const deleteButtonHandler = () => {
     if (onClickDeleteButton != null && page._id != null) {
@@ -46,7 +46,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   });
 
   if (bookmarkInfoError != null || bookmarkInfo == null) {
-    return <></>;
+    return <>hoge</>;
   }
 
   const dropdownToggle = () => {
