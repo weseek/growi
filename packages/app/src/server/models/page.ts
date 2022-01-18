@@ -362,7 +362,10 @@ async function pushRevision(pageData, newRevision, user) {
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
 export default (crowi: Crowi): any => {
-  const pageEvent = crowi.event('page');
+  let pageEvent;
+  if (crowi != null) {
+    pageEvent = crowi.event('page');
+  }
 
   schema.statics.create = async function(path, body, user, options = {}) {
     if (crowi.pageGrantService == null || crowi.configManager == null) {
