@@ -45,13 +45,18 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     }
   });
 
-  if (bookmarkInfoError != null || bookmarkInfo == null) {
-    return <>hoge</>;
-  }
+  const renderBookmarkText = () => {
+    if (bookmarkInfoError != null || bookmarkInfo == null) {
+      return '';
+    }
+    return bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark');
+  };
+
 
   const dropdownToggle = () => {
     setIsOpen(!isOpen);
   };
+
 
   return (
     <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
@@ -90,7 +95,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         {isEnableActions && (
           <DropdownItem onClick={bookmarkToggleHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
-            { bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
+            {renderBookmarkText()}
           </DropdownItem>
         )}
         {isEnableActions && (

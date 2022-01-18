@@ -8,7 +8,6 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined, isOpen = t
     pageId != null && isOpen
       ? `/bookmarks/info?pageId=${pageId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
-      console.log('isOpen_swr', isOpen);
       return {
         sumOfBookmarks: response.data.sumOfBookmarks,
         isBookmarked: response.data.isBookmarked,
