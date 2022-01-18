@@ -1253,7 +1253,7 @@ class PageService {
    * - page that has the same path as the provided path
    * - pages that are descendants of the above page
    */
-  async updateSelfAndDescendantCount(path = '/') {
+  async updateDescendantCountOfSelfAndDescendants(path = '/') {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 
@@ -1265,7 +1265,7 @@ class PageService {
       async write(pageDocuments, encoding, callback) {
         for (const document of pageDocuments) {
           // eslint-disable-next-line no-await-in-loop
-          await Page.recountPage(document._id);
+          await Page.recountDescendantCountOfSelfAndDescendants(document._id);
         }
         callback();
       },

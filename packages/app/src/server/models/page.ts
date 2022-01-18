@@ -390,7 +390,8 @@ schema.statics.recountDescendantCountOfAncestors = async function(path:string, c
   await this.bulkWrite(operations);
 };
 
-schema.statics.recountPage = async function(id:mongoose.Types.ObjectId):Promise<void> {
+// update descendantCount of page with provided id
+schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mongoose.Types.ObjectId):Promise<void> {
   const res = await this.aggregate(
     [
       {
