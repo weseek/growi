@@ -344,16 +344,6 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   return pathToChildren;
 };
 
-schema.statics.findAncestors = async function(targetPath: string, includeEmpty = true): Promise<PageDocument[]> {
-  const builder = new PageQueryBuilder(this.find(), includeEmpty);
-  const ancestors = await builder
-    .addConditionToListOnlyAncestors(targetPath)
-    .query
-    .exec();
-
-  return ancestors;
-};
-
 /*
  * Utils from obsolete-page.js
  */
