@@ -64,7 +64,7 @@ class PageGrantService {
      */
     // GRANT_PUBLIC
     if (ancestor.grant === Page.GRANT_PUBLIC) {
-      // DO NOTHING
+      // do nothing
     }
     // GRANT_OWNER
     if (ancestor.grant === Page.GRANT_OWNER) {
@@ -106,15 +106,9 @@ class PageGrantService {
      * descendant side
      */
 
-    if (target.applicableGroupIds == null) {
-      throw Error('applicableGroupIds must not be null');
-    }
-
     // GRANT_PUBLIC
     if (target.grant === Page.GRANT_PUBLIC) {
-      if (descendants.descendantGroupIds.length !== 0 || descendants.descendantGroupIds.length !== 0) {
-        return false;
-      }
+      // do nothing
     }
     // GRANT_OWNER
     if (target.grant === Page.GRANT_OWNER) {
@@ -128,6 +122,10 @@ class PageGrantService {
     }
     // GRANT_USER_GROUP
     if (target.grant === Page.GRANT_USER_GROUP) {
+      if (target.applicableGroupIds == null) {
+        throw Error('applicableGroupIds must not be null');
+      }
+
       const shouldNotExistIds = excludeTestIdsFromTargetIds(descendants.descendantGroupIds, target.applicableGroupIds);
       if (shouldNotExistIds.length !== 0) {
         return false;
@@ -145,8 +143,8 @@ class PageGrantService {
       grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
-      const applicableGroups = await UserGroup.findGroupsWithDescendantsById(grantedGroupId);
-      const applicableGroupIds = applicableGroups.map(g => g._id);
+      const applicableGroups = grantedGroupId != null ? await UserGroup.findGroupsWithDescendantsById(grantedGroupId) : null;
+      const applicableGroupIds = applicableGroups?.map(g => g._id) || null;
 
 
       return {

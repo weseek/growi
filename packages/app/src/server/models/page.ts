@@ -23,7 +23,7 @@ const logger = loggerFactory('growi:models:page');
  */
 const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
-const GRANT_SPECIFIED = 3;
+const GRANT_SPECIFIED = 3; // DEPRECATED
 const GRANT_OWNER = 4;
 const GRANT_USER_GROUP = 5;
 const PAGE_GRANT_ERROR = 1;
@@ -401,24 +401,25 @@ export default (crowi: Crowi): any => {
     // find existing empty page at target path
     const emptyPage = await Page.findOne({ path, isEmpty: true });
 
-    /*
-     * UserGroup & Owner validation
-     */
-    let isGrantNormalized = false;
-    try {
-      // It must check descendants as well if emptyTarget is not null
-      const shouldCheckDescendants = emptyPage != null;
+    if (grant !== GRANT_RESTRICTED) {
+      /*
+       * UserGroup & Owner validation
+       */
+      let isGrantNormalized = false;
+      try {
+        // It must check descendants as well if emptyTarget is not null
+        const shouldCheckDescendants = emptyPage != null;
 
-      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
     }
-    catch (err) {
-      logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
-      throw err;
-    }
-    if (!isGrantNormalized) {
-      throw Error('The selected grant or grantedGroup is not assignable to this page.');
-    }
-
 
     /*
      * update empty page if exists, if not, create a new page
@@ -455,6 +456,65 @@ export default (crowi: Crowi): any => {
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
+
+    return savedPage;
+  };
+
+  schema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+    if (crowi.configManager == null || crowi.pageGrantService == null) {
+      throw Error('Crowi is not set up');
+    }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible) {
+      // v4 compatible process
+      return this.updatePageV4(pageData, body, previousBody, user, options);
+    }
+
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+    const grant = options.grant || pageData.grant; // use the previous data if absence
+    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+    const grantedUserIds = pageData.grantedUserIds || [user._id];
+
+    const newPageData = pageData;
+
+    if (grant === GRANT_RESTRICTED) {
+      newPageData.parent = null;
+    }
+    else {
+      /*
+       * UserGroup & Owner validation
+       */
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = true;
+
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+    }
+
+    newPageData.applyScope(user, grant, grantUserGroupId);
+
+    // update existing page
+    let savedPage = await newPageData.save();
+    const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+    const revision = await pushRevision(savedPage, newRevision, user);
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
+
+    if (isSyncRevisionToHackmd) {
+      savedPage = await this.syncRevisionToHackmd(savedPage);
+    }
+
+    pageEvent.emit('update', savedPage, user);
 
     return savedPage;
   };
