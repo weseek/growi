@@ -310,6 +310,10 @@ jobs:
         name: Cypress Report
         path: packages/app/test/cypress
 
+    - name: debug
+      run: |
+        ls -R packages/app/test/cypress
+
     - name: Run reg-suit
       working-directory: ./packages/app
       run: |
