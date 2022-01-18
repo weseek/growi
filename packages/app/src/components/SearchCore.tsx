@@ -44,13 +44,13 @@ const getQueryByLocation = (location: Location) => {
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
 // 1. renderSearchForm
-// 2. icon migrate
-// 3. onAfterSearchInvoked should be refactored in LegacyPage
+// 2. renderSort
+// 3. message props to SearchPageLayout. <- not relevant here
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
-  actionIconAndText: JSX.Element
+  renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
   query?: string,
 };
 
@@ -233,8 +233,9 @@ const SearchCore: FC<Props> = (props: Props) => {
     }
   }, [selectedPagesIdList, searchResults]);
 
-  const toggleAllCheckBox = useCallback((nextSelectAllCheckboxType) => {
-    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
+  const toggleAllCheckBox = () => {
+    const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
+    if (next === CheckboxType.NONE_CHECKED) {
       selectedPagesIdList.clear();
     }
     else {
@@ -243,9 +244,8 @@ const SearchCore: FC<Props> = (props: Props) => {
       });
     }
     setSelectedPagesIdList(selectedPagesIdList);
-    setSelectAllCheckboxType(nextSelectAllCheckboxType);
-  }, [searchResults, selectedPagesIdList]);
-
+    setSelectAllCheckboxType(next);
+  };
 
   const getSelectedPagesToAction = useCallback(() => {
     const filteredPages = searchResults.filter((page) => {
@@ -323,18 +323,15 @@ const SearchCore: FC<Props> = (props: Props) => {
         searchingKeyword={searchingKeyword}
         sort={sort}
         order={order}
-        searchResultCount={searchResultCount || 0}
         appContainer={props.appContainer}
         onSearchInvoked={onSearchInvoked}
-        onClickSelectAllCheckbox={toggleAllCheckBox}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={actionToAllPagesButtonHandler}
         onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
         excludeUserPages={excludeUserPages}
         excludeTrashPages={excludeTrashPages}
         onChangeSortInvoked={onChangeSortInvoked}
-        actionIconAndText={props.actionIconAndText}
+        // eslint-disable-next-line max-len
+        actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
       >
       </SearchControl>
     );

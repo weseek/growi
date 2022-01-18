@@ -2,6 +2,7 @@ import React, {
   FC,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
 
@@ -13,19 +14,12 @@ type Props = {
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
 // 1. renderSearchForm
-// 2. icon migrate
-// 3.. onAfterSearchInvoked should be refactored in LegacyPage
-
+// 2. renderSort
+// 3. message props to SearchPageLayout.
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const actionIconAndText = (
-    <>
-      <i className="icon-trash"></i>
-      delete
-    </>
-  );
   // Delete modal
   const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
@@ -39,11 +33,33 @@ const SearchPage : FC<Props> = (props: Props) => {
     );
   };
 
+  const renderActionToPages = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
+    const actionIconAndText = (
+      <>
+        <i className="icon-trash"></i>
+        delete
+      </>
+    );
+    return (
+      <ActionToSelectedPageGroup
+        isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
+        selectAllCheckboxType={selectAllCheckboxType}
+        onClickActionAllButton={onClickActionAllButton}
+        onClickSelectAllCheckbox={onClickSelectAllCheckbox}
+        actionIconAndText={actionIconAndText}
+      >
+      </ActionToSelectedPageGroup>
+    );
+  };
+
   const renderSearchForm = () => {
-    // TODO
-    // Task : https://redmine.weseek.co.jp/issues/85465
     // return <SearchForm />
   };
+
+  const renderSortBar = () => {
+    // return <Sortcontrolr>;
+  };
+
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
     let hash = window.location.hash || '';
@@ -59,7 +75,7 @@ const SearchPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
-      actionIconAndText={actionIconAndText}
+      renderActionToPages={renderActionToPages}
     />
   );
 };

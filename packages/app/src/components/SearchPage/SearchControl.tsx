@@ -5,7 +5,7 @@ import AppContainer from '../../client/services/AppContainer';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 import {
-  CheckboxType, SORT_AXIS, SORT_ORDER,
+  SORT_AXIS, SORT_ORDER,
 } from '../../interfaces/search';
 
 type Props = {
@@ -13,17 +13,13 @@ type Props = {
   sort: SORT_AXIS,
   order: SORT_ORDER,
   appContainer: AppContainer,
-  searchResultCount: number,
-  selectAllCheckboxType: CheckboxType,
-  actionIconAndText: JSX.Element,
-  onClickActionButton?: () => void
-  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
   excludeTrashPages: boolean,
   onSearchInvoked: (data: {keyword: string}) => Promise<void>
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
+  actionToPageGroup: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -33,7 +29,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
-  const { searchResultCount } = props;
+  const { actionToPageGroup } = props;
 
   const switchExcludeUserPagesHandler = () => {
     if (props.onExcludeUserPagesSwitched != null) {
@@ -65,14 +61,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     if (props.onSearchInvoked != null) {
       props.onSearchInvoked({ keyword: props.searchingKeyword });
     }
-  };
-
-  const onClickCheckbox = () => {
-    if (props.onClickSelectAllCheckbox == null) {
-      return;
-    }
-    const next = props.selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
-    props.onClickSelectAllCheckbox(next);
   };
 
 
@@ -119,25 +107,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
-          <div className="d-flex align-items-center">
-            <input
-              id="check-all-pages"
-              type="checkbox"
-              name="check-all-pages"
-              className="grw-indeterminate-checkbox"
-              disabled={searchResultCount === 0}
-              onClick={onClickCheckbox}
-              checked={props.selectAllCheckboxType === CheckboxType.ALL_CHECKED}
-            />
-            <button
-              type="button"
-              className="btn text-danger font-weight-light p-0 ml-2"
-              disabled={props.selectAllCheckboxType === CheckboxType.NONE_CHECKED}
-              onClick={props.onClickActionButton}
-            >
-              {props.actionIconAndText}
-            </button>
-          </div>
+          {actionToPageGroup}
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
