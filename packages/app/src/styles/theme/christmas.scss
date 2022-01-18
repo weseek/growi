@@ -64,7 +64,7 @@ html[dark] {
   $bgcolor-list: transparent;
   // $color-list-hover: $color-reversal;
   $color-list-active: $themelight;
-  // $bgcolor-list-active:;
+  $bgcolor-list-active: $themecolor;
 
   // Navbar
   $bgcolor-navbar: $themecolor;
@@ -195,7 +195,7 @@ html[dark] {
         $color-list-hover,
         $bgcolor-list-hover,
         $color-list-active,
-        $bgcolor-list-active,
+        $bgcolor-list-hover,
         $gray-400
       );
     }
