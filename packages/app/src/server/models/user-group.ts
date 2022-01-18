@@ -123,4 +123,12 @@ schema.statics.findGroupsWithDescendantsRecursively = async function(groups, des
   return this.findGroupsWithDescendantsRecursively(nextGroups, descendants.concat(nextGroups));
 };
 
+schema.statics.findGroupsWithDescendantsById = async function(groupId) {
+  const root = await this.findOne({ _id: groupId });
+  if (root == null) {
+    throw Error('The root user group does not exist');
+  }
+  return this.findGroupsWithDescendantsRecursively([root]);
+};
+
 export default getOrCreateModel<UserGroupDocument, UserGroupModel>('UserGroup', schema);

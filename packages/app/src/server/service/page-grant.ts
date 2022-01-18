@@ -20,8 +20,8 @@ type ComparableTarget = {
 type ComparableAncestor = {
   grant: number,
   grantedUserIds: ObjectId[],
-  applicableUserIds: ObjectId[],
-  applicableGroupIds: ObjectId[],
+  applicableUserIds?: ObjectId[],
+  applicableGroupIds?: ObjectId[],
 };
 
 type ComparableDescendants = {
@@ -78,6 +78,10 @@ class PageGrantService {
     }
     // GRANT_USER_GROUP
     if (ancestor.grant === Page.GRANT_USER_GROUP) {
+      if (ancestor.applicableGroupIds == null || ancestor.applicableUserIds == null) {
+        throw Error('applicableGroupIds and applicableUserIds are not specified');
+      }
+
       if (target.grant === Page.GRANT_PUBLIC) {
         return false;
       }
@@ -134,14 +138,10 @@ class PageGrantService {
   }
 
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, hasChild: boolean,
+      grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
-    if (hasChild) {
-      const root = await UserGroup.findOne({ _id: grantedGroupId });
-      if (root == null) {
-        throw Error('The userGroup to compare does not exist');
-      }
-      const applicableGroupIds = await UserGroup.findGroupsWithDescendantsRecursively(root);
+    if (includeApplicable) {
+      const applicableGroupIds = await UserGroup.findGroupsWithDescendantsById(grantedGroupId);
 
       return {
         grant,
@@ -167,7 +167,8 @@ class PageGrantService {
     const Page = mongoose.model('Page') as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-    let ancestorUsers: ObjectId[] = [];
+    let applicableUserIds: ObjectId[] | undefined;
+    let applicableGroupIds: ObjectId[] | undefined;
 
     /*
      * make granted users list of ancestor's
@@ -183,19 +184,19 @@ class PageGrantService {
       throw Error('testAncestor must exist');
     }
 
-    if (testAncestor.grant === Page.GRANT_PUBLIC) {
-      ancestorUsers = [];
-    }
-    else if (testAncestor.grant === Page.GRANT_USER_GROUP) {
+    if (testAncestor.grant === Page.GRANT_USER_GROUP) {
       // make a set of all users
-      const ancestorsGrantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
-      ancestorUsers = Array.from(new Set(ancestorsGrantedRelations.map(r => r.relatedUser))) as ObjectId[];
-    }
-    else if (testAncestor.grant === Page.GRANT_OWNER) {
-      ancestorUsers = testAncestor.grantedUsers;
+      const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
+      applicableGroupIds = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
+      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectId[];
     }
 
-    return ancestorUsers;
+    return {
+      grant: testAncestor.grant,
+      grantedUserIds: testAncestor.grantedUsers,
+      applicableUserIds,
+      applicableGroupIds,
+    };
   }
 
   /**
@@ -205,7 +206,6 @@ class PageGrantService {
    */
   private async generateComparableDescendants(targetPath: string): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as PageModel;
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     /*
      * make granted users list of descendant's
@@ -218,7 +218,6 @@ class PageGrantService {
       .exec();
 
     let grantedUsersOfGrantOwner: ObjectId[] = []; // users of GRANT_OWNER
-    const grantedUsersOfGrantUserGroup: ObjectId[] = []; // users of GRANT_GROUP
     const grantedGroups: ObjectId[] = [];
     descendants.forEach((d) => {
       if (d.grantedUsers != null) {
@@ -229,17 +228,18 @@ class PageGrantService {
       }
     });
 
-    const uniqueGrantedGroups = removeDuplicates(grantedGroups);
-    const grantedRelations = await UserGroupRelation.find({ relatedGroup: { $in: uniqueGrantedGroups } }, { _id: 0, relatedUser: 1 });
-    grantedRelations.forEach(r => grantedUsersOfGrantUserGroup.push(r.relatedUser));
-    return removeDuplicates([...grantedUsersOfGrantOwner, ...grantedUsersOfGrantUserGroup]);
+    const descendantGroupIds = removeDuplicates(grantedGroups);
+    return {
+      grantedUserIds: grantedUsersOfGrantOwner,
+      descendantGroupIds,
+    };
   }
 
   /**
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
    * @returns Promise<boolean>
    */
-  async isGrantNormalized(targetPath: string, user, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
+  async isGrantNormalized(targetPath: string, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
