@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import {
-  UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem,
+  Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
 import toastr from 'toastr';
@@ -24,6 +24,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     page, isEnableActions, onClickDeleteButton, isDeletable,
   } = props;
   const { t } = useTranslation('');
+  const [isOpen, setIsOpen] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
 
   const deleteButtonHandler = () => {
@@ -31,7 +32,6 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
       onClickDeleteButton(page._id);
     }
   };
-
 
 
   const bookmarkToggleHandler = (async() => {
@@ -49,9 +49,12 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     return <></>;
   }
 
+  const dropdownToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <UncontrolledDropdown>
+    <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
@@ -114,7 +117,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
       </DropdownMenu>
 
 
-    </UncontrolledDropdown>
+    </Dropdown>
   );
 
 };
