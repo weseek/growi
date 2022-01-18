@@ -51,6 +51,7 @@ type Props = {
   onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
   actionIconAndText: JSX.Element
+  query?: string,
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -65,7 +66,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [searchingKeyword, setSearchingKeyword] = useState<string>(decodeURI(query.q) || '');
+  const [searchingKeyword, setSearchingKeyword] = useState<string>(props.query != null ? props.query : decodeURI(query.q) || '');
   const [currentSearchedKeyword, setSearchedKeyword] = useState<string>('');
   // should be <[IPageSearchResultData] | []> but gives lint errors.
   const [searchResults, setSearchResults] = useState<any>([]);

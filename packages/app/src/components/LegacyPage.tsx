@@ -46,8 +46,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
-    // TODO
-    // Task : https://redmine.weseek.co.jp/issues/85465
+    // Do nothing
   };
 
 
@@ -56,6 +55,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
       actionIconAndText={actionIconAndText}
+      query="[nq:PrivateLegacyPages]"
     />
   );
 };
