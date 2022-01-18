@@ -463,7 +463,8 @@
     "dont_ask_again": "不要再问"
   },
   "modal_migrate":{
-    "migrating_page": "Migrating page"
+    "migrating_page": "Migrating page",
+    "migrate_recursively": "Migrate child pages recursively"
   },
   "link_edit": {
     "edit_link": "Edit Link",

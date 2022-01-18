@@ -1,8 +1,9 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useCallback } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 export type IPageForPageDeleteModal = {
   pageId: string,
@@ -16,20 +17,44 @@ type Props = {
   pages: IPageForPageDeleteModal[],
   onClose?: () => void,
 }
-// TODO : migration modal : https://redmine.weseek.co.jp/issues/84858
 const PageMigrateModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
     isOpen, onClose, pages,
   } = props;
 
+  const [isMigrateRecursively, setIsDeleteRecursively] = useState(true);
+  const [errs, setErrs] = useState(null);
+
   const migratePage = async() => {
+    // TODO : https://redmine.weseek.co.jp/issues/84857
     alert('Migrate page run!');
   };
 
   const migrateButtonHandler = async() => {
     migratePage();
   };
+
+  const chnageIsMigrateRecursivelyHandler = useCallback(() => {
+    setIsDeleteRecursively(prev => !prev);
+  }, [setIsDeleteRecursively]);
+
+  const renderMigrateRecursivelyForm = useCallback(() => {
+    return (
+      <div className="custom-control custom-checkbox custom-checkbox-warning">
+        <input
+          className="custom-control-input"
+          id="deleteRecursively"
+          type="checkbox"
+          checked={isMigrateRecursively}
+          onChange={chnageIsMigrateRecursivelyHandler}
+        />
+        <label className="custom-control-label" htmlFor="deleteRecursively">
+          { t('modal_migrate.migrate_recursively') }
+        </label>
+      </div>
+    );
+  }, [chnageIsMigrateRecursivelyHandler, isMigrateRecursively]);
 
 
   return (
@@ -49,9 +74,13 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })}
         </div>
+        {renderMigrateRecursivelyForm()}
       </ModalBody>
       <ModalFooter>
-
+        <ApiErrorMessageList errs={errs} />
+        <button type="button" className="btn btn-primary" onClick={migrateButtonHandler}>
+          { t('modal_migrate.migrating_page') }
+        </button>
       </ModalFooter>
     </Modal>
   );

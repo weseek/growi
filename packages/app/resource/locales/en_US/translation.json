@@ -485,7 +485,8 @@
     "dont_ask_again": "Don't ask again"
   },
   "modal_migrate":{
-    "migrating_page": "Migrating page"
+    "migrating_page": "Migrating page",
+    "migrate_recursively": "Migrate child pages recursively"
   },
   "link_edit": {
     "edit_link": "Edit Link",
