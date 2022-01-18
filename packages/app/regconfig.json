@@ -11,8 +11,7 @@
   "plugins": {
     "reg-keygen-git-hash-plugin": true,
     "reg-notify-github-plugin": {
-      "prComment": true,
-      "prCommentBehavior": "default",
+      "prCommentBehavior": "new",
       "setCommitStatus": false,
       "clientId": "$REG_NOTIFY_GITHUB_PLUGIN_CLIENTID"
     },
