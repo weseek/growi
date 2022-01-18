@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
-import { generateGrantCondition } from '~/server/models/page';
+import { generateGrantCondition, collectAncestorPaths } from '~/server/models/page';
 
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
@@ -1290,10 +1290,11 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
-  // update descendantCount of all pages that are ancestors of path by passed count
+  // update descendantCount of all pages that are ancestors of a provided path by count
   async updateDescendantCountOfAncestors(path = '/', count = 0) {
     const Page = this.crowi.model('Page');
-    await Page.recountDescendantCountOfAncestors(path, count);
+    const ancestors = collectAncestorPaths(path);
+    await Page.recountDescendantCountOfPathsByCount(ancestors, count);
   }
 
 }
