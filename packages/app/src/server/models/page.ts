@@ -396,8 +396,8 @@ export default (crowi: Crowi): any => {
     }
 
     /*
-      * UserGroup & Owner validation
-      */
+     * UserGroup & Owner validation
+     */
     let isGrantNormalized = false;
     try {
       isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId);
