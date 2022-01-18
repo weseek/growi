@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import SearchResultListItem from './SearchResultListItem';
+import SearchResultListItem from '../Page/PageListItem';
 import PaginationWrapper from '../PaginationWrapper';
 import { IPageSearchResultData } from '../../interfaces/search';
 
@@ -42,6 +42,9 @@ const SearchResultList: FC<Props> = (props:Props) => {
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
             onClickDeleteButton={props.onClickDeleteButton}
+            showCheckbox
+            changeBgColorOnSelected
+            showPageUpdatedTime={false}
           />
         );
       })}
