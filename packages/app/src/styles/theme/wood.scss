@@ -88,7 +88,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Sidebar
-  $bgcolor-sidebar: transparent;
+  $bgcolor-sidebar: $themecolor;
   // Sidebar contents
   $color-sidebar-context: #9d7406;
   $bgcolor-sidebar-context: transparent;
