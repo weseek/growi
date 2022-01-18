@@ -12,7 +12,6 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
@@ -21,7 +20,6 @@ import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
 import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mlu from './MarkdownLinkUtil';
@@ -30,6 +28,7 @@ import mdu from './MarkdownDrawioUtil';
 import geu from './GridEditorUtil';
 import GridEditModal from './GridEditModal';
 import LinkEditModal from './LinkEditModal';
+import EmojiPickerModal from './EmojiPickerModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -121,6 +120,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
+    this.emojiPickerModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -172,7 +172,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper();
     this.setState({ isEnabledEmojiAutoComplete: true });
     this.initializeTextlint();
   }
@@ -568,10 +567,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.updateCheatsheetStates(null, value);
     this.searchEmojiPattern();
-    // Emoji AutoComplete
-    if (this.state.isEnabledEmojiAutoComplete) {
-      this.emojiAutoCompleteHelper.showHint(editor);
-    }
   }
 
   /**
@@ -995,10 +990,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
-        {/* Todo: Show emoji-mart picker */}
-        {/* <Picker
-          set="apple"
-        /> */}
+        <EmojiPickerModal
+          ref={this.emojiPickerModal}
+        />
+
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
