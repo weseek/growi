@@ -1290,6 +1290,12 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
+  // update descendantCount of all pages that are ancestors of path by passed count
+  async updateDescendantCountOfAncestors(path = '/', count = 0) {
+    const Page = this.crowi.model('Page');
+    await Page.recountDescendantCountOfAncestors(path, count);
+  }
+
 }
 
 module.exports = PageService;
