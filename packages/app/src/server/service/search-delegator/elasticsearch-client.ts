@@ -12,6 +12,8 @@ import {
   SearchResponse,
   ValidateQueryResponse,
   ClusterHealthResponse,
+  IndicesStatsResponse,
+  ReindexResponse,
 } from './elasticsearch-client-types';
 
 type ApiResponse<T = any, C = any> = ES6ApiResponse<T, C> | ES7ApiResponse<T, C>
@@ -52,10 +54,14 @@ export default class ElasticsearchClient {
       this.client instanceof ES6Client ? this.client.indices.existsAlias(params) : this.client.indices.existsAlias(params),
     putAlias: (params: ES6RequestParams.IndicesPutAlias & ES7RequestParams.IndicesPutAlias) =>
       this.client instanceof ES6Client ? this.client.indices.putAlias(params) : this.client.indices.putAlias(params),
+    getAlias: (params: ES6RequestParams.IndicesGetAlias & ES7RequestParams.IndicesGetAlias) =>
+      this.client instanceof ES6Client ? this.client.indices.getAlias(params) : this.client.indices.getAlias(params),
     updateAliases: (params: ES6RequestParams.IndicesUpdateAliases & ES7RequestParams.IndicesUpdateAliases) =>
       this.client instanceof ES6Client ? this.client.indices.updateAliases(params) : this.client.indices.updateAliases(params),
     validateQuery: (params: ES6RequestParams.IndicesValidateQuery & ES7RequestParams.IndicesValidateQuery): Promise<ApiResponse<ValidateQueryResponse>> =>
       this.client instanceof ES6Client ? this.client.indices.validateQuery(params) : this.client.indices.validateQuery(params),
+    stats: (params: ES6RequestParams.IndicesStats & ES7RequestParams.IndicesStats): Promise<ApiResponse<IndicesStatsResponse>> =>
+      this.client instanceof ES6Client ? this.client.indices.stats(params) : this.client.indices.stats(params),
   }
 
   nodes = {
@@ -64,6 +70,10 @@ export default class ElasticsearchClient {
 
   ping() {
     return this.client instanceof ES6Client ? this.client.ping() : this.client.ping();
+  }
+
+  reindex(params: ES6RequestParams.Reindex & ES7RequestParams.Reindex): Promise<ApiResponse<ReindexResponse>> {
+    return this.client instanceof ES6Client ? this.client.reindex(params) : this.client.reindex(params);
   }
 
   search(params: ES6RequestParams.Search & ES7RequestParams.Search): Promise<ApiResponse<SearchResponse>> {

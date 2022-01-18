@@ -81,3 +81,33 @@ export type ClusterHealthResponse = {
   task_max_waiting_in_queue_millis: number,
   active_shards_percent_as_number: number
 }
+
+export type IndicesStatsResponse = {
+  _shards: {
+    total: number,
+    successful: number,
+    failed: number
+  },
+  _all: {
+    primaries: any,
+    total: any
+  },
+  indices: any
+}
+
+export type ReindexResponse = {
+  took: number,
+  timed_out: boolean,
+  total: number,
+  updated: number,
+  created: number,
+  deleted: number,
+  batches: number,
+  noops: number,
+  version_conflicts: number,
+  retries: number,
+  throttled_millis: number,
+  requests_per_second: number,
+  throttled_until_millis: number,
+  failures: any | null
+}
