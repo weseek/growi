@@ -1038,10 +1038,11 @@ class PageService {
     // update descendantCount of all public pages
     try {
       await this.updateSelfAndDescendantCount('/');
-      logger.info('Successfully updated all descendantCountd of public pages.');
+      logger.info('Successfully updated all descendantCount of public pages.');
     }
     catch (err) {
-      logger.error('updating descendantCount on public pages failed.', err);
+      logger.error('Failed updating descendantCount of public pages.', err);
+      throw err;
     }
 
     await this._setIsV5CompatibleTrue();
@@ -1285,6 +1286,8 @@ class PageService {
     aggregatedPages
       .pipe(createBatchStream(BATCH_SIZE))
       .pipe(recountWriteStream);
+
+    await streamToPromise(recountWriteStream);
   }
 
 }
