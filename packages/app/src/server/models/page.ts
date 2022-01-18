@@ -398,12 +398,18 @@ export default (crowi: Crowi): any => {
       throw new Error('Cannot create new page to existed path');
     }
 
+    // find existing empty page at target path
+    const emptyPage = await Page.findOne({ path, isEmpty: true });
+
     /*
      * UserGroup & Owner validation
      */
     let isGrantNormalized = false;
     try {
-      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId);
+      // It must check descendants as well if emptyTarget is not null
+      const shouldCheckDescendants = emptyPage != null;
+
+      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
     }
     catch (err) {
       logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -418,7 +424,6 @@ export default (crowi: Crowi): any => {
      * update empty page if exists, if not, create a new page
      */
     let page;
-    const emptyPage = await Page.findOne({ path, isEmpty: true });
     if (emptyPage != null) {
       page = emptyPage;
       page.isEmpty = false;

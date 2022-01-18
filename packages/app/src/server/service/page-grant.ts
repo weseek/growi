@@ -242,19 +242,14 @@ class PageGrantService {
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
    * @returns Promise<boolean>
    */
-  async isGrantNormalized(targetPath: string, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId): Promise<boolean> {
+  async isGrantNormalized(targetPath: string, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, shouldCheckDescendants = false): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
 
-    const Page = mongoose.model('Page') as PageModel;
-
     const comparableAncestor = await this.generateComparableAncestor(targetPath);
 
-    // find existing empty page at target path
-    // it will be unnecessary to check the descendant if emptyTarget is null
-    const emptyTarget = await Page.findOne({ path: targetPath });
-    if (emptyTarget == null) { // checking the parent is enough
+    if (!shouldCheckDescendants) { // checking the parent is enough
       const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
       return this.processValidation(comparableTarget, comparableAncestor);
     }
