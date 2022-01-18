@@ -72,7 +72,7 @@ class PageGrantService {
         return false;
       }
 
-      if (ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) {
+      if (!ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) {
         return false;
       }
     }
