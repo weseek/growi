@@ -243,6 +243,18 @@ describe('PageGrantService', () => {
 
       expect(result).toBe(false);
     });
+
+    test('Should return false when Ancestor: owned by GroupChild, Target: GroupParent', async() => {
+      const targetPath = `${pageE3GroupChildPath}/NEW`;
+      const grant = Page.GRANT_USER_GROUP;
+      const grantedUserIds = null;
+      const grantedGroupId = groupParent._id;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+
+      expect(result).toBe(false);
+    });
   });
 
   describe('Test isGrantNormalized method with shouldCheckDescendants true', () => {

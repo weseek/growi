@@ -12,7 +12,7 @@ type ObjectId = mongoose.Types.ObjectId;
 
 type ComparableTarget = {
   grant: number,
-  grantedUserIds: ObjectId[],
+  grantedUserIds?: ObjectId[],
   grantedGroupId: ObjectId,
   applicableUserIds?: ObjectId[],
   applicableGroupIds?: ObjectId[],
@@ -70,6 +70,10 @@ class PageGrantService {
     }
     // GRANT_OWNER
     else if (ancestor.grant === Page.GRANT_OWNER) {
+      if (target.grantedUserIds?.length !== 1) {
+        throw Error('grantedUserIds must have one user');
+      }
+
       if (target.grant !== Page.GRANT_OWNER) { // only GRANT_OWNER page can exist under GRANT_OWNER page
         return false;
       }
@@ -89,6 +93,10 @@ class PageGrantService {
       }
 
       if (target.grant === Page.GRANT_OWNER) {
+        if (target.grantedUserIds?.length !== 1) {
+          throw Error('grantedUserIds must have one user');
+        }
+
         if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
           return false;
         }
@@ -114,6 +122,10 @@ class PageGrantService {
     }
     // GRANT_OWNER
     else if (target.grant === Page.GRANT_OWNER) {
+      if (target.grantedUserIds?.length !== 1) {
+        throw Error('grantedUserIds must have one user');
+      }
+
       if (descendants.isPublicExist) { // public page must not exist under GRANT_OWNER page
         return false;
       }
@@ -151,7 +163,7 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as PageModel;
@@ -276,7 +288,9 @@ class PageGrantService {
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
    * @returns Promise<boolean>
    */
-  async isGrantNormalized(targetPath: string, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, shouldCheckDescendants = false): Promise<boolean> {
+  async isGrantNormalized(
+      targetPath: string, grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, shouldCheckDescendants = false,
+  ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
