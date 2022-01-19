@@ -3,6 +3,9 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 
+import * as loginFormValidator from '../middlewares/login-form-validator';
+import * as registerFormValidator from '../middlewares/register-form-validator';
+
 import * as forgotPassword from './forgot-password';
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
@@ -33,7 +36,6 @@ module.exports = function(crowi, app) {
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
-  const form = require('../form');
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
@@ -60,10 +62,10 @@ module.exports = function(crowi, app) {
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
-  app.post('/login'                   , applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation(), csrf, login.invited);
+  app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation(), csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
+  app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation(), csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
   app.get('/logout'                   , applicationInstalled, logout.logout);
 
@@ -74,7 +76,7 @@ module.exports = function(crowi, app) {
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , applicationNotInstalled , form.register , csrf, installer.install);
+    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation(), csrf, installer.install);
     return;
   }
 
@@ -91,7 +93,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation() , loginPassport.testLdapCredentials);
 
   // security admin
   app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
