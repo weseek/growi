@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
-import { generateGrantCondition, collectAncestorPaths } from '~/server/models/page';
+import { generateGrantCondition } from '~/server/models/page';
 
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
@@ -17,7 +17,9 @@ const debug = require('debug')('growi:services:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
-const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
+const {
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+} = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;

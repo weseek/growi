@@ -13,7 +13,7 @@ import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 
@@ -94,19 +94,6 @@ const schema = new Schema<PageDocument, PageModel>({
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
-
-
-/*
- * Methods
- */
-export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return ancestorPaths;
-
-  const parentPath = nodePath.dirname(path);
-  ancestorPaths.push(parentPath);
-  return collectAncestorPaths(parentPath, ancestorPaths);
-};
-
 
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
