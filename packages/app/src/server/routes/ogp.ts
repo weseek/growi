@@ -2,22 +2,32 @@ import {
   Request, Response,
 } from 'express';
 import path from 'path';
-import { promises as fsPromise } from 'fs';
-
+import * as fs from 'fs';
+import { DevidedPagePath } from '@growi/core';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
-import { generatePageTitleFromPagePath } from '~/utils/page-title-utils';
-import ApiResponse from '../util/apiResponse';
 import { convertStreamToBuffer } from '../util/stream';
-import { isUserImageGravatar, isUserImageAttachment, isUserImageDefault } from '../util/user-image-url';
 
 const logger = loggerFactory('growi:routes:ogp');
 
-const DEFAULT_IMAGE_PATH = 'public/images/icons/user.svg';
+const DEFAULT_USER_IMAGE_URL = '/images/icons/user.svg';
+const DEFAULT_USER_IMAGE_PATH = `public/${DEFAULT_USER_IMAGE_URL}`;
+
 
 module.exports = function(crowi) {
   const { configManager, aclService } = crowi;
+
+  // default user image is cached
+  let bufferedUserImage: Buffer = Buffer.from('');
+  fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
+    if (err) throw err;
+    bufferedUserImage = buffer;
+  });
+
+  const isUserImageAttachment = (userImageUrlCached: string): boolean => {
+    return /^\/attachment\/.+/.test(userImageUrlCached);
+  };
 
   const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
   if (ogpUri == null) {
@@ -40,28 +50,22 @@ module.exports = function(crowi) {
         return res.status(400).send('page id is not included in the parameter');
       }
 
-
       let user;
       let pageTitle: string;
-      let bufferedUserImage: Buffer = Buffer.from('');
 
       try {
         const Page = crowi.model('Page');
         const page = await Page.findByIdAndViewer(pageId);
 
-        if (page.status !== 'published' || (page.grant !== 1 && page.grant !== 2)) {
+        if (page == null || page.status !== Page.STATUS_PUBLISHED || (page.grant !== Page.GRANT_PUBLIC && page.grant !== Page.GRANT_RESTRICTED)) {
           return res.status(400).send('the page does not e xist');
         }
 
         const User = crowi.model('User');
         user = await User.findById(page.creator._id.toString());
 
-        if (isUserImageGravatar(user.imageUrlCached)) {
-          bufferedUserImage = (await axios.get(
-            user.imageUrlCached, {
-              responseType: 'arraybuffer',
-            },
-          )).data;
+        if (user.imageUrlCached === DEFAULT_USER_IMAGE_URL) {
+          // use cached default user bufferedUserImage
         }
         else if (isUserImageAttachment(user.imageUrlCached)) {
           const { fileUploadService } = crowi;
@@ -70,23 +74,22 @@ module.exports = function(crowi) {
           const fileStream = await fileUploadService.findDeliveryFile(attachment);
           bufferedUserImage = await convertStreamToBuffer(fileStream);
         }
-        else if (isUserImageDefault(user.imageUrlCached)) {
-          bufferedUserImage = await fsPromise.readFile(
-            path.join(projectRoot, DEFAULT_IMAGE_PATH),
-          );
-        }
         else {
-          throw new Error('imageUrlCached is invalid value');
+          bufferedUserImage = (await axios.get(
+            user.imageUrlCached, {
+              responseType: 'arraybuffer',
+            },
+          )).data;
         }
 
-        pageTitle = generatePageTitleFromPagePath(page.path);
+        // todo: consider page title
+        pageTitle = (new DevidedPagePath(page.path)).latter;
 
       }
       catch (err) {
         logger.error(err);
-        return res.status(500).send(ApiResponse.error(`error: ${err}`));
+        return res.status(500).send(`error: ${err}`);
       }
-
 
       let result;
       try {
@@ -104,7 +107,7 @@ module.exports = function(crowi) {
       }
       catch (err) {
         logger.error(err);
-        return res.status(500).send(ApiResponse.error(`error: ${err}`));
+        return res.status(500).send(`error: ${err}`);
       }
 
       res.writeHead(200, {
