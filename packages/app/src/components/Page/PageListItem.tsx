@@ -13,7 +13,7 @@ const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
-  isSelected: boolean, // is item selected
+  isSelected: boolean, // is item selected(focused)
   isChecked: boolean, // is checkbox of item checked
   isEnableActions: boolean,
   shortBody?: string
