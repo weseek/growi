@@ -23,8 +23,8 @@ module.exports = (crowi) => {
   const validator = {
     password: [
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 6 })
-        .withMessage('password must be at least 6 characters long'),
+        .isLength({ min: 8 })
+        .withMessage('password must be at least 8 characters long'),
       // checking if password confirmation matches password
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
@@ -81,7 +81,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', injectResetOrderByTokenMiddleware, async(req, res) => {
+  router.put('/', /* injectResetOrderByTokenMiddleware, */ async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
