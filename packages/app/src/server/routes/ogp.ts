@@ -14,7 +14,7 @@ import { convertStreamToBuffer } from '../util/stream';
 const logger = loggerFactory('growi:routes:ogp');
 
 const DEFAULT_USER_IMAGE_URL = '/images/icons/user.svg';
-const DEFAULT_USER_IMAGE_PATH = `public/${DEFAULT_USER_IMAGE_URL}`;
+const DEFAULT_USER_IMAGE_PATH = `public${DEFAULT_USER_IMAGE_URL}`;
 
 
 module.exports = function(crowi) {
