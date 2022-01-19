@@ -292,10 +292,10 @@ class PageGrantService {
     const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
     // GRANT_OWNER group
     const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
-    const grantedUserIds: ObjectId[] = grantOwnerResult != null ? grantOwnerResult.grantedUsersSet : null;
+    const grantedUserIds: ObjectId[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
     const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
-    const grantedGroupIds = grantUserGroupResult != null ? grantUserGroupResult.grantedGroupSet : null;
+    const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
 
     return {
       isPublicExist,
