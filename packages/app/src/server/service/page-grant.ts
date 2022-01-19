@@ -67,7 +67,7 @@ class PageGrantService {
       // do nothing
     }
     // GRANT_OWNER
-    if (ancestor.grant === Page.GRANT_OWNER) {
+    else if (ancestor.grant === Page.GRANT_OWNER) {
       if (target.grant !== Page.GRANT_OWNER) {
         return false;
       }
@@ -77,7 +77,7 @@ class PageGrantService {
       }
     }
     // GRANT_USER_GROUP
-    if (ancestor.grant === Page.GRANT_USER_GROUP) {
+    else if (ancestor.grant === Page.GRANT_USER_GROUP) {
       if (ancestor.applicableGroupIds == null || ancestor.applicableUserIds == null) {
         throw Error('applicableGroupIds and applicableUserIds are not specified');
       }
@@ -111,7 +111,7 @@ class PageGrantService {
       // do nothing
     }
     // GRANT_OWNER
-    if (target.grant === Page.GRANT_OWNER) {
+    else if (target.grant === Page.GRANT_OWNER) {
       if (descendants.descendantGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) {
         return false;
       }
@@ -121,7 +121,7 @@ class PageGrantService {
       }
     }
     // GRANT_USER_GROUP
-    if (target.grant === Page.GRANT_USER_GROUP) {
+    else if (target.grant === Page.GRANT_USER_GROUP) {
       if (target.applicableGroupIds == null) {
         throw Error('applicableGroupIds must not be null');
       }
