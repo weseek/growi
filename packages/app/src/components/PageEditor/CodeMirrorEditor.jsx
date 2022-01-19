@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
-import { Button } from 'reactstrap';
+import { Button, Modal } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
 
@@ -13,6 +13,7 @@ import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
+import { Picker } from 'emoji-mart';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -28,7 +29,6 @@ import mdu from './MarkdownDrawioUtil';
 import geu from './GridEditorUtil';
 import GridEditModal from './GridEditModal';
 import LinkEditModal from './LinkEditModal';
-import EmojiPickerModal from './EmojiPickerModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
@@ -120,7 +120,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    this.emojiPickerModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -155,6 +154,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
   }
 
   init() {
@@ -662,6 +662,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  renderEmojiPickerModal() {
+    return (
+      <Modal isOpen={this.state.isEmojiPickerShown} toggle={this.toggleEmojiPicker}>
+        <Picker set="apple" autoFocus="true" style={{ width: '100%', position: 'absolute' }} />
+      </Modal>
+    );
+  }
+
   /**
    * return a function to replace a selected range with prefix + selection + suffix
    *
@@ -752,6 +760,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     lineNumbers.forEach((lineNumber) => {
       editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
     });
+  }
+
+  toggleEmojiPicker() {
+    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
 
   onSaveForDrawio(drawioData) {
@@ -909,8 +921,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
     if (sc.findPrevious()) {
       const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+      // Add delay between search emoji and display emoji picker
+      setTimeout(() => {
+        this.setState({ isEmojiPickerShown: isInputtingEmoji });
+      }, 300);
       // return if it isn't inputting emoji
-      this.isEmojiPickerShown = isInputtingEmoji;
       if (!isInputtingEmoji) {
         return;
       }
@@ -990,13 +1005,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
-        <EmojiPickerModal
-          ref={this.emojiPickerModal}
-        />
-
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
+        { this.renderEmojiPickerModal() }
 
         <GridEditModal
           ref={this.gridEditModal}

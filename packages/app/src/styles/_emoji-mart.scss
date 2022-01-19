@@ -1,0 +1,13 @@
+// Override emoji-mart style
+nav.emoji-mart-anchors {
+  display: flex !important;
+}
+
+button.emoji-mart-anchors {
+  display: inline-block !important;
+  color: #858585 !important;
+}
+
+:root button {
+  overflow: hidden;
+}
