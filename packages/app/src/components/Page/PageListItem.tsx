@@ -17,6 +17,7 @@ type Props = {
   isChecked: boolean,
   isEnableActions: boolean,
   shortBody?: string
+  showCheckbox: boolean,
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -25,7 +26,7 @@ type Props = {
 const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody, showCheckbox,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -72,19 +73,21 @@ const PageListItem: FC<Props> = memo((props:Props) => {
       >
         <div className="d-flex h-100">
           {/* checkbox */}
-          <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
-            <input
-              className="form-check-input position-relative m-0"
-              type="checkbox"
-              id="flexCheckDefault"
-              onChange={() => {
-                if (onClickCheckbox != null) {
-                  onClickCheckbox(pageData._id);
-                }
-              }}
-              checked={isChecked}
-            />
-          </div>
+          {showCheckbox && (
+            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
+              <input
+                className="form-check-input position-relative m-0"
+                type="checkbox"
+                id="flexCheckDefault"
+                onChange={() => {
+                  if (onClickCheckbox != null) {
+                    onClickCheckbox(pageData._id);
+                  }
+                }}
+                checked={isChecked}
+              />
+            </div>
+          )}
           <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
             <h6 className="mb-1 py-1">
