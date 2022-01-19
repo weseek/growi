@@ -81,7 +81,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', apiLimiter, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
