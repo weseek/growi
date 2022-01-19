@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
-  getParentIdAndFillAncestors(path: string): Promise<string | null>
+  getParentIdAndFillAncestors(path: string, parent: (PageDocument & { _id: any }) | null): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -158,10 +158,9 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
  *   - second  update ancestor pages' parent
  *   - finally return the target's parent page id
  */
-schema.statics.getParentIdAndFillAncestors = async function(path: string): Promise<Schema.Types.ObjectId> {
+schema.statics.getParentIdAndFillAncestors = async function(path: string, parent: PageDocument | null): Promise<Schema.Types.ObjectId> {
   const parentPath = nodePath.dirname(path);
 
-  const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
   if (parent != null) {
     return parent._id;
   }
@@ -184,7 +183,7 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string): Promi
     .exec();
 
   const ancestorsMap = new Map(); // Map<path, _id>
-  ancestors.forEach(page => ancestorsMap.set(page.path, page._id));
+  ancestors.forEach(page => !ancestorsMap.has(page.path) && ancestorsMap.set(page.path, page._id)); // the earlier element should be the true ancestor
 
   // bulkWrite to update ancestors
   const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
@@ -341,11 +340,121 @@ schema.statics.findAncestorsChildrenByPathAndViewer = async function(path: strin
   return pathToChildren;
 };
 
+/*
+ * Utils from obsolete-page.js
+ */
+async function pushRevision(pageData, newRevision, user) {
+  await newRevision.save();
+
+  pageData.revision = newRevision;
+  pageData.lastUpdateUser = user;
+  pageData.updatedAt = Date.now();
+
+  return pageData.save();
+}
+
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
 export default (crowi: Crowi): any => {
+  let pageEvent;
+  if (crowi != null) {
+    pageEvent = crowi.event('page');
+  }
+
+  schema.statics.create = async function(path, body, user, options = {}) {
+    if (crowi.pageGrantService == null || crowi.configManager == null) {
+      throw Error('Crowi is not setup');
+    }
+
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible) {
+      // v4 compatible process
+      return this.createV4(path, body, user, options);
+    }
+
+    const Page = this;
+    const Revision = crowi.model('Revision');
+    const {
+      format = 'markdown', redirectTo, grantedUserIds = [user._id], grantUserGroupId,
+    } = options;
+
+    // sanitize path
+    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
+
+    let grant = options.grant;
+    // force public
+    if (isTopPage(path)) {
+      grant = GRANT_PUBLIC;
+    }
+
+    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
+    }
+
+    // find existing empty page at target path
+    const emptyPage = await Page.findOne({ path, isEmpty: true });
+
+    /*
+     * UserGroup & Owner validation
+     */
+    let isGrantNormalized = false;
+    try {
+      // It must check descendants as well if emptyTarget is not null
+      const shouldCheckDescendants = emptyPage != null;
+
+      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+    }
+    catch (err) {
+      logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
+      throw err;
+    }
+    if (!isGrantNormalized) {
+      throw Error('The selected grant or grantedGroup is not assignable to this page.');
+    }
+
+
+    /*
+     * update empty page if exists, if not, create a new page
+     */
+    let page;
+    if (emptyPage != null) {
+      page = emptyPage;
+      page.isEmpty = false;
+    }
+    else {
+      page = new Page();
+    }
+
+    let parentId: string | null = null;
+    const parentPath = nodePath.dirname(path);
+    const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
+    if (!isTopPage(path)) {
+      parentId = await Page.getParentIdAndFillAncestors(path, parent);
+    }
+
+    page.path = path;
+    page.creator = user;
+    page.lastUpdateUser = user;
+    page.redirectTo = redirectTo;
+    page.status = STATUS_PUBLISHED;
+    page.parent = options.grant === GRANT_RESTRICTED ? null : parentId;
+
+    page.applyScope(user, grant, grantUserGroupId);
+
+    let savedPage = await page.save();
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    const revision = await pushRevision(savedPage, newRevision, user);
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
+
+    pageEvent.emit('create', savedPage, user);
+
+    return savedPage;
+  };
+
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };

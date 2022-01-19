@@ -367,7 +367,7 @@ class PageService {
     const options = { page };
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
+    options.grantedUserIds = page.grantedUsers;
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
