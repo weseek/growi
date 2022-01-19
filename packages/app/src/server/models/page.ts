@@ -151,10 +151,6 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
   }
 };
 
-schema.statics.findOneParentByParentPath = async function(parentPath: string): Promise<PageDocument | null> {
-  return this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
-};
-
 /*
  * Find the parent and update if the parent exists.
  * If not,
@@ -434,7 +430,7 @@ export default (crowi: Crowi): any => {
 
     let parentId: string | null = null;
     const parentPath = nodePath.dirname(path);
-    const parent = await this.findOneParentByParentPath(parentPath);
+    const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
     if (!isTopPage(path)) {
       parentId = await Page.getParentIdAndFillAncestors(path, parent);
     }
