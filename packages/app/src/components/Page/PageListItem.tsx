@@ -17,8 +17,7 @@ type Props = {
   isChecked: boolean, // is checkbox of item checked
   isEnableActions: boolean,
   shortBody?: string
-  showCheckbox: boolean,
-  showPageUpdatedTime: boolean, // whether to show page's updated time at the top-right corner of item
+  showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -28,7 +27,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
-    showCheckbox, showPageUpdatedTime,
+    showPageUpdatedTime,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -76,17 +75,13 @@ const PageListItem: FC<Props> = memo((props:Props) => {
       >
         <div className="d-flex h-100">
           {/* checkbox */}
-          {showCheckbox && (
+          {onClickCheckbox != null && (
             <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
               <input
                 className="form-check-input position-relative m-0"
                 type="checkbox"
                 id="flexCheckDefault"
-                onChange={() => {
-                  if (onClickCheckbox != null) {
-                    onClickCheckbox(pageData._id);
-                  }
-                }}
+                onChange={() => { onClickCheckbox(pageData._id) }}
                 checked={isChecked}
               />
             </div>
