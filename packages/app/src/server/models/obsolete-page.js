@@ -1033,7 +1033,7 @@ export const getPageSchema = (crowi) => {
     return savedPage;
   };
 
-  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+  pageSchema.statics.updatePageV4 = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
