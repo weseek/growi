@@ -36,7 +36,7 @@ class PageService {
     this.initPageEvent();
   }
 
-  initPageEvent() {
+  private initPageEvent() {
     // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
@@ -157,7 +157,7 @@ class PageService {
    * @param {object} redirectToPagePathMapping
    * @param {array} pagePaths
    */
-  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
+  private prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
     const pagePath = redirectToPagePathMapping[redirectTo];
 
     if (pagePath == null) {
@@ -173,7 +173,7 @@ class PageService {
    * @param {string} targetPagePath
    * @param {User} viewer
    */
-  async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+  private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -228,7 +228,7 @@ class PageService {
   }
 
 
-  async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
 
     const pageCollection = mongoose.connection.collection('pages');
@@ -284,7 +284,7 @@ class PageService {
   /**
    * Create rename stream
    */
-  async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -325,7 +325,7 @@ class PageService {
   }
 
 
-  async deleteCompletelyOperation(pageIds, pagePaths) {
+  private async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
@@ -401,7 +401,7 @@ class PageService {
    * Receive the object with oldPageId and newPageId and duplicate the tags from oldPage to newPage
    * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
-  async duplicateTags(pageIdMapping) {
+  private async duplicateTags(pageIdMapping) {
     const PageTagRelation = mongoose.model('PageTagRelation');
 
     // convert pageId from string to ObjectId
@@ -434,7 +434,7 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -481,7 +481,7 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  async duplicateDescendantsWithStream(page, newPagePath, user) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
@@ -558,7 +558,7 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteDescendants(pages, user) {
+  private async deleteDescendants(pages, user) {
     const Page = this.crowi.model('Page');
 
     const pageCollection = mongoose.connection.collection('pages');
@@ -615,7 +615,7 @@ class PageService {
   /**
    * Create delete stream
    */
-  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -648,7 +648,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async deleteMultipleCompletely(pages, user, options = {}) {
+  private async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
 
@@ -680,10 +680,14 @@ class PageService {
     return;
   }
 
+  async emptyTrashPage(user, options = {}) {
+    return this.deleteCompletelyDescendantsWithStream({ path: '/trash' }, user, options);
+  }
+
   /**
    * Create delete completely stream
    */
-  async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -715,7 +719,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedDescendants(pages, user) {
+  private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
@@ -805,7 +809,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -920,13 +924,7 @@ class PageService {
     return shortBodiesMap;
   }
 
-  validateCrowi() {
-    if (this.crowi == null) {
-      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
-    }
-  }
-
-  createAndSendNotifications = async function(page, user, action) {
+  private async createAndSendNotifications(page, user, action) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
@@ -946,7 +944,7 @@ class PageService {
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
-  };
+  }
 
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');
