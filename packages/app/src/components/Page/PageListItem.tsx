@@ -13,12 +13,12 @@ const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
-  isSelected: boolean,
-  isChecked: boolean,
+  isSelected: boolean, // is item selected
+  isChecked: boolean, // is checkbox of item checked
   isEnableActions: boolean,
   shortBody?: string
   showCheckbox: boolean,
-  showPageUpdatedTime: boolean,
+  showPageUpdatedTime: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -63,6 +63,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
     }
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
+  // background color of list item changes when class "active" exists under 'grw-search-result-item'
   const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
   return (
     <li
