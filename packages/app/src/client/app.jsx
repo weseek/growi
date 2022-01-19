@@ -42,6 +42,7 @@ import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
+import DuplicatingPage from '../components/DuplicatingPage';
 
 import ContextExtractor from '~/client/services/ContextExtractor';
 import PageContainer from '~/client/services/PageContainer';
@@ -87,6 +88,9 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
+
+  'duplicating-page': <DuplicatingPage crowi={appContainer} />,
+
   'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
