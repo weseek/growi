@@ -1,24 +1,21 @@
 import { pagePathUtils } from '@growi/core';
+import mongoose from 'mongoose';
+import escapeStringRegexp from 'escape-string-regexp';
+import streamToPromise from 'stream-to-promise';
+import pathlib from 'path';
+import { Writable } from 'stream';
 
+import { serializePageSecurely } from '../models/serializers/page-serializer';
+import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { generateGrantCondition } from '~/server/models/page';
-
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-
 import ActivityDefine from '../util/activityDefine';
 
-const mongoose = require('mongoose');
-const escapeStringRegexp = require('escape-string-regexp');
-const streamToPromise = require('stream-to-promise');
-const pathlib = require('path');
+const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
-const debug = require('debug')('growi:services:page');
-const { Writable } = require('stream');
-const { createBatchStream } = require('~/server/util/batch-stream');
-
 const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
 
