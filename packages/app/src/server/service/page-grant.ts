@@ -277,7 +277,7 @@ class PageGrantService {
       { // remove duplicates from pipeline
         $group: {
           _id: '$grant',
-          grantedGroupSet: { $addToSet: '$grantGroup' },
+          grantedGroupSet: { $addToSet: '$grantedGroup' },
           grantedUsersSet: { $addToSet: '$grantedUsers' },
         },
       },
