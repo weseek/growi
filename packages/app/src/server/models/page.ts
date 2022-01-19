@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
-  getParentIdAndFillAncestors(path: string, parent: PageDocument): Promise<string | null>
+  getParentIdAndFillAncestors(path: string, parent: (PageDocument & { _id: any }) | null): Promise<string | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -149,10 +149,6 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
     logger.error('Failed to insert empty pages.', err);
     throw err;
   }
-};
-
-schema.statics.findOneParentByParentPath = async function(parentPath: string): Promise<PageDocument | null> {
-  return this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
 };
 
 /*
@@ -435,7 +431,7 @@ export default (crowi: Crowi): any => {
 
     let parentId: string | null = null;
     const parentPath = nodePath.dirname(path);
-    const parent = await this.findOneParentByParentPath(parentPath);
+    const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
     if (!isTopPage(path)) {
       parentId = await Page.getParentIdAndFillAncestors(path, parent);
     }
