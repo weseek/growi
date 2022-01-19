@@ -22,7 +22,7 @@ type Props = {
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-const SearchResultListItem: FC<Props> = memo((props:Props) => {
+const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
@@ -138,4 +138,4 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
   );
 });
 
-export default SearchResultListItem;
+export default PageListItem;
