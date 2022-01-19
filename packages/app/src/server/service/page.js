@@ -1296,7 +1296,7 @@ class PageService {
   async updateDescendantCountOfAncestors(path = '/', count = 0) {
     const Page = this.crowi.model('Page');
     const ancestors = collectAncestorPaths(path);
-    await Page.recountDescendantCountOfPathsByCount(ancestors, count);
+    await Page.incrementDescendantCountOfPaths(ancestors, count);
   }
 
 }

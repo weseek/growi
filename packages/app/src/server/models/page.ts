@@ -362,14 +362,17 @@ schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(
   ];
 };
 
-// update descendantCount of pages with provided paths by count
-schema.statics.recountDescendantCountOfPathsByCount = async function(paths:string[], count: number):Promise<void> {
+/**
+ * add/subtract descendantCount of pages with provided paths by increment.
+ * increment can be negative number
+ */
+schema.statics.incrementDescendantCountOfPaths = async function(paths:string[], increment: number):Promise<void> {
   const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
   const operations = pages.map((page) => {
     return {
       updateOne: {
         filter: { path: page.path },
-        update: { descendantCount: page.descendantCount + count },
+        update: { descendantCount: page.descendantCount + increment },
       },
     };
   });
