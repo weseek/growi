@@ -259,8 +259,8 @@ class PageGrantService {
     const pathWithTrailingSlash = addTrailingSlash(targetPath);
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
-    const descendants = await Page.aggregate([
-      {
+    const result = await Page.aggregate([
+      { // match to descendants excluding empty pages
         $match: {
           path: new RegExp(`^${startsPattern}`),
           isEmpty: { $ne: true },
@@ -274,37 +274,32 @@ class PageGrantService {
           grantedGroup: 1,
         },
       },
-      {
+      { // remove duplicates from pipeline
         $group: {
-          _id: {
-            grantedGroup: '$grantedGroup',
-            grantedUsers: '$grantedUsers',
-          },
-          grant: 1,
-          grantedUsers: 1,
-          grantedGroup: 1,
+          _id: '$grant',
+          grantedGroupSet: { $addToSet: '$grantGroup' },
+          grantedUsersSet: { $addToSet: '$grantedUsers' },
+        },
+      },
+      { // flatten granted user set
+        $unwind: {
+          path: '$grantedUsersSet',
         },
       },
     ]);
-    console.log('かしか', descendants);
 
-    const isPublicExist = descendants.some(d => d.grant === Page.GRANT_PUBLIC);
+    // GRANT_PUBLIC group
+    const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
+    // GRANT_OWNER group
+    const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
+    const grantedUserIds: ObjectId[] = grantOwnerResult != null ? grantOwnerResult.grantedUsersSet : null;
+    // GRANT_USER_GROUP group
+    const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
+    const grantedGroupIds = grantUserGroupResult != null ? grantUserGroupResult.grantedGroupSet : null;
 
-    let grantedUsersOfGrantOwner: ObjectId[] = []; // users of GRANT_OWNER
-    const grantedGroups: ObjectId[] = [];
-    descendants.forEach((d) => {
-      if (d.grantedUsers != null) {
-        grantedUsersOfGrantOwner = grantedUsersOfGrantOwner.concat(d.grantedUsers);
-      }
-      if (d.grantedGroup != null) {
-        grantedGroups.push(d.grantedGroup);
-      }
-    });
-
-    const grantedGroupIds = removeDuplicates(grantedGroups);
     return {
       isPublicExist,
-      grantedUserIds: grantedUsersOfGrantOwner,
+      grantedUserIds,
       grantedGroupIds,
     };
   }
