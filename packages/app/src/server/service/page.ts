@@ -8,7 +8,7 @@ import { Writable } from 'stream';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { generateGrantCondition } from '~/server/models/page';
+import { generateGrantCondition, PageModel } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 
@@ -20,6 +20,12 @@ const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
 const BULK_REINDEX_SIZE = 100;
 
 class PageService {
+
+  crowi: any;
+
+  pageEvent: any;
+
+  tagEvent: any;
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -114,7 +120,7 @@ class PageService {
       page = await Page.findByPathAndViewer(path, user);
     }
 
-    const result = {};
+    const result: any = {};
 
     if (page == null) {
       const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
@@ -151,7 +157,7 @@ class PageService {
    * @param {object} redirectToPagePathMapping
    * @param {array} pagePaths
    */
-  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths = []) {
+  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
     const pagePath = redirectToPagePathMapping[redirectTo];
 
     if (pagePath == null) {
@@ -199,7 +205,7 @@ class PageService {
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
-    const update = {};
+    const update: any = {};
     // update Page
     update.path = newPagePath;
     if (updateMetadata) {
@@ -254,7 +260,7 @@ class PageService {
           _id: revisionId, path: page.path, body: `redirect ${newPagePath}`, author: user._id, format: 'markdown',
         });
       }
-      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } });
     });
 
     try {
@@ -268,7 +274,7 @@ class PageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to rename pages: ', err);
+        throw new Error(`Failed to rename pages: ${err}`);
       }
     }
 
@@ -338,7 +344,7 @@ class PageService {
       redirectToPagePathMapping[page.redirectTo] = page.path;
     });
 
-    const redirectedFromPagePaths = [];
+    const redirectedFromPagePaths: any[] = [];
     pagePaths.forEach((pagePath) => {
       redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
     });
@@ -356,12 +362,12 @@ class PageService {
 
   async duplicate(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = mongoose.model('PageTagRelation');
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
-    const options = { page };
+    const options: any = { page };
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUserIds = page.grantedUsers;
@@ -400,7 +406,7 @@ class PageService {
 
     // convert pageId from string to ObjectId
     const pageIds = Object.keys(pageIdMapping);
-    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: mongoose.Types.ObjectId(pageId) } }) };
+    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: new mongoose.Types.ObjectId(pageId) } }) };
 
     const pagesAssociatedWithTag = await PageTagRelation.aggregate([
       {
@@ -414,7 +420,7 @@ class PageService {
       },
     ]);
 
-    const newPageTagRelation = [];
+    const newPageTagRelation: any[] = [];
     pagesAssociatedWithTag.forEach(({ _id, relatedPages }) => {
       // relatedPages
       relatedPages.forEach((pageId) => {
@@ -443,8 +449,8 @@ class PageService {
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
-    const newPages = [];
-    const newRevisions = [];
+    const newPages: any[] = [];
+    const newRevisions: any[] = [];
 
     pages.forEach((page) => {
       const newPageId = new mongoose.Types.ObjectId();
@@ -561,7 +567,7 @@ class PageService {
     const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
     const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-    const newPagesForRedirect = [];
+    const newPagesForRedirect: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
@@ -598,7 +604,7 @@ class PageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to revert pages: ', err);
+        throw new Error(`Failed to revert pages: ${err}`);
       }
     }
     finally {
@@ -744,7 +750,7 @@ class PageService {
           path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
         },
       });
-      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
+      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } });
     });
 
     try {
@@ -754,7 +760,7 @@ class PageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to revert pages: ', err);
+        throw new Error(`Failed to revert pages: ${err}`);
       }
     }
   }
@@ -836,7 +842,6 @@ class PageService {
     const Page = this.crowi.model('Page');
     const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
-    let operationsToPublicize;
     switch (action) {
       case 'public':
         await Page.publicizePages(pages);
@@ -858,7 +863,7 @@ class PageService {
     // aggregation options
     const viewerCondition = await generateGrantCondition(user, null);
     const filterByIds = {
-      _id: { $in: pageIds.map(id => mongoose.Types.ObjectId(id)) },
+      _id: { $in: pageIds.map(id => new mongoose.Types.ObjectId(id)) },
     };
 
     let pages;
@@ -1039,7 +1044,7 @@ class PageService {
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
   async _generateRegExpsByPageIds(pageIds) {
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
 
     let result;
     try {
@@ -1077,7 +1082,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     // generate filter
-    let filter = {
+    let filter: any = {
       parent: null,
       path: { $ne: '/' },
     };
@@ -1154,7 +1159,7 @@ class PageService {
             parentPath = parentPath.replace(bracket, `\\${bracket}`);
           });
 
-          const filter = {
+          const filter: any = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
             path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
