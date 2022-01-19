@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
 import { PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
 import { isIncludesObjectId, removeDuplicates, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
+const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
 type ObjectId = mongoose.Types.ObjectId;
@@ -254,14 +256,37 @@ class PageGrantService {
     /*
      * make granted users list of descendant's
      */
-    // find all descendants excluding empty pages
-    const builderForDescendants = new PageQueryBuilder(Page.find({}, {
-      _id: 0, grant: 1, grantedUsers: 1, grantedGroup: 1,
-    }), false);
-    const descendants = await builderForDescendants
-      .addConditionToListOnlyDescendants(targetPath)
-      .query
-      .exec();
+    const pathWithTrailingSlash = addTrailingSlash(targetPath);
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    const descendants = await Page.aggregate([
+      {
+        $match: {
+          path: new RegExp(`^${startsPattern}`),
+          isEmpty: { $ne: true },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          grant: 1,
+          grantedUsers: 1,
+          grantedGroup: 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            grantedGroup: '$grantedGroup',
+            grantedUsers: '$grantedUsers',
+          },
+          grant: 1,
+          grantedUsers: 1,
+          grantedGroup: 1,
+        },
+      },
+    ]);
+    console.log('かしか', descendants);
 
     const isPublicExist = descendants.some(d => d.grant === Page.GRANT_PUBLIC);
 
