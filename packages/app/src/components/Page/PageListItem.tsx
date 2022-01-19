@@ -18,6 +18,7 @@ type Props = {
   isEnableActions: boolean,
   shortBody?: string
   showCheckbox: boolean,
+  showPageUpdatedTime: boolean,
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -26,7 +27,8 @@ type Props = {
 const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody, showCheckbox,
+    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    showCheckbox, showPageUpdatedTime,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -90,11 +92,12 @@ const PageListItem: FC<Props> = memo((props:Props) => {
           )}
           <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
-            <h6 className="mb-1 py-1">
-              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
+            <h6 className="mb-1 py-1 d-flex">
+              <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
                 <i className="icon-fw icon-home"></i>
                 {pagePathElem}
               </a>
+              {showPageUpdatedTime && (<p className="ml-auto mb-0 mr-4 list-item-updated-time">Updated: 0000/00/00 00:00:00</p>)}
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}

@@ -43,6 +43,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             isSelected={page.pageData._id === focusedPageId || false}
             onClickDeleteButton={props.onClickDeleteButton}
             showCheckbox
+            showPageUpdatedTime={false}
           />
         );
       })}
