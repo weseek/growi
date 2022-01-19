@@ -370,8 +370,8 @@ export default (crowi: Crowi): any => {
     }
 
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    // v4 compatible process
     if (!isV5Compatible) {
-      // v4 compatible process
       return this.createV4(path, body, user, options);
     }
 
@@ -380,28 +380,27 @@ export default (crowi: Crowi): any => {
     const {
       format = 'markdown', redirectTo, grantUserGroupId,
     } = options;
+    let grant = options.grant;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
-
-    let grant = options.grant;
+    // throw if exists
+    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
+    }
     // force public
     if (isTopPage(path)) {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = (await this.count({ path, isEmpty: false })) > 0; // not validate empty page
-    if (isExist) {
-      throw new Error('Cannot create new page to existed path');
-    }
-
-    // find existing empty page at target path
+    // find an existing empty page
     const emptyPage = await Page.findOne({ path, isEmpty: true });
 
+    /*
+     * UserGroup & Owner validation
+     */
     if (grant !== GRANT_RESTRICTED) {
-      /*
-       * UserGroup & Owner validation
-       */
       let isGrantNormalized = false;
       try {
         // It must check descendants as well if emptyTarget is not null
@@ -443,11 +442,22 @@ export default (crowi: Crowi): any => {
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
-    page.parent = options.grant === GRANT_RESTRICTED ? null : parentId;
+
+    // set parent to null when GRANT_RESTRICTED
+    if (grant === GRANT_RESTRICTED) {
+      page.parent = null;
+    }
+    else {
+      page.parent = parentId;
+    }
 
     page.applyScope(user, grant, grantUserGroupId);
 
     let savedPage = await page.save();
+
+    /*
+     * After save
+     */
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
     savedPage = await this.findByPath(revision.path);
