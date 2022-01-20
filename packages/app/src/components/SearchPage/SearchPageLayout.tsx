@@ -1,11 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SearchResultMeta } from '~/interfaces/search';
 
-type SearchResultMeta = {
-  took?: number,
-  total?: number,
-  results?: number
-}
 
 type Props = {
   SearchControl: React.FunctionComponent,

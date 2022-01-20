@@ -2,26 +2,24 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
-import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
-import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
+import {
+  SORT_AXIS, SORT_ORDER,
+} from '../../interfaces/search';
 
 type Props = {
   searchingKeyword: string,
   sort: SORT_AXIS,
   order: SORT_ORDER,
   appContainer: AppContainer,
-  searchResultCount: number,
-  selectAllCheckboxType: CheckboxType,
-  onClickDeleteAllButton?: () => void
-  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
   excludeUserPages: boolean,
   excludeTrashPages: boolean,
-  onSearchInvoked: (data: {keyword: string}) => boolean,
+  onSearchInvoked: (data: {keyword: string}) => Promise<void>
   onExcludeUserPagesSwitched?: () => void,
   onExcludeTrashPagesSwitched?: () => void,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
+  actionToPageGroup: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -31,7 +29,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
-  const { searchResultCount } = props;
+  const { actionToPageGroup } = props;
 
   const switchExcludeUserPagesHandler = () => {
     if (props.onExcludeUserPagesSwitched != null) {
@@ -64,6 +62,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       props.onSearchInvoked({ keyword: props.searchingKeyword });
     }
   };
+
 
   const rednerSearchOptionModal = () => {
     return (
@@ -108,13 +107,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
-          {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
-          <DeleteSelectedPageGroup
-            isSelectAllCheckboxDisabled={searchResultCount === 0}
-            selectAllCheckboxType={props.selectAllCheckboxType}
-            onClickDeleteAllButton={props.onClickDeleteAllButton}
-            onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-          />
+          {actionToPageGroup}
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
@@ -135,6 +128,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <div className="card-body">
               <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                 <input
+                  checked={!props.excludeUserPages}
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckDefault"
@@ -152,6 +146,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   type="checkbox"
                   id="flexCheckChecked"
                   onClick={switchExcludeTrashPagesHandler}
+                  checked={!props.excludeTrashPages}
                 />
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
