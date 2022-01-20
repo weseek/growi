@@ -13,6 +13,5 @@ export const checkAndUpdateImageUrlCached = (useSWRNext) => {
       }
     }
     return swrNext;
-
   };
 };
