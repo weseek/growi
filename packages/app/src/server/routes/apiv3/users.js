@@ -743,7 +743,7 @@ module.exports = (crowi) => {
   router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     try {
       const userIds = req.body.userIds;
-      const users = await User.find({ _id: { $in: userIds } });
+      const users = await User.find({ _id: { $in: userIds }, imageUrlCached: null });
       const requests = await Promise.all(users.map(async(user) => {
         return {
           updateOne: {
