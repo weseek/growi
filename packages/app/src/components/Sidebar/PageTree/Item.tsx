@@ -215,9 +215,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
-      <div
+      <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
       >
         <button
           type="button"
@@ -243,7 +243,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
           />
         </div>
-      </div>
+      </li>
 
       {isEnableActions && (
         <ClosableTextInput

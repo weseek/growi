@@ -5,7 +5,7 @@ $grw-pagetree-item-padding-left: 10px;
 .grw-pagetree {
   min-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
-  .grw-pagetree-item {
+  .list-group-item {
     &:hover {
       .grw-pagetree-control {
         display: flex !important;
@@ -47,54 +47,57 @@ $grw-pagetree-item-padding-left: 10px;
 
   // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
   > .grw-pagetree-item-container {
+    > .list-group-item {
+      padding-left: 0;
+    }
     > .grw-pagetree-item-children {
       > .grw-pagetree-item-container {
-        > .grw-pagetree-item {
+        > .list-group-item {
           padding-left: $grw-pagetree-item-padding-left;
         }
         > .grw-pagetree-item-children {
           > .grw-pagetree-item-container {
-            > .grw-pagetree-item {
+            > .list-group-item {
               padding-left: $grw-pagetree-item-padding-left * 2;
             }
             > .grw-pagetree-item-children {
               > .grw-pagetree-item-container {
-                > .grw-pagetree-item {
+                > .list-group-item {
                   padding-left: $grw-pagetree-item-padding-left * 3;
                 }
                 > .grw-pagetree-item-children {
                   > .grw-pagetree-item-container {
-                    > .grw-pagetree-item {
+                    > .list-group-item {
                       padding-left: $grw-pagetree-item-padding-left * 4;
                     }
                     > .grw-pagetree-item-children {
                       > .grw-pagetree-item-container {
-                        > .grw-pagetree-item {
+                        > .list-group-item {
                           padding-left: $grw-pagetree-item-padding-left * 5;
                         }
                         > .grw-pagetree-item-children {
                           > .grw-pagetree-item-container {
-                            > .grw-pagetree-item {
+                            > .list-group-item {
                               padding-left: $grw-pagetree-item-padding-left * 6;
                             }
                             > .grw-pagetree-item-children {
                               > .grw-pagetree-item-container {
-                                > .grw-pagetree-item {
+                                > .list-group-item {
                                   padding-left: $grw-pagetree-item-padding-left * 7;
                                 }
                                 > .grw-pagetree-item-children {
                                   > .grw-pagetree-item-container {
-                                    > .grw-pagetree-item {
+                                    > .list-group-item {
                                       padding-left: $grw-pagetree-item-padding-left * 8;
                                     }
                                     > .grw-pagetree-item-children {
                                       > .grw-pagetree-item-container {
-                                        > .grw-pagetree-item {
+                                        > .list-group-item {
                                           padding-left: $grw-pagetree-item-padding-left * 9;
                                         }
                                         .grw-pagetree-item-children {
                                           > .grw-pagetree-item-container {
-                                            > .grw-pagetree-item {
+                                            > .list-group-item {
                                               padding-left: $grw-pagetree-item-padding-left * 10;
                                             }
                                           }
