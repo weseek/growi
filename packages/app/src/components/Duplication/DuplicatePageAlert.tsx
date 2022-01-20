@@ -7,7 +7,7 @@ type Props = {
   path: string,
 }
 
-const DuplicationAlert:FC<Props> = (props:Props) => {
+const DuplicatePageAlert:FC<Props> = (props:Props) => {
   const { path } = props;
   const devidedPath = new DevidedPagePath(path);
 
@@ -23,4 +23,4 @@ const DuplicationAlert:FC<Props> = (props:Props) => {
   );
 };
 
-export default DuplicationAlert;
+export default DuplicatePageAlert;
