@@ -31,7 +31,6 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
-// import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 // Textlint
 window.JSHINT = JSHINT;
