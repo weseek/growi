@@ -64,9 +64,14 @@ class LegacyRevisionRenderer extends React.PureComponent {
    */
   getHighlightedBody(body, keywords) {
     const normalizedKeywordsArray = [];
-    // !!TODO!!: care double quote
     // !!TODO!!: add test code
-    keywords.replace(/"/g, '').split(/[\u{20}\u{3000}]/u).forEach((keyword, i) => { // split by both full-with and half-width space
+    // Separate keywords
+    // - Surrounded by double quotation
+    // - Split by both full-width and half-width spaces
+    const splitKwds = [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)];
+    splitKwds.forEach((kwd, i) => {
+      // Removes double quotes from keywords and trims start and end blanks
+      const keyword = kwd.replace(/"/g, '').trim();
       if (keyword === '') {
         return;
       }
