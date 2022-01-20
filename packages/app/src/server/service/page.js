@@ -1039,7 +1039,7 @@ class PageService {
 
     // update descendantCount of all public pages
     try {
-      await this.updateSelfAndDescendantCount('/');
+      await this.updateDescendantCountOfSelfAndDescendants('/');
       logger.info('Successfully updated all descendantCount of public pages.');
     }
     catch (err) {
