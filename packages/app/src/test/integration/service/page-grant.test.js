@@ -37,6 +37,11 @@ describe('PageGrantService', () => {
   const emptyPagePath2 = '/E2';
   const emptyPagePath3 = '/E3';
 
+  let pageRootPublic;
+  let pageRootGroupParent;
+  const pageRootPublicPath = '/Public';
+  const pageRootGroupParentPath = '/GroupParent';
+
   let pageE1Public;
   let pageE2User1;
   let pageE3GroupParent;
@@ -132,6 +137,24 @@ describe('PageGrantService', () => {
         isEmpty: true,
         parent: rootPage._id,
       },
+      {
+        path: pageRootPublicPath,
+        grant: Page.GRANT_PUBLIC,
+        creator: user1,
+        lastUpdateUser: user1,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: pageRootGroupParentPath,
+        grant: Page.GRANT_USER_GROUP,
+        creator: user1,
+        lastUpdateUser: user1,
+        grantedUsers: null,
+        grantedGroup: groupParent._id,
+        parent: rootPage._id,
+      },
     ]);
 
     emptyPage1 = await Page.findOne({ path: emptyPagePath1 });
@@ -196,6 +219,54 @@ describe('PageGrantService', () => {
   });
 
   describe('Test isGrantNormalized method with shouldCheckDescendants false', () => {
+    test('Should return true when Ancestor: root, Target: public', async() => {
+      const targetPath = '/NEW';
+      const grant = Page.GRANT_PUBLIC;
+      const grantedUserIds = null;
+      const grantedGroupId = null;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+
+      expect(result).toBe(true);
+    });
+
+    test('Should return true when Ancestor: root, Target: GroupParent', async() => {
+      const targetPath = '/NEW_GroupParent';
+      const grant = Page.GRANT_USER_GROUP;
+      const grantedUserIds = null;
+      const grantedGroupId = groupParent._id;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+
+      expect(result).toBe(true);
+    });
+
+    test('Should return true when Ancestor: under-root public, Target: public', async() => {
+      const targetPath = `${pageRootPublicPath}/NEW`;
+      const grant = Page.GRANT_PUBLIC;
+      const grantedUserIds = null;
+      const grantedGroupId = null;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+
+      expect(result).toBe(true);
+    });
+
+    test('Should return true when Ancestor: under-root GroupParent, Target: GroupParent', async() => {
+      const targetPath = `${pageRootGroupParentPath}/NEW`;
+      const grant = Page.GRANT_USER_GROUP;
+      const grantedUserIds = null;
+      const grantedGroupId = groupParent._id;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+
+      expect(result).toBe(true);
+    });
+
     test('Should return true when Ancestor: public, Target: public', async() => {
       const targetPath = `${pageE1PublicPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
@@ -213,18 +284,6 @@ describe('PageGrantService', () => {
       const grant = Page.GRANT_OWNER;
       const grantedUserIds = [user1._id];
       const grantedGroupId = null;
-      const shouldCheckDescendants = false;
-
-      const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
-
-      expect(result).toBe(true);
-    });
-
-    test('Should return true when Ancestor: owned by GroupParent, Target: owned by GroupChild', async() => {
-      const targetPath = `${pageE3GroupParentPath}/NEW`;
-      const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
-      const grantedGroupId = groupParent._id;
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(targetPath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
