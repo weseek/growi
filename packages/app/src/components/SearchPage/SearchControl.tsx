@@ -26,9 +26,6 @@ type Props = {
 const SearchControl: FC <Props> = (props: Props) => {
 
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
-  // Temporaly workaround for lint error
-  // later needs to be fixed: SearchControl to typescript componet
-  const SearchPageFormTypeAny : any = SearchPageForm;
   const { t } = useTranslation('');
   const { actionToPageGroup } = props;
 
@@ -93,11 +90,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          {/* <SearchPageFormTypeAny
-            keyword={props.searchingKeyword}
-            appContainer={props.appContainer}
-            onSearchFormChanged={props.onSearchInvoked}
-          /> */}
           {props.searchForm}
         </div>
 

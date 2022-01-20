@@ -14,7 +14,6 @@ type Props = {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 1. renderSearchForm
 // 2. renderSort
 // 3. message props to SearchPageLayout.
 const SearchPage : FC<Props> = (props: Props) => {
@@ -58,7 +57,7 @@ const SearchPage : FC<Props> = (props: Props) => {
   };
 
   const renderSortBar = () => {
-    // return <Sortcontrolr>;
+  // return <Sortcontrolr>;
   };
 
 
