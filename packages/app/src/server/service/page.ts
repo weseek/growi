@@ -266,9 +266,6 @@ class PageService {
   }
 
   private async renamePageV4(page, newPagePath, user, options, isRecursively = false) {
-
-    console.log('かもーん', page, newPagePath, user, options, isRecursively);
-
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
     const path = page.path;
