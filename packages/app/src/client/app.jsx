@@ -42,7 +42,7 @@ import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
-import DuplicatingPage from '../components/DuplicatingPage';
+import DuplicatePage from '../components/DuplicatePage';
 
 import ContextExtractor from '~/client/services/ContextExtractor';
 import PageContainer from '~/client/services/PageContainer';
@@ -89,7 +89,7 @@ Object.assign(componentMappings, {
 
   'search-page': <SearchPage crowi={appContainer} />,
 
-  'duplicating-page': <DuplicatingPage crowi={appContainer} />,
+  'duplicate-page-list': <DuplicatePage crowi={appContainer} />,
 
   'all-in-app-notifications': <InAppNotificationPage />,
 

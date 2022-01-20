@@ -614,7 +614,7 @@ module.exports = function(crowi, app) {
 
     if (pages.length >= 2) {
       // pass only redirectFrom since it is not sure whether the query params are related to the pages
-      return res.render('duplication', { redirectFrom });
+      return res.render('duplicate-page-list', { redirectFrom });
     }
 
     if (pages.length === 1) {
