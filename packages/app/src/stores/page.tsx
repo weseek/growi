@@ -1,6 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
 
-import { Types } from 'mongoose';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
@@ -8,6 +7,7 @@ import { IPage, IPageInfo } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { useIsGuestUser } from './context';
+import { checkAndUpdateImageUrlCached } from './middlewares/user';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
@@ -63,11 +63,11 @@ export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRRespo
   );
 };
 
-// TODO: 85860
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageInfo, Error> => {
   return useSWR(
     ['/page/info', pageId],
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    { use: [checkAndUpdateImageUrlCached] },
   );
 };
