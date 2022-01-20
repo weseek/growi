@@ -159,7 +159,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);

@@ -1,16 +1,17 @@
 import React, { FC, useState } from 'react';
 
-import { Types } from 'mongoose';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
 import UserPictureList from './User/UserPictureList';
 import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
+import { useSWRxPageInfo } from '~/stores/page';
+import { useSWRxUsersList } from '~/stores/user';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
-  pageId: Types.ObjectId,
+  pageId: string,
 }
 
 const LikeButtons: FC<Props> = (props: Props) => {
@@ -21,14 +22,17 @@ const LikeButtons: FC<Props> = (props: Props) => {
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  // TODO: Get the following values in SWR
-  const isLiked = false;
-  const sumOfLikers = 0;
-  const likers = [];
+  const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
+  const isLiked = pageInfo?.isLiked ?? false;
+  const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
+  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
+  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
 
-  const togglePopover = () => {
-    setIsPopoverOpen(!isPopoverOpen);
-  };
+  // Put in a mixture of seenUserIds and likerIds data to make the cache work
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
+  const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
+
+  const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
   const handleClick = async() => {
     if (isGuestUser) {
@@ -36,7 +40,10 @@ const LikeButtons: FC<Props> = (props: Props) => {
     }
 
     try {
-      await apiv3Put('/page/likes', { pageId, bool: isLiked });
+      const res = await apiv3Put('/page/likes', { pageId, bool: !isLiked });
+      if (res) {
+        mutate();
+      }
     }
     catch (err) {
       toastError(err);
@@ -68,7 +75,7 @@ const LikeButtons: FC<Props> = (props: Props) => {
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet.')}
+            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet')}
           </div>
         </PopoverBody>
       </Popover>

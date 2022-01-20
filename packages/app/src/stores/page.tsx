@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
-import { IPage } from '~/interfaces/page';
+import { IPage, IPageInfo } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { useIsGuestUser } from './context';
@@ -50,14 +50,21 @@ export const useSWRxPageList = (
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxSubscriptionStatus = <Data, Error>(pageId: Types.ObjectId): SWRResponse<{status: boolean | null}, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-
-  const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
   return useSWR(
-    key,
+    isGuestUser === false ? ['/page/subscribe', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then((response) => {
       return {
         status: response.data.subscribing,
       };
     }),
+  );
+};
+
+// TODO: 85860
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageInfo, Error> => {
+  return useSWR(
+    ['/page/info', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
