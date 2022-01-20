@@ -56,6 +56,9 @@ type Props = {
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
   renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
+  renderSearchForm: (keyword, appContainer, onSearchInvoked) => React.FunctionComponent,
+  shouldExcludeUserPages: boolean,
+  shouldExcludeTrashPages : boolean,
   query?: string,
 };
 
@@ -88,8 +91,8 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [shortBodiesMap, setShortBodiesMap] = useState<Record<string, string> | null>(null);
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
-  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
-  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(true);
+  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(props.shouldExcludeUserPages);
+  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(props.shouldExcludeTrashPages);
   const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
@@ -343,6 +346,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onChangeSortInvoked={onChangeSortInvoked}
         // eslint-disable-next-line max-len
         actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
+        searchForm={props.renderSearchForm(searchingKeyword, props.appContainer, onSearchInvoked)}
       >
       </SearchControl>
     );

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
+import SearchPageForm from './SearchPage/SearchPageForm';
 
 
 type Props = {
@@ -52,8 +53,8 @@ const SearchPage : FC<Props> = (props: Props) => {
     );
   };
 
-  const renderSearchForm = () => {
-    // return <SearchForm />
+  const renderSearchForm = (keyword, appContainer, onSearchInvoked) => {
+    return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked}></SearchPageForm>;
   };
 
   const renderSortBar = () => {
@@ -76,6 +77,9 @@ const SearchPage : FC<Props> = (props: Props) => {
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
       renderActionToPages={renderActionToPages}
+      renderSearchForm={renderSearchForm}
+      shouldExcludeUserPages
+      shouldExcludeTrashPages
     />
   );
 };

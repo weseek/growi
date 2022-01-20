@@ -20,6 +20,7 @@ type Props = {
   onExcludeTrashPagesSwitched?: () => void,
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
   actionToPageGroup: React.ReactNode,
+  searchForm: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -92,11 +93,12 @@ const SearchControl: FC <Props> = (props: Props) => {
     <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchPageFormTypeAny
+          {/* <SearchPageFormTypeAny
             keyword={props.searchingKeyword}
             appContainer={props.appContainer}
             onSearchFormChanged={props.onSearchInvoked}
-          />
+          /> */}
+          {props.searchForm}
         </div>
 
         {/* sort option: show when screen is larger than lg */}
