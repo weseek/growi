@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
-  _getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
+  getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -203,18 +203,7 @@ schema.statics.replaceTargetEmptyPage = async function(exPage, pageToReplaceWith
  * @param path string
  * @returns Promise<PageDocument>
  */
-schema.statics.findOrCreateParent = async function(path: string): Promise<PageDocument> {
-  return this._getParentAndFillAncestors(path);
-};
-
-/*
- * Find the parent and update if the parent exists.
- * If not,
- *   - first   run createEmptyPagesByPaths with ancestor's paths to ensure all the ancestors exist
- *   - second  update ancestor pages' parent
- *   - finally return the target's parent page id
- */
-schema.statics._getParentAndFillAncestors = async function(path: string): Promise<PageDocument> {
+schema.statics.getParentAndFillAncestors = async function(path: string): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
   const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
   if (parent != null) {
@@ -580,7 +569,7 @@ export default (crowi: Crowi): any => {
     }
 
     let parentId: IObjectId | string | null = null;
-    const parent = await Page._getParentAndFillAncestors(path);
+    const parent = await Page.getParentAndFillAncestors(path);
     if (!isTopPage(path)) {
       parentId = parent._id;
     }

@@ -249,7 +249,7 @@ class PageService {
      */
     const update: Partial<IPage> = {};
     // find or create parent
-    const newParent = await Page.findOrCreateParent(newPagePath);
+    const newParent = await Page.getParentAndFillAncestors(newPagePath);
 
     // update Page
     update.path = newPagePath;
