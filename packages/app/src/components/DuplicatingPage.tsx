@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 import DuplicatingPageSubnavigation from './Duplication/DuplicatingPageSubNavigation';
+import DuplicatedAlert from './Duplication/DuplicationAlert';
 // import { useTranslation } from 'react-i18next';
 // import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 // import { toastSuccess, toastError } from '../client/util/apiNotification';
@@ -8,18 +9,18 @@ import DuplicatingPageSubnavigation from './Duplication/DuplicatingPageSubNaviga
 
 // }
 
-const DuplicatingPage: React.FC = (props) => {
+const DuplicatingPage: FC = (props) => {
   const newProps = {
-    pageId: '61e5964c4783fe61da0d5cdd',
-    path: '/Sandbox/Hoge',
+    pageId: '',
+    path: '/Sandbox',
   };
   return (
-    // add header
-    // add alert
-    // add page list
     <>
       <DuplicatingPageSubnavigation {...newProps} />
-      <div>Duplication Found</div>
+      <div className="duplicate-content">
+        <DuplicatedAlert path={newProps.path} />
+        {/* add page list */}
+      </div>
     </>
   );
 
