@@ -5,6 +5,10 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import { EditorMode } from '~/stores/ui';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -29,6 +33,29 @@ class TagLabels extends React.Component {
 
   closeEditorModal() {
     this.setState({ isTagEditModalShown: false });
+  }
+
+  async tagsUpdatedHandler(newTags) {
+    const {
+      appContainer, editorContainer, pageContainer, editorMode,
+    } = this.props;
+
+    const { pageId, revisionId } = pageContainer.state;
+    // It will not be reflected in the DB until the page is refreshed
+    if (editorMode === EditorMode.Editor) {
+      return editorContainer.setState({ tags: newTags });
+    }
+    try {
+      const { tags, savedPage } = await appContainer.apiPost('/tags.update', {
+        pageId, tags: newTags, revisionId,
+      });
+      editorContainer.setState({ tags });
+      pageContainer.updatePageMetaData(savedPage, savedPage.revision, tags);
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err, 'fail to update tags');
+    }
   }
 
 
@@ -66,12 +93,15 @@ class TagLabels extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
+const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer, EditorContainer, PageContainer]);
 
 TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorMode: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(String),
   tagsUpdateInvoked: PropTypes.func,
 };

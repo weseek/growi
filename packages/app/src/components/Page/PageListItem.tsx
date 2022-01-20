@@ -13,19 +13,21 @@ const { isTopPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
-  isSelected: boolean,
-  isChecked: boolean,
+  isSelected: boolean, // is item selected(focused)
+  isChecked: boolean, // is checkbox of item checked
   isEnableActions: boolean,
   shortBody?: string
+  showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-const SearchResultListItem: FC<Props> = memo((props:Props) => {
+const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    showPageUpdatedTime,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -60,6 +62,7 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
     }
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
+  // background color of list item changes when class "active" exists under 'grw-search-result-item'
   const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
   return (
     <li
@@ -72,26 +75,25 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
       >
         <div className="d-flex h-100">
           {/* checkbox */}
-          <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
-            <input
-              className="form-check-input position-relative m-0"
-              type="checkbox"
-              id="flexCheckDefault"
-              onChange={() => {
-                if (onClickCheckbox != null) {
-                  onClickCheckbox(pageData._id);
-                }
-              }}
-              checked={isChecked}
-            />
-          </div>
+          {onClickCheckbox != null && (
+            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
+              <input
+                className="form-check-input position-relative m-0"
+                type="checkbox"
+                id="flexCheckDefault"
+                onChange={() => { onClickCheckbox(pageData._id) }}
+                checked={isChecked}
+              />
+            </div>
+          )}
           <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
             {/* page path */}
-            <h6 className="mb-1 py-1">
-              <a href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
+            <h6 className="mb-1 py-1 d-flex">
+              <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
                 <i className="icon-fw icon-home"></i>
                 {pagePathElem}
               </a>
+              {showPageUpdatedTime && (<p className="ml-auto mb-0 mr-4 list-item-updated-time">Updated: 0000/00/00 00:00:00</p>)}
             </h6>
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
@@ -138,4 +140,4 @@ const SearchResultListItem: FC<Props> = memo((props:Props) => {
   );
 });
 
-export default SearchResultListItem;
+export default PageListItem;

@@ -1,12 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import {
-  UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem,
+  Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '~/interfaces/page';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/apiNotification';
+import { useSWRBookmarkInfo } from '~/stores/bookmark';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
@@ -21,14 +24,42 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     page, isEnableActions, onClickDeleteButton, isDeletable,
   } = props;
   const { t } = useTranslation('');
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
   const deleteButtonHandler = () => {
     if (onClickDeleteButton != null && page._id != null) {
       onClickDeleteButton(page._id);
     }
   };
+
+
+  const bookmarkToggleHandler = (async() => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
+      mutateBookmarkInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  });
+
+  const renderBookmarkText = () => {
+    if (bookmarkInfoError != null || bookmarkInfo == null) {
+      return '';
+    }
+    return bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark');
+  };
+
+
+  const dropdownToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+
   return (
-    <UncontrolledDropdown>
+    <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
@@ -62,9 +93,9 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <DropdownItem onClick={bookmarkToggleHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
-            {t('Add to bookmark')}
+            {renderBookmarkText()}
           </DropdownItem>
         )}
         {isEnableActions && (
@@ -91,7 +122,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
       </DropdownMenu>
 
 
-    </UncontrolledDropdown>
+    </Dropdown>
   );
 
 };

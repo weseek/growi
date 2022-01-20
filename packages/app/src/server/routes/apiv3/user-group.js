@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -40,6 +41,11 @@ module.exports = (crowi) => {
     Page,
   } = crowi.models;
 
+  validator.listChildren = [
+    query('parentIds', 'parentIds must be an array').optional().isArray(),
+    query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+  ];
+
   /**
    * @swagger
    *
@@ -61,10 +67,10 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: userGroups with no parent
     const { query } = req;
 
-    // TODO: filter with querystring
+    // TODO 85062: improve sort
     try {
       const page = query.page != null ? parseInt(query.page) : undefined;
       const limit = query.limit != null ? parseInt(query.limit) : undefined;
@@ -84,8 +90,28 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO 85062: improve sort
+  router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
+    try {
+      const { parentIds, includeGrandChildren = false } = req.query;
+
+      const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
+      return res.apiv3({
+        childUserGroups: userGroupsResult.childUserGroups,
+        grandChildUserGroups: userGroupsResult.grandChildUserGroups,
+      });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching child user group list';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'child-user-group-list-fetch-failed'));
+    }
+  });
+
   validator.create = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+    body('description', 'Description must be a string').optional().isString(),
+    body('parentId', 'ParentId must be a string').optional().isString(),
   ];
 
   /**
@@ -119,11 +145,12 @@ module.exports = (crowi) => {
    *                      description: A result of `UserGroup.createGroupByName`
    */
   router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
-    const { name } = req.body;
+    const { name, description = '', parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
-      const userGroup = await UserGroup.createGroupByName(userGroupName);
+      const userGroupDescription = crowi.xss.process(description);
+      const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
 
       return res.apiv3({ userGroup }, 201);
     }
@@ -183,23 +210,22 @@ module.exports = (crowi) => {
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
-      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
 
-      return res.apiv3({ userGroup });
+      return res.apiv3({ userGroups });
     }
     catch (err) {
-      const msg = 'Error occurred in deleting a user group';
+      const msg = 'Error occurred while deleting user groups';
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-delete-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-delete-failed'));
     }
   });
 
-  // return one group with the id
-  // router.get('/:id', async(req, res) => {
-  // });
-
   validator.update = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+    body('description', 'Group description must be a string').optional().isString(),
+    body('parentId', 'parentId must be a string').optional().isString(),
+    body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
   ];
 
   /**
@@ -232,21 +258,12 @@ module.exports = (crowi) => {
    */
   router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const {
+      name, description, parentId, forceUpdateParents = false,
+    } = req.body;
 
     try {
-      const userGroup = await UserGroup.findById(id);
-      if (userGroup == null) {
-        throw new Error('The group does not exist');
-      }
-
-      // check if the new group name is available
-      const isRegisterableName = await UserGroup.isRegisterableName(name);
-      if (!isRegisterableName) {
-        throw new Error('The group name is already taken');
-      }
-
-      await userGroup.updateName(name);
+      const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
       res.apiv3({ userGroup });
     }
@@ -419,18 +436,19 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
+      const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      const userGroupIds = userGroups.map(g => g._id);
+
       // check for duplicate users in groups
-      const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
+      const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
+      const existingGroupIds = existingRelations.map(r => r.relatedGroup);
 
-      if (isRelatedUserForGroup) {
-        logger.warn('The user is already joined');
-        return res.apiv3();
-      }
+      const groupIdsOfRelationToCreate = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
-      const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
+      const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
     }
     catch (err) {
       const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
@@ -488,13 +506,16 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
-      const userGroupRelation = await UserGroupRelation.findOneAndDelete({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
     }
     catch (err) {
-      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      const msg = 'Error occurred while removing the user from groups.';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }

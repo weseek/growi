@@ -5,6 +5,11 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  DetachCodeBlockInterceptor,
+  RestoreCodeBlockInterceptor,
+} from '../client/util/interceptor/detach-code-blocks';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -57,6 +62,12 @@ type Props = {
 const SearchCore: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const query = getQueryByLocation(window.location);
+  // TODO: Move this code to the right place after completing the "omit unstated" initiative.
+  const { interceptorManager } = props.appContainer;
+  if (interceptorManager != null) {
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(props.appContainer), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(props.appContainer), 900); // process as late as possible
+  }
 
   /*
    * SWR
