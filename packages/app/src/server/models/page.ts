@@ -57,6 +57,7 @@ export interface PageModel extends Model<PageDocument> {
   STATUS_DELETED
 }
 
+type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<PageDocument, PageModel>({
@@ -377,7 +378,7 @@ export default (crowi: Crowi): any => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', redirectTo, grantedUserIds = [user._id], grantUserGroupId,
+      format = 'markdown', redirectTo, grantUserGroupId,
     } = options;
     let grant = options.grant;
 
@@ -404,8 +405,9 @@ export default (crowi: Crowi): any => {
       try {
         // It must check descendants as well if emptyTarget is not null
         const shouldCheckDescendants = emptyPage != null;
+        const newGrantedUserIds = grant === GRANT_OWNER ? [user._id] as IObjectId[] : undefined;
 
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(path, grant, newGrantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);

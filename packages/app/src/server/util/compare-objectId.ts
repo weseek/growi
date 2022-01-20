@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
-type ObjectIdLike = IObjectId | string;
 
 export const isIncludesObjectId = (arr: (IObjectId | string)[], id: IObjectId | string): boolean => {
   const _arr = arr.map(i => i.toString());

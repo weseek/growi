@@ -1,19 +1,22 @@
 import mongoose from 'mongoose';
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
 import { PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
 import { isIncludesObjectId, removeDuplicates, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
+const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
 type ObjectId = mongoose.Types.ObjectId;
 
 type ComparableTarget = {
   grant: number,
-  grantedUserIds: ObjectId[],
+  grantedUserIds?: ObjectId[],
   grantedGroupId: ObjectId,
+  applicableUserIds?: ObjectId[],
   applicableGroupIds?: ObjectId[],
 };
 
@@ -25,8 +28,9 @@ type ComparableAncestor = {
 };
 
 type ComparableDescendants = {
+  isPublicExist: boolean,
   grantedUserIds: ObjectId[],
-  descendantGroupIds: ObjectId[],
+  grantedGroupIds: ObjectId[],
 };
 
 class PageGrantService {
@@ -63,16 +67,20 @@ class PageGrantService {
      * ancestor side
      */
     // GRANT_PUBLIC
-    if (ancestor.grant === Page.GRANT_PUBLIC) {
+    if (ancestor.grant === Page.GRANT_PUBLIC) { // any page can exist under public page
       // do nothing
     }
     // GRANT_OWNER
     else if (ancestor.grant === Page.GRANT_OWNER) {
-      if (target.grant !== Page.GRANT_OWNER) {
+      if (target.grantedUserIds?.length !== 1) {
+        throw Error('grantedUserIds must have one user');
+      }
+
+      if (target.grant !== Page.GRANT_OWNER) { // only GRANT_OWNER page can exist under GRANT_OWNER page
         return false;
       }
 
-      if (!ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) {
+      if (!ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
         return false;
       }
     }
@@ -82,18 +90,22 @@ class PageGrantService {
         throw Error('applicableGroupIds and applicableUserIds are not specified');
       }
 
-      if (target.grant === Page.GRANT_PUBLIC) {
+      if (target.grant === Page.GRANT_PUBLIC) { // public page must not exist under GRANT_USER_GROUP page
         return false;
       }
 
       if (target.grant === Page.GRANT_OWNER) {
-        if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) {
+        if (target.grantedUserIds?.length !== 1) {
+          throw Error('grantedUserIds must have one user');
+        }
+
+        if (!isIncludesObjectId(ancestor.applicableUserIds, target.grantedUserIds[0])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
           return false;
         }
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
-        if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) {
+        if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
       }
@@ -107,27 +119,40 @@ class PageGrantService {
      */
 
     // GRANT_PUBLIC
-    if (target.grant === Page.GRANT_PUBLIC) {
+    if (target.grant === Page.GRANT_PUBLIC) { // any page can exist under public page
       // do nothing
     }
     // GRANT_OWNER
     else if (target.grant === Page.GRANT_OWNER) {
-      if (descendants.descendantGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) {
+      if (target.grantedUserIds?.length !== 1) {
+        throw Error('grantedUserIds must have one user');
+      }
+
+      if (descendants.isPublicExist) { // public page must not exist under GRANT_OWNER page
         return false;
       }
 
-      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].equals(target.grantedGroupId)) {
+      if (descendants.grantedGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) { // groups or more than 2 grantedUsers must not be in descendants
+        return false;
+      }
+
+      if (descendants.grantedUserIds.length === 1 && !descendants.grantedUserIds[0].equals(target.grantedUserIds[0])) { // if Only me page exists, then all of them must be owned by the same user as the target page
         return false;
       }
     }
     // GRANT_USER_GROUP
     else if (target.grant === Page.GRANT_USER_GROUP) {
-      if (target.applicableGroupIds == null) {
-        throw Error('applicableGroupIds must not be null');
+      if (target.applicableGroupIds == null || target.applicableUserIds == null) {
+        throw Error('applicableGroupIds and applicableUserIds must not be null');
       }
 
-      const shouldNotExistIds = excludeTestIdsFromTargetIds(descendants.descendantGroupIds, target.applicableGroupIds);
-      if (shouldNotExistIds.length !== 0) {
+      if (descendants.isPublicExist) { // public page must not exist under GRANT_USER_GROUP page
+        return false;
+      }
+
+      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds, target.applicableGroupIds);
+      const shouldNotExistUserIds = excludeTestIdsFromTargetIds(descendants.grantedUserIds, target.applicableUserIds);
+      if (shouldNotExistGroupIds.length !== 0 || shouldNotExistUserIds.length !== 0) {
         return false;
       }
     }
@@ -140,17 +165,33 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
-      const applicableGroups = grantedGroupId != null ? await UserGroup.findGroupsWithDescendantsById(grantedGroupId) : null;
-      const applicableGroupIds = applicableGroups?.map(g => g._id) || null;
+      const Page = mongoose.model('Page') as PageModel;
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
+      let applicableUserIds: ObjectId[] | undefined;
+      let applicableGroupIds: ObjectId[] | undefined;
+
+      if (grant === Page.GRANT_USER_GROUP) {
+        const targetUserGroup = await UserGroup.findOne({ _id: grantedGroupId });
+        if (targetUserGroup == null) {
+          throw Error('Target user group does not exist');
+        }
+
+        const relatedUsers = await UserGroupRelation.find({ relatedGroup: targetUserGroup._id });
+        applicableUserIds = relatedUsers.map(u => u.relatedUser);
+
+        const applicableGroups = grantedGroupId != null ? await UserGroup.findGroupsWithDescendantsById(grantedGroupId) : null;
+        applicableGroupIds = applicableGroups?.map(g => g._id) || null;
+      }
 
       return {
         grant,
         grantedUserIds,
         grantedGroupId,
+        applicableUserIds,
         applicableGroupIds,
       };
     }
@@ -215,28 +256,51 @@ class PageGrantService {
     /*
      * make granted users list of descendant's
      */
-    // find all descendants excluding empty pages
-    const builderForDescendants = new PageQueryBuilder(Page.find({}, { _id: 0, grantedUsers: 1, grantedGroup: 1 }), false);
-    const descendants = await builderForDescendants
-      .addConditionToListOnlyDescendants(targetPath)
-      .query
-      .exec();
+    const pathWithTrailingSlash = addTrailingSlash(targetPath);
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
-    let grantedUsersOfGrantOwner: ObjectId[] = []; // users of GRANT_OWNER
-    const grantedGroups: ObjectId[] = [];
-    descendants.forEach((d) => {
-      if (d.grantedUsers != null) {
-        grantedUsersOfGrantOwner = grantedUsersOfGrantOwner.concat(d.grantedUsers);
-      }
-      if (d.grantedGroup != null) {
-        grantedGroups.push(d.grantedGroup);
-      }
-    });
+    const result = await Page.aggregate([
+      { // match to descendants excluding empty pages
+        $match: {
+          path: new RegExp(`^${startsPattern}`),
+          isEmpty: { $ne: true },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          grant: 1,
+          grantedUsers: 1,
+          grantedGroup: 1,
+        },
+      },
+      { // remove duplicates from pipeline
+        $group: {
+          _id: '$grant',
+          grantedGroupSet: { $addToSet: '$grantedGroup' },
+          grantedUsersSet: { $addToSet: '$grantedUsers' },
+        },
+      },
+      { // flatten granted user set
+        $unwind: {
+          path: '$grantedUsersSet',
+        },
+      },
+    ]);
 
-    const descendantGroupIds = removeDuplicates(grantedGroups);
+    // GRANT_PUBLIC group
+    const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
+    // GRANT_OWNER group
+    const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
+    const grantedUserIds: ObjectId[] = grantOwnerResult?.grantedUsersSet ?? [];
+    // GRANT_USER_GROUP group
+    const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
+    const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
+
     return {
-      grantedUserIds: grantedUsersOfGrantOwner,
-      descendantGroupIds,
+      isPublicExist,
+      grantedUserIds,
+      grantedGroupIds,
     };
   }
 
@@ -244,7 +308,9 @@ class PageGrantService {
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
    * @returns Promise<boolean>
    */
-  async isGrantNormalized(targetPath: string, grant, grantedUserIds: ObjectId[], grantedGroupId: ObjectId, shouldCheckDescendants = false): Promise<boolean> {
+  async isGrantNormalized(
+      targetPath: string, grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, shouldCheckDescendants = false,
+  ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
