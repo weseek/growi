@@ -1,8 +1,50 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
+
+### 💎 Features
+
+- feat: Display a list of bookmarked users (#5044) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Built-in editor scroll position is reset after save (Introduced by v4.5.3) (#5074) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump y18n to v4.0.3 (#5071) @yuki-takei
+- support: Omit prettier-stylelint (#5070) @yuki-takei
+- support: Bump tar to 6.1.11 (#5069) @yuki-takei
+
+## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
+
+### 🐛 Bug Fixes
+
+- fix: Subnavigation sticking initialization (#5062) @yuki-takei
+- fix: Built-in editor was broken (#5061) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump re2 to 1.17.2 (#5059) @yuki-takei
+
+## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
+
+### 💎 Features
+
+- feat: Resolve conflict with 3-way merge like editor (#5012) @yuto-oweseek
+
+### 🚀 Improvement
+
+- imprv: Subnavigation behavior (#5047) @yuki-takei
+- imprv: Switching editor mode behavior (#5043) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- Bug: Error: The specified instance couldn't register because same id has already been registered (#5031) by #5043 @yuki-takei
 
 ## [v4.5.5](https://github.com/weseek/growi/compare/v4.5.4...v4.5.5) - 2022-01-05
 

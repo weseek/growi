@@ -5,10 +5,10 @@ import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
 
-import { apiPost } from '../util/apiv1-client';
 import loggerFactory from '~/utils/logger';
-import { toastError } from '../util/apiNotification';
+import { EditorMode } from '~/stores/ui';
 
+import { toastError } from '../util/apiNotification';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -53,9 +53,6 @@ export default class PageContainer extends Container {
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path,
       tocHtml: '',
-
-      isBookmarked: false,
-      sumOfBookmarks: 0,
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
@@ -246,20 +243,6 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
-  async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
-    this.setState({
-      sumOfBookmarks: response.data.sumOfBookmarks,
-      isBookmarked: response.data.isBookmarked,
-    });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
-  }
-
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
@@ -312,7 +295,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'edit') {
+      if (editorMode !== EditorMode.Editor) {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
@@ -320,7 +303,7 @@ export default class PageContainer extends Container {
     const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
       // reset
-      if (editorMode !== 'hackmd') {
+      if (editorMode !== EditorMode.HackMD) {
         pageEditorByHackmd.reset();
       }
     }

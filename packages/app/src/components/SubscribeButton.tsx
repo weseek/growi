@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 
-
-import { Types } from 'mongoose';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 import { useSWRxSubscriptionStatus } from '../stores/page';
@@ -12,7 +10,7 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { useIsGuestUser } from '~/stores/context';
 
 type Props = {
-  pageId: Types.ObjectId,
+  pageId: string,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
