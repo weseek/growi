@@ -68,10 +68,9 @@ class LegacyRevisionRenderer extends React.PureComponent {
     // Separate keywords
     // - Surrounded by double quotation
     // - Split by both full-width and half-width spaces
-    const splitKwds = [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)];
-    splitKwds.forEach((kwd, i) => {
+    [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((separatedKeyword, i) => {
       // Removes double quotes from keywords and trims start and end blanks
-      const keyword = kwd.replace(/"/g, '').trim();
+      const keyword = separatedKeyword.replace(/"/g, '').trim();
       if (keyword === '') {
         return;
       }
