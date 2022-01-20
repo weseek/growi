@@ -66,9 +66,9 @@ html[dark] {
   // $color-list: $color-global;
   $bgcolor-list: transparent;
   $color-list-hover: $gray-100;
-  $bgcolor-list-hover: darken($bgcolor-global, 5%);
+  $bgcolor-list-hover: lighten($primary, 40%);
   // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  $bgcolor-list-active: lighten($primary, 30%);
 
   // Table colors
   // $color-table: #; // optional
