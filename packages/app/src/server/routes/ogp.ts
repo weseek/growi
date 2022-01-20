@@ -16,16 +16,15 @@ const logger = loggerFactory('growi:routes:ogp');
 const DEFAULT_USER_IMAGE_URL = '/images/icons/user.svg';
 const DEFAULT_USER_IMAGE_PATH = `public${DEFAULT_USER_IMAGE_URL}`;
 
+// default user image is cached
+let bufferedUserImage: Buffer = Buffer.from('');
+fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
+  if (err) throw err;
+  bufferedUserImage = buffer;
+});
 
 module.exports = function(crowi) {
   const { configManager, aclService } = crowi;
-
-  // default user image is cached
-  let bufferedUserImage: Buffer = Buffer.from('');
-  fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
-    if (err) throw err;
-    bufferedUserImage = buffer;
-  });
 
   const isUserImageAttachment = (userImageUrlCached: string): boolean => {
     return /^\/attachment\/.+/.test(userImageUrlCached);
