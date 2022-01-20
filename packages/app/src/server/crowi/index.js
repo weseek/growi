@@ -20,6 +20,7 @@ import AppService from '../service/app';
 import AclService from '../service/acl';
 import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
+import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -679,9 +680,8 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  const PageEventService = require('../service/page');
   if (this.pageService == null) {
-    this.pageService = new PageEventService(this);
+    this.pageService = new PageService(this);
   }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
