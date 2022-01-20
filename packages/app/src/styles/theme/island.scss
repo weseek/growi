@@ -29,9 +29,9 @@ html[dark] {
   // $color-list: $color-global;
   // $bgcolor-list: lighten($color-themelight, 10%);
   // $color-list-hover: ;
-  // $bgcolor-list-hover: ;
+  $bgcolor-list-hover: $color-themelight;
   $color-list-active: $color-global;
-  // $bgcolor-list-active: $primary;
+  $bgcolor-list-active: $primary;
 
   // Table colors
   // $color-table: #; // optional
@@ -118,4 +118,24 @@ html[dark] {
       color: $color-reversal;
     }
   }
+
+  /*
+   * GROWI Sidebar
+  */
+  .grw-sidebar {
+    // Pagetree
+    .grw-pagetree {
+      @include override-list-group-item-for-pagetree(
+        $color-list,
+        $bgcolor-sidebar-list-group,
+        $color-list-hover,
+        $bgcolor-list-hover,
+        $color-list-active,
+        lighten($bgcolor-list-hover, 5%),
+        $gray-400
+      );
+    }
+  }
 }
+// $color-list-hover,
+// $bgcolor-list-hover,
