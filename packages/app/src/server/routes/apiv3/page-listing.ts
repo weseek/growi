@@ -98,7 +98,8 @@ export default (crowi: Crowi): Router => {
     const { pageIds } = req.query;
 
     try {
-      const shortBodiesMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds, req.user);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const shortBodiesMap = await crowi.pageService!.shortBodiesMapByPageIds(pageIds as string[], req.user);
       return res.apiv3({ shortBodiesMap });
     }
     catch (err) {

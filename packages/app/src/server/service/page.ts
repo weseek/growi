@@ -935,7 +935,7 @@ class PageService {
     }
   }
 
-  async shortBodiesMapByPageIds(pageIds = [], user) {
+  async shortBodiesMapByPageIds(pageIds: string[] = [], user) {
     const Page = mongoose.model('Page');
     const MAX_LENGTH = 350;
 
