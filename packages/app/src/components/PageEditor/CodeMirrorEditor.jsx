@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
-import { UnControlled as UncontrolledCodeMirror } from 'react-codemirror2';
-
 import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
@@ -13,6 +11,7 @@ import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -110,7 +109,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
-      isGfmMode: this.props.isGfmMode ?? true,
+      isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -909,7 +908,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
@@ -936,12 +934,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           value={this.state.value}
           options={{
-            mode,
-            theme: this.props.editorOptions.theme,
-            styleActiveLine: this.props.editorOptions.styleActiveLine,
-            lineNumbers: this.props.lineNumbers,
-            tabSize: 4,
-            indentUnit: this.props.indentSize,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
