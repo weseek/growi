@@ -157,6 +157,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
     this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
+    this.addEmoji = this.addEmoji.bind(this);
   }
 
   init() {
@@ -667,7 +668,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   renderEmojiPickerModal() {
     return (
       <Modal isOpen={this.state.isEmojiPickerShown} toggle={this.toggleEmojiPicker} onOpened={this.emojiPickerOpened}>
-        <Picker set="apple" autoFocus style={{ width: '100%', position: 'absolute' }} />
+        <Picker set="apple" autoFocus style={{ width: '100%', position: 'absolute' }} onSelect={this.addEmoji} />
       </Modal>
     );
   }
@@ -784,6 +785,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     valueSetter.call(input, this.state.emojiSearchText);
     const event = new Event('input', { bubbles: true });
     input.dispatchEvent(event);
+  }
+
+  addEmoji(emoji) {
+    this.replaceBolToCurrentPos(emoji.colons);
   }
 
   getNavbarItems() {
@@ -931,7 +936,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const pattern = /:[^:\s]+/;
     const currentPos = cm.getCursor();
     const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
-
     if (sc.findPrevious()) {
       const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
       // Add delay between search emoji and display emoji picker
