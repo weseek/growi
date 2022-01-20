@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-export type IPageForPageDeleteModal = {
+export type IPageForPageMigrateModal = {
   pageId: string,
   revisionId: string,
   path: string
@@ -14,7 +14,7 @@ export type IPageForPageDeleteModal = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageForPageDeleteModal[],
+  pages: IPageForPageMigrateModal[],
   onClose?: () => void,
 }
 const PageMigrateModal: FC<Props> = (props: Props) => {

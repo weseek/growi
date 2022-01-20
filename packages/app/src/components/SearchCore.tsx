@@ -5,6 +5,11 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  DetachCodeBlockInterceptor,
+  RestoreCodeBlockInterceptor,
+} from '../client/util/interceptor/detach-code-blocks';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -44,18 +49,25 @@ const getQueryByLocation = (location: Location) => {
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
 // 1. renderSearchForm
-// 2. icon migrate
-// 3. onAfterSearchInvoked should be refactored in LegacyPage
+// 2. renderSort
+// 3. message props to SearchPageLayout. <- not relevant here
 type Props = {
   appContainer: AppContainer,
-  onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
+  onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
-  renderActionToPageGroup: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox)=>React.FunctionComponent,
+  renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
+  query?: string,
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const query = getQueryByLocation(window.location);
+  // TODO: Move this code to the right place after completing the "omit unstated" initiative.
+  const { interceptorManager } = props.appContainer;
+  if (interceptorManager != null) {
+    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(props.appContainer), 10); // process as soon as possible
+    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(props.appContainer), 900); // process as late as possible
+  }
 
   /*
    * SWR
@@ -65,7 +77,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [searchingKeyword, setSearchingKeyword] = useState<string>(decodeURI(query.q) || '');
+  const [searchingKeyword, setSearchingKeyword] = useState<string>(props.query != null ? props.query : decodeURI(query.q) || '');
   const [currentSearchedKeyword, setSearchedKeyword] = useState<string>('');
   // should be <[IPageSearchResultData] | []> but gives lint errors.
   const [searchResults, setSearchResults] = useState<any>([]);
@@ -232,8 +244,9 @@ const SearchCore: FC<Props> = (props: Props) => {
     }
   }, [selectedPagesIdList, searchResults]);
 
-  const toggleAllCheckBox = useCallback((nextSelectAllCheckboxType) => {
-    if (nextSelectAllCheckboxType === CheckboxType.NONE_CHECKED) {
+  const toggleAllCheckBox = () => {
+    const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
+    if (next === CheckboxType.NONE_CHECKED) {
       selectedPagesIdList.clear();
     }
     else {
@@ -242,9 +255,8 @@ const SearchCore: FC<Props> = (props: Props) => {
       });
     }
     setSelectedPagesIdList(selectedPagesIdList);
-    setSelectAllCheckboxType(nextSelectAllCheckboxType);
-  }, [searchResults, selectedPagesIdList]);
-
+    setSelectAllCheckboxType(next);
+  };
 
   const getSelectedPagesToAction = useCallback(() => {
     const filteredPages = searchResults.filter((page) => {
@@ -322,18 +334,15 @@ const SearchCore: FC<Props> = (props: Props) => {
         searchingKeyword={searchingKeyword}
         sort={sort}
         order={order}
-        searchResultCount={searchResultCount || 0}
         appContainer={props.appContainer}
         onSearchInvoked={onSearchInvoked}
-        onClickSelectAllCheckbox={toggleAllCheckBox}
-        selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={actionToAllPagesButtonHandler}
         onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
         excludeUserPages={excludeUserPages}
         excludeTrashPages={excludeTrashPages}
         onChangeSortInvoked={onChangeSortInvoked}
-        renderActionToPageGroup={props.renderActionToPageGroup}
+        // eslint-disable-next-line max-len
+        actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
       >
       </SearchControl>
     );

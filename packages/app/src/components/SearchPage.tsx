@@ -2,9 +2,9 @@ import React, {
   FC,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
-import ActionToPageGroup from './SearchPage/ActionToPageGroup';
 
 
 type Props = {
@@ -14,9 +14,8 @@ type Props = {
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
 // 1. renderSearchForm
-// 2. icon migrate
-// 3.. onAfterSearchInvoked should be refactored in LegacyPage
-
+// 2. renderSort
+// 3. message props to SearchPageLayout.
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
@@ -34,30 +33,33 @@ const SearchPage : FC<Props> = (props: Props) => {
     );
   };
 
-  const renderActionToPageGroup = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionButton, onClickSelectAllCheckbox) => {
-    const actionTypeAndText = (
+  const renderActionToPages = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
+    const actionIconAndText = (
       <>
         <i className="icon-trash"></i>
         delete
       </>
     );
     return (
-      <ActionToPageGroup
-        actionTypeIconAndText={actionTypeAndText}
+      <ActionToSelectedPageGroup
         isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
         selectAllCheckboxType={selectAllCheckboxType}
-        onClickActionButton={onClickActionButton}
+        onClickActionAllButton={onClickActionAllButton}
         onClickSelectAllCheckbox={onClickSelectAllCheckbox}
+        actionIconAndText={actionIconAndText}
       >
-      </ActionToPageGroup>
+      </ActionToSelectedPageGroup>
     );
   };
 
   const renderSearchForm = () => {
-    // TODO
-    // Task : https://redmine.weseek.co.jp/issues/85465
     // return <SearchForm />
   };
+
+  const renderSortBar = () => {
+    // return <Sortcontrolr>;
+  };
+
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
     let hash = window.location.hash || '';
@@ -73,7 +75,7 @@ const SearchPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
-      renderActionToPageGroup={renderActionToPageGroup}
+      renderActionToPages={renderActionToPages}
     />
   );
 };

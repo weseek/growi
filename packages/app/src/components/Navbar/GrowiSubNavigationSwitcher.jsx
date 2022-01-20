@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-// import PropTypes from 'prop-types';
+import React, {
+  useMemo, useState, useRef, useEffect, useCallback,
+} from 'react';
 
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
+
 import loggerFactory from '~/utils/logger';
+import { useSidebarCollapsed } from '~/stores/ui';
 
 import GrowiSubNavigation from './GrowiSubNavigation';
 
@@ -21,24 +24,43 @@ const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
  */
 const GrowiSubNavigationSwitcher = (props) => {
 
+  const { data: isSidebarCollapsed } = useSidebarCollapsed();
+
   const [isVisible, setVisible] = useState(false);
+  const [width, setWidth] = useState(null);
 
-  const resetWidth = useCallback(() => {
-    const elem = document.getElementById('grw-subnav-fixed-container');
+  const fixedContainerRef = useRef();
+  const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
 
-    if (elem == null || elem.parentNode == null) {
+  const initWidth = useCallback(() => {
+    const instance = fixedContainerRef.current;
+
+    if (instance == null || instance.parentNode == null) {
       return;
     }
 
     // get parent width
-    const { clientWidth: width } = elem.parentNode;
+    const { clientWidth } = instance.parentNode;
     // update style
-    elem.style.width = `${width}px`;
+    setWidth(clientWidth);
   }, []);
+
+  const initVisible = useCallback(() => {
+    const elements = stickyEvents.stickyElements;
+
+    for (const elem of elements) {
+      const bool = stickyEvents.isSticking(elem);
+      if (bool) {
+        setVisible(bool);
+        break;
+      }
+    }
+
+  }, [stickyEvents]);
 
   // setup effect by resizing event
   useEffect(() => {
-    const resizeHandler = debounce(100, resetWidth);
+    const resizeHandler = debounce(100, initWidth);
 
     window.addEventListener('resize', resizeHandler);
 
@@ -46,7 +68,7 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       window.removeEventListener('resize', resizeHandler);
     };
-  }, [resetWidth]);
+  }, [initWidth]);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -57,7 +79,6 @@ const GrowiSubNavigationSwitcher = (props) => {
   useEffect(() => {
     // sticky
     // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' });
     const { stickySelector } = stickyEvents;
     const elem = document.querySelector(stickySelector);
     elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
@@ -66,16 +87,29 @@ const GrowiSubNavigationSwitcher = (props) => {
     return () => {
       elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
     };
-  }, [stickyChangeHandler]);
+  }, [stickyChangeHandler, stickyEvents]);
 
-  // update width
+  // update width when sidebar collapsing changed
   useEffect(() => {
-    resetWidth();
-  });
+    if (isSidebarCollapsed != null) {
+      setTimeout(initWidth, 300);
+    }
+  }, [isSidebarCollapsed, initWidth]);
+
+  // initialize
+  useEffect(() => {
+    initWidth();
+
+    // check sticky state several times
+    setTimeout(initVisible, 100);
+    setTimeout(initVisible, 300);
+    setTimeout(initVisible, 2000);
+
+  }, [initWidth, initVisible]);
 
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
-      <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed">
+      <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed" ref={fixedContainerRef} style={{ width }}>
         <GrowiSubNavigation isCompactMode />
       </div>
     </div>

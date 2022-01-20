@@ -17,11 +17,15 @@ class Apiv1ErrorHandler extends Error {
 
   code;
 
-  constructor(message = '', code = '') {
+  data;
+
+  constructor(message = '', code = '', data = '') {
     super();
 
     this.message = message;
     this.code = code;
+    this.data = data;
+
   }
 
 }
@@ -35,7 +39,7 @@ export async function apiRequest<T = unknown>(method: string, path: string, para
 
   // Return error code if code is exist
   if (res.data.code != null) {
-    const error = new Apiv1ErrorHandler(res.data.error, res.data.code);
+    const error = new Apiv1ErrorHandler(res.data.error, res.data.code, res.data.data);
     throw error;
   }
 

@@ -1,4 +1,3 @@
-import RE2 from 're2';
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
@@ -189,8 +188,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
-    const replaceRegexp = new RE2(/\[nq:|\]/g);
+    const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RegExp(/\[nq:|\]/g);
 
     const queryString = normalizeQueryString(_queryString);
 

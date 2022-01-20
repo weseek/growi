@@ -17,7 +17,9 @@ const debug = require('debug')('growi:services:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
 
-const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
+const {
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+} = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -27,6 +29,7 @@ class PageService {
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.tagEvent = crowi.event('tag');
 
     // init
     this.initPageEvent();
@@ -384,6 +387,7 @@ class PageService {
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      this.tagEvent.emit('update', createdPage, savedTags);
     }
 
     const result = serializePageSecurely(createdPage);
@@ -518,6 +522,7 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -542,6 +547,7 @@ class PageService {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
@@ -760,6 +766,7 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
@@ -788,6 +795,7 @@ class PageService {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
     await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
@@ -829,22 +837,19 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({ grantedGroup: deletedGroup });
+    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
+    let operationsToPublicize;
     switch (action) {
       case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
+        await Page.publicizePages(pages);
         break;
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
+        await Page.transferPagesToGroup(pages, transferToUserGroupId);
         break;
       default:
         throw new Error('Unknown action for private pages');
@@ -1029,6 +1034,16 @@ class PageService {
       logger.error('V5 initial miration failed.', err);
       // socket.emit('v5InitialMirationFailed', { error: err.message });
 
+      throw err;
+    }
+
+    // update descendantCount of all public pages
+    try {
+      await this.updateDescendantCountOfSelfAndDescendants('/');
+      logger.info('Successfully updated all descendantCount of public pages.');
+    }
+    catch (err) {
+      logger.error('Failed updating descendantCount of public pages.', err);
       throw err;
     }
 
@@ -1243,6 +1258,45 @@ class PageService {
     }
     const Page = this.crowi.model('Page');
     return Page.count({ parent: null, creator: user });
+  }
+
+  /**
+   * update descendantCount of the following pages
+   * - page that has the same path as the provided path
+   * - pages that are descendants of the above page
+   */
+  async updateDescendantCountOfSelfAndDescendants(path = '/') {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+
+    const aggregateCondition = Page.getAggrConditionForPageWithProvidedPathAndDescendants(path);
+    const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
+
+    const recountWriteStream = new Writable({
+      objectMode: true,
+      async write(pageDocuments, encoding, callback) {
+        for (const document of pageDocuments) {
+          // eslint-disable-next-line no-await-in-loop
+          await Page.recountDescendantCountOfSelfAndDescendants(document._id);
+        }
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+    aggregatedPages
+      .pipe(createBatchStream(BATCH_SIZE))
+      .pipe(recountWriteStream);
+
+    await streamToPromise(recountWriteStream);
+  }
+
+  // update descendantCount of all pages that are ancestors of a provided path by count
+  async updateDescendantCountOfAncestors(path = '/', count = 0) {
+    const Page = this.crowi.model('Page');
+    const ancestors = collectAncestorPaths(path);
+    await Page.incrementDescendantCountOfPaths(ancestors, count);
   }
 
 }
