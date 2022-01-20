@@ -44,12 +44,12 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
       <div className="custom-control custom-checkbox custom-checkbox-warning">
         <input
           className="custom-control-input"
-          id="deleteRecursively"
+          id="migrateRecursively"
           type="checkbox"
           checked={isMigrateRecursively}
           onChange={chnageIsMigrateRecursivelyHandler}
         />
-        <label className="custom-control-label" htmlFor="deleteRecursively">
+        <label className="custom-control-label" htmlFor="migrateRecursively">
           { t('modal_migrate.migrate_recursively') }
         </label>
       </div>
