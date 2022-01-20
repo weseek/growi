@@ -1,16 +1,15 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import DuplicatePageSubnavigation from './Duplication/DuplicatePageSubnavigation';
 import DuplicatePageAlert from './Duplication/DuplicatePageAlert';
-// import PageListItem from './Page/PageListItem';
 import PageListIcon from './Icons/PageListIcon';
+// import PageListItem from './Page/PageListItem';
+
+// Todo: add type
 
 const DuplicatingPage: FC = (props) => {
   const { t } = useTranslation();
-  const newProps = {
-    pageId: '',
-    path: '/Sandbox',
-  };
 
   const accessory = {
     name: 'pagelist',
@@ -20,15 +19,16 @@ const DuplicatingPage: FC = (props) => {
 
   return (
     <div className="duplicate-page">
-      <DuplicatePageSubnavigation {...newProps} />
+      <DuplicatePageSubnavigation {...props} />
       <div className="container duplicate-content d-flex">
         <div className="flex-grow-1">
           <div className="mb-4">
-            <DuplicatePageAlert path={newProps.path} />
+            {/* Todo: pass duplicate path */}
+            <DuplicatePageAlert path="/hoge" />
           </div>
           <div className="page-list">
             <div className="page-list-ul border p-3">
-              {/* Iterate pages here */}
+              {/* Todo: Iterate pages here */}
               {/* <PageListItem page={} /> */}
             </div>
           </div>
@@ -42,7 +42,7 @@ const DuplicatingPage: FC = (props) => {
                 <button
                   type="button"
                   className="btn btn-link grw-btn-page-accessories"
-                  onClick={() => { /* open page list of all duplicate pages */ }}
+                  onClick={() => { /* Todo: open page list of all duplicate pages */ }}
                 >
                   {accessory.Icon}
                 </button>
@@ -51,6 +51,7 @@ const DuplicatingPage: FC = (props) => {
             {/* name */}
             <div className="mx-5">{accessory.i18n}</div>
             {/* page count */}
+            {/* Todo: add page count */}
             <div className="rounded">17</div>
           </a>
         </div>

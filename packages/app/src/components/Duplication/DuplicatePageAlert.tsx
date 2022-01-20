@@ -2,7 +2,6 @@
 import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 
-
 type Props = {
   path: string,
 }
@@ -12,6 +11,7 @@ const DuplicatePageAlert:FC<Props> = (props:Props) => {
   const devidedPath = new DevidedPagePath(path);
 
   return (
+  // Todo: use i18n
     <div className="alert alert-warning py-3">
       <h5 className="font-weight-bold mt-1">ページ名「{devidedPath.latter}」が重複しています</h5>
       <p>
