@@ -196,6 +196,7 @@ class PageService {
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
     // v4 compatible process
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    console.log('よばれた', isV5Compatible);
     if (!isV5Compatible) {
       return this.renamePageV4(page, newPagePath, user, options, isRecursively);
     }
