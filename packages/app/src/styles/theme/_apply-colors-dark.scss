@@ -2,7 +2,7 @@
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
-$bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
+$bgcolor-list-hover: lighten($bgcolor-global, 8%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
 $bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
