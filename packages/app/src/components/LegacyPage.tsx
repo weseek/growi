@@ -64,14 +64,8 @@ const LegacyPage : FC<Props> = (props: Props) => {
     // https://xd.adobe.com/view/cd3cb2f8-625d-4a6b-b6e4-917f75c675c5-986f/screen/31308311-63c8-4183-98c9-64ef29811956/
   };
 
-  const onAfterSearchHandler = (keyword, searchedKeyword) => {
-    // Do nothing
-  };
-
-
   return (
     <SearchCore
-      onAfterSearchInvoked={onAfterSearchHandler}
       renderActionToPagesModal={renderActionsToPageModal}
       renderActionToPages={renderActionToPages}
       query="[nq:PrivateLegacyPages]"

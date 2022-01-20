@@ -48,7 +48,7 @@ const getQueryByLocation = (location: Location) => {
 // 3. message props to SearchPageLayout. <- not relevant here
 type Props = {
   appContainer: AppContainer,
-  onAfterSearchInvoked: (keyword: string, searchedKeyword: string) => Promise<void> | void,
+  onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
   renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
   query?: string,
