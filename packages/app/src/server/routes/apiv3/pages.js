@@ -464,7 +464,7 @@ module.exports = (crowi) => {
     };
 
     if (!isCreatablePage(newPagePath)) {
-      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
+      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
     }
 
     // check whether path starts slash

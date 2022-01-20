@@ -39,7 +39,7 @@ type TargetAndAncestorsResult = {
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
-  getParentIdAndFillAncestors(path: string, parent: (PageDocument & { _id: any }) | null): Promise<string | null>
+  _getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -139,6 +139,74 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
   }
 };
 
+schema.statics.createEmptyPage = async function(path: string, parent) {
+  if (parent == null) {
+    throw Error('parent must not be null');
+  }
+
+  const Page = this;
+  const page = new Page();
+  page.path = path;
+  page.isEmpty = true;
+  page.parent = parent;
+
+  return page.save();
+};
+
+/**
+ * Replace an existing page with an empty page.
+ * It updates the children's parent to the new empty page's _id.
+ * @param exPage a page document to be replaced
+ * @param pageToReplaceWith (optional) a page document to replace with
+ * @returns Promise<void>
+ */
+schema.statics.replaceTargetEmptyPage = async function(exPage, pageToReplaceWith?): Promise<void> {
+  // find parent
+  const parent = await this.findOne({ _id: exPage.parent });
+  if (parent == null) {
+    throw Error('parent to update does not exist. Prepare parent first.');
+  }
+
+  // create empty page at path
+  let newTarget = pageToReplaceWith;
+  if (newTarget) {
+    newTarget = await this.createEmptyPage(exPage.path, parent);
+  }
+
+  // find children by ex-page _id
+  const children = await this.find({ parent: exPage._id });
+
+  // bulkWrite
+  const operationForNewTarget = {
+    updateOne: {
+      filter: { _id: newTarget._id },
+      update: {
+        parent: parent._id,
+      },
+    },
+  };
+  const operationsForChildren = {
+    updateMany: {
+      filter: children.map(d => d._id),
+      update: {
+        parent: newTarget._id,
+      },
+    },
+  };
+
+  await this.bulkWrite([operationForNewTarget, operationsForChildren]);
+};
+
+/**
+ * Find parent or create parent if not exists.
+ * It also updates parent of ancestors
+ * @param path string
+ * @returns Promise<PageDocument>
+ */
+schema.statics.findOrCreateParent = async function(path: string): Promise<PageDocument> {
+  return this._getParentAndFillAncestors(path);
+};
+
 /*
  * Find the parent and update if the parent exists.
  * If not,
@@ -146,11 +214,11 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
  *   - second  update ancestor pages' parent
  *   - finally return the target's parent page id
  */
-schema.statics.getParentIdAndFillAncestors = async function(path: string, parent: PageDocument | null): Promise<Schema.Types.ObjectId> {
+schema.statics._getParentAndFillAncestors = async function(path: string): Promise<PageDocument> {
   const parentPath = nodePath.dirname(path);
-
+  const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
   if (parent != null) {
-    return parent._id;
+    return parent;
   }
 
   /*
@@ -162,16 +230,15 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string, parent
   await this.createEmptyPagesByPaths(ancestorPaths);
 
   // find ancestors
-  const builder = new PageQueryBuilder(this.find({}, { _id: 1, path: 1 }), true);
+  const builder = new PageQueryBuilder(this.find(), true);
   const ancestors = await builder
     .addConditionToListByPathsArray(ancestorPaths)
     .addConditionToSortPagesByDescPath()
     .query
-    .lean()
     .exec();
 
-  const ancestorsMap = new Map(); // Map<path, _id>
-  ancestors.forEach(page => !ancestorsMap.has(page.path) && ancestorsMap.set(page.path, page._id)); // the earlier element should be the true ancestor
+  const ancestorsMap = new Map(); // Map<path, page>
+  ancestors.forEach(page => !ancestorsMap.has(page.path) && ancestorsMap.set(page.path, page)); // the earlier element should be the true ancestor
 
   // bulkWrite to update ancestors
   const nonRootAncestors = ancestors.filter(page => !isTopPage(page.path));
@@ -191,8 +258,12 @@ schema.statics.getParentIdAndFillAncestors = async function(path: string, parent
   });
   await this.bulkWrite(operations);
 
-  const parentId = ancestorsMap.get(parentPath);
-  return parentId;
+  const createdParent = ancestorsMap.get(parentPath);
+
+  if (createdParent == null) {
+    throw Error('createdParent must not be null');
+  }
+  return createdParent;
 };
 
 // Utility function to add viewer condition to PageQueryBuilder instance
@@ -508,11 +579,10 @@ export default (crowi: Crowi): any => {
       page = new Page();
     }
 
-    let parentId: string | null = null;
-    const parentPath = nodePath.dirname(path);
-    const parent = await this.findOne({ path: parentPath }); // find the oldest parent which must always be the true parent
+    let parentId: IObjectId | string | null = null;
+    const parent = await Page._getParentAndFillAncestors(path);
     if (!isTopPage(path)) {
-      parentId = await Page.getParentIdAndFillAncestors(path, parent);
+      parentId = parent._id;
     }
 
     page.path = path;

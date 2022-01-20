@@ -11,6 +11,7 @@ import loggerFactory from '~/utils/logger';
 import { generateGrantCondition, PageModel } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
+import { IPage } from '~/interfaces/page';
 
 const debug = require('debug')('growi:services:page');
 
@@ -191,7 +192,80 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
+  // TODO: implement recursive rename
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
+    // v4 compatible process
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible) {
+      return this.renamePageV4(page, newPagePath, user, options, isRecursively);
+    }
+
+    const Page = this.crowi.model('Page');
+    const {
+      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantUserGroupId,
+    } = page;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
+
+    // sanitize path
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = false;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+      }
+    }
+
+    // create descendants first
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
+
+    /*
+     * replace target
+     */
+    let pageToReplaceWith = null;
+    if (createRedirectPage) {
+      const body = `redirect ${newPagePath}`;
+      pageToReplaceWith = await Page.create(path, body, user, { redirectTo: newPagePath });
+    }
+    await Page.replaceTargetWithPage(page, pageToReplaceWith);
+
+    /*
+     * update target
+     */
+    const update: Partial<IPage> = {};
+    // find or create parent
+    const newParent = await Page.findOrCreateParent(newPagePath);
+
+    // update Page
+    update.path = newPagePath;
+    update.parent = newParent._id;
+    if (updateMetadata) {
+      update.lastUpdateUser = user;
+      update.updatedAt = new Date();
+    }
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+
+    this.pageEvent.emit('rename', page, user);
+
+    return renamedPage;
+  }
+
+  private async renamePageV4(page, newPagePath, user, options, isRecursively = false) {
 
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
