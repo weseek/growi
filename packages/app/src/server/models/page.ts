@@ -13,7 +13,7 @@ import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
 const logger = loggerFactory('growi:models:page');
 
@@ -95,19 +95,6 @@ const schema = new Schema<PageDocument, PageModel>({
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
-
-
-/*
- * Methods
- */
-const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
-  if (isTopPage(path)) return ancestorPaths;
-
-  const parentPath = nodePath.dirname(path);
-  ancestorPaths.push(parentPath);
-  return collectAncestorPaths(parentPath, ancestorPaths);
-};
-
 
 const hasSlash = (str: string): boolean => {
   return str.includes('/');
@@ -354,6 +341,97 @@ async function pushRevision(pageData, newRevision, user) {
   return pageData.save();
 }
 
+/**
+ * return aggregate condition to get following pages
+ * - page that has the same path as the provided path
+ * - pages that are descendants of the above page
+ * pages without parent will be ignored
+ */
+schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
+  let match;
+  if (isTopPage(path)) {
+    match = {
+      // https://regex101.com/r/Kip2rV/1
+      $match: { $or: [{ path: { $regex: '^/.*' }, parent: { $ne: null } }, { path: '/' }] },
+    };
+  }
+  else {
+    match = {
+      // https://regex101.com/r/mJvGrG/1
+      $match: { path: { $regex: `^${path}(/.*|$)` }, parent: { $ne: null } },
+    };
+  }
+  return [
+    match,
+    {
+      $project: {
+        path: 1,
+        parent: 1,
+        field_length: { $strLenCP: '$path' },
+      },
+    },
+    { $sort: { field_length: -1 } },
+    { $project: { field_length: 0 } },
+  ];
+};
+
+/**
+ * add/subtract descendantCount of pages with provided paths by increment.
+ * increment can be negative number
+ */
+schema.statics.incrementDescendantCountOfPaths = async function(paths:string[], increment: number):Promise<void> {
+  const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
+  const operations = pages.map((page) => {
+    return {
+      updateOne: {
+        filter: { path: page.path },
+        update: { descendantCount: page.descendantCount + increment },
+      },
+    };
+  });
+  await this.bulkWrite(operations);
+};
+
+// update descendantCount of a page with provided id
+schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mongoose.Types.ObjectId):Promise<void> {
+  const res = await this.aggregate(
+    [
+      {
+        $match: {
+          parent: id,
+        },
+      },
+      {
+        $project: {
+          path: 1,
+          parent: 1,
+          descendantCount: 1,
+        },
+      },
+      {
+        $group: {
+          _id: '$parent',
+          sumOfDescendantCount: {
+            $sum: '$descendantCount',
+          },
+          sumOfDocsCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $set: {
+          descendantCount: {
+            $sum: ['$sumOfDescendantCount', '$sumOfDocsCount'],
+          },
+        },
+      },
+    ],
+  );
+
+  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
+  await this.findByIdAndUpdate(id, query);
+};
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance

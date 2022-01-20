@@ -15,7 +15,9 @@ import ActivityDefine from '../util/activityDefine';
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
-const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
+const {
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+} = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 
@@ -1035,6 +1037,16 @@ class PageService {
       throw err;
     }
 
+    // update descendantCount of all public pages
+    try {
+      await this.updateDescendantCountOfSelfAndDescendants('/');
+      logger.info('Successfully updated all descendantCount of public pages.');
+    }
+    catch (err) {
+      logger.error('Failed updating descendantCount of public pages.', err);
+      throw err;
+    }
+
     await this._setIsV5CompatibleTrue();
   }
 
@@ -1248,6 +1260,45 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
+  /**
+   * update descendantCount of the following pages
+   * - page that has the same path as the provided path
+   * - pages that are descendants of the above page
+   */
+  async updateDescendantCountOfSelfAndDescendants(path = '/') {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+
+    const aggregateCondition = Page.getAggrConditionForPageWithProvidedPathAndDescendants(path);
+    const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
+
+    const recountWriteStream = new Writable({
+      objectMode: true,
+      async write(pageDocuments, encoding, callback) {
+        for (const document of pageDocuments) {
+          // eslint-disable-next-line no-await-in-loop
+          await Page.recountDescendantCountOfSelfAndDescendants(document._id);
+        }
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+    aggregatedPages
+      .pipe(createBatchStream(BATCH_SIZE))
+      .pipe(recountWriteStream);
+
+    await streamToPromise(recountWriteStream);
+  }
+
+  // update descendantCount of all pages that are ancestors of a provided path by count
+  async updateDescendantCountOfAncestors(path = '/', count = 0) {
+    const Page = this.crowi.model('Page');
+    const ancestors = collectAncestorPaths(path);
+    await Page.incrementDescendantCountOfPaths(ancestors, count);
+  }
+
 }
 
-module.exports = PageService;
+export default PageService;
