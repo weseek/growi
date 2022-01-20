@@ -10,6 +10,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import PageDuplicateModal from '~/components/PageDuplicateModal';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
@@ -25,6 +26,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
+  const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
   const deleteButtonHandler = () => {
@@ -32,6 +34,21 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
       onClickDeleteButton(page._id);
     }
   };
+
+  const pageDuplicateModalHandler = () => {
+    setIsPageDuplicateModalShown(true);
+  }
+
+  const renderModals = () => {
+    return (
+      <PageDuplicateModal
+        isOpen={isPageDuplicateModalShown}
+        onClose={() => setIsPageDuplicateModalShown(false)}
+        pageId={page._id}
+        path={page.path}
+      />
+    );
+  }
 
 
   const bookmarkToggleHandler = (async() => {
@@ -59,6 +76,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
 
 
   return (
+    <>
     <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
@@ -99,7 +117,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <DropdownItem onClick={pageDuplicateModalHandler}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
           </DropdownItem>
@@ -120,9 +138,9 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </>
         )}
       </DropdownMenu>
-
-
     </Dropdown>
+    {renderModals()}
+    </>
   );
 
 };
