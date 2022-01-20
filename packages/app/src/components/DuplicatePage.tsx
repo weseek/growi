@@ -21,6 +21,7 @@ const DuplicatingPage: FC = (props) => {
     <div className="duplicate-page">
       <DuplicatePageSubnavigation {...props} />
       <div className="container duplicate-content d-flex">
+        {/* main content */}
         <div className="flex-grow-1">
           <div className="mb-4">
             {/* Todo: pass duplicate path */}
@@ -33,8 +34,8 @@ const DuplicatingPage: FC = (props) => {
             </div>
           </div>
         </div>
+        {/* page list btn */}
         <div className="d-none d-lg-block">
-          {/* page list btn */}
           <a href="#" className="d-flex border rounded-pill justify-content-between align-items-center pl-3 pr-4 grw-page-list-btn">
             {/* icon */}
             <div className="grw-page-accessories-control">
