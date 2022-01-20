@@ -156,6 +156,21 @@ export class PageQueryBuilder {
 
   }
 
+  addConditionToListOnlyAncestors(path) {
+    const pathNormalized = pathUtils.normalizePath(path);
+    const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
+
+    this.query = this.query
+      .and({
+        path: {
+          $in: ancestorsPaths,
+        },
+      });
+
+    return this;
+
+  }
+
   /**
    * generate the query to find pages that start with `path`
    *
@@ -970,14 +985,17 @@ export const getPageSchema = (crowi) => {
     }
   }
 
-  pageSchema.statics.create = async function(path, body, user, options = {}) {
+  pageSchema.statics.createV4 = async function(path, body, user, options = {}) {
+    /*
+     * v4 compatible process
+     */
     validateCrowi();
 
     const Page = this;
     const Revision = crowi.model('Revision');
-    const {
-      format = 'markdown', redirectTo, grantUserGroupId, parentId,
-    } = options;
+    const format = options.format || 'markdown';
+    const redirectTo = options.redirectTo || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -988,37 +1006,18 @@ export const getPageSchema = (crowi) => {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({ path, isEmpty: false }); // not validate empty page
+    const isExist = await this.count({ path });
+
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
     }
 
-    /*
-     * update empty page if exists, if not, create a new page
-     */
-    let page;
-    const emptyPage = await Page.findOne({ path, isEmpty: true });
-    if (emptyPage != null) {
-      page = emptyPage;
-      page.isEmpty = false;
-    }
-    else {
-      page = new Page();
-    }
-
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    let parent = parentId;
-    if (isV5Compatible && parent == null && !isTopPage(path)) {
-      parent = await Page.getParentIdAndFillAncestors(path);
-    }
-
+    const page = new Page();
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
-    page.parent = parent;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
@@ -1034,7 +1033,7 @@ export const getPageSchema = (crowi) => {
     return savedPage;
   };
 
-  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+  pageSchema.statics.updatePageV4 = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');

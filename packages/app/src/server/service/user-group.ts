@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
-import UserGroup from '~/server/models/user-group';
-import { compareObjectId, isIncludesObjectId } from '~/server/util/compare-objectId';
+import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
+import { isIncludesObjectId } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -61,7 +61,7 @@ class UserGroupService {
 
     // throw if parent was in its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    const descendants = descendantsWithTarget.filter(d => compareObjectId(d._id, userGroup._id));
+    const descendants = descendantsWithTarget.filter(d => d._id.equals(userGroup._id));
     if (isIncludesObjectId(descendants, parent._id)) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }

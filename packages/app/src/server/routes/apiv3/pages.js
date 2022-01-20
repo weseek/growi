@@ -284,6 +284,7 @@ module.exports = (crowi) => {
       });
     }
     catch (err) {
+      logger.error('Error occurred while creating a page.', err);
       return res.apiv3Err(err);
     }
 
