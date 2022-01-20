@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import DuplicatingPageSubnavigation from './Duplication/DuplicatingPageSubNavigation';
+import DuplicatePageSubnavigation from './Duplication/DuplicatePageSubnavigation';
 import DuplicatePageAlert from './Duplication/DuplicatePageAlert';
 // import PageListItem from './Page/PageListItem';
 import PageListIcon from './Icons/PageListIcon';
@@ -20,7 +20,7 @@ const DuplicatingPage: FC = (props) => {
 
   return (
     <div className="duplicate-page">
-      <DuplicatingPageSubnavigation {...newProps} />
+      <DuplicatePageSubnavigation {...newProps} />
       <div className="container duplicate-content d-flex">
         <div className="flex-grow-1">
           <div className="mb-4">
