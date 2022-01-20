@@ -180,12 +180,11 @@ class PageService {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(Page.find())
+    const builder = new PageQueryBuilder(Page.find(), true)
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
     await Page.addConditionToFilteringByViewerToEdit(builder, userToOperate);
-
     return builder
       .query
       .lean()
@@ -195,7 +194,7 @@ class PageService {
   // TODO: implement recursive rename
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
     // v4 compatible process
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && page.parent != null;
     if (!isV5Compatible) {
       return this.renamePageV4(page, newPagePath, user, options, isRecursively);
     }
@@ -237,12 +236,17 @@ class PageService {
     /*
      * replace target
      */
+    const escapedPath = escapeStringRegexp(page.path);
+    const shouldReplaceTarget = createRedirectPage
+      || await Page.countDocuments({ path: { $regex: new RegExp(`^${escapedPath}(\\/[^/]+)\\/?$`, 'gi') }, parent: { $ne: null } }) > 0;
     let pageToReplaceWith = null;
     if (createRedirectPage) {
       const body = `redirect ${newPagePath}`;
       pageToReplaceWith = await Page.create(path, body, user, { redirectTo: newPagePath });
     }
-    await Page.replaceTargetWithPage(page, pageToReplaceWith);
+    if (shouldReplaceTarget) {
+      await Page.replaceTargetWithPage(page, pageToReplaceWith);
+    }
 
     /*
      * update target
@@ -303,7 +307,92 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, isV5Compatible, grant?, grantedUsers?, grantedGroup?) {
+    // v4 compatible process
+    if (!isV5Compatible) {
+      return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
+    }
+
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
+    const { updateMetadata, createRedirectPage } = options;
+
+    const updatePathOperations: any[] = [];
+    const insertRediectPageOperations: any[] = [];
+    const insertRediectRevisionOperations: any[] = [];
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+
+      // increment updatePathOperations
+      let update;
+      if (updateMetadata && !page.isEmpty) {
+        update = {
+          $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() },
+        };
+      }
+      else {
+        update = {
+          $set: { path: newPagePath },
+        };
+      }
+      updatePathOperations.push({
+        updateOne: {
+          filter: {
+            _id: page._id,
+          },
+          update,
+        },
+      });
+
+      // create redirect page
+      if (createRedirectPage && !page.isEmpty) {
+        const revisionId = new mongoose.Types.ObjectId();
+        insertRediectPageOperations.push({
+          insertOne: {
+            document: {
+              path: page.path,
+              revision: revisionId,
+              creator: user._id,
+              lastUpdateUser: user._id,
+              status: Page.STATUS_PUBLISHED,
+              redirectTo: newPagePath,
+              grant,
+              grantedUsers,
+              grantedGroup,
+            },
+          },
+        });
+        insertRediectRevisionOperations.push({
+          insertOne: {
+            document: {
+              _id: revisionId, pageId: page._id, body: `redirected ${newPagePath}`, author: user._id, format: 'markdown',
+            },
+          },
+        });
+      }
+    });
+
+    try {
+      await Page.bulkWrite(updatePathOperations);
+      // Execute after unorderedBulkOp to prevent duplication
+      if (createRedirectPage) {
+        await Page.bulkWrite(insertRediectPageOperations);
+        await Revision.bulkWrite(insertRediectRevisionOperations);
+        // fill ancestors(parents) of redirectPages
+      }
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    this.pageEvent.emit('updateMany', pages, user);
+  }
+
+  private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
 
     const pageCollection = mongoose.connection.collection('pages');
@@ -356,10 +445,69 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  /**
-   * Create rename stream
-   */
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+    // v4 compatible process
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && targetPage.parent != null;
+    if (!isV5Compatible) {
+      return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
+    }
+
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
+
+    const renameDescendants = this.renameDescendants.bind(this);
+    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await renameDescendants(
+            batch, user, options, pathRegExp, newPagePathPrefix, isV5Compatible, targetPage.grant, targetPage.grantedUsers, targetPage.grantedGroup,
+          );
+          logger.debug(`Renaming pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('Renaming error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      async final(callback) {
+        const Page = mongoose.model('Page') as PageModel;
+        // normalize parent of descendant pages
+        if (targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED) {
+          try {
+            await normalizeParentOfTree(targetPage.path);
+          }
+          catch (err) {
+            logger.error('Failed to normalize descendants afrer rename:', err);
+            throw err;
+          }
+        }
+
+        logger.debug(`Renaming pages has completed: (totalCount=${count})`);
+
+        // update path
+        targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
+    await streamToPromise(readStream);
+  }
+
+  private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -1021,6 +1169,11 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
+  async normalizeParentOfTree(rootPath: string): Promise<void> {
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(rootPath)}`, 'i');
+    return this._v5RecursiveMigration(null, [pathRegExp]);
+  }
+
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');
 
@@ -1158,7 +1311,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps, publicOnly = false) {
+  async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -1237,15 +1390,12 @@ class PageService {
 
           // modify to adjust for RegExp
           let parentPath = parent.path === '/' ? '' : parent.path;
-          // inject \ before brackets
-          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
-            parentPath = parentPath.replace(bracket, `\\${bracket}`);
-          });
+          parentPath = escapeStringRegexp(parentPath);
 
           const filter: any = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'gi') },
           };
           if (grant != null) {
             filter.grant = grant;

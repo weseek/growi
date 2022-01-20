@@ -174,7 +174,7 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('revisionId').optional.isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
@@ -453,8 +453,13 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', /* accessTokenParser, loginRequiredStrictly, csrf, */validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
+    // v4 compatible validation
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible || revisionId == null) {
+      return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
+    }
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -479,13 +484,13 @@ module.exports = (crowi) => {
     let page;
 
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
-      if (!page.isUpdatable(revisionId)) {
+      if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
       page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);

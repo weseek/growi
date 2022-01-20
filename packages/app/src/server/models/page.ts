@@ -160,7 +160,7 @@ schema.statics.createEmptyPage = async function(path: string, parent) {
  * @param pageToReplaceWith (optional) a page document to replace with
  * @returns Promise<void>
  */
-schema.statics.replaceTargetEmptyPage = async function(exPage, pageToReplaceWith?): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?): Promise<void> {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -169,7 +169,7 @@ schema.statics.replaceTargetEmptyPage = async function(exPage, pageToReplaceWith
 
   // create empty page at path
   let newTarget = pageToReplaceWith;
-  if (newTarget) {
+  if (newTarget == null) {
     newTarget = await this.createEmptyPage(exPage.path, parent);
   }
 
@@ -187,7 +187,9 @@ schema.statics.replaceTargetEmptyPage = async function(exPage, pageToReplaceWith
   };
   const operationsForChildren = {
     updateMany: {
-      filter: children.map(d => d._id),
+      filter: {
+        _id: { $in: children.map(d => d._id) },
+      },
       update: {
         parent: newTarget._id,
       },
