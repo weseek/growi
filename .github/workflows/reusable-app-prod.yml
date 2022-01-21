@@ -6,7 +6,9 @@ on:
       node-version:
         required: true
         type: string
-      test-launching:
+      checkout-ref:
+        type: string
+      skip-launching-test:
         type: boolean
 
 jobs:
@@ -19,6 +21,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ input.checkout-ref ||  github.head_ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -84,7 +88,7 @@ jobs:
     needs: [build-prod]
     runs-on: ubuntu-latest
 
-    if: ${{ inputs.test-launching }}
+    if: ${{ !inputs.skip-launching-test }}
 
     services:
       mongodb:
@@ -98,6 +102,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ input.checkout-ref ||  github.head_ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -188,6 +194,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ input.checkout-ref ||  github.head_ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -276,7 +284,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.head_ref }}
+        ref: ${{ input.checkout-ref ||  github.head_ref }}
         fetch-depth: 0
 
     - uses: actions/setup-node@v2
