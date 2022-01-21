@@ -140,7 +140,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
 };
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, // TODO: improve type including IPage
+    path: string, parent: any, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
