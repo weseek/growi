@@ -117,6 +117,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: null,
+      searchEmojiTimeout: 0,
     };
 
     this.gridEditModal = React.createRef();
@@ -791,6 +792,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   emojiSearchTextSetValue(value) {
   // Get input element of emoji picker search
     const input = document.querySelector('[id^="emoji-mart-search"]');
+    input.focus();
     const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
     // Set value to input of emoji picker search and trigger the search
     valueSetter.call(input, value);
@@ -817,7 +819,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
         ch: sc.to().ch,
       };
       sc.replace(emoji.colons, cm.getTokenAt(currentPos).string);
-      console.log(cm.getTokenAt(currentPos).string);
       this.setState({ emojiSearchText: null });
     }
 
@@ -970,17 +971,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     if (sc.findPrevious()) {
       const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-      // Add delay between search emoji and display emoji picker
+      // current search cursor position
       const pos = {
         line: sc.to().line,
         ch: sc.to().ch,
       };
-      const searchText = cm.getTokenAt(pos).string;
-      const searchValue = searchText.replace(':', '');
-      setTimeout(() => {
+      // Add delay between search emoji and display emoji picker
+      if (this.state.searchEmojiTimeout) {
+        clearTimeout(this.state.searchEmojiTimeout);
+      }
+      const timeout = setTimeout(() => {
+        const currentSearchText = sc.matches(true, pos).match[0];
+        const searchValue = currentSearchText.replace(':', '');
         this.setState({ isEmojiPickerShown: isInputtingEmoji });
         this.setState({ emojiSearchText: searchValue });
-      }, 1000);
+      }, 700);
+      this.setState({ searchEmojiTimeout: timeout });
       // return if it isn't inputting emoji
       if (!isInputtingEmoji) {
         return;
