@@ -43,7 +43,7 @@ const DuplicatingPage: FC = (props) => {
                 <button
                   type="button"
                   className="btn btn-link grw-btn-page-accessories"
-                  onClick={() => { /* Todo: open page list of all duplicate pages */ }}
+                  onClick={() => { /* Todo: open page list of ascendants of all duplicate pages */ }}
                 >
                   {accessory.Icon}
                 </button>
