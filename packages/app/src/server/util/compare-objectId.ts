@@ -3,11 +3,7 @@ import mongoose from 'mongoose';
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const compareObjectId = (id1: IObjectId, id2: IObjectId): boolean => {
-  return id1.toString() === id2.toString();
-};
-
-export const isIncludesObjectId = (arr: IObjectId[], id: IObjectId): boolean => {
+export const isIncludesObjectId = (arr: (IObjectId | string)[], id: IObjectId | string): boolean => {
   const _arr = arr.map(i => i.toString());
   const _id = id.toString();
 
@@ -20,14 +16,28 @@ export const isIncludesObjectId = (arr: IObjectId[], id: IObjectId): boolean => 
  * @param testIds Array of mongoose.Types.ObjectId
  * @returns Array of mongoose.Types.ObjectId
  */
-export const excludeTestIdsFromTargetIds = (targetIds: IObjectId[], testIds: IObjectId[]): IObjectId[] => {
+export const excludeTestIdsFromTargetIds = <T extends { toString: any } = IObjectId>(
+  targetIds: T[], testIds: (IObjectId | string)[],
+): T[] => {
   // cast to string
   const arr1 = targetIds.map(e => e.toString());
   const arr2 = testIds.map(e => e.toString());
 
   // filter
-  const excluded = arr2.filter(e => !arr1.includes(e));
+  const excluded = arr1.filter(e => !arr2.includes(e));
+  // cast to ObjectId
+  const shouldReturnString = (arr: any[]): arr is string[] => {
+    return typeof arr[0] === 'string';
+  };
+
+  return shouldReturnString(targetIds) ? excluded : excluded.map(e => new ObjectId(e));
+};
+
+export const removeDuplicates = (objectIds: (IObjectId | string)[]): IObjectId[] => {
+  // cast to string
+  const strs = objectIds.map(id => id.toString());
+  const uniqueArr = Array.from(new Set(strs));
 
   // cast to ObjectId
-  return excluded.map(e => new ObjectId(e));
+  return uniqueArr.map(str => new ObjectId(str));
 };
