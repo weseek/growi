@@ -146,7 +146,7 @@ jobs:
 
     - name: Extract procution files artifact
       run: |
-        tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
+        tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: yarn server:ci
       working-directory: ./packages/app
@@ -229,7 +229,7 @@ jobs:
 
     - name: Extract procution files artifact
       run: |
-        tar -xf ${{ needs.build-prod-node14.outputs.PROD_FILES }}
+        tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: Determine spec expression
       id: determine-spec-exp
