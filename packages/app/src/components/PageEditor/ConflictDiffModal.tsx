@@ -98,7 +98,7 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      const editorMode = 'editorOnResolveConflict';
+      const editorMode = 'editorOnResolveConflictModal';
       await pageContainer.resolveConflict(codeMirrorVal, editorMode);
       onClose();
       pageContainer.showSuccessToastr();
