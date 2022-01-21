@@ -50,7 +50,7 @@ class LoginForm extends React.Component {
               <i className="icon-user"></i>
             </span>
           </div>
-          <input type="text" className="form-control rounded-0" placeholder="Username or E-mail" name="loginForm[username]" />
+          <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail" name="loginForm[username]" />
           {isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
@@ -66,12 +66,12 @@ class LoginForm extends React.Component {
               <i className="icon-lock"></i>
             </span>
           </div>
-          <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]" />
+          <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password" name="loginForm[password]" />
         </div>
 
         <div className="input-group my-4">
           <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
+          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
             <div className="eff"></div>
             <span className="btn-label">
               <i className="icon-login"></i>

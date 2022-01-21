@@ -51,11 +51,13 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.2",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.35",
     "@types/rewire": "^2.5.28",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
+    "cypress": "^9.2.0",
     "eslint": "^7.31.0",
     "eslint-config-weseek": "^1.1.0",
     "eslint-import-resolver-typescript": "^2.4.0",
@@ -69,6 +71,11 @@
     "lerna": "^4.0.0",
     "postcss": "^8.4.5",
     "postcss-scss": "^4.0.3",
+    "reg-keygen-git-hash-plugin": "^0.11.1",
+    "reg-notify-github-plugin": "^0.11.1",
+    "reg-notify-slack-plugin": "^0.11.0",
+    "reg-publish-s3-plugin": "^0.11.0",
+    "reg-suit": "^0.11.1",
     "rewire": "^5.0.0",
     "shipjs": "^0.24.1",
     "stylelint": "^14.2.0",
@@ -76,7 +83,8 @@
     "ts-jest": "^27.0.4",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "yargs": "^17.3.1"
   },
   "engines": {
     "node": "^12 || ^14",
