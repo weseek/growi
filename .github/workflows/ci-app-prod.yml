@@ -6,23 +6,82 @@ on:
 
 jobs:
 
-  test-suit-base:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
+  run-reg-suit-sync-expected:
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
-      skip-launching-test: true
+      run-sync-expected: true
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  test-suit-head:
+
+ test-prod-base:
+    needs: [run-reg-suit-sync-expected]
+
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
+
+    if: ${{ !needs.run-reg-suit-sync-expected.outputs.EXPECTED_IMAGES_EXIST }}
+
+    with:
+      node-version: 14.x
+      checkout-ref: ${{ github.event.pull_request.base.ref }}
+      skip-launching-test: true
+      cypress-report-artifact-name: Cypress report for base
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  run-reg-suit-base:
+    needs: [test-prod-base]
+
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
+
+    with:
+      node-version: 14.x
+      checkout-ref: ${{ github.event.pull_request.base.ref }}
+      run-sync-expected: true
+      run-compare: true
+      run-publish: true
+      cypress-report-artifact-name: Cypress report for base
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  test-prod-head:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
+      cypress-report-artifact-name: Cypress report for head
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  run-reg-suit-head:
+    needs: [run-reg-suit-base, test-prod-head]
+
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
+
+    with:
+      node-version: 14.x
+      checkout-ref: ${{ github.event.pull_request.head.ref }}
+      run-sync-expected: true
+      run-compare: true
+      run-publish: true
+      cypress-report-artifact-name: Cypress report for head
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
