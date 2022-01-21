@@ -5,11 +5,11 @@ import ExtensibleCustomError from 'extensible-custom-error';
 
 import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
+import { Lang } from '~/interfaces/lang';
 import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';
 
-import AppService from './app';
 import SearchService from './search';
 import ConfigManager from './config-manager';
 
@@ -53,7 +53,7 @@ export class InstallerService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async createInitialPages(owner, lang): Promise<any> {
+  private async createInitialPages(owner, lang: Lang): Promise<any> {
     const { localeDir } = this.crowi;
 
     const promises: Promise<IPage|undefined>[] = [];
@@ -80,7 +80,7 @@ export class InstallerService {
   /**
    * Execute only once for installing application
    */
-  private async initDB(globalLang: string): Promise<void> {
+  private async initDB(globalLang: Lang): Promise<void> {
     const configManager: ConfigManager = this.crowi.configManager;
 
     const initialConfig = generateConfigsForInstalling();
@@ -88,8 +88,8 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, language: string): Promise<IUser> {
-    await this.initDB(language);
+  async install(firstAdminUserToSave: IUser, globalLang: Lang): Promise<IUser> {
+    await this.initDB(globalLang);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -102,7 +102,7 @@ export class InstallerService {
       const {
         name, username, email, password,
       } = firstAdminUserToSave;
-      adminUser = await User.createUser(name, username, email, password, language);
+      adminUser = await User.createUser(name, username, email, password, globalLang);
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
@@ -110,10 +110,7 @@ export class InstallerService {
     }
 
     // create initial pages
-    await this.createInitialPages(adminUser, language);
-
-    const appService: AppService = this.crowi.appService;
-    appService.setupAfterInstall();
+    await this.createInitialPages(adminUser, globalLang);
 
     return adminUser;
   }

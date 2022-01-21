@@ -43,6 +43,9 @@ module.exports = function(crowi) {
       return res.render('installer');
     }
 
+    const appService = crowi.appService;
+    appService.setupAfterInstall();
+
     // login with passport
     req.logIn(adminUser, (err) => {
       if (err) {

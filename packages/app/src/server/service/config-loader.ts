@@ -172,6 +172,36 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  AUTO_INSTALL_ADMIN_USERNAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminUsername',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_NAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminName',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_EMAIL: {
+    ns:      'crowi',
+    key:     'autoInstall:adminEmail',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_PASSWORD: {
+    ns:      'crowi',
+    key:     'autoInstall:adminPassword',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_GLOBAL_LANG: {
+    ns:      'crowi',
+    key:     'autoInstall:globalLang',
+    type:    ValueType.STRING,
+    default: null,
+  },
   S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:serverType',
