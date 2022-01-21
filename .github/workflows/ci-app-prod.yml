@@ -6,11 +6,29 @@ on:
 
 jobs:
 
+  retrieve-merge-base-hash:
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      MERGE_BASE_SHA: ${{ steps.get-merge-base.outputs.sha }}
+
+    steps:
+    - name: Git merge-base
+      id: get-merge-base
+      run: |
+        sha=`git merge-base ${{ github.head_ref }} ${{ github.base_ref }}`
+        echo "::set-output name=sha::$sha"
+
+
   run-reg-suit-sync-expected:
+    needs: [retrieve-merge-base-hash]
+
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
+
     with:
       node-version: 14.x
-      checkout-ref: ${{ github.event.pull_request.head.ref }}
+      checkout-ref: ${{ needs.retrieve-merge-base-hash.outputs.MERGE_BASE_SHA }}
       run-sync-expected: true
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
@@ -19,8 +37,8 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  test-prod-base:
-    needs: [run-reg-suit-sync-expected]
+  test-prod-merge-base:
+    needs: [retrieve-merge-base-hash, run-reg-suit-sync-expected]
 
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
 
@@ -28,14 +46,14 @@ jobs:
 
     with:
       node-version: 14.x
-      checkout-ref: ${{ github.event.pull_request.base.ref }}
+      checkout-ref: ${{ needs.retrieve-merge-base-hash.outputs.MERGE_BASE_SHA }}
       skip-launching-test: true
       cypress-report-artifact-name: Cypress report for base
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  run-reg-suit-base:
+  run-reg-suit-merge-base:
     needs: [test-prod-base]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
@@ -61,7 +79,6 @@ jobs:
 
     with:
       node-version: 14.x
-      checkout-ref: ${{ github.event.pull_request.head.ref }}
       cypress-report-artifact-name: Cypress report for head
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -76,7 +93,6 @@ jobs:
 
     with:
       node-version: 14.x
-      checkout-ref: ${{ github.event.pull_request.head.ref }}
       run-sync-expected: true
       run-compare: true
       run-publish: true
