@@ -54,6 +54,7 @@ import PersonalContainer from '~/client/services/PersonalContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import { appContainer, componentMappings } from './base';
+import DuplicatePage from '~/components/DuplicatePage';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -88,6 +89,7 @@ Object.assign(componentMappings, {
 
   'search-page': <SearchPage crowi={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,
+  'duplicate-page-list': <DuplicatePage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
