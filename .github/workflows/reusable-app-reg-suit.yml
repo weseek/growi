@@ -70,7 +70,6 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download screenshots taken by cypress
-      if: ${{ inputs.run-compare }}
       uses: actions/download-artifact@v2
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
