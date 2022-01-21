@@ -61,11 +61,24 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
+
     - name: Run reg-suit sync-expected
       if: ${{ inputs.run-sync-expected }}
       working-directory: ./packages/app
       run: |
-        npx reg-suit sync-expected
+        yarn reg-suit sync-expected
 
     - name: Check expected images exist
       if: ${{ inputs.run-sync-expected }}
@@ -84,13 +97,13 @@ jobs:
       if: ${{ inputs.run-compare }}
       working-directory: ./packages/app
       run: |
-        npx reg-suit compare
+        yarn reg-suit compare
 
     - name: Run reg-suit publish
       if: ${{ inputs.run-publish }}
       working-directory: ./packages/app
       run: |
-        npx reg-suit publish -n
+        yarn reg-suit publish -n
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
