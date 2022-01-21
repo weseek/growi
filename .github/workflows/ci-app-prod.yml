@@ -19,7 +19,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
- test-prod-base:
+  test-prod-base:
     needs: [run-reg-suit-sync-expected]
 
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
