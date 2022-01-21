@@ -42,7 +42,7 @@ class PageGrantService {
   }
 
   private validateComparableTarget(comparable: ComparableTarget) {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     const { grant, grantedUserIds, grantedGroupId } = comparable;
 
@@ -61,7 +61,7 @@ class PageGrantService {
   private processValidation(target: ComparableTarget, ancestor: ComparableAncestor, descendants?: ComparableDescendants): boolean {
     this.validateComparableTarget(target);
 
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     /*
      * ancestor side
@@ -168,7 +168,7 @@ class PageGrantService {
       grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
-      const Page = mongoose.model('Page') as PageModel;
+      const Page = mongoose.model('Page') as unknown as PageModel;
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
       let applicableUserIds: ObjectId[] | undefined;
@@ -209,7 +209,7 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableAncestor(targetPath: string): Promise<ComparableAncestor> {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
     let applicableUserIds: ObjectId[] | undefined;
@@ -251,7 +251,7 @@ class PageGrantService {
    * @returns ComparableDescendants
    */
   private async generateComparableDescendants(targetPath: string): Promise<ComparableDescendants> {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     /*
      * make granted users list of descendant's

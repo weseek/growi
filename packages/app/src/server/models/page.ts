@@ -32,10 +32,13 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {}
 
+
 type TargetAndAncestorsResult = {
   targetAndAncestors: PageDocument[]
   rootPage: PageDocument
 }
+
+export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
@@ -339,7 +342,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   }
   else {
     const parentId = parentPathOrId;
-    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }), true);
+    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO
   }
   await addViewerCondition(queryBuilder, user, userGroups);
 
@@ -670,7 +673,7 @@ export default (crowi: Crowi): any => {
   schema.methods = { ...pageSchema.methods, ...schema.methods };
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
-  return getOrCreateModel<PageDocument, PageModel>('Page', schema);
+  return getOrCreateModel<PageDocument, PageModel>('Page', schema as any); // TODO: improve type
 };
 
 /*

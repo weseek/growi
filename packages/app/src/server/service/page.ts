@@ -8,7 +8,7 @@ import { Writable } from 'stream';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { generateGrantCondition, PageModel } from '~/server/models/page';
+import { CreateMethod, generateGrantCondition, PageModel } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 import { IPage } from '~/interfaces/page';
@@ -235,6 +235,7 @@ class PageService {
      * replace target
      */
     const escapedPath = escapeStringRegexp(page.path);
+    // https://regex101.com/r/mrDJrx/1
     const shouldReplaceTarget = createRedirectPage
       || await Page.countDocuments({ path: { $regex: new RegExp(`^${escapedPath}(\\/[^/]+)\\/?$`, 'gi') }, parent: { $ne: null } }) > 0;
     let pageToReplaceWith = null;
@@ -476,7 +477,7 @@ class PageService {
         callback();
       },
       async final(callback) {
-        const Page = mongoose.model('Page') as PageModel;
+        const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
         if (targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED) {
           try {
@@ -545,43 +546,54 @@ class PageService {
     await streamToPromise(readStream);
   }
 
+  /*
+   * Duplicate
+   */
+  async duplicate(page, newPagePath, user, isRecursively) {
+    // v4 compatible process
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && page.parent != null;
+    if (!isV5Compatible) {
+      return this.duplicateV4(page, newPagePath, user, isRecursively);
+    }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
-    const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    // populate
+    await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
-    const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: { $in: pageIds } });
+    // create option
+    const options = {
+      grant: page.grant,
+      grantUserGroupId: page.grantedGroup,
+      grantedUserIds: page.grantedUsers,
+    };
 
-    const pages = await Page.find({ redirectTo: { $ne: null } });
-    const redirectToPagePathMapping = {};
-    pages.forEach((page) => {
-      redirectToPagePathMapping[page.redirectTo] = page.path;
-    });
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-    const redirectedFromPagePaths: any[] = [];
-    pagePaths.forEach((pagePath) => {
-      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
-    });
+    const createdPage = await (Page.create as CreateMethod)(
+      newPagePath, page.revision.body, user, options,
+    );
 
-    return Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
-      Comment.deleteMany({ page: { $in: pageIds } }),
-      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
-      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ path: { $in: pagePaths } }),
-      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
-      attachmentService.removeAllAttachments(attachments),
-    ]);
+    if (isRecursively) {
+      this.duplicateDescendantsWithStream(page, newPagePath, user);
+    }
+
+    // take over tags
+    const originTags = await page.findRelatedTagsById();
+    let savedTags = [];
+    if (originTags != null) {
+      await PageTagRelation.updatePageTags(createdPage._id, originTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage._id);
+      this.tagEvent.emit('update', createdPage, savedTags);
+    }
+
+    const result = serializePageSecurely(createdPage);
+    result.tags = savedTags;
+
+    return result;
   }
 
-  async duplicate(page, newPagePath, user, isRecursively) {
+  async duplicateV4(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
@@ -741,7 +753,9 @@ class PageService {
 
   }
 
-
+  /*
+   * Delete
+   */
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
@@ -777,6 +791,41 @@ class PageService {
     this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
+  }
+
+  private async deleteCompletelyOperation(pageIds, pagePaths) {
+    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+    const Bookmark = this.crowi.model('Bookmark');
+    const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
+    const ShareLink = this.crowi.model('ShareLink');
+    const Revision = this.crowi.model('Revision');
+    const Attachment = this.crowi.model('Attachment');
+
+    const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: { $in: pageIds } });
+
+    const pages = await Page.find({ redirectTo: { $ne: null } });
+    const redirectToPagePathMapping = {};
+    pages.forEach((page) => {
+      redirectToPagePathMapping[page.redirectTo] = page.path;
+    });
+
+    const redirectedFromPagePaths: any[] = [];
+    pagePaths.forEach((pagePath) => {
+      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    });
+
+    return Promise.all([
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
+      attachmentService.removeAllAttachments(attachments),
+    ]);
   }
 
   private async deleteDescendants(pages, user) {
@@ -1278,7 +1327,7 @@ class PageService {
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
   async _generateRegExpsByPageIds(pageIds) {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     let result;
     try {
