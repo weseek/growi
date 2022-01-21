@@ -13,9 +13,7 @@ type Props = {
 
 }
 
-// TODO
-// Task : https://redmine.weseek.co.jp/issues/85465
-// 3. message props to SearchPageLayout.
+
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();

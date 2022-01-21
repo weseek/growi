@@ -11,9 +11,6 @@ type Props = {
 
 }
 
-// TODO
-// Task : https://redmine.weseek.co.jp/issues/85465
-// 3. message props to SearchPageLayout.
 const LegacyPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
@@ -52,12 +49,17 @@ const LegacyPage : FC<Props> = (props: Props) => {
     return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked} isDisabled></SearchPageForm>;
   };
 
-
-  const message = () => {
-    // return xd黄色のmessage部分
-    // props として search coreに流して LegacyPageの時のみこのmessageをSearchPageLayoutの中に差し込む
-    // https://xd.adobe.com/view/cd3cb2f8-625d-4a6b-b6e4-917f75c675c5-986f/screen/31308311-63c8-4183-98c9-64ef29811956/
-  };
+  // TODO : i18n
+  // TASK : https://redmine.weseek.co.jp/issues/86488
+  const alertMessage = (
+    <div className="alert alert-warning py-3">
+      <h5 className="font-weight-bold mt-1">旧形式のプライペートページです</h5>
+      <p>
+        チェックボックスでページを選択して 画面上部新スキーマへ変換する ボタンから新スキーマへ切り替えることが可能です。
+        詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて<i className="icon-share-alt"></i> </a>を参照ください。
+      </p>
+    </div>
+  );
 
   return (
     <SearchCore
@@ -67,6 +69,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
       query="[nq:PrivateLegacyPages]"
       shouldExcludeUserPages={false}
       shouldExcludeTrashPages={false}
+      alertMessage={alertMessage}
     />
   );
 };

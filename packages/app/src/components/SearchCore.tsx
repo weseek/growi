@@ -61,6 +61,7 @@ type Props = {
   shouldExcludeTrashPages : boolean,
   renderIncludeSpecificPath?: (excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler) => React.FunctionComponent,
   renderSortControl?: (sort, order, onChangeSortInvoked) => React.FunctionComponent,
+  alertMessage?: React.ReactNode,
   query?: string,
 };
 
@@ -378,6 +379,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onPagingLimitChanged={onPagingLimitChanged}
         pagingLimit={pagingLimit}
         activePage={activePage}
+        alertMessage={props.alertMessage}
       >
       </SearchPageLayout>
       {props.renderActionToPagesModal(isActionToPageModalShown, getSelectedPagesToAction, closeActionConfirmModalHandler)}
