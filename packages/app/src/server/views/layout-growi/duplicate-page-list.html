@@ -1,0 +1,15 @@
+{% extends 'base/layout.html' %}
+
+{% block content_header_wrapper %}
+<div id="grw-subnav-switcher-container" class="d-edit-none"></div>
+{% endblock %}
+
+{% block layout_main %}
+<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
+<div>
+  {% for page in pages %}
+    <li>{{page._id.toString()}}: {{page.path}}</li>
+  {% endfor %}
+</div>
+<div id="duplicate-page-list"></div>
+{% endblock %}
