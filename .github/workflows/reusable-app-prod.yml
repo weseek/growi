@@ -6,10 +6,7 @@ on:
       node-version:
         required: true
         type: string
-      checkout-ref:
-        type: string
-        default: ${{ github.head_ref }}
-      skip-launching-test:
+      skip-cypress:
         type: boolean
       cypress-report-artifact-name:
         required: true
@@ -28,8 +25,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ inputs.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -95,8 +90,6 @@ jobs:
     needs: [build-prod]
     runs-on: ubuntu-latest
 
-    if: ${{ !inputs.skip-launching-test }}
-
     services:
       mongodb:
         image: mongo:4.4
@@ -109,8 +102,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ inputs.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -184,6 +175,8 @@ jobs:
   run-cypress:
     needs: [build-prod]
 
+    if: ${{ !inputs.skip-cypress }}
+
     runs-on: ubuntu-latest
     container: cypress/base:14.18.1
 
@@ -201,8 +194,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ inputs.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:

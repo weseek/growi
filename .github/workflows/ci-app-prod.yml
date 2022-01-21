@@ -1,65 +1,35 @@
 name: Node CI for app production
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
+    branches-ignore:
+      - release/**
+      - rc/**
+      - chore/**
+      - support/prepare-v**
 
 jobs:
 
-  retrieve-merge-base-hash:
-
-    runs-on: ubuntu-latest
-
-    outputs:
-      MERGE_BASE_SHA: ${{ steps.get-merge-base.outputs.sha }}
-
-    steps:
-
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    - name: Git merge-base
-      id: get-merge-base
-      run: |
-        sha=`git merge-base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}`
-        echo "::set-output name=sha::$sha"
-
-
-  run-reg-suit-sync-expected:
-    needs: [retrieve-merge-base-hash]
-
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
-
-    with:
-      node-version: 14.x
-      checkout-ref: ${{ needs.retrieve-merge-base-hash.outputs.MERGE_BASE_SHA }}
-      run-sync-expected: true
-    secrets:
-      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-  test-prod-merge-base:
-    needs: [retrieve-merge-base-hash, run-reg-suit-sync-expected]
-
+  test-prod-12.x:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
-
-    if: ${{ !needs.run-reg-suit-sync-expected.outputs.EXPECTED_IMAGES_EXIST }}
-
     with:
-      node-version: 14.x
-      checkout-ref: ${{ needs.retrieve-merge-base-hash.outputs.MERGE_BASE_SHA }}
-      skip-launching-test: true
-      cypress-report-artifact-name: Cypress report for base
+      node-version: 12.x
+      skip-cypress: true
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  run-reg-suit-merge-base:
-    needs: [test-prod-merge-base]
+  test-prod-14.x:
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
+    with:
+      node-version: 14.x
+      cypress-report-artifact-name: Cypress report
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  run-reg-suit-14.x:
+    needs: [test-prod-14.x]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
@@ -67,41 +37,7 @@ jobs:
 
     with:
       node-version: 14.x
-      checkout-ref: ${{ github.event.pull_request.base.ref }}
-      run-sync-expected: true
-      run-compare: true
-      run-publish: true
-      cypress-report-artifact-name: Cypress report for base
-    secrets:
-      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-  test-prod-head:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
-
-    with:
-      node-version: 14.x
-      cypress-report-artifact-name: Cypress report for head
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-  run-reg-suit-head:
-    needs: [run-reg-suit-merge-base, test-prod-head]
-
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
-
-    if: always()
-
-    with:
-      node-version: 14.x
-      run-sync-expected: true
-      run-compare: true
-      run-publish: true
-      cypress-report-artifact-name: Cypress report for head
+      cypress-report-artifact-name: Cypress report
     secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
