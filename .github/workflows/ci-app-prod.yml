@@ -12,6 +12,7 @@ jobs:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
       skip-launching-test: true
+    secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -22,6 +23,7 @@ jobs:
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
+    secrets:
       REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
