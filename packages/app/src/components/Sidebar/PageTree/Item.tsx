@@ -120,12 +120,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isInputOpen, setIsInputOpen] = useState(false);
-
+  const [isInputForRenameOpen, setIsInputForRenameOpen] = useState(false);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
-
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -189,7 +187,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   const onClickRenameButtonHandler = useCallback(() => {
-    setIsInputOpen(true);
+    setIsInputForRenameOpen(true);
   }, []);
 
   const onPressEnterHandlerForRename = async() => {
@@ -202,7 +200,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     //   console.log(err);
     // }
     console.log('Page path has been renamed!!');
-    setIsInputOpen(false);
+    console.log(page);
+    setIsInputForRenameOpen(false);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -263,7 +262,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         </button>
         {/* page path */}
-        { isInputOpen && (
+        { isInputForRenameOpen && (
           <ClosableTextInput
             isShown
             placeholder={page.path}
@@ -271,7 +270,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onPressEnter={onPressEnterHandlerForRename}
           />
         )}
-        { !isInputOpen && (
+        { !isInputForRenameOpen && (
           <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
