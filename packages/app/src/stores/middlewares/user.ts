@@ -4,8 +4,9 @@ export const checkAndUpdateImageUrlCached = (useSWRNext) => {
   return (key, fetcher, config) => {
     const swrNext = useSWRNext(key, fetcher, config);
     if (swrNext.data != null) {
-      const distinctUserIds = Array.from(new Set([swrNext.data]));
-      if (distinctUserIds.length > 0) {
+      const userIds = swrNext.data?.map(user => user._id);
+      if (userIds.length > 0) {
+        const distinctUserIds = Array.from(new Set(userIds));
         apiv3Put('/users/update.imageUrlCache', { userIds: distinctUserIds });
       }
     }
