@@ -2,11 +2,10 @@ name: Node CI for app production
 
 on:
   push:
-    branches-ignore:
-      - release/**
-      - rc/**
-      - chore/**
-      - support/prepare-v**
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
 
 jobs:
 
