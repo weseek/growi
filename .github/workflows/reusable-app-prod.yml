@@ -9,7 +9,6 @@ on:
       skip-cypress:
         type: boolean
       cypress-report-artifact-name:
-        required: true
         type: string
     secrets:
       SLACK_WEBHOOK_URL:
