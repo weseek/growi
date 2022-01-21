@@ -22,6 +22,7 @@ import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import SearchService from '../service/search';
+import { InstallerService } from '../service/installer';
 
 import Actiity from '../models/activity';
 
@@ -140,6 +141,8 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
   ]);
+
+  await this.autoInstall();
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -370,6 +373,35 @@ Crowi.prototype.setupCsrf = async function() {
   this.tokens = new Tokens();
 
   return Promise.resolve();
+};
+
+Crowi.prototype.autoInstall = function() {
+  const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+  const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
+
+  if (isInstalled || username == null) {
+    return;
+  }
+
+  logger.info('Start automatic installation');
+
+  const firstAdminUserToSave = {
+    username,
+    name: this.configManager.getConfig('crowi', 'autoInstall:adminName'),
+    email: this.configManager.getConfig('crowi', 'autoInstall:adminEmail'),
+    password: this.configManager.getConfig('crowi', 'autoInstall:adminPassword'),
+    admin: true,
+  };
+  const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+
+  const installerService = new InstallerService(this);
+
+  try {
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+  }
+  catch (err) {
+    logger.warn('Automatic installation failed.', err);
+  }
 };
 
 Crowi.prototype.getTokens = function() {
