@@ -34,7 +34,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
     // no icon for migration
     const actionIconAndText = (
       <>
-        Migrate
+        {t('modal_migrate.migrating_page')}
       </>
     );
     return (

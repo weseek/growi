@@ -64,6 +64,10 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
+          {/* TODO : i18n + link
+            Task : https://redmine.weseek.co.jp/issues/86488
+          */}
+          <p>詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて</a></p>
           <label>{t('modal_migrate.migrating_page')}:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
