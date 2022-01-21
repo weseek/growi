@@ -16,12 +16,13 @@ type PageItemControlProps = {
   isEnableActions: boolean
   isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
+  onClickRenameButton?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
   const {
-    page, isEnableActions, onClickDeleteButton, isDeletable,
+    page, isEnableActions, onClickDeleteButton, isDeletable, onClickRenameButton,
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,12 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const deleteButtonHandler = () => {
     if (onClickDeleteButton != null && page._id != null) {
       onClickDeleteButton(page._id);
+    }
+  };
+
+  const renameButtonHandler = () => {
+    if (onClickRenameButton != null && page._id != null) {
+      onClickRenameButton(page._id);
     }
   };
 
@@ -105,7 +112,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <DropdownItem onClick={renameButtonHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
