@@ -386,7 +386,6 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
     const renameDescendants = this.renameDescendants.bind(this);
-    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
@@ -406,18 +405,6 @@ class PageService {
         callback();
       },
       async final(callback) {
-        const Page = mongoose.model('Page') as PageModel;
-        // normalize parent of descendant pages
-        if (targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED) {
-          try {
-            await normalizeParentOfTree(targetPage.path);
-          }
-          catch (err) {
-            logger.error('Failed to normalize descendants afrer rename:', err);
-            throw err;
-          }
-        }
-
         logger.debug(`Renaming pages has completed: (totalCount=${count})`);
 
         // update path
@@ -1095,11 +1082,6 @@ class PageService {
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
-  }
-
-  async normalizeParentOfTree(rootPath: string): Promise<void> {
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(rootPath)}`, 'i');
-    return this._v5RecursiveMigration(null, [pathRegExp]);
   }
 
   async v5MigrationByPageIds(pageIds) {
