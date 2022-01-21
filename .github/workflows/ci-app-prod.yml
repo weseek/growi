@@ -58,7 +58,7 @@ jobs:
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
-    if: always();
+    if: always()
 
     with:
       node-version: 14.x
@@ -89,7 +89,7 @@ jobs:
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
-    if: always();
+    if: always()
 
     with:
       node-version: 14.x
