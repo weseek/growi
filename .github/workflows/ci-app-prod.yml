@@ -14,6 +14,11 @@ jobs:
       MERGE_BASE_SHA: ${{ steps.get-merge-base.outputs.sha }}
 
     steps:
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
     - name: Git merge-base
       id: get-merge-base
       run: |
