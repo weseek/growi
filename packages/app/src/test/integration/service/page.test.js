@@ -304,9 +304,6 @@ describe('PageService', () => {
       expect(wrongPage).toBeNull();
     });
 
-    /*
-     * TODO: rewrite test when modify rename function
-     */
     test('rename page with different tree with isRecursively [shallower]', async() => {
       // setup
       expect(await Page.findOne({ path: '/level1' })).toBeNull();
