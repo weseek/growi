@@ -1,16 +1,12 @@
 import React, { FC, useState } from 'react';
 
-import { Types } from 'mongoose';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
 import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
-import { toastError } from '~/client/util/apiNotification';
 import { useIsGuestUser } from '~/stores/context';
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
-import { apiv3Put } from '~/client/util/apiv3-client';
 
 interface Props {
   hideTotalNumber?: boolean
