@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  test-prod-12.x:
+  test-prod-node12:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 12.x
@@ -19,7 +19,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  test-prod-14.x:
+  test-prod-node14:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
@@ -28,8 +28,8 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  run-reg-suit-14.x:
-    needs: [test-prod-14.x]
+  run-reg-suit-node14:
+    needs: [test-prod-node14]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
