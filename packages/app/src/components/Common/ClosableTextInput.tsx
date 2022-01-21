@@ -96,7 +96,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       <input
         ref={inputRef}
         type="text"
-        className="form-control my-1"
+        className="form-control"
         placeholder={props.placeholder}
         name="input"
         onChange={onChangeHandler}
