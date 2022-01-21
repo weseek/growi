@@ -46,7 +46,7 @@ type ItemControlProps = {
   isEnableActions: boolean
   isDeletable: boolean
   onClickDeleteButtonHandler?(): void
-  onClickRenameButtonHandler?(): void
+  onClickRenameButton?(): void
   onClickPlusButtonHandler?(): void
 }
 
@@ -67,12 +67,12 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     props.onClickDeleteButtonHandler();
   };
 
-  const onClickRenameButton = () => {
-    if (props.onClickRenameButtonHandler == null) {
+  const onClickRenameButtonHandler = () => {
+    if (props.onClickRenameButton == null) {
       return;
     }
 
-    props.onClickRenameButtonHandler();
+    props.onClickRenameButton();
   };
 
   if (props.page == null) {
@@ -86,7 +86,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
         onClickDeleteButton={onClickDeleteButton}
         isEnableActions={props.isEnableActions}
         isDeletable={props.isDeletable}
-        onClickRenameButton={onClickRenameButton}
+        onClickRenameButtonHandler={onClickRenameButtonHandler}
       />
       <button
         type="button"
@@ -186,7 +186,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [page, onClickDeleteByPage]);
 
 
-  const onClickRenameButtonHandler = useCallback(() => {
+  const onClickRenameButton = useCallback(() => {
     setIsInputForRenameOpen(true);
   }, []);
 
@@ -272,7 +272,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemControl
             page={page}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-            onClickRenameButtonHandler={onClickRenameButtonHandler}
+            onClickRenameButton={onClickRenameButton}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
             isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
