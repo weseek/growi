@@ -255,7 +255,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         { isInputForRenameOpen && (
           <ClosableTextInput
             isShown
-            placeholder={page.path}
+            placeholder={t('Input page name')}
             onClickOutside={() => { setIsInputForRenameOpen(false) }}
             onPressEnter={onPressEnterHandlerForRename}
           />
