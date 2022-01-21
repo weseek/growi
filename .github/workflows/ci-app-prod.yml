@@ -22,7 +22,7 @@ jobs:
     - name: Git merge-base
       id: get-merge-base
       run: |
-        sha=`git merge-base ${{ github.head_ref }} ${{ github.base_ref }}`
+        sha=`git merge-base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}`
         echo "::set-output name=sha::$sha"
 
 
