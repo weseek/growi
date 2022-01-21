@@ -46,6 +46,7 @@ type ItemControlProps = {
   isEnableActions: boolean
   isDeletable: boolean
   onClickDeleteButtonHandler?(): void
+  onClickRenameButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
 
@@ -66,13 +67,27 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     props.onClickDeleteButtonHandler();
   };
 
+  const onClickRenameButton = () => {
+    if (props.onClickRenameButtonHandler == null) {
+      return;
+    }
+
+    props.onClickRenameButtonHandler();
+  };
+
   if (props.page == null) {
     return <></>;
   }
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
+      <PageItemControl
+        page={props.page}
+        onClickDeleteButton={onClickDeleteButton}
+        isEnableActions={props.isEnableActions}
+        isDeletable={props.isDeletable}
+        onClickRenameButton={onClickRenameButton}
+      />
       <button
         type="button"
         className="border-0 rounded grw-btn-page-management p-0"
@@ -105,6 +120,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
+  const [isInputOpen, setIsInputOpen] = useState(false);
 
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
 
@@ -171,6 +187,24 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
+
+  const onClickRenameButtonHandler = useCallback(() => {
+    setIsInputOpen(true);
+  }, []);
+
+  const onPressEnterHandlerForRename = async() => {
+    // try {
+    //   await apiv3Put('/pages/rename', {
+    //     newPagePath: 'こんにちは GROWI', pageId: page._id, isRecursively: false, revisionId: page.revision,
+    //   });
+    // }
+    // catch (err) {
+    //   console.log(err);
+    // }
+    console.log('Page path has been renamed!!');
+    setIsInputOpen(false);
+  };
+
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
       return {
@@ -228,9 +262,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <TriangleIcon />
           </div>
         </button>
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
-        </a>
+        {/* page path */}
+        { isInputOpen && (
+          <ClosableTextInput
+            isShown
+            placeholder={page.path}
+            onClickOutside={() => { setNewPageInputShown(false) }}
+            onPressEnter={onPressEnterHandlerForRename}
+          />
+        )}
+        { !isInputOpen && (
+          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          </a>
+        )}
         <div className="grw-pagetree-count-wrapper">
           <ItemCount />
         </div>
@@ -238,6 +283,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ItemControl
             page={page}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickRenameButtonHandler={onClickRenameButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
             isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
