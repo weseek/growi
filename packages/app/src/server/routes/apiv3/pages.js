@@ -178,7 +178,6 @@ module.exports = (crowi) => {
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
-      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
 
     duplicatePage: [
@@ -454,7 +453,7 @@ module.exports = (crowi) => {
    *            description: page path is already existed
    */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively, revisionId } = req.body;
+    const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -488,7 +487,7 @@ module.exports = (crowi) => {
       if (!page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
     }
     catch (err) {
       logger.error(err);
