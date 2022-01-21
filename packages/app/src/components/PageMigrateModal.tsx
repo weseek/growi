@@ -69,8 +69,6 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
           */}
           <p>詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて</a></p>
           <label>{t('modal_migrate.migrating_page')}:</label><br />
-          {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {pages.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })}
