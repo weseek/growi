@@ -112,12 +112,6 @@ export class InstallerService {
     // create initial pages
     await this.createInitialPages(adminUser, language);
 
-    const pluginService = this.crowi.pluginService;
-    await pluginService.autoDetectAndLoadPlugins();
-
-    this.crowi.setupRoutesAtLast();
-    this.crowi.setupGlobalErrorHandlers();
-
     const appService: AppService = this.crowi.appService;
     appService.setupAfterInstall();
 

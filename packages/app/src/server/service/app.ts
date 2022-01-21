@@ -47,6 +47,12 @@ export default class AppService implements S2sMessageHandlable {
     const isDBInitialized = await this.isDBInitialized(true);
     if (isDBInitialized) {
       this.setupAfterInstall();
+
+      // remove message handler
+      const { s2sMessagingService } = this;
+      if (s2sMessagingService != null) {
+        this.s2sMessagingService.removeMessageHandler(this);
+      }
     }
   }
 
@@ -107,14 +113,10 @@ export default class AppService implements S2sMessageHandlable {
     return this.configManager.getConfigFromDB('crowi', 'app:installed');
   }
 
-  setupAfterInstall() {
-    this.publishPostInstallationMessage();
-
-    // remove message handler
-    const { s2sMessagingService } = this;
-    if (s2sMessagingService != null) {
-      this.s2sMessagingService.removeMessageHandler(this);
-    }
+  async setupAfterInstall(): Promise<void> {
+    await this.crowi.pluginService.autoDetectAndLoadPlugins();
+    this.crowi.setupRoutesAtLast();
+    this.crowi.setupGlobalErrorHandlers();
   }
 
 }
