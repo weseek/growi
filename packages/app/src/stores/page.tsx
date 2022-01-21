@@ -7,7 +7,6 @@ import { IPage, IPageInfo } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { useIsGuestUser } from './context';
-import { checkAndUpdateImageUrlCached } from './middlewares/user';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
@@ -68,6 +67,5 @@ export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageI
   return useSWR(
     ['/page/info', pageId],
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
-    { use: [checkAndUpdateImageUrlCached] },
   );
 };
