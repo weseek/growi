@@ -8,13 +8,13 @@ jobs:
 
   build-prod-base:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
-      with:
-        node-version: 14.x
-        checkout-ref: ${{ github.event.pull_request.head.ref }}
+    with:
+      node-version: 14.x
+      checkout-ref: ${{ github.event.pull_request.head.ref }}
 
   build-prod-head:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
-      with:
-        node-version: 14.x
-        checkout-ref: ${{ github.event.pull_request.head.ref }}
-        test-launching: true
+    with:
+      node-version: 14.x
+      checkout-ref: ${{ github.event.pull_request.head.ref }}
+      test-launching: true
