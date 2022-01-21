@@ -8,6 +8,7 @@ on:
         type: string
       checkout-ref:
         type: string
+        default: ${{ github.head_ref }}
       skip-launching-test:
         type: boolean
 
@@ -22,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ input.checkout-ref ||  github.head_ref }}
+        ref: ${{ input.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -103,7 +104,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ input.checkout-ref ||  github.head_ref }}
+        ref: ${{ input.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -195,7 +196,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ input.checkout-ref ||  github.head_ref }}
+        ref: ${{ input.checkout-ref }}
 
     - uses: actions/setup-node@v2
       with:
@@ -284,7 +285,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ input.checkout-ref ||  github.head_ref }}
+        ref: ${{ input.checkout-ref }}
         fetch-depth: 0
 
     - uses: actions/setup-node@v2
