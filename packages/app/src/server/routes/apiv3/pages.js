@@ -452,9 +452,9 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', /* accessTokenParser, loginRequiredStrictly, csrf, */validator.renamePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively, revisionId } = req.body;
-    // v4 compatible validation
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+    const { pageId, revisionId } = req.body;
+    // v4 compatible validation (reason: empty page does not require revisionId validation)
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible && revisionId == null) {
       return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
@@ -492,7 +492,7 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
     }
     catch (err) {
       logger.error(err);
