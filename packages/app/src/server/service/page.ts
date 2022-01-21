@@ -193,11 +193,11 @@ class PageService {
   }
 
   // TODO: implement recursive rename
-  async renamePage(page, newPagePath, user, options, isRecursively = false) {
+  async renamePage(page, newPagePath, user, options) {
     // v4 compatible process
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
-      return this.renamePageV4(page, newPagePath, user, options, isRecursively);
+      return this.renamePageV4(page, newPagePath, user, options);
     }
 
     const Page = this.crowi.model('Page');
@@ -229,10 +229,8 @@ class PageService {
       }
     }
 
-    // create descendants first
-    if (isRecursively) {
-      await this.renameDescendantsWithStream(page, newPagePath, user, options);
-    }
+    // update descendants first
+    await this.renameDescendantsWithStream(page, newPagePath, user, options);
 
     /*
      * replace target
