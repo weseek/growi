@@ -194,7 +194,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 6 characters long.",
+      "password": "Your password must be at least 8 characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },

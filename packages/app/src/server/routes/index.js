@@ -13,7 +13,7 @@ const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  max: 10, // limit each IP to 10 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes',
 });
@@ -61,7 +61,7 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
-  app.post('/login'                   , applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , apiLimiter, applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
