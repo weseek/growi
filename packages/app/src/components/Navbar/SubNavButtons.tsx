@@ -91,6 +91,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
             onLikeClicked={likeClickhandler}
             sumOfBookmarks={sumOfBookmarks}
             isBookmarked={isBookmarked}
+            bookmarkedUsers={bookmarkedUsers}
             onBookMarkClicked={bookmarkClickHandler}
           >
           </PageReactionButtons>
