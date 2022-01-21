@@ -27,7 +27,8 @@ on:
       SLACK_WEBHOOK_URL:
         required: true
     outputs:
-      EXPECTED_IMAGES_EXIST: ${{ jobs.run-reg-suit.outputs.EXPECTED_IMAGES_EXIST }}
+      EXPECTED_IMAGES_EXIST:
+        value: ${{ jobs.run-reg-suit.outputs.EXPECTED_IMAGES_EXIST }}
 
 
 jobs:
