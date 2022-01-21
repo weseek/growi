@@ -69,18 +69,6 @@ jobs:
       run: |
         npx lerna bootstrap -- --frozen-lockfile
 
-    - name: Run reg-suit sync-expected
-      if: ${{ inputs.run-sync-expected }}
-      working-directory: ./packages/app
-      run: |
-        yarn reg-suit sync-expected
-
-    - name: Check expected images exist
-      if: ${{ inputs.run-sync-expected }}
-      id: check-expected-images
-      run: |
-        echo "::set-output name=EXPECTED_IMAGES_EXIST::`if [ -d .reg/expected/screenshots ]; then echo true; fi`"
-
     - name: Download screenshots taken by cypress
       if: ${{ inputs.run-compare }}
       uses: actions/download-artifact@v2
@@ -88,17 +76,10 @@ jobs:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: packages/app/test/cypress
 
-    - name: Run reg-suit compare
-      if: ${{ inputs.run-compare }}
+    - name: Run reg-suit
       working-directory: ./packages/app
       run: |
-        yarn reg-suit compare
-
-    - name: Run reg-suit publish
-      if: ${{ inputs.run-publish }}
-      working-directory: ./packages/app
-      run: |
-        yarn reg-suit publish -n
+        yarn reg:run
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
