@@ -454,11 +454,6 @@ module.exports = (crowi) => {
    */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
-    // v4 compatible validation (reason: empty page does not require revisionId validation)
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible && revisionId == null) {
-      return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
-    }
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -487,6 +482,11 @@ module.exports = (crowi) => {
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
+      }
+
+      // empty page does not require revisionId validation
+      if (!page.isEmpty && revisionId == null) {
+        return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
       }
 
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
