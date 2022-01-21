@@ -191,7 +191,6 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  // TODO: rewrite recursive rename
   async renamePage(page, newPagePath, user, options) {
     // v4 compatible process
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && page.parent != null;
