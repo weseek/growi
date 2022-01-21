@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -16,13 +16,13 @@ type PageItemControlProps = {
   isEnableActions: boolean
   isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
-  onClickRenameButton?: (pageId: string) => void
+  onClickRenameButtonHandler?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
   const {
-    page, isEnableActions, onClickDeleteButton, isDeletable, onClickRenameButton,
+    page, isEnableActions, onClickDeleteButton, isDeletable, onClickRenameButtonHandler,
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
@@ -34,11 +34,11 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     }
   };
 
-  const renameButtonHandler = () => {
-    if (onClickRenameButton != null && page._id != null) {
-      onClickRenameButton(page._id);
+  const renameButtonClickedHandler = useCallback(() => {
+    if (onClickRenameButtonHandler != null && page._id != null) {
+      onClickRenameButtonHandler(page._id);
     }
-  };
+  }, [onClickRenameButtonHandler, page._id]);
 
 
   const bookmarkToggleHandler = (async() => {
@@ -112,7 +112,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={renameButtonHandler}>
+          <DropdownItem onClick={renameButtonClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
