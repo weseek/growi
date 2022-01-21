@@ -54,7 +54,7 @@ jobs:
 
 
   run-reg-suit-merge-base:
-    needs: [test-prod-base]
+    needs: [test-prod-merge-base]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
@@ -85,7 +85,7 @@ jobs:
 
 
   run-reg-suit-head:
-    needs: [run-reg-suit-base, test-prod-head]
+    needs: [run-reg-suit-merge-base, test-prod-head]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@support/vrt-with-cypress
 
