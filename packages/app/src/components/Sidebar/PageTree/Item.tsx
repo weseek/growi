@@ -266,7 +266,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ClosableTextInput
             isShown
             placeholder={page.path}
-            onClickOutside={() => { setNewPageInputShown(false) }}
+            onClickOutside={() => { setIsInputForRenameOpen(false) }}
             onPressEnter={onPressEnterHandlerForRename}
           />
         )}
