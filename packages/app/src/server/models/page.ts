@@ -139,7 +139,9 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
   }
 };
 
-schema.statics.createEmptyPage = async function(path: string, parent) {
+schema.statics.createEmptyPage = async function(
+    path: string, parent: any, // TODO: improve type including IPage
+): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
   }
@@ -251,9 +253,6 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
 
   const createdParent = ancestorsMap.get(parentPath);
 
-  if (createdParent == null) {
-    throw Error('createdParent must not be null');
-  }
   return createdParent;
 };
 

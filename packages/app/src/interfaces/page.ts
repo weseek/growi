@@ -5,7 +5,7 @@ import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 
 
-export type IPage = {
+export interface IPage {
   path: string,
   status: string,
   revision: Ref<IRevision>,
