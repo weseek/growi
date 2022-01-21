@@ -11,10 +11,10 @@ jobs:
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
+      skip-launching-test: true
 
   build-prod-head:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
-      test-launching: true
