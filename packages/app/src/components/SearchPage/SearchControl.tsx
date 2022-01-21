@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SearchPageForm from './SearchPageForm';
 import AppContainer from '../../client/services/AppContainer';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
@@ -21,6 +20,8 @@ type Props = {
   onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
   actionToPageGroup: React.ReactNode,
   searchForm: React.ReactNode,
+  includeSpecificPath?: React.ReactNode,
+  sortControl?: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -38,12 +39,6 @@ const SearchControl: FC <Props> = (props: Props) => {
   const switchExcludeTrashPagesHandler = () => {
     if (props.onExcludeTrashPagesSwitched != null) {
       props.onExcludeTrashPagesSwitched();
-    }
-  };
-
-  const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
-    if (props.onChangeSortInvoked != null) {
-      props.onChangeSortInvoked(nextSort, nextOrder);
     }
   };
 
@@ -76,15 +71,6 @@ const SearchControl: FC <Props> = (props: Props) => {
     );
   };
 
-  const renderSortControl = () => {
-    return (
-      <SortControl
-        sort={props.sort}
-        order={props.order}
-        onChangeSortInvoked={onChangeSortInvoked}
-      />
-    );
-  };
 
   return (
     <div className="position-sticky fixed-top shadow-sm">
@@ -95,7 +81,7 @@ const SearchControl: FC <Props> = (props: Props) => {
 
         {/* sort option: show when screen is larger than lg */}
         <div className="mr-4 d-lg-flex d-none">
-          {renderSortControl()}
+          {props.sortControl}
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
@@ -105,7 +91,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
-          {renderSortControl()}
+          {props.sortControl}
         </div>
         {/* filter option */}
         <div className="d-lg-none">
@@ -117,36 +103,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <i className="icon-equalizer"></i>
           </button>
         </div>
-        <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
-          <div className="card mr-3 mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
-                <input
-                  checked={!props.excludeUserPages}
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckDefault"
-                  onClick={switchExcludeUserPagesHandler}
-                />
-                {t('Include Subordinated Target Page', { target: '/user' })}
-              </label>
-            </div>
-          </div>
-          <div className="card mb-0">
-            <div className="card-body">
-              <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
-                <input
-                  className="mr-2"
-                  type="checkbox"
-                  id="flexCheckChecked"
-                  onClick={switchExcludeTrashPagesHandler}
-                  checked={!props.excludeTrashPages}
-                />
-                {t('Include Subordinated Target Page', { target: '/trash' })}
-              </label>
-            </div>
-          </div>
-        </div>
+        {props.includeSpecificPath}
       </div>
       {rednerSearchOptionModal()}
     </div>

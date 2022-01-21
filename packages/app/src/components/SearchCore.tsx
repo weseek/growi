@@ -59,6 +59,8 @@ type Props = {
   renderSearchForm: (keyword, appContainer, onSearchInvoked) => React.FunctionComponent,
   shouldExcludeUserPages: boolean,
   shouldExcludeTrashPages : boolean,
+  renderIncludeSpecificPath?: (excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler) => React.FunctionComponent,
+  renderSortControl?: (sort, order, onChangeSortInvoked) => React.FunctionComponent,
   query?: string,
 };
 
@@ -347,6 +349,13 @@ const SearchCore: FC<Props> = (props: Props) => {
         // eslint-disable-next-line max-len
         actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
         searchForm={props.renderSearchForm(searchingKeyword, props.appContainer, onSearchInvoked)}
+        includeSpecificPath={
+          props.renderIncludeSpecificPath != null
+          && props.renderIncludeSpecificPath(excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler)
+        }
+        sortControl={props.renderSortControl != null
+          && props.renderSortControl(sort, order, onChangeSortInvoked)
+        }
       >
       </SearchControl>
     );

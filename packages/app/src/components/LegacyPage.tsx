@@ -13,7 +13,6 @@ type Props = {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 2. renderSort
 // 3. message props to SearchPageLayout.
 const LegacyPage : FC<Props> = (props: Props) => {
 
@@ -51,10 +50,6 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
   const renderSearchForm = (keyword, appContainer, onSearchInvoked) => {
     return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked} isDisabled></SearchPageForm>;
-  };
-
-  const renderSortBar = () => {
-    // return null;
   };
 
 

@@ -6,6 +6,7 @@ import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
 import SearchPageForm from './SearchPage/SearchPageForm';
+import SortControl from './SearchPage/SortControl';
 
 
 type Props = {
@@ -14,7 +15,6 @@ type Props = {
 
 // TODO
 // Task : https://redmine.weseek.co.jp/issues/85465
-// 2. renderSort
 // 3. message props to SearchPageLayout.
 const SearchPage : FC<Props> = (props: Props) => {
 
@@ -56,8 +56,49 @@ const SearchPage : FC<Props> = (props: Props) => {
     return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked}></SearchPageForm>;
   };
 
-  const renderSortBar = () => {
-  // return <Sortcontrolr>;
+  const renderIncludeSpecificPath = (excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler) => {
+    return (
+      <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
+        <div className="card mr-3 mb-0">
+          <div className="card-body">
+            <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+              <input
+                checked={excludeUserPages}
+                className="mr-2"
+                type="checkbox"
+                id="flexCheckDefault"
+                onClick={switchExcludeUserPagesHandler}
+              />
+              {t('Include Subordinated Target Page', { target: '/user' })}
+            </label>
+          </div>
+        </div>
+        <div className="card mb-0">
+          <div className="card-body">
+            <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
+              <input
+                className="mr-2"
+                type="checkbox"
+                id="flexCheckChecked"
+                onClick={switchExcludeTrashPagesHandler}
+                checked={excludeTrashPages}
+              />
+              {t('Include Subordinated Target Page', { target: '/trash' })}
+            </label>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSortControl = (sort, order, onChangeSortInvoked) => {
+    return (
+      <SortControl
+        sort={sort}
+        order={order}
+        onChangeSortInvoked={onChangeSortInvoked}
+      />
+    );
   };
 
 
@@ -79,6 +120,8 @@ const SearchPage : FC<Props> = (props: Props) => {
       renderSearchForm={renderSearchForm}
       shouldExcludeUserPages
       shouldExcludeTrashPages
+      renderIncludeSpecificPath={renderIncludeSpecificPath}
+      renderSortControl={renderSortControl}
     />
   );
 };
