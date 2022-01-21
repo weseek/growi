@@ -174,11 +174,10 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').optional.isMongoId().withMessage('revisionId is required'), // required when v4
+      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
-      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
 
     duplicatePage: [
@@ -456,8 +455,8 @@ module.exports = (crowi) => {
   router.put('/rename', /* accessTokenParser, loginRequiredStrictly, csrf, */validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
     // v4 compatible validation
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || revisionId == null) {
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible && revisionId == null) {
       return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
     }
 
@@ -484,7 +483,7 @@ module.exports = (crowi) => {
     let page;
 
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+      page = await Page.findByIdAndViewer(pageId, req.user, null, true) || await Page.findOne({ _id: pageId });
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);

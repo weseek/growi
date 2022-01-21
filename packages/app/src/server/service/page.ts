@@ -217,7 +217,7 @@ class PageService {
       try {
         const shouldCheckDescendants = false;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
