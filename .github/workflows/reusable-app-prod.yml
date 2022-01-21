@@ -11,6 +11,15 @@ on:
         default: ${{ github.head_ref }}
       skip-launching-test:
         type: boolean
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
 

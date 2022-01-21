@@ -6,15 +6,23 @@ on:
 
 jobs:
 
-  build-prod-base:
+  test-suit-base:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
       skip-launching-test: true
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  build-prod-head:
+  test-suit-head:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/vrt-with-cypress
     with:
       node-version: 14.x
       checkout-ref: ${{ github.event.pull_request.head.ref }}
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
