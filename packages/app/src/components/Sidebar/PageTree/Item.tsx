@@ -190,17 +190,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsInputForRenameOpen(true);
   }, []);
 
-  const onPressEnterHandlerForRename = async() => {
-    // try {
-    //   await apiv3Put('/pages/rename', {
-    //     newPagePath: 'こんにちは GROWI', pageId: page._id, isRecursively: false, revisionId: page.revision,
-    //   });
-    // }
-    // catch (err) {
-    //   console.log(err);
-    // }
+  const onPressEnterHandlerForRename = () => {
     console.log('Page path has been renamed!!');
-    console.log(page);
     setIsInputForRenameOpen(false);
   };
 
@@ -261,7 +252,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <TriangleIcon />
           </div>
         </button>
-        {/* page path */}
         { isInputForRenameOpen && (
           <ClosableTextInput
             isShown
