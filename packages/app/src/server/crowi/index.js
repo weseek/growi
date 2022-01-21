@@ -372,24 +372,7 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const searchDelegatorLogger = loggerFactory('growi:service:search');
-
-  this.searchService = await new SearchService(this);
-
-  if (this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot')) {
-    searchDelegatorLogger.info('Reindex elasticsearch is running');
-    try {
-      this.searchService.rebuildIndex();
-    }
-    catch (err) {
-      // since rebuildIndex() will force to throw `error` in catch section and `finally` section won't be called,
-      // run normalize indices here anyway
-      this.searchService.normalizeIndices();
-    }
-  }
-  else {
-    searchDelegatorLogger.info('ELASTICSEARCH_REINDEX_ON_BOOT value is false, no reindex on boot');
-  }
+  this.searchService = new SearchService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {
