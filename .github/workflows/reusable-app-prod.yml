@@ -233,6 +233,11 @@ jobs:
         SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
         echo "::set-output name=value::$SPEC"
 
+    - name: Copy dotenv file for ci
+      working-directory: ./packages/app
+      run: |
+        cat config/ci/.env.local.for-ci >> .env.production.local
+
     - name: Copy dotenv file for automatic installation
       if: ${{ matrix.spec-group != '1' }}
       working-directory: ./packages/app
@@ -245,8 +250,6 @@ jobs:
         working-directory: ./packages/app
         install: false
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
-        build: |
-          cat config/ci/.env.local.for-ci >> .env.production.local
         start: yarn server
         wait-on: 'http://localhost:3000'
       env:
