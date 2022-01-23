@@ -632,6 +632,16 @@ export const getPageSchema = (crowi) => {
     return queryBuilder.query.exec();
   };
 
+  pageSchema.statics.findByIdAndViewerToEdit = async function(id, user, includeEmpty = false) {
+    const baseQuery = this.findOne({ _id: id });
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(queryBuilder, user);
+
+    return queryBuilder.query.exec();
+  };
+
   // find page by path
   pageSchema.statics.findByPath = function(path, includeEmpty = false) {
     if (path == null) {

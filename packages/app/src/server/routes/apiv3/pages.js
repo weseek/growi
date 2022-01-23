@@ -478,7 +478,7 @@ module.exports = (crowi) => {
     let page;
 
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+      page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
