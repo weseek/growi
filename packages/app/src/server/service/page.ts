@@ -192,20 +192,37 @@ class PageService {
   }
 
   async renamePage(page, newPagePath, user, options) {
+    const Page = this.crowi.model('Page');
+
     // v4 compatible process
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && page.parent != null;
-    if (!isV5Compatible) {
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible || !isPageMigrated) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
-    const Page = this.crowi.model('Page');
-    const {
-      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantUserGroupId,
-    } = page;
     const updateMetadata = options.updateMetadata || false;
-
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    // use the parent's grant when target page is an empty page
+    let grant;
+    let grantedUserIds;
+    let grantedGroupId;
+    if (page.isEmpty) {
+      const parent = await Page.findOne({ _id: page.parent });
+      if (parent == null) {
+        throw Error('parent not found');
+      }
+      grant = parent.grant;
+      grantedUserIds = parent.grantedUsers;
+      grantedGroupId = parent.grantedGroup;
+    }
+    else {
+      grant = page.grant;
+      grantedUserIds = page.grantedUsers;
+      grantedGroupId = page.grantedGroup;
+    }
 
     /*
      * UserGroup & Owner validation
@@ -215,7 +232,7 @@ class PageService {
       try {
         const shouldCheckDescendants = false;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
@@ -375,8 +392,9 @@ class PageService {
 
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
     // v4 compatible process
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && targetPage.parent != null;
-    if (!isV5Compatible) {
+    const isPageMigrated = targetPage.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible || !isPageMigrated) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
