@@ -199,7 +199,8 @@ class PageService {
     // v4 compatible process
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    const useV4Process = !isV5Compatible || !isPageMigrated;
+    if (useV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
@@ -246,7 +247,7 @@ class PageService {
     }
 
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    await this.renameDescendantsWithStream(page, newPagePath, user, options, useV4Process);
 
     /*
      * TODO: https://redmine.weseek.co.jp/issues/86577
@@ -310,9 +311,9 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, isV5Compatible) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
     // v4 compatible process
-    if (!isV5Compatible) {
+    if (useV4Process) {
       return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
     }
 
@@ -360,8 +361,6 @@ class PageService {
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
-    const Page = this.crowi.model('Page');
-
     const pageCollection = mongoose.connection.collection('pages');
     const { updateMetadata } = options;
 
@@ -392,11 +391,9 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, useV4Process = false) {
     // v4 compatible process
-    const isPageMigrated = targetPage.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    if (useV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
@@ -414,7 +411,7 @@ class PageService {
         try {
           count += batch.length;
           await renameDescendants(
-            batch, user, options, pathRegExp, newPagePathPrefix, isV5Compatible, targetPage.grant, targetPage.grantedUsers, targetPage.grantedGroup,
+            batch, user, options, pathRegExp, newPagePathPrefix, useV4Process,
           );
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
@@ -489,7 +486,8 @@ class PageService {
     const isPageMigrated = page.parent != null;
     // v4 compatible process
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    const useV4Process = !isV5Compatible || !isPageMigrated;
+    if (useV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
 
@@ -511,7 +509,7 @@ class PageService {
     );
 
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user);
+      this.duplicateDescendantsWithStream(page, newPagePath, user, useV4Process);
     }
 
     // take over tags
@@ -603,7 +601,10 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
+    if (useV4Process) {
+      return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
+    }
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -650,8 +651,95 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user) {
+  private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
 
+    const paths = pages.map(page => (page.path));
+    const revisions = await Revision.find({ path: { $in: paths } });
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
+
+    // key: oldPageId, value: newPageId
+    const pageIdMapping = {};
+    const newPages: any[] = [];
+    const newRevisions: any[] = [];
+
+    pages.forEach((page) => {
+      const newPageId = new mongoose.Types.ObjectId();
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      const revisionId = new mongoose.Types.ObjectId();
+      pageIdMapping[page._id] = newPageId;
+
+      newPages.push({
+        _id: newPageId,
+        path: newPagePath,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        revision: revisionId,
+      });
+
+      newRevisions.push({
+        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+      });
+
+    });
+
+    await Page.insertMany(newPages, { ordered: false });
+    await Revision.insertMany(newRevisions, { ordered: false });
+    await this.duplicateTags(pageIdMapping);
+  }
+
+  private async duplicateDescendantsWithStream(page, newPagePath, user, useV4Process = false) {
+    if (useV4Process) {
+      return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
+    }
+
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
+
+    const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
+          logger.debug(`Adding pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Adding pages has completed: (totalCount=${count})`);
+        // update  path
+        page.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', page, user);
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
+  }
+
+  private async duplicateDescendantsWithStreamV4(page, newPagePath, user) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;
