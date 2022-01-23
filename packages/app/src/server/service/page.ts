@@ -492,6 +492,45 @@ class PageService {
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
+
+    // use the parent's grant when target page is an empty page
+    let grant;
+    let grantedUserIds;
+    let grantedGroupId;
+    if (page.isEmpty) {
+      const parent = await Page.findOne({ _id: page.parent });
+      if (parent == null) {
+        throw Error('parent not found');
+      }
+      grant = parent.grant;
+      grantedUserIds = parent.grantedUsers;
+      grantedGroupId = parent.grantedGroup;
+    }
+    else {
+      grant = page.grant;
+      grantedUserIds = page.grantedUsers;
+      grantedGroupId = page.grantedGroup;
+    }
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = false;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${newPagePath}" when duplicating`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error(`This page cannot be duplicated to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+      }
+    }
+
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
@@ -605,16 +644,17 @@ class PageService {
     if (useV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
+
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
-    const paths = pages.map(page => (page.path));
-    const revisions = await Revision.find({ path: { $in: paths } });
+    const pageIds = pages.map(page => page._id);
+    const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
+    const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
+      pageIdRevisionMapping[revision.pageId] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -622,26 +662,38 @@ class PageService {
     const newPages: any[] = [];
     const newRevisions: any[] = [];
 
+    // no need to save parent here
     pages.forEach((page) => {
       const newPageId = new mongoose.Types.ObjectId();
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
       const revisionId = new mongoose.Types.ObjectId();
       pageIdMapping[page._id] = newPageId;
 
-      newPages.push({
-        _id: newPageId,
-        path: newPagePath,
-        creator: user._id,
-        grant: page.grant,
-        grantedGroup: page.grantedGroup,
-        grantedUsers: page.grantedUsers,
-        lastUpdateUser: user._id,
-        redirectTo: null,
-        revision: revisionId,
-      });
+      let newPage;
+      if (page.isEmpty) {
+        newPage = {
+          _id: newPageId,
+          path: newPagePath,
+          isEmpty: true,
+        };
+      }
+      else {
+        newPage = {
+          _id: newPageId,
+          path: newPagePath,
+          creator: user._id,
+          grant: page.grant,
+          grantedGroup: page.grantedGroup,
+          grantedUsers: page.grantedUsers,
+          lastUpdateUser: user._id,
+          revision: revisionId,
+        };
+      }
+
+      newPages.push(newPage);
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -655,13 +707,13 @@ class PageService {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
-    const paths = pages.map(page => (page.path));
-    const revisions = await Revision.find({ path: { $in: paths } });
+    const pageIds = pages.map(page => page._id);
+    const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
+    const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
+      pageIdRevisionMapping[revision.pageId] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -687,7 +739,7 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pathRevisionMapping[page.path].body, author: user._id, format: 'markdown',
+        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -708,6 +760,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
@@ -715,7 +768,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, useV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -724,7 +777,19 @@ class PageService {
 
         callback();
       },
-      final(callback) {
+      async final(callback) {
+        const Page = mongoose.model('Page') as unknown as PageModel;
+        // normalize parent of descendant pages
+        if (page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED) {
+          try {
+            await normalizeParentOfTree(page.path);
+          }
+          catch (err) {
+            logger.error('Failed to normalize descendants afrer duplicate:', err);
+            throw err;
+          }
+        }
+
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
         // update  path
         page.path = newPagePath;
@@ -1238,6 +1303,12 @@ class PageService {
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
+  }
+
+  async normalizeParentOfTree(path) {
+    const escapedPath = escapeStringRegexp(path);
+    const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+    return this._v5RecursiveMigration(null, regexps);
   }
 
   async v5MigrationByPageIds(pageIds) {
