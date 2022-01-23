@@ -37,7 +37,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
 
   const pageDuplicateModalHandler = () => {
     setIsPageDuplicateModalShown(true);
-  }
+  };
 
   const renderModals = () => {
     return (
@@ -48,7 +48,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         path={page.path}
       />
     );
-  }
+  };
 
 
   const bookmarkToggleHandler = (async() => {
@@ -77,13 +77,13 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
 
   return (
     <>
-    <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
-      <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
-        <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
-      </DropdownToggle>
-      <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+      <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
+        <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
+          <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
+        </DropdownToggle>
+        <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
 
-        {/* TODO: if there is the following button in XD add it here
+          {/* TODO: if there is the following button in XD add it here
         <button
           type="button"
           className="btn btn-link p-0"
@@ -96,50 +96,50 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         </button>
         */}
 
-        {/*
+          {/*
           TODO: add function to the following buttons like using modal or others
           ref: https://estoc.weseek.co.jp/redmine/issues/79026
         */}
 
-        {/* TODO: show dropdown when permalink section is implemented */}
+          {/* TODO: show dropdown when permalink section is implemented */}
 
-        {!isEnableActions && (
-          <DropdownItem>
-            <p>
-              {t('search_result.currently_not_implemented')}
-            </p>
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={bookmarkToggleHandler}>
-            <i className="fa fa-fw fa-bookmark-o"></i>
-            {renderBookmarkText()}
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={pageDuplicateModalHandler}>
-            <i className="icon-fw icon-docs"></i>
-            {t('Duplicate')}
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
-          </DropdownItem>
-        )}
-        {isDeletable && isEnableActions && (
-          <>
-            <DropdownItem divider />
-            <DropdownItem className="text-danger pt-2" onClick={deleteButtonHandler}>
-              <i className="icon-fw icon-trash"></i>
-              {t('Delete')}
+          {!isEnableActions && (
+            <DropdownItem>
+              <p>
+                {t('search_result.currently_not_implemented')}
+              </p>
             </DropdownItem>
-          </>
-        )}
-      </DropdownMenu>
-    </Dropdown>
-    {renderModals()}
+          )}
+          {isEnableActions && (
+            <DropdownItem onClick={bookmarkToggleHandler}>
+              <i className="fa fa-fw fa-bookmark-o"></i>
+              {renderBookmarkText()}
+            </DropdownItem>
+          )}
+          {isEnableActions && (
+            <DropdownItem onClick={pageDuplicateModalHandler}>
+              <i className="icon-fw icon-docs"></i>
+              {t('Duplicate')}
+            </DropdownItem>
+          )}
+          {isEnableActions && (
+            <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+              <i className="icon-fw  icon-action-redo"></i>
+              {t('Move/Rename')}
+            </DropdownItem>
+          )}
+          {isDeletable && isEnableActions && (
+            <>
+              <DropdownItem divider />
+              <DropdownItem className="text-danger pt-2" onClick={deleteButtonHandler}>
+                <i className="icon-fw icon-trash"></i>
+                {t('Delete')}
+              </DropdownItem>
+            </>
+          )}
+        </DropdownMenu>
+      </Dropdown>
+      {renderModals()}
     </>
   );
 

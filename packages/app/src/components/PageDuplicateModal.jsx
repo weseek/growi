@@ -5,8 +5,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
+import { useTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -20,8 +20,9 @@ const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
   const {
-    t, appContainer, pageId, path,
+    appContainer, pageId, path,
   } = props;
+  const { t } = useTranslation('');
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
@@ -217,7 +218,6 @@ const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [A
 
 
 PageDuplicateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
@@ -227,4 +227,4 @@ PageDuplicateModal.propTypes = {
   path: PropTypes.string.isRequired,
 };
 
-export default withTranslation()(PageDuplicateModallWrapper);
+export default PageDuplicateModallWrapper;
