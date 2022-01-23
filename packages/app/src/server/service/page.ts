@@ -8,7 +8,9 @@ import { Writable } from 'stream';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { CreateMethod, generateGrantCondition, PageModel } from '~/server/models/page';
+import {
+  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel,
+} from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 import { IPage } from '~/interfaces/page';
@@ -484,9 +486,10 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
+    const isPageMigrated = page.parent != null;
     // v4 compatible process
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible') && page.parent != null;
-    if (!isV5Compatible) {
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible || !isPageMigrated) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
 
@@ -496,10 +499,9 @@ class PageService {
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
-    const options = {
+    const options: PageCreateOptions = {
       grant: page.grant,
       grantUserGroupId: page.grantedGroup,
-      grantedUserIds: page.grantedUsers,
     };
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
@@ -515,7 +517,7 @@ class PageService {
     // take over tags
     const originTags = await page.findRelatedTagsById();
     let savedTags = [];
-    if (originTags != null) {
+    if (originTags.length !== 0) {
       await PageTagRelation.updatePageTags(createdPage._id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage._id);
       this.tagEvent.emit('update', createdPage, savedTags);

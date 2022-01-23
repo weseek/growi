@@ -5,32 +5,32 @@ import escapeStringRegexp from 'escape-string-regexp';
 import UserGroup from '~/server/models/user-group';
 import { PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
-import { isIncludesObjectId, removeDuplicates, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
-type ObjectId = mongoose.Types.ObjectId;
+type ObjectIdLike = mongoose.Types.ObjectId | string;
 
 type ComparableTarget = {
   grant: number,
-  grantedUserIds?: ObjectId[],
-  grantedGroupId: ObjectId,
-  applicableUserIds?: ObjectId[],
-  applicableGroupIds?: ObjectId[],
+  grantedUserIds?: ObjectIdLike[],
+  grantedGroupId?: ObjectIdLike,
+  applicableUserIds?: ObjectIdLike[],
+  applicableGroupIds?: ObjectIdLike[],
 };
 
 type ComparableAncestor = {
   grant: number,
-  grantedUserIds: ObjectId[],
-  applicableUserIds?: ObjectId[],
-  applicableGroupIds?: ObjectId[],
+  grantedUserIds: ObjectIdLike[],
+  applicableUserIds?: ObjectIdLike[],
+  applicableGroupIds?: ObjectIdLike[],
 };
 
 type ComparableDescendants = {
   isPublicExist: boolean,
-  grantedUserIds: ObjectId[],
-  grantedGroupIds: ObjectId[],
+  grantedUserIds: ObjectIdLike[],
+  grantedGroupIds: ObjectIdLike[],
 };
 
 class PageGrantService {
@@ -80,7 +80,7 @@ class PageGrantService {
         return false;
       }
 
-      if (!ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
+      if (ancestor.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
         return false;
       }
     }
@@ -105,6 +105,10 @@ class PageGrantService {
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
+        if (target.grantedGroupId == null) {
+          throw Error('grantedGroupId must not be null');
+        }
+
         if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
@@ -136,7 +140,7 @@ class PageGrantService {
         return false;
       }
 
-      if (descendants.grantedUserIds.length === 1 && !descendants.grantedUserIds[0].equals(target.grantedUserIds[0])) { // if Only me page exists, then all of them must be owned by the same user as the target page
+      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // if Only me page exists, then all of them must be owned by the same user as the target page
         return false;
       }
     }
@@ -165,14 +169,14 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupId: ObjectIdLike | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as unknown as PageModel;
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-      let applicableUserIds: ObjectId[] | undefined;
-      let applicableGroupIds: ObjectId[] | undefined;
+      let applicableUserIds: ObjectIdLike[] | undefined;
+      let applicableGroupIds: ObjectIdLike[] | undefined;
 
       if (grant === Page.GRANT_USER_GROUP) {
         const targetUserGroup = await UserGroup.findOne({ _id: grantedGroupId });
@@ -212,8 +216,8 @@ class PageGrantService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-    let applicableUserIds: ObjectId[] | undefined;
-    let applicableGroupIds: ObjectId[] | undefined;
+    let applicableUserIds: ObjectIdLike[] | undefined;
+    let applicableGroupIds: ObjectIdLike[] | undefined;
 
     /*
      * make granted users list of ancestor's
@@ -234,7 +238,7 @@ class PageGrantService {
       const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
       const grantedGroups = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
       applicableGroupIds = grantedGroups.map(g => g._id);
-      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectId[];
+      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectIdLike[];
     }
 
     return {
@@ -292,7 +296,7 @@ class PageGrantService {
     const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
     // GRANT_OWNER group
     const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
-    const grantedUserIds: ObjectId[] = grantOwnerResult?.grantedUsersSet ?? [];
+    const grantedUserIds: ObjectIdLike[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
     const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
     const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
@@ -309,7 +313,7 @@ class PageGrantService {
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      targetPath: string, grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, shouldCheckDescendants = false,
+      targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;

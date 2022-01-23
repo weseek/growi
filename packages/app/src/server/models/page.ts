@@ -497,6 +497,12 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mo
   await this.findByIdAndUpdate(id, query);
 };
 
+export type PageCreateOptions = {
+  format?: string
+  grantUserGroupId?: string | IObjectId
+  grant?: number
+}
+
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
@@ -506,7 +512,7 @@ export default (crowi: Crowi): any => {
     pageEvent = crowi.event('page');
   }
 
-  schema.statics.create = async function(path, body, user, options = {}) {
+  schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
     if (crowi.pageGrantService == null || crowi.configManager == null) {
       throw Error('Crowi is not setup');
     }
@@ -520,7 +526,7 @@ export default (crowi: Crowi): any => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', redirectTo, grantUserGroupId,
+      format = 'markdown', grantUserGroupId,
     } = options;
     let grant = options.grant;
 
@@ -581,7 +587,6 @@ export default (crowi: Crowi): any => {
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
-    page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
 
     // set parent to null when GRANT_RESTRICTED
