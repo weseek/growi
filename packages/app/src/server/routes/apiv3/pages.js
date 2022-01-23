@@ -618,7 +618,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', /*accessTokenParser, loginRequiredStrictly, csrf,*/ validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
@@ -629,7 +629,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
     }
 
-    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true) || await Page.findOne({ _id: pageId }); // TAICHI !!DELETE TEMPORARY CODE!!
+    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
     if (page == null) {
       res.code = 'Page is not found';
