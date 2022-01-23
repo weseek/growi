@@ -143,7 +143,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
 };
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, // TODO: improve type including IPage
+    path: string, parent: any, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
@@ -614,8 +614,9 @@ export default (crowi: Crowi): any => {
       throw Error('Crowi is not set up');
     }
 
+    const isPageMigrated = pageData.parent != null;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible) {
+    if (!isV5Compatible || !isPageMigrated) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
