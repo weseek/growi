@@ -1166,15 +1166,12 @@ class PageService {
 
           // modify to adjust for RegExp
           let parentPath = parent.path === '/' ? '' : parent.path;
-          // inject \ before brackets
-          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
-            parentPath = parentPath.replace(bracket, `\\${bracket}`);
-          });
+          parentPath = escapeStringRegexp(parentPath);
 
           const filter = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
           };
           if (grant != null) {
             filter.grant = grant;
