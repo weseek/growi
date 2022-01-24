@@ -297,18 +297,18 @@ class LoginForm extends React.Component {
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
+                {isPasswordResetEnabled && (
+                  <div className="text-right mb-2">
+                    <a href="/forgot-password" className="d-block link-switch">
+                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                    </a>
+                  </div>
+                )}
                 {isRegistrationEnabled && (
-                  <div className="row">
-                    <div className="col-12 text-right py-2">
-                      {isPasswordResetEnabled && (
-                        <a href="/forgot-password" className="d-block link-switch mb-1">
-                          <i className="icon-key"></i> {t('forgot_password.forgot_password')}
-                        </a>
-                      )}
-                      <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                        <i className="ti-check-box"></i> {t('Sign up is here')}
-                      </a>
-                    </div>
+                  <div className="text-right mb-2">
+                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
+                      <i className="ti-check-box"></i> {t('Sign up is here')}
+                    </a>
                   </div>
                 )}
               </div>
