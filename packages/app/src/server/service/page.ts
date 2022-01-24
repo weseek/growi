@@ -780,9 +780,11 @@ class PageService {
       async final(callback) {
         const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
-        if (page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED) {
+        const shouldNormalize = page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
+        if (shouldNormalize) {
           try {
-            await normalizeParentOfTree(page.path);
+            await normalizeParentOfTree(newPagePath);
+            logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
           }
           catch (err) {
             logger.error('Failed to normalize descendants afrer duplicate:', err);
