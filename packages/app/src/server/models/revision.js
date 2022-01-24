@@ -37,10 +37,8 @@ module.exports = function(crowi) {
       .exec();
   };
 
-  revisionSchema.statics.updateRevisionListByPath = async function(path, updateData) {
-    const Revision = this;
-
-    return Revision.updateMany({ path }, { $set: updateData });
+  revisionSchema.statics.updateRevisionListByPageId = async function(pageId, updateData) {
+    return this.updateMany({ pageId }, { $set: updateData });
   };
 
   revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
