@@ -310,7 +310,7 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, useV4Process = true) {
     // v4 compatible process
     if (useV4Process) {
       return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
@@ -390,7 +390,7 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, useV4Process = false) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, useV4Process = true) {
     // v4 compatible process
     if (useV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
@@ -639,7 +639,7 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, useV4Process = true) {
     if (useV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
@@ -748,7 +748,7 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, useV4Process = false) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, useV4Process = true) {
     if (useV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
@@ -871,7 +871,7 @@ class PageService {
     }
 
     // replace with an empty page
-    const shouldReplace = isRecursively && await Page.exists({ parent: page._id });
+    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithEmptyPage(page);
     }
@@ -944,41 +944,6 @@ class PageService {
     return deletedPage;
   }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
-    const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
-
-    const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: { $in: pageIds } });
-
-    const pages = await Page.find({ redirectTo: { $ne: null } });
-    const redirectToPagePathMapping = {};
-    pages.forEach((page) => {
-      redirectToPagePathMapping[page.redirectTo] = page.path;
-    });
-
-    const redirectedFromPagePaths: any[] = [];
-    pagePaths.forEach((pagePath) => {
-      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
-    });
-
-    return Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
-      Comment.deleteMany({ page: { $in: pageIds } }),
-      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
-      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ path: { $in: pagePaths } }),
-      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
-      attachmentService.removeAllAttachments(attachments),
-    ]);
-  }
-
   private async deleteDescendants(pages, user) {
     const Page = mongoose.model('Page') as PageModel;
 
@@ -1046,6 +1011,47 @@ class PageService {
       .pipe(writeStream);
   }
 
+  private async deleteCompletelyOperation(pageIds, pagePaths) {
+    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+    const Bookmark = this.crowi.model('Bookmark');
+    const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
+    const ShareLink = this.crowi.model('ShareLink');
+    const Revision = this.crowi.model('Revision');
+    const Attachment = this.crowi.model('Attachment');
+
+    const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: { $in: pageIds } });
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * deleteMany related PageRedirect documents
+     */
+    // const pages = await Page.find({ redirectTo: { $ne: null } });
+    // const redirectToPagePathMapping = {};
+    // pages.forEach((page) => {
+    //   redirectToPagePathMapping[page.redirectTo] = page.path;
+    // });
+
+    // const redirectedFromPagePaths: any[] = [];
+    // pagePaths.forEach((pagePath) => {
+    //   redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    // });
+
+    return Promise.all([
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
+      // TODO: https://redmine.weseek.co.jp/issues/86577
+      // Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
+      attachmentService.removeAllAttachments(attachments),
+    ]);
+  }
+
   // delete multiple pages
   private async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
@@ -1061,6 +1067,41 @@ class PageService {
   }
 
   async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
+    const Page = mongoose.model('Page') as PageModel;
+
+    // v4 compatible process
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const useV4Process = !isV5Compatible || !isPageMigrated;
+    if (useV4Process) {
+      return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
+    }
+
+    const ids = [page._id];
+    const paths = [page.path];
+
+    logger.debug('Deleting completely', paths);
+
+    // replace with an empty page
+    const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
+    if (shouldReplace) {
+      await Page.replaceTargetWithEmptyPage(page);
+    }
+
+    await this.deleteCompletelyOperation(ids, paths);
+
+    if (isRecursively) {
+      this.deleteCompletelyDescendantsWithStream(page, user, options);
+    }
+
+    if (!preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
+
+    return;
+  }
+
+  private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -1456,7 +1497,7 @@ class PageService {
   /*
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
-  async _generateRegExpsByPageIds(pageIds) {
+  private async _generateRegExpsByPageIds(pageIds) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     let result;
@@ -1474,7 +1515,7 @@ class PageService {
     return regexps;
   }
 
-  async _setIsV5CompatibleTrue() {
+  private async _setIsV5CompatibleTrue() {
     try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
         'app:isV5Compatible': true,
@@ -1488,7 +1529,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
+  private async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -1628,7 +1669,7 @@ class PageService {
 
   }
 
-  async _v5NormalizeIndex() {
+  private async _v5NormalizeIndex() {
     const collection = mongoose.connection.collection('pages');
 
     try {
