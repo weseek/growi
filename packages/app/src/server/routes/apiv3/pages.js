@@ -629,13 +629,12 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
     }
 
-    const page = await Page.findByIdAndViewer(pageId, req.user);
+    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    // null check
     if (page == null) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
-      return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
+      return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
     }
 
     const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);

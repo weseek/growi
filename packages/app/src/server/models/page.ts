@@ -12,6 +12,7 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
@@ -32,10 +33,13 @@ const STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document {}
 
+
 type TargetAndAncestorsResult = {
   targetAndAncestors: PageDocument[]
   rootPage: PageDocument
 }
+
+export type CreateMethod = (path: string, body: string, user, options) => Promise<PageDocument & { _id: any }>
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
@@ -339,7 +343,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   }
   else {
     const parentId = parentPathOrId;
-    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId }), true);
+    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO: improve type
   }
   await addViewerCondition(queryBuilder, user, userGroups);
 
@@ -494,6 +498,12 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mo
   await this.findByIdAndUpdate(id, query);
 };
 
+export type PageCreateOptions = {
+  format?: string
+  grantUserGroupId?: ObjectIdLike
+  grant?: number
+}
+
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
@@ -503,7 +513,7 @@ export default (crowi: Crowi): any => {
     pageEvent = crowi.event('page');
   }
 
-  schema.statics.create = async function(path, body, user, options = {}) {
+  schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
     if (crowi.pageGrantService == null || crowi.configManager == null) {
       throw Error('Crowi is not setup');
     }
@@ -517,7 +527,7 @@ export default (crowi: Crowi): any => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const {
-      format = 'markdown', redirectTo, grantUserGroupId,
+      format = 'markdown', grantUserGroupId,
     } = options;
     let grant = options.grant;
 
@@ -578,7 +588,6 @@ export default (crowi: Crowi): any => {
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
-    page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
 
     // set parent to null when GRANT_RESTRICTED
@@ -671,7 +680,7 @@ export default (crowi: Crowi): any => {
   schema.methods = { ...pageSchema.methods, ...schema.methods };
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
-  return getOrCreateModel<PageDocument, PageModel>('Page', schema);
+  return getOrCreateModel<PageDocument, PageModel>('Page', schema as any); // TODO: improve type
 };
 
 /*
