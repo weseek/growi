@@ -8,6 +8,7 @@ import { SWRConfig } from 'swr';
 import loggerFactory from '~/utils/logger';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
+import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
@@ -85,6 +86,7 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
+  'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
@@ -98,7 +100,7 @@ Object.assign(componentMappings, {
   'not-found-page': <NotFoundPage />,
   'not-found-alert': <NotFoundAlert
     isGuestUserMode={appContainer.isGuestUser}
-    isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable ?? pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
   />,
 
   'forbidden-page': <ForbiddenPage />,

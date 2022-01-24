@@ -1,10 +1,13 @@
 import useSWR, { SWRResponse } from 'swr';
 
+import { Types } from 'mongoose';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
 
 import { IPage } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
+
+import { useIsGuestUser } from './context';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
@@ -39,6 +42,23 @@ export const useSWRxPageList = (
         items: response.data.pages,
         totalCount: response.data.totalCount,
         limit: response.data.limit,
+      };
+    }),
+  );
+};
+
+type GetSubscriptionStatusResult = { subscribing: boolean };
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
+  return useSWR(
+    key,
+    (endpoint, pageId) => apiv3Get<GetSubscriptionStatusResult>(endpoint, { pageId }).then((response) => {
+      return {
+        status: response.data.subscribing,
       };
     }),
   );

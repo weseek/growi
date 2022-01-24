@@ -828,9 +828,17 @@ module.exports = function(crowi, app) {
     }
 
     // check revision
+    const Revision = crowi.model('Revision');
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
+      const latestRevision = await Revision.findById(page.revision).populate('author');
+      const returnLatestRevision = {
+        revisionId: latestRevision._id.toString(),
+        revisionBody: xss.process(latestRevision.body),
+        createdAt: latestRevision.createdAt,
+        user: serializeUserSecurely(latestRevision.author),
+      };
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
     const options = { isSyncRevisionToHackmd };
@@ -839,7 +847,6 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const Revision = crowi.model('Revision');
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
@@ -851,8 +858,10 @@ module.exports = function(crowi, app) {
 
     let savedTags;
     if (pageTags != null) {
+      const tagEvent = crowi.event('tag');
       await PageTagRelation.updatePageTags(pageId, pageTags);
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
+      tagEvent.emit('update', page, savedTags);
     }
 
     const result = {
@@ -1085,7 +1094,7 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!req.user.canDeleteCompletely(page.creator)) {
+        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user)) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);

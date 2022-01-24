@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -200,6 +201,13 @@ module.exports = (crowi) => {
       query('fromPath').isString(),
       query('toPath').isString(),
     ],
+    subscribe: [
+      body('pageId').isString(),
+      body('status').isBoolean(),
+    ],
+    subscribeStatus: [
+      query('pageId').isString(),
+    ],
   };
 
   /**
@@ -315,6 +323,10 @@ module.exports = (crowi) => {
     res.apiv3({ result });
 
     if (isLiked) {
+      const pageEvent = crowi.event('page');
+      // in-app notification
+      pageEvent.emit('like', page, req.user);
+
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
@@ -572,6 +584,90 @@ module.exports = (crowi) => {
   //   const dummy = 6;
   //   return res.apiv3({ dummy });
   // });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      put:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Update subscription status
+   *        operationId: updateSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.body;
+    const userId = req.user._id;
+    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
+    try {
+      const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+      return res.apiv3({ subscription });
+    }
+    catch (err) {
+      logger.error('Failed to update subscribe status', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/subscribe:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/subscribe
+   *        description: Get subscription status
+   *        operationId: getSubscriptionStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get subscription status.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/Page'
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+    const userId = req.user._id;
+
+    const page = await Page.findById(pageId);
+    if (!page) throw new Error('Page not found');
+
+    try {
+      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
+      const subscribing = subscription ? subscription.isSubscribing() : null;
+      return res.apiv3({ subscribing });
+    }
+    catch (err) {
+      logger.error('Failed to ge subscribe status', err);
+      return res.apiv3(err, 500);
+    }
+  });
 
   return router;
 };

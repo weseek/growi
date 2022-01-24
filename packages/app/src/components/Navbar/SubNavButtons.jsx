@@ -2,18 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import { usePageId } from '~/stores/context';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import BookmarkButton from '../BookmarkButton';
+import BookmarkButtons from '../BookmarkButtons';
 import LikeButtons from '../LikeButtons';
+import SubscribeButton from '../SubscribeButton';
 import PageManagement from '../Page/PageManagement';
 
-const SubnavButtons = (props) => {
+const SubnavButtons = React.memo((props) => {
   const {
     appContainer, pageContainer, isCompactMode,
   } = props;
 
+  const { data: pageId } = usePageId();
   const { data: editorMode } = useEditorMode();
 
   /* eslint-disable react/prop-types */
@@ -21,13 +24,16 @@ const SubnavButtons = (props) => {
 
     return (
       <>
+        <span>
+          <SubscribeButton pageId={pageId} />
+        </span>
         {pageContainer.isAbleToShowLikeButtons && (
           <span>
             <LikeButtons />
           </span>
         )}
         <span>
-          <BookmarkButton />
+          <BookmarkButtons pageId={pageId} />
         </span>
       </>
     );
@@ -46,7 +52,7 @@ const SubnavButtons = (props) => {
       )}
     </>
   );
-};
+});
 
 /**
  * Wrapper component for using unstated

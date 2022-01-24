@@ -1,23 +1,22 @@
 import { FC, useCallback, useEffect } from 'react';
 
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 import { useIsEditable } from '~/stores/context';
 
+/**
+ * Change editorMode by browser forward/back operation
+ */
 const HashChanged: FC<void> = () => {
   const { data: isEditable } = useIsEditable();
-  const { mutate: mutateEditorMode } = useEditorMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
 
   const hashchangeHandler = useCallback(() => {
-    const { hash } = window.location;
+    const newEditorMode = determineEditorModeByHash();
 
-    if (hash == null) {
-      return;
+    if (editorMode !== newEditorMode) {
+      mutateEditorMode(newEditorMode);
     }
-
-    if (hash === '#edit') {
-      mutateEditorMode(EditorMode.Editor);
-    }
-  }, [mutateEditorMode]);
+  }, [editorMode, mutateEditorMode]);
 
   // setup effect
   useEffect(() => {

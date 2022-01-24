@@ -5,6 +5,7 @@ import loggerFactory from '~/utils/logger';
 import { listLocaleIds } from '~/utils/locale-utils';
 
 import EditorSettings from '../../models/editor-settings';
+import InAppNotificationSettings from '../../models/in-app-notification-settings';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -85,8 +86,8 @@ module.exports = (crowi) => {
     password: [
       body('oldPassword').isString(),
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 6 })
-        .withMessage('password must be at least 6 characters long'),
+        .isLength({ min: 8 })
+        .withMessage('password must be at least 8 characters long'),
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
           return (value === req.body.newPassword);
@@ -105,7 +106,10 @@ module.exports = (crowi) => {
       body('textlintSettings.textlintRules.*.name').optional().isString(),
       body('textlintSettings.textlintRules.*.options').optional(),
       body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
-
+    ],
+    inAppNotificationSettings: [
+      body('defaultSubscribeRules.*.name').isString(),
+      body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
     ],
   };
 
@@ -549,6 +553,79 @@ module.exports = (crowi) => {
       return res.apiv3Err('getting-editor-settings-failed');
     }
   });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      put:
+   *        tags: [in-app-notification-settings]
+   *        operationId: putInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Put InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: in-app-notification-settings
+   */
+  // eslint-disable-next-line max-len
+  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+    const query = { userId: req.user.id };
+    const subscribeRules = req.body.subscribeRules;
+
+    if (subscribeRules == null) {
+      return res.apiv3Err('no-rules-found');
+    }
+
+    const options = { upsert: true, new: true, runValidators: true };
+    try {
+      const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('updating-in-app-notification-settings-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/in-app-notification-settings:
+   *      get:
+   *        tags: [in-app-notification-settings]
+   *        operationId: getInAppNotificationSettings
+   *        summary: personal-setting/in-app-notification-settings
+   *        description: Get InAppNotificationSettings
+   *        responses:
+   *          200:
+   *            description: params of InAppNotificationSettings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: InAppNotificationSettings
+   */
+  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const query = { userId: req.user.id };
+    try {
+      const response = await InAppNotificationSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-in-app-notification-settings-failed');
+    }
+  });
+
 
   return router;
 };

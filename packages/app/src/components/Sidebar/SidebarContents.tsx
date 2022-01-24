@@ -5,6 +5,7 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 
 import RecentChanges from './RecentChanges';
 import CustomSidebar from './CustomSidebar';
+import Tag from './Tag';
 
 type Props = {
 };
@@ -17,6 +18,9 @@ const SidebarContents: FC<Props> = (props: Props) => {
   switch (currentSidebarContents) {
     case SidebarContentsType.RECENT:
       Contents = RecentChanges;
+      break;
+    case SidebarContentsType.TAG:
+      Contents = Tag;
       break;
     default:
       Contents = CustomSidebar;

@@ -1,4 +1,3 @@
-import RE2 from 're2';
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
@@ -114,11 +113,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('update', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
-    pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPagesDeletedCompletely.bind(this.fullTextSearchDelegator));
     pageEvent.on('delete', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('revert', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('deleteCompletely', this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator));
+    pageEvent.on('syncDescendantsDelete', this.fullTextSearchDelegator.syncDescendantsPagesDeleted.bind(this.fullTextSearchDelegator));
     pageEvent.on('updateMany', this.fullTextSearchDelegator.syncPagesUpdated.bind(this.fullTextSearchDelegator));
-    pageEvent.on('syncDescendants', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('syncDescendantsUpdate', this.fullTextSearchDelegator.syncDescendantsPagesUpdated.bind(this.fullTextSearchDelegator));
     pageEvent.on('addSeenUsers', this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator));
+    pageEvent.on('rename', () => {
+      this.fullTextSearchDelegator.syncPageDeleted.bind(this.fullTextSearchDelegator);
+      this.fullTextSearchDelegator.syncPageUpdated.bind(this.fullTextSearchDelegator);
+    });
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.fullTextSearchDelegator.syncBookmarkChanged.bind(this.fullTextSearchDelegator));
@@ -192,8 +197,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
-    const regexp = new RE2(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
-    const replaceRegexp = new RE2(/\[nq:|\]/g);
+    const regexp = new RegExp(/^\[nq:.+\]$/g); // https://regex101.com/r/FzDUvT/1
+    const replaceRegexp = new RegExp(/\[nq:|\]/g);
 
     const queryString = normalizeQueryString(_queryString);
 
