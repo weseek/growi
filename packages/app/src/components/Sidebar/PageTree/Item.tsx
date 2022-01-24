@@ -45,18 +45,19 @@ type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
+  onClickPlusButton?(): void
   onClickDeleteButton?(): void
   onClickRenameButton?(): void
-  onClickPlusButtonHandler?(): void
 }
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
-    if (props.onClickPlusButtonHandler == null) {
+    console.log('プラスボタン！');
+    if (props.onClickPlusButton == null) {
       return;
     }
 
-    props.onClickPlusButtonHandler();
+    props.onClickPlusButton();
   };
 
   const onClickDeleteButtonHandler = () => {
@@ -165,6 +166,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
+  const onClickPlusButton = useCallback(() => {
+    setNewPageInputShown(true);
+  }, []);
+
   const onClickDeleteButton = useCallback(() => {
     if (onClickDeleteByPage == null) {
       return;
@@ -207,7 +212,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   // TODO: go to create page page
-  const onPressEnterHandler = () => {
+  const onPressEnterForCreateHandler = () => {
     toastWarning(t('search_result.currently_not_implemented'));
   };
 
@@ -271,9 +276,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
+            onClickPlusButton={onClickPlusButton}
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
-            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
             isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
           />
@@ -285,7 +290,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           isShown={isNewPageInputShown}
           placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterHandler}
+          onPressEnter={onPressEnterForCreateHandler}
           inputValidator={inputValidator}
         />
       )}
