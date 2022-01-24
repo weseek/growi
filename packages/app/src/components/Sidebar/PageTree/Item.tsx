@@ -195,9 +195,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
+  // TODO: make a put request to pages/title
   const onPressEnterForRenameHandler = () => {
     toastWarning(t('search_result.currently_not_implemented'));
     setRenameInputShown(false);
+  };
+
+  // TODO: go to create page page
+  const onPressEnterForCreateHandler = () => {
+    toastWarning(t('search_result.currently_not_implemented'));
+    setNewPageInputShown(false);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -209,11 +216,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     return null;
-  };
-
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
   };
 
   // didMount
