@@ -115,7 +115,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               <div className="item-control ml-auto">
                 <PageItemControl
                   page={pageData}
-                  onClickDeleteButton={props.onClickDeleteButton}
+                  onClickDeleteButtonHandler={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                   isDeletable={!isTopPage(pageData.path)}
                 />
