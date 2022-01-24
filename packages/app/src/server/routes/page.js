@@ -1155,9 +1155,9 @@ module.exports = function(crowi, app) {
     const previousRevision = req.body.revision_id || null;
 
     // get completely flag
-    const isCompletely = (req.body.completely != null);
+    const isCompletely = req.body.completely;
     // get recursively flag
-    const isRecursively = (req.body.recursively != null);
+    const isRecursively = req.body.recursively;
 
     const options = {};
 
