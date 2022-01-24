@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
@@ -13,6 +12,7 @@ import {
   useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsTrashPage, useIsUserPage,
   useIsNotCreatable,
 } from '~/stores/context';
+import { useSWRTagsInfo } from '~/stores/page';
 
 import TagLabels from '../Page/TagLabels';
 import SubNavButtons from './SubNavButtons';
@@ -44,15 +44,11 @@ const GrowiSubNavigation = (props) => {
   const { data: isUserPage } = useIsUserPage();
   const { data: isNotCreatable } = useIsNotCreatable();
 
+  const { mutate: mutateSWRTagsInfo, data: TagsInfoData } = useSWRTagsInfo(pageId);
 
   const {
-    appContainer, pageContainer, editorContainer, isCompactMode,
+    appContainer, editorContainer, isCompactMode,
   } = props;
-
-  const {
-    tags,
-  } = pageContainer.state;
-
 
   const { isGuestUser, isSharedUser } = appContainer;
   const isEditorMode = editorMode !== EditorMode.View;
@@ -75,10 +71,10 @@ const GrowiSubNavigation = (props) => {
     }
 
     try {
-      const { tags } = await apiPost('/tags.update', { pageId, tags: newTags });
+      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
-      // update pageContainer.state
-      pageContainer.setState({ tags });
+      // mutate SWRTagsInfo
+      mutateSWRTagsInfo();
       // update editorContainer.state
       editorContainer.setState({ tags });
 
@@ -104,7 +100,7 @@ const GrowiSubNavigation = (props) => {
         <div className="grw-path-nav-container">
           { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
-              <TagLabels tags={tags} tagsUpdateInvoked={tagsUpdatedHandler} />
+              <TagLabels tags={TagsInfoData?.tags || []} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
@@ -155,12 +151,11 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer, EditorContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
