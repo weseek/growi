@@ -797,29 +797,6 @@
   resolved "https://registry.yarnpkg.com/@browser-bunyan/levels/-/levels-1.6.0.tgz#3a50b8118254aa2ac26caf9d2aafa72d157e374b"
   integrity sha512-wte6nXXZH62Y/RGysYRlOkKxuJn+4S8xEamMF0fDncxxy0SriCHYwGPyWGF0FWYWmRzbZuEkp7dNebBf9Xfeeg==
 
-"@elastic/elasticsearch6@npm:@elastic/elasticsearch@^6.8.7":
-  version "6.8.8"
-  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-6.8.8.tgz#363d332d4de3a3ee5420ac0ced2eb4bfadf04548"
-  integrity sha512-51Jp3ZZ0oPqYPNlPG58XJ773MqJBx91rGNWCgVvy2UtxjxHsExAJooesOyLcoADnW0Dhyxu6yB8tziHnmyl8Vw==
-  dependencies:
-    debug "^4.1.1"
-    decompress-response "^4.2.0"
-    into-stream "^5.1.0"
-    ms "^2.1.1"
-    once "^1.4.0"
-    pump "^3.0.0"
-    secure-json-parse "^2.1.0"
-
-"@elastic/elasticsearch7@npm:@elastic/elasticsearch@^7.16.0":
-  version "7.16.0"
-  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-7.16.0.tgz#c1c64b6f0343c0f5ca6893fb77ceecd763455024"
-  integrity sha512-lMY2MFZZFG3om7QNHninxZZOXYx3NdIUwEISZxqaI9dXPoL3DNhU31keqjvx1gN6T74lGXAzrRNP4ag8CJ/VXw==
-  dependencies:
-    debug "^4.3.1"
-    hpagent "^0.1.1"
-    ms "^2.1.3"
-    secure-json-parse "^2.4.0"
-
 "@cypress/request@^2.88.10":
   version "2.88.10"
   resolved "https://registry.yarnpkg.com/@cypress/request/-/request-2.88.10.tgz#b66d76b07f860d3a4b8d7a0604d020c662752cce"
@@ -856,6 +833,29 @@
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.6.tgz#d5e0706cf8c6acd8c6032f8d54070af261bbbb2f"
   integrity sha512-ws57AidsDvREKrZKYffXddNkyaF14iHNHm8VQnZH6t99E8gczjNN0GpvcGny0imC80yQ0tHz1xVUKk/KFQSUyA==
+
+"@elastic/elasticsearch6@npm:@elastic/elasticsearch@^6.8.7":
+  version "6.8.8"
+  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-6.8.8.tgz#363d332d4de3a3ee5420ac0ced2eb4bfadf04548"
+  integrity sha512-51Jp3ZZ0oPqYPNlPG58XJ773MqJBx91rGNWCgVvy2UtxjxHsExAJooesOyLcoADnW0Dhyxu6yB8tziHnmyl8Vw==
+  dependencies:
+    debug "^4.1.1"
+    decompress-response "^4.2.0"
+    into-stream "^5.1.0"
+    ms "^2.1.1"
+    once "^1.4.0"
+    pump "^3.0.0"
+    secure-json-parse "^2.1.0"
+
+"@elastic/elasticsearch7@npm:@elastic/elasticsearch@^7.16.0":
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-7.16.0.tgz#c1c64b6f0343c0f5ca6893fb77ceecd763455024"
+  integrity sha512-lMY2MFZZFG3om7QNHninxZZOXYx3NdIUwEISZxqaI9dXPoL3DNhU31keqjvx1gN6T74lGXAzrRNP4ag8CJ/VXw==
+  dependencies:
+    debug "^4.3.1"
+    hpagent "^0.1.1"
+    ms "^2.1.3"
+    secure-json-parse "^2.4.0"
 
 "@emotion/is-prop-valid@^0.8.3":
   version "0.8.8"
@@ -7486,11 +7486,6 @@ ejs@^3.0.0, ejs@^3.1.5:
   integrity sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==
   dependencies:
     jake "^10.6.1"
-
-electron-to-chromium@^1.3.30, electron-to-chromium@^1.3.878:
-  version "1.3.884"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.884.tgz#0cd8c3a80271fd84a81f284c60fb3c9ecb33c166"
-  integrity sha512-kOaCAa+biA98PwH5BpCkeUeTL6mCeg8p3Q3OhqzPyqhu/5QUnWAN2wr/3IK8xMQxIV76kfoQpP+Bn/wij/jXrg==
 
 electron-to-chromium@^1.3.723:
   version "1.3.792"
@@ -17990,14 +17985,7 @@ secure-json-parse@^2.1.0, secure-json-parse@^2.4.0:
   resolved "https://registry.yarnpkg.com/secure-json-parse/-/secure-json-parse-2.4.0.tgz#5aaeaaef85c7a417f76271a4f5b0cc3315ddca85"
   integrity sha512-Q5Z/97nbON5t/L/sH6mY2EacfjVGwrCcSi5D3btRO2GZ8pf1K1UN7Z9H5J57hjVU2Qzxr1xO+FmBhOvEkzCMmg==
 
-semver-diff@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/semver-diff/-/semver-diff-2.1.0.tgz#4bbb8437c8d37e4b0cf1a68fd726ec6d645d6d36"
-  integrity sha1-S7uEN8jTfksM8aaP1ybsbWRdbTY=
-  dependencies:
-    semver "^5.0.3"
-
-"semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.7.1:
+"semver@2 || 3 || 4 || 5", semver@^5.7.1:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
