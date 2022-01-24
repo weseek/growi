@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-const DuplicateAlertTemporaly = <></>;
-
 const DuplicatedAlert = (props) => {
   const { t } = props;
   const urlParams = new URLSearchParams(window.location.search);
