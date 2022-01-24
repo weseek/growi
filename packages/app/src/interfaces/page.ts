@@ -4,7 +4,6 @@ import { IRevision } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 
-
 export type IPage = {
   path: string,
   status: string,
@@ -29,6 +28,14 @@ export type IPage = {
   hasDraftOnHackmd: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
+}
+
+export type IPageInfo = {
+  sumOfLikers: number
+  likerIds: string[]
+  seenUserIds: string[]
+  isSeen: boolean
+  isLiked: boolean
 }
 
 export type IPageHasId = IPage & HasObjectId;
