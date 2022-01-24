@@ -975,7 +975,7 @@
     "private_legacy_pages": "Private Legacy Pages"
   },
   "duplicated_page_alert" : {
-    "same_page_name_exists": "Same page name exits as「{{pageName}}",
+    "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
   }
