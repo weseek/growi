@@ -15,7 +15,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   // migrate modal
-  const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
+  const renderActionToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
       <PageMigrateModal
         isOpen={isActionConfirmModalShown}
@@ -29,7 +29,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
     // no icon for migration
     const actionIconAndText = (
       <>
-        Migrate
+        {t('modal_migrate.migrating_page')}
       </>
     );
     return (
@@ -59,7 +59,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
   return (
     <SearchCore
-      renderActionToPagesModal={renderActionsToPageModal}
+      renderActionToPagesModal={renderActionToPageModal}
       renderActionToPages={renderActionToPages}
       query="[nq:PrivateLegacyPages]"
       shouldExcludeUserPages={false}
