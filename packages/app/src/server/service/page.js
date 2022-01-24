@@ -1198,7 +1198,7 @@ class PageService {
           }
 
           // finish migration
-          if (res.result.nModified === 0) { // TODO: find the best property to count updated documents
+          if (res.result.nModified === 0 && res.result.nMatched === 0) { // TODO: find the best property to count updated documents
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
           }
