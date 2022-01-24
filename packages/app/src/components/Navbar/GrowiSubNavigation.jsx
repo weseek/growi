@@ -73,7 +73,7 @@ const GrowiSubNavigation = (props) => {
     try {
       const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
-      // mutate SWRTagsInfo
+      // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
       // update editorContainer.state
       editorContainer.setState({ tags });
