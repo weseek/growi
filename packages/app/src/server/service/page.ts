@@ -19,7 +19,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths, isTopPage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -199,7 +199,10 @@ class PageService {
     // v4 compatible process
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible || !isPageMigrated) {
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
