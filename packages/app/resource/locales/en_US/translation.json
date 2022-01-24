@@ -112,6 +112,8 @@
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "V5 Page Migration": "V5 Page Migration",
+  "GROWI.4.9_new_schema": "GROWI.4.9 new schema",
+  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -488,6 +490,11 @@
     "confirm_download_dict_and_enable_textlint": "Are you sure you want to enable Textlint? This will download 20MB of dictionary file.",
     "enable_textlint": "Enable Textlint",
     "dont_ask_again": "Don't ask again"
+  },
+  "modal_migrate":{
+    "migrating_page": "Convert to new schema",
+    "migrate_recursively": "Convert child pages recursively",
+    "migrate_warning": "Once you conver to new schema, it can not be converted back to previous schema"
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",

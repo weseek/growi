@@ -21,7 +21,7 @@ const SearchPage : FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   // Delete modal
-  const renderActionsToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
+  const renderActionToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
     return (
       <PageDeleteModal
         isOpen={isActionConfirmModalShown}
@@ -74,7 +74,7 @@ const SearchPage : FC<Props> = (props: Props) => {
   return (
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
-      renderActionToPagesModal={renderActionsToPageModal}
+      renderActionToPagesModal={renderActionToPageModal}
       renderActionToPages={renderActionToPages}
     />
   );
