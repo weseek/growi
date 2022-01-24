@@ -122,7 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [isRenameInputShown, setIsRenameInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -192,12 +192,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   const onClickRenameButton = useCallback(() => {
-    setIsRenameInputShown(true);
+    setRenameInputShown(true);
   }, []);
 
   const onPressEnterForRenameHandler = () => {
     toastWarning(t('search_result.currently_not_implemented'));
-    setIsRenameInputShown(false);
+    setRenameInputShown(false);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -261,7 +261,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <ClosableTextInput
             isShown
             placeholder={t('Input page name')}
-            onClickOutside={() => { setIsRenameInputShown(false) }}
+            onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={onPressEnterForRenameHandler}
             inputValidator={inputValidator}
           />
