@@ -121,8 +121,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isInputForRenameOpen, setIsInputForRenameOpen] = useState(false);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
+  const [isRenameInputShown, setIsRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -192,12 +192,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   const onClickRenameButton = useCallback(() => {
-    setIsInputForRenameOpen(true);
+    setIsRenameInputShown(true);
   }, []);
 
-  const onPressEnterHandlerForRename = () => {
-    console.log('Page path has been renamed!!');
-    setIsInputForRenameOpen(false);
+  const onPressEnterForRenameHandler = () => {
+    toastWarning(t('search_result.currently_not_implemented'));
+    setIsRenameInputShown(false);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -257,15 +257,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <TriangleIcon />
           </div>
         </button>
-        { isInputForRenameOpen && (
+        { isRenameInputShown && (
           <ClosableTextInput
             isShown
             placeholder={t('Input page name')}
-            onClickOutside={() => { setIsInputForRenameOpen(false) }}
-            onPressEnter={onPressEnterHandlerForRename}
+            onClickOutside={() => { setIsRenameInputShown(false) }}
+            onPressEnter={onPressEnterForRenameHandler}
+            inputValidator={inputValidator}
           />
         )}
-        { !isInputForRenameOpen && (
+        { !isRenameInputShown && (
           <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
