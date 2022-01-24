@@ -4,14 +4,12 @@ import {
 
 import { getOrCreateModel } from '@growi/core';
 
-
 export interface PageOperationDocument extends Document {
   _id: Types.ObjectId
   pageId: Types.ObjectId
   createdAt: Date
   expiredAt: Date
 }
-
 
 export type PageOperationModel = Model<PageOperationDocument>
 
