@@ -613,7 +613,7 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
-      return res.render('layout-growi/duplicate-page-list', {
+      return res.render('layout-growi/identical-path-page-list', {
         pages, redirectFrom,
       });
     }
