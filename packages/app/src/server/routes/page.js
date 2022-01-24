@@ -613,8 +613,11 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
-      // pass only redirectFrom since it is not sure whether the query params are related to the pages
-      return res.render('layout-growi/select-go-to-page', { pages, redirectFrom });
+      const duplicatePageIds = pages.map(p => p._id.toString());
+      const duplicatePath = pages[0].path; // index doesn't matter since the path is duplicate
+      return res.render('layout-growi/duplicate-page-list', {
+        pages, duplicatePageIds, duplicatePath, redirectFrom,
+      });
     }
 
     if (pages.length === 1) {
