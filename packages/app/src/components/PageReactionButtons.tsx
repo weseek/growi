@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import LikeButtons from './LikeButtons';
 import { IUser } from '../interfaces/user';
-import BookmarkButton from './BookmarkButton';
+import BookmarkButtons from './BookmarkButtons';
 
 type Props = {
   isCompactMode?: boolean,
@@ -13,13 +13,14 @@ type Props = {
 
   isBookmarked: boolean,
   sumOfBookmarks: number,
+  bookmarkedUsers: IUser[]
   onBookMarkClicked: ()=>void,
 }
 
 
 const PageReactionButtons : FC<Props> = (props: Props) => {
   const {
-    isCompactMode, sumOfLikers, isLiked, likers, onLikeClicked, sumOfBookmarks, isBookmarked, onBookMarkClicked,
+    isCompactMode, sumOfLikers, isLiked, likers, onLikeClicked, sumOfBookmarks, isBookmarked, bookmarkedUsers, onBookMarkClicked,
   } = props;
 
 
@@ -33,13 +34,14 @@ const PageReactionButtons : FC<Props> = (props: Props) => {
         likers={likers}
       >
       </LikeButtons>
-      <BookmarkButton
+      <BookmarkButtons
         hideTotalNumber={isCompactMode}
         sumOfBookmarks={sumOfBookmarks}
         isBookmarked={isBookmarked}
+        bookmarkedUsers={bookmarkedUsers}
         onBookMarkClicked={onBookMarkClicked}
       >
-      </BookmarkButton>
+      </BookmarkButtons>
     </>
   );
 };
