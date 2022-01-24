@@ -17,7 +17,7 @@ export interface PageOperationBlockDocument extends IPageOperationBlock, Documen
 export type PageOperationBlockModel = Model<PageOperationBlockDocument>
 
 const pageOperationBlockSchema = new Schema<PageOperationBlockDocument, PageOperationBlockModel>({
-  path: { type: String },
+  path: { type: String, required: true },
   expiredAt: {
     type: Date,
     // 5 mins after being created a document
