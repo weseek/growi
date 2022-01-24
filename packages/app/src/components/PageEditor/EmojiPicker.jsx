@@ -31,7 +31,7 @@ class EmojiPicker extends React.Component {
     return (
       <div className="overlay">
         <div ref={this.emojiPicker}>
-          <Picker />
+          <Picker set="apple" autoFocus />
         </div>
       </div>
     );
