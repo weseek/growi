@@ -52,7 +52,6 @@ type ItemControlProps = {
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
-    console.log('プラスボタン！');
     if (props.onClickPlusButton == null) {
       return;
     }
