@@ -19,7 +19,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths, isTopPage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -199,8 +199,10 @@ class PageService {
     // v4 compatible process
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const useV4Process = !isV5Compatible || !isPageMigrated;
-    if (useV4Process) {
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
@@ -247,7 +249,7 @@ class PageService {
     }
 
     // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, useV4Process);
+    await this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
 
     /*
      * TODO: https://redmine.weseek.co.jp/issues/86577
@@ -311,9 +313,9 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = false) {
     // v4 compatible process
-    if (useV4Process) {
+    if (shouldUseV4Process) {
       return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
     }
 
@@ -391,9 +393,9 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, useV4Process = false) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = false) {
     // v4 compatible process
-    if (useV4Process) {
+    if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
@@ -411,7 +413,7 @@ class PageService {
         try {
           count += batch.length;
           await renameDescendants(
-            batch, user, options, pathRegExp, newPagePathPrefix, useV4Process,
+            batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
@@ -483,15 +485,18 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
-    const isPageMigrated = page.parent != null;
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+
     // v4 compatible process
+    const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const useV4Process = !isV5Compatible || !isPageMigrated;
-    if (useV4Process) {
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
-
-    const Page = mongoose.model('Page') as unknown as PageModel;
 
     // use the parent's grant when target page is an empty page
     let grant;
@@ -531,7 +536,6 @@ class PageService {
       }
     }
 
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
@@ -548,7 +552,7 @@ class PageService {
     );
 
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user, useV4Process);
+      this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
     }
 
     // take over tags
@@ -640,8 +644,8 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, useV4Process = false) {
-    if (useV4Process) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = false) {
+    if (shouldUseV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
 
@@ -749,8 +753,8 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, useV4Process = false) {
-    if (useV4Process) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process = false) {
+    if (shouldUseV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
@@ -768,7 +772,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, useV4Process);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
