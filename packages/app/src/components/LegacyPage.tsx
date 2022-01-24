@@ -46,7 +46,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
   };
 
   const renderSearchForm = (keyword, appContainer, onSearchInvoked) => {
-    return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked} isDisabled></SearchPageForm>;
+    return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked}></SearchPageForm>;
   };
 
   // TODO : i18n
