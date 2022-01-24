@@ -1172,7 +1172,6 @@ class PageService {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
             path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
-            parent: null,
           };
           if (grant != null) {
             filter.grant = grant;
