@@ -14,6 +14,8 @@ import PageContainer from '../../client/services/PageContainer';
 import AppContainer from '../../client/services/AppContainer';
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
+import { useEditorMode } from '~/stores/ui';
+
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
@@ -42,6 +44,8 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+
+  const { data: editorMode } = useEditorMode();
 
   const uncontrolledRef = useRef<CodeMirror>(null);
 
@@ -98,7 +102,6 @@ export const ConflictDiffModal: FC<ConflictDiffModalProps> = (props) => {
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      const editorMode = 'editorOnResolveConflictModal';
       await pageContainer.resolveConflict(codeMirrorVal, editorMode);
       onClose();
       pageContainer.showSuccessToastr();
