@@ -84,13 +84,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       }
       else {
         logger.info('Reindex elasticsearch is running');
-        try {
-          this.rebuildIndex();
-          logger.info('Reindex elasticsearch done');
-        }
-        catch (err) {
-          logger.info(`Reindex elasticsearch fail ${err}`);
-        }
+        this.rebuildIndex();
       }
 
       this.registerUpdateEvent();
@@ -211,7 +205,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async rebuildIndex() {
-    return this.fullTextSearchDelegator.rebuildIndex();
+    try {
+      await this.fullTextSearchDelegator.rebuildIndex();
+      logger.info('Reindex elasticsearch done');
+    }
+    catch (err) {
+      logger.warn(`Reindex elasticsearch fail, ${err}`);
+    }
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
