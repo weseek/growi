@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-const DuplicatePage = () => {
-  return <div>duplicate pages</div>;
+type DuplicatePageProps= {
+
+}
+const DuplicatePage:FC<DuplicatePageProps> = (props:DuplicatePageProps) => {
+  return <div></div>;
 };
 
 export default DuplicatePage;
