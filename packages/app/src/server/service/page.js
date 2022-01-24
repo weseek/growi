@@ -891,7 +891,9 @@ class PageService {
                 },
                 {
                   $project: {
-                    revision: { $substr: ['$body', 0, MAX_LENGTH] },
+                    // What is $substrCP?
+                    // see: https://stackoverflow.com/questions/43556024/mongodb-error-substrbytes-invalid-range-ending-index-is-in-the-middle-of-a-ut/43556249
+                    revision: { $substrCP: ['$body', 0, MAX_LENGTH] },
                   },
                 },
               ],
@@ -1164,15 +1166,12 @@ class PageService {
 
           // modify to adjust for RegExp
           let parentPath = parent.path === '/' ? '' : parent.path;
-          // inject \ before brackets
-          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
-            parentPath = parentPath.replace(bracket, `\\${bracket}`);
-          });
+          parentPath = escapeStringRegexp(parentPath);
 
           const filter = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
           };
           if (grant != null) {
             filter.grant = grant;
@@ -1199,7 +1198,7 @@ class PageService {
           }
 
           // finish migration
-          if (res.result.nModified === 0) { // TODO: find the best property to count updated documents
+          if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
           }
