@@ -976,5 +976,10 @@
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
+    "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
+    "select_page_to_see" : "请在下面选择你想去的页面。"
   }
 }

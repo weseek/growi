@@ -969,7 +969,7 @@
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
-    "same_page_name_exists_at_path" : "”{{path}}” において ”{{pathName}}”というページは複数存在しています。",
+    "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
     "select_page_to_see" : "以下から遷移するページを選択してください。"
   }
 }
