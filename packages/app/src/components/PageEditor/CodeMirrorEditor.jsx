@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
-import { Button, Modal } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 import { JSHINT } from 'jshint';
 
@@ -157,6 +157,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
     this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
+    this.closeEmojiPicker = this.closeEmojiPicker.bind(this);
   }
 
   init() {
@@ -664,22 +665,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  renderEmojiPicker() {
-    return (
-      <div className="">
-        { this.state.isEmojiPickerShown
-          ? (
-            <div className="text-left">
+  closeEmojiPicker() {
+    this.setState({ isEmojiPickerShown: false });
+  }
 
-              <div className="mb-2 d-none d-md-block">
-                <EmojiPicker />
-              </div>
-            </div>
-          )
-          : ''
-        }
-      </div>
-    );
+  renderEmojiPicker() {
+    return this.state.isEmojiPickerShown
+      ? (
+        <div className="text-left">
+          <div className="mb-2 d-none d-md-block">
+            <EmojiPicker close={this.closeEmojiPicker} />
+          </div>
+        </div>
+      )
+      : '';
   }
 
   /**
