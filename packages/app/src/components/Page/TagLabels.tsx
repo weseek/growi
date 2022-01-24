@@ -7,17 +7,15 @@ import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
 type TagLabels = {
-  appContainer: AppContainer,
-  tagsUpdateInvoked: any,
   tags: string[],
+  appContainer: AppContainer,
+  tagsUpdateInvoked?: () => Promise<void>,
 }
 
 
 const TagLabels:FC<TagLabels> = (props:TagLabels) => {
-  const {
-    appContainer, tagsUpdateInvoked,
-  } = props;
-  const tags = props.tags;
+  const { tags, appContainer, tagsUpdateInvoked } = props;
+
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const openEditorModal = () => {
