@@ -89,7 +89,6 @@ type Props = {
   onFocus?: () => void,
   onSubmit?: (input: string) => void,
   onInputChange?: (text: string) => void,
-  isDisabled?: boolean,
 };
 
 
@@ -147,7 +146,6 @@ const SearchForm: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, r
       }}
       helpElement={<SearchFormHelp isShownHelp={isShownHelp} isReachable={isSearchServiceReachable} />}
       keywordOnInit={props.keyword}
-      isDisabled={props.isDisabled}
     />
   );
 };

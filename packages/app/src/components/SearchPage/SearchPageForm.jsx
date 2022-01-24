@@ -48,7 +48,6 @@ class SearchPageForm extends React.Component {
         onSubmit={this.search}
         keyword={this.state.searchedKeyword}
         onInputChange={this.onInputChange}
-        isDisabled={this.props.isDisabled}
       />
     );
   }
@@ -65,10 +64,8 @@ SearchPageForm.propTypes = {
 
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func,
-  isDisabled: PropTypes.bool,
 };
 SearchPageForm.defaultProps = {
-  isDisabled: false,
 };
 
 export default SearchPageFormWrapper;

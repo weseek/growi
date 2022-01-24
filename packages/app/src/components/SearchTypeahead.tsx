@@ -40,7 +40,6 @@ type Props = TypeaheadProps & {
   keywordOnInit?: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpElement?: any,
-  isDisabled? : boolean,
 };
 
 // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
@@ -222,7 +221,6 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         autoFocus={props.autoFocus}
         onBlur={props.onBlur}
         onFocus={props.onFocus}
-        disabled={props.isDisabled}
       />
       <ResetFormButton
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
