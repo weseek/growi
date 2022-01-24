@@ -45,7 +45,7 @@ type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
-  onClickDeleteButtonHandler?(): void
+  onClickDeleteButton?(): void
   onClickRenameButton?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -59,12 +59,12 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     props.onClickPlusButtonHandler();
   };
 
-  const onClickDeleteButton = () => {
-    if (props.onClickDeleteButtonHandler == null) {
+  const onClickDeleteButtonHandler = () => {
+    if (props.onClickDeleteButton == null) {
       return;
     }
 
-    props.onClickDeleteButtonHandler();
+    props.onClickDeleteButton();
   };
 
   const onClickRenameButtonHandler = () => {
@@ -83,7 +83,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     <>
       <PageItemControl
         page={props.page}
-        onClickDeleteButton={onClickDeleteButton}
+        onClickDeleteButtonHandler={onClickDeleteButtonHandler}
         isEnableActions={props.isEnableActions}
         isDeletable={props.isDeletable}
         onClickRenameButtonHandler={onClickRenameButtonHandler}
@@ -165,7 +165,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickDeleteButtonHandler = useCallback(() => {
+  const onClickDeleteButton = useCallback(() => {
     if (onClickDeleteByPage == null) {
       return;
     }
@@ -271,7 +271,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
-            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+            onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}
