@@ -17,7 +17,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths, isTopPage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -180,34 +180,52 @@ class PageService {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(Page.find())
+    const builder = new PageQueryBuilder(Page.find(), true)
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
     await Page.addConditionToFilteringByViewerToEdit(builder, userToOperate);
-
     return builder
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  // TODO: rewrite recursive rename
   async renamePage(page, newPagePath, user, options) {
+    const Page = this.crowi.model('Page');
+
     // v4 compatible process
+    const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible) {
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
-    const Page = this.crowi.model('Page');
-    const {
-      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantUserGroupId,
-    } = page;
     const updateMetadata = options.updateMetadata || false;
-
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    // use the parent's grant when target page is an empty page
+    let grant;
+    let grantedUserIds;
+    let grantedGroupId;
+    if (page.isEmpty) {
+      const parent = await Page.findOne({ _id: page.parent });
+      if (parent == null) {
+        throw Error('parent not found');
+      }
+      grant = parent.grant;
+      grantedUserIds = parent.grantedUsers;
+      grantedGroupId = parent.grantedGroup;
+    }
+    else {
+      grant = page.grant;
+      grantedUserIds = page.grantedUsers;
+      grantedGroupId = page.grantedGroup;
+    }
 
     /*
      * UserGroup & Owner validation
@@ -217,7 +235,7 @@ class PageService {
       try {
         const shouldCheckDescendants = false;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(newPagePath, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
@@ -293,7 +311,58 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, isV5Compatible) {
+    // v4 compatible process
+    if (!isV5Compatible) {
+      return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
+    }
+
+    const Page = this.crowi.model('Page');
+
+    const { updateMetadata } = options;
+
+    const updatePathOperations: any[] = [];
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+
+      // increment updatePathOperations
+      let update;
+      if (updateMetadata && !page.isEmpty) {
+        update = {
+          $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() },
+        };
+      }
+      else {
+        update = {
+          $set: { path: newPagePath },
+        };
+      }
+      updatePathOperations.push({
+        updateOne: {
+          filter: {
+            _id: page._id,
+          },
+          update,
+        },
+      });
+    });
+
+    try {
+      await Page.bulkWrite(updatePathOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    this.pageEvent.emit('updateMany', pages, user);
+  }
+
+  private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+    const Page = this.crowi.model('Page');
+
     const pageCollection = mongoose.connection.collection('pages');
     const { updateMetadata } = options;
 
@@ -324,10 +393,57 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  /**
-   * Create rename stream
-   */
   private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+    // v4 compatible process
+    const isPageMigrated = targetPage.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible || !isPageMigrated) {
+      return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
+    }
+
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
+
+    const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await renameDescendants(
+            batch, user, options, pathRegExp, newPagePathPrefix, isV5Compatible, targetPage.grant, targetPage.grantedUsers, targetPage.grantedGroup,
+          );
+          logger.debug(`Renaming pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('Renaming error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      async final(callback) {
+        logger.debug(`Renaming pages has completed: (totalCount=${count})`);
+
+        // update path
+        targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendantsUpdate', targetPage, user);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
+    await streamToPromise(readStream);
+  }
+
+  private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -1126,7 +1242,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps, publicOnly = false) {
+  async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -1205,15 +1321,12 @@ class PageService {
 
           // modify to adjust for RegExp
           let parentPath = parent.path === '/' ? '' : parent.path;
-          // inject \ before brackets
-          ['(', ')', '[', ']', '{', '}'].forEach((bracket) => {
-            parentPath = parentPath.replace(bracket, `\\${bracket}`);
-          });
+          parentPath = escapeStringRegexp(parentPath);
 
           const filter: any = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'gi') },
           };
           if (grant != null) {
             filter.grant = grant;

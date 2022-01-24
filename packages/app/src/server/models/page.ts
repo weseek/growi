@@ -171,7 +171,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
 
   // create empty page at path
   let newTarget = pageToReplaceWith;
-  if (newTarget) {
+  if (newTarget == null) {
     newTarget = await this.createEmptyPage(exPage.path, parent);
   }
 
@@ -189,7 +189,9 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   };
   const operationsForChildren = {
     updateMany: {
-      filter: children.map(d => d._id),
+      filter: {
+        _id: { $in: children.map(d => d._id) },
+      },
       update: {
         parent: newTarget._id,
       },
@@ -609,8 +611,9 @@ export default (crowi: Crowi): any => {
       throw Error('Crowi is not set up');
     }
 
+    const isPageMigrated = pageData.parent != null;
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    if (!isV5Compatible) {
+    if (!isV5Compatible || !isPageMigrated) {
       // v4 compatible process
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }

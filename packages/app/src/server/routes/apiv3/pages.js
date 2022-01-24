@@ -174,7 +174,7 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
@@ -478,13 +478,18 @@ module.exports = (crowi) => {
     let page;
 
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
-      if (!page.isUpdatable(revisionId)) {
+      // empty page does not require revisionId validation
+      if (!page.isEmpty && revisionId == null) {
+        return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
+      }
+
+      if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
       page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
