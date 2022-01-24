@@ -12,7 +12,7 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
-import { ObjectIdLike } from '~/interfaces/mongoose-utils';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
