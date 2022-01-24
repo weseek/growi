@@ -112,6 +112,8 @@
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "V5 Page Migration": "V5 Page Migration",
+  "GROWI.4.9_new_schema": "GROWI.4.9 new schema",
+  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -491,7 +493,8 @@
   },
   "modal_migrate":{
     "migrating_page": "Convert to new schema",
-    "migrate_recursively": "Convert child pages recursively"
+    "migrate_recursively": "Convert child pages recursively",
+    "migrate_warning": "Once you conver to new schema, it can not be converted back to previous schema"
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",

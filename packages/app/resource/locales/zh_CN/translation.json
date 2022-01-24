@@ -120,6 +120,8 @@
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
   "V5 Page Migration": "V5 Page Migration",
+  "GROWI.4.9_new_schema": "GROWI.4.9 new schema",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Customize": "页面定制",
@@ -469,7 +471,8 @@
   },
   "modal_migrate":{
     "migrating_page": "转为新计划",
-    "migrate_recursively": "递归地转换子页面"
+    "migrate_recursively": "递归地转换子页面",
+    "migrate_warning": "它不能被转换回以前的模式"
   },
   "modal_resolve_conflict": {
     "file_conflicting_with_newer_remote": "此文件与较新的远程文件冲突",
