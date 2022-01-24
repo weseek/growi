@@ -403,6 +403,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 3,
   },
+  OIDC_CLIENT_CLOCK_TOLERANCE: {
+    ns: 'crowi',
+    key: 'security:passport-oidc:oidcClientClockTolerance',
+    type: ValueType.NUMBER,
+    default: 60,
+  },
+  OIDC_ISSUER_TIMEOUT_OPTION: {
+    ns: 'crowi',
+    key: 'security:passport-oidc:oidcIssuerTimeoutOption',
+    type: ValueType.NUMBER,
+    default: 5000,
+  },
   S3_REFERENCE_FILE_WITH_RELAY_MODE: {
     ns:      'crowi',
     key:     'aws:referenceFileWithRelayMode',
