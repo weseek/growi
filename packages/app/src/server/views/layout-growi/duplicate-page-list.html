@@ -1,16 +1,5 @@
 {% extends 'base/layout.html' %}
 
-
-{% block content_main_before %}
-<div
-  {# attributes to get extracted by ContextExtractor #}
-  id="growi-duplicate-page-list-context"
-  data-duplicate-page-ids="{{ duplicatePageIds }}"
-  duplicate-page-path="{{duplicatePath}}"
->
-</div>
-{% endblock %}
-
 {% block content_main %}
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
 <div>
@@ -18,6 +7,4 @@
     <li>{{page._id.toString()}}: {{page.path}}</li>
   {% endfor %}
 </div>
-<div id="duplicate-page-list-context"
-></div>
 {% endblock %}
