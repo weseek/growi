@@ -4,6 +4,7 @@ import React, {
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
+import { useDrag, useDrop } from 'react-dnd';
 import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
@@ -109,6 +110,39 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'PAGE_TREE',
+    item: { page },
+    collect: monitor => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  const pageItemDropHandler = () => {
+    // TODO: hit an api to rename the page by 85175
+    // eslint-disable-next-line no-console
+    console.log('pageItem was droped!!');
+  };
+
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'PAGE_TREE',
+    drop: pageItemDropHandler,
+    hover: (item, monitor) => {
+      // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
+      if (monitor.isOver()) {
+        setTimeout(() => {
+          if (monitor.isOver()) {
+            setIsOpen(true);
+          }
+        }, 1000);
+      }
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -180,8 +214,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen]);
 
   return (
-    <>
-      <div className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}>
+    <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
+      <div
+        ref={(c) => { drag(c); drop(c) }}
+        className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+      >
         <button
           type="button"
           className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
@@ -211,7 +248,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
-          placeholder={t('Input title')}
+          placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
           onPressEnter={onPressEnterHandler}
           inputValidator={inputValidator}
@@ -219,7 +256,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       )}
       {
         isOpen && hasChildren() && currentChildren.map(node => (
-          <div key={node.page._id} className="grw-pagetree-item-container">
+          <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
               isEnableActions={isEnableActions}
               itemNode={node}
@@ -230,7 +267,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         ))
       }
-    </>
+    </div>
   );
 
 };

@@ -257,6 +257,9 @@ ul.pagination {
 
   // Pagetree
   .grw-pagetree {
+    .grw-pagetree-is-over {
+      background: $bgcolor-list-hover;
+    }
     .grw-pagetree-item {
       &.grw-pagetree-is-target {
         background: $bgcolor-list-hover;

@@ -1,38 +1,45 @@
 import { pagePathUtils } from '@growi/core';
+import mongoose from 'mongoose';
+import escapeStringRegexp from 'escape-string-regexp';
+import streamToPromise from 'stream-to-promise';
+import pathlib from 'path';
+import { Writable } from 'stream';
 
+import { serializePageSecurely } from '../models/serializers/page-serializer';
+import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { generateGrantCondition } from '~/server/models/page';
-
+import { generateGrantCondition, PageModel } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-
 import ActivityDefine from '../util/activityDefine';
+import { IPage } from '~/interfaces/page';
 
-const mongoose = require('mongoose');
-const escapeStringRegexp = require('escape-string-regexp');
-const streamToPromise = require('stream-to-promise');
-const pathlib = require('path');
+const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
-const debug = require('debug')('growi:services:page');
-const { Writable } = require('stream');
-const { createBatchStream } = require('~/server/util/batch-stream');
-
-const { isCreatablePage, isDeletablePage, isTrashPage } = pagePathUtils;
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const {
+  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths,
+} = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 
 class PageService {
 
+  crowi: any;
+
+  pageEvent: any;
+
+  tagEvent: any;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
+    this.tagEvent = crowi.event('tag');
 
     // init
     this.initPageEvent();
   }
 
-  initPageEvent() {
+  private initPageEvent() {
     // create
     this.pageEvent.on('create', this.pageEvent.onCreate);
 
@@ -116,7 +123,7 @@ class PageService {
       page = await Page.findByPathAndViewer(path, user);
     }
 
-    const result = {};
+    const result: any = {};
 
     if (page == null) {
       const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
@@ -153,7 +160,7 @@ class PageService {
    * @param {object} redirectToPagePathMapping
    * @param {array} pagePaths
    */
-  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths = []) {
+  private prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
     const pagePath = redirectToPagePathMapping[redirectTo];
 
     if (pagePath == null) {
@@ -169,7 +176,7 @@ class PageService {
    * @param {string} targetPagePath
    * @param {User} viewer
    */
-  async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+  private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -185,23 +192,85 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  async renamePage(page, newPagePath, user, options, isRecursively = false) {
+  // TODO: rewrite recursive rename
+  async renamePage(page, newPagePath, user, options) {
+    // v4 compatible process
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    if (!isV5Compatible) {
+      return this.renamePageV4(page, newPagePath, user, options);
+    }
 
+    const Page = this.crowi.model('Page');
+    const {
+      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantUserGroupId,
+    } = page;
+    const updateMetadata = options.updateMetadata || false;
+
+    // sanitize path
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = false;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+      }
+    }
+
+    // update descendants first
+    await this.renameDescendantsWithStream(page, newPagePath, user, options);
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * bulkWrite PageRedirectDocument if createRedirectPage is true
+     */
+
+    /*
+     * update target
+     */
+    const update: Partial<IPage> = {};
+    // find or create parent
+    const newParent = await Page.getParentAndFillAncestors(newPagePath);
+    // update Page
+    update.path = newPagePath;
+    update.parent = newParent._id;
+    if (updateMetadata) {
+      update.lastUpdateUser = user;
+      update.updatedAt = new Date();
+    }
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+
+    this.pageEvent.emit('rename', page, user);
+
+    return renamedPage;
+  }
+
+  // !!renaming always include descendant pages!!
+  private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
     const path = page.path;
-    const createRedirectPage = options.createRedirectPage || false;
     const updateMetadata = options.updateMetadata || false;
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
-    if (isRecursively) {
-      await this.renameDescendantsWithStream(page, newPagePath, user, options);
-    }
+    await this.renameDescendantsWithStream(page, newPagePath, user, options);
 
-    const update = {};
+
+    const update: any = {};
     // update Page
     update.path = newPagePath;
     if (updateMetadata) {
@@ -213,10 +282,10 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
 
-    if (createRedirectPage) {
-      const body = `redirect ${newPagePath}`;
-      await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * bulkWrite PageRedirectDocument if createRedirectPage is true
+     */
 
     this.pageEvent.emit('rename', page, user);
 
@@ -224,21 +293,14 @@ class PageService {
   }
 
 
-  async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
-    const Page = this.crowi.model('Page');
-
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
-    const { updateMetadata, createRedirectPage } = options;
+    const { updateMetadata } = options;
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
-    const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
-      const revisionId = new mongoose.Types.ObjectId();
 
       if (updateMetadata) {
         unorderedBulkOp
@@ -248,29 +310,14 @@ class PageService {
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
-      if (createRedirectPage) {
-        createRediectPageBulkOp.insert({
-          path: page.path, revision: revisionId, creator: user._id, lastUpdateUser: user._id, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
-        });
-        createRediectRevisionBulkOp.insert({
-          _id: revisionId, path: page.path, body: `redirect ${newPagePath}`, author: user._id, format: 'markdown',
-        });
-      }
-      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
     });
 
     try {
       await unorderedBulkOp.execute();
-      await revisionUnorderedBulkOp.execute();
-      // Execute after unorderedBulkOp to prevent duplication
-      if (createRedirectPage) {
-        await createRediectPageBulkOp.execute();
-        await createRediectRevisionBulkOp.execute();
-      }
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to rename pages: ', err);
+        throw new Error(`Failed to rename pages: ${err}`);
       }
     }
 
@@ -280,7 +327,7 @@ class PageService {
   /**
    * Create rename stream
    */
-  async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -321,7 +368,7 @@ class PageService {
   }
 
 
-  async deleteCompletelyOperation(pageIds, pagePaths) {
+  private async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
@@ -340,7 +387,7 @@ class PageService {
       redirectToPagePathMapping[page.redirectTo] = page.path;
     });
 
-    const redirectedFromPagePaths = [];
+    const redirectedFromPagePaths: any[] = [];
     pagePaths.forEach((pagePath) => {
       redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
     });
@@ -358,15 +405,15 @@ class PageService {
 
   async duplicate(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = mongoose.model('PageTagRelation');
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
     // create option
-    const options = { page };
+    const options: any = { page };
     options.grant = page.grant;
     options.grantUserGroupId = page.grantedGroup;
-    options.grantedUsers = page.grantedUsers;
+    options.grantedUserIds = page.grantedUsers;
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
@@ -384,6 +431,7 @@ class PageService {
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+      this.tagEvent.emit('update', createdPage, savedTags);
     }
 
     const result = serializePageSecurely(createdPage);
@@ -396,12 +444,12 @@ class PageService {
    * Receive the object with oldPageId and newPageId and duplicate the tags from oldPage to newPage
    * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
-  async duplicateTags(pageIdMapping) {
+  private async duplicateTags(pageIdMapping) {
     const PageTagRelation = mongoose.model('PageTagRelation');
 
     // convert pageId from string to ObjectId
     const pageIds = Object.keys(pageIdMapping);
-    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: mongoose.Types.ObjectId(pageId) } }) };
+    const stage = { $or: pageIds.map((pageId) => { return { relatedPage: new mongoose.Types.ObjectId(pageId) } }) };
 
     const pagesAssociatedWithTag = await PageTagRelation.aggregate([
       {
@@ -415,7 +463,7 @@ class PageService {
       },
     ]);
 
-    const newPageTagRelation = [];
+    const newPageTagRelation: any[] = [];
     pagesAssociatedWithTag.forEach(({ _id, relatedPages }) => {
       // relatedPages
       relatedPages.forEach((pageId) => {
@@ -429,7 +477,7 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -444,8 +492,8 @@ class PageService {
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
-    const newPages = [];
-    const newRevisions = [];
+    const newPages: any[] = [];
+    const newRevisions: any[] = [];
 
     pages.forEach((page) => {
       const newPageId = new mongoose.Types.ObjectId();
@@ -476,7 +524,7 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  async duplicateDescendantsWithStream(page, newPagePath, user) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
@@ -518,6 +566,7 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -542,6 +591,7 @@ class PageService {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
     const body = `redirect ${newPath}`;
     await Page.create(page.path, body, user, { redirectTo: newPath });
 
@@ -551,7 +601,7 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteDescendants(pages, user) {
+  private async deleteDescendants(pages, user) {
     const Page = this.crowi.model('Page');
 
     const pageCollection = mongoose.connection.collection('pages');
@@ -560,7 +610,7 @@ class PageService {
     const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
     const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-    const newPagesForRedirect = [];
+    const newPagesForRedirect: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
@@ -597,7 +647,7 @@ class PageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to revert pages: ', err);
+        throw new Error(`Failed to revert pages: ${err}`);
       }
     }
     finally {
@@ -608,7 +658,7 @@ class PageService {
   /**
    * Create delete stream
    */
-  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -641,7 +691,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async deleteMultipleCompletely(pages, user, options = {}) {
+  private async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
 
@@ -673,10 +723,14 @@ class PageService {
     return;
   }
 
+  async emptyTrashPage(user, options = {}) {
+    return this.deleteCompletelyDescendantsWithStream({ path: '/trash' }, user, options);
+  }
+
   /**
    * Create delete completely stream
    */
-  async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -708,7 +762,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedDescendants(pages, user) {
+  private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
@@ -743,7 +797,7 @@ class PageService {
           path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
         },
       });
-      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
+      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } });
     });
 
     try {
@@ -753,13 +807,14 @@ class PageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error('Failed to revert pages: ', err);
+        throw new Error(`Failed to revert pages: ${err}`);
       }
     }
   }
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
@@ -788,6 +843,7 @@ class PageService {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
       },
     }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
     await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
@@ -796,7 +852,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
@@ -829,36 +885,32 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({ grantedGroup: deletedGroup });
+    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
 
     switch (action) {
       case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
+        await Page.publicizePages(pages);
         break;
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
+        await Page.transferPagesToGroup(pages, transferToUserGroupId);
         break;
       default:
         throw new Error('Unknown action for private pages');
     }
   }
 
-  async shortBodiesMapByPageIds(pageIds = [], user) {
+  async shortBodiesMapByPageIds(pageIds: string[] = [], user) {
     const Page = mongoose.model('Page');
     const MAX_LENGTH = 350;
 
     // aggregation options
     const viewerCondition = await generateGrantCondition(user, null);
     const filterByIds = {
-      _id: { $in: pageIds.map(id => mongoose.Types.ObjectId(id)) },
+      _id: { $in: pageIds.map(id => new mongoose.Types.ObjectId(id)) },
     };
 
     let pages;
@@ -915,13 +967,7 @@ class PageService {
     return shortBodiesMap;
   }
 
-  validateCrowi() {
-    if (this.crowi == null) {
-      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
-    }
-  }
-
-  createAndSendNotifications = async function(page, user, action) {
+  private async createAndSendNotifications(page, user, action) {
     const { activityService, inAppNotificationService } = this.crowi;
 
     const snapshot = stringifySnapshot(page);
@@ -941,7 +987,7 @@ class PageService {
     // Create and send notifications
     await inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
     await inAppNotificationService.emitSocketIo(targetUsers);
-  };
+  }
 
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');
@@ -1032,6 +1078,16 @@ class PageService {
       throw err;
     }
 
+    // update descendantCount of all public pages
+    try {
+      await this.updateDescendantCountOfSelfAndDescendants('/');
+      logger.info('Successfully updated all descendantCount of public pages.');
+    }
+    catch (err) {
+      logger.error('Failed updating descendantCount of public pages.', err);
+      throw err;
+    }
+
     await this._setIsV5CompatibleTrue();
   }
 
@@ -1039,7 +1095,7 @@ class PageService {
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
   async _generateRegExpsByPageIds(pageIds) {
-    const Page = mongoose.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
 
     let result;
     try {
@@ -1077,7 +1133,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     // generate filter
-    let filter = {
+    let filter: any = {
       parent: null,
       path: { $ne: '/' },
     };
@@ -1154,7 +1210,7 @@ class PageService {
             parentPath = parentPath.replace(bracket, `\\${bracket}`);
           });
 
-          const filter = {
+          const filter: any = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
             path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'g') },
@@ -1245,6 +1301,45 @@ class PageService {
     return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
   }
 
+  /**
+   * update descendantCount of the following pages
+   * - page that has the same path as the provided path
+   * - pages that are descendants of the above page
+   */
+  async updateDescendantCountOfSelfAndDescendants(path = '/') {
+    const BATCH_SIZE = 200;
+    const Page = this.crowi.model('Page');
+
+    const aggregateCondition = Page.getAggrConditionForPageWithProvidedPathAndDescendants(path);
+    const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
+
+    const recountWriteStream = new Writable({
+      objectMode: true,
+      async write(pageDocuments, encoding, callback) {
+        for (const document of pageDocuments) {
+          // eslint-disable-next-line no-await-in-loop
+          await Page.recountDescendantCountOfSelfAndDescendants(document._id);
+        }
+        callback();
+      },
+      final(callback) {
+        callback();
+      },
+    });
+    aggregatedPages
+      .pipe(createBatchStream(BATCH_SIZE))
+      .pipe(recountWriteStream);
+
+    await streamToPromise(recountWriteStream);
+  }
+
+  // update descendantCount of all pages that are ancestors of a provided path by count
+  async updateDescendantCountOfAncestors(path = '/', count = 0) {
+    const Page = this.crowi.model('Page');
+    const ancestors = collectAncestorPaths(path);
+    await Page.incrementDescendantCountOfPaths(ancestors, count);
+  }
+
 }
 
-module.exports = PageService;
+export default PageService;

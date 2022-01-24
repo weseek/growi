@@ -1,3 +1,5 @@
+import nodePath from 'path';
+
 import escapeStringRegexp from 'escape-string-regexp';
 
 /**
@@ -131,4 +133,18 @@ export const generateEditorPath = (...paths: string[]): string => {
   catch (err) {
     throw new Error('Invalid path format');
   }
+};
+
+/**
+ * returns ancestors paths
+ * @param {string} path
+ * @param {string[]} ancestorPaths
+ * @returns {string[]}
+ */
+export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
+  if (isTopPage(path)) return ancestorPaths;
+
+  const parentPath = nodePath.dirname(path);
+  ancestorPaths.push(parentPath);
+  return collectAncestorPaths(parentPath, ancestorPaths);
 };
