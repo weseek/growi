@@ -2,9 +2,5 @@
 
 {% block content_main %}
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
-<div>
-  {% for page in pages %}
-    <li>{{page._id.toString()}}: {{page.path}}</li>
-  {% endfor %}
-</div>
+<div id="identical-path-page-list"></div>
 {% endblock %}
