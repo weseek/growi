@@ -28,11 +28,11 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const [isOpen, setIsOpen] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
-  const deleteButtonClickedHandler = () => {
+  const deleteButtonClickedHandler = useCallback(() => {
     if (onClickDeleteButtonHandler != null && page._id != null) {
       onClickDeleteButtonHandler(page._id);
     }
-  };
+  }, [onClickDeleteButtonHandler, page._id]);
 
   const renameButtonClickedHandler = useCallback(() => {
     if (onClickRenameButtonHandler != null && page._id != null) {
