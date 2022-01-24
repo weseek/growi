@@ -4,11 +4,15 @@ import {
 
 import { getOrCreateModel } from '@growi/core';
 
-export interface PageOperationDocument extends Document {
-  _id: Types.ObjectId
+
+export interface IPageOperation {
   pageId: Types.ObjectId
   createdAt: Date
   expiredAt: Date
+}
+
+export interface PageOperationDocument extends IPageOperation, Document {
+  isExpired(): Promise<boolean>
 }
 
 export type PageOperationModel = Model<PageOperationDocument>
@@ -32,6 +36,10 @@ const pageOperationSchema = new Schema<PageOperationDocument, PageOperationModel
     required: true,
   },
 });
+
+pageOperationSchema.methods.isExpired = function() {
+  return this.expiredAt.getTime() < Date.now();
+};
 
 
 const PageOperation = getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', pageOperationSchema);
