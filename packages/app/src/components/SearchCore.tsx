@@ -46,17 +46,12 @@ const getQueryByLocation = (location: Location) => {
 };
 
 
-// TODO
-// Task : https://redmine.weseek.co.jp/issues/85465
-// 1. renderSearchForm
-// 2. renderSort
-// 3. message props to SearchPageLayout. <- not relevant here
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
   renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
-  renderSearchForm: (keyword, appContainer, onSearchInvoked) => React.FunctionComponent,
+  renderSearchForm?: (keyword, appContainer, onSearchInvoked) => React.FunctionComponent,
   shouldExcludeUserPages: boolean,
   shouldExcludeTrashPages : boolean,
   renderIncludeSpecificPath?: (excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler) => React.FunctionComponent,
@@ -349,7 +344,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onChangeSortInvoked={onChangeSortInvoked}
         // eslint-disable-next-line max-len
         actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
-        searchForm={props.renderSearchForm(searchingKeyword, props.appContainer, onSearchInvoked)}
+        searchForm={props.renderSearchForm != null && props.renderSearchForm(searchingKeyword, props.appContainer, onSearchInvoked)}
         includeSpecificPath={
           props.renderIncludeSpecificPath != null
           && props.renderIncludeSpecificPath(excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler)

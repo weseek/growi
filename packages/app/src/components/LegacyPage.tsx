@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageMigrateModal from './PageMigrateModal';
 import SearchCore from './SearchCore';
-import SearchPageForm from './SearchPage/SearchPageForm';
 
 type Props = {
 
@@ -45,9 +44,6 @@ const LegacyPage : FC<Props> = (props: Props) => {
     );
   };
 
-  const renderSearchForm = (keyword, appContainer, onSearchInvoked) => {
-    return <SearchPageForm keyword={keyword} appContainer={appContainer} onSearchFormChanged={onSearchInvoked}></SearchPageForm>;
-  };
 
   // TODO : i18n
   // TASK : https://redmine.weseek.co.jp/issues/86488
@@ -65,7 +61,6 @@ const LegacyPage : FC<Props> = (props: Props) => {
     <SearchCore
       renderActionToPagesModal={renderActionsToPageModal}
       renderActionToPages={renderActionToPages}
-      renderSearchForm={renderSearchForm}
       query="[nq:PrivateLegacyPages]"
       shouldExcludeUserPages={false}
       shouldExcludeTrashPages={false}
