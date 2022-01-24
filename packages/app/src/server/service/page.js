@@ -1172,6 +1172,7 @@ class PageService {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
             path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
+            parent: null,
           };
           if (grant != null) {
             filter.grant = grant;
@@ -1198,7 +1199,7 @@ class PageService {
           }
 
           // finish migration
-          if (res.result.nModified === 0 && res.result.nMatched === 0) { // TODO: find the best property to count updated documents
+          if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
           }
