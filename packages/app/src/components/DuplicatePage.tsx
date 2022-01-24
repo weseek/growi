@@ -3,11 +3,11 @@ import { DevidedPagePath } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
 
-type Props = {
+type DuplicatePageAlertProps = {
   path : string,
 }
 
-const DuplicatePageAlert : FC<Props> = (props: Props) => {
+const DuplicatePageAlert : FC<DuplicatePageAlertProps> = (props: DuplicatePageAlertProps) => {
   const { path } = props;
   const { t } = useTranslation();
   const devidedPath = new DevidedPagePath(path);
