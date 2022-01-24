@@ -26,12 +26,20 @@ class PageStatusAlert extends React.Component {
     };
 
     this.getContentsForSomeoneEditingAlert = this.getContentsForSomeoneEditingAlert.bind(this);
+    this.getContentsForRevisionOutdated = this.getContentsForRevisionOutdated.bind(this);
     this.getContentsForDraftExistsAlert = this.getContentsForDraftExistsAlert.bind(this);
     this.getContentsForUpdatedAlert = this.getContentsForUpdatedAlert.bind(this);
+    this.onClickResolveConflict = this.onClickResolveConflict.bind(this);
   }
 
   refreshPage() {
     window.location.reload();
+  }
+
+  onClickResolveConflict() {
+    this.props.pageContainer.setState({
+      isConflictDiffModalOpen: true,
+    });
   }
 
   getContentsForSomeoneEditingAlert() {
@@ -46,6 +54,45 @@ class PageStatusAlert extends React.Component {
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
+    ];
+  }
+
+  getContentsForRevisionOutdated() {
+    const { t, appContainer, pageContainer } = this.props;
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
+
+    let markdownOnEdit = '';
+    let isConflictOnEdit = false;
+
+    if (pageEditor != null) {
+      markdownOnEdit = pageEditor.getMarkdown();
+      isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
+    }
+
+    return [
+      ['bg-warning', 'd-hackmd-none'],
+      <>
+        <i className="icon-fw icon-pencil"></i>
+        {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}
+      </>,
+      <>
+        <button type="button" onClick={() => this.refreshPage()} className="btn btn-outline-white mr-4">
+          <i className="icon-fw icon-reload mr-1"></i>
+          {t('Load latest')}
+        </button>
+        {isConflictOnEdit
+          && (
+            <button
+              type="button"
+              onClick={this.onClickResolveConflict}
+              className="btn btn-outline-white"
+            >
+              <i className="fa fa-fw fa-file-text-o mr-1"></i>
+              {t('modal_resolve_conflict.resolve_conflict')}
+            </button>
+          )
+        }
+      </>,
     ];
   }
 
@@ -92,8 +139,12 @@ class PageStatusAlert extends React.Component {
 
     let getContentsFunc = null;
 
+    // when conflicting on save
+    if (isRevisionOutdated) {
+      getContentsFunc = this.getContentsForRevisionOutdated;
+    }
     // when remote revision is newer than both
-    if (isHackmdDocumentOutdated && isRevisionOutdated) {
+    else if (isHackmdDocumentOutdated && isRevisionOutdated) {
       getContentsFunc = this.getContentsForUpdatedAlert;
     }
     // when someone editing with HackMD

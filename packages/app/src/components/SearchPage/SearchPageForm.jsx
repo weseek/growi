@@ -31,11 +31,14 @@ class SearchPageForm extends React.Component {
   }
 
   render() {
+    const { appContainer } = this.props;
+    const isSearchServiceReachable = appContainer.getConfig().isSearchServiceReachable;
+
     return (
       <div className="input-group mb-3 d-flex">
         <div className="flex-fill">
           <SearchForm
-            t={this.props.t}
+            isSearchServiceReachable={isSearchServiceReachable}
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}

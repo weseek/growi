@@ -22,20 +22,20 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
 };
 
 
-export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageId', initialData ?? null);
+export const usePageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('pageId', initialData ?? null);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData ?? null);
 };
 
-export const useCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('createdAt', initialData ?? null);
+export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
+  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData ?? null);
 };
 
-export const useUpdatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('updatedAt', initialData ?? null);
+export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
+  return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData ?? null);
 };
 
 export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

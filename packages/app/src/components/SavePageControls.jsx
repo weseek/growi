@@ -20,7 +20,9 @@ import GrantSelector from './SavePageControls/GrantSelector';
 import { getOptionsToSave } from '~/client/util/editor';
 
 // TODO: remove this when omitting unstated is completed
-import { useEditorMode } from '~/stores/ui';
+import {
+  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
 import { useIsEditable, useSlackChannels } from '~/stores/context';
 import { useIsSlackEnabled } from '~/stores/editor';
 
@@ -42,35 +44,47 @@ class SavePageControls extends React.Component {
   }
 
   updateGrantHandler(data) {
-    this.props.editorContainer.setState(data);
+    const { mutateGrant, mutateGrantGroupId, mutateGrantGroupName } = this.props;
+
+    mutateGrant(data.grant);
+    mutateGrantGroupId(data.grantGroupId);
+    mutateGrantGroupName(data.grantGroupName);
   }
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
+      if (error.code === 'conflict') {
+        pageContainer.setState({
+          remoteRevisionId: error.data.revisionId,
+          remoteRevisionBody: error.data.revisionBody,
+          remoteRevisionUpdateAt: error.data.createdAt,
+          lastUpdateUser: error.data.user,
+        });
+      }
     }
   }
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer,
     } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
     // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, editorContainer);
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
@@ -79,7 +93,9 @@ class SavePageControls extends React.Component {
 
   render() {
 
-    const { t, pageContainer, editorContainer } = this.props;
+    const {
+      t, pageContainer, grant, grantGroupId, grantGroupName,
+    } = this.props;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
@@ -93,9 +109,9 @@ class SavePageControls extends React.Component {
             <div className="mr-2">
               <GrantSelector
                 disabled={isRootPage}
-                grant={editorContainer.state.grant}
-                grantGroupId={editorContainer.state.grantGroupId}
-                grantGroupName={editorContainer.state.grantGroupName}
+                grant={grant}
+                grantGroupId={grantGroupId}
+                grantGroupName={grantGroupName}
                 onUpdateGrant={this.updateGrantHandler}
               />
             </div>
@@ -128,6 +144,10 @@ const SavePageControlsWrapper = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannels } = useSlackChannels();
+  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
+  const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+
 
   if (isEditable == null || editorMode == null) {
     return null;
@@ -143,6 +163,12 @@ const SavePageControlsWrapper = (props) => {
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannels}
+      grant={grant}
+      grantGroupId={grantGroupId}
+      grantGroupName={grantGroupName}
+      mutateGrant={mutateGrant}
+      mutateGrantGroupId={mutateGrantGroupId}
+      mutateGrantGroupName={mutateGrantGroupName}
     />
   );
 };
@@ -158,6 +184,12 @@ SavePageControls.propTypes = {
   editorMode: PropTypes.string.isRequired,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+  mutateGrant: PropTypes.func,
+  mutateGrantGroupId: PropTypes.func,
+  mutateGrantGroupName: PropTypes.func,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

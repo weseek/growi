@@ -113,10 +113,16 @@ module.exports = (crowi) => {
     const responsesParams = {};
 
     try {
-      responsesParams.sumOfBookmarks = await Bookmark.countByPageId(pageId);
+      const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
+      let users = [];
+      if (bookmarks.length > 0) {
+        users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
+      }
+      responsesParams.sumOfBookmarks = bookmarks.length;
+      responsesParams.bookmarkedUsers = users;
     }
     catch (err) {
-      logger.error('get-bookmark-count-failed', err);
+      logger.error('get-bookmark-document-failed', err);
       return res.apiv3Err(err, 500);
     }
 
@@ -261,6 +267,10 @@ module.exports = (crowi) => {
       }
       if (bool) {
         bookmark = await Bookmark.add(page, req.user);
+
+        const pageEvent = crowi.event('page');
+        // in-app notification
+        pageEvent.emit('bookmark', page, req.user);
       }
       else {
         bookmark = await Bookmark.removeBookmark(page, req.user);

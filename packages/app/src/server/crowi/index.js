@@ -22,6 +22,9 @@ import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import SearchService from '../service/search';
+import { InstallerService } from '../service/installer';
+
+import Actiity from '../models/activity';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -67,6 +70,9 @@ function Crowi() {
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
+  this.inAppNotificationService = null;
+  this.activityService = null;
+  this.commentService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -124,6 +130,9 @@ Crowi.prototype.init = async function() {
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
+    this.setupInAppNotificationService(),
+    this.setupActivityService(),
+    this.setupCommentService(),
     this.setupSyncPageStatusService(),
   ]);
 
@@ -132,42 +141,8 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
   ]);
-};
 
-Crowi.prototype.initForTest = async function() {
-  await this.setupModels();
-  await this.setupConfigManager();
-
-  // // customizeService depends on AppService and XssService
-  // // passportService depends on appService
-  await Promise.all([
-    this.setUpApp(),
-    this.setUpXss(),
-    // this.setUpGrowiBridge(),
-  ]);
-
-  await Promise.all([
-    // this.scanRuntimeVersions(),
-    this.setupPassport(),
-    // this.setupSearcher(),
-    // this.setupMailer(),
-    // this.setupSlackIntegrationService(),
-    // this.setupCsrf(),
-    // this.setUpFileUpload(),
-    this.setupAttachmentService(),
-    this.setUpAcl(),
-    // this.setUpCustomize(),
-    // this.setUpRestQiitaAPI(),
-    // this.setupUserGroup(),
-    // this.setupExport(),
-    // this.setupImport(),
-    this.setupPageService(),
-  ]);
-
-  // globalNotification depends on slack and mailer
-  // await Promise.all([
-  //   this.setUpGlobalNotification(),
-  // ]);
+  await this.autoInstall();
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -295,7 +270,15 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  Object.keys(models).forEach((key) => {
+  let allModels = {};
+
+  // include models that dependent on crowi
+  allModels = models;
+
+  // include models that independent from crowi
+  allModels.Activity = Actiity;
+
+  Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
 };
@@ -390,6 +373,35 @@ Crowi.prototype.setupCsrf = async function() {
   this.tokens = new Tokens();
 
   return Promise.resolve();
+};
+
+Crowi.prototype.autoInstall = function() {
+  const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+  const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
+
+  if (isInstalled || username == null) {
+    return;
+  }
+
+  logger.info('Start automatic installation');
+
+  const firstAdminUserToSave = {
+    username,
+    name: this.configManager.getConfig('crowi', 'autoInstall:adminName'),
+    email: this.configManager.getConfig('crowi', 'autoInstall:adminEmail'),
+    password: this.configManager.getConfig('crowi', 'autoInstall:adminPassword'),
+    admin: true,
+  };
+  const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+
+  const installerService = new InstallerService(this);
+
+  try {
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+  }
+  catch (err) {
+    logger.warn('Automatic installation failed.', err);
+  }
 };
 
 Crowi.prototype.getTokens = function() {
@@ -658,6 +670,27 @@ Crowi.prototype.setupPageService = async function() {
   const PageEventService = require('../service/page');
   if (this.pageService == null) {
     this.pageService = new PageEventService(this);
+  }
+};
+
+Crowi.prototype.setupInAppNotificationService = async function() {
+  const InAppNotificationService = require('../service/in-app-notification');
+  if (this.inAppNotificationService == null) {
+    this.inAppNotificationService = new InAppNotificationService(this);
+  }
+};
+
+Crowi.prototype.setupActivityService = async function() {
+  const ActivityService = require('../service/activity');
+  if (this.activityService == null) {
+    this.activityService = new ActivityService(this);
+  }
+};
+
+Crowi.prototype.setupCommentService = async function() {
+  const CommentService = require('../service/comment');
+  if (this.commentService == null) {
+    this.commentService = new CommentService(this);
   }
 };
 

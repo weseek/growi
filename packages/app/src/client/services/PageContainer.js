@@ -4,9 +4,11 @@ import { Container } from 'unstated';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 import { pagePathUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
-import { toastError } from '../util/apiNotification';
 
+import loggerFactory from '~/utils/logger';
+import { EditorMode } from '~/stores/ui';
+
+import { toastError } from '../util/apiNotification';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -52,9 +54,6 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
 
-      isBookmarked: false,
-      sumOfBookmarks: 0,
-
       seenUsers: [],
       seenUserIds: [],
       sumOfSeenUsers: [],
@@ -65,6 +64,7 @@ export default class PageContainer extends Container {
       sumOfLikers: 0,
 
       createdAt: mainContent.getAttribute('data-page-created-at'),
+      // please use useCurrentUpdatedAt instead
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
       deletedAt: mainContent.getAttribute('data-page-deleted-at') || null,
 
@@ -85,12 +85,15 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      remoteRevisionBody: null,
+      remoteRevisionUpdateAt: null,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: mainContent.getAttribute('data-page-last-update-username') || null,
       deleteUsername: mainContent.getAttribute('data-page-delete-username') || null,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+      isConflictDiffModalOpen: false,
     };
 
     // parse creator, lastUpdateUser and revisionAuthor
@@ -102,6 +105,7 @@ export default class PageContainer extends Container {
     }
     try {
       this.state.revisionAuthor = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
+      this.state.lastUpdateUser = JSON.parse(mainContent.getAttribute('data-page-revision-author'));
     }
     catch (e) {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
@@ -125,7 +129,6 @@ export default class PageContainer extends Container {
       // as it is stored in a separate collection to like and seen user
       // data so it has a separate api endpoint.
       this.initialPageLoad();
-      this.retrieveBookmarkInfo();
     }
 
     this.setTocHtml = this.setTocHtml.bind(this);
@@ -313,20 +316,6 @@ export default class PageContainer extends Container {
     this.checkAndUpdateImageUrlCached(users);
   }
 
-  async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
-    this.setState({
-      sumOfBookmarks: response.data.sumOfBookmarks,
-      isBookmarked: response.data.isBookmarked,
-    });
-  }
-
-  async toggleBookmark() {
-    const bool = !this.state.isBookmarked;
-    await this.appContainer.apiv3Put('/bookmarks', { pageId: this.state.pageId, bool });
-    return this.retrieveBookmarkInfo();
-  }
-
   async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
@@ -346,8 +335,12 @@ export default class PageContainer extends Container {
   setLatestRemotePageData(s2cMessagePageUpdated) {
     const newState = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
       revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
       lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+      lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
     };
 
     if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
@@ -376,6 +369,7 @@ export default class PageContainer extends Container {
       revisionId: revision._id,
       revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
       remoteRevisionId: revision._id,
+      revisionAuthor: revision.author,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: revision.body,
@@ -390,7 +384,7 @@ export default class PageContainer extends Container {
     // PageEditor component
     const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     if (pageEditor != null) {
-      if (editorMode !== 'edit') {
+      if (editorMode !== EditorMode.Editor) {
         pageEditor.updateEditorValue(newState.markdown);
       }
     }
@@ -398,13 +392,36 @@ export default class PageContainer extends Container {
     const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
       // reset
-      if (editorMode !== 'hackmd') {
+      if (editorMode !== EditorMode.HackMD) {
         pageEditorByHackmd.reset();
       }
     }
 
-    // hidden input
-    $('input[name="revision_id"]').val(newState.revisionId);
+  }
+
+  /**
+   * update page meta data
+   * @param {object} page Page instance
+   * @param {object} revision Revision instance
+   * @param {String[]} tags Array of Tag
+   */
+  updatePageMetaData(page, revision, tags) {
+
+    const newState = {
+      revisionId: revision._id,
+      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+      remoteRevisionId: revision._id,
+      revisionAuthor: revision.author,
+      revisionIdHackmdSynced: page.revisionHackmdSynced,
+      hasDraftOnHackmd: page.hasDraftOnHackmd,
+      updatedAt: page.updatedAt,
+    };
+    if (tags != null) {
+      newState.tags = tags;
+    }
+
+    this.setState(newState);
+
   }
 
   /**
@@ -416,7 +433,6 @@ export default class PageContainer extends Container {
   async save(markdown, editorMode, optionsToSave = {}) {
     const { pageId, path } = this.state;
     let { revisionId } = this.state;
-
     const options = Object.assign({}, optionsToSave);
 
     if (editorMode === 'hackmd') {
@@ -636,6 +652,23 @@ export default class PageContainer extends Container {
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
+  }
+
+  async resolveConflict(markdown, editorMode) {
+
+    const { pageId, remoteRevisionId, path } = this.state;
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const options = editorContainer.getCurrentOptionsToSave();
+    const optionsToSave = Object.assign({}, options);
+
+    const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
+
+    editorContainer.clearDraft(path);
+    this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+
+    editorContainer.setState({ tags: res.tags });
+
+    return res;
   }
 
 }

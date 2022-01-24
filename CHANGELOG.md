@@ -1,8 +1,126 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.9](https://github.com/weseek/growi/compare/v4.5.8...v4.5.9) - 2022-01-21
+
+### 🚀 Improvement
+
+- imprv: 79291 make password min length 8 charactors (#5116) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: OIDC reconnection bug fix (#5104) @mudana-grune
+- fix: /_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
+- fix: Default completely deletion settings label mismatched against to actual (#5102) @yuki-takei
+- fix: OIDC issuer host availability check (#5099) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Improve multistage build (#5090) @yuki-takei
+- support: Omit node-re2 (#5089) @yuki-takei
+- ci(deps-dev): bump swr from 1.0.1 to 1.1.2 (#5018) @dependabot
+
+## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
+
+### 💎 Features
+
+- feat: Display a list of bookmarked users (#5044) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Built-in editor scroll position is reset after save (Introduced by v4.5.3) (#5074) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump y18n to v4.0.3 (#5071) @yuki-takei
+- support: Omit prettier-stylelint (#5070) @yuki-takei
+- support: Bump tar to 6.1.11 (#5069) @yuki-takei
+
+## [v4.5.7](https://github.com/weseek/growi/compare/v4.5.6...v4.5.7) - 2022-01-11
+
+### 🐛 Bug Fixes
+
+- fix: Subnavigation sticking initialization (#5062) @yuki-takei
+- fix: Built-in editor was broken (#5061) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Bump re2 to 1.17.2 (#5059) @yuki-takei
+
+## [v4.5.6](https://github.com/weseek/growi/compare/v4.5.5...v4.5.6) - 2022-01-07
+
+### 💎 Features
+
+- feat: Resolve conflict with 3-way merge like editor (#5012) @yuto-oweseek
+
+### 🚀 Improvement
+
+- imprv: Subnavigation behavior (#5047) @yuki-takei
+- imprv: Switching editor mode behavior (#5043) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- Bug: Error: The specified instance couldn't register because same id has already been registered (#5031) by #5043 @yuki-takei
+
+## [v4.5.5](https://github.com/weseek/growi/compare/v4.5.4...v4.5.5) - 2022-01-05
+
+### 💎 Features
+
+- feat: OIDC reconnection (#5016) @mudana-grune
+- feat: In-App Notification (#4792) @kaoritokashiki
+
+### 🚀 Improvement
+
+- imprv: Improve tags functions (#5001) @yuto-oweseek
+- imprv: Migrate editor container grant to SWR (#4957) @stevenfukase
+
+### 🐛 Bug Fixes
+
+- Bug: Error: The specified instance couldn't register because same id has already been registered (#5031) by 573216c @yuki-takei
+
+### 🧰 Maintenance
+
+- fix: dependabot alert trim-newlines (#4931) @mudana-grune
+- fix: dependabot alert dot-prop (#4921) @mudana-grune
+- ci(deps-dev): bump tsconfig-paths-webpack-plugin from 3.5.1 to 3.5.2 (#4852) @dependabot
+- ci(deps): bump ua-parser-js from 0.7.17 to 0.7.31 (#4895) @dependabot
+- support: dependabot alert ssri (#4973) @mudana-grune
+
+## [v4.5.4](https://github.com/weseek/growi/compare/v4.5.3...v4.5.4) - 2021-12-23
+
+### 💎 Features
+
+- feat: Hotkey to focus to search (#5006) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Omit magnifier icon from global SearchTypeahead (#5005) @yuki-takei
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- imprv: Make updatedAt SWR (#4954) @kaoritokashiki
+- imprv: Make createdAt SWR (#4819) @kaoritokashiki
+- imprv: Performance optimization for large drawio diagrams (#4221) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Sidebar height is a little large (#4988) @yuki-takei
+
+### 🧰 Maintenance
+
+- imprv: Focus to input when resetting SearchTypeahead (#5003) @yuki-takei
+- support: Typescriptize search components (#4982) @yuki-takei
+- fix:  dependabot alert object-path (#4964) @mudana-grune
+- fix: dependabot alert axios (#4960) @mudana-grune
+- fix: dependabot alert elliptic (#4959) @mudana-grune
+- fix: dependabot alert acorn (#4951) @mudana-grune
+- fix: dependabot alert is-svg (#4937) @mudana-grune
+- fix: dependabot alert socket.io-parser (#4934) @mudana-grune
+- fix: dependabot alert serialize-javascript (#4910) @mudana-grune
+- fix: dependabot alert js-yaml (#4906) @mudana-grune
+- ci(deps): bump ws from 7.5.1 to 8.3.0 (#4728) @dependabot
+- support: omit growi-commons (#4938) @yuki-takei
 
 ## [v4.5.3](https://github.com/weseek/growi/compare/v4.5.2...v4.5.3) - 2021-12-17
 

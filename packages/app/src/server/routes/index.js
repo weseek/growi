@@ -4,6 +4,7 @@ import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
+import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
 const multer = require('multer');
@@ -12,7 +13,7 @@ const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  max: 10, // limit each IP to 10 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes',
 });
@@ -60,7 +61,7 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
-  app.post('/login'                   , applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , apiLimiter, applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
@@ -138,6 +139,8 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
+  // my in-app-notifications
+  app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
   app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
   // my drafts
   app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);

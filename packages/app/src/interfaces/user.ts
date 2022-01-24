@@ -1,6 +1,8 @@
 export type IUser = {
   name: string;
   username: string;
+  email: string;
+  password: string;
   imageUrlCached: string;
   admin: boolean;
 }
