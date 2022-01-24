@@ -13,7 +13,7 @@ import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import EmojiPicker from './EmojiPicker';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -664,11 +664,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  renderEmojiPickerModal() {
+  renderEmojiPicker() {
     return (
-      <Modal isOpen={this.state.isEmojiPickerShown} toggle={this.toggleEmojiPicker} onOpened={this.emojiPickerOpened}>
-        <Picker set="apple" autoFocus style={{ width: '100%', position: 'absolute' }} />
-      </Modal>
+      <div className="">
+        { this.state.isEmojiPickerShown
+          ? (
+            <div className="text-left">
+
+              <div className="mb-2 d-none d-md-block">
+                <EmojiPicker />
+              </div>
+            </div>
+          )
+          : ''
+        }
+      </div>
     );
   }
 
@@ -1024,7 +1034,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
-        { this.renderEmojiPickerModal() }
+        { this.renderEmojiPicker() }
 
         <GridEditModal
           ref={this.gridEditModal}
