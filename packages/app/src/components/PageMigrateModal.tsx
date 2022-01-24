@@ -67,7 +67,7 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
           {/* TODO : i18n + link
             Task : https://redmine.weseek.co.jp/issues/86488
           */}
-          <p>新スキーマに変換すると旧スキーマには戻せなくなります。<br />詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて</a></p>
+          <p>新スキーマに変換すると旧スキーマには戻せなくなります。<br />詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて</a><i className="icon-share-alt"></i>を参照ください。</p>
           <label>{t('modal_migrate.migrating_page')}:</label><br />
           {pages.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
