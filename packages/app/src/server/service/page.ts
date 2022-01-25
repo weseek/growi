@@ -1144,48 +1144,29 @@ class PageService {
       .pipe(writeStream);
   }
 
+  // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
 
-    const removePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revertRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-
-    // e.g. key: '/test'
-    const pathToPageMapping = {};
-    const toPaths = pages.map(page => Page.getRevertDeletedPageName(page.path));
-    const toPages = await Page.find({ path: { $in: toPaths } });
-    toPages.forEach((toPage) => {
-      pathToPageMapping[toPage.path] = toPage;
-    });
+    const revertPageOperations: any[] = [];
 
     pages.forEach((page) => {
-
       // e.g. page.path = /trash/test, toPath = /test
       const toPath = Page.getRevertDeletedPageName(page.path);
-
-      if (pathToPageMapping[toPath] != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-        if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).delete();
-        }
-      }
-      revertPageBulkOp.find({ _id: page._id }).update({
-        $set: {
-          path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+      revertPageOperations.push({
+        updateOne: {
+          filter: { _id: page._id },
+          update: {
+            $set: {
+              path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+            },
+          },
         },
       });
-      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } });
     });
 
     try {
-      await removePageBulkOp.execute();
-      await revertPageBulkOp.execute();
-      await revertRevisionBulkOp.execute();
+      await Page.bulkWrite(revertPageOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1211,18 +1192,20 @@ class PageService {
       throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
     }
 
-    if (isRecursively) {
-      this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
-    }
+    const parent = await Page.getParentAndFillAncestors(newPath);
 
     page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id,
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    if (isRecursively) {
+      this.revertDeletedDescendantsWithStream(page, user, options);
+    }
 
     return updatedPage;
   }
@@ -1234,15 +1217,7 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-
-      await this.deleteCompletely(originPage, user, options, false, true);
-      this.pageEvent.emit('revert', page, user);
+      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
     }
 
     if (isRecursively) {
@@ -1265,8 +1240,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = false) {
-
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
@@ -1276,7 +1250,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedDescendants(batch, user);
+          await revertDeletedDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
