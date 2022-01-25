@@ -1,5 +1,5 @@
 import React, {
-  FC, useState,
+  FC,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
@@ -13,9 +13,6 @@ type Props = {
 const LegacyPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
-
-  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(false);
-  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(false);
 
   // migrate modal
   const renderActionToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
@@ -62,8 +59,9 @@ const LegacyPage : FC<Props> = (props: Props) => {
       renderActionToPages={renderActionToPages}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
-      excludeUserPages={excludeUserPages}
-      excludeTrashPages={excludeTrashPages}
+      // prefix does not work with named query
+      excludeUserPages={false}
+      excludeTrashPages={false}
     />
   );
 };
