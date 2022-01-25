@@ -454,16 +454,16 @@ class PageService {
         try {
           count += batch.length;
           await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
-          logger.debug(`Reverting pages progressing: (count=${count})`);
+          logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
-          logger.error('revertPages error on add anyway: ', err);
+          logger.error('renameDescendants error on add anyway: ', err);
         }
 
         callback();
       },
       final(callback) {
-        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        logger.debug(`Renaming pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
         pageEvent.emit('syncDescendantsUpdate', targetPage, user);
@@ -991,16 +991,16 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
-          logger.debug(`Reverting pages progressing: (count=${count})`);
+          logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
-          logger.error('revertPages error on add anyway: ', err);
+          logger.error('deleteDescendants error on add anyway: ', err);
         }
 
         callback();
       },
       final(callback) {
-        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        logger.debug(`Deleting pages has completed: (totalCount=${count})`);
 
         callback();
       },
