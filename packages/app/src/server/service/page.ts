@@ -942,7 +942,7 @@ class PageService {
           filter: { _id: page._id },
           update: {
             $set: {
-              path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
+              path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
             },
           },
         },
