@@ -117,6 +117,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: null,
+      isInputtingEmoji: false,
+      searchEmojiTimeout: 0,
     };
 
     this.gridEditModal = React.createRef();
@@ -155,8 +157,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
+    this.getSearchCursor = this.getSearchCursor.bind(this);
+    this.addEmoji = this.addEmoji.bind(this);
+
   }
 
   init() {
@@ -664,16 +668,40 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  getSearchCursor() {
+    const cm = this.getCodeMirror();
+    const pattern = /:[^:\s]+/;
+    const currentPos = cm.getCursor();
+    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
+    return sc;
+  }
+
+  addEmoji(emoji) {
+    const cm = this.getCodeMirror();
+    const currentPos = cm.getCursor();
+    const doc = cm.getDoc();
+    const sc = this.getSearchCursor();
+    if (sc.findPrevious() && this.state.isInputtingEmoji) {
+      sc.replace(emoji.colons, cm.getTokenAt(currentPos).string);
+      this.setState({ emojiSearchText: null });
+    }
+    else {
+      doc.replaceRange(emoji.colons, currentPos);
+    }
+
+  }
+
   toggleEmojiPicker() {
     this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
 
   renderEmojiPicker() {
+    const { emojiSearchText } = this.state;
     return this.state.isEmojiPickerShown
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
-            <EmojiPicker close={this.toggleEmojiPicker} />
+            <EmojiPicker close={this.toggleEmojiPicker} selectEmoji={this.addEmoji} emojiSearchText={emojiSearchText} />
           </div>
         </div>
       )
@@ -779,15 +807,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return range;
   }
 
-  emojiPickerOpened() {
-    // Get input element of emoji picker search
-    const input = document.querySelector('[id^="emoji-mart-search"]');
-    const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    // Set value to input of emoji picker search and trigger the search
-    valueSetter.call(input, this.state.emojiSearchText);
-    const event = new Event('input', { bubbles: true });
-    input.dispatchEvent(event);
-  }
 
   getNavbarItems() {
     return [
@@ -939,20 +958,29 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   searchEmojiPattern() {
+    const sc = this.getSearchCursor();
     const cm = this.getCodeMirror();
-    const pattern = /:[^:\s]+/;
     const currentPos = cm.getCursor();
-    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
 
     if (sc.findPrevious()) {
       const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+      this.setState({ isInputtingEmoji });
+      // current search cursor position
+      const pos = {
+        line: sc.to().line,
+        ch: sc.to().ch,
+      };
       // Add delay between search emoji and display emoji picker
-      const searchText = cm.getTokenAt(currentPos).string;
-      const searchValue = searchText.replace(':', '');
-      setTimeout(() => {
+      if (this.state.searchEmojiTimeout) {
+        clearTimeout(this.state.searchEmojiTimeout);
+      }
+      const timeout = setTimeout(() => {
+        const currentSearchText = sc.matches(true, pos).match[0];
+        const searchValue = currentSearchText.replace(':', '');
         this.setState({ isEmojiPickerShown: isInputtingEmoji });
         this.setState({ emojiSearchText: searchValue });
-      }, 1000);
+      }, 700);
+      this.setState({ searchEmojiTimeout: timeout });
       // return if it isn't inputting emoji
       if (!isInputtingEmoji) {
         return;

@@ -9,6 +9,7 @@ class EmojiPicker extends React.Component {
     super(props);
     this.emojiPicker = React.createRef();
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.selectEmoji = this.selectEmoji.bind(this);
   }
 
   componentDidMount() {
@@ -25,13 +26,17 @@ class EmojiPicker extends React.Component {
     }
   }
 
+  selectEmoji(emoji) {
+    this.props.selectEmoji(emoji);
+  }
+
   render() {
     const { t } = this.props;
 
     return (
       <div className="overlay">
         <div ref={this.emojiPicker}>
-          <Picker set="apple" autoFocus />
+          <Picker set="apple" autoFocus onSelect={this.selectEmoji} />
         </div>
       </div>
     );
@@ -42,6 +47,8 @@ class EmojiPicker extends React.Component {
 EmojiPicker.propTypes = {
   t: PropTypes.func.isRequired,
   close: PropTypes.func,
+  selectEmoji: PropTypes.func,
+  emojiSearchText: PropTypes.string,
 };
 
 export default withTranslation()(EmojiPicker);
