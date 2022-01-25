@@ -112,6 +112,8 @@
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "V5 Page Migration": "V5 Page Migration",
+  "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
+  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -971,5 +973,10 @@
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "Same page name exits as「{{pageName}}」",
+    "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
+    "select_page_to_see" : "Select a page to see"
   }
 }
