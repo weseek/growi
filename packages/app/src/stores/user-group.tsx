@@ -3,7 +3,10 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
-import { UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult } from '~/interfaces/user-group-response';
+import { IPageHasId } from '~/interfaces/page';
+import {
+  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupPagesResult,
+} from '~/interfaces/user-group-response';
 
 
 export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRResponse<IUserGroupHasId[], Error> => {
@@ -41,5 +44,12 @@ export const useSWRxUserGroupRelationList = (
     {
       fallbackData: initialData,
     },
+  );
+};
+
+export const useSWRxUserGroupPages = (groupId: string | undefined, limit: number, offset: number): SWRResponse<IPageHasId[], Error> => {
+  return useSWRImmutable(
+    groupId != null ? [`/user-groups/${groupId}/pages`, { limit, offset }] : null,
+    endpoint => apiv3Get<UserGroupPagesResult>(endpoint).then(result => result.data.userGroupPages),
   );
 };
