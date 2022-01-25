@@ -994,25 +994,39 @@ class PageService {
   private async deleteDescendants(pages, user) {
     const Page = mongoose.model('Page') as PageModel;
 
-    const deletePageBulkOp: any[] = [];
+    const deletePageOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
 
-      deletePageBulkOp.push({
-        updateOne: {
-          filter: { _id: page._id },
-          update: {
-            $set: {
-              path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+      let operation;
+      // if empty, delete completely
+      if (page.isEmpty) {
+        operation = {
+          deleteOne: {
+            filter: { _id: page._id },
+          },
+        };
+      }
+      // if not empty, set parent to null and update to trash
+      else {
+        operation = {
+          updateOne: {
+            filter: { _id: page._id },
+            update: {
+              $set: {
+                path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+              },
             },
           },
-        },
-      });
+        };
+      }
+
+      deletePageOperations.push(operation);
     });
 
     try {
-      await Page.bulkWrite(deletePageBulkOp);
+      await Page.bulkWrite(deletePageOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
