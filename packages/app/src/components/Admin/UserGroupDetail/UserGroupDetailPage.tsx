@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  FC, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ import {
 import { toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
-  IUserGroup, IUserGroupHasId, IUserGroupRelation, IUserGroupRelationHasId,
+  IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
 import { useSWRxUserGroupPages, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
@@ -28,7 +28,6 @@ const UserGroupDetailPage: FC = () => {
    * State (from AdminUserGroupDetailContainer)
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-  // const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelationHasId[]>([]); // For user list
 
   // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
   const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
@@ -50,24 +49,6 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Function
    */
-  // const sync = useCallback(async() => {
-  //   try {
-  //     const [
-  //       userGroupRelations,
-  //       relatedPages,
-  //     ] = await Promise.all([
-  //       apiv3Get(`/user-groups/${userGroup._id}/user-group-relations`).then(res => res.data.userGroupRelations),
-  //       apiv3Get(`/user-groups/${userGroup._id}/pages`).then(res => res.data.pages),
-  //     ]);
-
-  //     setUserGroupRelations(userGroupRelations);
-  //     setRelatedPages(relatedPages);
-  //   }
-  //   catch (err) {
-  //     toastError(new Error('Failed to fetch data'));
-  //   }
-  // }, [userGroup]);
-
   // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
     setAlsoMailSearched(prev => !prev);
@@ -117,21 +98,12 @@ const UserGroupDetailPage: FC = () => {
     await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
     mutateUserGroupPages();
     mutateUserGroupRelations();
-    // await sync();
   }, [userGroup, mutateUserGroupPages, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
     await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
     mutateUserGroupRelations();
-    // setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id)); // TODO 85062: use swr to sync
   }, [userGroup, mutateUserGroupRelations]);
-
-  /*
-   * componentDidMount
-   */
-  // useEffect(() => {
-  //   sync();
-  // }, []);
 
   /*
    * Dependencies
