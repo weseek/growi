@@ -150,6 +150,18 @@ class PageService {
     return result;
   }
 
+  private shouldUseV4Process(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+
+    return shouldUseV4Process;
+  }
+
   /**
    * go back by using redirectTo and return the paths
    *  ex: when
@@ -197,11 +209,7 @@ class PageService {
     const Page = this.crowi.model('Page');
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
@@ -488,11 +496,7 @@ class PageService {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
@@ -856,11 +860,7 @@ class PageService {
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
