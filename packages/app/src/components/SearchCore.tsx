@@ -52,11 +52,12 @@ type Props = {
   renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
   renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
   renderSearchForm?: (keyword, appContainer, onSearchInvoked) => React.FunctionComponent,
-  shouldExcludeUserPages: boolean,
-  shouldExcludeTrashPages : boolean,
   renderIncludeSpecificPath?: (excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler) => React.FunctionComponent,
+  renderSearchOptionModal?: (isFileterOptionModalShown, onRetrySearchInvoked, closeSearchOptionModalHandler) => React.FunctionComponent,
   renderSortControl?: (sort, order, onChangeSortInvoked) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
+  excludeTrashPages: boolean,
+  excludeUserPages: boolean,
   query?: string,
 };
 
@@ -89,8 +90,6 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [shortBodiesMap, setShortBodiesMap] = useState<Record<string, string> | null>(null);
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
-  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(props.shouldExcludeUserPages);
-  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(props.shouldExcludeTrashPages);
   const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
@@ -110,14 +109,6 @@ const SearchCore: FC<Props> = (props: Props) => {
     setActivePage(1);
   };
 
-  const switchExcludeUserPagesHandler = useCallback(() => {
-    setExcludeUserPages(prev => !prev);
-  }, [setExcludeUserPages]);
-
-  const switchExcludeTrashPagesHandler = useCallback(() => {
-    setExcludeTrashPages(prevState => !prevState);
-
-  }, [setExcludeTrashPages]);
 
   const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
     setSort(nextSort);
@@ -141,15 +132,15 @@ const SearchCore: FC<Props> = (props: Props) => {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (excludeTrashPages) {
+    if (props.excludeTrashPages) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (excludeUserPages) {
+    if (props.excludeUserPages) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
     return query;
-  }, [excludeTrashPages, excludeUserPages]);
+  }, [props.excludeTrashPages, props.excludeUserPages]);
 
   // refs: https://redmine.weseek.co.jp/issues/82139
   const search = useCallback(async(data) => {
@@ -287,6 +278,10 @@ const SearchCore: FC<Props> = (props: Props) => {
     setIsActionToPageModalShown(false);
   }, []);
 
+  const onRetrySearchHandler = useCallback(() => {
+    onSearchInvoked({ keyword: searchingKeyword });
+  }, [onSearchInvoked, searchingKeyword]);
+
   /*
    * componentDidMount
    */
@@ -332,26 +327,18 @@ const SearchCore: FC<Props> = (props: Props) => {
   const renderSearchControl = () => {
     return (
       <SearchControl
-        searchingKeyword={searchingKeyword}
-        sort={sort}
-        order={order}
-        appContainer={props.appContainer}
-        onSearchInvoked={onSearchInvoked}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={excludeUserPages}
-        excludeTrashPages={excludeTrashPages}
-        onChangeSortInvoked={onChangeSortInvoked}
         // eslint-disable-next-line max-len
         actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
         searchForm={props.renderSearchForm != null && props.renderSearchForm(searchingKeyword, props.appContainer, onSearchInvoked)}
         includeSpecificPath={
           props.renderIncludeSpecificPath != null
-          && props.renderIncludeSpecificPath(excludeUserPages, switchExcludeUserPagesHandler, excludeTrashPages, switchExcludeTrashPagesHandler)
+          && props.renderIncludeSpecificPath
         }
         sortControl={props.renderSortControl != null
           && props.renderSortControl(sort, order, onChangeSortInvoked)
         }
+        renderSearchOptionModal={props.renderSearchOptionModal}
+        onRetrySearchInvoked={onRetrySearchHandler}
       >
       </SearchControl>
     );

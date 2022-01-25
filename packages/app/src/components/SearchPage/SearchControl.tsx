@@ -1,27 +1,13 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppContainer from '../../client/services/AppContainer';
-import SearchOptionModal from './SearchOptionModal';
-import SortControl from './SortControl';
-import {
-  SORT_AXIS, SORT_ORDER,
-} from '../../interfaces/search';
 
 type Props = {
-  searchingKeyword: string,
-  sort: SORT_AXIS,
-  order: SORT_ORDER,
-  appContainer: AppContainer,
-  excludeUserPages: boolean,
-  excludeTrashPages: boolean,
-  onSearchInvoked: (data: {keyword: string}) => Promise<void>
-  onExcludeUserPagesSwitched?: () => void,
-  onExcludeTrashPagesSwitched?: () => void,
-  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
   actionToPageGroup: React.ReactNode,
   searchForm: React.ReactNode,
   includeSpecificPath?: React.ReactNode,
   sortControl?: React.ReactNode,
+  renderSearchOptionModal?: (isFileterOptionModalShown, onRetrySearchInvoked, closeSearchOptionModalHandler) => React.FunctionComponent,
+  onRetrySearchInvoked: () => void
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
@@ -30,17 +16,6 @@ const SearchControl: FC <Props> = (props: Props) => {
   const { t } = useTranslation('');
   const { actionToPageGroup } = props;
 
-  const switchExcludeUserPagesHandler = () => {
-    if (props.onExcludeUserPagesSwitched != null) {
-      props.onExcludeUserPagesSwitched();
-    }
-  };
-
-  const switchExcludeTrashPagesHandler = () => {
-    if (props.onExcludeTrashPagesSwitched != null) {
-      props.onExcludeTrashPagesSwitched();
-    }
-  };
 
   const openSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(true);
@@ -49,28 +24,6 @@ const SearchControl: FC <Props> = (props: Props) => {
   const closeSearchOptionModalHandler = () => {
     setIsFileterOptionModalShown(false);
   };
-
-  const onRetrySearchInvoked = () => {
-    if (props.onSearchInvoked != null) {
-      props.onSearchInvoked({ keyword: props.searchingKeyword });
-    }
-  };
-
-
-  const rednerSearchOptionModal = () => {
-    return (
-      <SearchOptionModal
-        isOpen={isFileterOptionModalShown || false}
-        onClickFilteringSearchResult={onRetrySearchInvoked}
-        onClose={closeSearchOptionModalHandler}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={props.excludeUserPages}
-        excludeTrashPages={props.excludeTrashPages}
-      />
-    );
-  };
-
 
   return (
     <div className="position-sticky fixed-top shadow-sm">
@@ -105,7 +58,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
         {props.includeSpecificPath}
       </div>
-      {rednerSearchOptionModal()}
+      {props.renderSearchOptionModal != null
+      && props.renderSearchOptionModal(isFileterOptionModalShown, props.onRetrySearchInvoked, closeSearchOptionModalHandler)}
     </div>
   );
 };
