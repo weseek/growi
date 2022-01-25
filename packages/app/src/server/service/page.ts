@@ -858,8 +858,10 @@ class PageService {
     // v4 compatible process
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const useV4Process = !isV5Compatible || !isPageMigrated;
-    if (useV4Process) {
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    if (shouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
 
