@@ -14,5 +14,5 @@ export type UserGroupRelationListResult = {
 };
 
 export type UserGroupPagesResult = {
-  userGroupPages: IPageHasId[],
+  pages: IPageHasId[],
 }
