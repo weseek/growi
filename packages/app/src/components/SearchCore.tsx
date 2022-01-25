@@ -56,8 +56,8 @@ type Props = {
   renderSearchOptionModal?: (isFileterOptionModalShown, onRetrySearchInvoked, closeSearchOptionModalHandler) => React.FunctionComponent,
   renderSortControl?: (sort, order, onChangeSortInvoked) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
-  excludeTrashPages: boolean,
   excludeUserPages: boolean,
+  excludeTrashPages: boolean,
   query?: string,
 };
 
