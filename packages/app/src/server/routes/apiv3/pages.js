@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
+import { PageOperationBlock } from '~/server/models/page-operation-block';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
@@ -477,8 +478,15 @@ module.exports = (crowi) => {
     }
 
     let page;
+    let pageOperationBlock;
+
 
     try {
+      if (isRecursively) {
+        pageOperationBlock = new PageOperationBlock({ path: '/消されて欲しいよ' });
+        await pageOperationBlock.save();
+      }
+
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
@@ -495,6 +503,9 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
+    if (pageOperationBlock != null) {
+      await PageOperationBlock.findOneAndDelete(pageOperationBlock);
+    }
     const result = { page: serializePageSecurely(page) };
 
     try {
