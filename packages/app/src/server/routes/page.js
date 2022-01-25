@@ -1215,7 +1215,7 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id;
 
     // get recursively flag
-    const isRecursively = (req.body.recursively != null);
+    const isRecursively = req.body.recursively;
 
     let page;
     try {

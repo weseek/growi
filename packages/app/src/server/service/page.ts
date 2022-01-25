@@ -150,27 +150,16 @@ class PageService {
     return result;
   }
 
-  /**
-   * go back by using redirectTo and return the paths
-   *  ex: when
-   *    '/page1' redirects to '/page2' and
-   *    '/page2' redirects to '/page3'
-   *    and given '/page3',
-   *    '/page1' and '/page2' will be return
-   *
-   * @param {string} redirectTo
-   * @param {object} redirectToPagePathMapping
-   * @param {array} pagePaths
-   */
-  private prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
-    const pagePath = redirectToPagePathMapping[redirectTo];
+  private shouldUseV4Process(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
-    if (pagePath == null) {
-      return pagePaths;
-    }
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
 
-    pagePaths.push(pagePath);
-    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
+    return shouldUseV4Process;
   }
 
   /**
@@ -197,11 +186,7 @@ class PageService {
     const Page = this.crowi.model('Page');
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
@@ -488,11 +473,7 @@ class PageService {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
@@ -1216,7 +1197,39 @@ class PageService {
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const Revision = this.crowi.model('Revision');
+
+    // v4 compatible process
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
+      return this.revertDeletedPageV4(page, user, options, isRecursively);
+    }
+
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const originPage = await Page.findByPath(newPath);
+    const isOriginPageEmpty = originPage.isEmpty;
+    if (originPage != null && !isOriginPageEmpty) {
+      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
+    }
+
+    if (isRecursively) {
+      this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+    }
+
+    page.status = Page.STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    const updatedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: {
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+      },
+    }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    return updatedPage;
+  }
+
+  private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
@@ -1245,7 +1258,6 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
-    await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
   }
@@ -1253,7 +1265,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = false) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
