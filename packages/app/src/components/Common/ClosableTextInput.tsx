@@ -47,7 +47,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       return;
     }
 
-    props.onPressEnter(inputText);
+    props.onPressEnter(inputText.trim());
   };
 
   const onKeyDownHandler = (e) => {
