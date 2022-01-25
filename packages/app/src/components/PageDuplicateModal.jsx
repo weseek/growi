@@ -22,7 +22,7 @@ const PageDuplicateModal = (props) => {
   const {
     appContainer, pageId, path,
   } = props;
-  const { t } = useTranslation('');
+  const { t } = useTranslation();
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
