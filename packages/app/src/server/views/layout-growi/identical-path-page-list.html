@@ -2,5 +2,10 @@
 
 {% block content_main %}
 <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
-<div id="identical-path-page-list"></div>
+<div
+  id="identical-path-page-list"
+  data-identical-page-data-list="{{ identicalPageDataList|json }}"
+  data-shortody-map="{{ shortBodyMap|json }}"
+>
+</div>
 {% endblock %}

@@ -142,6 +142,7 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
+  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
@@ -613,8 +614,20 @@ module.exports = function(crowi, app) {
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
+
+      const pageIds = pages.map(p => p._id);
+      const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
+      const identicalPageDataList = await Promise.all(pages.map(async(page) => {
+        const bookmarkCount = await Bookmark.countByPageId(page._id);
+        return {
+          pageData: page,
+          pageMeta: {
+            bookmarkCount,
+          },
+        };
+      }));
       return res.render('layout-growi/identical-path-page-list', {
-        pages, redirectFrom,
+        identicalPageDataList, shortBodyMap, redirectFrom,
       });
     }
 
