@@ -455,7 +455,10 @@ module.exports = (crowi) => {
    *            description: page path is already existed
    */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively, revisionId } = req.body;
+    const {
+      pageId, isRecursively, revisionId, path,
+    } = req.body;
+
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -483,7 +486,7 @@ module.exports = (crowi) => {
 
     try {
       if (isRecursively) {
-        pageOperationBlock = new PageOperationBlock({ path: '/消されて欲しいよ' });
+        pageOperationBlock = new PageOperationBlock({ path });
         await pageOperationBlock.save();
       }
 
