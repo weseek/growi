@@ -5,7 +5,7 @@ import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
-import { toastWarning } from '~/client/util/apiNotification';
+import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
@@ -13,6 +13,7 @@ import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
@@ -118,6 +119,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { page, children } = itemNode;
 
+  const [pageTitle, setPageTitle] = useState(page.path);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -195,9 +197,24 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   // TODO: make a put request to pages/title
-  const onPressEnterForRenameHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
-    setRenameInputShown(false);
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+
+    const parentPath = nodePath.dirname(page.path as string || '/');
+    const childPath = nodePath.basename(inputText);
+    const newPagePath = `${parentPath}/${childPath}`;
+
+    try {
+      const res = await apiv3Put('pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+
+      const title = nodePath.basename(res.data.page.path);
+      setPageTitle(title);
+    }
+    catch (err) {
+      toastError(err);
+    }
+    finally {
+      setRenameInputShown(false);
+    }
   };
 
   // TODO: go to create page page
@@ -269,7 +286,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         )}
         { !isRenameInputShown && (
           <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
           </a>
         )}
         <div className="grw-pagetree-count-wrapper">
