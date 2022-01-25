@@ -1082,10 +1082,8 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const useV4Process = !isV5Compatible || !isPageMigrated;
-    if (useV4Process) {
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
       return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
     }
 
