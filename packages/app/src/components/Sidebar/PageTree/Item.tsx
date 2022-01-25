@@ -197,9 +197,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
-
     if (inputText.includes('/')) {
-      toastWarning('Cannot rename a title that contains "/"');
+      toastWarning(t('pagetree.cannot_rename_a_title_that_contains_slash'));
       return;
     }
 
