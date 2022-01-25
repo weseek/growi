@@ -888,7 +888,7 @@ class PageService {
     await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
@@ -996,7 +996,7 @@ class PageService {
           filter: { _id: page._id },
           update: {
             $set: {
-              path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
+              path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
             },
           },
         },
