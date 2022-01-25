@@ -45,8 +45,6 @@ const LegacyPage : FC<Props> = (props: Props) => {
   };
 
 
-  // TODO : i18n
-  // TASK : https://redmine.weseek.co.jp/issues/86488
   const alertMessage = (
     <div className="alert alert-warning py-3">
       <h5 className="font-weight-bold mt-1">{t('legacy_pages_alert.legacy_page_alert')}</h5>
