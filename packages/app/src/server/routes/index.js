@@ -16,7 +16,7 @@ const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  max: 10, // limit each IP to 10 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes',
 });
@@ -63,7 +63,7 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
   app.post('/login/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
-  app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
@@ -161,7 +161,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
