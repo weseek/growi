@@ -199,6 +199,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // TODO: make a put request to pages/title
   const onPressEnterForRenameHandler = async(inputText: string) => {
 
+    if (inputText.includes('/')) {
+      toastWarning('Cannot rename a title that contains "/"');
+      return;
+    }
+
     const parentPath = nodePath.dirname(page.path as string || '/');
     const childPath = nodePath.basename(inputText);
     const newPagePath = `${parentPath}/${childPath}`;
