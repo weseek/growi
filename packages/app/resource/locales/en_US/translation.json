@@ -973,6 +973,7 @@
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",
+    "this_title_cannot_be_renamed": "This title cannot be renamed",
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
   },
   "duplicated_page_alert" : {
