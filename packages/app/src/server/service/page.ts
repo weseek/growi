@@ -1186,10 +1186,13 @@ class PageService {
     }
 
     const newPath = Page.getRevertDeletedPageName(page.path);
-    const originPage = await Page.findByPath(newPath);
+    const includeEmpty = true;
+    const originPage = await Page.findByPath(newPath, includeEmpty);
     const isOriginPageEmpty = originPage.isEmpty;
+
+    // throw if any page already exists
     if (originPage != null && !isOriginPageEmpty) {
-      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
+      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
     }
 
     const parent = await Page.getParentAndFillAncestors(newPath);
@@ -1240,7 +1243,56 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+    if (shouldUseV4Process) {
+      return this.revertDeletedDescendantsWithStreamV4(targetPage, user, options);
+    }
+
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+
+    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
+    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await revertDeletedDescendants(batch, user);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      async final(callback) {
+        const Page = mongoose.model('Page') as unknown as PageModel;
+        // normalize parent of descendant pages
+        const shouldNormalize = targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED;
+        if (shouldNormalize) {
+          try {
+            await normalizeParentOfTree(targetPage.path);
+            logger.info(`Successfully normalized reverted descendant pages under "${targetPage.path}"`);
+          }
+          catch (err) {
+            logger.error('Failed to normalize descendants afrer revert:', err);
+            throw err;
+          }
+        }
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
+  private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
@@ -1529,6 +1581,7 @@ class PageService {
     let filter: any = {
       parent: null,
       path: { $ne: '/' },
+      status: Page.STATUS_PUBLISHED,
     };
     if (grant != null) {
       filter = {
