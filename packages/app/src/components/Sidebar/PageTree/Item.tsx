@@ -196,7 +196,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
-  // TODO: make a put request to pages/title
   const onPressEnterForRenameHandler = async(inputText: string) => {
 
     if (inputText.includes('/')) {
@@ -204,15 +203,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    const parentPath = nodePath.dirname(page.path as string || '/');
-    const childPath = nodePath.basename(inputText);
-    const newPagePath = `${parentPath}/${childPath}`;
+    const parentPath = nodePath.dirname(page.path as string);
+    const newPagePath = `${parentPath}/${inputText}`;
 
     try {
-      const res = await apiv3Put('pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
-
-      const title = nodePath.basename(res.data.page.path);
-      setPageTitle(title);
+      await apiv3Put('pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+      setPageTitle(inputText);
     }
     catch (err) {
       toastError(err);
