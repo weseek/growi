@@ -155,9 +155,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
     this.emojiPickerOpened = this.emojiPickerOpened.bind(this);
-    this.closeEmojiPicker = this.closeEmojiPicker.bind(this);
+    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
   }
 
   init() {
@@ -665,8 +664,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  closeEmojiPicker() {
-    this.setState({ isEmojiPickerShown: false });
+  toggleEmojiPicker() {
+    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
 
   renderEmojiPicker() {
@@ -674,7 +673,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
-            <EmojiPicker close={this.closeEmojiPicker} />
+            <EmojiPicker close={this.toggleEmojiPicker} />
           </div>
         </div>
       )
@@ -771,11 +770,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     lineNumbers.forEach((lineNumber) => {
       editor.foldCode({ line: lineNumber, ch: 0 }, { scanUp: false }, 'fold');
     });
-  }
-
-  toggleEmojiPicker() {
-    this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
-    this.setState({ emojiSearchText: null });
   }
 
   onSaveForDrawio(drawioData) {
@@ -937,6 +931,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="Emoji"
+        onClick={this.toggleEmojiPicker}
       >
         <EditorIcon icon="Emoji" />
       </Button>,
