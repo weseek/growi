@@ -629,7 +629,7 @@ module.exports = (crowi) => {
       });
 
       // TODO: create a common moudule for paginated response
-      return res.apiv3({ total: totalDocs, current, pages });
+      return res.apiv3({ total: totalDocs, current, userGroupPages: pages });
     }
     catch (err) {
       const msg = `Error occurred in fetching pages for group: ${id}`;
