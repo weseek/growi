@@ -875,7 +875,7 @@ class PageService {
     }
 
     // replace with an empty page
-    const shouldReplace = isRecursively && await Page.exists({ parent: page._id });
+    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithEmptyPage(page);
     }
@@ -884,24 +884,30 @@ class PageService {
       this.deleteDescendantsWithStream(page, user); // use the same process in both version v4 and v5
     }
 
+    let deletedPage;
     // update Revisions
-    await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
-    const deletedPage = await Page.findByIdAndUpdate(page._id, {
-      $set: {
-        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
-      },
-    }, { new: true });
-    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
+    if (page.isEmpty) {
+      await Page.remove({ _id: page._id });
+    }
+    else {
+      await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
+      deletedPage = await Page.findByIdAndUpdate(page._id, {
+        $set: {
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+        },
+      }, { new: true });
+      await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * bulkWrite PageRedirect documents
-     */
-    // const body = `redirect ${newPath}`;
-    // await Page.create(page.path, body, user, { redirectTo: newPath });
+      /*
+       * TODO: https://redmine.weseek.co.jp/issues/86577
+       * bulkWrite PageRedirect documents
+       */
+      // const body = `redirect ${newPath}`;
+      // await Page.create(page.path, body, user, { redirectTo: newPath });
 
-    this.pageEvent.emit('delete', page, user);
-    this.pageEvent.emit('create', deletedPage, user);
+      this.pageEvent.emit('delete', page, user);
+      this.pageEvent.emit('create', deletedPage, user);
+    }
 
     return deletedPage;
   }
