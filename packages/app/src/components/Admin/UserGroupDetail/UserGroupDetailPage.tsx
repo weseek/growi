@@ -43,7 +43,7 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Fetch
    */
-  const { data: userGroupPages, mutate: mutateUserGroupPages } = useSWRxUserGroupPages(userGroup._id, 2, 2);
+  const { data: userGroupPages, mutate: mutateUserGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList([userGroup._id]);
 
   /*
@@ -132,9 +132,9 @@ const UserGroupDetailPage: FC = () => {
       <UserGroupUserTable />
       <UserGroupUserModal />
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
-      {/* <div className="page-list">
+      <div className="page-list">
         <UserGroupPageList />
-      </div> */}
+      </div>
     </div>
   );
 

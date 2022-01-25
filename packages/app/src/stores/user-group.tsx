@@ -50,7 +50,7 @@ export const useSWRxUserGroupRelationList = (
 
 export const useSWRxUserGroupPages = (groupId: string | undefined, limit: number, offset: number): SWRResponse<IPageHasId[], Error> => {
   return useSWRImmutable(
-    groupId != null ? [`/user-groups/${groupId}/pages`, { limit, offset }] : null,
-    endpoint => apiv3Get<UserGroupPagesResult>(endpoint).then(result => result.data.userGroupPages),
+    groupId != null ? [`/user-groups/${groupId}/pages`, limit, offset] : null,
+    endpoint => apiv3Get<UserGroupPagesResult>(endpoint, { limit, offset }).then(result => result.data.pages),
   );
 };
