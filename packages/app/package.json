@@ -175,7 +175,7 @@
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
     "codemirror": "^5.63.0",
-    "colors": "^1.2.5",
+    "colors": "=1.4.0",
     "connect-browser-sync": "^2.1.0",
     "core-js": "=2.6.9",
     "css-loader": "^3.0.0",
