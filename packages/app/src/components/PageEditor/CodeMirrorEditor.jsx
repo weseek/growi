@@ -932,6 +932,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Drawio" />
       </Button>,
+      <Button
+        key="nav-item-emoji"
+        color={null}
+        bssize="small"
+        title="Emoji"
+      >
+        <EditorIcon icon="Emoji" />
+      </Button>,
     ];
   }
 
