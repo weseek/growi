@@ -12,6 +12,7 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
@@ -338,7 +339,7 @@ schema.statics.findChildrenByParentPathOrIdAndViewer = async function(parentPath
   }
   else {
     const parentId = parentPathOrId;
-    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO
+    queryBuilder = new PageQueryBuilder(this.find({ parent: parentId } as any), true); // TODO: improve type
   }
   await addViewerCondition(queryBuilder, user, userGroups);
 
@@ -495,7 +496,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mo
 
 export type PageCreateOptions = {
   format?: string
-  grantUserGroupId?: string | IObjectId
+  grantUserGroupId?: ObjectIdLike
   grant?: number
 }
 
