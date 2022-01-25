@@ -504,11 +504,11 @@ module.exports = (crowi) => {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
-    // finally {
-    //   if (pageOperationBlock != null) {
-    //     await PageOperationBlock.findOneAndDelete(pageOperationBlock);
-    //   }
-    // }
+    finally {
+      if (pageOperationBlock != null) {
+        await PageOperationBlock.findOneAndDelete(pageOperationBlock);
+      }
+    }
 
     const result = { page: serializePageSecurely(page) };
 
