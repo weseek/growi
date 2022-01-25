@@ -983,5 +983,9 @@
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
     "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
     "select_page_to_see" : "Select a page to see"
+  },
+  "legacy_pages_alert": {
+    "legacy_page_alert" : "This is legacy pages",
+    "migrate_help": "You can chose pages by marknig a checkbox and click 'Convert to new schema' above to do so."
   }
 }

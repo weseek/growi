@@ -492,7 +492,7 @@
     "dont_ask_again": "常に許可する"
   },
   "modal_migrate":{
-    "migrating_page": "新スキーマへ変換",
+    "migrating_page": "新スキーマへ変換する",
     "migrate_recursively": "全ての子ページを変換",
     "migrate_warning": "新スキーマに変換すると旧スキーマには戻せなくなります。"
   },
@@ -976,5 +976,9 @@
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
     "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
     "select_page_to_see" : "以下から遷移するページを選択してください。"
+  },
+  "legacy_pages_alert": {
+    "legacy_page_alert" : "旧形式のページです" ,
+    "migrate_help":"チェックボックスでページを選択して画面上部”新スキーマへ変換する”ボタンから新スキーマへ切り替えることが可能です。"
   }
 }

@@ -49,11 +49,9 @@ const LegacyPage : FC<Props> = (props: Props) => {
   // TASK : https://redmine.weseek.co.jp/issues/86488
   const alertMessage = (
     <div className="alert alert-warning py-3">
-      <h5 className="font-weight-bold mt-1">旧形式のプライペートページです</h5>
-      <p>
-        チェックボックスでページを選択して 画面上部新スキーマへ変換する ボタンから新スキーマへ切り替えることが可能です。
-        詳しくは<a href="#" className="alert-link"> GROWI.4.9における新スキーマについて<i className="icon-share-alt"></i> </a>を参照ください。
-      </p>
+      <h5 className="font-weight-bold mt-1">{t('legacy_pages_alert.legacy_page_alert')}</h5>
+      <p>{t('legacy_pages_alert.migrate_help')}</p>
+      <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }} />
     </div>
   );
 

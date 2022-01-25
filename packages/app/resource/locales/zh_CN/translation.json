@@ -986,5 +986,9 @@
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
     "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
     "select_page_to_see" : "请在下面选择你想去的页面。"
+  },
+  "legacy_pages_alert": {
+    "legacy_page_alert" : "本页为旧格式" ,
+    "migrate_help": "通过用复选框选择一个页面，并点击屏幕上方的 ”转为新计划” 按钮，就可以切换到新模式。"
   }
 }
