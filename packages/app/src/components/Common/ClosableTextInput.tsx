@@ -1,3 +1,4 @@
+import { text } from 'body-parser';
 import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
@@ -19,7 +20,7 @@ type ClosableTextInputProps = {
   isShown: boolean
   placeholder?: string
   inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
-  onPressEnter?(): void
+  onPressEnter?(inputText: string): void
   onClickOutside?(): void
 }
 
@@ -27,14 +28,18 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [inputText, setInputText] = useState('');
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
   const onChangeHandler = async(e) => {
     if (props.inputValidator == null) { return }
 
-    const alertInfo = await props.inputValidator(e.target.value);
+    const inputText = e.target.value;
+
+    const alertInfo = await props.inputValidator(inputText);
 
     setAlertInfo(alertInfo);
+    setInputText(inputText);
   };
 
   const onPressEnter = () => {
@@ -42,7 +47,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       return;
     }
 
-    props.onPressEnter();
+    props.onPressEnter(inputText);
   };
 
   const onKeyDownHandler = (e) => {
