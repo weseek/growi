@@ -11,3 +11,9 @@ button.emoji-mart-anchors {
 :root button {
   overflow: hidden;
 }
+
+.emoji-mart-category {
+  .emoji-mart-emoji span {
+    cursor: pointer !important;
+  }
+}

@@ -129,11 +129,12 @@ const EditorIcon = (props) => {
       return (
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
           <g transform="translate(-435 -392)">
-            <rect width="30" height="30" transform="translate(435 392)" fill="none" />
-            <path d="M8,1a7,7,0,1,0,7,7A7.008,7.008,0,0,0,8,1M8,0A8,8,0,1,1,0,8,8,8,0,0,1,8,0Z" transform="translate(442 399)" fill="#2a2d33" /><circle cx="1" cy="1" r="1" transform="translate(446 403)" fill="#2a2d33" />
-            <circle cx="1" cy="1" r="1" transform="translate(452 403)" fill="#2a2d33" />
+            <rect width="30" height="30" transform="translate(435 392)" fillOpacity="0" />
+            <path d="M8,1a7,7,0,1,0,7,7A7.008,7.008,0,0,0,8,1M8,0A8,8,0,1,1,0,8,8,8,0,0,1,8,0Z" transform="translate(442 399)" />
+            <circle cx="1" cy="1" r="1" transform="translate(446 403)" />
+            <circle cx="1" cy="1" r="1" transform="translate(452 403)" />
             <g transform="translate(445 406.5)">
-              <path d="M5,5.5a5.006,5.006,0,0,1-5-5,.5.5,0,1,1,1,0,4,4,0,0,0,8,0,.5.5,0,0,1,1,0A5.006,5.006,0,0,1,5,5.5Z" fill="#2a2d33" />
+              <path d="M5,5.5a5.006,5.006,0,0,1-5-5,.5.5,0,1,1,1,0,4,4,0,0,0,8,0,.5.5,0,0,1,1,0A5.006,5.006,0,0,1,5,5.5Z" />
             </g>
           </g>
         </svg>
