@@ -42,8 +42,9 @@ class PageOnlyDescendantsIterableFactory {
   constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
     this.user = user;
     this.rootPage = rootPage;
-    this.isReady = false;
     this.shouldIncludeEmpty = shouldIncludeEmpty;
+
+    this.isReady = false;
 
     this.Page = mongoose.model('Page') as unknown as PageModel;
   }
