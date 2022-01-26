@@ -746,7 +746,7 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
-    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
+    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
@@ -769,7 +769,9 @@ class PageService {
         const shouldNormalize = page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
         if (shouldNormalize) {
           try {
-            await normalizeParentOfTree(newPagePath);
+            const escapedPath = escapeStringRegexp(newPagePath);
+            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+            await normalizeParentRecursively(null, regexps);
             logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
           }
           catch (err) {
@@ -1268,7 +1270,7 @@ class PageService {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
-    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
+    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -1291,7 +1293,9 @@ class PageService {
         if (shouldNormalize) {
           try {
             const newPath = Page.getRevertDeletedPageName(targetPage.path);
-            await normalizeParentOfTree(newPath);
+            const escapedPath = escapeStringRegexp(newPath);
+            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+            await normalizeParentRecursively(null, regexps);
             logger.info(`Successfully normalized reverted descendant pages under "${newPath}"`);
           }
           catch (err) {
@@ -1446,12 +1450,6 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentOfTree(path) {
-    const escapedPath = escapeStringRegexp(path);
-    const regexps = [new RegExp(`^${escapedPath}`, 'i')];
-    return this._v5RecursiveMigration(null, regexps);
-  }
-
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');
 
@@ -1465,7 +1463,7 @@ class PageService {
 
     // migrate recursively
     try {
-      await this._v5RecursiveMigration(null, regexps);
+      await this.normalizeParentRecursively(null, regexps);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -1532,7 +1530,7 @@ class PageService {
 
     // then migrate
     try {
-      await this._v5RecursiveMigration(grant, null, true);
+      await this.normalizeParentRecursively(grant, null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -1589,7 +1587,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  private async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
+  private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -1725,7 +1723,7 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(filter) && shouldContinue) {
-      return this._v5RecursiveMigration(grant, regexps, publicOnly);
+      return this.normalizeParentRecursively(grant, regexps, publicOnly);
     }
 
   }
