@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - dev/4.*
 
 jobs:
 
