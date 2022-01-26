@@ -53,6 +53,7 @@ const GrowiSubNavigation = (props) => {
   const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
+  console.log(isAbleToShowPageManagement);
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();

@@ -1,5 +1,5 @@
 import useSWR, {
-  useSWRConfig, SWRResponse, Key, Fetcher,
+  useSWRConfig, SWRResponse, Key, Fetcher, mutate,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -314,33 +314,52 @@ export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWR
 
 export const useIsEditorMode = (): SWRResponse<Nullable<boolean>, Error> => {
   const { data: editorMode } = useEditorMode();
-  return useStaticSWR('isEditorMode', editorMode !== EditorMode.View);
+  const key = 'isEditorMode';
+
+  mutate(key, editorMode !== EditorMode.View);
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<Nullable<boolean>, Error> => {
+  const key = 'isAbleToShowPageManagement';
   const { data: isPageExist } = useIsPageExist();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isEditorMode } = useIsEditorMode();
 
-  return useStaticSWR('isAbleToShowPageManagement', isPageExist && !isTrashPage && !isSharedUser && !isEditorMode);
+  mutate(key, isPageExist && !isTrashPage && !isSharedUser && !isEditorMode);
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<Nullable<boolean>, Error> => {
+  const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
   const { data: isSharedUser } = useIsSharedUser();
-  return useStaticSWR('isAbleToShowTagLabel', !isUserPage && !isSharedUser);
+
+  mutate(key, !isUserPage && !isSharedUser);
+
+  return useStaticSWR(key, !isUserPage && !isSharedUser);
 };
 
 export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<Nullable<boolean>, Error> => {
+  const key = 'isAbleToShowPageEditorModeManager';
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
-  return useStaticSWR('isAbleToShowPageEditorModeManager', (!isNotCreatable && !isTrashPage && !isSharedUser));
+
+  mutate(key, (!isNotCreatable && !isTrashPage && !isSharedUser));
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<Nullable<boolean>, Error> => {
+  const key = 'isAbleToShowPageAuthors';
   const { data: isPageExist } = useIsPageExist();
   const { data: isUserPage } = useIsUserPage();
-  return useStaticSWR('isAbleToShowPageAuthors', (isPageExist && !isUserPage));
+
+  mutate(key, (isPageExist && !isUserPage));
+
+  return useStaticSWR(key);
 };
