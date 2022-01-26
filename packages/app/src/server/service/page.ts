@@ -157,7 +157,9 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const isTrashPage = page.status === Page.STATUS_DELETED;
+
+    const shouldUseV4Process = !isRoot && !isPageRestricted && !isTrashPage && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
@@ -1204,10 +1206,9 @@ class PageService {
     const newPath = Page.getRevertDeletedPageName(page.path);
     const includeEmpty = true;
     const originPage = await Page.findByPath(newPath, includeEmpty);
-    const isOriginPageEmpty = originPage.isEmpty;
 
     // throw if any page already exists
-    if (originPage != null && !isOriginPageEmpty) {
+    if (originPage != null) {
       throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
     }
 
@@ -1223,7 +1224,7 @@ class PageService {
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
     if (isRecursively) {
-      this.revertDeletedDescendantsWithStream(page, user, options);
+      this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
     }
 
     return updatedPage;
@@ -1289,8 +1290,9 @@ class PageService {
         const shouldNormalize = targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED;
         if (shouldNormalize) {
           try {
-            await normalizeParentOfTree(targetPage.path);
-            logger.info(`Successfully normalized reverted descendant pages under "${targetPage.path}"`);
+            const newPath = Page.getRevertDeletedPageName(targetPage.path);
+            await normalizeParentOfTree(newPath);
+            logger.info(`Successfully normalized reverted descendant pages under "${newPath}"`);
           }
           catch (err) {
             logger.error('Failed to normalize descendants afrer revert:', err);
