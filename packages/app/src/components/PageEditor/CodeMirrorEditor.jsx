@@ -110,7 +110,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
-      isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
@@ -178,7 +177,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillMount() {
-    this.setState({ isEnabledEmojiAutoComplete: true });
     this.initializeTextlint();
   }
 
@@ -256,7 +254,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // update state
     this.setState({
       isGfmMode: bool,
-      isEnabledEmojiAutoComplete: bool,
     });
 
     this.updateCheatsheetStates(bool, null);
