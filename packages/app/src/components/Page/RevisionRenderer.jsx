@@ -64,7 +64,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
    */
   getHighlightedBody(body, keywords) {
     const normalizedKeywordsArray = [];
-    // !!TODO!!: add test code
+    // !!TODO!!: add test code refs: https://redmine.weseek.co.jp/issues/86841
     // Separate keywords
     // - Surrounded by double quotation
     // - Split by both full-width and half-width spaces
