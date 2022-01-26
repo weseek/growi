@@ -1,4 +1,3 @@
-import { text } from 'body-parser';
 import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
@@ -18,9 +17,10 @@ export type AlertInfo = {
 
 type ClosableTextInputProps = {
   isShown: boolean
+  value?: string
   placeholder?: string
   inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
-  onPressEnter?(inputText: string): void
+  onPressEnter?(inputText: string | null): void
   onClickOutside?(): void
 }
 
@@ -28,7 +28,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
   const onChangeHandler = async(e) => {
@@ -47,7 +47,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       return;
     }
 
-    props.onPressEnter(inputText.trim());
+    const text = inputText != null ? inputText.trim() : null;
+
+    props.onPressEnter(text);
   };
 
   const onKeyDownHandler = (e) => {
@@ -99,6 +101,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   return (
     <div className={props.isShown ? 'd-block' : 'd-none'}>
       <input
+        value={inputText}
         ref={inputRef}
         type="text"
         className="form-control"
