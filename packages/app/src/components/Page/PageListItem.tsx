@@ -118,6 +118,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
                   onClickDeleteButtonHandler={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                   isDeletable={!isTopPage(pageData.path)}
+                  // Todo: add onClickRenameButtonHandler
                 />
               </div>
             </div>

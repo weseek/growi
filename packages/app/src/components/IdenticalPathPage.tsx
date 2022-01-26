@@ -18,17 +18,20 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPagePro
 
   return (
     <div className="container">
+      {/* Todo: show alert */}
+
+      {/* identical page list */}
       <ul className="list-group">
-        {/* Todo: show alert */}
         {pageDataList.map((data) => {
           return (
             <PageListItem
               key={data.pageData._id}
-              page={data} // need this to have valid userpicture
+              page={data}
               isSelected={false}
               isChecked={false}
-              isEnableActions={false}
+              isEnableActions
               shortBody={shortbodyMap[data.pageData._id]}
+              // Todo: add onClickDeleteButton when delete feature implemented
             />
           );
         })}

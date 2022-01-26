@@ -619,6 +619,7 @@ module.exports = function(crowi, app) {
       const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
       const identicalPageDataList = await Promise.all(pages.map(async(page) => {
         const bookmarkCount = await Bookmark.countByPageId(page._id);
+        page._doc.seenUserCount = (page.seenUsers && page.seenUsers.length) || 0;
         return {
           pageData: page,
           pageMeta: {
