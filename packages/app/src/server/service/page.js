@@ -109,7 +109,8 @@ class PageService {
       return true;
     }
     if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      return (operator._id.equals(creatorId));
+      const operatorId = operator?._id;
+      return (operatorId != null && operatorId.equals(creatorId));
     }
 
     return false;
