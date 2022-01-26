@@ -1,9 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose, { FilterQuery } from 'mongoose';
+import mongoose from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
-import { Readable, Writable, ReadableOptions } from 'stream';
+import { Readable, Writable } from 'stream';
 
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -24,34 +24,33 @@ const {
 
 const BULK_REINDEX_SIZE = 100;
 
+// TODO: improve type
 class PageOnlyDescendantsIterableFactory {
 
   private user: any; // TODO: Typescriptize model
 
   private rootPage: any; // TODO: wait for mongoose update
 
-  private defaultFilter: any;
+  private shouldIncludeEmpty: boolean;
 
-  private filter: any;
-
-  private currentCursor: Readable;
+  private initialCursor: Readable;
 
   private Page: PageModel;
 
   private isReady: boolean;
 
-  constructor(user: any, rootPage: any, filter?: any) {
+  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
     this.user = user;
     this.rootPage = rootPage;
-    this.filter = filter;
     this.isReady = false;
+    this.shouldIncludeEmpty = shouldIncludeEmpty;
 
     this.Page = mongoose.model('Page') as unknown as PageModel;
   }
 
   async init() {
     const initialCursor = await this.generateCursor(this.rootPage);
-    this.currentCursor = initialCursor;
+    this.initialCursor = initialCursor;
     this.isReady = true;
   }
 
@@ -59,27 +58,39 @@ class PageOnlyDescendantsIterableFactory {
     if (!this.isReady) {
       throw Error('Run init first');
     }
-    return this.findChildrenAndPushRecursively(this.currentCursor);
+
+    return this.generateOnlyDescendants(this.initialCursor);
   }
 
-  private async* findChildrenAndPushRecursively(cursor: any) {
+  /**
+   * Generator that unorderedly yields descendant pages
+   */
+  private async* generateOnlyDescendants(cursor: any) {
     for await (const page of cursor) {
       const nextCursor = await this.generateCursor(page);
-      yield* this.findChildrenAndPushRecursively(nextCursor);
+      yield* this.generateOnlyDescendants(nextCursor); // recursively yield
 
       yield page;
     }
   }
 
   private async generateCursor(page: any): Promise<any> {
-    const grantCondition = await this.generateConditionToFilteringByViewerToEdit(this.user);
-    const query = (this.Page as any).find({ parent: page._id, ...this.defaultFilter, ...this.filter }).and({ $or: grantCondition });
+    const { PageQueryBuilder } = this.Page;
 
-    const cursor = query.lean().cursor({ batchSize: BULK_REINDEX_SIZE });
+    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    builder.addConditionToFilteringByParentId(page._id);
+    await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
+
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE });
 
     return cursor;
   }
 
+  /**
+   * Generates grant condition array. Inspired by addConditionToFilteringByViewerToEdit at obsolete-page.js
+   * @param user user document with _id
+   * @returns grant condition array
+   */
   private async generateConditionToFilteringByViewerToEdit(user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
     let userGroups: any[] | undefined;
@@ -491,7 +502,7 @@ class PageService {
     }
 
     // const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
-    const iterableFactory = new PageOnlyDescendantsIterableFactory(user, targetPage);
+    const iterableFactory = new PageOnlyDescendantsIterableFactory(user, targetPage, true);
     await iterableFactory.init();
     const iterable = await iterableFactory.generateIterable();
     const readStream = Readable.from(iterable);
