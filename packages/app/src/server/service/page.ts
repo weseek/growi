@@ -86,38 +86,6 @@ class PageOnlyDescendantsIterableFactory {
     return cursor;
   }
 
-  /**
-   * Generates grant condition array. Inspired by addConditionToFilteringByViewerToEdit at obsolete-page.js
-   * @param user user document with _id
-   * @returns grant condition array
-   */
-  private async generateConditionToFilteringByViewerToEdit(user) {
-    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-    let userGroups: any[] | undefined;
-    if (this.user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(this.user);
-    }
-
-    const grantConditions: any[] = [
-      { grant: null },
-      { grant: this.Page.GRANT_PUBLIC },
-    ];
-
-    if (user != null) {
-      grantConditions.push(
-        { grant: this.Page.GRANT_OWNER, grantedUsers: user._id },
-      );
-    }
-
-    if (userGroups != null && userGroups.length > 0) {
-      grantConditions.push(
-        { grant: this.Page.GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
-      );
-    }
-
-    return grantConditions;
-  }
-
 }
 
 class PageService {
