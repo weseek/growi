@@ -150,6 +150,12 @@ class PageService {
     return result;
   }
 
+  private shouldNormalizeParent(page) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
+  }
+
   /**
    * go back by using redirectTo and return the paths
    *  ex: when
@@ -753,7 +759,7 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process = false) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
@@ -764,7 +770,8 @@ class PageService {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
-    const normalizeParentOfTree = this.normalizeParentOfTree.bind(this);
+    const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
+    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
@@ -784,10 +791,12 @@ class PageService {
       async final(callback) {
         const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
-        const shouldNormalize = page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
+        const shouldNormalize = shouldNormalizeParent(page);
         if (shouldNormalize) {
           try {
-            await normalizeParentOfTree(newPagePath);
+            const escapedPath = escapeStringRegexp(newPagePath);
+            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+            await normalizeParentRecursively(null, regexps);
             logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
           }
           catch (err) {
@@ -1311,12 +1320,6 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentOfTree(path) {
-    const escapedPath = escapeStringRegexp(path);
-    const regexps = [new RegExp(`^${escapedPath}`, 'i')];
-    return this._v5RecursiveMigration(null, regexps);
-  }
-
   async v5MigrationByPageIds(pageIds) {
     const Page = mongoose.model('Page');
 
@@ -1330,7 +1333,7 @@ class PageService {
 
     // migrate recursively
     try {
-      await this._v5RecursiveMigration(null, regexps);
+      await this.normalizeParentRecursively(null, regexps);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -1397,7 +1400,7 @@ class PageService {
 
     // then migrate
     try {
-      await this._v5RecursiveMigration(grant, null, true);
+      await this.normalizeParentRecursively(grant, null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -1454,7 +1457,7 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async _v5RecursiveMigration(grant, regexps, publicOnly = false): Promise<void> {
+  async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = this.crowi.model('Page');
@@ -1589,7 +1592,7 @@ class PageService {
     await streamToPromise(migratePagesStream);
 
     if (await Page.exists(filter) && shouldContinue) {
-      return this._v5RecursiveMigration(grant, regexps, publicOnly);
+      return this.normalizeParentRecursively(grant, regexps, publicOnly);
     }
 
   }
