@@ -2,15 +2,14 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, useIsEditorMode,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
-  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable,
+  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -40,26 +39,27 @@ const GrowiSubNavigation = (props) => {
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: isPageExist } = useIsPageExist();
-  const { data: isTrashPage } = useIsTrashPage();
-  const { data: isUserPage } = useIsUserPage();
-  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isGuestUser } = useIsGuestUser();
 
   const { mutate: mutateSWRTagsInfo, data: TagsInfoData } = useSWRTagsInfo(pageId);
 
   const {
-    appContainer, editorContainer, isCompactMode,
+    editorContainer, isCompactMode,
   } = props;
 
-  const { isGuestUser, isSharedUser } = appContainer;
-  const isEditorMode = editorMode !== EditorMode.View;
+  const { data: isEditorMode } = useIsEditorMode();
+
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
-  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser && !isEditorMode;
-  const isAbleToShowTagLabel = (!isUserPage && !isSharedUser);
-  const isAbleToShowPageEditorModeManager = (!isNotCreatable && !isTrashPage && !isSharedUser);
-  const isAbleToShowPageAuthors = (isPageExist && !isUserPage);
-
+  const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
+  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
+  console.log('-----------------------------');
+  console.log(isAbleToShowPageManagement);
+  console.log(isAbleToShowPageManagement);
+  console.log('-----------------------------');
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
@@ -151,11 +151,10 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, EditorContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
