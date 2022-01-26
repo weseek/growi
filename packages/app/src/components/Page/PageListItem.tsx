@@ -9,8 +9,6 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
-import { useIsSearchPage } from '~/stores/context';
-
 const { isTopPage } = pagePathUtils;
 
 type Props = {
@@ -33,7 +31,6 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
-  const { data: isSearchPage } = useIsSearchPage();
 
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
@@ -71,7 +68,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
     <li
       key={pageData._id}
       className={`w-100 grw-search-result-item search-result-list
-        ${isSearchPage ? 'list-group-item-action border-bottom' : 'list-group-item p-0'}
+        ${onClickCheckbox != null ? 'list-group-item-action border-bottom' : 'list-group-item p-0'}
         ${responsiveListStyleClass}`
       }
     >
