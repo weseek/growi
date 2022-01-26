@@ -1,8 +1,26 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.10](https://github.com/weseek/growi/compare/v4.5.9...v4.5.10) - 2022-01-26
+
+### 💎 Features
+
+- feat: Automatic installation (#5141) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Migrate like states to swr (#5137) @miya
+
+### 🐛 Bug Fixes
+
+- fix: 86631-cannot-reset-password-in-case-that-register-limitation-is-Closed (#5155) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: VRT with Cypress (#5030) @yuki-takei
 
 ## [v4.5.9](https://github.com/weseek/growi/compare/v4.5.8...v4.5.9) - 2022-01-21
 
