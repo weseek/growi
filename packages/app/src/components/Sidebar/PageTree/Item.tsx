@@ -24,8 +24,6 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  // IPageForPageDeleteModal のduplicate versionを作らないといけない
-  // onClickOpenPageDuplicateModal?(page): void
   onClickDuplecatePage?(page): void
   onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
@@ -291,7 +289,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
-              // duplicate Modal openさせなきゃ
               onClickDuplecatePage={onClickDuplecatePage}
               targetPathOrId={targetPathOrId}
               onClickDeleteByPage={onClickDeleteByPage}
