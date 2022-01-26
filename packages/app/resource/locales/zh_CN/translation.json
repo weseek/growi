@@ -178,7 +178,8 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。"
+    "title_required": "标题是必需的。",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "创建页面",
