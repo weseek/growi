@@ -197,11 +197,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
-    if (inputText === '') {
-      toastWarning(t('pagetree.this_title_cannot_be_renamed'));
-      return;
-    }
-
     if (inputText.includes('/')) {
       toastWarning(t('pagetree.cannot_rename_a_title_that_contains_slash'));
       return;
@@ -229,7 +224,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '') {
+    if (title == null || title === '' || title.trim() === '') {
       return {
         type: AlertType.WARNING,
         message: t('form_validation.title_required'),
