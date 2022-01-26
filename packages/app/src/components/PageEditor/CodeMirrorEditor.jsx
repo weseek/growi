@@ -684,9 +684,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (sc.findPrevious() && this.state.isInputtingEmoji) {
       sc.replace(emoji.colons, cm.getTokenAt(currentPos).string);
       this.setState({ emojiSearchText: null });
+      cm.focus();
     }
     else {
       doc.replaceRange(emoji.colons, currentPos);
+      cm.focus();
     }
 
   }

@@ -946,5 +946,35 @@
     "success_to_send_email": "我发了一封电子邮件",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+  },
+  "emoji" :{
+    "title": "Emoji Mart",
+    "search": "Search",
+    "clear": "Clear",
+    "notfound": "No Emoji Found",
+    "skintext": "Choose your default skin tone",
+    "categories": {
+      "search": "Search Results",
+      "recent": "Frequently Used",
+      "smileys": "Smileys & Emotion",
+      "people": "People & Body",
+      "nature": "Animals & Nature",
+      "foods": "Food & Drink",
+      "activity": "Activity",
+      "places": "Travel & Places",
+      "objects": "Objects",
+      "symbols": "Symbols",
+      "flags": "Flags",
+      "custom": "Custom"
+    },
+    "categorieslabel": "Emoji categories",
+    "skintones": {
+      "1": "Default Skin Tone",
+      "2": "Light Skin Tone",
+      "3": "Medium-Light Skin Tone",
+      "4": "Medium Skin Tone",
+      "5": "Medium-Dark Skin Tone",
+      "6": "Dark Skin Tone"
+    }
   }
 }
