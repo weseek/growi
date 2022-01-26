@@ -84,6 +84,8 @@ const PageTree: FC = memo(() => {
 
   const path = currentPath || '/';
 
+  console.log('isPageDuplicateModalOpen', isPageDuplicateModalOpen);
+
   return (
     <>
       <div className="grw-sidebar-content-header p-3">

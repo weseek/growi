@@ -88,10 +88,11 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
-        onClickOpenPageDuplicateModal={openPageDuplicateModalHandler}
+        onClickDuplecatePage={openPageDuplicateModalHandler}
         onClickDeleteByPage={onClickDeleteByPage}
       />
       {DeleteModal}
+      {DuplicateModal}
     </div>
   );
 };
@@ -118,6 +119,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       onClose={onCloseDelete}
     />
   );
+
+  console.log('isPageDuplicateModalShown', isPageDuplicateModalShown);
 
   const DuplicateModal = (
     <PageDuplicateModal

@@ -25,7 +25,8 @@ interface ItemProps {
   targetPathOrId?: string
   isOpen?: boolean
   // IPageForPageDeleteModal のduplicate versionを作らないといけない
-  onClickOpenPageDuplicateModal?(page): void
+  // onClickOpenPageDuplicateModal?(page): void
+  onClickDuplecatePage?(page): void
   onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
@@ -65,6 +66,7 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     if (props.onClickOpenPageDuplicateModal == null) {
       return;
     }
+    console.log('bbb');
     props.onClickOpenPageDuplicateModal();
   };
 
@@ -115,7 +117,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickOpenPageDuplicateModal, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplecatePage, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -169,11 +171,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [isOpen]);
 
   const openDuplicateModalHandler = useCallback(() => {
-    if (onClickOpenPageDuplicateModal == null) {
+    if (onClickDuplecatePage == null) {
+      console.log('hi');
       return;
     }
 
-    onClickOpenPageDuplicateModal();
+    console.log('ccc');
+    onClickDuplecatePage(page._id);
   }, []);
 
   const onClickDeleteButtonHandler = useCallback(() => {
@@ -287,6 +291,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              // duplicate Modal openさせなきゃ
+              onClickDuplecatePage={onClickDuplecatePage}
               targetPathOrId={targetPathOrId}
               onClickDeleteByPage={onClickDeleteByPage}
             />

@@ -36,6 +36,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
 
   const openPageDuplicateModalHandler = () => {
     if (onClickOpenPageDuplicateModal != null && page._id != null) {
+      console.log('aaa');
       onClickOpenPageDuplicateModal(page._id);
     }
   };
