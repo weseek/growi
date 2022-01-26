@@ -17,6 +17,7 @@ import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import SearchControl from './SearchPage/SearchControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import PageDuplicateModal from './PageDuplicateModal';
 import PageDeleteModal from './PageDeleteModal';
 import { useIsGuestUser } from '~/stores/context';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -48,6 +49,9 @@ class SearchPage extends React.Component {
       sort: SORT_AXIS.RELATION_SCORE,
       order: SORT_ORDER.DESC,
       selectAllCheckboxType: CheckboxType.NONE_CHECKED,
+      isPageDuplicateModalShown: false,
+      duplicateTargetPageId: '',
+      duplicateTargetPagePath: '',
       isDeleteConfirmModalShown: false,
       deleteTargetPageIds: new Set(),
     };
@@ -70,6 +74,8 @@ class SearchPage extends React.Component {
     this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
     this.deleteAllPagesButtonHandler = this.deleteAllPagesButtonHandler.bind(this);
     this.closeDeleteConfirmModalHandler = this.closeDeleteConfirmModalHandler.bind(this);
+    this.openPageDuplicateModalHandler = this.openPageDuplicateModalHandler.bind(this);
+    this.closeDuplicateModalHandler = this.closeDuplicateModalHandler.bind(this);
   }
 
   componentDidMount() {
@@ -290,6 +296,14 @@ class SearchPage extends React.Component {
     }));
   }
 
+  openPageDuplicateModalHandler(pageId, pagePath) {
+    console.log('pageId, pagePath', pageId, pagePath);
+    this.setState({ duplicateTargetPageId: pageId, duplicateTargetPagePath: pagePath, isPageDuplicateModalShown: true });
+    // this.setState({ duplicateTargetPagePath: pagePath });
+    // this.setState({ isPageDuplicateModalShown: true });
+    console.log('aaa');
+  }
+
   deleteSinglePageButtonHandler(pageId) {
     this.setState({ deleteTargetPageIds: new Set([pageId]) });
     this.setState({ isDeleteConfirmModalShown: true });
@@ -303,6 +317,10 @@ class SearchPage extends React.Component {
 
   closeDeleteConfirmModalHandler() {
     this.setState({ isDeleteConfirmModalShown: false });
+  }
+
+  closeDuplicateModalHandler() {
+    this.setState({ isPageDuplicateModalShown: false });
   }
 
   renderSearchResultContent = () => {
@@ -330,6 +348,7 @@ class SearchPage extends React.Component {
         onClickSearchResultItem={this.selectPage}
         onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
+        onClickOpenPageDuplicateModal={this.openPageDuplicateModalHandler}
         onClickDeleteButton={this.deleteSinglePageButtonHandler}
       />
     );
@@ -375,6 +394,12 @@ class SearchPage extends React.Component {
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModalHandler}
           pages={this.getSelectedPagesToDelete()}
+        />
+        <PageDuplicateModal
+          isOpen={this.state.isPageDuplicateModalShown}
+          onClose={this.closeDuplicateModalHandler}
+          pageId={this.state.duplicateTargetPageId}
+          path={this.state.duplicateTargetPagePath}
         />
       </div>
     );
