@@ -69,11 +69,13 @@ const PageTree: FC = memo(() => {
   }
 
   const openPageDuplicateModalHandler = (page) => {
+    console.log('ddd');
     setIsPageDuplicateModalOpen(true);
     setPagesToDuplicate([page as never]);
   };
 
   const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
+    console.log('delete');
     setDeleteModalOpen(true);
     setPagesToDelete([page]);
   };

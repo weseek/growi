@@ -77,7 +77,7 @@ const renderByInitialNode = (
     DeleteModal: JSX.Element,
     isEnableActions: boolean,
     targetPathOrId?: string,
-    openPageDuplicateModalHandler?: (page: IPageForPageDeleteModal) => void,
+    openPageDuplicateModalHandler?: (page) => void,
     onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
@@ -142,7 +142,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickPageDuplicateModal, onClickDeleteByPage);
   }
 
   /*
@@ -150,7 +150,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickPageDuplicateModal, onClickDeleteByPage);
   }
 
   return null;
