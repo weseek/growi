@@ -1,9 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose from 'mongoose';
+import mongoose, { FilterQuery } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
-import { Writable } from 'stream';
+import { Readable, Writable, ReadableOptions } from 'stream';
 
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -23,6 +23,91 @@ const {
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+
+class PageOnlyDescendantsIterableFactory {
+
+  private user: any; // TODO: Typescriptize model
+
+  private rootPage: any; // TODO: wait for mongoose update
+
+  private defaultFilter: any;
+
+  private filter: any;
+
+  private currentCursor: Readable;
+
+  private Page: PageModel;
+
+  private isReady: boolean;
+
+  constructor(user: any, rootPage: any, filter?: any) {
+    this.user = user;
+    this.rootPage = rootPage;
+    this.filter = filter;
+    this.isReady = false;
+
+    this.Page = mongoose.model('Page') as unknown as PageModel;
+  }
+
+  async init() {
+    const initialCursor = await this.generateCursor(this.rootPage);
+    this.currentCursor = initialCursor;
+    this.isReady = true;
+  }
+
+  async generateIterable(): Promise<AsyncGenerator> {
+    if (!this.isReady) {
+      throw Error('Run init first');
+    }
+    return this.findChildrenAndPushRecursively(this.currentCursor);
+  }
+
+  private async* findChildrenAndPushRecursively(cursor: any) {
+    for await (const page of cursor) {
+      const nextCursor = await this.generateCursor(page);
+      yield* this.findChildrenAndPushRecursively(nextCursor);
+
+      yield page;
+    }
+  }
+
+  private async generateCursor(page: any): Promise<any> {
+    const grantCondition = await this.generateConditionToFilteringByViewerToEdit(this.user);
+    const query = (this.Page as any).find({ parent: page._id, ...this.defaultFilter, ...this.filter }).and({ $or: grantCondition });
+
+    const cursor = query.lean().cursor({ batchSize: BULK_REINDEX_SIZE });
+
+    return cursor;
+  }
+
+  private async generateConditionToFilteringByViewerToEdit(user) {
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+    let userGroups: any[] | undefined;
+    if (this.user != null) {
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(this.user);
+    }
+
+    const grantConditions: any[] = [
+      { grant: null },
+      { grant: this.Page.GRANT_PUBLIC },
+    ];
+
+    if (user != null) {
+      grantConditions.push(
+        { grant: this.Page.GRANT_OWNER, grantedUsers: user._id },
+      );
+    }
+
+    if (userGroups != null && userGroups.length > 0) {
+      grantConditions.push(
+        { grant: this.Page.GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      );
+    }
+
+    return grantConditions;
+  }
+
+}
 
 class PageService {
 
@@ -405,7 +490,11 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    // const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const iterableFactory = new PageOnlyDescendantsIterableFactory(user, targetPage);
+    await iterableFactory.init();
+    const iterable = await iterableFactory.generateIterable();
+    const readStream = Readable.from(iterable);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
