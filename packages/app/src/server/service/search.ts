@@ -80,13 +80,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     if (this.isConfigured) {
       this.fullTextSearchDelegator.init();
       this.registerUpdateEvent();
-      if (!this.isElasticsearchReindexOnBoot) {
-        logger.info('ELASTICSEARCH_REINDEX_ON_BOOT value is false, no reindex on boot');
-        this.normalizeIndices();
-      }
-      else {
+      if (this.isElasticsearchReindexOnBoot) {
         logger.info('Reindex elasticsearch is running');
-        this.rebuildIndex(); // rebuildIndex() will call normalizeIndices() in the end of rebuildIndex() process
+        this.rebuildIndex();
       }
     }
   }
