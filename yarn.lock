@@ -7656,6 +7656,11 @@ eslint-plugin-react@^7.24.0:
     resolve "^2.0.0-next.3"
     string.prototype.matchall "^4.0.5"
 
+eslint-plugin-regex@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-regex/-/eslint-plugin-regex-1.8.0.tgz#4bd111cf5235fb76a4a7f77d7ffcb7b3777b8a77"
+  integrity sha512-rmzVvpoxHKgvcYDo9d1X9RMFOtyOV3A6taD3KWE6gIID2dHoc8RPd0YAjDSJ0LG35wnehQBfsNB+F7q4eYqXqw==
+
 eslint-restricted-globals@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/eslint-restricted-globals/-/eslint-restricted-globals-0.1.1.tgz#35f0d5cbc64c2e3ed62e93b4b1a7af05ba7ed4d7"
