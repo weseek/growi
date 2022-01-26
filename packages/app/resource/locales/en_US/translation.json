@@ -178,7 +178,9 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
+
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -972,7 +974,8 @@
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
   "pagetree": {
-    "private_legacy_pages": "Private Legacy Pages"
+    "private_legacy_pages": "Private Legacy Pages",
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
