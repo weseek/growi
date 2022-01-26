@@ -203,7 +203,7 @@ class PageService {
 
     // create descendants first
     if (isRecursively) {
-      pageOperationBlock = await PageOperationBlock.createDocument(path);
+      pageOperationBlock = await PageOperationBlock.create(path);
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
@@ -225,7 +225,7 @@ class PageService {
     }
 
     if (pageOperationBlock != null) {
-      await PageOperationBlock.findOneAndDelete(pageOperationBlock);
+      await PageOperationBlock.findAndDeleteByPagePath(path);
     }
 
     this.pageEvent.emit('rename', page, user);

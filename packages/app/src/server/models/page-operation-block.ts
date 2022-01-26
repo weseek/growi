@@ -30,11 +30,16 @@ pageOperationBlockSchema.methods.isExpired = function() {
   return this.expiredAt.getTime() < Date.now();
 };
 
-pageOperationBlockSchema.statics.createDocument = function(path) {
+pageOperationBlockSchema.statics.create = function(path) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const pageOperationBlock = new PageOperationBlock({ path });
   pageOperationBlock.save();
   return pageOperationBlock;
+};
+
+pageOperationBlockSchema.statics.findAndDeleteByPagePath = function(path) {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  return PageOperationBlock.findOneAndDelete({ path });
 };
 
 const PageOperationBlock = getOrCreateModel<PageOperationBlockDocument, PageOperationBlockModel>('PageOperationBlock', pageOperationBlockSchema);
