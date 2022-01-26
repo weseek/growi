@@ -143,6 +143,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
+  async init() {
+    return this.normalizeIndices();
+  }
+
   /**
    * return Nodes Info
    * `cluster:monitor/nodes/info` privilege is required on ES

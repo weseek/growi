@@ -78,16 +78,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
     this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
 
     if (this.isConfigured) {
-      if (!this.isElasticsearchReindexOnBoot) {
-        logger.info('ELASTICSEARCH_REINDEX_ON_BOOT value is false, no reindex on boot');
-        this.normalizeIndices();
-      }
-      else {
-        logger.info('Reindex elasticsearch is running');
-        this.rebuildIndex();
-      }
-
+      this.fullTextSearchDelegator.init();
       this.registerUpdateEvent();
+    }
+
+    if (!this.isElasticsearchReindexOnBoot) {
+      logger.info('ELASTICSEARCH_REINDEX_ON_BOOT value is false, no reindex on boot');
+      this.normalizeIndices();
+    }
+    else {
+      logger.info('Reindex elasticsearch is running');
+      this.rebuildIndex(); // rebuildIndex() will call normalizeIndices() in the end of rebuildIndex() process
     }
   }
 
