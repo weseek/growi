@@ -157,7 +157,7 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isV5Compatible || !isPageMigrated || !isRoot || isPageRestricted;
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
