@@ -56,10 +56,7 @@ const GrowiSubNavigation = (props) => {
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
-  console.log('-----------------------------');
-  console.log(isAbleToShowPageManagement);
-  console.log(isAbleToShowPageManagement);
-  console.log('-----------------------------');
+
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
