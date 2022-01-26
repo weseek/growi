@@ -24,6 +24,8 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
+  // IPageForPageDeleteModal のduplicate versionを作らないといけない
+  onClickOpenPageDuplicateModal?(page): void
   onClickDeleteByPage?(page: IPageForPageDeleteModal): void
 }
 
@@ -45,6 +47,7 @@ type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
+  onClickOpenPageDuplicateModal?(): void
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -57,6 +60,14 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
     props.onClickPlusButtonHandler();
   };
+
+  const openPageDuplicateModalHandler = () => {
+    if (props.onClickOpenPageDuplicateModal == null) {
+      return;
+    }
+    props.onClickOpenPageDuplicateModal();
+  };
+
 
   const onClickDeleteButton = () => {
     if (props.onClickDeleteButtonHandler == null) {
@@ -72,7 +83,13 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
+      <PageItemControl
+        page={props.page}
+        onClickOpenPageDuplicateModal={openPageDuplicateModalHandler}
+        onClickDeleteButton={onClickDeleteButton}
+        isEnableActions={props.isEnableActions}
+        isDeletable={props.isDeletable}
+      />
       <button
         type="button"
         className="border-0 rounded grw-btn-page-management p-0"
@@ -98,7 +115,7 @@ const ItemCount: FC = () => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickOpenPageDuplicateModal, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -150,6 +167,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickLoadChildren = useCallback(async() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
+
+  const openDuplicateModalHandler = useCallback(() => {
+    if (onClickOpenPageDuplicateModal == null) {
+      return;
+    }
+
+    onClickOpenPageDuplicateModal();
+  }, []);
 
   const onClickDeleteButtonHandler = useCallback(() => {
     if (onClickDeleteByPage == null) {
@@ -237,6 +262,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
+            onClickOpenPageDuplicateModal={openDuplicateModalHandler}
             onClickDeleteButtonHandler={onClickDeleteButtonHandler}
             onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
             isEnableActions={isEnableActions}

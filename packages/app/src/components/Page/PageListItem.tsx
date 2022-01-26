@@ -20,6 +20,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickSearchResultItem?: (pageId: string) => void,
+  onClickOpenPageDuplicateModal? : (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
@@ -115,6 +116,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               <div className="item-control ml-auto">
                 <PageItemControl
                   page={pageData}
+                  onClickOpenPageDuplicateModal={props.onClickOpenPageDuplicateModal}
                   onClickDeleteButton={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                   isDeletable={!isTopPage(pageData.path)}

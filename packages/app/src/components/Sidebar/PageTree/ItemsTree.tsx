@@ -7,6 +7,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
 import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import PageDuplicateModal, { } from '~/components/PageDuplicateModal';
 
 /*
  * Utility to generate initial node
@@ -53,6 +54,13 @@ type ItemsTreeProps = {
   targetPathOrId?: string
   targetAndAncestorsData?: TargetAndAncestors
 
+  // for duplicateModal
+  isPageDuplicateModalShown: boolean
+  pagesToDuplicate: any[] // need to declear IPageForPageDeleteModal
+  onClosePageDuplicateModal(): void
+  onClickPageDuplicateModal(page): void
+  pageId
+  path
   // for deleteModal
   isDeleteModalOpen: boolean
   pagesToDelete: IPageForPageDeleteModal[]
@@ -64,7 +72,13 @@ type ItemsTreeProps = {
 
 const renderByInitialNode = (
     // eslint-disable-next-line max-len
-    initialNode: ItemNode, DeleteModal: JSX.Element, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode,
+    DuplicateModal: JSX.Element,
+    DeleteModal: JSX.Element,
+    isEnableActions: boolean,
+    targetPathOrId?: string,
+    openPageDuplicateModalHandler?: (page: IPageForPageDeleteModal) => void,
+    onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
     <div className="grw-pagetree p-3">
@@ -74,6 +88,7 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
+        onClickOpenPageDuplicateModal={openPageDuplicateModalHandler}
         onClickDeleteByPage={onClickDeleteByPage}
       />
       {DeleteModal}
@@ -88,7 +103,7 @@ const renderByInitialNode = (
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
     targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    onClickDeleteByPage, isEnableActions,
+    isPageDuplicateModalShown, onClosePageDuplicateModal, pageId, path, onClickPageDuplicateModal, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
@@ -104,6 +119,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     />
   );
 
+  const DuplicateModal = (
+    <PageDuplicateModal
+      isOpen={isPageDuplicateModalShown}
+      onClose={onClosePageDuplicateModal}
+      pageId={pageId}
+      path={path}
+    />
+  );
+
   if (error1 != null || error2 != null) {
     // TODO: improve message
     toastError('Error occurred while fetching pages to render PageTree');
@@ -115,7 +139,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
   }
 
   /*
@@ -123,7 +147,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DuplicateModal, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
   }
 
   return null;

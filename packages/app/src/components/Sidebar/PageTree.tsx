@@ -22,9 +22,14 @@ const PageTree: FC = memo(() => {
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  // for delete modal
+  // for PageDuplicateModal
+  const [isPageDuplicateModalOpen, setIsPageDuplicateModalOpen] = useState(false);
+  const [pagesToDuplicate, setPagesToDuplicate] = useState([]);
+
+  // for PageDeleteModal
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
+
 
   const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
 
@@ -63,6 +68,11 @@ const PageTree: FC = memo(() => {
     return null;
   }
 
+  const openPageDuplicateModalHandler = (page) => {
+    setIsPageDuplicateModalOpen(true);
+    setPagesToDuplicate([page as never]);
+  };
+
   const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
     setDeleteModalOpen(true);
     setPagesToDelete([page]);
@@ -86,6 +96,14 @@ const PageTree: FC = memo(() => {
           targetPath={path}
           targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
+          // For PageDuplicateModal
+          isPageDuplicateModalShown={isPageDuplicateModalOpen}
+          pagesToDuplicate={pagesToDuplicate}
+          onClosePageDuplicateModal={() => setIsPageDuplicateModalOpen(false)}
+          onClickPageDuplicateModal={openPageDuplicateModalHandler}
+          pageId={targetId}
+          path={currentPath}
+          // For PageDeleteModal
           isDeleteModalOpen={isDeleteModalOpen}
           pagesToDelete={pagesToDelete}
           isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely

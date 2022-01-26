@@ -10,11 +10,12 @@ import { IPageHasId } from '~/interfaces/page';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
-import PageDuplicateModal from '~/components/PageDuplicateModal';
+// import PageDuplicateModal from '~/components/PageDuplicateModal';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
+  onClickOpenPageDuplicateModal?: (pageId: string) => void
   isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
 }
@@ -22,11 +23,11 @@ type PageItemControlProps = {
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
   const {
-    page, isEnableActions, onClickDeleteButton, isDeletable,
+    page, isEnableActions, onClickOpenPageDuplicateModal, onClickDeleteButton, isDeletable,
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
-  const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
+  // const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
   const deleteButtonHandler = () => {
@@ -35,20 +36,26 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
     }
   };
 
-  const pageDuplicateModalHandler = () => {
-    setIsPageDuplicateModalShown(true);
+  const openPageDuplicateModalHandler = () => {
+    if (onClickOpenPageDuplicateModal != null && page._id != null) {
+      onClickOpenPageDuplicateModal(page._id);
+    }
   };
 
-  const renderModals = () => {
-    return (
-      <PageDuplicateModal
-        isOpen={isPageDuplicateModalShown}
-        onClose={() => setIsPageDuplicateModalShown(false)}
-        pageId={page._id}
-        path={page.path}
-      />
-    );
-  };
+  // const pageDuplicateModalHandler = () => {
+  //   setIsPageDuplicateModalShown(true);
+  // };
+
+  // const renderModals = () => {
+  //   return (
+  //     <PageDuplicateModal
+  //       isOpen={isPageDuplicateModalShown}
+  //       onClose={() => setIsPageDuplicateModalShown(false)}
+  //       pageId={page._id}
+  //       path={page.path}
+  //     />
+  //   );
+  // };
 
 
   const bookmarkToggleHandler = (async() => {
@@ -117,7 +124,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
             </DropdownItem>
           )}
           {isEnableActions && (
-            <DropdownItem onClick={pageDuplicateModalHandler}>
+            <DropdownItem onClick={openPageDuplicateModalHandler}>
               <i className="icon-fw icon-docs"></i>
               {t('Duplicate')}
             </DropdownItem>
@@ -139,7 +146,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           )}
         </DropdownMenu>
       </Dropdown>
-      {renderModals()}
+      {/* {renderModals()} */}
     </>
   );
 
