@@ -197,20 +197,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
+    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
+      return;
+    }
+
     const parentPath = nodePath.dirname(page.path as string);
     const newPagePath = `${parentPath}/${inputText}`;
 
     try {
-      await apiv3Put('pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
       setPageTitle(inputText);
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
     }
     catch (err) {
+      // open ClosableInput and set pageTitle back to the previous title
+      setPageTitle(nodePath.basename(pageTitle as string));
+      setRenameInputShown(true);
       toastError(err);
     }
-    finally {
-      setRenameInputShown(false);
-    }
   };
+
 
   // TODO: go to create page page
   const onPressEnterForCreateHandler = () => {
