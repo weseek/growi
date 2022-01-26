@@ -2,7 +2,7 @@ import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 import { generateGrantCondition } from '~/server/models/page';
-
+import { PageOperationBlock } from '~/server/models/page-operation-block';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import ActivityDefine from '../util/activityDefine';
@@ -199,8 +199,11 @@ class PageService {
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
+    let pageOperationBlock;
+
     // create descendants first
     if (isRecursively) {
+      pageOperationBlock = await PageOperationBlock.createDocument(path);
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
@@ -219,6 +222,10 @@ class PageService {
     if (createRedirectPage) {
       const body = `redirect ${newPagePath}`;
       await Page.create(path, body, user, { redirectTo: newPagePath });
+    }
+
+    if (pageOperationBlock != null) {
+      await PageOperationBlock.findOneAndDelete(pageOperationBlock);
     }
 
     this.pageEvent.emit('rename', page, user);

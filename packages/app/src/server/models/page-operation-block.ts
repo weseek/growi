@@ -30,6 +30,12 @@ pageOperationBlockSchema.methods.isExpired = function() {
   return this.expiredAt.getTime() < Date.now();
 };
 
+pageOperationBlockSchema.statics.createDocument = function(path) {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  const pageOperationBlock = new PageOperationBlock({ path });
+  pageOperationBlock.save();
+  return pageOperationBlock;
+};
 
 const PageOperationBlock = getOrCreateModel<PageOperationBlockDocument, PageOperationBlockModel>('PageOperationBlock', pageOperationBlockSchema);
 
