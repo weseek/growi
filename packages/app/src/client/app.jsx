@@ -42,6 +42,7 @@ import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
+import IdenticalPathPage from '~/components/IdenticalPathPage';
 
 import ContextExtractor from '~/client/services/ContextExtractor';
 import PageContainer from '~/client/services/PageContainer';
@@ -88,6 +89,7 @@ Object.assign(componentMappings, {
 
   'search-page': <SearchPage crowi={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,
+  'identical-path-page-list': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,

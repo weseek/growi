@@ -120,6 +120,8 @@
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
   "V5 Page Migration": "V5 Page Migration",
+  "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Customize": "页面定制",
@@ -974,5 +976,10 @@
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
+    "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
+    "select_page_to_see" : "请在下面选择你想去的页面。"
   }
 }

@@ -45,25 +45,34 @@ type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
-  onClickDeleteButtonHandler?(): void
-  onClickPlusButtonHandler?(): void
+  onClickPlusButton?(): void
+  onClickDeleteButton?(): void
+  onClickRenameButton?(): void
 }
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
-    if (props.onClickPlusButtonHandler == null) {
+    if (props.onClickPlusButton == null) {
       return;
     }
 
-    props.onClickPlusButtonHandler();
+    props.onClickPlusButton();
   };
 
-  const onClickDeleteButton = () => {
-    if (props.onClickDeleteButtonHandler == null) {
+  const onClickDeleteButtonHandler = () => {
+    if (props.onClickDeleteButton == null) {
       return;
     }
 
-    props.onClickDeleteButtonHandler();
+    props.onClickDeleteButton();
+  };
+
+  const onClickRenameButtonHandler = () => {
+    if (props.onClickRenameButton == null) {
+      return;
+    }
+
+    props.onClickRenameButton();
   };
 
   if (props.page == null) {
@@ -72,7 +81,13 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
 
   return (
     <>
-      <PageItemControl page={props.page} onClickDeleteButton={onClickDeleteButton} isEnableActions={props.isEnableActions} isDeletable={props.isDeletable} />
+      <PageItemControl
+        page={props.page}
+        onClickDeleteButtonHandler={onClickDeleteButtonHandler}
+        isEnableActions={props.isEnableActions}
+        isDeletable={props.isDeletable}
+        onClickRenameButtonHandler={onClickRenameButtonHandler}
+      />
       <button
         type="button"
         className="border-0 rounded grw-btn-page-management p-0"
@@ -105,11 +120,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
-
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -151,7 +165,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickDeleteButtonHandler = useCallback(() => {
+  const onClickPlusButton = useCallback(() => {
+    setNewPageInputShown(true);
+  }, []);
+
+  const onClickDeleteButton = useCallback(() => {
     if (onClickDeleteByPage == null) {
       return;
     }
@@ -171,6 +189,23 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
+
+  const onClickRenameButton = useCallback(() => {
+    setRenameInputShown(true);
+  }, []);
+
+  // TODO: make a put request to pages/title
+  const onPressEnterForRenameHandler = () => {
+    toastWarning(t('search_result.currently_not_implemented'));
+    setRenameInputShown(false);
+  };
+
+  // TODO: go to create page page
+  const onPressEnterForCreateHandler = () => {
+    toastWarning(t('search_result.currently_not_implemented'));
+    setNewPageInputShown(false);
+  };
+
   const inputValidator = (title: string | null): AlertInfo | null => {
     if (title == null || title === '') {
       return {
@@ -180,11 +215,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
 
     return null;
-  };
-
-  // TODO: go to create page page
-  const onPressEnterHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
   };
 
   // didMount
@@ -215,9 +245,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   return (
     <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
-      <div
+      <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`grw-pagetree-item d-flex align-items-center pr-1 ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
       >
         <button
           type="button"
@@ -228,29 +258,41 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <TriangleIcon />
           </div>
         </button>
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
-        </a>
+        { isRenameInputShown && (
+          <ClosableTextInput
+            isShown
+            placeholder={t('Input page name')}
+            onClickOutside={() => { setRenameInputShown(false) }}
+            onPressEnter={onPressEnterForRenameHandler}
+            inputValidator={inputValidator}
+          />
+        )}
+        { !isRenameInputShown && (
+          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          </a>
+        )}
         <div className="grw-pagetree-count-wrapper">
           <ItemCount />
         </div>
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
-            onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-            onClickPlusButtonHandler={() => { setNewPageInputShown(true) }}
+            onClickPlusButton={onClickPlusButton}
+            onClickDeleteButton={onClickDeleteButton}
+            onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
             isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
           />
         </div>
-      </div>
+      </li>
 
       {isEnableActions && (
         <ClosableTextInput
           isShown={isNewPageInputShown}
           placeholder={t('Input page name')}
           onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterHandler}
+          onPressEnter={onPressEnterForCreateHandler}
           inputValidator={inputValidator}
         />
       )}
