@@ -115,7 +115,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
 
               {/* page meta */}
               <div className="d-none d-md-flex item-meta py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
+                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
