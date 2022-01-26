@@ -50,7 +50,7 @@ class PageOnlyDescendantsIterableFactory {
   }
 
   async init() {
-    const initialCursor = await this.generateCursor(this.rootPage);
+    const initialCursor = await this.generateCursorToFindChildren(this.rootPage);
     this.initialCursor = initialCursor;
     this.isReady = true;
   }
@@ -68,14 +68,14 @@ class PageOnlyDescendantsIterableFactory {
    */
   private async* generateOnlyDescendants(cursor: any) {
     for await (const page of cursor) {
-      const nextCursor = await this.generateCursor(page);
+      const nextCursor = await this.generateCursorToFindChildren(page);
       yield* this.generateOnlyDescendants(nextCursor); // recursively yield
 
       yield page;
     }
   }
 
-  private async generateCursor(page: any): Promise<any> {
+  private async generateCursorToFindChildren(page: any): Promise<any> {
     const { PageQueryBuilder } = this.Page;
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
