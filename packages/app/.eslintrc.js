@@ -30,11 +30,11 @@ module.exports = {
     }],
     'regex/invalid': ['error', [
       {
-        regex: '\\/\\?\\!',
-        message: 'Do not use any negative lookahead',
+        regex: '\\?\\<\\!',
+        message: 'Do not use any negative lookbehind',
       }, {
-        regex: '\\/\\?\\=',
-        message: 'Do not use any Positive lookahead',
+        regex: '\\?\\<\\=',
+        message: 'Do not use any Positive lookbehind',
       },
     ]],
     '@typescript-eslint/no-var-requires': 'off',
