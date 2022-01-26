@@ -21,21 +21,23 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPagePro
       {/* Todo: show alert */}
 
       {/* identical page list */}
-      <ul className="list-group">
-        {pageDataList.map((data) => {
-          return (
-            <PageListItem
-              key={data.pageData._id}
-              page={data}
-              isSelected={false}
-              isChecked={false}
-              isEnableActions
-              shortBody={shortbodyMap[data.pageData._id]}
+      <div className="page-list">
+        <ul className="page-list-ul list-group-flush border px-3">
+          {pageDataList.map((data) => {
+            return (
+              <PageListItem
+                key={data.pageData._id}
+                page={data}
+                isSelected={false}
+                isChecked={false}
+                isEnableActions
+                shortBody={shortbodyMap[data.pageData._id]}
               // Todo: add onClickDeleteButton when delete feature implemented
-            />
-          );
-        })}
-      </ul>
+              />
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };

@@ -25,6 +25,10 @@ body .page-list {
       width: 16px;
       height: 16px;
       vertical-align: text-bottom;
+      &-custom-md {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     .page-list-meta {

@@ -9,6 +9,8 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
+import { useIsSearchPage } from '~/stores/context';
+
 const { isTopPage } = pagePathUtils;
 
 type Props = {
@@ -31,6 +33,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { data: isSearchPage } = useIsSearchPage();
 
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
@@ -63,11 +66,14 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
   // background color of list item changes when class "active" exists under 'grw-search-result-item'
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
+  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `${isSelected ? 'active' : ''}`}`;
   return (
     <li
       key={pageData._id}
-      className={`w-100 grw-search-result-item border-bottom ${responsiveListStyleClass}`}
+      className={`w-100 grw-search-result-item search-result-list
+        ${isSearchPage ? 'list-group-item-action border-bottom' : 'list-group-item p-0'}
+        ${responsiveListStyleClass}`
+      }
     >
       <div
         className="h-100 text-break"
@@ -98,7 +104,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
               <span className="mr-2 d-none d-md-block">
-                <UserPicture user={pageData.lastUpdateUser} size="sm" />
+                <UserPicture user={pageData.lastUpdateUser} size="custom-md" />
               </span>
               {/* page title */}
               <Clamp lines={1}>
