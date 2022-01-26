@@ -197,11 +197,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
-    if (inputText.includes('/')) {
-      toastWarning(t('pagetree.cannot_rename_a_title_that_contains_slash'));
-      return;
-    }
-
     const parentPath = nodePath.dirname(page.path as string);
     const newPagePath = `${parentPath}/${inputText}`;
 
@@ -228,6 +223,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return {
         type: AlertType.WARNING,
         message: t('form_validation.title_required'),
+      };
+    }
+
+    if (title.includes('/')) {
+      return {
+        type: AlertType.WARNING,
+        message: t('form_validation.slashed_are_not_yet_supported'),
       };
     }
 

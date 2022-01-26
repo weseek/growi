@@ -178,7 +178,9 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
+
   },
   "not_found_page": {
     "Create Page": "Create Page",

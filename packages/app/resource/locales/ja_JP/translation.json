@@ -180,7 +180,8 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください"
+    "title_required": "タイトルを入力してください",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
