@@ -24,13 +24,13 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        npx -y lerna bootstrap
 
     - name: Bump versions
       run: |
@@ -85,13 +85,13 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        npx -y lerna bootstrap
 
     - name: Bump versions for next RC
       run: |

@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -38,7 +38,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: lerna run lint for plugins
       run: |
@@ -64,15 +64,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     services:
       mongodb:
         image: mongo:4.4
-        ports:
-        - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
         ports:
         - 27017/tcp
 
@@ -97,7 +93,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: yarn test
       working-directory: ./packages/app
@@ -105,12 +101,6 @@ jobs:
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
-    - name: yarn test with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        yarn test
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 
     - name: Upload coverage report as artifact
       uses: actions/upload-artifact@v2
@@ -135,7 +125,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     services:
       mongodb:
@@ -164,7 +154,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: yarn dev:ci
       working-directory: ./packages/app

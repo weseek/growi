@@ -47,7 +47,7 @@ jobs:
       - name: Get release version
         id: release-version
         run: |
-          RELEASE_VERSION=`npx semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
+          RELEASE_VERSION=`npx -y semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
           echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
 
       - name: Create/Update Pull Request

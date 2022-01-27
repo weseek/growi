@@ -3,7 +3,7 @@
 ##
 ## packages-json-picker
 ##
-FROM node:14-slim AS packages-json-picker
+FROM node:16-slim AS packages-json-picker
 
 ENV optDir /opt
 
@@ -28,7 +28,7 @@ COPY --from=packages-json-picker ${optDir} .
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN npx lerna bootstrap -- --frozen-lockfile
+RUN npx -y lerna bootstrap -- --frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -49,7 +49,7 @@ COPY ["package.json", "yarn.lock", "lerna.json", "./"]
 COPY ./packages/slack/package.json ./packages/slack/package.json
 COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.json
 
-RUN npx lerna bootstrap -- --production
+RUN npx -y lerna bootstrap -- --production
 # make artifacts
 RUN tar -cf dependencies.tar \
   node_modules \
@@ -60,7 +60,7 @@ RUN tar -cf dependencies.tar \
 ##
 ## builder
 ##
-FROM node:14-slim AS builder
+FROM node:16-slim AS builder
 
 ENV optDir /opt
 
@@ -95,7 +95,7 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:14-slim
+FROM node:16-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production

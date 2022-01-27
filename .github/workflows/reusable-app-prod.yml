@@ -43,7 +43,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: Remove unnecessary packages
       run: |
@@ -133,7 +133,7 @@ jobs:
 
     - name: lerna bootstrap --production
       run: |
-        npx lerna bootstrap -- --production
+        npx -y lerna bootstrap -- --production
 
     - name: Download production files artifact
       uses: actions/download-artifact@v2
@@ -177,7 +177,7 @@ jobs:
     if: ${{ !inputs.skip-cypress }}
 
     runs-on: ubuntu-latest
-    container: cypress/base:14.18.1
+    container: cypress/base:16.13.0
 
     strategy:
       fail-fast: false
@@ -216,7 +216,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: Download production files artifact
       uses: actions/download-artifact@v2

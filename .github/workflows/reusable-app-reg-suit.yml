@@ -67,7 +67,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: Download screenshots taken by cypress
       uses: actions/download-artifact@v2
