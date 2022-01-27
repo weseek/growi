@@ -7,7 +7,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
-import { Strategy as OidcStrategy, Issuer as OIDCIssuer } from 'openid-client';
+import { Strategy as OidcStrategy, Issuer as OIDCIssuer, custom } from 'openid-client';
 import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
 import { BasicStrategy } from 'passport-http';
 
@@ -623,7 +623,12 @@ class PassportService implements S2sMessageHandlable {
     // setup client
     // extend oidc request timeouts
     const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
-    OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
+    // OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
+
+    OIDCIssuer[custom.http_options] = () => {
+      return { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
+    };
+
     const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
     const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret');
@@ -679,7 +684,7 @@ class PassportService implements S2sMessageHandlable {
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
       const OIDC_CLIENT_CLOCK_TOLERANCE = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcClientClockTolerance');
-      client.CLOCK_TOLERANCE = OIDC_CLIENT_CLOCK_TOLERANCE;
+      client[custom.clock_tolerance] = OIDC_CLIENT_CLOCK_TOLERANCE;
       passport.use('oidc', new OidcStrategy(
         {
           client,
@@ -748,6 +753,7 @@ class PassportService implements S2sMessageHandlable {
   async getOIDCIssuerInstace(issuerHost) {
     const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:timeoutMultiplier');
     const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed');
@@ -758,9 +764,12 @@ class PassportService implements S2sMessageHandlable {
     }, {
       onFailedAttempt: (error) => {
         // get current OIDCIssuer.defaultHttpOptions.timeout
-        const oidcOptionTimeout = OIDCIssuer.defaultHttpOptions.timeout;
+        // const oidcOptionTimeout = OIDCIssuer.defaultHttpOptions.timeout;
         // Increases OIDCIssuer.defaultHttpOptions.timeout by multiply with 1.5
-        OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * OIDC_TIMEOUT_MULTIPLIER };
+        custom.setHttpOptionsDefaults({
+          timeout: OIDC_ISSUER_TIMEOUT_OPTION * (OIDC_TIMEOUT_MULTIPLIER ** error.attemptNumber),
+        });
+        // OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * OIDC_TIMEOUT_MULTIPLIER };
         logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
       },
       retries: OIDC_DISCOVERY_RETRIES,
