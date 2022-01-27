@@ -125,6 +125,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
     item: { page },
@@ -249,15 +251,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
       >
-        <button
-          type="button"
-          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
-          onClick={onClickLoadChildren}
-        >
-          <div className="grw-triangle-icon">
-            <TriangleIcon />
-          </div>
-        </button>
+        {hasDescendants && (
+          <button
+            type="button"
+            className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+            onClick={onClickLoadChildren}
+          >
+            <div className="grw-triangle-icon">
+              <TriangleIcon />
+            </div>
+          </button>
+        )}
         { isRenameInputShown && (
           <ClosableTextInput
             isShown
@@ -268,7 +272,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && (
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <a
+            href={page._id}
+            className={`grw-pagetree-title-anchor flex-grow-1 ${hasDescendants ? '' : 'ml-fill-triangle'}`}
+          >
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
         )}

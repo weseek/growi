@@ -45,6 +45,17 @@ $grw-pagetree-item-padding-left: 10px;
     }
   }
 
+  .grw-pagetree-item-container {
+    // fix the height as item height depends on the height of its children
+    > .list-group-item {
+      height: 40px;
+      // fill in the blank sapce created due to the absence of triangle when the page has no descendants
+      > .ml-fill-triangle {
+        margin-left: 35px;
+      }
+    }
+  }
+
   // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
   > .grw-pagetree-item-container {
     > .list-group-item {
