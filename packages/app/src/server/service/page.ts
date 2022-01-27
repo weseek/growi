@@ -25,7 +25,7 @@ const {
 const BULK_REINDEX_SIZE = 100;
 
 // TODO: improve type
-class PageOnlyDescendantsIterableFactory {
+class PageCursorsForDescendantsFactory {
 
   private user: any; // TODO: Typescriptize model
 
@@ -477,7 +477,7 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const iterableFactory = new PageOnlyDescendantsIterableFactory(user, targetPage, true);
+    const iterableFactory = new PageCursorsForDescendantsFactory(user, targetPage, true);
     const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
