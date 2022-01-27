@@ -241,29 +241,6 @@ class PageService {
   }
 
   /**
-   * go back by using redirectTo and return the paths
-   *  ex: when
-   *    '/page1' redirects to '/page2' and
-   *    '/page2' redirects to '/page3'
-   *    and given '/page3',
-   *    '/page1' and '/page2' will be return
-   *
-   * @param {string} redirectTo
-   * @param {object} redirectToPagePathMapping
-   * @param {array} pagePaths
-   */
-  private prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
-    const pagePath = redirectToPagePathMapping[redirectTo];
-
-    if (pagePath == null) {
-      return pagePaths;
-    }
-
-    pagePaths.push(pagePath);
-    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
-  }
-
-  /**
    * Generate read stream to operate descendants of the specified page path
    * @param {string} targetPagePath
    * @param {User} viewer
@@ -273,6 +250,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true)
+      .addConditionAsNotMigrated() // to avoid affecting v5 pages
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
@@ -484,8 +462,8 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const iterableFactory = new PageCursorsForDescendantsFactory(user, targetPage, true);
-    const readStream = await iterableFactory.generateReadable();
+    const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+    const readStream = await factory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -840,7 +818,8 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+    const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
+    const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -959,7 +938,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user); // use the same process in both version v4 and v5
+      this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
     }
     else {
       // replace with an empty page
@@ -1089,8 +1068,16 @@ class PageService {
   /**
    * Create delete stream
    */
-  private async deleteDescendantsWithStream(targetPage, user) {
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = false) {
+    let readStream;
+    if (shouldUseV4Process) {
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
+
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -1198,7 +1185,7 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteCompletelyDescendantsWithStream(page, user, options);
+      this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
     }
 
     if (!preventEmitting) {
@@ -1234,9 +1221,17 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = false) {
+    let readStream;
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const isTrashed = isTrashPage(targetPage.path);
+    if (isTrashed || shouldUseV4Process) { // pages don't have parents
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
