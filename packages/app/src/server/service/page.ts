@@ -150,6 +150,18 @@ class PageService {
     return result;
   }
 
+  private shouldUseV4Process(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+
+    return shouldUseV4Process;
+  }
+
   private shouldNormalizeParent(page) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -203,11 +215,7 @@ class PageService {
     const Page = this.crowi.model('Page');
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
@@ -286,7 +294,6 @@ class PageService {
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const path = page.path;
     const updateMetadata = options.updateMetadata || false;
 
     // sanitize path
@@ -306,7 +313,7 @@ class PageService {
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
-    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
+    await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
     /*
      * TODO: https://redmine.weseek.co.jp/issues/86577
@@ -495,11 +502,7 @@ class PageService {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
@@ -861,9 +864,15 @@ class PageService {
    * Delete
    */
   async deletePage(page, user, options = {}, isRecursively = false) {
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const Revision = this.crowi.model('Revision');
+    const Page = mongoose.model('Page') as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+
+    // v4 compatible process
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
+      return this.deletePageV4(page, user, options, isRecursively);
+    }
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -877,19 +886,79 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user, options);
+      this.deleteDescendantsWithStream(page, user); // use the same process in both version v4 and v5
+    }
+    else {
+      // replace with an empty page
+      const shouldReplace = await Page.exists({ parent: page._id });
+      if (shouldReplace) {
+        await Page.replaceTargetWithEmptyPage(page);
+      }
     }
 
-    // update Rivisions
-    await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
+    let deletedPage;
+    // update Revisions
+    if (page.isEmpty) {
+      await Page.remove({ _id: page._id });
+    }
+    else {
+      await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
+      deletedPage = await Page.findByIdAndUpdate(page._id, {
+        $set: {
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+        },
+      }, { new: true });
+      await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
+
+      /*
+       * TODO: https://redmine.weseek.co.jp/issues/86577
+       * bulkWrite PageRedirect documents
+       */
+      // const body = `redirect ${newPath}`;
+      // await Page.create(page.path, body, user, { redirectTo: newPath });
+
+      this.pageEvent.emit('delete', page, user);
+      this.pageEvent.emit('create', deletedPage, user);
+    }
+
+    return deletedPage;
+  }
+
+  private async deletePageV4(page, user, options = {}, isRecursively = false) {
+    const Page = mongoose.model('Page') as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+
+    const newPath = Page.getDeletedPageName(page.path);
+    const isTrashed = isTrashPage(page.path);
+
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
+    if (!Page.isDeletableName(page.path)) {
+      throw new Error('Page is not deletable.');
+    }
+
+    if (isRecursively) {
+      this.deleteDescendantsWithStream(page, user);
+    }
+
+    // update Revisions
+    await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
-    const body = `redirect ${newPath}`;
-    await Page.create(page.path, body, user, { redirectTo: newPath });
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * bulkWrite PageRedirect documents
+     */
+    // const body = `redirect ${newPath}`;
+    // await Page.create(page.path, body, user, { redirectTo: newPath });
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
@@ -933,52 +1002,45 @@ class PageService {
   }
 
   private async deleteDescendants(pages, user) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
 
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
-
-    const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
-    const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-    const newPagesForRedirect: any[] = [];
+    const deletePageOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
-      const revisionId = new mongoose.Types.ObjectId();
-      const body = `redirect ${newPath}`;
 
-      deletePageBulkOp.find({ _id: page._id }).update({
-        $set: {
-          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
-        },
-      });
-      updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
-      createRediectRevisionBulkOp.insert({
-        _id: revisionId, path: page.path, body, author: user._id, format: 'markdown',
-      });
+      let operation;
+      // if empty, delete completely
+      if (page.isEmpty) {
+        operation = {
+          deleteOne: {
+            filter: { _id: page._id },
+          },
+        };
+      }
+      // if not empty, set parent to null and update to trash
+      else {
+        operation = {
+          updateOne: {
+            filter: { _id: page._id },
+            update: {
+              $set: {
+                path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+              },
+            },
+          },
+        };
+      }
 
-      newPagesForRedirect.push({
-        path: page.path,
-        creator: user._id,
-        grant: page.grant,
-        grantedGroup: page.grantedGroup,
-        grantedUsers: page.grantedUsers,
-        lastUpdateUser: user._id,
-        redirectTo: newPath,
-        revision: revisionId,
-      });
+      deletePageOperations.push(operation);
     });
 
     try {
-      await deletePageBulkOp.execute();
-      await updateRevisionListOp.execute();
-      await createRediectRevisionBulkOp.execute();
-      await Page.insertMany(newPagesForRedirect, { ordered: false });
+      await Page.bulkWrite(deletePageOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error(`Failed to revert pages: ${err}`);
+        throw new Error(`Failed to delete pages: ${err}`);
       }
     }
     finally {
@@ -989,8 +1051,7 @@ class PageService {
   /**
    * Create delete stream
    */
-  private async deleteDescendantsWithStream(targetPage, user, options = {}) {
-
+  private async deleteDescendantsWithStream(targetPage, user) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const deleteDescendants = this.deleteDescendants.bind(this);
@@ -1000,7 +1061,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          deleteDescendants(batch, user);
+          await deleteDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
