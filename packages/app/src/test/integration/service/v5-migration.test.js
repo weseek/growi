@@ -16,7 +16,7 @@ describe('V5 page migration', () => {
   });
 
 
-  describe('v5MigrationByPageIds()', () => {
+  describe('normalizeParentRecursivelyByPageIds()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
 
@@ -50,7 +50,7 @@ describe('V5 page migration', () => {
 
       const pageIds = pages.map(page => page._id);
       // migrate
-      await crowi.pageService.v5MigrationByPageIds(pageIds);
+      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
 
       const migratedPages = await Page.find({
         path: {

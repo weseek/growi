@@ -226,6 +226,7 @@ class PageGrantService {
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)
       .addConditionToSortPagesByDescPath()
+      .addConditionAsMigrated()
       .query
       .exec();
     const testAncestor = ancestors[0];
@@ -268,6 +269,7 @@ class PageGrantService {
         $match: {
           path: new RegExp(`^${startsPattern}`),
           isEmpty: { $ne: true },
+          parent: { $ne: null },
         },
       },
       {
@@ -310,6 +312,7 @@ class PageGrantService {
 
   /**
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
+   * Only v5 schema pages will be used to compare.
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
