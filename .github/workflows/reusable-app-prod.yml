@@ -136,7 +136,7 @@ jobs:
 
     - name: lerna bootstrap --production
       run: |
-        npx -y lerna bootstrap -- --production
+        ${{ inputs.npx-command }}  lerna bootstrap -- --production
 
     - name: Download production files artifact
       uses: actions/download-artifact@v2
