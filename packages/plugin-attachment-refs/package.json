@@ -24,6 +24,7 @@
   "dependencies": {
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
+    "eslint-plugin-regex": "^1.8.0",
     "http-errors": "^1.8.0",
     "react-images": "~1.0.0",
     "react-motion": "^0.5.2",

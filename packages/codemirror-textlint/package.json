@@ -10,7 +10,9 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"
   },
-  "dependencies": {},
+  "dependencies": {
+    "eslint-plugin-regex": "^1.8.0"
+  },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
     "@textlint/kernel": "^12.0.2",

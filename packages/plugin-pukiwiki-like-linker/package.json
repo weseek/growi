@@ -23,5 +23,8 @@
   "devDependencies": {
     "browser-bunyan": "^1.6.3",
     "tsc-alias": "^1.2.9"
+  },
+  "dependencies": {
+    "eslint-plugin-regex": "^1.8.0"
   }
 }

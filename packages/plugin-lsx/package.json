@@ -21,7 +21,9 @@
     "lint": "run-p lint:*",
     "test": ""
   },
-  "dependencies": {},
+  "dependencies": {
+    "eslint-plugin-regex": "^1.8.0"
+  },
   "devDependencies": {
     "react": "^16.8.3",
     "react-dom": "^16.8.3"
