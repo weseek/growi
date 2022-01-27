@@ -38,7 +38,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: lerna run lint for plugins
       run: |
@@ -93,7 +93,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn test
       working-directory: ./packages/app
@@ -154,7 +154,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn dev:ci
       working-directory: ./packages/app

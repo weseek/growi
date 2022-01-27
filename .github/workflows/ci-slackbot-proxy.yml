@@ -38,7 +38,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn lint
       run: |
@@ -96,7 +96,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --frozen-lockfile
 
     - name: yarn dev:ci
       working-directory: ./packages/slackbot-proxy
@@ -155,7 +155,7 @@ jobs:
         ls | egrep -v '^(slack|slackbot-proxy)$' | xargs rm -r
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -166,7 +166,7 @@ jobs:
         yarn lerna run build
     - name: lerna bootstrap --production
       run: |
-        npx -y lerna bootstrap -- --production
+        npx lerna bootstrap -- --production
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
