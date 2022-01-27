@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -15,23 +15,30 @@ type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
-  onClickDeleteButton?: (pageId: string) => void
+  onClickDeleteButtonHandler?: (pageId: string) => void
+  onClickRenameButtonHandler?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
   const {
-    page, isEnableActions, onClickDeleteButton, isDeletable,
+    page, isEnableActions, onClickDeleteButtonHandler, isDeletable, onClickRenameButtonHandler,
   } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
-  const deleteButtonHandler = () => {
-    if (onClickDeleteButton != null && page._id != null) {
-      onClickDeleteButton(page._id);
+  const deleteButtonClickedHandler = useCallback(() => {
+    if (onClickDeleteButtonHandler != null && page._id != null) {
+      onClickDeleteButtonHandler(page._id);
     }
-  };
+  }, [onClickDeleteButtonHandler, page._id]);
+
+  const renameButtonClickedHandler = useCallback(() => {
+    if (onClickRenameButtonHandler != null && page._id != null) {
+      onClickRenameButtonHandler(page._id);
+    }
+  }, [onClickRenameButtonHandler, page._id]);
 
 
   const bookmarkToggleHandler = (async() => {
@@ -105,7 +112,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
           </DropdownItem>
         )}
         {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <DropdownItem onClick={renameButtonClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
@@ -113,7 +120,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         {isDeletable && isEnableActions && (
           <>
             <DropdownItem divider />
-            <DropdownItem className="text-danger pt-2" onClick={deleteButtonHandler}>
+            <DropdownItem className="text-danger pt-2" onClick={deleteButtonClickedHandler}>
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
             </DropdownItem>

@@ -62,7 +62,7 @@ html[dark] {
   // $color-list: $color-global;
   $bgcolor-list: transparent;
   // $color-list-hover: $color-reversal;
-  $color-list-active: white;
+  $color-list-active: $themelight;
   $bgcolor-list-active: $themecolor;
 
   // Navbar
@@ -179,6 +179,24 @@ html[dark] {
   .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
+    }
+  }
+
+  /*
+ * GROWI Sidebar
+ */
+  .grw-sidebar {
+    // Pagetree
+    .grw-pagetree {
+      @include override-list-group-item-for-pagetree(
+        $color-list,
+        $bgcolor-sidebar-list-group,
+        $color-list-hover,
+        $bgcolor-list-hover,
+        $color-list-active,
+        $bgcolor-list-hover,
+        $gray-400
+      );
     }
   }
 }

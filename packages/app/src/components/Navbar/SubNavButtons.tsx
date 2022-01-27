@@ -74,7 +74,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   }
 
   const { sumOfLikers, isLiked } = pageInfo;
-  const { sumOfBookmarks, isBookmarked } = bookmarkInfo;
+  const { sumOfBookmarks, isBookmarked, bookmarkedUsers } = bookmarkInfo;
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
@@ -91,6 +91,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
             onLikeClicked={likeClickhandler}
             sumOfBookmarks={sumOfBookmarks}
             isBookmarked={isBookmarked}
+            bookmarkedUsers={bookmarkedUsers}
             onBookMarkClicked={bookmarkClickHandler}
           >
           </PageReactionButtons>
