@@ -17,29 +17,15 @@ type Props = {
   onClickSearchResultItem?: (pageId: string) => void,
   onClickCheckbox?: (pageId: string) => void,
   onClickInvoked?: (pageId: string) => void,
-  onClickOpenPageDuplicateModal?: (pageId: string, pagePath: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    focusedSearchResultData, selectedPagesIdList, isEnableActions, shortBodiesMap, onClickOpenPageDuplicateModal,
+    focusedSearchResultData, selectedPagesIdList, isEnableActions, shortBodiesMap,
   } = props;
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
-
-
-  const openDuplicateModalHandler = ((pageId, pagePath) => {
-    if (onClickOpenPageDuplicateModal == null) {
-      console.log('hi');
-      return;
-    }
-
-    console.log('ccc');
-    onClickOpenPageDuplicateModal(pageId, pagePath);
-  });
-
-
   return (
     <>
       {Array.isArray(props.pages) && props.pages.map((page) => {
@@ -55,7 +41,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
-            onClickOpenPageDuplicateModal={() => openDuplicateModalHandler(page.pageData._id, page.pageData.path)}
             onClickDeleteButton={props.onClickDeleteButton}
           />
         );

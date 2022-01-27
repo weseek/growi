@@ -28,7 +28,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
-    showPageUpdatedTime, onClickOpenPageDuplicateModal,
+    showPageUpdatedTime,
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
@@ -50,14 +50,6 @@ const PageListItem: FC<Props> = memo((props:Props) => {
       isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
     />
   );
-
-  const openPageDuplicateModalHandler = () => {
-    if (onClickOpenPageDuplicateModal == null) {
-      return;
-    }
-    console.log('bbb');
-    onClickOpenPageDuplicateModal(pageData._id);
-  };
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -124,7 +116,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               <div className="item-control ml-auto">
                 <PageItemControl
                   page={pageData}
-                  onClickOpenPageDuplicateModal={openPageDuplicateModalHandler}
+                  onClickOpenPageDuplicateModal={props.onClickOpenPageDuplicateModal}
                   onClickDeleteButton={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                   isDeletable={!isTopPage(pageData.path)}
