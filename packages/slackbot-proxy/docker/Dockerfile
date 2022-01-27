@@ -17,7 +17,7 @@ RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs
 ##
 ## deps-resolver-dev
 ##
-FROM node:14-slim AS deps-resolver-dev
+FROM node:16-slim AS deps-resolver-dev
 
 ENV optDir /opt
 
@@ -40,7 +40,7 @@ RUN tar -cf node_modules.tar \
 ##
 ## deps-resolver-prod
 ##
-FROM node:14-slim AS deps-resolver-prod
+FROM node:16-slim AS deps-resolver-prod
 
 ENV optDir /opt
 

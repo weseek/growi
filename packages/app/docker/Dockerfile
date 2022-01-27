@@ -6,7 +6,7 @@ ARG flavor=default
 ##
 ## packages-json-picker
 ##
-FROM node:14-slim AS packages-json-picker
+FROM node:16-slim AS packages-json-picker
 
 ENV optDir /opt
 
