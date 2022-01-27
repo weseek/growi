@@ -34,10 +34,10 @@ export const useSWRxChildUserGroupList = (
   );
 };
 
-export const useSWRxUserGroupRelations = (groupId: string) => {
+export const useSWRxUserGroupRelations = (groupId: string): SWRResponse<IUserGroupRelationHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? [`user-groups/${groupId}/user-group-relations`] : null,
-    endpoint => apiv3Get(endpoint).then(result => result.data),
+    endpoint => apiv3Get<UserGroupRelationListResult>(endpoint).then(result => result.data.userGroupRelations),
   );
 };
 
