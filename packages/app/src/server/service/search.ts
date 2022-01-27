@@ -53,8 +53,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   isErrorOccuredOnSearching: boolean | null
 
-  isElasticsearchReindexOnBoot: boolean
-
   fullTextSearchDelegator: any & SearchDelegator
 
   nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
@@ -75,15 +73,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
       logger.error(err);
     }
 
-    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
-
     if (this.isConfigured) {
       this.fullTextSearchDelegator.init();
       this.registerUpdateEvent();
-      if (this.isElasticsearchReindexOnBoot) {
-        logger.info('Reindex elasticsearch is running');
-        this.rebuildIndex();
-      }
     }
   }
 
@@ -201,13 +193,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async rebuildIndex() {
-    try {
-      await this.fullTextSearchDelegator.rebuildIndex();
-      logger.info('Reindex elasticsearch done');
-    }
-    catch (err) {
-      logger.warn(`Reindex elasticsearch fail, ${err}`);
-    }
+    return this.fullTextSearchDelegator.rebuildIndex();
   }
 
   async parseSearchQuery(_queryString: string): Promise<ParsedQuery> {
