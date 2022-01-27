@@ -1197,7 +1197,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
     }
 
-    if (!preventEmitting) {
+    if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
@@ -1216,7 +1216,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    if (!preventEmitting) {
+    if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
