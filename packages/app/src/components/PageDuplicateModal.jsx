@@ -51,7 +51,7 @@ const PageDuplicateModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, checkExistPaths), [path],
   );
 
   useEffect(() => {
