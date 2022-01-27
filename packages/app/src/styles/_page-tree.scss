@@ -46,13 +46,9 @@ $grw-pagetree-item-padding-left: 10px;
   }
 
   .grw-pagetree-item-container {
-    // fix the height as item height depends on the height of its children
-    > .list-group-item {
+    .grw-triangle-container {
+      min-width: 35px;
       height: 40px;
-      // fill in the blank sapce created due to the absence of triangle when the page has no descendants
-      > .grw-ml-fill-triangle {
-        margin-left: 35px;
-      }
     }
   }
 
