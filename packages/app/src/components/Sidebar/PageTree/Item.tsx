@@ -251,14 +251,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
       >
-        <div className="grw-triangle-container">
+        <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
               type="button"
               className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
-              <div className="grw-triangle-icon">
+              <div className="grw-triangle-icon d-flex justify-content-center">
                 <TriangleIcon />
               </div>
             </button>
