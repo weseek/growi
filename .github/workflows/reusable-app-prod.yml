@@ -219,6 +219,9 @@ jobs:
 
     - name: lerna bootstrap
       run: |
+        whoami
+        ls -al .
+        ls -al packages/app
         npx -y lerna bootstrap -- --frozen-lockfile
 
     - name: Download production files artifact
