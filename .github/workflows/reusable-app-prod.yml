@@ -6,6 +6,9 @@ on:
       node-version:
         required: true
         type: string
+      npx-command:
+        type: string
+        default: npx -y
       skip-cypress:
         type: boolean
       cypress-report-artifact-name:
@@ -43,7 +46,7 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx -y lerna bootstrap -- --frozen-lockfile
+        ${{ inputs.npx-command }} lerna bootstrap -- --frozen-lockfile
 
     - name: Remove unnecessary packages
       run: |
