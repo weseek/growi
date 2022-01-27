@@ -229,7 +229,8 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const isTrashed = isTrashPage(page.path);
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || !isTrashed);
 
     return shouldUseV4Process;
   }
@@ -263,6 +264,10 @@ class PageService {
 
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
+
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to rename the top page');
+    }
 
     // v4 compatible process
     const shouldUseV4Process = this.shouldUseV4Process(page);
@@ -1165,6 +1170,10 @@ class PageService {
   async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const Page = mongoose.model('Page') as PageModel;
 
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to delete the top page');
+    }
+
     // v4 compatible process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
@@ -1224,8 +1233,7 @@ class PageService {
   private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
     let readStream;
 
-    const isTrashed = isTrashPage(targetPage.path);
-    if (isTrashed || shouldUseV4Process) { // pages don't have parents
+    if (shouldUseV4Process) { // pages don't have parents
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
