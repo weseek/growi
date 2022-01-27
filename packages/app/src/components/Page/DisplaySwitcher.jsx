@@ -15,7 +15,8 @@ import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import HashChanged from '../EventListeneres/HashChanged';
-import { useIsEditable } from '~/stores/context';
+import { useIsEditable, useIsIdenticalPathPageList } from '~/stores/context';
+import IdenticalPathPage from '../IdenticalPathPage';
 
 
 const DisplaySwitcher = (props) => {
@@ -26,7 +27,7 @@ const DisplaySwitcher = (props) => {
 
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
-
+  const { data: isIdenticalPathPageList } = useIsIdenticalPathPageList();
   const isViewMode = editorMode === EditorMode.View;
 
   return (
@@ -52,9 +53,8 @@ const DisplaySwitcher = (props) => {
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               {pageUser && <UserInfo pageUser={pageUser} />}
-              <Page />
+              {isIdenticalPathPageList ? <IdenticalPathPage /> : <Page />}
             </div>
-
           </div>
         </TabPane>
         { isEditable && (

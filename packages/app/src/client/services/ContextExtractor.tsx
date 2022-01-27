@@ -6,7 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsIdenticalPathPageList,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -78,6 +78,9 @@ const ContextExtractorOnce: FC = () => {
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
   const grantGroupName = mainContent?.getAttribute('data-page-grant-group-name') || null;
 
+  const identicalPathPageList = mainContent?.getAttribute('data-identical-page-data-list') || null;
+
+
   /*
    * use static swr
    */
@@ -140,6 +143,9 @@ const ContextExtractorOnce: FC = () => {
 
   // SearchResult
   useIsDeviceSmallerThanLg();
+
+  // identicalPathPageList
+  useIsIdenticalPathPageList(identicalPathPageList != null);
 
   return null;
 };

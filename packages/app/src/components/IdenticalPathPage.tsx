@@ -12,7 +12,7 @@ type IdenticalPathPageProps= {
 const jsonNull = 'null';
 
 const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPageProps) => {
-  const identicalPageDocument = document.getElementById('identical-path-page-list');
+  const identicalPageDocument = document.getElementById('content-main');
   const pageDataList = JSON.parse(identicalPageDocument?.getAttribute('data-identical-page-data-list') || jsonNull);
   const shortbodyMap = JSON.parse(identicalPageDocument?.getAttribute('data-shortody-map') || jsonNull);
 

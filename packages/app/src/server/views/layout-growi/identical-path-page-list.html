@@ -1,11 +1,16 @@
 {% extends 'base/layout.html' %}
 
 {% block content_main %}
-<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
-<div
-  id="identical-path-page-list"
+<div id="content-main"
+  data-path="{{ encodeURI(path) }}"
   data-identical-page-data-list="{{ identicalPageDataList|json }}"
   data-shortody-map="{{ shortBodyMap|json }}"
->
+></div>
+<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
+
+<div class="grw-container-convertible">
+
+  <div id="display-switcher"></div>
+
 </div>
 {% endblock %}

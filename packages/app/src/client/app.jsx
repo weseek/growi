@@ -89,7 +89,6 @@ Object.assign(componentMappings, {
 
   'search-page': <SearchPage crowi={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,
-  'identical-path-page-list': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
