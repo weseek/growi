@@ -50,7 +50,7 @@ class LoginForm extends React.Component {
               <i className="icon-user"></i>
             </span>
           </div>
-          <input type="text" className="form-control rounded-0" placeholder="Username or E-mail" name="loginForm[username]" />
+          <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail" name="loginForm[username]" />
           {isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
@@ -66,12 +66,12 @@ class LoginForm extends React.Component {
               <i className="icon-lock"></i>
             </span>
           </div>
-          <input type="password" className="form-control rounded-0" placeholder="Password" name="loginForm[password]" />
+          <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password" name="loginForm[password]" />
         </div>
 
         <div className="input-group my-4">
           <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto">
+          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
             <div className="eff"></div>
             <span className="btn-label">
               <i className="icon-login"></i>
@@ -297,18 +297,18 @@ class LoginForm extends React.Component {
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
+                {isPasswordResetEnabled && (
+                  <div className="text-right mb-2">
+                    <a href="/forgot-password" className="d-block link-switch">
+                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                    </a>
+                  </div>
+                )}
                 {isRegistrationEnabled && (
-                  <div className="row">
-                    <div className="col-12 text-right py-2">
-                      {isPasswordResetEnabled && (
-                        <a href="/forgot-password" className="d-block link-switch mb-1">
-                          <i className="icon-key"></i> {t('forgot_password.forgot_password')}
-                        </a>
-                      )}
-                      <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                        <i className="ti-check-box"></i> {t('Sign up is here')}
-                      </a>
-                    </div>
+                  <div className="text-right mb-2">
+                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
+                      <i className="ti-check-box"></i> {t('Sign up is here')}
+                    </a>
                   </div>
                 )}
               </div>

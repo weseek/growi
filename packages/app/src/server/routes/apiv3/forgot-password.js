@@ -23,8 +23,8 @@ module.exports = (crowi) => {
   const validator = {
     password: [
       body('newPassword').isString().not().isEmpty()
-        .isLength({ min: 6 })
-        .withMessage('password must be at least 6 characters long'),
+        .isLength({ min: 8 })
+        .withMessage('password must be at least 8 characters long'),
       // checking if password confirmation matches password
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
@@ -35,7 +35,7 @@ module.exports = (crowi) => {
 
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // limit each IP to 5 requests per windowMs
+    max: 10, // limit each IP to 10 requests per windowMs
     message:
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
@@ -81,7 +81,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', injectResetOrderByTokenMiddleware, async(req, res) => {
+  router.put('/', apiLimiter, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
