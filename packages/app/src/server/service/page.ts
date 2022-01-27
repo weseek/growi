@@ -1068,7 +1068,7 @@ class PageService {
   /**
    * Create delete stream
    */
-  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = false) {
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true) {
     let readStream;
     if (shouldUseV4Process) {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
@@ -1221,7 +1221,7 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = false) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
     let readStream;
 
     const isTrashed = isTrashPage(targetPage.path);
