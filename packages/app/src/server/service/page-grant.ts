@@ -348,7 +348,7 @@ class PageGrantService {
     const shouldIncludeNotMigratedPages = true;
 
     const normalizedIds: ObjectIdLike[] = [];
-    const notNormalizedPaths: string[] = [];
+    const notNormalizedPaths: string[] = []; // can be used to tell user which page failed to migrate
 
     await Promise.all(pageIds.map(async(pageId) => {
       const page = await Page.findById(pageId) as any | null;
