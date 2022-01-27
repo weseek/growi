@@ -34,6 +34,13 @@ export const useSWRxChildUserGroupList = (
   );
 };
 
+export const useSWRxUserGroupRelations = (groupId: string) => {
+  return useSWRImmutable(
+    groupId != null ? [`user-groups/${groupId}/user-group-relations`] : null,
+    endpoint => apiv3Get(endpoint).then(result => result.data),
+  );
+};
+
 export const useSWRxUserGroupRelationList = (
     groupIds: string[] | undefined, childGroupIds?: string[], initialData?: IUserGroupRelationHasId[],
 ): SWRResponse<IUserGroupRelationHasId[], Error> => {
