@@ -43,8 +43,9 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Fetch
    */
-  const { data: userGroupPages, mutate: mutateUserGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
+  const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+  console.log(userGroupRelations);
 
   /*
    * Function
@@ -96,9 +97,8 @@ const UserGroupDetailPage: FC = () => {
   // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
     await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
-    mutateUserGroupPages();
     mutateUserGroupRelations();
-  }, [userGroup, mutateUserGroupPages, mutateUserGroupRelations]);
+  }, [userGroup, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
     await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
