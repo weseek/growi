@@ -17,7 +17,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage, isIdenticalPathPageList,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
 
@@ -59,7 +59,7 @@ const PageAccessoriesModalControl = (props) => {
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
-
+        if (isIdenticalPathPageList && accessory.name !== 'pagelist') return;
         let tooltipMessage;
         if (accessory.disabled) {
           tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
@@ -108,6 +108,7 @@ PageAccessoriesModalControl.propTypes = {
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
   isNotFoundPage: PropTypes.bool.isRequired,
+  isIdenticalPathPageList: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);

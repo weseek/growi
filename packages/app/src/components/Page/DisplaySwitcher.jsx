@@ -39,15 +39,17 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  <PageAccessories isNotFoundPage={!isPageExist} />
+                  <PageAccessories isNotFoundPage={!isPageExist} isIdenticalPathPageList={isIdenticalPathPageList} />
                 </div>
 
-                <div className="d-none d-lg-block">
-                  <div id="revision-toc" className="revision-toc">
-                    <TableOfContents />
+                {!isIdenticalPathPageList && (
+                  <div className="d-none d-lg-block">
+                    <div id="revision-toc" className="revision-toc">
+                      <TableOfContents />
+                    </div>
+                    <ContentLinkButtons />
                   </div>
-                  <ContentLinkButtons />
-                </div>
+                )}
               </div>
             </div>
 

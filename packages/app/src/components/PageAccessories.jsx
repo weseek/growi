@@ -9,7 +9,9 @@ import AppContainer from '~/client/services/AppContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
-  const { appContainer, pageAccessoriesContainer, isNotFoundPage } = props;
+  const {
+    appContainer, pageAccessoriesContainer, isNotFoundPage, isIdenticalPathPageList,
+  } = props;
   const { isGuestUser, isSharedUser } = appContainer;
 
   return (
@@ -18,6 +20,7 @@ const PageAccessories = (props) => {
         isGuestUser={isGuestUser}
         isSharedUser={isSharedUser}
         isNotFoundPage={isNotFoundPage}
+        isIdenticalPathPageList={isIdenticalPathPageList}
       />
       <PageAccessoriesModal
         isGuestUser={isGuestUser}
@@ -39,6 +42,7 @@ PageAccessories.propTypes = {
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 
   isNotFoundPage: PropTypes.bool.isRequired,
+  isIdenticalPathPageList: PropTypes.bool.isRequired,
 };
 
 export default PageAccessoriesWrapper;
