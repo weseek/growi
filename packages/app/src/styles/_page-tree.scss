@@ -50,7 +50,7 @@ $grw-pagetree-item-padding-left: 10px;
     > .list-group-item {
       height: 40px;
       // fill in the blank sapce created due to the absence of triangle when the page has no descendants
-      > .ml-fill-triangle {
+      > .grw-ml-fill-triangle {
         margin-left: 35px;
       }
     }

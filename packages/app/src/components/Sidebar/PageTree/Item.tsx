@@ -274,7 +274,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         { !isRenameInputShown && (
           <a
             href={page._id}
-            className={`grw-pagetree-title-anchor flex-grow-1 ${hasDescendants ? '' : 'ml-fill-triangle'}`}
+            className={`grw-pagetree-title-anchor flex-grow-1 ${hasDescendants ? '' : 'grw-ml-fill-triangle'}`}
           >
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
