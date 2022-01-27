@@ -625,9 +625,9 @@ class PassportService implements S2sMessageHandlable {
     const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
     // OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
 
-    OIDCIssuer[custom.http_options] = () => {
-      return { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
-    };
+    custom.setHttpOptionsDefaults({
+      timeout: OIDC_ISSUER_TIMEOUT_OPTION,
+    });
 
     const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
@@ -763,13 +763,15 @@ class PassportService implements S2sMessageHandlable {
       return OIDCIssuer.discover(issuerHost);
     }, {
       onFailedAttempt: (error) => {
-        // get current OIDCIssuer.defaultHttpOptions.timeout
-        // const oidcOptionTimeout = OIDCIssuer.defaultHttpOptions.timeout;
-        // Increases OIDCIssuer.defaultHttpOptions.timeout by multiply with 1.5
-        custom.setHttpOptionsDefaults({
-          timeout: OIDC_ISSUER_TIMEOUT_OPTION * (OIDC_TIMEOUT_MULTIPLIER ** error.attemptNumber),
-        });
-        // OIDCIssuer.defaultHttpOptions = { timeout: oidcOptionTimeout * OIDC_TIMEOUT_MULTIPLIER };
+        // get current OIDCIssuer timeout options
+        OIDCIssuer[custom.http_options] = (url, options) => {
+          const timeout = options.timeout
+            ? options.timeout * OIDC_TIMEOUT_MULTIPLIER
+            : OIDC_ISSUER_TIMEOUT_OPTION * OIDC_TIMEOUT_MULTIPLIER;
+          custom.setHttpOptionsDefaults({ timeout });
+          return { timeout };
+        };
+
         logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
       },
       retries: OIDC_DISCOVERY_RETRIES,
