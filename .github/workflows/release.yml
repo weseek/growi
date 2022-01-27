@@ -30,7 +30,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        npx -y lerna bootstrap
 
     - name: Bump versions
       run: |
@@ -91,7 +91,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npx lerna bootstrap
+        npx -y lerna bootstrap
 
     - name: Bump versions for next RC
       run: |

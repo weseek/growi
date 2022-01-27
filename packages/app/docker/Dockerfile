@@ -31,7 +31,7 @@ COPY --from=packages-json-picker ${optDir} .
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN npx lerna bootstrap -- --frozen-lockfile
+RUN npx -y lerna bootstrap -- --frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -48,7 +48,7 @@ FROM deps-resolver AS deps-resolver-prod
 # remove unnecessary packages
 RUN rm -rf packages/slackbot-proxy
 
-RUN npx lerna bootstrap -- --production
+RUN npx -y lerna bootstrap -- --production
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
