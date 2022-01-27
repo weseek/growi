@@ -885,14 +885,15 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    // replace with an empty page
-    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
-    if (shouldReplace) {
-      await Page.replaceTargetWithEmptyPage(page);
-    }
-
     if (isRecursively) {
       this.deleteDescendantsWithStream(page, user); // use the same process in both version v4 and v5
+    }
+    else {
+      // replace with an empty page
+      const shouldReplace = await Page.exists({ parent: page._id });
+      if (shouldReplace) {
+        await Page.replaceTargetWithEmptyPage(page);
+      }
     }
 
     let deletedPage;
