@@ -177,7 +177,7 @@ jobs:
     if: ${{ !inputs.skip-cypress }}
 
     runs-on: ubuntu-latest
-    container: cypress/base:14.18.1
+    container: cypress/base:16.13.0
 
     strategy:
       fail-fast: false
