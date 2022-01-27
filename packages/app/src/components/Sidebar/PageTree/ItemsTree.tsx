@@ -7,7 +7,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
 import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
-import PageDuplicateModal, { } from '~/components/PageDuplicateModal';
+import PageDuplicateModal from '~/components/PageDuplicateModal';
 
 /*
  * Utility to generate initial node
