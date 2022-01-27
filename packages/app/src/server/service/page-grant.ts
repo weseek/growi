@@ -212,7 +212,7 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns Promise<ComparableAncestor>
    */
-  private async generateComparableAncestor(targetPath: string): Promise<ComparableAncestor> {
+  private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
@@ -223,10 +223,12 @@ class PageGrantService {
      * make granted users list of ancestor's
      */
     const builderForAncestors = new PageQueryBuilder(Page.find(), false);
+    if (!includeNotMigratedPages) {
+      builderForAncestors.addConditionAsMigrated();
+    }
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)
       .addConditionToSortPagesByDescPath()
-      .addConditionAsMigrated()
       .query
       .exec();
     const testAncestor = ancestors[0];
@@ -255,7 +257,7 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns ComparableDescendants
    */
-  private async generateComparableDescendants(targetPath: string): Promise<ComparableDescendants> {
+  private async generateComparableDescendants(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     /*
@@ -264,13 +266,17 @@ class PageGrantService {
     const pathWithTrailingSlash = addTrailingSlash(targetPath);
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
+    const $match: any = {
+      path: new RegExp(`^${startsPattern}`),
+      isEmpty: { $ne: true },
+    };
+    if (includeNotMigratedPages) {
+      $match.parent = { $ne: null };
+    }
+
     const result = await Page.aggregate([
       { // match to descendants excluding empty pages
-        $match: {
-          path: new RegExp(`^${startsPattern}`),
-          isEmpty: { $ne: true },
-          parent: { $ne: null },
-        },
+        $match,
       },
       {
         $project: {
@@ -316,13 +322,14 @@ class PageGrantService {
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false,
+      // eslint-disable-next-line max-len
+      targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
 
-    const comparableAncestor = await this.generateComparableAncestor(targetPath);
+    const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
       const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
@@ -330,9 +337,39 @@ class PageGrantService {
     }
 
     const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
-    const comparableDescendants = await this.generateComparableDescendants(targetPath);
+    const comparableDescendants = await this.generateComparableDescendants(targetPath, includeNotMigratedPages);
 
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
+  }
+
+  async validatePageIdsByIsGrantNormalized(pageIds: ObjectIdLike[]): Promise<[ObjectIdLike[], string[]]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const shouldCheckDescendants = true;
+    const shouldIncludeNotMigratedPages = true;
+
+    const normalizedIds: ObjectIdLike[] = [];
+    const notNormalizedPaths: string[] = [];
+
+    await Promise.all(pageIds.map(async(pageId) => {
+      const page = await Page.findById(pageId) as any | null;
+      if (page == null) {
+        return;
+      }
+
+      const {
+        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+      } = page;
+
+      const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
+      if (isNormalized) {
+        normalizedIds.push(page._id);
+      }
+      else {
+        notNormalizedPaths.push(page.path);
+      }
+    }));
+
+    return [normalizedIds, notNormalizedPaths];
   }
 
 }

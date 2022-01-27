@@ -1507,8 +1507,20 @@ class PageService {
       return;
     }
 
+    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.validatePageIdsByIsGrantNormalized(pageIds);
+
+    if (normalizedIds.length === 0) {
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+      return;
+    }
+
+    if (notNormalizedPaths.length !== 0) {
+      // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+    }
+
     // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(pageIds);
+    const regexps = await this._generateRegExpsByPageIds(normalizedIds);
 
     // migrate recursively
     try {
