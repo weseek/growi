@@ -50,9 +50,6 @@ type ItemControlProps = {
   onClickRenameButton?(): void
 }
 
-type ItemCountProps = {
-  descendantCount: number
-}
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
@@ -102,6 +99,11 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     </>
   );
 });
+
+
+type ItemCountProps = {
+  descendantCount: number
+}
 
 const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
