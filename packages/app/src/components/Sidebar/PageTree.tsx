@@ -25,6 +25,8 @@ const PageTree: FC = memo(() => {
   // for PageDuplicateModal
   const [isPageDuplicateModalOpen, setIsPageDuplicateModalOpen] = useState(false);
   const [pagesToDuplicate, setPagesToDuplicate] = useState([]);
+  const [pageIdToDuplicate, setPageIdToDuplicate] = useState('');
+  const [pagePathToDuplicate, setPagePathToDuplicate] = useState('');
 
   // for PageDeleteModal
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -72,6 +74,8 @@ const PageTree: FC = memo(() => {
     console.log('ddd');
     setIsPageDuplicateModalOpen(true);
     setPagesToDuplicate([page as never]);
+    setPageIdToDuplicate(page._id);
+    setPagePathToDuplicate(page.path);
   };
 
   const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
@@ -103,10 +107,10 @@ const PageTree: FC = memo(() => {
           // For PageDuplicateModal
           isPageDuplicateModalShown={isPageDuplicateModalOpen}
           pagesToDuplicate={pagesToDuplicate}
+          pageIdToDuplicate={pageIdToDuplicate}
+          pagePathToDuplicate={pagePathToDuplicate}
           onClosePageDuplicateModal={() => setIsPageDuplicateModalOpen(false)}
           onClickPageDuplicateModal={openPageDuplicateModalHandler}
-          pageId={targetId}
-          path={currentPath}
           // For PageDeleteModal
           isDeleteModalOpen={isDeleteModalOpen}
           pagesToDelete={pagesToDelete}

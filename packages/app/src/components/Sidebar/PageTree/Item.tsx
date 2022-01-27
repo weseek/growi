@@ -46,7 +46,7 @@ type ItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
   isDeletable: boolean
-  onClickOpenPageDuplicateModal?(): void
+  onClickOpenPageDuplicateModal?(page): void
   onClickDeleteButtonHandler?(): void
   onClickPlusButtonHandler?(): void
 }
@@ -60,12 +60,12 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     props.onClickPlusButtonHandler();
   };
 
-  const openPageDuplicateModalHandler = () => {
+  const openPageDuplicateModalHandler = (page) => {
     if (props.onClickOpenPageDuplicateModal == null) {
       return;
     }
     console.log('bbb');
-    props.onClickOpenPageDuplicateModal();
+    props.onClickOpenPageDuplicateModal(page);
   };
 
 
@@ -168,14 +168,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const openDuplicateModalHandler = useCallback(() => {
+  const openDuplicateModalHandler = useCallback((page) => {
     if (onClickDuplecatePage == null) {
       console.log('hi');
       return;
     }
 
     console.log('ccc');
-    onClickDuplecatePage(page._id);
+    onClickDuplecatePage(page);
   }, []);
 
   const onClickDeleteButtonHandler = useCallback(() => {

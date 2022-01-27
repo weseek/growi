@@ -14,7 +14,7 @@ import { useSWRBookmarkInfo } from '~/stores/bookmark';
 type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions: boolean
-  onClickOpenPageDuplicateModal?: (pageId: string) => void
+  onClickOpenPageDuplicateModal?: (page) => void
   isDeletable: boolean
   onClickDeleteButton?: (pageId: string) => void
 }
@@ -28,6 +28,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   const [isOpen, setIsOpen] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
+
   const deleteButtonHandler = () => {
     if (onClickDeleteButton != null && page._id != null) {
       onClickDeleteButton(page._id);
@@ -35,9 +36,9 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
   };
 
   const openPageDuplicateModalHandler = () => {
-    if (onClickOpenPageDuplicateModal != null && page._id != null) {
+    if (onClickOpenPageDuplicateModal != null && page != null) {
       console.log('aaa');
-      onClickOpenPageDuplicateModal(page._id);
+      onClickOpenPageDuplicateModal(page);
     }
   };
 
