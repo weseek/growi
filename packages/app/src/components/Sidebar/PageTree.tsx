@@ -71,7 +71,6 @@ const PageTree: FC = memo(() => {
   }
 
   const openPageDuplicateModalHandler = (page) => {
-    console.log('ddd');
     setIsPageDuplicateModalOpen(true);
     setPagesToDuplicate([page as never]);
     setPageIdToDuplicate(page._id);
@@ -79,7 +78,6 @@ const PageTree: FC = memo(() => {
   };
 
   const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
-    console.log('delete');
     setDeleteModalOpen(true);
     setPagesToDelete([page]);
   };
@@ -90,7 +88,6 @@ const PageTree: FC = memo(() => {
 
   const path = currentPath || '/';
 
-  console.log('isPageDuplicateModalOpen', isPageDuplicateModalOpen);
 
   return (
     <>

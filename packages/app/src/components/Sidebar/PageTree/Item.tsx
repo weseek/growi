@@ -64,7 +64,6 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
     if (props.onClickOpenPageDuplicateModal == null) {
       return;
     }
-    console.log('bbb');
     props.onClickOpenPageDuplicateModal(page);
   };
 
@@ -170,11 +169,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const openDuplicateModalHandler = useCallback((page) => {
     if (onClickDuplecatePage == null) {
-      console.log('hi');
       return;
     }
 
-    console.log('ccc');
     onClickDuplecatePage(page);
   }, []);
 

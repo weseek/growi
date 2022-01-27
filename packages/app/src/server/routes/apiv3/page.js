@@ -483,6 +483,8 @@ module.exports = (crowi) => {
   router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
     const { fromPath, toPath } = req.query;
 
+    console.log('fromPath_hoge', fromPath);
+
     try {
       const fromPage = await Page.findByPath(fromPath);
       const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
