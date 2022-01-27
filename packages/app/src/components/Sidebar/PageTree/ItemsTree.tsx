@@ -59,8 +59,8 @@ type ItemsTreeProps = {
   pagesToDuplicate: any[] // need to declear IPageForPageDeleteModal
   onClosePageDuplicateModal(): void
   onClickPageDuplicateModal(page): void
-  pageId
-  path
+  pageIdToDuplicate
+  pagePathToDuplicate
   // for deleteModal
   isDeleteModalOpen: boolean
   pagesToDelete: IPageForPageDeleteModal[]
@@ -81,7 +81,7 @@ const renderByInitialNode = (
     onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
   return (
-    <div className="grw-pagetree p-3">
+    <ul className="grw-pagetree list-group p-3">
       <Item
         key={initialNode.page.path}
         targetPathOrId={targetPathOrId}
@@ -93,7 +93,7 @@ const renderByInitialNode = (
       />
       {DeleteModal}
       {DuplicateModal}
-    </div>
+    </ul>
   );
 };
 
@@ -104,7 +104,8 @@ const renderByInitialNode = (
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
     targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    isPageDuplicateModalShown, onClosePageDuplicateModal, pageId, path, onClickPageDuplicateModal, onClickDeleteByPage, isEnableActions,
+    isPageDuplicateModalShown, onClosePageDuplicateModal, pageIdToDuplicate, pagePathToDuplicate,
+    onClickPageDuplicateModal, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
@@ -120,14 +121,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     />
   );
 
-  console.log('isPageDuplicateModalShown', isPageDuplicateModalShown);
-
   const DuplicateModal = (
     <PageDuplicateModal
       isOpen={isPageDuplicateModalShown}
       onClose={onClosePageDuplicateModal}
-      pageId={pageId}
-      path={path}
+      pageId={pageIdToDuplicate}
+      path={pagePathToDuplicate}
     />
   );
 

@@ -891,7 +891,9 @@ class PageService {
                 },
                 {
                   $project: {
-                    revision: { $substr: ['$body', 0, MAX_LENGTH] },
+                    // What is $substrCP?
+                    // see: https://stackoverflow.com/questions/43556024/mongodb-error-substrbytes-invalid-range-ending-index-is-in-the-middle-of-a-ut/43556249
+                    revision: { $substrCP: ['$body', 0, MAX_LENGTH] },
                   },
                 },
               ],
