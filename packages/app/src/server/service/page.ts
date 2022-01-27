@@ -1,9 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose from 'mongoose';
+import mongoose, { QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
-import { Writable } from 'stream';
+import { Readable, Writable } from 'stream';
 
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -23,6 +23,78 @@ const {
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+
+// TODO: improve type
+class PageCursorsForDescendantsFactory {
+
+  private user: any; // TODO: Typescriptize model
+
+  private rootPage: any; // TODO: wait for mongoose update
+
+  private shouldIncludeEmpty: boolean;
+
+  private initialCursor: QueryCursor<any>; // TODO: wait for mongoose update
+
+  private Page: PageModel;
+
+  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
+    this.user = user;
+    this.rootPage = rootPage;
+    this.shouldIncludeEmpty = shouldIncludeEmpty;
+
+    this.Page = mongoose.model('Page') as unknown as PageModel;
+  }
+
+  // prepare initial cursor
+  private async init() {
+    const initialCursor = await this.generateCursorToFindChildren(this.rootPage);
+    this.initialCursor = initialCursor;
+  }
+
+  /**
+   * Returns Iterable that yields only descendant pages unorderedly
+   * @returns Promise<AsyncGenerator>
+   */
+  async generateIterable(): Promise<AsyncGenerator> {
+    // initialize cursor
+    await this.init();
+
+    return this.generateOnlyDescendants(this.initialCursor);
+  }
+
+  /**
+   * Returns Readable that produces only descendant pages unorderedly
+   * @returns Promise<Readable>
+   */
+  async generateReadable(): Promise<Readable> {
+    return Readable.from(await this.generateIterable());
+  }
+
+  /**
+   * Generator that unorderedly yields descendant pages
+   */
+  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+    for await (const page of cursor) {
+      const nextCursor = await this.generateCursorToFindChildren(page);
+      yield* this.generateOnlyDescendants(nextCursor); // recursively yield
+
+      yield page;
+    }
+  }
+
+  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any>> {
+    const { PageQueryBuilder } = this.Page;
+
+    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    builder.addConditionToFilteringByParentId(page._id);
+    await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
+
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+
+    return cursor;
+  }
+
+}
 
 class PageService {
 
@@ -412,7 +484,8 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const iterableFactory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+    const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
