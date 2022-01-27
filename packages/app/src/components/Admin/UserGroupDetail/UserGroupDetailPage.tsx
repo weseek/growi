@@ -17,7 +17,7 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
 
 
 const UserGroupDetailPage: FC = () => {
@@ -44,7 +44,7 @@ const UserGroupDetailPage: FC = () => {
    * Fetch
    */
   const { data: userGroupPages, mutate: mutateUserGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList([userGroup._id]);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
   /*
    * Function
