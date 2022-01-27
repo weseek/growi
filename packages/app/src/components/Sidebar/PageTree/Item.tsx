@@ -50,6 +50,10 @@ type ItemControlProps = {
   onClickRenameButton?(): void
 }
 
+type ItemCountProps = {
+  descendantCount: number
+}
+
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
     if (props.onClickPlusButton == null) {
@@ -99,12 +103,11 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   );
 });
 
-const ItemCount: FC = () => {
+const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
       <span className="grw-pagetree-count badge badge-pill badge-light text-muted">
-        {/* TODO: consider to show the number of children pages */}
-        00
+        {props.descendantCount}
       </span>
     </>
   );
@@ -273,7 +276,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </a>
         )}
         <div className="grw-pagetree-count-wrapper">
-          <ItemCount />
+          <ItemCount descendantCount={page.descendantCount || 0} />
         </div>
         <div className="grw-pagetree-control d-none">
           <ItemControl
