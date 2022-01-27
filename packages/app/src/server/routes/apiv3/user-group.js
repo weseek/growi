@@ -42,7 +42,7 @@ module.exports = (crowi) => {
   } = crowi.models;
 
   validator.listChildren = [
-    query('parentIds', 'parentIds must be an array').optional().isArray(),
+    query('parentIds', 'parentIds must be an string').optional().isString(),
     query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
   ];
 
@@ -95,11 +95,20 @@ module.exports = (crowi) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
 
-      const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
-      return res.apiv3({
-        childUserGroups: userGroupsResult.childUserGroups,
-        grandChildUserGroups: userGroupsResult.grandChildUserGroups,
-      });
+      let parentIdList = [];
+      if (parentIds != null) {
+        parentIdList = parentIds.split(',');
+      }
+
+      let childUserGroups = [];
+      let grandChildUserGroups = [];
+      if (parentIdList.length > 0) {
+        const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIdList, includeGrandChildren);
+        childUserGroups = userGroupsResult.childUserGroups;
+        grandChildUserGroups = userGroupsResult.grandChildUserGroups;
+      }
+
+      return res.apiv3({ childUserGroups, grandChildUserGroups });
     }
     catch (err) {
       const msg = 'Error occurred in fetching child user group list';
