@@ -60,7 +60,6 @@ const PageDuplicateModal = (props) => {
     }
   }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
 
-  console.log('path_bb', path);
   /**
    * change pageNameInput for PagePathAutoComplete
    * @param {string} value

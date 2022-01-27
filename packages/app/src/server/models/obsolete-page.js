@@ -696,7 +696,6 @@ export const getPageSchema = (crowi) => {
     if (user == null) {
       return null;
     }
-    console.log(page);
 
     const builder = new PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(page.path, option);
