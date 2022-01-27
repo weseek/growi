@@ -32,25 +32,25 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'timeline',
         Icon: <TimeLineIcon />,
-        disabled: isSharedUser,
+        disabled: isSharedUser || isIdenticalPathPageList,
         i18n: t('Timeline View'),
       },
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage || isIdenticalPathPageList,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: isNotFoundPage,
+        disabled: isNotFoundPage || isIdenticalPathPageList,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage || isLinkSharingDisabled,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage || isLinkSharingDisabled || isIdenticalPathPageList,
         i18n: t('share_links.share_link_management'),
       },
     ];
@@ -59,7 +59,7 @@ const PageAccessoriesModalControl = (props) => {
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
-        if (isIdenticalPathPageList && accessory.name !== 'pagelist') return;
+
         let tooltipMessage;
         if (accessory.disabled) {
           tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
