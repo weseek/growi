@@ -44,7 +44,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    */
   const syncUserGroupAndRelations = useCallback(async() => {
     try {
-      await mutateUserGroups(undefined, true);
+      await mutateUserGroups();
     }
     catch (err) {
       toastError(err);
@@ -77,7 +77,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       });
 
       // sync
-      await mutateUserGroups(undefined, true);
+      await mutateUserGroups();
     }
     catch (err) {
       toastError(err);
@@ -92,7 +92,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
       });
 
       // sync
-      await mutateUserGroups(undefined, true);
+      await mutateUserGroups();
 
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
