@@ -147,10 +147,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async init() {
-    if (!this.isElasticsearchReindexOnBoot) {
-      return this.normalizeIndices(); // call normalizeIndices() only
+    const normalizeIndices = await this.normalizeIndices();
+    if (this.isElasticsearchReindexOnBoot) {
+      return this.rebuildIndex();
     }
-    return this.rebuildIndex(); // rebuildIndex() will call normalizeIndeces() in the end of rebuild process
+    return normalizeIndices;
   }
 
   /**
