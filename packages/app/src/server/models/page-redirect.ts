@@ -20,7 +20,9 @@ export interface PageRedirectModel extends Model<PageRedirectDocument> {
  * This is the setting for notify to 3rd party tool (like Slack).
  */
 const schema = new Schema<PageRedirectDocument, PageRedirectModel>({
-  fromPath: { type: String, required: true, unique: true },
+  fromPath: {
+    type: String, required: true, unique: true, index: true,
+  },
   toPath: { type: String, required: true },
 });
 
