@@ -277,9 +277,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
         )}
-        <div className="grw-pagetree-count-wrapper">
-          <ItemCount descendantCount={page.descendantCount || 0} />
-        </div>
+        {(page.descendantCount != null && page.descendantCount > 0) && (
+          <div className="grw-pagetree-count-wrapper">
+            <ItemCount descendantCount={page.descendantCount} />
+          </div>
+        )}
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
