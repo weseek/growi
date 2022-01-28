@@ -2,6 +2,7 @@ import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
+import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 
 import * as forgotPassword from './forgot-password';
 import * as privateLegacyPages from './private-legacy-pages';
@@ -165,8 +166,8 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
+  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   app.get('/tags'                     , loginRequired, tag.showPage);

@@ -1,7 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 import urljoin from 'url-join';
-import loggerFactory from '~/utils/logger';
+import { body } from 'express-validator';
 
+import loggerFactory from '~/utils/logger';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage } = pagePathUtils;
@@ -650,7 +651,10 @@ module.exports = function(crowi, app) {
 
 
   const api = {};
+  const validator = {};
+
   actions.api = api;
+  actions.validator = validator;
 
   /**
    * @swagger
@@ -1143,6 +1147,11 @@ module.exports = function(crowi, app) {
       });
   };
 
+  validator.remove = [
+    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
+    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+  ];
+
   /**
    * @api {post} /pages.remove Remove page
    * @apiName RemovePage
@@ -1204,6 +1213,10 @@ module.exports = function(crowi, app) {
       logger.error('Delete notification failed', err);
     }
   };
+
+  validator.revertRemove = [
+    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+  ];
 
   /**
    * @api {post} /pages.revertRemove Revert removed page
