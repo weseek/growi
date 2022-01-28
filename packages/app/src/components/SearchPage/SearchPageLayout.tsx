@@ -4,7 +4,7 @@ import { SearchResultMeta } from '~/interfaces/search';
 
 
 type Props = {
-  SearchControl: React.FunctionComponent,
+  Control: any |React.FunctionComponent,
   SearchResultList: React.FunctionComponent,
   SearchResultContent: React.FunctionComponent,
   searchResultMeta: SearchResultMeta,
@@ -17,7 +17,7 @@ type Props = {
 const SearchPageLayout: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
-    SearchResultList, SearchControl, SearchResultContent, searchResultMeta, searchingKeyword, pagingLimit, activePage,
+    SearchResultList, Control, SearchResultContent, searchResultMeta, searchingKeyword, pagingLimit, activePage,
   } = props;
 
   const renderShowingPageCountInfo = () => {
@@ -32,7 +32,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
       <div className="search-result d-flex" id="search-result">
         <div className="mw-0 flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
 
-          <SearchControl></SearchControl>
+          <Control></Control>
           <div className="search-result-list-scroll">
             <div className="d-flex align-items-center justify-content-between my-3 ml-4">
               <div className="search-result-meta text-nowrap">

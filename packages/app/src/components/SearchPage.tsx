@@ -1,35 +1,60 @@
 import React, {
-  FC,
+  FC, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import AppContainer from '~/client/services/AppContainer';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
+import SearchControl from './SearchPage/SearchControl';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 type Props = {
-
+  appContainer: AppContainer
 }
 
 
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
+  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
+  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(true);
+  const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
+  const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
+  const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
+
+
+  const switchExcludeUserPagesHandler = useCallback(() => {
+    setExcludeUserPages(prev => !prev);
+  }, [setExcludeUserPages]);
+
+  const switchExcludeTrashPagesHandler = useCallback(() => {
+    setExcludeTrashPages(prevState => !prevState);
+
+  }, [setExcludeTrashPages]);
+
+  const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
+    setSort(nextSort);
+    setOrder(nextOrder);
+  }, [setSort, setOrder]);
+
 
   // Delete modal
-  const renderActionToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
+  const renderActionToPageModal = (getSelectedPagesForAction) => {
     return (
       <PageDeleteModal
-        isOpen={isActionConfirmModalShown}
+        isOpen={isActionToPageModalShown}
         pages={getSelectedPagesForAction()}
-        onClose={closeActionConfirmModalHandler}
+        onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
         isDeleteCompletelyModal={false}
         isAbleToDeleteCompletely={false}
       />
     );
   };
 
-  const renderActionToPages = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
+  const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
     const actionIconAndText = (
       <>
         <i className="icon-trash"></i>
@@ -46,7 +71,7 @@ const SearchPage : FC<Props> = (props: Props) => {
       >
       </ActionToSelectedPageGroup>
     );
-  };
+  }, []);
 
 
   const onAfterSearchHandler = (keyword, searchedKeyword) => {
@@ -59,12 +84,46 @@ const SearchPage : FC<Props> = (props: Props) => {
     }
   };
 
+  // eslint-disable-next-line max-len
+  const renderSearchControl = (searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
+    return (
+      <SearchControl
+        searchingKeyword={searchingKeyword}
+        sort={sort}
+        order={order}
+        appContainer={props.appContainer}
+        excludeTrashPages={excludeTrashPages}
+        excludeUserPages={excludeUserPages}
+        onSearchInvoked={onSearchInvoked}
+        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
+        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
+        onChangeSortInvoked={onChangeSortInvoked}
+        actionToPageGroup={renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
+      >
+      </SearchControl>
+    );
+  };
+
   return (
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
-      renderActionToPagesModal={renderActionToPageModal}
-      renderActionToPages={renderActionToPages}
+      renderSearchControl={renderSearchControl}
+      excludeUserPages={excludeUserPages}
+      excludeTrashPages={excludeTrashPages}
+      sort={sort}
+      order={order}
+      renderActionToPageModal={renderActionToPageModal}
+      setIsActionToPageModalShown={setIsActionToPageModalShown}
     />
   );
 };
-export default SearchPage;
+
+/**
+ * Wrapper component for using unstated
+ */
+const SearchPageUnstatedWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
+
+const SearchPageWrapper = (props) => {
+  return <SearchPageUnstatedWrapper {...props}></SearchPageUnstatedWrapper>;
+};
+export default SearchPageWrapper;

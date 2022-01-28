@@ -22,7 +22,6 @@ import {
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import SearchControl from './SearchPage/SearchControl';
 
 
 export const specificPathNames = {
@@ -45,17 +44,17 @@ const getQueryByLocation = (location: Location) => {
   return query;
 };
 
-
-// TODO
-// Task : https://redmine.weseek.co.jp/issues/85465
-// 1. renderSearchForm
-// 2. renderSort
-// 3. message props to SearchPageLayout. <- not relevant here
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
-  renderActionToPagesModal: (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => React.FunctionComponent,
-  renderActionToPages: (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => React.FunctionComponent,
+  renderSearchControl?: (searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => any,
+  renderLegacyPageControl?: ()=> React.FunctionComponent,
+  excludeUserPages :boolean,
+  excludeTrashPages : boolean,
+  sort: SORT_AXIS,
+  order : SORT_ORDER,
+  setIsActionToPageModalShown: (x : boolean) => void,
+  renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   query?: string,
 };
 
@@ -88,12 +87,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [shortBodiesMap, setShortBodiesMap] = useState<Record<string, string> | null>(null);
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
-  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
-  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(true);
-  const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
-  const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
-  const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
   const [actionTargetPageIds, sestActionToTargetPageIds] = useState<Set<string>>(new Set());
 
 
@@ -108,20 +102,6 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSearchResultCount(0);
     setActivePage(1);
   };
-
-  const switchExcludeUserPagesHandler = useCallback(() => {
-    setExcludeUserPages(prev => !prev);
-  }, [setExcludeUserPages]);
-
-  const switchExcludeTrashPagesHandler = useCallback(() => {
-    setExcludeTrashPages(prevState => !prevState);
-
-  }, [setExcludeTrashPages]);
-
-  const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
-    setSort(nextSort);
-    setOrder(nextOrder);
-  }, [setSort, setOrder]);
 
   const onAfterSearchHandler = useCallback((keyword) => {
     if (props.onAfterSearchInvoked == null) {
@@ -140,15 +120,15 @@ const SearchCore: FC<Props> = (props: Props) => {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (excludeTrashPages) {
+    if (props.excludeTrashPages) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (excludeUserPages) {
+    if (props.excludeUserPages) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
     return query;
-  }, [excludeTrashPages, excludeUserPages]);
+  }, [props.excludeTrashPages, props.excludeUserPages]);
 
   // refs: https://redmine.weseek.co.jp/issues/82139
   const search = useCallback(async(data) => {
@@ -165,6 +145,7 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSearchingKeyword(keyword);
 
     const offset = (activePage * pagingLimit) - pagingLimit;
+    const { sort, order } = props;
     try {
       const res = await apiGet<any>('/search', {
         q: createSearchQuery(keyword),
@@ -203,7 +184,7 @@ const SearchCore: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, order, pagingLimit, sort]);
+  }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, props.order, pagingLimit, props.sort]);
 
   const onPagingNumberChanged = useCallback(async(activePage) => {
     setActivePage(activePage);
@@ -272,19 +253,15 @@ const SearchCore: FC<Props> = (props: Props) => {
 
   const actionToSinglePageButtonHandler = useCallback((pageId) => {
     sestActionToTargetPageIds(new Set([pageId]));
-    setIsActionToPageModalShown(true);
-  }, []);
+    props.setIsActionToPageModalShown(true);
+  }, [props.setIsActionToPageModalShown, sestActionToTargetPageIds]);
 
   const actionToAllPagesButtonHandler = useCallback(() => {
     if (selectedPagesIdList.size === 0) { return }
     sestActionToTargetPageIds(selectedPagesIdList);
-    setIsActionToPageModalShown(true);
-  }, [selectedPagesIdList]);
+    props.setIsActionToPageModalShown(true);
+  }, [selectedPagesIdList, props.setIsActionToPageModalShown]);
 
-
-  const closeActionConfirmModalHandler = useCallback(() => {
-    setIsActionToPageModalShown(false);
-  }, []);
 
   /*
    * componentDidMount
@@ -328,24 +305,16 @@ const SearchCore: FC<Props> = (props: Props) => {
     );
   };
 
-  const renderSearchControl = () => {
-    return (
-      <SearchControl
-        searchingKeyword={searchingKeyword}
-        sort={sort}
-        order={order}
-        appContainer={props.appContainer}
-        onSearchInvoked={onSearchInvoked}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={excludeUserPages}
-        excludeTrashPages={excludeTrashPages}
-        onChangeSortInvoked={onChangeSortInvoked}
-        // eslint-disable-next-line max-len
-        actionToPageGroup={props.renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
-      >
-      </SearchControl>
-    );
+  const renderControl = () => {
+    if (props.renderSearchControl != null) {
+      // eslint-disable-next-line max-len
+      return props.renderSearchControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+    }
+    if (props.renderLegacyPageControl != null) {
+      return props.renderLegacyPageControl();
+    }
+
+    return <></>;
   };
   /*
    * Dependencies
@@ -357,7 +326,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   return (
     <div>
       <SearchPageLayout
-        SearchControl={renderSearchControl}
+        Control={renderControl}
         SearchResultList={renderSearchResultList}
         SearchResultContent={renderSearchResultContent}
         searchResultMeta={searchResultMeta}
@@ -367,7 +336,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         activePage={activePage}
       >
       </SearchPageLayout>
-      {props.renderActionToPagesModal(isActionToPageModalShown, getSelectedPagesToAction, closeActionConfirmModalHandler)}
+      {props.renderActionToPageModal(getSelectedPagesToAction)}
     </div>
   );
 };
