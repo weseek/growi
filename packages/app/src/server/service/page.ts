@@ -1769,7 +1769,7 @@ class PageService {
       objectMode: true,
       async write(pages, encoding, callback) {
         // make list to create empty pages
-        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
