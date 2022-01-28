@@ -1748,7 +1748,7 @@ class PageService {
     }
 
     const { pages } = result;
-    const regexps = pages.map(page => new RegExp(`^${page.path}`));
+    const regexps = pages.map(page => new RegExp(`^${escapeStringRegexp(page.path)}`));
 
     return regexps;
   }
