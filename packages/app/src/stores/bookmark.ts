@@ -11,6 +11,7 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined, isOpen = f
       return {
         sumOfBookmarks: response.data.sumOfBookmarks,
         isBookmarked: response.data.isBookmarked,
+        bookmarkedUsers: response.data.bookmarkedUsers,
       };
     }),
   );

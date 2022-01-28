@@ -170,32 +170,15 @@ $border-color: $border-color-global;
 
   // Pagetree
   .grw-pagetree {
-    .grw-pagetree-is-over {
-      background: $bgcolor-list-hover;
-    }
-    .grw-pagetree-item {
-      &.grw-pagetree-is-target {
-        background: $bgcolor-list-hover;
-      }
-
-      .grw-pagetree-count {
-        background: $bgcolor-sidebar-list-group;
-      }
-
-      .grw-pagetree-button {
-        &:not(:hover) {
-          svg {
-            fill: $gray-400;
-          }
-        }
-      }
-      &:hover {
-        background: $bgcolor-list-hover;
-      }
-      &:active {
-        background: $bgcolor-list-active;
-      }
-    }
+    @include override-list-group-item-for-pagetree(
+      $color-list,
+      $bgcolor-sidebar-list-group,
+      $color-list-hover,
+      $bgcolor-list-hover,
+      $color-list-active,
+      $bgcolor-list-active,
+      $gray-400
+    );
   }
 }
 

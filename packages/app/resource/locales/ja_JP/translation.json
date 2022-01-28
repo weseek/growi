@@ -112,6 +112,8 @@
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "V5 Page Migration": "V5 ページマイグレーション",
+  "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
+  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
@@ -178,7 +180,8 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください"
+    "title_required": "タイトルを入力してください",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -963,6 +966,12 @@
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
   "pagetree": {
-    "private_legacy_pages": "待避所"
+    "private_legacy_pages": "待避所",
+    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
+    "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
+    "select_page_to_see" : "以下から遷移するページを選択してください。"
   }
 }
