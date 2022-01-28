@@ -1381,6 +1381,7 @@ class PageService {
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
+    const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -1399,7 +1400,7 @@ class PageService {
       async final(callback) {
         const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
-        const shouldNormalize = targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED;
+        const shouldNormalize = shouldNormalizeParent(targetPage);
         if (shouldNormalize) {
           try {
             const newPath = Page.getRevertDeletedPageName(targetPage.path);
