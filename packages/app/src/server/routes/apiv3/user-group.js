@@ -97,7 +97,9 @@ module.exports = (crowi) => {
 
       let parentIdList = [];
       if (parentIds != null) {
-        parentIdList = parentIds.split(',');
+        parentIdList = parentIds
+          .split(',')
+          .filter(parentId => parentId !== '');
       }
 
       let childUserGroups = [];
