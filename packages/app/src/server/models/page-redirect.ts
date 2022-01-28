@@ -13,7 +13,7 @@ export interface IPageRedirect {
 export interface PageRedirectDocument extends IPageRedirect, Document {}
 
 export interface PageRedirectModel extends Model<PageRedirectDocument> {
-  [x:string]: any
+  [x:string]: any // TODO: improve type
 }
 
 /**
