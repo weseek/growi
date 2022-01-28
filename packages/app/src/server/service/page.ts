@@ -236,10 +236,10 @@ class PageService {
     return shouldUseV4Process;
   }
 
-  private shouldNormalizeParent(grant): boolean {
+  private shouldNormalizeParent(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    return grant !== Page.GRANT_RESTRICTED;
+    return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
   }
 
   /**
