@@ -1708,14 +1708,14 @@ class PageService {
 
     // GRANT_RESTRICTED and GRANT_SPECIFIED will never have parent
     const grantFilter: any = {
-      $or: [
+      $and: [
         { grant: { $ne: Page.GRANT_RESTRICTED } },
         { grant: { $ne: Page.GRANT_SPECIFIED } },
       ],
     };
 
     if (grant != null) { // add grant condition if not null
-      grantFilter.$or = [...grantFilter.$or, { grant }];
+      grantFilter.$and = [...grantFilter.$and, { grant }];
     }
 
     // generate filter
