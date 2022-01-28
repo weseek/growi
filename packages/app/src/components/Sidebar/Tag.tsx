@@ -4,19 +4,13 @@ import TagList from '../TagList';
 import TagCloudBox from '../TagCloudBox';
 import { apiGet } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/apiNotification';
-
-// todo: commonize
-type Itag = {
-  _id: string,
-  name: string,
-  count: number,
-}
+import { ITagDataHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
 
 const Tag: FC = () => {
 
-  const [tagData, setTagData] = useState<Itag[]>([]);
+  const [tagData, setTagData] = useState<ITagDataHasId[]>([]);
   const [totalTags, setTotalTags] = useState<number>(0);
   const [isOnReload, setIsOnReload] = useState<boolean>(false);
   const { t } = useTranslation('');
@@ -26,7 +20,7 @@ const Tag: FC = () => {
     let res;
 
     try {
-      res = await apiGet('/tags.list', { LIMIT, offset });
+      res = await apiGet('/tags.list', { limit: LIMIT, offset });
     }
     catch (error) {
       toastError(error);
@@ -89,7 +83,13 @@ const Tag: FC = () => {
             {t('Check All tags')}
           </button>
         </div>
-        <TagList tagData={tagData} totalTags={totalTags} />
+        <TagList
+          tagData={tagData}
+          totalTags={totalTags}
+          limit={LIMIT}
+          isOnReload={isOnReload}
+          onHandlePagination={getTagList}
+        />
       </div>
     </>
   );

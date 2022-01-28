@@ -1,24 +1,25 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import PaginationWrapper from './PaginationWrapper';
+import { ITagDataHasId } from '~/interfaces/tag';
 
-type Itag = {
-  _id: string,
-  name: string,
-  count: number,
-}
 
 type TagListProps = {
-  tagData: Itag[],
+  tagData: ITagDataHasId[],
   totalTags: number,
-  onHandlePage?: ((selectPageNumber:number) => void)
+  limit: number,
+  isOnReload: boolean,
+  onHandlePagination?: ((selectPageNumber:number) => void)
 }
 
-const PAGING_LIMIT = 10;
 
 const TagList: FC<TagListProps> = (props:TagListProps) => {
   const [activePage, setActivePage] = useState<number>(1);
-  const { tagData, totalTags, onHandlePage } = props;
+  const {
+    tagData, totalTags, limit, onHandlePagination,
+  } = props;
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
 
@@ -34,11 +35,11 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
   }, []);
 
   const paginationHandler = useCallback(async(selectedPage) => {
-    if (onHandlePage != null) {
-      onHandlePage(selectedPage);
+    if (onHandlePagination != null) {
+      onHandlePagination(selectedPage);
       setActivePage(selectedPage);
     }
-  }, [onHandlePage]);
+  }, [onHandlePagination]);
 
   if (!isTagExist) {
     return <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
@@ -53,7 +54,7 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
         activePage={activePage}
         changePage={paginationHandler}
         totalItemsCount={totalTags}
-        pagingLimit={PAGING_LIMIT}
+        pagingLimit={limit}
         align="center"
         size="md"
       />
