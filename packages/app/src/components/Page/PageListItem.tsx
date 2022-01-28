@@ -63,13 +63,14 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
   // background color of list item changes when class "active" exists under 'grw-search-result-item'
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `${isSelected ? 'active' : ''}`}`;
+  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
+  const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
+  const styleBorder = onClickCheckbox != null ? 'border-bottom' : 'list-group-item p-0';
+
   return (
     <li
       key={pageData._id}
-      className={`w-100 grw-search-result-item search-result-list
-        ${onClickCheckbox != null ? 'list-group-item-action border-bottom' : 'list-group-item p-0'}
-        ${responsiveListStyleClass}`
+      className={`w-100 grw-search-result-item search-result-list ${styleListGroupItem} ${styleActive} ${styleBorder}}`
       }
     >
       <div
