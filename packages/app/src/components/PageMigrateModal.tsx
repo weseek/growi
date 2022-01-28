@@ -65,7 +65,7 @@ const PageMigrateModal: FC<Props> = (props: Props) => {
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
           <p>{t('modal_migrate.migrate_warning')}<br />
-            <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }} />
+            <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
           </p>
           <label>{t('modal_migrate.migrating_page')}:</label><br />
           {pages.map((page) => {

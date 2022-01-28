@@ -55,6 +55,7 @@ type Props = {
   order : SORT_ORDER,
   setIsActionToPageModalShown: (x : boolean) => void,
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
+  alertMessage?: React.ReactNode,
   query?: string,
 };
 

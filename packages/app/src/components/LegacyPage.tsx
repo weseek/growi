@@ -49,26 +49,19 @@ const LegacyPage : FC<Props> = (props: Props) => {
     );
   };
 
-  const renderSearchForm = () => {
-    // return <SearchForm />
-  };
-
-  const renderSortBar = () => {
-    // return null;
-  };
-
-
-  const message = () => {
-    // return xd黄色のmessage部分
-    // props として search coreに流して LegacyPageの時のみこのmessageをSearchPageLayoutの中に差し込む
-    // https://xd.adobe.com/view/cd3cb2f8-625d-4a6b-b6e4-917f75c675c5-986f/screen/31308311-63c8-4183-98c9-64ef29811956/
-  };
-
+  const alertMessage = (
+    <div className="alert alert-warning py-3">
+      <h5 className="font-weight-bold mt-1">{t('legacy_pages_alert.legacy_page_alert')}</h5>
+      <p>{t('legacy_pages_alert.migrate_help')}</p>
+      <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
+    </div>
+  );
   return (
     <SearchCore
       renderActionToPagesModal={renderActionToPageModal}
       renderActionToPages={renderActionToPages}
       query="[nq:PrivateLegacyPages]"
+      alertMessage={alertMessage}
     />
   );
 };

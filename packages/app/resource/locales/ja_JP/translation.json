@@ -112,7 +112,7 @@
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "V5 Page Migration": "V5 ページマイグレーション",
-  "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
+  "GROWI.5.x_new_schema": "GROWI v5.x系における新スキーマについて",
   "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
@@ -492,7 +492,7 @@
     "dont_ask_again": "常に許可する"
   },
   "modal_migrate":{
-    "migrating_page": "新スキーマへ変換",
+    "migrating_page": "新スキーマへ変換する",
     "migrate_recursively": "全ての子ページを変換",
     "migrate_warning": "新スキーマに変換すると旧スキーマには戻せなくなります。"
   },
@@ -976,5 +976,9 @@
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
     "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
     "select_page_to_see" : "以下から遷移するページを選択してください。"
+  },
+  "legacy_pages_alert": {
+    "legacy_page_alert" : "旧形式のページです" ,
+    "migrate_help":"チェックボックスでページを選択して画面上部”新スキーマへ変換する”ボタンから新スキーマへ切り替えることが可能です。"
   }
 }

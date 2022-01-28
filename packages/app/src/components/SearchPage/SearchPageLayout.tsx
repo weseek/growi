@@ -11,6 +11,7 @@ type Props = {
   searchingKeyword: string,
   pagingLimit: number,
   activePage: number,
+  alertMessage?:React.ReactNode,
   onPagingLimitChanged: (limit: number) => void
 }
 
@@ -59,6 +60,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
             </div>
 
             <div className="page-list">
+              {props.alertMessage}
               <ul className="page-list-ul page-list-ul-flat px-md-4 nav nav-pills"><SearchResultList></SearchResultList></ul>
             </div>
           </div>
