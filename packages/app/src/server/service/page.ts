@@ -229,13 +229,14 @@ class PageService {
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const isTrashed = isTrashPage(page.path);
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || !isTrashed);
+    const isTrashPage = page.status === Page.STATUS_DELETED;
+
+    const shouldUseV4Process = !isRoot && !isPageRestricted && !isTrashPage && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
 
-  private shouldNormalizeParent(page) {
+  private shouldNormalizeParent(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
@@ -526,16 +527,16 @@ class PageService {
         try {
           count += batch.length;
           await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
-          logger.debug(`Reverting pages progressing: (count=${count})`);
+          logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
-          logger.error('revertPages error on add anyway: ', err);
+          logger.error('renameDescendants error on add anyway: ', err);
         }
 
         callback();
       },
       final(callback) {
-        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        logger.debug(`Renaming pages has completed: (totalCount=${count})`);
         // update  path
         targetPage.path = newPagePath;
         pageEvent.emit('syncDescendantsUpdate', targetPage, user);
@@ -849,7 +850,6 @@ class PageService {
         callback();
       },
       async final(callback) {
-        const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
         const shouldNormalize = shouldNormalizeParent(page);
         if (shouldNormalize) {
@@ -1092,16 +1092,16 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
-          logger.debug(`Reverting pages progressing: (count=${count})`);
+          logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
-          logger.error('revertPages error on add anyway: ', err);
+          logger.error('deleteDescendants error on add anyway: ', err);
         }
 
         callback();
       },
       final(callback) {
-        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        logger.debug(`Deleting pages has completed: (totalCount=${count})`);
 
         callback();
       },
@@ -1269,48 +1269,34 @@ class PageService {
       .pipe(writeStream);
   }
 
+  // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
 
-    const removePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revertPageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revertRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-
-    // e.g. key: '/test'
-    const pathToPageMapping = {};
-    const toPaths = pages.map(page => Page.getRevertDeletedPageName(page.path));
-    const toPages = await Page.find({ path: { $in: toPaths } });
-    toPages.forEach((toPage) => {
-      pathToPageMapping[toPage.path] = toPage;
-    });
+    const revertPageOperations: any[] = [];
 
     pages.forEach((page) => {
-
       // e.g. page.path = /trash/test, toPath = /test
       const toPath = Page.getRevertDeletedPageName(page.path);
-
-      if (pathToPageMapping[toPath] != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-        if (pathToPageMapping[toPath].redirectTo === page.path) {
-          removePageBulkOp.find({ path: toPath }).delete();
-        }
-      }
-      revertPageBulkOp.find({ _id: page._id }).update({
-        $set: {
-          path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+      revertPageOperations.push({
+        updateOne: {
+          filter: { _id: page._id },
+          update: {
+            $set: {
+              path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+            },
+          },
         },
       });
-      revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } });
     });
 
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * deleteMany PageRedirectDocument of paths as well
+     */
+
     try {
-      await removePageBulkOp.execute();
-      await revertPageBulkOp.execute();
-      await revertRevisionBulkOp.execute();
+      await Page.bulkWrite(revertPageOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1322,20 +1308,48 @@ class PageService {
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const Revision = this.crowi.model('Revision');
+
+    // v4 compatible process
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
+      return this.revertDeletedPageV4(page, user, options, isRecursively);
+    }
+
+    const newPath = Page.getRevertDeletedPageName(page.path);
+    const includeEmpty = true;
+    const originPage = await Page.findByPath(newPath, includeEmpty);
+
+    // throw if any page already exists
+    if (originPage != null) {
+      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
+    }
+
+    const parent = await Page.getParentAndFillAncestors(newPath);
+
+    page.status = Page.STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    const updatedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: {
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id,
+      },
+    }, { new: true });
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
+
+    if (isRecursively) {
+      this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+    }
+
+    return updatedPage;
+  }
+
+  private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-
-      await this.deleteCompletely(originPage, user, options, false, true);
-      this.pageEvent.emit('revert', page, user);
+      throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists.`);
     }
 
     if (isRecursively) {
@@ -1351,7 +1365,6 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
-    await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
 
     return updatedPage;
   }
@@ -1359,8 +1372,60 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+    if (shouldUseV4Process) {
+      return this.revertDeletedDescendantsWithStreamV4(targetPage, user, options);
+    }
 
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+
+    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
+    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
+    const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await revertDeletedDescendants(batch, user);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      async final(callback) {
+        const Page = mongoose.model('Page') as unknown as PageModel;
+        // normalize parent of descendant pages
+        const shouldNormalize = shouldNormalizeParent(targetPage);
+        if (shouldNormalize) {
+          try {
+            const newPath = Page.getRevertDeletedPageName(targetPage.path);
+            const escapedPath = escapeStringRegexp(newPath);
+            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+            await normalizeParentRecursively(null, regexps);
+            logger.info(`Successfully normalized reverted descendant pages under "${newPath}"`);
+          }
+          catch (err) {
+            logger.error('Failed to normalize descendants afrer revert:', err);
+            throw err;
+          }
+        }
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
+  private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
@@ -1370,7 +1435,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedDescendants(batch, user);
+          await revertDeletedDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1635,23 +1700,30 @@ class PageService {
   }
 
   // TODO: use websocket to show progress
-  async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
+  private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
+
+    // GRANT_RESTRICTED and GRANT_SPECIFIED will never have parent
+    const grantFilter: any = {
+      $and: [
+        { grant: { $ne: Page.GRANT_RESTRICTED } },
+        { grant: { $ne: Page.GRANT_SPECIFIED } },
+      ],
+    };
+
+    if (grant != null) { // add grant condition if not null
+      grantFilter.$and = [...grantFilter.$and, { grant }];
+    }
 
     // generate filter
     let filter: any = {
       parent: null,
       path: { $ne: '/' },
+      status: Page.STATUS_PUBLISHED,
     };
-    if (grant != null) {
-      filter = {
-        ...filter,
-        grant,
-      };
-    }
     if (regexps != null && regexps.length !== 0) {
       filter = {
         ...filter,
@@ -1665,6 +1737,9 @@ class PageService {
 
     let baseAggregation = Page
       .aggregate([
+        {
+          $match: grantFilter,
+        },
         {
           $match: filter,
         },
@@ -1694,7 +1769,7 @@ class PageService {
       objectMode: true,
       async write(pages, encoding, callback) {
         // make list to create empty pages
-        const parentPathsSet = new Set(pages.map(page => pathlib.dirname(page.path)));
+        const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
