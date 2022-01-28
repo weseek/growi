@@ -96,10 +96,8 @@ module.exports = (crowi) => {
       const { parentIdsJoinedByComma, includeGrandChildren = false } = req.query;
 
       let parentIdList = [];
-      if (parentIdsJoinedByComma != null) {
-        parentIdList = parentIdsJoinedByComma
-          .split(',')
-          .filter(parentId => parentId !== '');
+      if (parentIdsJoinedByComma != null && parentIdsJoinedByComma !== '') { // null check & trim empty string
+        parentIdList = parentIdsJoinedByComma.split(',');
       }
 
       let childUserGroups = [];
