@@ -21,7 +21,7 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRRespon
 };
 
 export const useSWRxChildUserGroupList = (
-    parentIds: string[] | undefined, includeGrandChildren?: boolean, initialData?: IUserGroupHasId[],
+    parentIds?: string[], includeGrandChildren?: boolean, initialData?: IUserGroupHasId[],
 ): SWRResponse<IUserGroupHasId[], Error> => {
   const shouldFetch = parentIds != null && parentIds.join() !== '';
   return useSWRImmutable<IUserGroupHasId[], Error>(
