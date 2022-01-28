@@ -93,11 +93,11 @@ module.exports = (crowi) => {
   // TODO 85062: improve sort
   router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
     try {
-      const { parentIds, includeGrandChildren = false } = req.query;
+      const { parentIdsJoinedByComma, includeGrandChildren = false } = req.query;
 
       let parentIdList = [];
-      if (parentIds != null) {
-        parentIdList = parentIds
+      if (parentIdsJoinedByComma != null) {
+        parentIdList = parentIdsJoinedByComma
           .split(',')
           .filter(parentId => parentId !== '');
       }
