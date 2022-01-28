@@ -1290,6 +1290,11 @@ class PageService {
       });
     });
 
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * deleteMany PageRedirectDocument of paths as well
+     */
+
     try {
       await Page.bulkWrite(revertPageOperations);
     }
