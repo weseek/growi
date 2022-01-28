@@ -1,9 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose from 'mongoose';
+import mongoose, { QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
-import { Writable } from 'stream';
+import { Readable, Writable } from 'stream';
 
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -24,6 +24,78 @@ const {
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+
+// TODO: improve type
+class PageCursorsForDescendantsFactory {
+
+  private user: any; // TODO: Typescriptize model
+
+  private rootPage: any; // TODO: wait for mongoose update
+
+  private shouldIncludeEmpty: boolean;
+
+  private initialCursor: QueryCursor<any>; // TODO: wait for mongoose update
+
+  private Page: PageModel;
+
+  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
+    this.user = user;
+    this.rootPage = rootPage;
+    this.shouldIncludeEmpty = shouldIncludeEmpty;
+
+    this.Page = mongoose.model('Page') as unknown as PageModel;
+  }
+
+  // prepare initial cursor
+  private async init() {
+    const initialCursor = await this.generateCursorToFindChildren(this.rootPage);
+    this.initialCursor = initialCursor;
+  }
+
+  /**
+   * Returns Iterable that yields only descendant pages unorderedly
+   * @returns Promise<AsyncGenerator>
+   */
+  async generateIterable(): Promise<AsyncGenerator> {
+    // initialize cursor
+    await this.init();
+
+    return this.generateOnlyDescendants(this.initialCursor);
+  }
+
+  /**
+   * Returns Readable that produces only descendant pages unorderedly
+   * @returns Promise<Readable>
+   */
+  async generateReadable(): Promise<Readable> {
+    return Readable.from(await this.generateIterable());
+  }
+
+  /**
+   * Generator that unorderedly yields descendant pages
+   */
+  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+    for await (const page of cursor) {
+      const nextCursor = await this.generateCursorToFindChildren(page);
+      yield* this.generateOnlyDescendants(nextCursor); // recursively yield
+
+      yield page;
+    }
+  }
+
+  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any>> {
+    const { PageQueryBuilder } = this.Page;
+
+    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    builder.addConditionToFilteringByParentId(page._id);
+    await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
+
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+
+    return cursor;
+  }
+
+}
 
 class PageService {
 
@@ -165,6 +237,12 @@ class PageService {
     return shouldUseV4Process;
   }
 
+  private shouldNormalizeParent(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
+  }
+
   /**
    * Generate read stream to operate descendants of the specified page path
    * @param {string} targetPagePath
@@ -175,6 +253,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true)
+      .addConditionAsNotMigrated() // to avoid affecting v5 pages
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
@@ -187,6 +266,10 @@ class PageService {
 
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
+
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to rename the top page');
+    }
 
     // v4 compatible process
     const shouldUseV4Process = this.shouldUseV4Process(page);
@@ -386,7 +469,8 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+    const readStream = await factory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -741,12 +825,14 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+    const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
+    const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
     const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
@@ -765,9 +851,8 @@ class PageService {
         callback();
       },
       async final(callback) {
-        const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
-        const shouldNormalize = page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
+        const shouldNormalize = shouldNormalizeParent(page);
         if (shouldNormalize) {
           try {
             const escapedPath = escapeStringRegexp(newPagePath);
@@ -865,7 +950,14 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user); // use the same process in both version v4 and v5
+      this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+    }
+    else {
+      // replace with an empty page
+      const shouldReplace = await Page.exists({ parent: page._id });
+      if (shouldReplace) {
+        await Page.replaceTargetWithEmptyPage(page);
+      }
     }
 
     let deletedPage;
@@ -988,8 +1080,16 @@ class PageService {
   /**
    * Create delete stream
    */
-  private async deleteDescendantsWithStream(targetPage, user) {
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true) {
+    let readStream;
+    if (shouldUseV4Process) {
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
+
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -1077,6 +1177,10 @@ class PageService {
   async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const Page = mongoose.model('Page') as PageModel;
 
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to delete the top page');
+    }
+
     // v4 compatible process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
@@ -1097,10 +1201,10 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteCompletelyDescendantsWithStream(page, user, options);
+      this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
     }
 
-    if (!preventEmitting) {
+    if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
@@ -1119,7 +1223,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    if (!preventEmitting) {
+    if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
@@ -1133,9 +1237,16 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+    let readStream;
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    if (shouldUseV4Process) { // pages don't have parents
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
@@ -1185,6 +1296,11 @@ class PageService {
         },
       });
     });
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * deleteMany PageRedirectDocument of paths as well
+     */
 
     try {
       await Page.bulkWrite(revertPageOperations);
@@ -1272,6 +1388,7 @@ class PageService {
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
+    const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -1290,7 +1407,7 @@ class PageService {
       async final(callback) {
         const Page = mongoose.model('Page') as unknown as PageModel;
         // normalize parent of descendant pages
-        const shouldNormalize = targetPage.grant !== Page.GRANT_RESTRICTED && targetPage.grant !== Page.GRANT_SPECIFIED;
+        const shouldNormalize = shouldNormalizeParent(targetPage);
         if (shouldNormalize) {
           try {
             const newPath = Page.getRevertDeletedPageName(targetPage.path);
@@ -1400,7 +1517,9 @@ class PageService {
                 },
                 {
                   $project: {
-                    revision: { $substr: ['$body', 0, MAX_LENGTH] },
+                    // What is $substrCP?
+                    // see: https://stackoverflow.com/questions/43556024/mongodb-error-substrbytes-invalid-range-ending-index-is-in-the-middle-of-a-ut/43556249
+                    revision: { $substrCP: ['$body', 0, MAX_LENGTH] },
                   },
                 },
               ],
@@ -1651,8 +1770,20 @@ class PageService {
   private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
+
+    // GRANT_RESTRICTED and GRANT_SPECIFIED will never have parent
+    const grantFilter: any = {
+      $or: [
+        { grant: { $ne: Page.GRANT_RESTRICTED } },
+        { grant: { $ne: Page.GRANT_SPECIFIED } },
+      ],
+    };
+
+    if (grant != null) { // add grant condition if not null
+      grantFilter.$or = [...grantFilter.$or, { grant }];
+    }
 
     // generate filter
     let filter: any = {
@@ -1660,12 +1791,6 @@ class PageService {
       path: { $ne: '/' },
       status: Page.STATUS_PUBLISHED,
     };
-    if (grant != null) {
-      filter = {
-        ...filter,
-        grant,
-      };
-    }
     if (regexps != null && regexps.length !== 0) {
       filter = {
         ...filter,
@@ -1679,6 +1804,9 @@ class PageService {
 
     let baseAggregation = Page
       .aggregate([
+        {
+          $match: grantFilter,
+        },
         {
           $match: filter,
         },
@@ -1733,7 +1861,7 @@ class PageService {
           const filter: any = {
             // regexr.com/6889f
             // ex. /parent/any_child OR /any_level1
-            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'gi') },
+            path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
           };
           if (grant != null) {
             filter.grant = grant;
@@ -1760,7 +1888,7 @@ class PageService {
           }
 
           // finish migration
-          if (res.result.nModified === 0) { // TODO: find the best property to count updated documents
+          if (res.result.nModified === 0 && res.result.nMatched === 0) {
             shouldContinue = false;
             logger.error('Migration is unable to continue', 'parentPaths:', parentPaths, 'bulkWriteResult:', res);
           }

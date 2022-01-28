@@ -17,9 +17,10 @@ export type AlertInfo = {
 
 type ClosableTextInputProps = {
   isShown: boolean
+  value?: string
   placeholder?: string
   inputValidator?(text: string): AlertInfo | Promise<AlertInfo> | null
-  onPressEnter?(): void
+  onPressEnter?(inputText: string | null): void
   onClickOutside?(): void
 }
 
@@ -27,14 +28,18 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
   const onChangeHandler = async(e) => {
     if (props.inputValidator == null) { return }
 
-    const alertInfo = await props.inputValidator(e.target.value);
+    const inputText = e.target.value;
+
+    const alertInfo = await props.inputValidator(inputText);
 
     setAlertInfo(alertInfo);
+    setInputText(inputText);
   };
 
   const onPressEnter = () => {
@@ -42,7 +47,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
       return;
     }
 
-    props.onPressEnter();
+    const text = inputText != null ? inputText.trim() : null;
+
+    props.onPressEnter(text);
   };
 
   const onKeyDownHandler = (e) => {
@@ -94,9 +101,10 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   return (
     <div className={props.isShown ? 'd-block' : 'd-none'}>
       <input
+        value={inputText}
         ref={inputRef}
         type="text"
-        className="form-control mt-1"
+        className="form-control"
         placeholder={props.placeholder}
         name="input"
         onChange={onChangeHandler}
