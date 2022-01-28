@@ -1,5 +1,5 @@
 import React, {
-  FC,
+  FC, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
@@ -10,22 +10,19 @@ type Props = {
 
 }
 
-// TODO
-// Task : https://redmine.weseek.co.jp/issues/85465
-// 1. renderSearchForm
-// 2. renderSort
-// 3. message props to SearchPageLayout.
 const LegacyPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
+  const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
+
 
   // migrate modal
-  const renderActionToPageModal = (isActionConfirmModalShown, getSelectedPagesForAction, closeActionConfirmModalHandler) => {
+  const renderActionToPageModal = (getSelectedPagesForAction) => {
     return (
       <PageMigrateModal
-        isOpen={isActionConfirmModalShown}
+        isOpen={isActionToPageModalShown}
         pages={getSelectedPagesForAction()}
-        onClose={closeActionConfirmModalHandler}
+        onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
       />
     );
   };
@@ -56,12 +53,21 @@ const LegacyPage : FC<Props> = (props: Props) => {
       <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
     </div>
   );
+
+
+  const renderLegacyPageControl = () => {
+    // TODO: create legacyControl component.
+    // LegacyControl has ActionToSinglePage
+    return <></>;
+  };
   return (
     <SearchCore
-      renderActionToPagesModal={renderActionToPageModal}
-      renderActionToPages={renderActionToPages}
+      renderActionToPageModal={renderActionToPageModal}
+      renderLegacyPageControl={renderLegacyPageControl}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
+      excludeTrashPages={false}
+      excludeUserPages={false}
     />
   );
 };
