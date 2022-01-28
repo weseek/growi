@@ -1703,8 +1703,20 @@ class PageService {
   private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
+
+    // GRANT_RESTRICTED and GRANT_SPECIFIED will never have parent
+    const grantFilter: any = {
+      $or: [
+        { grant: { $ne: Page.GRANT_RESTRICTED } },
+        { grant: { $ne: Page.GRANT_SPECIFIED } },
+      ],
+    };
+
+    if (grant != null) { // add grant condition if not null
+      grantFilter.$or = [...grantFilter.$or, { grant }];
+    }
 
     // generate filter
     let filter: any = {
@@ -1712,12 +1724,6 @@ class PageService {
       path: { $ne: '/' },
       status: Page.STATUS_PUBLISHED,
     };
-    if (grant != null) {
-      filter = {
-        ...filter,
-        grant,
-      };
-    }
     if (regexps != null && regexps.length !== 0) {
       filter = {
         ...filter,
@@ -1731,6 +1737,9 @@ class PageService {
 
     let baseAggregation = Page
       .aggregate([
+        {
+          $match: grantFilter,
+        },
         {
           $match: filter,
         },
