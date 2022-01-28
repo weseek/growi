@@ -42,7 +42,7 @@ module.exports = (crowi) => {
   } = crowi.models;
 
   validator.listChildren = [
-    query('parentIds', 'parentIds must be an string').optional().isString(),
+    query('parentIdsJoinedByComma', 'parentIds must be an string').optional().isString(),
     query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
   ];
 
