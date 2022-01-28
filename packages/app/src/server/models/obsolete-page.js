@@ -327,6 +327,11 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionToFilteringByParentId(parentId) {
+    this.query = this.query.and({ parent: parentId });
+    return this;
+  }
+
 }
 
 export const getPageSchema = (crowi) => {

@@ -1,9 +1,9 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose from 'mongoose';
+import mongoose, { QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
-import { Writable } from 'stream';
+import { Readable, Writable } from 'stream';
 
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -23,6 +23,78 @@ const {
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+
+// TODO: improve type
+class PageCursorsForDescendantsFactory {
+
+  private user: any; // TODO: Typescriptize model
+
+  private rootPage: any; // TODO: wait for mongoose update
+
+  private shouldIncludeEmpty: boolean;
+
+  private initialCursor: QueryCursor<any>; // TODO: wait for mongoose update
+
+  private Page: PageModel;
+
+  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
+    this.user = user;
+    this.rootPage = rootPage;
+    this.shouldIncludeEmpty = shouldIncludeEmpty;
+
+    this.Page = mongoose.model('Page') as unknown as PageModel;
+  }
+
+  // prepare initial cursor
+  private async init() {
+    const initialCursor = await this.generateCursorToFindChildren(this.rootPage);
+    this.initialCursor = initialCursor;
+  }
+
+  /**
+   * Returns Iterable that yields only descendant pages unorderedly
+   * @returns Promise<AsyncGenerator>
+   */
+  async generateIterable(): Promise<AsyncGenerator> {
+    // initialize cursor
+    await this.init();
+
+    return this.generateOnlyDescendants(this.initialCursor);
+  }
+
+  /**
+   * Returns Readable that produces only descendant pages unorderedly
+   * @returns Promise<Readable>
+   */
+  async generateReadable(): Promise<Readable> {
+    return Readable.from(await this.generateIterable());
+  }
+
+  /**
+   * Generator that unorderedly yields descendant pages
+   */
+  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
+    for await (const page of cursor) {
+      const nextCursor = await this.generateCursorToFindChildren(page);
+      yield* this.generateOnlyDescendants(nextCursor); // recursively yield
+
+      yield page;
+    }
+  }
+
+  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any>> {
+    const { PageQueryBuilder } = this.Page;
+
+    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    builder.addConditionToFilteringByParentId(page._id);
+    await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
+
+    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
+
+    return cursor;
+  }
+
+}
 
 class PageService {
 
@@ -150,33 +222,23 @@ class PageService {
     return result;
   }
 
+  private shouldUseV4Process(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const isPageMigrated = page.parent != null;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isRoot = isTopPage(page.path);
+    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
+    const isTrashed = isTrashPage(page.path);
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated || !isTrashed);
+
+    return shouldUseV4Process;
+  }
+
   private shouldNormalizeParent(page) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
-  }
-
-  /**
-   * go back by using redirectTo and return the paths
-   *  ex: when
-   *    '/page1' redirects to '/page2' and
-   *    '/page2' redirects to '/page3'
-   *    and given '/page3',
-   *    '/page1' and '/page2' will be return
-   *
-   * @param {string} redirectTo
-   * @param {object} redirectToPagePathMapping
-   * @param {array} pagePaths
-   */
-  private prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths: any[] = []) {
-    const pagePath = redirectToPagePathMapping[redirectTo];
-
-    if (pagePath == null) {
-      return pagePaths;
-    }
-
-    pagePaths.push(pagePath);
-    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
   }
 
   /**
@@ -189,6 +251,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true)
+      .addConditionAsNotMigrated() // to avoid affecting v5 pages
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
@@ -202,12 +265,12 @@ class PageService {
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
 
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to rename the top page');
+    }
+
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
@@ -286,7 +349,6 @@ class PageService {
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const path = page.path;
     const updateMetadata = options.updateMetadata || false;
 
     // sanitize path
@@ -306,7 +368,7 @@ class PageService {
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
-    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
+    await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
     /*
      * TODO: https://redmine.weseek.co.jp/issues/86577
@@ -319,7 +381,7 @@ class PageService {
   }
 
 
-  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = false) {
+  private async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
@@ -399,13 +461,14 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = false) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+    const readStream = await factory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -495,11 +558,7 @@ class PageService {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     // v4 compatible process
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
@@ -650,7 +709,7 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = false) {
+  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
@@ -764,7 +823,8 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+    const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
+    const readStream = await iterableFactory.generateReadable();
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -861,9 +921,15 @@ class PageService {
    * Delete
    */
   async deletePage(page, user, options = {}, isRecursively = false) {
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const Revision = this.crowi.model('Revision');
+    const Page = mongoose.model('Page') as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+
+    // v4 compatible process
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
+      return this.deletePageV4(page, user, options, isRecursively);
+    }
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -877,19 +943,79 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user, options);
+      this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+    }
+    else {
+      // replace with an empty page
+      const shouldReplace = await Page.exists({ parent: page._id });
+      if (shouldReplace) {
+        await Page.replaceTargetWithEmptyPage(page);
+      }
     }
 
-    // update Rivisions
-    await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
+    let deletedPage;
+    // update Revisions
+    if (page.isEmpty) {
+      await Page.remove({ _id: page._id });
+    }
+    else {
+      await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
+      deletedPage = await Page.findByIdAndUpdate(page._id, {
+        $set: {
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+        },
+      }, { new: true });
+      await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
+
+      /*
+       * TODO: https://redmine.weseek.co.jp/issues/86577
+       * bulkWrite PageRedirect documents
+       */
+      // const body = `redirect ${newPath}`;
+      // await Page.create(page.path, body, user, { redirectTo: newPath });
+
+      this.pageEvent.emit('delete', page, user);
+      this.pageEvent.emit('create', deletedPage, user);
+    }
+
+    return deletedPage;
+  }
+
+  private async deletePageV4(page, user, options = {}, isRecursively = false) {
+    const Page = mongoose.model('Page') as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+
+    const newPath = Page.getDeletedPageName(page.path);
+    const isTrashed = isTrashPage(page.path);
+
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
+    if (!Page.isDeletableName(page.path)) {
+      throw new Error('Page is not deletable.');
+    }
+
+    if (isRecursively) {
+      this.deleteDescendantsWithStream(page, user);
+    }
+
+    // update Revisions
+    await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
         path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
-    const body = `redirect ${newPath}`;
-    await Page.create(page.path, body, user, { redirectTo: newPath });
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * bulkWrite PageRedirect documents
+     */
+    // const body = `redirect ${newPath}`;
+    // await Page.create(page.path, body, user, { redirectTo: newPath });
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
@@ -897,88 +1023,46 @@ class PageService {
     return deletedPage;
   }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
-    const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
-
-    const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: { $in: pageIds } });
-
-    const pages = await Page.find({ redirectTo: { $ne: null } });
-    const redirectToPagePathMapping = {};
-    pages.forEach((page) => {
-      redirectToPagePathMapping[page.redirectTo] = page.path;
-    });
-
-    const redirectedFromPagePaths: any[] = [];
-    pagePaths.forEach((pagePath) => {
-      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
-    });
-
-    return Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
-      Comment.deleteMany({ page: { $in: pageIds } }),
-      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
-      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ path: { $in: pagePaths } }),
-      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
-      attachmentService.removeAllAttachments(attachments),
-    ]);
-  }
-
   private async deleteDescendants(pages, user) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as PageModel;
 
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
-
-    const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
-    const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
-    const newPagesForRedirect: any[] = [];
+    const deletePageOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
-      const revisionId = new mongoose.Types.ObjectId();
-      const body = `redirect ${newPath}`;
 
-      deletePageBulkOp.find({ _id: page._id }).update({
-        $set: {
-          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
-        },
-      });
-      updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
-      createRediectRevisionBulkOp.insert({
-        _id: revisionId, path: page.path, body, author: user._id, format: 'markdown',
-      });
+      let operation;
+      // if empty, delete completely
+      if (page.isEmpty) {
+        operation = {
+          deleteOne: {
+            filter: { _id: page._id },
+          },
+        };
+      }
+      // if not empty, set parent to null and update to trash
+      else {
+        operation = {
+          updateOne: {
+            filter: { _id: page._id },
+            update: {
+              $set: {
+                path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, // set parent as null
+              },
+            },
+          },
+        };
+      }
 
-      newPagesForRedirect.push({
-        path: page.path,
-        creator: user._id,
-        grant: page.grant,
-        grantedGroup: page.grantedGroup,
-        grantedUsers: page.grantedUsers,
-        lastUpdateUser: user._id,
-        redirectTo: newPath,
-        revision: revisionId,
-      });
+      deletePageOperations.push(operation);
     });
 
     try {
-      await deletePageBulkOp.execute();
-      await updateRevisionListOp.execute();
-      await createRediectRevisionBulkOp.execute();
-      await Page.insertMany(newPagesForRedirect, { ordered: false });
+      await Page.bulkWrite(deletePageOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw new Error(`Failed to revert pages: ${err}`);
+        throw new Error(`Failed to delete pages: ${err}`);
       }
     }
     finally {
@@ -989,9 +1073,16 @@ class PageService {
   /**
    * Create delete stream
    */
-  private async deleteDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true) {
+    let readStream;
+    if (shouldUseV4Process) {
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -1000,7 +1091,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          deleteDescendants(batch, user);
+          await deleteDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1021,6 +1112,47 @@ class PageService {
       .pipe(writeStream);
   }
 
+  private async deleteCompletelyOperation(pageIds, pagePaths) {
+    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+    const Bookmark = this.crowi.model('Bookmark');
+    const Comment = this.crowi.model('Comment');
+    const Page = this.crowi.model('Page');
+    const PageTagRelation = this.crowi.model('PageTagRelation');
+    const ShareLink = this.crowi.model('ShareLink');
+    const Revision = this.crowi.model('Revision');
+    const Attachment = this.crowi.model('Attachment');
+
+    const { attachmentService } = this.crowi;
+    const attachments = await Attachment.find({ page: { $in: pageIds } });
+
+    /*
+     * TODO: https://redmine.weseek.co.jp/issues/86577
+     * deleteMany related PageRedirect documents
+     */
+    // const pages = await Page.find({ redirectTo: { $ne: null } });
+    // const redirectToPagePathMapping = {};
+    // pages.forEach((page) => {
+    //   redirectToPagePathMapping[page.redirectTo] = page.path;
+    // });
+
+    // const redirectedFromPagePaths: any[] = [];
+    // pagePaths.forEach((pagePath) => {
+    //   redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    // });
+
+    return Promise.all([
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
+      // TODO: https://redmine.weseek.co.jp/issues/86577
+      // Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
+      attachmentService.removeAllAttachments(attachments),
+    ]);
+  }
+
   // delete multiple pages
   private async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
@@ -1036,6 +1168,43 @@ class PageService {
   }
 
   async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
+    const Page = mongoose.model('Page') as PageModel;
+
+    if (isTopPage(page.path)) {
+      throw Error('It is forbidden to delete the top page');
+    }
+
+    // v4 compatible process
+    const shouldUseV4Process = this.shouldUseV4Process(page);
+    if (shouldUseV4Process) {
+      return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
+    }
+
+    const ids = [page._id];
+    const paths = [page.path];
+
+    logger.debug('Deleting completely', paths);
+
+    // replace with an empty page
+    const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
+    if (shouldReplace) {
+      await Page.replaceTargetWithEmptyPage(page);
+    }
+
+    await this.deleteCompletelyOperation(ids, paths);
+
+    if (isRecursively) {
+      this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+    }
+
+    if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
+
+    return;
+  }
+
+  private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
     const ids = [page._id];
     const paths = [page.path];
 
@@ -1047,7 +1216,7 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    if (!preventEmitting) {
+    if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
     }
 
@@ -1061,9 +1230,16 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+    let readStream;
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    if (shouldUseV4Process) { // pages don't have parents
+      readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    }
+    else {
+      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
+      readStream = await factory.generateReadable();
+    }
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
@@ -1427,7 +1603,7 @@ class PageService {
   /*
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
-  async _generateRegExpsByPageIds(pageIds) {
+  private async _generateRegExpsByPageIds(pageIds) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     let result;
@@ -1445,7 +1621,7 @@ class PageService {
     return regexps;
   }
 
-  async _setIsV5CompatibleTrue() {
+  private async _setIsV5CompatibleTrue() {
     try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
         'app:isV5Compatible': true,
@@ -1599,7 +1775,7 @@ class PageService {
 
   }
 
-  async _v5NormalizeIndex() {
+  private async _v5NormalizeIndex() {
     const collection = mongoose.connection.collection('pages');
 
     try {

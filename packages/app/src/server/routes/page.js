@@ -1156,13 +1156,13 @@ module.exports = function(crowi, app) {
     const previousRevision = req.body.revision_id || null;
 
     // get completely flag
-    const isCompletely = (req.body.completely != null);
+    const isCompletely = req.body.completely;
     // get recursively flag
-    const isRecursively = (req.body.recursively != null);
+    const isRecursively = req.body.recursively;
 
     const options = {};
 
-    const page = await Page.findByIdAndViewer(pageId, req.user);
+    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
@@ -1178,7 +1178,7 @@ module.exports = function(crowi, app) {
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
-        if (!page.isUpdatable(previousRevision)) {
+        if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
