@@ -166,7 +166,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , /*loginRequiredStrictly , csrf,*/ page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
