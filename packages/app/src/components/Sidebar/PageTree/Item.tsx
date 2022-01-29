@@ -16,7 +16,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, isUserPage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -131,6 +131,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
+
+  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -298,7 +300,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+            isDeletable
           />
         </div>
       </li>
