@@ -300,7 +300,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
-            isDeletable
+            isDeletable={isDeletable}
           />
         </div>
       </li>
