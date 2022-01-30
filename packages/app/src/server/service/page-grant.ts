@@ -344,18 +344,19 @@ class PageGrantService {
 
   async separateNormalizedAndNonNormalizedPages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
     const normalizedPages: (PageDocument & { _id: any })[] = [];
     const nonNormalizedPages: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
 
-    for await (const pageId of pageIds) {
-      const page = await Page.findById(pageId) as any | null;
-      if (page == null) {
-        continue;
-      }
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListByPageIdsArray(pageIds);
 
+    const pages = await builder.query.exec();
+
+    for await (const page of pages) {
       const {
         path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
       } = page;
