@@ -3,7 +3,7 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
-import { PageModel } from '~/server/models/page';
+import { PageDocument, PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
@@ -342,13 +342,13 @@ class PageGrantService {
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
   }
 
-  async validatePageIdsByIsGrantNormalized(pageIds: ObjectIdLike[]): Promise<[ObjectIdLike[], string[]]> {
+  async separateNormalizedAndNonNormalizedPages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
-    const normalizedIds: ObjectIdLike[] = [];
-    const notNormalizedPaths: string[] = []; // can be used to tell user which page failed to migrate
+    const normalizedPages: (PageDocument & { _id: any })[] = [];
+    const nonNormalizedPages: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
 
     for await (const pageId of pageIds) {
       const page = await Page.findById(pageId) as any | null;
@@ -362,14 +362,14 @@ class PageGrantService {
 
       const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
       if (isNormalized) {
-        normalizedIds.push(page._id);
+        normalizedPages.push(page);
       }
       else {
-        notNormalizedPaths.push(page.path);
+        nonNormalizedPages.push(page);
       }
     }
 
-    return [normalizedIds, notNormalizedPaths];
+    return [normalizedPages, nonNormalizedPages];
   }
 
 }

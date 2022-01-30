@@ -1626,7 +1626,7 @@ class PageService {
       return;
     }
 
-    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.validatePageIdsByIsGrantNormalized(pageIds);
+    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
 
     if (normalizedIds.length === 0) {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
