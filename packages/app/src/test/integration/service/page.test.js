@@ -384,8 +384,8 @@ describe('PageService', () => {
       test('rename page with createRedirectPage option', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
-        const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
-        const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3' });
+        // const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
+        // const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -395,13 +395,13 @@ describe('PageService', () => {
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-        expect(redirectedFromPage).not.toBeNull();
-        expect(redirectedFromPage.path).toBe('/parentForRename3');
-        expect(redirectedFromPage.redirectTo).toBe('/renamed3');
+        // expect(redirectedFromPage).not.toBeNull();
+        // expect(redirectedFromPage.path).toBe('/parentForRename3');
+        // expect(redirectedFromPage.redirectTo).toBe('/renamed3');
 
-        expect(redirectedFromPageRevision).not.toBeNull();
-        expect(redirectedFromPageRevision.path).toBe('/parentForRename3');
-        expect(redirectedFromPageRevision.body).toBe('redirect /renamed3');
+        // expect(redirectedFromPageRevision).not.toBeNull();
+        // expect(redirectedFromPageRevision.path).toBe('/parentForRename3');
+        // expect(redirectedFromPageRevision.body).toBe('redirect /renamed3');
       });
 
       test('rename page with isRecursively', async() => {
@@ -480,8 +480,8 @@ describe('PageService', () => {
 
       await crowi.pageService.renameDescendants([childForRename3], testUser2, { createRedirectPage: true }, oldPagePathPrefix, newPagePathPrefix);
       const resultPage = await Page.findOne({ path: '/renamed3/child' });
-      const redirectedFromPage = await Page.findOne({ path: '/parentForRename3/child' });
-      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3/child' });
+      // const redirectedFromPage = await Page.findOne({ path: '/parentForRename3/child' });
+      // const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3/child' });
 
       expect(resultPage).not.toBeNull();
       expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename3], testUser2);
@@ -490,13 +490,13 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(childForRename3.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(redirectedFromPage).not.toBeNull();
-      expect(redirectedFromPage.path).toBe('/parentForRename3/child');
-      expect(redirectedFromPage.redirectTo).toBe('/renamed3/child');
+      // expect(redirectedFromPage).not.toBeNull();
+      // expect(redirectedFromPage.path).toBe('/parentForRename3/child');
+      // expect(redirectedFromPage.redirectTo).toBe('/renamed3/child');
 
-      expect(redirectedFromPageRevision).not.toBeNull();
-      expect(redirectedFromPageRevision.path).toBe('/parentForRename3/child');
-      expect(redirectedFromPageRevision.body).toBe('redirect /renamed3/child');
+      // expect(redirectedFromPageRevision).not.toBeNull();
+      // expect(redirectedFromPageRevision.path).toBe('/parentForRename3/child');
+      // expect(redirectedFromPageRevision.body).toBe('redirect /renamed3/child');
     });
   });
 
@@ -597,8 +597,8 @@ describe('PageService', () => {
 
     test('delete page without options', async() => {
       const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { });
-      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete1' });
-      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete1' });
+      // const redirectedFromPage = await Page.findOne({ path: '/parentForDelete1' });
+      // const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete1' });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -610,13 +610,13 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete1.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(redirectedFromPage).not.toBeNull();
-      expect(redirectedFromPage.path).toBe('/parentForDelete1');
-      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete1');
+      // expect(redirectedFromPage).not.toBeNull();
+      // expect(redirectedFromPage.path).toBe('/parentForDelete1');
+      // expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete1');
 
-      expect(redirectedFromPageRevision).not.toBeNull();
-      expect(redirectedFromPageRevision.path).toBe('/parentForDelete1');
-      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete1');
+      // expect(redirectedFromPageRevision).not.toBeNull();
+      // expect(redirectedFromPageRevision.path).toBe('/parentForDelete1');
+      // expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete1');
 
       expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2);
       expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
@@ -625,8 +625,8 @@ describe('PageService', () => {
 
     test('delete page with isRecursively', async() => {
       const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true);
-      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete2' });
-      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete2' });
+      // const redirectedFromPage = await Page.findOne({ path: '/parentForDelete2' });
+      // const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete2' });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -638,13 +638,13 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(parentForDelete2.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(redirectedFromPage).not.toBeNull();
-      expect(redirectedFromPage.path).toBe('/parentForDelete2');
-      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete2');
+      // expect(redirectedFromPage).not.toBeNull();
+      // expect(redirectedFromPage.path).toBe('/parentForDelete2');
+      // expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete2');
 
-      expect(redirectedFromPageRevision).not.toBeNull();
-      expect(redirectedFromPageRevision.path).toBe('/parentForDelete2');
-      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete2');
+      // expect(redirectedFromPageRevision).not.toBeNull();
+      // expect(redirectedFromPageRevision.path).toBe('/parentForDelete2');
+      // expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete2');
 
       expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2);
       expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2);
@@ -655,8 +655,8 @@ describe('PageService', () => {
     test('deleteDescendants', async() => {
       await crowi.pageService.deleteDescendants([childForDelete], testUser2);
       const resultPage = await Page.findOne({ path: '/trash/parentForDelete/child' });
-      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete/child' });
-      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete/child' });
+      // const redirectedFromPage = await Page.findOne({ path: '/parentForDelete/child' });
+      // const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete/child' });
 
       expect(resultPage.status).toBe(Page.STATUS_DELETED);
       expect(resultPage.path).toBe('/trash/parentForDelete/child');
@@ -665,13 +665,13 @@ describe('PageService', () => {
       expect(resultPage.updatedAt).toEqual(childForDelete.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(redirectedFromPage).not.toBeNull();
-      expect(redirectedFromPage.path).toBe('/parentForDelete/child');
-      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete/child');
+      // expect(redirectedFromPage).not.toBeNull();
+      // expect(redirectedFromPage.path).toBe('/parentForDelete/child');
+      // expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete/child');
 
-      expect(redirectedFromPageRevision).not.toBeNull();
-      expect(redirectedFromPageRevision.path).toBe('/parentForDelete/child');
-      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete/child');
+      // expect(redirectedFromPageRevision).not.toBeNull();
+      // expect(redirectedFromPageRevision.path).toBe('/parentForDelete/child');
+      // expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete/child');
     });
   });
 
@@ -753,14 +753,14 @@ describe('PageService', () => {
 
     test('revert deleted page when the redirect from page exists', async() => {
 
-      findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
-        return { redirectTo: '/trash/parentForRevert1' };
-      });
+      // findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
+      //   return { redirectTo: '/trash/parentForRevert1' };
+      // });
 
       const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
-      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert1');
+      // expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert1');
       expect(deleteCompletelySpy).toHaveBeenCalled();
       expect(revertDeletedDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
@@ -793,9 +793,9 @@ describe('PageService', () => {
 
     test('revert deleted descendants', async() => {
 
-      findSpy = jest.spyOn(Page, 'find').mockImplementation(() => {
-        return [{ path: '/parentForRevert/child', redirectTo: '/trash/parentForRevert/child' }];
-      });
+      // findSpy = jest.spyOn(Page, 'find').mockImplementation(() => {
+      //   return [{ path: '/parentForRevert/child', redirectTo: '/trash/parentForRevert/child' }];
+      // });
 
       await crowi.pageService.revertDeletedDescendants([childForRevert], testUser2);
       const resultPage = await Page.findOne({ path: '/parentForRevert/child' });
@@ -803,7 +803,7 @@ describe('PageService', () => {
       const revrtedFromPageRevision = await Revision.findOne({ path: '/trash/parentForRevert/child' });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(childForRevert.path);
-      expect(findSpy).toHaveBeenCalledWith({ path: { $in: ['/parentForRevert/child'] } });
+      // expect(findSpy).toHaveBeenCalledWith({ path: { $in: ['/parentForRevert/child'] } });
 
       expect(resultPage.path).toBe('/parentForRevert/child');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);

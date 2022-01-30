@@ -1,9 +1,11 @@
 import { pagePathUtils } from '@growi/core';
 import urljoin from 'url-join';
 import { body } from 'express-validator';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import UpdatePost from '../models/update-post';
+import { PageRedirectModel } from '../models/page-redirect';
 
 const { isCreatablePage, isTopPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
@@ -71,10 +73,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  *            type: string
  *            description: page path
  *            example: /
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
  *          status:
@@ -146,6 +144,7 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
+  const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -429,11 +428,6 @@ module.exports = function(crowi, app) {
 
     const { path } = page; // this must exist
 
-    if (page.redirectTo) {
-      debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
-    }
-
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, path);
 
     const limit = 50;
@@ -611,6 +605,14 @@ module.exports = function(crowi, app) {
    */
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
+
+    if (pages.length === 0) {
+      const pageRedirect = await PageRedirect.findOne({ fromPath: path });
+      if (pageRedirect != null) {
+        return res.redirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
+      }
+    }
+
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {

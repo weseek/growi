@@ -110,10 +110,6 @@ const LIMIT_FOR_LIST = 10;
  *            type: string
  *            description: page path
  *            example: /Sandbox/Math
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: revision ID
