@@ -14,6 +14,7 @@ import {
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 import { IPage } from '~/interfaces/page';
+import { PageRedirectModel } from '../models/page-redirect';
 
 const debug = require('debug')('growi:services:page');
 
@@ -322,11 +323,6 @@ class PageService {
     await this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
 
     /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * bulkWrite PageRedirectDocument if createRedirectPage is true
-     */
-
-    /*
      * update target
      */
     const update: Partial<IPage> = {};
@@ -388,11 +384,13 @@ class PageService {
       return this.renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix);
     }
 
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { updateMetadata } = options;
 
     const updatePathOperations: any[] = [];
+    const insertPageRedirectOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
@@ -403,12 +401,23 @@ class PageService {
         update = {
           $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() },
         };
+
+        // insert PageRedirect
+        insertPageRedirectOperations.push({
+          insertOne: {
+            document: {
+              fromPath: page.path,
+              toPath: newPagePath,
+            },
+          },
+        });
       }
       else {
         update = {
           $set: { path: newPagePath },
         };
       }
+
       updatePathOperations.push({
         updateOne: {
           filter: {
@@ -421,6 +430,7 @@ class PageService {
 
     try {
       await Page.bulkWrite(updatePathOperations);
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -432,10 +442,12 @@ class PageService {
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const pageCollection = mongoose.connection.collection('pages');
     const { updateMetadata } = options;
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const insertPageRedirectOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
@@ -448,10 +460,20 @@ class PageService {
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
+      // insert PageRedirect
+      insertPageRedirectOperations.push({
+        insertOne: {
+          document: {
+            fromPath: page.path,
+            toPath: newPagePath,
+          },
+        },
+      });
     });
 
     try {
       await unorderedBulkOp.execute();
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -924,6 +946,7 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     // v4 compatible process
     const shouldUseV4Process = this.shouldUseV4Process(page);
@@ -967,12 +990,7 @@ class PageService {
       }, { new: true });
       await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-      /*
-       * TODO: https://redmine.weseek.co.jp/issues/86577
-       * bulkWrite PageRedirect documents
-       */
-      // const body = `redirect ${newPath}`;
-      // await Page.create(page.path, body, user, { redirectTo: newPath });
+      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
 
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
@@ -985,6 +1003,7 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -1010,12 +1029,7 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * bulkWrite PageRedirect documents
-     */
-    // const body = `redirect ${newPath}`;
-    // await Page.create(page.path, body, user, { redirectTo: newPath });
+    await PageRedirect.create({ fromPath: page.path, toPath: newPath });
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
@@ -1024,9 +1038,11 @@ class PageService {
   }
 
   private async deleteDescendants(pages, user) {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const deletePageOperations: any[] = [];
+    const insertPageRedirectOperations: any[] = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
@@ -1052,6 +1068,15 @@ class PageService {
             },
           },
         };
+
+        insertPageRedirectOperations.push({
+          insertOne: {
+            document: {
+              fromPath: page.path,
+              toPath: newPath,
+            },
+          },
+        });
       }
 
       deletePageOperations.push(operation);
@@ -1059,6 +1084,7 @@ class PageService {
 
     try {
       await Page.bulkWrite(deletePageOperations);
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1121,24 +1147,10 @@ class PageService {
     const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
-
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * deleteMany related PageRedirect documents
-     */
-    // const pages = await Page.find({ redirectTo: { $ne: null } });
-    // const redirectToPagePathMapping = {};
-    // pages.forEach((page) => {
-    //   redirectToPagePathMapping[page.redirectTo] = page.path;
-    // });
-
-    // const redirectedFromPagePaths: any[] = [];
-    // pagePaths.forEach((pagePath) => {
-    //   redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
-    // });
 
     return Promise.all([
       Bookmark.deleteMany({ page: { $in: pageIds } }),
@@ -1147,8 +1159,7 @@ class PageService {
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
       Revision.deleteMany({ path: { $in: pagePaths } }),
       Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
-      // TODO: https://redmine.weseek.co.jp/issues/86577
-      // Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
+      PageRedirect.deleteMany({ $or: [{ toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
@@ -1272,8 +1283,10 @@ class PageService {
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const revertPageOperations: any[] = [];
+    const fromPaths: string[] = [];
 
     pages.forEach((page) => {
       // e.g. page.path = /trash/test, toPath = /test
@@ -1288,15 +1301,13 @@ class PageService {
           },
         },
       });
-    });
 
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * deleteMany PageRedirectDocument of paths as well
-     */
+      fromPaths.push(page.path);
+    });
 
     try {
       await Page.bulkWrite(revertPageOperations);
+      await PageRedirect.deleteMany({ fromPath: { $in: fromPaths } });
     }
     catch (err) {
       if (err.code !== 11000) {
