@@ -283,6 +283,25 @@ module.exports = function(crowi, app) {
     renderVars.notFoundTargetPathOrId = pathOrId;
   }
 
+  async function addRenderVarsForIdenticalPage(renderVars, pages) {
+    const pageIds = pages.map(p => p._id);
+    const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
+
+    const identicalPageDataList = await Promise.all(pages.map(async(page) => {
+      const bookmarkCount = await Bookmark.countByPageId(page._id);
+      page._doc.seenUserCount = (page.seenUsers && page.seenUsers.length) || 0;
+      return {
+        pageData: page,
+        pageMeta: {
+          bookmarkCount,
+        },
+      };
+    }));
+
+    renderVars.identicalPageDataList = identicalPageDataList;
+    renderVars.shortBodyMap = shortBodyMap;
+  }
+
   function addRenderVarsWhenNotCreatableOrForbidden(renderVars) {
     renderVars.isAlertHidden = true;
   }
@@ -615,20 +634,14 @@ module.exports = function(crowi, app) {
 
     if (pages.length >= 2) {
 
-      const pageIds = pages.map(p => p._id);
-      const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
-      const identicalPageDataList = await Promise.all(pages.map(async(page) => {
-        const bookmarkCount = await Bookmark.countByPageId(page._id);
-        page._doc.seenUserCount = (page.seenUsers && page.seenUsers.length) || 0;
-        return {
-          pageData: page,
-          pageMeta: {
-            bookmarkCount,
-          },
-        };
-      }));
+      const renderVars = {};
+
+      await addRenderVarsForIdenticalPage(renderVars, pages);
+
       return res.render('layout-growi/identical-path-page', {
-        identicalPageDataList, shortBodyMap, redirectFrom, path
+        ...renderVars,
+        redirectFrom,
+        path,
       });
     }
 
