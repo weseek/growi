@@ -1293,7 +1293,7 @@ class PageService {
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const revertPageOperations: any[] = [];
-    const fromPaths: string[] = [];
+    const fromPathsToDelete: string[] = [];
 
     pages.forEach((page) => {
       // e.g. page.path = /trash/test, toPath = /test
