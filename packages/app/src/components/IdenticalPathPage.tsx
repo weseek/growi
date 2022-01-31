@@ -17,28 +17,42 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPagePro
   const shortbodyMap = JSON.parse(identicalPageDocument?.getAttribute('data-shortody-map') || jsonNull);
 
   return (
-    <div className="container">
+    <>
       {/* Todo: show alert */}
 
       {/* identical page list */}
-      <div className="page-list">
-        <ul className="page-list-ul list-group-flush border px-3">
-          {pageDataList.map((data) => {
-            return (
-              <PageListItem
-                key={data.pageData._id}
-                page={data}
-                isSelected={false}
-                isChecked={false}
-                isEnableActions
-                shortBody={shortbodyMap[data.pageData._id]}
-              // Todo: add onClickDeleteButton when delete feature implemented
-              />
-            );
-          })}
-        </ul>
+      <div className="d-flex flex-column flex-lg-row-reverse">
+
+        <div className="grw-side-contents-container">
+          <div className="grw-side-contents-sticky-container">
+            <div className="border-bottom pb-1">
+              {/* <PageAccessories isNotFoundPage={!isPageExist} /> */}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-grow-1 flex-basis-0 mw-0">
+          <div className="page-list">
+            <ul className="page-list-ul list-group-flush border px-3">
+              {pageDataList.map((data) => {
+                return (
+                  <PageListItem
+                    key={data.pageData._id}
+                    page={data}
+                    isSelected={false}
+                    isChecked={false}
+                    isEnableActions
+                    shortBody={shortbodyMap[data.pageData._id]}
+                  // Todo: add onClickDeleteButton when delete feature implemented
+                  />
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+
       </div>
-    </div>
+    </>
   );
 };
 
