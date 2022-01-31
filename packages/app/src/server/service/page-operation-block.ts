@@ -1,7 +1,7 @@
-// import PaageOperationBlock from '../models/page-operation-block';
 import mongoose from 'mongoose';
 import { PageQueryBuilder } from '../models/obsolete-page';
 import { PageModel } from '../models/page';
+import { PageOperationBlock } from '../models/page-operation-block';
 import Crowi from '../crowi';
 // import loggerFactory from '~/utils/logger'; // eslint-disable-line no-unused-vars
 
@@ -19,25 +19,49 @@ class PageOperationBlockService {
     this.crowi = crowi;
   }
 
-
   findBlockTargetPaths = async function(path) {
     const Page = mongoose.model('Page') as PageModel;
+    // find existing ancesters and descendants
+    const queryBuilderForAncestors = new PageQueryBuilder(Page.find());
+    const pageQueryBuilderForDescendants = new PageQueryBuilder(Page.find());
 
-    const pageQueryBuilder = new PageQueryBuilder(Page.find(), false);
-
-    const blockTargetPaths = await pageQueryBuilder
+    const ancestors = await queryBuilderForAncestors
       .addConditionToListOnlyAncestors(path)
-      .addConditionToListOnlyDescendants();
+      .query
+      .exec();
 
-    // extractToAncestorsPaths
-    // addConditionToListOnlyDescendants
+    const descendants = await pageQueryBuilderForDescendants
+      .addConditionToListOnlyDescendants(path)
+      .query
+      .exec();
 
-    // console.log('pageQueryBuilder', pageQueryBuilder);
-
-    return blockTargetPaths;
+    const ancestorPaths = ancestors.map((page) => { return page.path });
+    const descendantPaths = descendants.map((page) => { return page.path });
+    const ancestorsAndDescendants = ancestorPaths.concat(descendantPaths);
+    return ancestorsAndDescendants;
   }
 
-  shouldBlockOperation = (pagePath) => {
+
+  shouldBlockOperation = async(pagePath) => {
+    const blockTargetPaths = await this.findBlockTargetPaths(pagePath);
+    console.log('shouldBlockOperation_blockTargetPaths', blockTargetPaths);
+
+
+    // if (blockTargetPaths != null) {
+    //   const activeDocuments = PageOperationBlock.findDocuments(blockTargetPaths);
+
+    // const isActive = elm => elm.isActive === true;
+
+
+    // if (activeDocuments.some(isActive)) {
+    //   return true;
+    // }
+
+    // 一つでも該当していたらtrueを返す
+    // }
+    // 1. 一つもドキュメントが存在しない && ドキュメントが存在するけどisActiveがfalseだったら、falseを返す
+    // 2.isActiveがfalseのドキュメントは削除する
+    return false;
   }
 
 }
