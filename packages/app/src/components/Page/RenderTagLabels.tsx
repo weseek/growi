@@ -10,9 +10,7 @@ type RenderTagLabelsProps = {
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
-  const {
-    tags, isGuestUser, openEditorModal,
-  } = props;
+  const { tags, isGuestUser, openEditorModal } = props;
   const { t } = useTranslation();
 
   function openEditorHandler() {
