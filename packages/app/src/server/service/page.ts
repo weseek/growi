@@ -368,11 +368,6 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * bulkWrite PageRedirectDocument if createRedirectPage is true
-     */
-
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
@@ -388,7 +383,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
-    const { updateMetadata } = options;
+    const { updateMetadata, createRedirectPage } = options;
 
     const updatePathOperations: any[] = [];
     const insertPageRedirectOperations: any[] = [];
@@ -398,11 +393,19 @@ class PageService {
 
       // increment updatePathOperations
       let update;
-      if (updateMetadata && !page.isEmpty) {
+      if (!page.isEmpty && updateMetadata) {
         update = {
           $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() },
         };
 
+      }
+      else {
+        update = {
+          $set: { path: newPagePath },
+        };
+      }
+
+      if (!page.isEmpty && createRedirectPage) {
         // insert PageRedirect
         insertPageRedirectOperations.push({
           insertOne: {
@@ -412,11 +415,6 @@ class PageService {
             },
           },
         });
-      }
-      else {
-        update = {
-          $set: { path: newPagePath },
-        };
       }
 
       updatePathOperations.push({
@@ -445,7 +443,7 @@ class PageService {
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const pageCollection = mongoose.connection.collection('pages');
-    const { updateMetadata } = options;
+    const { updateMetadata, createRedirectPage } = options;
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const insertPageRedirectOperations: any[] = [];
@@ -462,14 +460,16 @@ class PageService {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
       // insert PageRedirect
-      insertPageRedirectOperations.push({
-        insertOne: {
-          document: {
-            fromPath: page.path,
-            toPath: newPagePath,
+      if (!page.isEmpty && createRedirectPage) {
+        insertPageRedirectOperations.push({
+          insertOne: {
+            document: {
+              fromPath: page.path,
+              toPath: newPagePath,
+            },
           },
-        },
-      });
+        });
+      }
     });
 
     try {
@@ -1309,12 +1309,12 @@ class PageService {
         },
       });
 
-      fromPaths.push(page.path);
+      fromPathsToDelete.push(page.path);
     });
 
     try {
       await Page.bulkWrite(revertPageOperations);
-      await PageRedirect.deleteMany({ fromPath: { $in: fromPaths } });
+      await PageRedirect.deleteMany({ fromPath: { $in: fromPathsToDelete } });
     }
     catch (err) {
       if (err.code !== 11000) {
