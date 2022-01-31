@@ -5,21 +5,16 @@ import TagList from '../TagList';
 import TagCloudBox from '../TagCloudBox';
 
 import { useSWRxTagList } from '~/stores/tag';
-
 import { toastError } from '~/client/util/apiNotification';
 import { ITagDataHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
 
 const Tag: FC = () => {
-
-  // const [tagData, setTagData] = useState<ITagDataHasId[]>([]);
-  // const [totalTags, setTotalTags] = useState<number>(0);
   const [isOnReload, setIsOnReload] = useState<boolean>(false);
-
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate } = useSWRxTagList(LIMIT, offset);
+  const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagList(LIMIT, offset);
   const tagData: ITagDataHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
 
@@ -29,7 +24,7 @@ const Tag: FC = () => {
     setOffset((selectedPageNumber - 1) * LIMIT);
 
     try {
-      mutate();
+      mutateTagDataList();
     }
     catch (error) {
       toastError(error);
@@ -42,6 +37,7 @@ const Tag: FC = () => {
     setIsOnReload(true);
   };
 
+  if (!tagDataList) return <div>{t('Loading')}</div>;
 
   return (
     <div className="grw-container-convertible px-4 mb-5 pb-5">
