@@ -8,7 +8,7 @@ type ITagDataResponse = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxTagList = (
+export const useSWRxTagDataList = (
     limit: number,
     offset: number,
 ): SWRResponse<ITagDataResponse, Error> => {

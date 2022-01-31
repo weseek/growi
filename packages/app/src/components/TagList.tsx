@@ -10,7 +10,7 @@ type TagListProps = {
   totalTags: number,
   limit: number,
   isOnReload?: boolean,
-  onHandlePagination?: ((selectedPageNumber:number) => void)
+  onHandlePagination?: (selectedPageNumber:number) => void
 }
 
 const TagList: FC<TagListProps> = (props:TagListProps) => {
@@ -21,7 +21,6 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
 
-
   const reloadHandler = useCallback(() => {
     if ((isOnReload != null && isOnReload) && onHandlePagination != null) {
       onHandlePagination(activePage);
@@ -31,7 +30,6 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
   useEffect(() => {
     reloadHandler();
   });
-
 
   const generateTagList = useCallback((tagData) => {
     return tagData.map((data) => {
