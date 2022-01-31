@@ -8,7 +8,11 @@ import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
-import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
+import {
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
+  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsTrashPage, useIsUserPage,
+  useIsNotCreatable,
+} from '~/stores/context';
 
 import TagLabels from '../Page/TagLabels';
 import SubNavButtons from './SubNavButtons';
@@ -28,23 +32,27 @@ const GrowiSubNavigation = (props) => {
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: createdAt } = useCurrentCreatedAt();
   const { data: updatedAt } = useCurrentUpdatedAt();
+  const { data: pageId } = useCurrentPageId();
+  const { data: revisionId } = useRevisionId();
+  const { data: path } = useCurrentPagePath();
+  const { data: isDeletable } = useIsDeletable();
+  const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
+  const { data: creator } = useCreator();
+  const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: isPageExist } = useIsPageExist();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isUserPage } = useIsUserPage();
+  const { data: isNotCreatable } = useIsNotCreatable();
+
 
   const {
     appContainer, pageContainer, editorContainer, isCompactMode,
   } = props;
 
   const {
-    pageId,
-    revisionId,
-    path,
-    isDeletable,
-    isAbleToDeleteCompletely,
-    creator,
-    revisionAuthor,
-    isPageExist,
-    isTrashPage,
     tags,
   } = pageContainer.state;
+
 
   const { isGuestUser, isSharedUser } = appContainer;
   const isEditorMode = editorMode !== EditorMode.View;
@@ -52,6 +60,10 @@ const GrowiSubNavigation = (props) => {
   const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
 
   const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser && !isEditorMode;
+  const isAbleToShowTagLabel = (!isUserPage && !isSharedUser);
+  const isAbleToShowPageEditorModeManager = (!isNotCreatable && !isTrashPage && !isSharedUser);
+  const isAbleToShowPageAuthors = (isPageExist && !isUserPage);
+
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
@@ -90,7 +102,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
             <div className="grw-taglabels-container">
               <TagLabels tags={tags} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
@@ -113,7 +125,7 @@ const GrowiSubNavigation = (props) => {
             willShowPageManagement={isAbleToShowPageManagement}
           />
           <div className="mt-2">
-            {pageContainer.isAbleToShowPageEditorModeManager && (
+            {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
@@ -125,7 +137,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+        { (isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
