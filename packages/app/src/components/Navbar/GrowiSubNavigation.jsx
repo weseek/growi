@@ -51,7 +51,8 @@ const GrowiSubNavigation = (props) => {
     editorContainer, isCompactMode,
   } = props;
 
-  const isEditorMode = editorMode !== EditorMode.View;
+  const isViewMode = editorMode === EditorMode.View;
+  const isEditorMode = !isViewMode;
 
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
@@ -111,7 +112,8 @@ const GrowiSubNavigation = (props) => {
             path={path}
             isDeletable={isDeletable}
             isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            willShowPageManagement={isAbleToShowPageManagement}
+            isViewMode={isViewMode}
+            isAbleToShowPageManagement={isAbleToShowPageManagement}
           />
           <div className="mt-2">
             {isAbleToShowPageEditorModeManager && (
