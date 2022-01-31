@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPagePath, useIsEditable, useIsPageExist, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { isSharedPage } from '^/../core/src/utils/page-path-utils';
@@ -329,17 +329,18 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: editorMode } = useEditorMode();
 
-  const includesUndefined = [isUserPage, currentPagePath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
   const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !(isViewMode && isNotFoundPage));
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage));
 };
 
 export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
@@ -358,14 +359,12 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: isPageExist } = useIsPageExist();
   const { data: isUserPage } = useIsUserPage();
 
-  const includesUndefined = [notFoundTargetPathOrId, isUserPage].some(v => v === undefined);
-
-  const isNotFoundPage = notFoundTargetPathOrId != null;
+  const includesUndefined = [isPageExist, isUserPage].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotFoundPage && !isUserPage);
+    () => isPageExist! && !isUserPage);
 };
