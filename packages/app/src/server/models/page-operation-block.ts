@@ -10,16 +10,15 @@ export interface IPageOperationBlock {
   isActive: boolean
   expiredAt: Date
 }
-
 export interface PageOperationBlockDocument extends IPageOperationBlock, Document {
   isExpired(): boolean,
 }
 
 export interface PageOperationBlockModel extends Model<PageOperationBlockDocument> {
-  // TODO: improve types
-  create(path): any
-  findOneAndDeleteByPagePath(path): any
-  findDocuments(path): any
+  create(path): IPageOperationBlock
+  findOneAndDeleteByPagePath(path): IPageOperationBlock
+  findActiveDocumentsByPaths(paths): IPageOperationBlock
+  findDocuments(path): IPageOperationBlock
 }
 
 const pageOperationBlockSchema = new Schema<PageOperationBlockDocument, PageOperationBlockModel>({
@@ -44,39 +43,22 @@ pageOperationBlockSchema.statics.create = function(path) {
   return pageOperationBlock;
 };
 
-pageOperationBlockSchema.statics.findOneAndDeleteByPagePath = function(path) {
+pageOperationBlockSchema.statics.findOneAndDeleteByPath = function(path) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return PageOperationBlock.findOneAndDelete({ path });
 };
 
 
-pageOperationBlockSchema.statics.findDocuments = function(paths) {
+pageOperationBlockSchema.statics.findActiveDocumentsByPaths = function(paths) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return PageOperationBlock.find({ path: { $in: paths }, isActive: true });
 };
 
 
-pageOperationBlockSchema.statics.findActiveDocuments = function(paths) {
+pageOperationBlockSchema.statics.deleteAllInActiveDocuments = function() {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return PageOperationBlock.find({ path: { $in: paths }, isActive: true });
+  return PageOperationBlock.deleteMany({ isActive: false });
 };
-
-
-pageOperationBlockSchema.statics.deleteInActiveDocuments = function() {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return PageOperationBlock.find({ isActive: false });
-};
-
-
-// find all blockingPaths and delete them
-// pageOperationBlockSchema.statics.findManyAndDeleteByPagePath = function(path) {
-//   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-//   const blokingPaths = PageOperationBlock.find({ path });
-//   console.log('blokingPaths', blokingPaths);
-//   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-//   PageOperationBlock.deleteMany({ path: { $in: blokingPaths } });
-//   return;
-// };
 
 
 const PageOperationBlock = getOrCreateModel<PageOperationBlockDocument, PageOperationBlockModel>('PageOperationBlock', pageOperationBlockSchema);

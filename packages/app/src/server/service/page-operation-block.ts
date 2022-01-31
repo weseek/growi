@@ -3,9 +3,9 @@ import { PageQueryBuilder } from '../models/obsolete-page';
 import { PageModel } from '../models/page';
 import { PageOperationBlock } from '../models/page-operation-block';
 import Crowi from '../crowi';
-// import loggerFactory from '~/utils/logger'; // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
 
-// const logger = loggerFactory('growi:service:PageOperationService');
+const logger = loggerFactory('growi:services:PageOperationBlockService');
 
 
 /**
@@ -19,54 +19,57 @@ class PageOperationBlockService {
     this.crowi = crowi;
   }
 
-  findBlockTargetPaths = async function(path) {
-    const Page = mongoose.model('Page') as PageModel;
 
-    // find existing ancesters by pagePath
-    const queryBuilderForAncestors = new PageQueryBuilder(Page.find());
-    const ancestorPages = await queryBuilderForAncestors
+  findAncestersByPath = async function(path) {
+    const Page = mongoose.model('Page') as PageModel;
+    const queryBuilder = new PageQueryBuilder(Page.find());
+    const ancestorPages = await queryBuilder
       .addConditionToListOnlyAncestors(path)
       .query
       .exec();
-    const ancestorPaths = ancestorPages.map((page) => { return page.path });
+    const ancestorPaths = ancestorPages.map(page => page.path);
+    return ancestorPaths;
+  }
 
-    // find existing descendants by pagePath
-    const pageQueryBuilderForDescendants = new PageQueryBuilder(Page.find());
-    const descendantPages = await pageQueryBuilderForDescendants
+  findDescendantsByPath = async function(path) {
+    const Page = mongoose.model('Page') as PageModel;
+    const queryBuilder = new PageQueryBuilder(Page.find());
+    const descendantPages = await queryBuilder
       .addConditionToListOnlyDescendants(path)
       .query
       .exec();
-    const descendantPaths = descendantPages.map((page) => { return page.path });
-
-    /*
-    * return An array including ancestor and descendant paths
-    * eg -> [/parent, /parent/{path}, /parent/{path}/grandChild]
-    */
-    const ancestorsAndDescendants = ancestorPaths.concat(descendantPaths);
-    return ancestorsAndDescendants;
+    const descendantPaths = descendantPages.map(page => page.path);
+    return descendantPaths;
   }
 
+  /*
+    * return An array including ancestorPaths + path + descendantPaths
+    * eg -> [/parent, /parent/{path}, /parent/{path}/grandChild]
+  */
+  findRelatedPaths = async function(path) {
+    try {
+      const ancestorPaths = await this.findAncestersByPath(path);
+      const descendantPaths = await this.findDescendantsByPath(path);
+      const relatedPaths = ancestorPaths.concat(path, descendantPaths);
+      return relatedPaths;
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  }
 
   shouldBlockOperation = async(pagePath) => {
-    const blockTargetPaths = await this.findBlockTargetPaths(pagePath);
-    console.log('shouldBlockOperation_blockTargetPaths', blockTargetPaths);
-
-
-    // if (blockTargetPaths != null) {
-    //   const activeDocuments = PageOperationBlock.findDocuments(blockTargetPaths);
-
-    // const isActive = elm => elm.isActive === true;
-
-
-    // if (activeDocuments.some(isActive)) {
-    //   return true;
-    // }
-
-    // 一つでも該当していたらtrueを返す
-    // }
-    // 1. 一つもドキュメントが存在しない && ドキュメントが存在するけどisActiveがfalseだったら、falseを返す
-    // 2.isActiveがfalseのドキュメントは削除する
-    return false;
+    try {
+      const relatedPaths = await this.findRelatedPaths(pagePath);
+      console.log('relatedPaths', relatedPaths);
+      // blockingPath seems to be one element but set as an array just in case
+      const blockingPaths = await PageOperationBlock.findActiveDocumentsByPaths(relatedPaths);
+      console.log('blockingPaths_fuga', blockingPaths);
+      return blockingPaths.length > 0;
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
 }

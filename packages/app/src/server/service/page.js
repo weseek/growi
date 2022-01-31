@@ -225,7 +225,7 @@ class PageService {
     }
 
     if (pageOperationBlock != null) {
-      await PageOperationBlock.findAndDeleteByPagePath(path);
+      await PageOperationBlock.findOneAndDeleteByPagePath(path);
     }
 
     this.pageEvent.emit('rename', page, user);
