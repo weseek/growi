@@ -12,9 +12,10 @@ import loggerFactory from '~/utils/logger';
 import { useStaticSWR } from './use-static-swr';
 import {
   useCurrentPagePath, useIsEditable, useIsPageExist, useIsTrashPage, useIsUserPage,
-  useIsNotCreatable, useIsSharedUser,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
+import { isSharedPage } from '^/../core/src/utils/page-path-utils';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -40,7 +41,7 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
-export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
+export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isServer ? null : 'isMobile';
 
   let configuration;
@@ -51,7 +52,7 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
     };
   }
 
-  return useStaticSWR(key, null, configuration);
+  return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
@@ -311,54 +312,60 @@ export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWR
   return useStaticSWR('globalSearchTypeahead', initialData);
 };
 
-export const useIsEditorMode = (): SWRResponse<Nullable<boolean>, Error> => {
-  const { data: editorMode } = useEditorMode();
-  const key = 'isEditorMode';
-
-  mutate(key, editorMode !== EditorMode.View);
-
-  return useStaticSWR(key);
-};
-
-export const useIsAbleToShowPageManagement = (): SWRResponse<Nullable<boolean>, Error> => {
+export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: isPageExist } = useIsPageExist();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isEditorMode } = useIsEditorMode();
 
-  mutate(key, isPageExist && !isTrashPage && !isSharedUser && !isEditorMode);
+  const includesUndefined = [isPageExist, isTrashPage, isSharedUser].some(v => v === undefined);
 
-  return useStaticSWR(key);
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => isPageExist! && !isTrashPage && !isSharedUser);
 };
 
-export const useIsAbleToShowTagLabel = (): SWRResponse<Nullable<boolean>, Error> => {
+export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: isUserPage } = useIsUserPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: editorMode } = useEditorMode();
 
-  mutate(key, !isUserPage && !isSharedUser);
+  const includesUndefined = [isUserPage, currentPagePath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
 
-  return useStaticSWR(key, !isUserPage && !isSharedUser);
+  const isViewMode = editorMode === EditorMode.View;
+  const isNotFoundPage = notFoundTargetPathOrId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !(isViewMode && isNotFoundPage));
 };
 
-export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<Nullable<boolean>, Error> => {
+export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageEditorModeManager';
   const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  mutate(key, (!isNotCreatable && !isTrashPage && !isSharedUser));
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
 
-  return useStaticSWR(key);
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser);
 };
 
-export const useIsAbleToShowPageAuthors = (): SWRResponse<Nullable<boolean>, Error> => {
+export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: isPageExist } = useIsPageExist();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
   const { data: isUserPage } = useIsUserPage();
 
-  mutate(key, (isPageExist && !isUserPage));
+  const includesUndefined = [notFoundTargetPathOrId, isUserPage].some(v => v === undefined);
 
-  return useStaticSWR(key);
+  const isNotFoundPage = notFoundTargetPathOrId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => !isNotFoundPage && !isUserPage);
 };

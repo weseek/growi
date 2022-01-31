@@ -5,7 +5,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, useIsEditorMode,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
@@ -38,8 +38,12 @@ const GrowiSubNavigation = (props) => {
   const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
-  const { data: isPageExist } = useIsPageExist();
   const { data: isGuestUser } = useIsGuestUser();
+
+  const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
+  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
   const { mutate: mutateSWRTagsInfo, data: TagsInfoData } = useSWRTagsInfo(pageId);
 
@@ -47,15 +51,7 @@ const GrowiSubNavigation = (props) => {
     editorContainer, isCompactMode,
   } = props;
 
-  const { data: isEditorMode } = useIsEditorMode();
-
-  // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
-
-  const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
-  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
-  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
-  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
+  const isEditorMode = editorMode !== EditorMode.View;
 
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
@@ -95,7 +91,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
               <TagLabels tags={TagsInfoData?.tags || []} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
