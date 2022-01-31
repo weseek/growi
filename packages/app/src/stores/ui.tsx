@@ -148,7 +148,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   };
 };
 
-export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
+export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
 
   const { cache, mutate } = useSWRConfig();
@@ -172,7 +172,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
-export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean|null, Error> => {
+export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
 
   const { cache, mutate } = useSWRConfig();
@@ -197,23 +197,23 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean|null, Error> => 
 };
 
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeByUser', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeOnEditByUser', initialData ?? null, { fallbackData: true });
+  return useStaticSWR('preferDrawerModeOnEditByUser', initialData, { fallbackData: true });
 };
 
 export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarCollapsed', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('isSidebarCollapsed', initialData, { fallbackData: false });
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData ?? null, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('productNavWidth', initialData ?? null, { fallbackData: 320 });
+  return useStaticSWR('productNavWidth', initialData, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
@@ -244,13 +244,11 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
+  return useStaticSWR('isDrawerOpened', isOpened, { fallbackData: false });
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
+  return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
 type CreateModalStatus = {
@@ -264,7 +262,8 @@ type CreateModalStatusUtils = {
 }
 
 export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
-  const swrResponse = useStaticSWR<CreateModalStatus, Error>('modalStatus', status || null);
+  const initialData: CreateModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<CreateModalStatus, Error>('modalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -297,19 +296,19 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
-  return useStaticSWR<Nullable<number>, Error>('grant', initialData ?? null);
+  return useStaticSWR<Nullable<number>, Error>('grant', initialData);
 };
 
 export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
 };
 
 export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR('globalSearchTypeahead', initialData ?? null);
+  return useStaticSWR('globalSearchTypeahead', initialData);
 };
 
 export const useIsEditorMode = (): SWRResponse<Nullable<boolean>, Error> => {
