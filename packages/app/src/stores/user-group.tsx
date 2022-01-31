@@ -23,11 +23,11 @@ export const useSWRxUserGroupList = (initialData?: IUserGroupHasId[]): SWRRespon
 export const useSWRxChildUserGroupList = (
     parentIds?: string[], includeGrandChildren?: boolean, initialData?: IUserGroupHasId[],
 ): SWRResponse<IUserGroupHasId[], Error> => {
-  const shouldFetch = parentIds != null && parentIds.join() !== '';
+  const shouldFetch = parentIds != null && parentIds.length > 0;
   return useSWRImmutable<IUserGroupHasId[], Error>(
     shouldFetch ? ['/user-groups/children', parentIds, includeGrandChildren] : null,
     (endpoint, parentIds, includeGrandChildren) => apiv3Get<ChildUserGroupListResult>(
-      endpoint, { parentIdsJoinedByComma: parentIds.join(','), includeGrandChildren },
+      endpoint, { parentIds, includeGrandChildren },
     ).then(result => result.data.childUserGroups),
     {
       fallbackData: initialData,
