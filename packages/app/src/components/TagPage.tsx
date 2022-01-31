@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import TagList from './TagList';
@@ -13,23 +13,23 @@ const LIMIT = 10;
 const TagPage: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate: mutatetagDataList } = useSWRxTagDataList(LIMIT, offset);
+  const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagDataList(LIMIT, offset);
   const tagData: ITagDataHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
 
   const { t } = useTranslation('');
 
-  const getTagList = async(selectedPageNumber) => {
+  const getTagList = useCallback((selectedPageNumber) => {
     setOffset((selectedPageNumber - 1) * LIMIT);
 
     try {
-      mutatetagDataList();
+      mutateTagDataList();
     }
     catch (error) {
       toastError(error);
     }
 
-  };
+  }, [mutateTagDataList]);
 
   if (!tagDataList) return <div>{t('Loading')}</div>;
 

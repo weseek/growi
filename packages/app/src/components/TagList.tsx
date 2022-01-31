@@ -42,7 +42,7 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
     });
   }, []);
 
-  const paginationHandler = useCallback(async(selectedPage) => {
+  const paginationHandler = useCallback((selectedPage) => {
     if (onHandlePagination != null) {
       onHandlePagination(selectedPage);
       setActivePage(selectedPage);
