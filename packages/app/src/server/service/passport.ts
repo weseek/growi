@@ -712,6 +712,20 @@ class PassportService implements S2sMessageHandlable {
   }
 
   /**
+   * Sanitize issuer Host / URL to match specified format
+   * Acceptable format : eg. https://hostname.com
+   * @param issuerHost string
+   * @returns string URL.origin
+   */
+  getOIDCIssuerHostName(issuerHost) {
+    const protocol = 'https://';
+    const pattern = /^https?:\/\//i;
+    // Set protocol if not available on url
+    const absUrl = !pattern.test(issuerHost) ? `${protocol}${issuerHost}` : issuerHost;
+    return new URL(absUrl).origin;
+  }
+
+  /**
  *
  * Check and initialize connection to OIDC issuer host
  * Prevent request timeout error on app init
@@ -721,11 +735,12 @@ class PassportService implements S2sMessageHandlable {
  */
   async isOidcHostReachable(issuerHost) {
     try {
+      const hostname = this.getOIDCIssuerHostName(issuerHost);
       const client = require('axios').default;
       axiosRetry(client, {
         retries: 3,
       });
-      const response = await client.get(`${issuerHost}/.well-known/openid-configuration`);
+      const response = await client.get(`${hostname}/.well-known/openid-configuration`);
       // Check for valid OIDC Issuer configuration
       if (!response.data.issuer) {
         logger.debug('OidcStrategy: Invalid OIDC Issuer configurations');
