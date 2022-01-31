@@ -102,7 +102,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
               <span className="mr-2 d-none d-md-block">
-                <UserPicture user={pageData.lastUpdateUser} size="custom-md" />
+                <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}
               <Clamp lines={1}>
