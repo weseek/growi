@@ -165,7 +165,7 @@ schema.statics.createEmptyPage = async function(
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithEmptyPage = async function(exPage): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?): Promise<void> {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -173,7 +173,7 @@ schema.statics.replaceTargetWithEmptyPage = async function(exPage): Promise<void
   }
 
   // create empty page at path
-  const newTarget = await this.createEmptyPage(exPage.path, parent);
+  const newTarget = pageToReplaceWith == null ? await this.createEmptyPage(exPage.path, parent) : pageToReplaceWith;
 
   // find children by ex-page _id
   const children = await this.find({ parent: exPage._id });

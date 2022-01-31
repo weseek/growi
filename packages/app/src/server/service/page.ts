@@ -14,6 +14,7 @@ import {
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 import { IPage } from '~/interfaces/page';
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 const debug = require('debug')('growi:services:page');
 
@@ -942,6 +943,12 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    // replace with an empty page
+    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
+    if (shouldReplace) {
+      await Page.replaceTargetWithPage(page);
+    }
+
     if (isRecursively) {
       this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
     }
@@ -1188,7 +1195,7 @@ class PageService {
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
-      await Page.replaceTargetWithEmptyPage(page);
+      await Page.replaceTargetWithPage(page);
     }
 
     await this.deleteCompletelyOperation(ids, paths);
@@ -1563,16 +1570,76 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async v5MigrationByPageIds(pageIds) {
-    const Page = mongoose.model('Page');
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[]): Promise<void> {
+    for await (const pageId of pageIds) {
+      try {
+        await this.normalizeParentByPageId(pageId);
+      }
+      catch (err) {
+        // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
+      }
+    }
+  }
 
+  private async normalizeParentByPageId(pageId: ObjectIdLike) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const target = await Page.findById(pageId);
+    if (target == null) {
+      throw Error('target does not exist');
+    }
+
+    const {
+      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+    } = target;
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (target.grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = true;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${path}"`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.');
+      }
+    }
+    else {
+      throw Error('Restricted pages can not be migrated');
+    }
+
+    // getParentAndFillAncestors
+    const parent = await Page.getParentAndFillAncestors(target.path);
+
+    return Page.updateOne({ _id: pageId }, { parent: parent._id });
+  }
+
+  async normalizeParentRecursivelyByPageIds(pageIds) {
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
     }
 
+    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+
+    if (normalizedIds.length === 0) {
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+      return;
+    }
+
+    if (notNormalizedPaths.length !== 0) {
+      // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+    }
+
     // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(pageIds);
+    const regexps = await this._generateRegExpsByPageIds(normalizedIds);
 
     // migrate recursively
     try {
@@ -1580,7 +1647,7 @@ class PageService {
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message }); TODO: use socket to tell user
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
 
       throw err;
     }
@@ -1681,7 +1748,7 @@ class PageService {
     }
 
     const { pages } = result;
-    const regexps = pages.map(page => new RegExp(`^${page.path}`));
+    const regexps = pages.map(page => new RegExp(`^${escapeStringRegexp(page.path)}`));
 
     return regexps;
   }
