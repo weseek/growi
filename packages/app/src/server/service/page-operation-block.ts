@@ -21,28 +21,29 @@ class PageOperationBlockService {
 
   findBlockTargetPaths = async function(path) {
     const Page = mongoose.model('Page') as PageModel;
-    // find existing ancesters and descendants
-    const queryBuilderForAncestors = new PageQueryBuilder(Page.find());
-    const pageQueryBuilderForDescendants = new PageQueryBuilder(Page.find());
 
+    // find existing ancesters by pagePath
+    const queryBuilderForAncestors = new PageQueryBuilder(Page.find());
     const ancestorPages = await queryBuilderForAncestors
       .addConditionToListOnlyAncestors(path)
       .query
       .exec();
+    const ancestorPaths = ancestorPages.map((page) => { return page.path });
 
+    // find existing descendants by pagePath
+    const pageQueryBuilderForDescendants = new PageQueryBuilder(Page.find());
     const descendantPages = await pageQueryBuilderForDescendants
       .addConditionToListOnlyDescendants(path)
       .query
       .exec();
-
-    const ancestorPaths = ancestorPages.map((page) => { return page.path });
     const descendantPaths = descendantPages.map((page) => { return page.path });
 
     /*
     * return An array including ancestor and descendant paths
     * eg -> [/parent, /parent/{path}, /parent/{path}/grandChild]
     */
-    return ancestorPaths.concat(descendantPaths);
+    const ancestorsAndDescendants = ancestorPaths.concat(descendantPaths);
+    return ancestorsAndDescendants;
   }
 
 
