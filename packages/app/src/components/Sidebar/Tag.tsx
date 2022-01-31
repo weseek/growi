@@ -36,9 +36,9 @@ const Tag: FC = () => {
 
   }, [isOnReload, mutateTagDataList]);
 
-  const onReload = () => {
+  const onReload = useCallback(() => {
     setIsOnReload(true);
-  };
+  }, []);
 
   if (!tagDataList) return <div>{t('Loading')}</div>;
 
