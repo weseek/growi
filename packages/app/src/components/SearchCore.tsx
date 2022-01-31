@@ -49,10 +49,6 @@ type Props = {
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   renderSearchControl?: (searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => any,
   renderLegacyPageControl?: ()=> React.FunctionComponent,
-  excludeUserPages :boolean,
-  excludeTrashPages : boolean,
-  sort: SORT_AXIS,
-  order : SORT_ORDER,
   setIsActionToPageModalShown: (x : boolean) => void,
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
@@ -117,19 +113,19 @@ const SearchCore: FC<Props> = (props: Props) => {
     setShortBodiesMap(res.data.shortBodiesMap);
   }, []);
 
-  const createSearchQuery = useCallback((keyword) => {
+  const createSearchQuery = useCallback((keyword, excludeTrashPages, excludeUserPages) => {
     let query = keyword;
 
     // pages included in specific path are not retrived when prefix is added
-    if (props.excludeTrashPages) {
+    if (excludeTrashPages) {
       query = `${query} -prefix:${specificPathNames.trash}`;
     }
-    if (props.excludeUserPages) {
+    if (excludeUserPages) {
       query = `${query} -prefix:${specificPathNames.user}`;
     }
 
     return query;
-  }, [props.excludeTrashPages, props.excludeUserPages]);
+  }, []);
 
   // refs: https://redmine.weseek.co.jp/issues/82139
   const search = useCallback(async(data) => {
@@ -146,10 +142,12 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSearchingKeyword(keyword);
 
     const offset = (activePage * pagingLimit) - pagingLimit;
-    const { sort, order } = props;
+    const {
+      sort, order, excludeTrashPages, excludeUserPages,
+    } = data;
     try {
       const res = await apiGet<any>('/search', {
-        q: createSearchQuery(keyword),
+        q: createSearchQuery(keyword, excludeTrashPages, excludeUserPages),
         limit: pagingLimit,
         offset,
         sort,
@@ -185,7 +183,7 @@ const SearchCore: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, props.order, pagingLimit, props.sort]);
+  }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, pagingLimit]);
 
   const onPagingNumberChanged = useCallback(async(activePage) => {
     setActivePage(activePage);

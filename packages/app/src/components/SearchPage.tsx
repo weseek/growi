@@ -19,26 +19,7 @@ type Props = {
 const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
-  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
-  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(true);
-  const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
-  const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
   const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
-
-
-  const switchExcludeUserPagesHandler = useCallback(() => {
-    setExcludeUserPages(prev => !prev);
-  }, [setExcludeUserPages]);
-
-  const switchExcludeTrashPagesHandler = useCallback(() => {
-    setExcludeTrashPages(prevState => !prevState);
-
-  }, [setExcludeTrashPages]);
-
-  const onChangeSortInvoked = useCallback((nextSort, nextOrder) => {
-    setSort(nextSort);
-    setOrder(nextOrder);
-  }, [setSort, setOrder]);
 
 
   // Delete modal
@@ -89,15 +70,8 @@ const SearchPage : FC<Props> = (props: Props) => {
     return (
       <SearchControl
         searchingKeyword={searchingKeyword}
-        sort={sort}
-        order={order}
         appContainer={props.appContainer}
-        excludeTrashPages={excludeTrashPages}
-        excludeUserPages={excludeUserPages}
         onSearchInvoked={onSearchInvoked}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        onChangeSortInvoked={onChangeSortInvoked}
         actionToPageGroup={renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
       >
       </SearchControl>
@@ -108,10 +82,6 @@ const SearchPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderSearchControl={renderSearchControl}
-      excludeUserPages={excludeUserPages}
-      excludeTrashPages={excludeTrashPages}
-      sort={sort}
-      order={order}
       renderActionToPageModal={renderActionToPageModal}
       setIsActionToPageModalShown={setIsActionToPageModalShown}
     />

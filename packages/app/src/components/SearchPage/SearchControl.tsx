@@ -10,21 +10,19 @@ import {
 
 type Props = {
   searchingKeyword: string,
-  sort: SORT_AXIS,
-  order: SORT_ORDER,
   appContainer: AppContainer,
-  excludeUserPages: boolean,
-  excludeTrashPages: boolean,
   onSearchInvoked: (data: {keyword: string}) => Promise<void>
-  onExcludeUserPagesSwitched?: () => void,
-  onExcludeTrashPagesSwitched?: () => void,
-  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
   actionToPageGroup: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
 
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
+  const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
+  const [excludeTrashPages, setExcludeTrashPages] = useState<boolean>(true);
+  const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
+  const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
+
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
@@ -32,21 +30,16 @@ const SearchControl: FC <Props> = (props: Props) => {
   const { actionToPageGroup } = props;
 
   const switchExcludeUserPagesHandler = () => {
-    if (props.onExcludeUserPagesSwitched != null) {
-      props.onExcludeUserPagesSwitched();
-    }
+    setExcludeUserPages(prev => !prev);
   };
 
   const switchExcludeTrashPagesHandler = () => {
-    if (props.onExcludeTrashPagesSwitched != null) {
-      props.onExcludeTrashPagesSwitched();
-    }
+    setExcludeTrashPages(prevState => !prevState);
   };
 
   const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
-    if (props.onChangeSortInvoked != null) {
-      props.onChangeSortInvoked(nextSort, nextOrder);
-    }
+    setSort(nextSort);
+    setOrder(nextOrder);
   };
 
   const openSearchOptionModalHandler = () => {
@@ -59,7 +52,14 @@ const SearchControl: FC <Props> = (props: Props) => {
 
   const onRetrySearchInvoked = () => {
     if (props.onSearchInvoked != null) {
-      props.onSearchInvoked({ keyword: props.searchingKeyword });
+      const data = {
+        keyword: props.searchingKeyword,
+        sort,
+        order,
+        excludeUserPages,
+        excludeTrashPages,
+      };
+      props.onSearchInvoked(data);
     }
   };
 
@@ -72,8 +72,8 @@ const SearchControl: FC <Props> = (props: Props) => {
         onClose={closeSearchOptionModalHandler}
         onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
         onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={props.excludeUserPages}
-        excludeTrashPages={props.excludeTrashPages}
+        excludeUserPages={excludeUserPages}
+        excludeTrashPages={excludeTrashPages}
       />
     );
   };
@@ -81,8 +81,8 @@ const SearchControl: FC <Props> = (props: Props) => {
   const renderSortControl = () => {
     return (
       <SortControl
-        sort={props.sort}
-        order={props.order}
+        sort={sort}
+        order={order}
         onChangeSortInvoked={onChangeSortInvoked}
       />
     );
@@ -128,7 +128,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             <div className="card-body">
               <label className="search-include-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                 <input
-                  checked={!props.excludeUserPages}
+                  checked={!excludeUserPages}
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckDefault"
@@ -146,7 +146,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   type="checkbox"
                   id="flexCheckChecked"
                   onClick={switchExcludeTrashPagesHandler}
-                  checked={!props.excludeTrashPages}
+                  checked={!excludeTrashPages}
                 />
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
