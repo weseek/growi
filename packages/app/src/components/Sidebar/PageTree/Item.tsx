@@ -132,6 +132,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
 
+  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string);
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
     item: { page },
@@ -298,7 +300,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string)}
+            isDeletable={isDeletable}
           />
         </div>
       </li>
