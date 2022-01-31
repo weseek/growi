@@ -1,8 +1,9 @@
+import Esa from 'esa-node';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:util:importer');
+// const esa = require('esa-nodejs');
 
-const esa = require('esa-nodejs');
+const logger = loggerFactory('growi:util:importer');
 
 /**
  * importer
@@ -17,16 +18,20 @@ module.exports = (crowi) => {
   const configManager = crowi.configManager;
 
   const importer = {};
-  let esaClient = {};
+  let esaClient = () => {};
 
   /**
    * Initialize importer
    */
   importer.initializeEsaClient = () => {
-    esaClient = esa({
-      team:        configManager.getConfig('crowi', 'importer:esa:team_name'),
-      accessToken: configManager.getConfig('crowi', 'importer:esa:access_token'),
-    });
+    // esaClient = esa({
+    //   team:        configManager.getConfig('crowi', 'importer:esa:team_name'),
+    //   accessToken: configManager.getConfig('crowi', 'importer:esa:access_token'),
+    // });
+    const team = configManager.getConfig('crowi', 'importer:esa:team_name');
+    const accessToken = configManager.getConfig('crowi', 'importer:esa:access_token');
+
+    esaClient = new Esa(accessToken, team);
     logger.debug('initialize esa importer');
   };
 
@@ -56,7 +61,7 @@ module.exports = (crowi) => {
    */
   const importPostsFromEsa = (pageNum, user, errors) => {
     return new Promise((resolve, reject) => {
-      esaClient.api.posts({ page: pageNum, per_page: 100 }, async(err, res) => {
+      esaClient.posts({ page: pageNum, per_page: 100 }, async(err, res) => {
         const nextPage = res.body.next_page;
         const postsReceived = res.body.posts;
 
@@ -173,14 +178,25 @@ module.exports = (crowi) => {
    * Get teams from esa (Promise wrapper)
    */
   const getTeamNameFromEsa = () => {
-    return new Promise((resolve, reject) => {
-      esaClient.api.team((err, res) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
+    // return new Promise((resolve, reject) => {
+
+    //   // esaClient.api.team(team, (err, res) => {
+    //   //   if (err) {
+    //   //     return reject(err);
+    //   //   }
+    //   //   resolve(res);
+    //   // });
+    //   const team = esaClient.team();
+    //   logger.debug('ESA', team);
+    //   if (team) {
+    //     resolve(team);
+    //   }
+    //   else {
+    //     reject();
+    //   }
+    // });
+    const team = configManager.getConfig('crowi', 'importer:esa:team_name')''
+    return esaClient.team(team);
   };
 
   // initialize when server starts
