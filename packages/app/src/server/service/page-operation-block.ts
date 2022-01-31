@@ -25,20 +25,24 @@ class PageOperationBlockService {
     const queryBuilderForAncestors = new PageQueryBuilder(Page.find());
     const pageQueryBuilderForDescendants = new PageQueryBuilder(Page.find());
 
-    const ancestors = await queryBuilderForAncestors
+    const ancestorPages = await queryBuilderForAncestors
       .addConditionToListOnlyAncestors(path)
       .query
       .exec();
 
-    const descendants = await pageQueryBuilderForDescendants
+    const descendantPages = await pageQueryBuilderForDescendants
       .addConditionToListOnlyDescendants(path)
       .query
       .exec();
 
-    const ancestorPaths = ancestors.map((page) => { return page.path });
-    const descendantPaths = descendants.map((page) => { return page.path });
-    const ancestorsAndDescendants = ancestorPaths.concat(descendantPaths);
-    return ancestorsAndDescendants;
+    const ancestorPaths = ancestorPages.map((page) => { return page.path });
+    const descendantPaths = descendantPages.map((page) => { return page.path });
+
+    /*
+    * return An array including ancestor and descendant paths
+    * eg -> [/parent, /parent/{path}, /parent/{path}/grandChild]
+    */
+    return ancestorPaths.concat(descendantPaths);
   }
 
 
