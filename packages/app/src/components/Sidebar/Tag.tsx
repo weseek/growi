@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import TagList from '../TagList';
@@ -20,7 +20,7 @@ const Tag: FC = () => {
 
   const { t } = useTranslation('');
 
-  const getTagList = async(selectedPageNumber) => {
+  const getTagList = useCallback((selectedPageNumber) => {
     setOffset((selectedPageNumber - 1) * LIMIT);
 
     try {
@@ -30,8 +30,11 @@ const Tag: FC = () => {
       toastError(error);
     }
 
-    setIsOnReload(false);
-  };
+    if (isOnReload) {
+      setIsOnReload(false);
+    }
+
+  }, [isOnReload, mutateTagDataList]);
 
   const onReload = () => {
     setIsOnReload(true);
