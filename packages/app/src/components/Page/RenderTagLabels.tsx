@@ -1,19 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-const RenderTagLabels = React.memo((props) => {
+type RenderTagLabelsProps = {
+  tags: string[],
+  isGuestUser: boolean,
+  openEditorModal?: () => void,
+}
+
+const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    t, tags, isGuestUser,
+    tags, isGuestUser, openEditorModal,
   } = props;
+  const { t } = useTranslation();
 
   function openEditorHandler() {
-    if (props.openEditorModal == null) {
+    if (openEditorModal == null) {
       return;
     }
-    props.openEditorModal();
+    openEditorModal();
   }
 
   // activate suspense
@@ -53,16 +59,5 @@ const RenderTagLabels = React.memo((props) => {
 
 });
 
-RenderTagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 
-  tags: PropTypes.array,
-  openEditorModal: PropTypes.func,
-  isGuestUser: PropTypes.bool.isRequired,
-};
-
-const RenderTagLabelsWrapper = (props) => {
-  return <RenderTagLabels {...props}></RenderTagLabels>;
-};
-
-export default withTranslation()(RenderTagLabelsWrapper);
+export default RenderTagLabels;

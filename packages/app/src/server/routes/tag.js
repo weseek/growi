@@ -144,6 +144,10 @@ module.exports = function(crowi, app) {
     const tags = req.body.tags;
     const userId = req.user._id;
     const revisionId = req.body.revisionId;
+    console.log(req.body.pageId);
+    console.log(req.body.tags);
+    console.log(req.user._id);
+    console.log(req.body.revisionId);
 
     const result = {};
     try {
