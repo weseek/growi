@@ -1,6 +1,7 @@
 import React, {
   FC,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DevidedPagePath } from '@growi/core';
 
@@ -8,7 +9,6 @@ import { useCurrentPagePath } from '~/stores/context';
 
 import PageListItem from './Page/PageListItem';
 
-import { useTranslation } from 'react-i18next';
 
 
 type IdenticalPathAlertProps = {
@@ -19,13 +19,14 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
   const { path } = props;
   const { t } = useTranslation();
 
-  const devidedPath = new DevidedPagePath(path);
-  const _path = path != null
-    ? (devidedPath.isFormerRoot ? '/' : devidedPath.former)
-    : '――';
-  const _pageName = path != null
-    ? devidedPath.latter
-    : '――';
+  let _path = '――';
+  let _pageName = '――';
+
+  if (path != null) {
+    const devidedPath = new DevidedPagePath(path);
+    _path = devidedPath.isFormerRoot ? '/' : devidedPath.former;
+    _pageName = devidedPath.latter;
+  }
 
   return (
     <div className="alert alert-warning py-3">
@@ -45,6 +46,8 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 type IdenticalPathPageProps= {
   // add props and types here
 }
+
+
 const jsonNull = 'null';
 
 const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPageProps) => {

@@ -322,7 +322,8 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => isPageExist! && !isTrashPage && !isSharedUser);
+    () => isPageExist! && !isTrashPage && !isSharedUser,
+  );
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
@@ -340,7 +341,8 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage));
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+  );
 };
 
 export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
@@ -366,5 +368,6 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => isPageExist! && !isUserPage);
+    () => isPageExist! && !isUserPage,
+  );
 };
