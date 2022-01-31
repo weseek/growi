@@ -67,6 +67,7 @@ function Crowi() {
   this.searchService = null;
   this.socketIoService = null;
   this.pageService = null;
+  this.pageOperationBlockService = null;
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -131,6 +132,7 @@ Crowi.prototype.init = async function() {
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
+    this.setupPageOperationBlockService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
     this.setupCommentService(),
@@ -175,6 +177,7 @@ Crowi.prototype.initForTest = async function() {
     // this.setupExport(),
     // this.setupImport(),
     this.setupPageService(),
+    this.setupPageOperationBlockService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
   ]);
@@ -688,12 +691,20 @@ Crowi.prototype.setupPageService = async function() {
   }
 };
 
+Crowi.prototype.setupPageOperationBlockService = async function() {
+  const PageOperationBlockService = require('../service/page-operation-block');
+  if (this.pageOperationBlockService == null) {
+    this.pageOperationBlockService = new PageOperationBlockService(this);
+  }
+};
+
 Crowi.prototype.setupInAppNotificationService = async function() {
   const InAppNotificationService = require('../service/in-app-notification');
   if (this.inAppNotificationService == null) {
     this.inAppNotificationService = new InAppNotificationService(this);
   }
 };
+
 
 Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
