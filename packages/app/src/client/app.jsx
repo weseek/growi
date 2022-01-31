@@ -12,7 +12,7 @@ import InAppNotificationPage from '../components/InAppNotification/InAppNotifica
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
 import SearchPage from '../components/SearchPage';
-import TagsList from '../components/TagsList';
+import TagPage from '../components/TagPage';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
 import Page from '../components/Page';
@@ -88,7 +88,7 @@ Object.assign(componentMappings, {
   'all-in-app-notifications': <InAppNotificationPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'tags-page': <TagsList crowi={appContainer} />,
+  'tags-page': <TagPage />,
 
   'grw-page-status-alert-container': <PageStatusAlert />,
 
