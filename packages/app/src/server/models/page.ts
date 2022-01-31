@@ -7,7 +7,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import nodePath from 'path';
 
-import { getOrCreateModel, pagePathUtils, getModelSafely } from '@growi/core';
+import { getOrCreateModel, pagePathUtils } from '@growi/core';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
@@ -219,8 +219,6 @@ schema.statics.findByPathAndViewer = async function(
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  const User = getModelSafely('User') || require('~/server/models/user')();
-  queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();
