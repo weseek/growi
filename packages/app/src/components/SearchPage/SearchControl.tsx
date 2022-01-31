@@ -23,6 +23,10 @@ const SearchControl: FC <Props> = (props: Props) => {
   const [sort, setSort] = useState<SORT_AXIS>(SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(SORT_ORDER.DESC);
 
+  const searchOptions = {
+    excludeUserPages, excludeTrashPages, sort, order,
+  };
+
   // Temporaly workaround for lint error
   // later needs to be fixed: SearchControl to typescript componet
   const SearchPageFormTypeAny : any = SearchPageForm;
@@ -96,6 +100,7 @@ const SearchControl: FC <Props> = (props: Props) => {
             keyword={props.searchingKeyword}
             appContainer={props.appContainer}
             onSearchFormChanged={props.onSearchInvoked}
+            searchOptions={searchOptions}
           />
         </div>
 

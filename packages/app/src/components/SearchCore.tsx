@@ -133,7 +133,10 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSelectedPagesIdList(new Set());
     setSelectAllCheckboxType(CheckboxType.NONE_CHECKED);
 
-    const keyword = data.keyword;
+    const {
+      keyword, excludeUserPages, excludeTrashPages, sort, order,
+    } = data;
+
     if (keyword === '') {
       resetSearchState();
       return;
@@ -142,9 +145,6 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSearchingKeyword(keyword);
 
     const offset = (activePage * pagingLimit) - pagingLimit;
-    const {
-      sort, order, excludeTrashPages, excludeUserPages,
-    } = data;
     try {
       const res = await apiGet<any>('/search', {
         q: createSearchQuery(keyword, excludeTrashPages, excludeUserPages),
@@ -184,6 +184,7 @@ const SearchCore: FC<Props> = (props: Props) => {
       toastError(err);
     }
   }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, pagingLimit]);
+
 
   const onPagingNumberChanged = useCallback(async(activePage) => {
     setActivePage(activePage);

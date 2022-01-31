@@ -26,7 +26,13 @@ class SearchPageForm extends React.Component {
   search() {
     if (this.props.onSearchFormChanged != null) {
       const keyword = this.state.keyword;
-      this.props.onSearchFormChanged({ keyword });
+      const {
+        order, sort, excludeUserPages, excludeTrashPages,
+      } = this.props.searchOptions || null;
+
+      this.props.onSearchFormChanged({
+        keyword, order, sort, excludeTrashPages, excludeUserPages,
+      });
       this.setState({ searchedKeyword: keyword });
     }
     else {
@@ -64,6 +70,7 @@ SearchPageForm.propTypes = {
 
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func,
+  searchOptions: PropTypes.object,
 };
 SearchPageForm.defaultProps = {
 };
