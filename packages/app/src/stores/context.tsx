@@ -23,7 +23,6 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
   return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
 };
 
-
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
@@ -42,6 +41,10 @@ export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<N
 
 export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData);
+};
+
+export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
 
 export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error> => {

@@ -6,7 +6,7 @@ import {
   useIsDeletable, useIsDeleted, useIsNotCreatable, useIsPageExist, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -51,6 +51,7 @@ const ContextExtractorOnce: FC = () => {
   const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
 
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
+  const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
   const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
@@ -99,6 +100,7 @@ const ContextExtractorOnce: FC = () => {
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
+  useIsIdenticalPath(isIdenticalPath);
   useIsAbleToDeleteCompletely(isAbleToDeleteCompletely);
   useIsDeletable(isDeletable);
   useIsDeleted(isDeleted);
