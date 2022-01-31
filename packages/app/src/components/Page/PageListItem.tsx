@@ -9,7 +9,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, isUserPage } = pagePathUtils;
 
 type Props = {
   page: IPageSearchResultData,
@@ -117,7 +117,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
                   page={pageData}
                   onClickDeleteButtonHandler={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
-                  isDeletable={!isTopPage(pageData.path)}
+                  isDeletable={!isTopPage(pageData.path) && !isUserPage(pageData.path)}
                 />
               </div>
             </div>

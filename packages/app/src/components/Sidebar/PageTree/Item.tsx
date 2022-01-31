@@ -16,7 +16,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, isUserPage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -298,7 +298,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+            isDeletable={!page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string)}
           />
         </div>
       </li>
