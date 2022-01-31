@@ -10,7 +10,10 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
-import { useCurrentPagePath, useIsEditable } from './context';
+import {
+  useCurrentPagePath, useIsEditable, useIsPageExist, useIsTrashPage, useIsUserPage,
+  useIsNotCreatable, useIsSharedUser,
+} from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
 
 const logger = loggerFactory('growi:stores:ui');
@@ -307,4 +310,37 @@ export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRRe
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
   return useStaticSWR('globalSearchTypeahead', initialData ?? null);
+};
+
+export const useIsEditorMode = (): SWRResponse<Nullable<boolean>, Error> => {
+  const { data: editorMode } = useEditorMode();
+  return useStaticSWR('isEditorMode', editorMode !== EditorMode.View);
+};
+
+export const useIsAbleToShowPageManagement = (): SWRResponse<Nullable<boolean>, Error> => {
+  const { data: isPageExist } = useIsPageExist();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: isEditorMode } = useIsEditorMode();
+
+  return useStaticSWR('isAbleToShowPageManagement', isPageExist && !isTrashPage && !isSharedUser && !isEditorMode);
+};
+
+export const useIsAbleToShowTagLabel = (): SWRResponse<Nullable<boolean>, Error> => {
+  const { data: isUserPage } = useIsUserPage();
+  const { data: isSharedUser } = useIsSharedUser();
+  return useStaticSWR('isAbleToShowTagLabel', !isUserPage && !isSharedUser);
+};
+
+export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<Nullable<boolean>, Error> => {
+  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+  return useStaticSWR('isAbleToShowPageEditorModeManager', (!isNotCreatable && !isTrashPage && !isSharedUser));
+};
+
+export const useIsAbleToShowPageAuthors = (): SWRResponse<Nullable<boolean>, Error> => {
+  const { data: isPageExist } = useIsPageExist();
+  const { data: isUserPage } = useIsUserPage();
+  return useStaticSWR('isAbleToShowPageAuthors', (isPageExist && !isUserPage));
 };
