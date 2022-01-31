@@ -47,6 +47,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
   isElasticsearchV6: boolean
 
+  isElasticsearchReindexOnBoot: boolean
+
   elasticsearch: any
 
   client: any
@@ -65,6 +67,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     this.isElasticsearchV6 = this.configManager.getConfig('crowi', 'app:useElasticsearchV6');
 
     this.elasticsearch = this.isElasticsearchV6 ? elasticsearch6 : elasticsearch7;
+    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -144,7 +147,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async init() {
-    return this.normalizeIndices();
+    const normalizeIndices = await this.normalizeIndices();
+    if (this.isElasticsearchReindexOnBoot) {
+      return this.rebuildIndex();
+    }
+    return normalizeIndices;
   }
 
   /**

@@ -177,7 +177,11 @@ jobs:
     if: ${{ !inputs.skip-cypress }}
 
     runs-on: ubuntu-latest
-    container: cypress/base:16.13.0
+    container:
+      image: cypress/base:16.13.0
+      # solve permissions issue
+      # see: https://github.com/cypress-io/github-action/issues/446#issuecomment-987015822
+      options: --user 1001
 
     strategy:
       fail-fast: false
