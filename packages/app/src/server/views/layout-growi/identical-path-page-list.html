@@ -1,11 +1,33 @@
 {% extends 'base/layout.html' %}
 
+{% block content_main_before %}
+{% endblock %}
+
+
 {% block content_main %}
-<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
-<div
-  id="identical-path-page-list"
-  data-identical-page-data-list="{{ identicalPageDataList|json }}"
-  data-shortody-map="{{ shortBodyMap|json }}"
->
-</div>
+  <div class="grw-container-convertible">
+
+    <div id="content-main" class="content-main d-flex"
+      data-path="{{ encodeURI(path) }}"
+      data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+      data-slack-channels="{% if page %}{{ page.slackChannels }}{% endif %}"
+      data-page-is-not-creatable="true"
+      data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
+      data-identical-path="true"
+    >
+      <div class="flex-grow-1 flex-basis-0 mw-0">
+        <div
+          id="identical-path-page-list"
+          data-identical-page-data-list="{{ identicalPageDataList|json }}"
+          data-shortody-map="{{ shortBodyMap|json }}"
+        ></div>
+      </div>
+      <div id="page-context"></div>
+    </div>
+
+  </div>
+{% endblock %}
+
+{% block content_footer %}
+  <div id="page-content-footer"></div>
 {% endblock %}

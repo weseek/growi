@@ -628,7 +628,7 @@ module.exports = function(crowi, app) {
         };
       }));
       return res.render('layout-growi/identical-path-page-list', {
-        identicalPageDataList, shortBodyMap, redirectFrom,
+        identicalPageDataList, shortBodyMap, redirectFrom, path
       });
     }
 
