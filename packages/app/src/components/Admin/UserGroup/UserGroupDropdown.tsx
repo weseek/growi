@@ -1,11 +1,12 @@
 import React, { FC, useState } from 'react';
 
+import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
-  headerLabel: string
+  headerLabel: TFunctionResult
   selectableUserGroups: IUserGroupHasId[]
   onClickAddButton?(userGroup: IUserGroupHasId): void
 };

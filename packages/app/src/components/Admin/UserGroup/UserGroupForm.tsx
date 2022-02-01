@@ -11,7 +11,7 @@ import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
-  headerLabel: string
+  headerLabel: TFunctionResult
   userGroup?: IUserGroupHasId,
   successedMessage: TFunctionResult;
   failedMessage: TFunctionResult;
