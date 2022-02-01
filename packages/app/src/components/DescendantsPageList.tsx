@@ -14,7 +14,7 @@ const DescendantsPageList = (props: Props): JSX.Element => {
 
   const [activePage, setActivePage] = useState(1);
 
-  const { data, error: error } = useSWRxPageList(path, activePage);
+  const { data, error } = useSWRxPageList(path, activePage);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);

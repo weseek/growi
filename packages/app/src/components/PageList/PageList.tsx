@@ -7,7 +7,6 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { PageListItemL } from './PageListItemL';
 
 
-
 type Props = {
   pages: IPagingResult<IPageHasId>,
 }
