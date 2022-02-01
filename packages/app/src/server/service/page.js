@@ -33,7 +33,6 @@ class PageService {
 
     // init
     this.initPageEvent();
-    this.updateDescendantCountOfSelfAndDescendants();
   }
 
   initPageEvent() {
