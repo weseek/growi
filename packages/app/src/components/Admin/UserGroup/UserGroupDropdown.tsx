@@ -1,28 +1,31 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
-  userGroups?: IUserGroupHasId[]
-  selectedUserGroup?: IUserGroupHasId
-  onClickDropdownButton?(): void
-  onClickAddButton?(): void
+  selectableUserGroups?: IUserGroupHasId[]
+  onClickDropdownButton?(userGroup: IUserGroupHasId): void
+  onClickAddButton?(userGroup: IUserGroupHasId): void
 };
 
 const UserGroupDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const onClickDropdownButtonHandler = () => {
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | null>(null);
+
+  const onClickDropdownButtonHandler = (userGroup) => {
+    setSelectedUserGroup(userGroup);
+
     if (props.onClickDropdownButton) {
-      props.onClickDropdownButton();
+      props.onClickDropdownButton(userGroup);
     }
   };
 
   const onClickAddButtonHandler = () => {
-    if (props.onClickAddButton) {
-      props.onClickAddButton();
+    if (props.onClickAddButton && selectedUserGroup != null) {
+      props.onClickAddButton(selectedUserGroup);
     }
   };
 
@@ -30,20 +33,20 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
     <>
       <h2 className="admin-setting-header">Select a child group</h2>
       {
-        (props.userGroups != null && props.userGroups.length > 0) ? (
+        (props.selectableUserGroups != null && props.selectableUserGroups.length > 0) ? (
           <>
             <div className="dropdown">
               <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                {props.selectedUserGroup != null ? props.selectedUserGroup.name : 'Select user group'}
+                {selectedUserGroup != null ? selectedUserGroup.name : 'Select user group'}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 {
-                  props.userGroups.map(group => (
+                  props.selectableUserGroups.map(group => (
                     <button
                       key={group._id}
                       type="button"
                       className="dropdown-item"
-                      onClick={onClickDropdownButtonHandler}
+                      onClick={() => onClickDropdownButtonHandler(group)}
                     >
                       {group.name}
                     </button>
@@ -54,7 +57,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
             <button
               type="button"
               className="btn btn-primary mt-3"
-              onClick={onClickAddButtonHandler}
+              onClick={() => onClickAddButtonHandler()}
             >
               {t('Add')}
             </button>
