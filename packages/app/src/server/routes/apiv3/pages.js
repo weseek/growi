@@ -454,9 +454,7 @@ module.exports = (crowi) => {
    *            description: page path is already existed
    */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
-    const {
-      pageId, isRecursively, revisionId,
-    } = req.body;
+    const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -479,7 +477,6 @@ module.exports = (crowi) => {
     }
 
     let page;
-
 
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
