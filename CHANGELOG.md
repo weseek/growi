@@ -1,8 +1,19 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.12](https://github.com/weseek/growi/compare/v4.5.11...v4.5.12) - 2022-02-01
+
+### 🚀 Improvement
+
+- imprv: Sidebar opening delay (for v4.5.x) (#5218) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: /_api/v3/page with pageId param occurs an 500 error (#5212) @yuki-takei
+- fix: Resolving OIDC issure host (#5220) @yuki-takei
 
 ## [v4.5.11](https://github.com/weseek/growi/compare/v4.5.10...v4.5.11) - 2022-01-26
 
