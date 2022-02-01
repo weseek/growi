@@ -429,11 +429,19 @@ class PageService {
 
     try {
       await Page.bulkWrite(updatePathOperations);
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
         throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
@@ -474,11 +482,19 @@ class PageService {
 
     try {
       await unorderedBulkOp.execute();
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
         throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
