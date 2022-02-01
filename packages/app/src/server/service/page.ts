@@ -1107,7 +1107,6 @@ class PageService {
 
     try {
       await Page.bulkWrite(deletePageOperations);
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1116,6 +1115,15 @@ class PageService {
     }
     finally {
       this.pageEvent.emit('syncDescendantsDelete', pages, user);
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
+      }
     }
   }
 
