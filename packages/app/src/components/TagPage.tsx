@@ -18,7 +18,7 @@ const TagPage: FC = () => {
 
   const { t } = useTranslation('');
 
-  const setOffsetByPageNumber = useCallback((selectedPageNumber: number):void => {
+  const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
     // offset = (selectedPageNumber - 1) * 10
     setOffset((selectedPageNumber - 1) * 10);
   }, []);
@@ -36,7 +36,7 @@ const TagPage: FC = () => {
       <TagList
         tagData={tagData}
         totalTags={totalCount}
-        activePage={1 + offset / 10} // activePage = 1 + offset / 10
+        activePage={1 + (offset / 10)} // activePage = 1 + offset / 10
         onChangePage={setOffsetByPageNumber}
         limit={LIMIT}
       />
