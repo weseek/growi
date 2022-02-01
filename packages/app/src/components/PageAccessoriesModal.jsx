@@ -24,7 +24,7 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
-    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser, isNotFoundPage,
+    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
   const { switchActiveTab } = pageAccessoriesContainer;
@@ -49,22 +49,21 @@ const PageAccessoriesModal = (props) => {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser,
       },
       attachment: {
         Icon: AttachmentIcon,
         i18n: t('attachment_data'),
         index: 3,
-        isLinkEnabled: v => !isNotFoundPage,
       },
       shareLink: {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage && !isLinkSharingDisabled,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [t, isGuestUser, isSharedUser, isNotFoundPage, isLinkSharingDisabled]);
+  }, [t, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const closeModalHandler = useCallback(() => {
     if (onClose == null) {
@@ -151,7 +150,6 @@ PageAccessoriesModal.propTypes = {
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
-  isNotFoundPage: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
