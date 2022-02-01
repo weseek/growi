@@ -20,6 +20,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
 
   const onClickAddButtonHandler = () => {
     if (props.onClickAddButton && selectedUserGroup != null) {
+      setSelectedUserGroup(null);
       props.onClickAddButton(selectedUserGroup);
     }
   };
