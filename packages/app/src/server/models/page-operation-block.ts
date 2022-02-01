@@ -43,18 +43,15 @@ pageOperationBlockSchema.statics.create = function(path) {
   return pageOperationBlock;
 };
 
-pageOperationBlockSchema.statics.findOneAndDeleteByPath = async function(path) {
+pageOperationBlockSchema.statics.findOneAndDeleteByPath = function(path) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return PageOperationBlock.findOneAndDelete({ path });
-
 };
-
 
 pageOperationBlockSchema.statics.findActiveDocumentsByPaths = function(paths) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return PageOperationBlock.find({ path: { $in: paths }, isActive: true });
 };
-
 
 pageOperationBlockSchema.statics.deleteAllInActiveDocuments = function() {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
