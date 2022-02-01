@@ -47,8 +47,7 @@ const getQueryByLocation = (location: Location) => {
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
-  renderSearchControl?: (onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => any,
-  // renderLegacyPageControl?: ()=> React.FunctionComponent,
+  renderControl: (onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => React.FunctionComponent,
   setIsActionToPageModalShown: (x : boolean) => void,
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
@@ -305,25 +304,14 @@ const SearchCore: FC<Props> = (props: Props) => {
     );
   };
 
-  // const renderControl = () => {
-  //   if (props.renderSearchControl != null) {
-  //     // eslint-disable-next-line max-len
-  // eslint-disable-next-line max-len
-  //     return props.renderSearchControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
-  //   }
-  //   if (props.renderLegacyPageControl != null) {
-  //     return props.renderLegacyPageControl();
-  //   }
 
-  //   return <></>;
-  // };
-
-  const renderSearchControl = () => {
-    if (props.renderSearchControl != null) {
+  const renderControl = useCallback(() => {
+    if (props.renderControl != null) {
       // eslint-disable-next-line max-len
-      return props.renderSearchControl(onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+      return props.renderControl(onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
     }
-  };
+    return <></>;
+  }, []);
   /*
    * Dependencies
    */
@@ -334,7 +322,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   return (
     <div>
       <SearchPageLayout
-        Control={renderSearchControl}
+        Control={renderControl}
         SearchResultList={renderSearchResultList}
         SearchResultContent={renderSearchResultContent}
         searchResultMeta={searchResultMeta}

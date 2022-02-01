@@ -4,7 +4,7 @@ import { SearchResultMeta } from '~/interfaces/search';
 
 
 type Props = {
-  Control: any |React.FunctionComponent,
+  Control: any|React.FunctionComponent,
   SearchResultList: React.FunctionComponent,
   SearchResultContent: React.FunctionComponent,
   searchResultMeta: SearchResultMeta,

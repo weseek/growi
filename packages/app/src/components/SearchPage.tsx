@@ -79,7 +79,7 @@ const SearchPage : FC<Props> = (props: Props) => {
   return (
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
-      renderSearchControl={renderSearchControl}
+      renderControl={renderSearchControl}
       renderActionToPageModal={renderActionToPageModal}
       setIsActionToPageModalShown={setIsActionToPageModalShown}
     />
