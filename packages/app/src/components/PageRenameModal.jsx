@@ -119,6 +119,7 @@ const PageRenameModal = (props) => {
         isRenameRedirect,
         isRemainMetadata,
         newPagePath: pageNameInput,
+        path,
       });
 
       const { page } = response.data;

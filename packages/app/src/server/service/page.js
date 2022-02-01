@@ -198,7 +198,6 @@ class PageService {
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-
     // create descendants first
     if (isRecursively) {
       await this.renameDescendantsWithStream(page, newPagePath, user, options);
