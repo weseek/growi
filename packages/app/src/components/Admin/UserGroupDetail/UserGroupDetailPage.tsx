@@ -130,7 +130,24 @@ const UserGroupDetailPage: FC = () => {
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
       <UserGroupUserModal />
+
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
+
+      <div className="py-3">
+        <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createChildGroupForm">
+          {t('admin:user_group_management.create_child_group')}
+        </button>
+
+        <div id="createChildGroupForm" className="collapse">
+          <UserGroupForm
+            successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
+            failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
+            submitButtonLabel={t('Create')}
+          // onSubmit={addUserGroup}
+          />
+        </div>
+      </div>
+
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
         <UserGroupPageList />

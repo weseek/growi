@@ -29,6 +29,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
    * Fetch
    */
   const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  console.log(userGroups);
   const userGroupIds = userGroups?.map(group => group._id);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
   const { data: childUserGroups } = useSWRxChildUserGroupList(userGroupIds);

@@ -450,6 +450,7 @@
   },
   "user_group_management": {
     "create_group": "新規グループの作成",
+    "create_child_group": "新規子グループの作成",
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",

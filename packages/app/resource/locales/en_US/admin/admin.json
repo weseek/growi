@@ -451,6 +451,7 @@
   },
   "user_group_management": {
     "create_group": "Create new group",
+    "create_child_group": "Create new child group",
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
