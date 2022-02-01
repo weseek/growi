@@ -9,7 +9,6 @@ import {
 } from '../../interfaces/search';
 
 type Props = {
-  searchingKeyword: string,
   appContainer: AppContainer,
   onSearchInvoked: (data: {keyword: string}) => Promise<void>
   actionToPageGroup: React.ReactNode,
@@ -57,7 +56,7 @@ const SearchControl: FC <Props> = (props: Props) => {
   const onRetrySearchInvoked = () => {
     if (props.onSearchInvoked != null) {
       const data = {
-        keyword: props.searchingKeyword,
+        keyword: 'test',
         sort,
         order,
         excludeUserPages,
@@ -97,7 +96,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
           <SearchPageFormTypeAny
-            keyword={props.searchingKeyword}
+            keyword="test"
             appContainer={props.appContainer}
             onSearchFormChanged={props.onSearchInvoked}
             searchOptions={searchOptions}

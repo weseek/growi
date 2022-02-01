@@ -1,5 +1,5 @@
 import React, {
-  FC, useState,
+  FC, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
@@ -17,7 +17,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
 
   // migrate modal
-  const renderActionToPageModal = (getSelectedPagesForAction) => {
+  const renderActionToPageModal = useCallback((getSelectedPagesForAction) => {
     return (
       <PageMigrateModal
         isOpen={isActionToPageModalShown}
@@ -25,15 +25,15 @@ const LegacyPage : FC<Props> = (props: Props) => {
         onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
       />
     );
-  };
+  }, [setIsActionToPageModalShown]);
 
-  const renderActionToPages = (isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
-    // no icon for migration
-    const actionIconAndText = (
-      <>
-        {t('modal_migrate.migrating_page')}
-      </>
-    );
+
+  const actionIconAndText = (
+    <>
+      {t('modal_migrate.migrating_page')}
+    </>
+  );
+  const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
     return (
       <ActionToSelectedPageGroup
         isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
@@ -44,7 +44,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
       >
       </ActionToSelectedPageGroup>
     );
-  };
+  }, []);
 
   const alertMessage = (
     <div className="alert alert-warning py-3">
@@ -55,15 +55,14 @@ const LegacyPage : FC<Props> = (props: Props) => {
   );
 
 
-  const renderLegacyPageControl = () => {
+  const renderLegacyPageControl = useCallback(() => {
     // TODO: create legacyControl component.
     // LegacyControl has ActionToSinglePage
     return <></>;
-  };
+  }, []);
   return (
     <SearchCore
       renderActionToPageModal={renderActionToPageModal}
-      renderLegacyPageControl={renderLegacyPageControl}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
       excludeTrashPages={false}

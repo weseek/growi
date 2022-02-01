@@ -17,7 +17,7 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import {
-  CheckboxType, IPageSearchResultData, SearchResultMeta, SORT_AXIS, SORT_ORDER,
+  CheckboxType, IPageSearchResultData, SearchResultMeta,
 } from '~/interfaces/search';
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
@@ -47,8 +47,8 @@ const getQueryByLocation = (location: Location) => {
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
-  renderSearchControl?: (searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => any,
-  renderLegacyPageControl?: ()=> React.FunctionComponent,
+  renderSearchControl?: (onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => any,
+  // renderLegacyPageControl?: ()=> React.FunctionComponent,
   setIsActionToPageModalShown: (x : boolean) => void,
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
@@ -305,16 +305,24 @@ const SearchCore: FC<Props> = (props: Props) => {
     );
   };
 
-  const renderControl = () => {
+  // const renderControl = () => {
+  //   if (props.renderSearchControl != null) {
+  //     // eslint-disable-next-line max-len
+  // eslint-disable-next-line max-len
+  //     return props.renderSearchControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+  //   }
+  //   if (props.renderLegacyPageControl != null) {
+  //     return props.renderLegacyPageControl();
+  //   }
+
+  //   return <></>;
+  // };
+
+  const renderSearchControl = () => {
     if (props.renderSearchControl != null) {
       // eslint-disable-next-line max-len
-      return props.renderSearchControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+      return props.renderSearchControl(onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
     }
-    if (props.renderLegacyPageControl != null) {
-      return props.renderLegacyPageControl();
-    }
-
-    return <></>;
   };
   /*
    * Dependencies
@@ -326,7 +334,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   return (
     <div>
       <SearchPageLayout
-        Control={renderControl}
+        Control={renderSearchControl}
         SearchResultList={renderSearchResultList}
         SearchResultContent={renderSearchResultContent}
         searchResultMeta={searchResultMeta}

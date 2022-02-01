@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
-import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import ActionToSelectedPageGroup from './ActionToSelectedPageGroup';
 import PageDeleteModal from './PageDeleteModal';
 import SearchCore from './SearchCore';
@@ -66,17 +65,16 @@ const SearchPage : FC<Props> = (props: Props) => {
   };
 
   // eslint-disable-next-line max-len
-  const renderSearchControl = (searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
+  const renderSearchControl = useCallback((onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
     return (
       <SearchControl
-        searchingKeyword={searchingKeyword}
         appContainer={props.appContainer}
         onSearchInvoked={onSearchInvoked}
         actionToPageGroup={renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
       >
       </SearchControl>
     );
-  };
+  }, []);
 
   return (
     <SearchCore
