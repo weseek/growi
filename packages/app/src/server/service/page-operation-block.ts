@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:services:PageOperationBlockService');
 
 
 /**
- * the service class of UserGroupService
+ * the service class of PageOperationBlockService
  */
 class PageOperationBlockService {
 

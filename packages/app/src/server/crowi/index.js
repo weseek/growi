@@ -705,7 +705,6 @@ Crowi.prototype.setupInAppNotificationService = async function() {
   }
 };
 
-
 Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
   if (this.activityService == null) {
