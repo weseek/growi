@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import PageListItem from '../Page/PageListItem';
+import PageListItem from '../PageList/PageListItem';
 import PaginationWrapper from '../PaginationWrapper';
 import { IPageSearchResultData } from '../../interfaces/search';
 

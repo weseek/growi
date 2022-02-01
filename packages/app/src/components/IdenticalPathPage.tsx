@@ -7,7 +7,7 @@ import { DevidedPagePath } from '@growi/core';
 
 import { useCurrentPagePath } from '~/stores/context';
 
-import PageListItem from './Page/PageListItem';
+import PageListItem from './PageList/PageListItem';
 
 
 type IdenticalPathAlertProps = {
