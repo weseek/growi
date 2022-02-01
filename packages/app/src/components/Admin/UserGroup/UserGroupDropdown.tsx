@@ -35,7 +35,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
           <>
             <div className="dropdown">
               <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                {selectedUserGroup != null ? selectedUserGroup.name : 'Select user group'}
+                {selectedUserGroup != null ? selectedUserGroup.name : t('admin:user_group_management.delete_modal.select_group')}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 {
@@ -57,11 +57,11 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
               className="btn btn-primary mt-3"
               onClick={() => onClickAddButtonHandler()}
             >
-              {t('Add')}
+              {t('add')}
             </button>
           </>
         ) : (
-          <>There are no user groups available for selection</>
+          <>{t('admin:user_group_management.no_groups_can_be_added')}</>
         )
       }
     </>
