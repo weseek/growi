@@ -65,9 +65,10 @@ const SearchPage : FC<Props> = (props: Props) => {
   }, []);
 
   // eslint-disable-next-line max-len
-  const renderSearchControl = useCallback((onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
+  const renderSearchControl = useCallback((searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
     return (
       <SearchControl
+        searchingKeyword={searchingKeyword}
         appContainer={props.appContainer}
         onSearchInvoked={onSearchInvoked}
         actionToPageGroup={renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}

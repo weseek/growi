@@ -308,7 +308,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const renderControl = useCallback(() => {
     if (props.renderControl != null) {
       // eslint-disable-next-line max-len
-      return props.renderControl(onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+      return props.renderControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
     }
     return <></>;
   }, []);
