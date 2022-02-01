@@ -2,7 +2,7 @@ import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { IPageHasId } from '~/interfaces/page';
+import { IPage, IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 
@@ -73,7 +73,6 @@ type GetSubscriptionStatusResult = { subscribing: boolean };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-
   const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
   return useSWR(
     key,
@@ -82,5 +81,13 @@ export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRRespo
         status: response.data.subscribing,
       };
     }),
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useSWRxPageInfo = <Data, Error>(pageId: string | undefined): SWRResponse<IPageInfo, Error> => {
+  return useSWR(
+    pageId != null ? ['/page/info', pageId] : null,
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
