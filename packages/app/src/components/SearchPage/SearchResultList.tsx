@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
-import PageListItem from '../PageList/PageListItem';
+import { PageListItemL } from '../PageList/PageListItemL';
 import PaginationWrapper from '../PaginationWrapper';
 
 
@@ -34,7 +34,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         const isChecked = selectedPagesIdList.has(page.pageData._id);
 
         return (
-          <PageListItem
+          <PageListItemL
             key={page.pageData._id}
             page={page}
             isEnableActions={isEnableActions}

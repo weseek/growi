@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 
-export default class Page extends React.Component {
+export default class PageListItemS extends React.Component {
 
   render() {
     const {
@@ -27,11 +27,11 @@ export default class Page extends React.Component {
 
 }
 
-Page.propTypes = {
+PageListItemS.propTypes = {
   page: PropTypes.object.isRequired,
   noLink: PropTypes.bool,
 };
 
-Page.defaultProps = {
+PageListItemS.defaultProps = {
   noLink: false,
 };

@@ -7,7 +7,7 @@ import { DevidedPagePath } from '@growi/core';
 
 import { useCurrentPagePath } from '~/stores/context';
 
-import PageListItem from './PageList/PageListItem';
+import { PageListItemL } from './PageList/PageListItemL';
 
 
 type IdenticalPathAlertProps = {
@@ -79,7 +79,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
           <ul className="page-list-ul list-group-flush border px-3">
             {pageDataList.map((data) => {
               return (
-                <PageListItem
+                <PageListItemL
                   key={data.pageData._id}
                   page={data}
                   isSelected={false}

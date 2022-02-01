@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
-import Page from './Page';
+import PageListItemS from './PageListItemS';
 import PaginationWrapper from '../PaginationWrapper';
 
 
@@ -37,7 +37,7 @@ const PageList = (props: Props): JSX.Element => {
 
   const pageList = pages.items.map(page => (
     <li key={page._id} className={liClassesStr}>
-      <Page page={page} />
+      <PageListItemS page={page} />
     </li>
   ));
 
