@@ -13,6 +13,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
+import PageContainer from '~/client/services/PageContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
@@ -24,7 +25,7 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
-    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
+    t, pageContainer, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
   const { switchActiveTab } = pageAccessoriesContainer;
@@ -115,7 +116,7 @@ const PageAccessoriesModal = (props) => {
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
-              {activeComponents.has('pagelist') && <PageList />}
+              {activeComponents.has('pagelist') && <PageList path={pageContainer.state.path} />}
             </TabPane>
             <TabPane tabId="timeline">
               {activeComponents.has('timeline') && <PageTimeline /> }
@@ -143,11 +144,13 @@ const PageAccessoriesModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageAccessoriesContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageContainer, PageAccessoriesContainer]);
 
 PageAccessoriesModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,

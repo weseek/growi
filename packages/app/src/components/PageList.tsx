@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Page from './PageList/Page';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '~/client/services/PageContainer';
 
 import { useSWRxPageList } from '~/stores/page';
 
 import PaginationWrapper from './PaginationWrapper';
 
 
-const PageList = (props) => {
+type Props = {
+  path: string,
+  liClasses?: string[],
+}
+
+const PageList = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { path } = pageContainer.state;
+  const { path, liClasses } = props;
 
   const [activePage, setActivePage] = useState(1);
 
@@ -43,12 +44,14 @@ const PageList = (props) => {
     );
   }
 
-  const liClasses = props.liClasses.join(' ');
+  const liClassesStr = (liClasses ?? ['mb-3']).join(' ');
+
   const pageList = pagesListData.items.map(page => (
-    <li key={page._id} className={liClasses}>
+    <li key={page._id} className={liClassesStr}>
       <Page page={page} />
     </li>
   ));
+
   if (pageList.length === 0) {
     return (
       <div className="mt-2">
@@ -71,13 +74,6 @@ const PageList = (props) => {
       />
     </div>
   );
-};
-
-PageList.propTypes = {
-  liClasses: PropTypes.arrayOf(PropTypes.string),
-};
-PageList.defaultProps = {
-  liClasses: ['mb-3'],
 };
 
 export default PageList;
