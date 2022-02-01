@@ -8,7 +8,7 @@ import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
 
-const SCROLL_OFFSET_TOP = 150;
+const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + subnavigation)
 
 // TODO : set focusedPage type to ?IPageSearchResultData once #80214 is merged
 // PR: https://github.com/weseek/growi/pull/4649
@@ -25,7 +25,6 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   const contentRef = useRef(null);
   useEffect(() => {
     // reset state
-    setIsRevisionBodyRendered(false);
     if (isRevisionBodyRendered) {
       const searchResultPageContent = contentRef.current as HTMLElement| null;
       if (searchResultPageContent == null) return;
@@ -33,7 +32,9 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       if (highlightedWord == null) return;
       smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
     }
-  }, [isRevisionBodyRendered]);
+    setIsRevisionBodyRendered(false);
+
+  }, [isRevisionBodyRendered, contentRef]);
 
   const page = props.focusedSearchResultData?.pageData;
   // return if page is null
