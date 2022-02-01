@@ -17,7 +17,7 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 
-    const cursor = Page.find({ redirectTo: { $ne: null } }, { path: 1, redirectTo: 1, _id: 0 }).cursor();
+    const cursor = Page.find({ redirectTo: { $exists: true, $ne: null } }, { path: 1, redirectTo: 1, _id: 0 }).lean().cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     // redirectTo => PageRedirect
@@ -46,12 +46,12 @@ module.exports = {
     const Page = getModelSafely('Page') || getPageModel();
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 
-    const cursor = PageRedirect.find().cursor();
+    const cursor = PageRedirect.find().lean().cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     // PageRedirect => redirectTo
     for await (const pageRedirects of cursor.pipe(batchStream)) {
-      const insertRedirectToPageOperations = pageRedirects.map((pageRedirect) => {
+      const insertPageOperations = pageRedirects.map((pageRedirect) => {
         return {
           insertOne: {
             document: {
@@ -62,7 +62,7 @@ module.exports = {
         };
       });
 
-      await Page.bulkWrite(insertRedirectToPageOperations);
+      await Page.bulkWrite(insertPageOperations);
     }
 
     await PageRedirect.deleteMany();
