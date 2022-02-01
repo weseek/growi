@@ -54,6 +54,28 @@ body .page-list {
       padding-left: 0;
     }
   }
+
+  // List group
+  .list-group {
+    .list-group-item {
+      min-height: 136px;
+
+      .page-list-meta {
+        .meta-icon {
+          width: 14px;
+          height: 14px;
+          margin-right: 14px;
+        }
+        .footstamp-icon {
+          margin-right: 2px;
+        }
+      }
+
+      &.list-group-item-action {
+        border-left: solid 3px transparent;
+      }
+    }
+  }
 }
 
 .popular-page-high {

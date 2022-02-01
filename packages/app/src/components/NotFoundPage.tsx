@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import PageList from './PageList';
+import DescendantsPageList from './DescendantsPageList';
 import PageTimeline from './PageTimeline';
 
-const NotFoundPage = (props) => {
-  const { t } = props;
+const NotFoundPage = (): JSX.Element => {
+  const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: PageList,
+        Content: DescendantsPageList,
         i18n: t('page_list'),
         index: 0,
       },
@@ -29,14 +29,10 @@ const NotFoundPage = (props) => {
 
 
   return (
-    <div className="mt-5 d-edit-none">
+    <div className="d-edit-none">
       <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );
 };
 
-NotFoundPage.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-};
-
-export default withTranslation()(NotFoundPage);
+export default NotFoundPage;

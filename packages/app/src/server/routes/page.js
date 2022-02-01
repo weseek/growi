@@ -302,10 +302,6 @@ module.exports = function(crowi, app) {
     renderVars.shortBodyMap = shortBodyMap;
   }
 
-  function addRenderVarsWhenNotCreatableOrForbidden(renderVars) {
-    renderVars.isAlertHidden = true;
-  }
-
   function replacePlaceholdersOfTemplate(template, req) {
     if (req.user == null) {
       return '';
@@ -329,11 +325,9 @@ module.exports = function(crowi, app) {
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/not_creatable';
     }
     else if (req.isForbidden) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/forbidden';
     }
     else {
@@ -527,7 +521,6 @@ module.exports = function(crowi, app) {
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       return res.render('layout-growi/forbidden');
     }
 
