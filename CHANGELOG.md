@@ -1,8 +1,51 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.11...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.11](https://github.com/weseek/growi/compare/v4.5.10...v4.5.11) - 2022-01-26
+
+### 🐛 Bug Fixes
+
+- fix: Internal server error occured when "Restrict complete deletion of pages" option's value is "Admin and author" (#5175 ) @yuki-takei
+
+## [v4.5.10](https://github.com/weseek/growi/compare/v4.5.9...v4.5.10) - 2022-01-26
+
+### 💎 Features
+
+- feat: Automatic installation (#5141) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Migrate like states to swr (#5137) @miya
+
+### 🐛 Bug Fixes
+
+- fix: 86631-cannot-reset-password-in-case-that-register-limitation-is-Closed (#5155) @kaoritokashiki
+
+### 🧰 Maintenance
+
+- support: VRT with Cypress (#5030) @yuki-takei
+
+## [v4.5.9](https://github.com/weseek/growi/compare/v4.5.8...v4.5.9) - 2022-01-21
+
+### 🚀 Improvement
+
+- imprv: 79291 make password min length 8 charactors (#5116) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: OIDC reconnection bug fix (#5104) @mudana-grune
+- fix: /_api/v3/page is broken and dump 500 error "get-page-failed TypeError: user.canDeleteCompletely is not a function" (#5103) @yuki-takei
+- fix: Default completely deletion settings label mismatched against to actual (#5102) @yuki-takei
+- fix: OIDC issuer host availability check (#5099) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Improve multistage build (#5090) @yuki-takei
+- support: Omit node-re2 (#5089) @yuki-takei
+- ci(deps-dev): bump swr from 1.0.1 to 1.1.2 (#5018) @dependabot
 
 ## [v4.5.8](https://github.com/weseek/growi/compare/v4.5.7...v4.5.8) - 2022-01-12
 

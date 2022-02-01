@@ -4,7 +4,6 @@ import { IRevision } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 
-
 export type IPage = {
   path: string,
   status: string,

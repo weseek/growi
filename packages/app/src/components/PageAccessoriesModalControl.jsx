@@ -15,11 +15,15 @@ import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
+import { useCurrentPageId } from '~/stores/context';
+
 const PageAccessoriesModalControl = (props) => {
   const {
     t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
+
+  const { data: pageId } = useCurrentPageId();
 
   const accessoriesBtnList = useMemo(() => {
     return [
@@ -90,7 +94,7 @@ const PageAccessoriesModalControl = (props) => {
       })}
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo disabled={isSharedUser} />
+        <SeenUserInfo disabled={isSharedUser} pageId={pageId} />
       </div>
     </div>
   );
