@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
 import PageListIcon from './Icons/PageListIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import PageList from './PageList';
 
 
-const ForbiddenPage = (props) => {
-  const { t } = props;
+const ForbiddenPage = (): JSX.Element => {
+  const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
     return {
@@ -40,15 +40,13 @@ const ForbiddenPage = (props) => {
           </p>
         </div>
       </div>
+
       <div className="mt-5">
         <CustomNavAndContents navTabMapping={navTabMapping} />
       </div>
+
     </>
   );
 };
 
-ForbiddenPage.propTypes = {
-  t: PropTypes.func.isRequired,
-};
-
-export default withTranslation()(ForbiddenPage);
+export default ForbiddenPage;
