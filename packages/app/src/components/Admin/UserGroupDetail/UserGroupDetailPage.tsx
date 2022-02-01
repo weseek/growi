@@ -178,30 +178,36 @@ const UserGroupDetailPage: FC = () => {
 
         <div id="addExistingGroupDropdown" className="collapse">
           <h2 className="admin-setting-header">Select a child group</h2>
-          <div className="dropdown">
-            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-              {selectedGroup != null ? selectedGroup.name : 'Select user group'}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {
-                selectableGroups.map(group => (
-                  <>
-                    <button
-                      key={group._id}
-                      type="button"
-                      className="dropdown-item"
-                      onClick={() => setSelectedGroup(group)}
-                    >
-                      {group.name}
-                    </button>
-                  </>
-                ))
-              }
-            </div>
-          </div>
-          <button type="button" className="btn btn-primary mt-3">
-            {t('Add')}
-          </button>
+          {
+            selectableGroups.length > 0 ? (
+              <>
+                <div className="dropdown">
+                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                    {selectedGroup != null ? selectedGroup.name : 'Select user group'}
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {
+                      selectableGroups.map(group => (
+                        <button
+                          key={group._id}
+                          type="button"
+                          className="dropdown-item"
+                          onClick={() => setSelectedGroup(group)}
+                        >
+                          {group.name}
+                        </button>
+                      ))
+                    }
+                  </div>
+                </div>
+                <button type="button" className="btn btn-primary mt-3">
+                  {t('Add')}
+                </button>
+              </>
+            ) : (
+              <>There are no user groups available for selection</>
+            )
+          }
         </div>
       </div>
 
