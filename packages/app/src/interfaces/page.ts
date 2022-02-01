@@ -45,7 +45,7 @@ export type IPageInfo = {
   isLiked?: boolean,
 }
 
-export type IPageWithMeta<M = {}> = {
+export type IPageWithMeta<M = Record<string, unknown>> = {
   pageData: IPageHasId,
   pageMeta?: Partial<IPageInfo> & M,
 };
