@@ -7,6 +7,7 @@ import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import {
@@ -104,31 +105,6 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
-  const selectableGroups = [
-    {
-      _id: '61f760c29175fae9dc57ecd8',
-      name: 'group-1',
-      createdAt: new Date(),
-      description: '1',
-      parent: null,
-    },
-    {
-      _id: '61f770a4cd70539d3f979d50',
-      name: 'group-2',
-      createdAt: new Date(),
-      description: '2',
-      parent: null,
-    },
-    {
-      _id: '61f384978a8d300a70f593de',
-      name: 'group-3',
-      createdAt: new Date(),
-      description: '3',
-      parent: null,
-    },
-  ];
-  const [selectedGroup, setSelectedGroup] = useState<IUserGroupHasId>();
-
   /*
    * Dependencies
    */
@@ -177,37 +153,7 @@ const UserGroupDetailPage: FC = () => {
         </div>
 
         <div id="addExistingGroupDropdown" className="collapse">
-          <h2 className="admin-setting-header">Select a child group</h2>
-          {
-            selectableGroups.length > 0 ? (
-              <>
-                <div className="dropdown">
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                    {selectedGroup != null ? selectedGroup.name : 'Select user group'}
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {
-                      selectableGroups.map(group => (
-                        <button
-                          key={group._id}
-                          type="button"
-                          className="dropdown-item"
-                          onClick={() => setSelectedGroup(group)}
-                        >
-                          {group.name}
-                        </button>
-                      ))
-                    }
-                  </div>
-                </div>
-                <button type="button" className="btn btn-primary mt-3">
-                  {t('Add')}
-                </button>
-              </>
-            ) : (
-              <>There are no user groups available for selection</>
-            )
-          }
+          <UserGroupDropdown />
         </div>
       </div>
 
