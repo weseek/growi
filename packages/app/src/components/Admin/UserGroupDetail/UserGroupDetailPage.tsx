@@ -104,6 +104,21 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
+  const selectableGroups = [
+    {
+      _id: '61f760c29175fae9dc57ecd8',
+      name: 'group-1',
+    },
+    {
+      _id: '61f770a4cd70539d3f979d50',
+      name: 'group-2',
+    },
+    {
+      _id: '61f384978a8d300a70f593de',
+      name: 'group-3',
+    },
+  ];
+
   /*
    * Dependencies
    */
@@ -155,12 +170,15 @@ const UserGroupDetailPage: FC = () => {
           <h2 className="admin-setting-header">Select a child group</h2>
           <div className="dropdown">
             <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-              Dropdown button
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <p className="dropdown-item">Action</p>
-              <p className="dropdown-item">Another action</p>
-              <p className="dropdown-item">Something else here</p>
+              {
+                selectableGroups.map(group => (
+                  <>
+                    <button key={group._id} className="dropdown-item" type="button">{group.name}</button>
+                  </>
+                ))
+              }
             </div>
           </div>
           <button type="button" className="btn btn-primary mt-3">
