@@ -92,8 +92,6 @@ const schema = new Schema<PageDocument, PageModel>({
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
 }, {
-  strict: true,
-  strictQuery: false,
   toJSON: { getters: true },
   toObject: { getters: true },
 });

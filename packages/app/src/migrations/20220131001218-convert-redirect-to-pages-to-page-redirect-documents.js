@@ -14,10 +14,10 @@ const BATCH_SIZE = 100;
 module.exports = {
   async up(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Page = getModelSafely('Page') || getPageModel();
+    const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 
-    const cursor = Page.find({ redirectTo: { $exists: true, $ne: null } }, { path: 1, redirectTo: 1, _id: 0 }).lean().cursor();
+    const cursor = pageCollection.find({ redirectTo: { $exists: true, $ne: null } }, { path: 1, redirectTo: 1, _id: 0 }).stream();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     // redirectTo => PageRedirect
@@ -33,17 +33,24 @@ module.exports = {
         };
       });
 
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+      try {
+        await PageRedirect.bulkWrite(insertPageRedirectOperations);
+      }
+      catch (err) {
+        if (err.code !== 11000) {
+          throw Error(`Failed to migrate: ${err}`);
+        }
+      }
     }
 
-    await Page.deleteMany({ redirectTo: { $ne: null } });
+    await pageCollection.deleteMany({ redirectTo: { $ne: null } });
 
     logger.info('Migration has successfully applied');
   },
 
   async down(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Page = getModelSafely('Page') || getPageModel();
+    const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 
     const cursor = PageRedirect.find().lean().cursor();
@@ -62,7 +69,14 @@ module.exports = {
         };
       });
 
-      await Page.bulkWrite(insertPageOperations);
+      try {
+        await pageCollection.bulkWrite(insertPageOperations);
+      }
+      catch (err) {
+        if (err.code !== 11000) {
+          throw Error(`Failed to migrate: ${err}`);
+        }
+      }
     }
 
     await PageRedirect.deleteMany();
