@@ -29,7 +29,7 @@ const NotFoundPage = (props) => {
 
 
   return (
-    <div className="mt-5 d-edit-none">
+    <div className="d-edit-none">
       <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );
