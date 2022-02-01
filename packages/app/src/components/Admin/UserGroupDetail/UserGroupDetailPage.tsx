@@ -7,7 +7,7 @@ import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
-import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
+// import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import {
@@ -121,6 +121,7 @@ const UserGroupDetailPage: FC = () => {
       {/* TODO 85062: Link to the ancestors group */}
       <div className="mt-4 form-box">
         <UserGroupForm
+          headerLabel={t('admin:user_group_management.basic_info')}
           userGroup={userGroup}
           successedMessage={t('toaster.update_successed', { target: t('UserGroup') })}
           failedMessage={t('toaster.update_failed', { target: t('UserGroup') })}
@@ -145,6 +146,7 @@ const UserGroupDetailPage: FC = () => {
 
         <div id="createChildGroupForm" className="collapse">
           <UserGroupForm
+            headerLabel={t('admin:user_group_management.create_child_group')}
             successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
             failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
             submitButtonLabel={t('Create')}
@@ -153,7 +155,11 @@ const UserGroupDetailPage: FC = () => {
         </div>
 
         <div id="addExistingGroupDropdown" className="collapse">
-          <UserGroupDropdown />
+          {/* <UserGroupDropdown
+            headerLabel={t('admin:user_group_management.add_existing_group')}
+            selectableUserGroups={userGroups}
+            onClickAddButton={onClickAddButton}
+          /> */}
         </div>
       </div>
 
