@@ -7,7 +7,7 @@ import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   headerLabel: TFunctionResult
-  selectableUserGroups: IUserGroupHasId[]
+  selectableUserGroups?: IUserGroupHasId[]
   onClickAddButton?(userGroup: IUserGroupHasId): void
 };
 
