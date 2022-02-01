@@ -6,17 +6,17 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { pagePathUtils, DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
 const { isTopPage } = pagePathUtils;
 
 type Props = {
-  page: IPageWithMeta<IPageSearchMeta>,
-  isSelected: boolean, // is item selected(focused)
-  isChecked: boolean, // is checkbox of item checked
-  isEnableActions: boolean,
+  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta>,
+  isSelected?: boolean, // is item selected(focused)
+  isChecked?: boolean, // is checkbox of item checked
+  isEnableActions?: boolean,
   shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
@@ -35,19 +35,21 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
 
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
+  const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
+
   const pageTitle = (
     <PagePathLabel
-      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      path={elasticSearchResult?.highlightedPath || pageData.path}
       isLatterOnly
-      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
     >
     </PagePathLabel>
   );
   const pagePathElem = (
     <PagePathLabel
-      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      path={elasticSearchResult?.highlightedPath || pageData.path}
       isFormerOnly
-      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
     />
   );
 
@@ -114,7 +116,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
 
               {/* page meta */}
               <div className="d-none d-md-flex py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
+                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
@@ -130,8 +132,8 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
                 {
-                  pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (
-                    <div dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
+                  elasticSearchResult != null && elasticSearchResult?.snippet.length !== 0 ? (
+                    <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                   ) : (
                     <div>{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator
                   )

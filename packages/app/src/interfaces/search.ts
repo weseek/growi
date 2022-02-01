@@ -14,6 +14,10 @@ export type IPageSearchMeta = {
   };
 };
 
+export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
+  return !!(meta as IPageSearchMeta)?.elasticSearchResult;
+}
+
 export type IFormattedSearchResult = {
   data: IPageWithMeta<IPageSearchMeta>[]
 
