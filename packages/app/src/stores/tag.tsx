@@ -2,19 +2,18 @@ import useSWR, { SWRResponse } from 'swr';
 import { ITagDataHasId } from '~/interfaces/tag';
 import { apiGet } from '~/client/util/apiv1-client';
 
-type ITagDataResponse = {
+type ITagDataListResponse = {
   data: ITagDataHasId[],
   totalCount: number,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxTagDataList = (
     limit: number,
     offset: number,
-): SWRResponse<ITagDataResponse, Error> => {
+): SWRResponse<ITagDataListResponse, Error> => {
   return useSWR(
     `/tags.list?limit=${limit}&offset=${offset}`,
-    endpoint => apiGet(endpoint).then((response: ITagDataResponse) => {
+    endpoint => apiGet(endpoint).then((response: ITagDataListResponse) => {
       return {
         data: response.data,
         totalCount: response.totalCount,

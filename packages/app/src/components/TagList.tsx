@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useEffect, useCallback,
+  FC, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PaginationWrapper from './PaginationWrapper';
@@ -8,31 +8,26 @@ import { ITagDataHasId } from '~/interfaces/tag';
 type TagListProps = {
   tagData: ITagDataHasId[],
   totalTags: number,
+  activePage: number,
+  onChangePage?: (selectedPageNumber: number) => void,
   limit: number,
-  isOnReload?: boolean,
-  onHandlePagination?: (selectedPageNumber:number) => void
+  isPaginationShown?: boolean,
 }
 
-const TagList: FC<TagListProps> = (props:TagListProps) => {
-  const [activePage, setActivePage] = useState<number>(1);
+const defaultProps = {
+  isPaginationShown: true,
+};
+
+const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) => {
   const {
-    tagData, totalTags, limit, isOnReload, onHandlePagination,
+    tagData, totalTags, activePage, onChangePage, limit, isPaginationShown,
   } = props;
   const isTagExist: boolean = tagData.length > 0;
   const { t } = useTranslation('');
 
-  const reloadHandler = useCallback(() => {
-    if ((isOnReload != null && isOnReload) && onHandlePagination != null) {
-      onHandlePagination(activePage);
-    }
-  }, [isOnReload, onHandlePagination, activePage]);
-
-  useEffect(() => {
-    reloadHandler();
-  });
-
   const generateTagList = useCallback((tagData) => {
     return tagData.map((data) => {
+      // todo: adjust design
       return (
         <a key={data.name} href={`/_search?q=tag:${data.name}`} className="list-group-item">
           <i className="icon-tag mr-2"></i>{data.name}
@@ -41,13 +36,6 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
       );
     });
   }, []);
-
-  const paginationHandler = useCallback((selectedPage) => {
-    if (onHandlePagination != null) {
-      onHandlePagination(selectedPage);
-      setActivePage(selectedPage);
-    }
-  }, [onHandlePagination]);
 
   if (!isTagExist) {
     return <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
@@ -58,17 +46,23 @@ const TagList: FC<TagListProps> = (props:TagListProps) => {
       <ul className="list-group text-left mb-4">
         {generateTagList(tagData)}
       </ul>
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={paginationHandler}
-        totalItemsCount={totalTags}
-        pagingLimit={limit}
-        align="center"
-        size="md"
-      />
+      {isPaginationShown
+      && (
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={onChangePage}
+          totalItemsCount={totalTags}
+          pagingLimit={limit}
+          align="center"
+          size="md"
+        />
+      )
+      }
     </>
   );
 
 };
+
+TagList.defaultProps = defaultProps;
 
 export default TagList;

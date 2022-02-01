@@ -5,13 +5,11 @@ import TagList from '../TagList';
 import TagCloudBox from '../TagCloudBox';
 
 import { useSWRxTagDataList } from '~/stores/tag';
-import { toastError } from '~/client/util/apiNotification';
 import { ITagDataHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
 
 const Tag: FC = () => {
-  const [isOnReload, setIsOnReload] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
 
   const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagDataList(LIMIT, offset);
@@ -20,28 +18,19 @@ const Tag: FC = () => {
 
   const { t } = useTranslation('');
 
-  const getTagList = useCallback((selectedPageNumber) => {
-    setOffset((selectedPageNumber - 1) * LIMIT);
-
-    try {
-      mutateTagDataList();
-    }
-    catch (error) {
-      toastError(error);
-    }
-
-    if (isOnReload) {
-      setIsOnReload(false);
-    }
-
-  }, [isOnReload, mutateTagDataList]);
-
-  const onReload = useCallback(() => {
-    setIsOnReload(true);
+  const setOffsetByPageNumber = useCallback((selectedPageNumber: number):void => {
+    // offset = (selectedPageNumber - 1) * 10
+    setOffset((selectedPageNumber - 1) * 10);
   }, []);
 
+  const onReload = useCallback(() => {
+    mutateTagDataList();
+  }, [mutateTagDataList]);
+
+  // todo: consider loading state by designer's advice
   if (!tagDataList) return <div>{t('Loading')}</div>;
 
+  // todo: adjust design by XD
   return (
     <div className="grw-container-convertible px-4 mb-5 pb-5">
       <div className="grw-sidebar-content-header py-3 d-flex">
@@ -71,9 +60,9 @@ const Tag: FC = () => {
       <TagList
         tagData={tagData}
         totalTags={totalCount}
+        activePage={1 + offset / 10} // activePage = 1 + offset / 10
+        onChangePage={setOffsetByPageNumber}
         limit={LIMIT}
-        isOnReload={isOnReload}
-        onHandlePagination={getTagList}
       />
     </div>
   );
