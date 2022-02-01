@@ -62,12 +62,16 @@ const PageListItem: FC<Props> = memo((props:Props) => {
     }
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
+  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'grw-search-result-item'
-  const responsiveListStyleClass = `${isDeviceSmallerThanLg ? '' : `list-group-item-action ${isSelected ? 'active' : ''}`}`;
+  const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
+  const styleBorder = onClickCheckbox != null ? 'border-bottom' : 'list-group-item p-0';
+
   return (
     <li
       key={pageData._id}
-      className={`w-100 grw-search-result-item border-bottom ${responsiveListStyleClass}`}
+      className={`w-100 grw-search-result-item search-result-list ${styleListGroupItem} ${styleActive} ${styleBorder}}`
+      }
     >
       <div
         className="h-100 text-break"
@@ -98,7 +102,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
               <span className="mr-2 d-none d-md-block">
-                <UserPicture user={pageData.lastUpdateUser} size="sm" />
+                <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}
               <Clamp lines={1}>
@@ -109,7 +113,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
 
               {/* page meta */}
               <div className="d-none d-md-flex item-meta py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} />
+                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
