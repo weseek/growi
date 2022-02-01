@@ -93,7 +93,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
               />
             </div>
           )}
-          <div className="search-item-text p-md-3 pl-2 py-3 pr-3">
+          <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
             {/* page path */}
             <h6 className="mb-1 py-1 d-flex">
               <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>

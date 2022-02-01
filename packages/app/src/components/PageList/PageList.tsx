@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
-import PageListItemS from './PageListItemS';
-import PaginationWrapper from '../PaginationWrapper';
+import { PageListItemL } from './PageListItemL';
+
 
 
 type Props = {
@@ -27,9 +27,7 @@ const PageList = (props: Props): JSX.Element => {
   }
 
   const pageList = pages.items.map(page => (
-    <li key={page._id} className={liClassesStr}>
-      <PageListItemS page={page} />
-    </li>
+    <PageListItemL page={{ pageData: page }} />
   ));
 
   if (pageList.length === 0) {
