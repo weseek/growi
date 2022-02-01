@@ -19,6 +19,7 @@
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint-plugin-regex": "^1.8.0"
+  }
 }
