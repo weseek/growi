@@ -374,8 +374,6 @@ describe('PageService', () => {
       test('rename page with createRedirectPage option', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
-        // const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
-        // const redirectedFromPageRevision = await Revision.findOne({ pageId: redirectedFromPage._id });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -384,14 +382,6 @@ describe('PageService', () => {
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
-
-        // expect(redirectedFromPage).not.toBeNull();
-        // expect(redirectedFromPage.path).toBe('/parentForRename3');
-        // expect(redirectedFromPage.redirectTo).toBe('/renamed3');
-
-        // expect(redirectedFromPageRevision).not.toBeNull();
-        // expect(redirectedFromPageRevision.pageId).toBe(redirectedFromPage._id);
-        // expect(redirectedFromPageRevision.body).toBe('redirect /renamed3');
       });
 
       test('rename page with isRecursively', async() => {
@@ -455,8 +445,6 @@ describe('PageService', () => {
 
       await crowi.pageService.renameDescendants([childForRename3], testUser2, { createRedirectPage: true }, oldPagePathPrefix, newPagePathPrefix);
       const resultPage = await Page.findOne({ path: '/renamed3/child' });
-      // const redirectedFromPage = await Page.findOne({ path: '/parentForRename3/child' });
-      // const redirectedFromPageRevision = await Revision.findOne({ pageId: redirectedFromPage._id });
 
       expect(resultPage).not.toBeNull();
       expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename3], testUser2);
@@ -464,14 +452,6 @@ describe('PageService', () => {
       expect(resultPage.path).toBe('/renamed3/child');
       expect(resultPage.updatedAt).toEqual(childForRename3.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
-
-      // expect(redirectedFromPage).not.toBeNull();
-      // expect(redirectedFromPage.path).toBe('/parentForRename3/child');
-      // expect(redirectedFromPage.redirectTo).toBe('/renamed3/child');
-
-      // expect(redirectedFromPageRevision).not.toBeNull();
-      // expect(redirectedFromPageRevision.pageId).toBe(redirectedFromPage._id);
-      // expect(redirectedFromPageRevision.body).toBe('redirect /renamed3/child');
     });
   });
 
