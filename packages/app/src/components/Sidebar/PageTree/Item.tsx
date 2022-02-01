@@ -16,7 +16,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, isUserPage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -49,6 +49,7 @@ type ItemControlProps = {
   onClickDeleteButton?(): void
   onClickRenameButton?(): void
 }
+
 
 const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   const onClickPlusButton = () => {
@@ -99,12 +100,16 @@ const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
   );
 });
 
-const ItemCount: FC = () => {
+
+type ItemCountProps = {
+  descendantCount: number
+}
+
+const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
   return (
     <>
       <span className="grw-pagetree-count badge badge-pill badge-light text-muted">
-        {/* TODO: consider to show the number of children pages */}
-        00
+        {props.descendantCount}
       </span>
     </>
   );
@@ -124,6 +129,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
+
+  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
+
+  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -247,17 +256,21 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
-        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center  ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
       >
-        <button
-          type="button"
-          className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
-          onClick={onClickLoadChildren}
-        >
-          <div className="grw-triangle-icon">
-            <TriangleIcon />
-          </div>
-        </button>
+        <div className="grw-triangle-container d-flex justify-content-center">
+          {hasDescendants && (
+            <button
+              type="button"
+              className={`grw-pagetree-button btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              onClick={onClickLoadChildren}
+            >
+              <div className="grw-triangle-icon d-flex justify-content-center">
+                <TriangleIcon />
+              </div>
+            </button>
+          )}
+        </div>
         { isRenameInputShown && (
           <ClosableTextInput
             isShown
@@ -268,13 +281,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && (
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <a
+            href={page._id}
+            className="grw-pagetree-title-anchor flex-grow-1"
+          >
             <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
           </a>
         )}
-        <div className="grw-pagetree-count-wrapper">
-          <ItemCount />
-        </div>
+        {(page.descendantCount != null && page.descendantCount > 0) && (
+          <div className="grw-pagetree-count-wrapper">
+            <ItemCount descendantCount={page.descendantCount} />
+          </div>
+        )}
         <div className="grw-pagetree-control d-none">
           <ItemControl
             page={page}
@@ -282,7 +300,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDeleteButton={onClickDeleteButton}
             onClickRenameButton={onClickRenameButton}
             isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+            isDeletable={isDeletable}
           />
         </div>
       </li>
