@@ -29,7 +29,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
-    <>
+    <ul className="page-list-ul list-group list-group-flush">
       {Array.isArray(props.pages) && props.pages.map((page) => {
         const isChecked = selectedPagesIdList.has(page.pageData._id);
 
@@ -58,7 +58,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         </div>
       )}
 
-    </>
+    </ul>
   );
 
 };

@@ -64,21 +64,21 @@ const PageListItem: FC<Props> = memo((props:Props) => {
   }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
-  // background color of list item changes when class "active" exists under 'grw-search-result-item'
+  // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
   const styleBorder = onClickCheckbox != null ? 'border-bottom' : 'list-group-item p-0';
 
   return (
     <li
       key={pageData._id}
-      className={`w-100 grw-search-result-item search-result-list ${styleListGroupItem} ${styleActive} ${styleBorder}}`
+      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive} ${styleBorder}}`
       }
     >
       <div
-        className="h-100 text-break"
+        className="text-break"
         onClick={clickHandler}
       >
-        <div className="d-flex h-100">
+        <div className="d-flex">
           {/* checkbox */}
           {onClickCheckbox != null && (
             <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
@@ -91,7 +91,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               />
             </div>
           )}
-          <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
+          <div className="search-item-text p-md-3 pl-2 py-3 pr-3">
             {/* page path */}
             <h6 className="mb-1 py-1 d-flex">
               <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
@@ -113,7 +113,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex item-meta py-0 px-1">
+              <div className="d-none d-md-flex py-0 px-1">
                 <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
               </div>
               {/* doropdown icon includes page control buttons */}
@@ -127,7 +127,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
                 />
               </div>
             </div>
-            <div className="grw-search-result-list-snippet py-1">
+            <div className="page-list-snippet py-1">
               <Clamp lines={2}>
                 {
                   pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (
