@@ -22,7 +22,7 @@ const SearchPage : FC<Props> = (props: Props) => {
 
 
   // Delete modal
-  const renderActionToPageModal = (getSelectedPagesForAction) => {
+  const renderActionToPageModal = useCallback((getSelectedPagesForAction) => {
     return (
       <PageDeleteModal
         isOpen={isActionToPageModalShown}
@@ -32,7 +32,7 @@ const SearchPage : FC<Props> = (props: Props) => {
         isAbleToDeleteCompletely={false}
       />
     );
-  };
+  }, []);
 
   const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
     const actionIconAndText = (
@@ -54,7 +54,7 @@ const SearchPage : FC<Props> = (props: Props) => {
   }, []);
 
 
-  const onAfterSearchHandler = (keyword, searchedKeyword) => {
+  const onAfterSearchHandler = useCallback((keyword, searchedKeyword) => {
     let hash = window.location.hash || '';
     if (searchedKeyword !== '') {
       hash = '';
@@ -62,7 +62,7 @@ const SearchPage : FC<Props> = (props: Props) => {
     if (window.history && window.history.pushState) {
       window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
     }
-  };
+  }, []);
 
   // eslint-disable-next-line max-len
   const renderSearchControl = useCallback((onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {

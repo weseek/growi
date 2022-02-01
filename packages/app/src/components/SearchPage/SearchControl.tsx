@@ -14,7 +14,7 @@ type Props = {
   actionToPageGroup: React.ReactNode,
 }
 
-const SearchControl: FC <Props> = (props: Props) => {
+const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
   const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
@@ -161,7 +161,7 @@ const SearchControl: FC <Props> = (props: Props) => {
       {rednerSearchOptionModal()}
     </div>
   );
-};
+});
 
 
 export default SearchControl;
