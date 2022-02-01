@@ -7,7 +7,7 @@ import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
-// import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import {
@@ -105,6 +105,10 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
+  const onClickAddChildButton = (userGroup: IUserGroupHasId) => {
+    console.log('Clicked add button', userGroup);
+  };
+
   /*
    * Dependencies
    */
@@ -143,24 +147,24 @@ const UserGroupDetailPage: FC = () => {
         <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#addExistingGroupDropdown">
           {t('admin:user_group_management.add_existing_group')}
         </button>
+      </div>
 
-        <div id="createChildGroupForm" className="collapse">
-          <UserGroupForm
-            headerLabel={t('admin:user_group_management.create_child_group')}
-            successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
-            failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
-            submitButtonLabel={t('Create')}
+      <div id="createChildGroupForm" className="collapse">
+        <UserGroupForm
+          headerLabel={t('admin:user_group_management.create_child_group')}
+          successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
+          failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
+          submitButtonLabel={t('Create')}
           // onSubmit={addUserGroup}
-          />
-        </div>
+        />
+      </div>
 
-        <div id="addExistingGroupDropdown" className="collapse">
-          {/* <UserGroupDropdown
-            headerLabel={t('admin:user_group_management.add_existing_group')}
-            selectableUserGroups={userGroups}
-            onClickAddButton={onClickAddButton}
-          /> */}
-        </div>
+      <div id="addExistingGroupDropdown" className="collapse">
+        <UserGroupDropdown
+          headerLabel={t('admin:user_group_management.add_existing_group')}
+          selectableUserGroups={undefined}
+          onClickAddButton={onClickAddChildButton}
+        />
       </div>
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
