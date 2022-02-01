@@ -133,9 +133,13 @@ const UserGroupDetailPage: FC = () => {
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
 
-      <div className="py-3">
-        <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#createChildGroupForm">
+      <div className="py-2">
+        <button type="button" className="btn btn-outline-secondary mr-2" data-toggle="collapse" data-target="#createChildGroupForm">
           {t('admin:user_group_management.create_child_group')}
+        </button>
+
+        <button type="button" className="btn btn-outline-secondary" data-toggle="collapse" data-target="#addExistingGroupDropdown">
+          {t('admin:user_group_management.add_existing_group')}
         </button>
 
         <div id="createChildGroupForm" className="collapse">
@@ -145,6 +149,23 @@ const UserGroupDetailPage: FC = () => {
             submitButtonLabel={t('Create')}
           // onSubmit={addUserGroup}
           />
+        </div>
+
+        <div id="addExistingGroupDropdown" className="collapse">
+          <h2 className="admin-setting-header">Select a child group</h2>
+          <div className="dropdown">
+            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+              Dropdown button
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <p className="dropdown-item">Action</p>
+              <p className="dropdown-item">Another action</p>
+              <p className="dropdown-item">Something else here</p>
+            </div>
+          </div>
+          <button type="button" className="btn btn-primary mt-3">
+            {t('Add')}
+          </button>
         </div>
       </div>
 

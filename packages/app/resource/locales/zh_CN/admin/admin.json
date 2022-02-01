@@ -461,6 +461,7 @@
   "user_group_management": {
     "create_group": "创建新组",
     "create_child_group": "创建新的子组",
+    "add_existing_group": "添加现有组别",
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
