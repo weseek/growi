@@ -6,7 +6,6 @@ import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   selectableUserGroups?: IUserGroupHasId[]
-  onClickDropdownButton?(userGroup: IUserGroupHasId): void
   onClickAddButton?(userGroup: IUserGroupHasId): void
 };
 
@@ -17,10 +16,6 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
 
   const onClickDropdownButtonHandler = (userGroup) => {
     setSelectedUserGroup(userGroup);
-
-    if (props.onClickDropdownButton) {
-      props.onClickDropdownButton(userGroup);
-    }
   };
 
   const onClickAddButtonHandler = () => {
