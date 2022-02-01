@@ -6,7 +6,11 @@ import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import PageList from './PageList';
 
 
-const ForbiddenPage = (): JSX.Element => {
+type Props = {
+  isSharePage?: boolean,
+}
+
+const ForbiddenPage = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
@@ -31,22 +35,23 @@ const ForbiddenPage = (): JSX.Element => {
         </div>
       </div>
 
-
       <div className="row row-alerts d-edit-none">
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
             <i className="icon-fw icon-lock" aria-hidden="true" />
-            {t('Browsing of this page is restricted')}
+            { props.isSharePage ? t('custom_navigation.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
           </p>
         </div>
       </div>
 
-      <div className="mt-5">
-        <CustomNavAndContents navTabMapping={navTabMapping} />
-      </div>
+      { !props.isSharePage && (
+        <div className="mt-5">
+          <CustomNavAndContents navTabMapping={navTabMapping} />
+        </div>
+      ) }
 
     </>
   );
-};
+});
 
 export default ForbiddenPage;
