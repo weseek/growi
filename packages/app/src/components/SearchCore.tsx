@@ -47,7 +47,8 @@ const getQueryByLocation = (location: Location) => {
 type Props = {
   appContainer: AppContainer,
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
-  renderControl: (onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => React.FunctionComponent,
+  // eslint-disable-next-line max-len
+  renderControl: ((searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox, searchingKeyword, onSearchInvoked) => React.FunctionComponent) | ((searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => React.FunctionComponent),
   setIsActionToPageModalShown: (x : boolean) => void,
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   alertMessage?: React.ReactNode,

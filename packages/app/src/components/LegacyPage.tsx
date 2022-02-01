@@ -28,12 +28,12 @@ const LegacyPage : FC<Props> = (props: Props) => {
   }, [setIsActionToPageModalShown]);
 
 
-  const actionIconAndText = (
-    <>
-      {t('modal_migrate.migrating_page')}
-    </>
-  );
   const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
+    const actionIconAndText = (
+      <>
+        {t('modal_migrate.migrating_page')}
+      </>
+    );
     return (
       <ActionToSelectedPageGroup
         isSelectAllCheckboxDisabled={isSelectAllCheckboxDisabled}
@@ -55,13 +55,20 @@ const LegacyPage : FC<Props> = (props: Props) => {
   );
 
 
-  const renderLegacyPageControl = useCallback(() => {
-    // TODO: create legacyControl component.
-    // LegacyControl has ActionToSinglePage
-    return <></>;
+  const renderLegacyPageControl = useCallback((searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => {
+    return (
+      <div className="position-sticky fixed-top shadow-sm">
+        <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
+          <div className="d-flex pl-md-2">
+            {renderActionToPages(searchResultCount === 0, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox)}
+          </div>
+        </div>
+      </div>
+    );
   }, []);
   return (
     <SearchCore
+      renderControl={renderLegacyPageControl}
       renderActionToPageModal={renderActionToPageModal}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
