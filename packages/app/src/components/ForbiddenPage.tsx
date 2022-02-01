@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import PageListIcon from './Icons/PageListIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import PageList from './PageList';
+import DescendantsPageList from './DescendantsPageList';
 
 
 type Props = {
@@ -17,7 +17,7 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: PageList,
+        Content: DescendantsPageList,
         i18n: t('page_list'),
         index: 0,
       },

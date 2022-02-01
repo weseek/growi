@@ -17,7 +17,7 @@ import PageContainer from '~/client/services/PageContainer';
 import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
-import PageList from './PageList';
+import DescendantsPageList from './DescendantsPageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
@@ -116,7 +116,7 @@ const PageAccessoriesModal = (props) => {
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
           <TabContent activeTab={activeTab}>
             <TabPane tabId="pagelist">
-              {activeComponents.has('pagelist') && <PageList path={pageContainer.state.path} />}
+              {activeComponents.has('pagelist') && <DescendantsPageList path={pageContainer.state.path} />}
             </TabPane>
             <TabPane tabId="timeline">
               {activeComponents.has('timeline') && <PageTimeline /> }

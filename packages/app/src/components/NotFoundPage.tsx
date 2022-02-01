@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import PageList from './PageList';
+import DescendantsPageList from './DescendantsPageList';
 import PageTimeline from './PageTimeline';
 
 const NotFoundPage = (): JSX.Element => {
@@ -14,7 +14,7 @@ const NotFoundPage = (): JSX.Element => {
     return {
       pagelist: {
         Icon: PageListIcon,
-        Content: PageList,
+        Content: DescendantsPageList,
         i18n: t('page_list'),
         index: 0,
       },
