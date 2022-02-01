@@ -5,7 +5,7 @@ import { pagePathUtils } from '@growi/core';
 
 import { IUser } from '../interfaces/user';
 
-import { useStaticSWR } from "./use-static-swr";
+import { useStaticSWR } from './use-static-swr';
 
 import { TargetAndAncestors, NotFoundTargetPathOrId } from '../interfaces/page-listing-results';
 
@@ -88,11 +88,11 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
 };
 
 export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData );
+  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData );
+  return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
 
 export const useShareLinkId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

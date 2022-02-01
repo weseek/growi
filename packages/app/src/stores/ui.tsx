@@ -1,5 +1,5 @@
 import useSWR, {
-  useSWRConfig, SWRResponse, Key, Fetcher, mutate,
+  useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -322,6 +322,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
   return useSWRImmutable(
     includesUndefined ? null : key,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => isPageExist! && !isTrashPage && !isSharedUser,
   );
 };
@@ -341,6 +342,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : key,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );
 };
@@ -356,7 +358,8 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser);
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+  );
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
@@ -368,6 +371,7 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     includesUndefined ? null : key,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => isPageExist! && !isUserPage,
   );
 };

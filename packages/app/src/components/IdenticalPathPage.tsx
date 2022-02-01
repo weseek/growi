@@ -10,7 +10,6 @@ import { useCurrentPagePath } from '~/stores/context';
 import PageListItem from './Page/PageListItem';
 
 
-
 type IdenticalPathAlertProps = {
   path? : string | null,
 }
@@ -28,19 +27,22 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
     _pageName = devidedPath.latter;
   }
 
+
   return (
     <div className="alert alert-warning py-3">
       <h5 className="font-weight-bold mt-1">{t('duplicated_page_alert.same_page_name_exists', { pageName: _pageName })}</h5>
       <p>
         {t('duplicated_page_alert.same_page_name_exists_at_path',
           { path: _path, pageName: _pageName })}<br />
-        <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }} />
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }}
+        />
       </p>
       <p className="mb-1">{t('duplicated_page_alert.select_page_to_see')}</p>
     </div>
   );
 };
-
 
 
 type IdenticalPathPageProps= {
@@ -50,7 +52,7 @@ type IdenticalPathPageProps= {
 
 const jsonNull = 'null';
 
-const IdenticalPathPage:FC<IdenticalPathPageProps> = (props:IdenticalPathPageProps) => {
+const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
 
   const identicalPageDocument = document.getElementById('identical-path-page');
   const pageDataList = JSON.parse(identicalPageDocument?.getAttribute('data-identical-page-data-list') || jsonNull);
