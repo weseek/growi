@@ -34,3 +34,18 @@ export type IPage = {
 export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
+
+export type IPageInfo = {
+  bookmarkCount: number,
+  sumOfLikers: number,
+  likerIds: string[],
+  sumOfSeenUsers: number,
+  seenUserIds: string[],
+  isSeen?: boolean,
+  isLiked?: boolean,
+}
+
+export type IPageWithMeta<M> = {
+  pageData: IPageHasId,
+  pageMeta: Partial<IPageInfo> & M,
+};

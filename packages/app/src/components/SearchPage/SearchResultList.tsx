@@ -1,18 +1,20 @@
 import React, { FC } from 'react';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+
 import PageListItem from '../PageList/PageListItem';
 import PaginationWrapper from '../PaginationWrapper';
-import { IPageSearchResultData } from '../../interfaces/search';
 
 
 type Props = {
-  pages: IPageSearchResultData[],
+  pages: IPageWithMeta<IPageSearchMeta>[],
   selectedPagesIdList: Set<string>
   isEnableActions: boolean,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
   shortBodiesMap?: Record<string, string>
-  focusedSearchResultData?: IPageSearchResultData,
+  focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
   onClickSearchResultItem?: (pageId: string) => void,
   onClickCheckbox?: (pageId: string) => void,

@@ -5,14 +5,15 @@ import Clamp from 'react-multiline-clamp';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { pagePathUtils, DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 
-import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
 const { isTopPage } = pagePathUtils;
 
 type Props = {
-  page: IPageSearchResultData,
+  page: IPageWithMeta<IPageSearchMeta>,
   isSelected: boolean, // is item selected(focused)
   isChecked: boolean, // is checkbox of item checked
   isEnableActions: boolean,
