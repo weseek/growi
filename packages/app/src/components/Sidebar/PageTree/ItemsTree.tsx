@@ -95,10 +95,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
+  const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
   const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
-  // targetElem is HTML collection but only one target HTML element in it always
-  if (targetElem[0] != null) {
-    smoothScrollIntoView(targetElem[0] as HTMLElement);
+  //  targetElem is HTML collection but only one HTML element in it all the time
+  if (targetElem[0] != null && startFrom != null) {
+    smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
   }
 
   const DeleteModal = (
