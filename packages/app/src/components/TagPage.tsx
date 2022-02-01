@@ -5,7 +5,6 @@ import TagList from './TagList';
 import TagCloudBox from './TagCloudBox';
 
 import { useSWRxTagDataList } from '~/stores/tag';
-import { toastError } from '~/client/util/apiNotification';
 import { ITagDataHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
@@ -13,26 +12,21 @@ const LIMIT = 10;
 const TagPage: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
-  const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagDataList(LIMIT, offset);
+  const { data: tagDataList } = useSWRxTagDataList(LIMIT, offset);
   const tagData: ITagDataHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
 
   const { t } = useTranslation('');
 
-  const getTagList = useCallback((selectedPageNumber) => {
-    setOffset((selectedPageNumber - 1) * LIMIT);
+  const setOffsetByPageNumber = useCallback((selectedPageNumber: number):void => {
+    // offset = (selectedPageNumber - 1) * 10
+    setOffset((selectedPageNumber - 1) * 10);
+  }, []);
 
-    try {
-      mutateTagDataList();
-    }
-    catch (error) {
-      toastError(error);
-    }
-
-  }, [mutateTagDataList]);
-
+  // todo: consider loading state by designer's advice
   if (!tagDataList) return <div>{t('Loading')}</div>;
 
+  // todo: adjust margin and redesign tags page
   return (
     <div className="grw-container-convertible mb-5 pb-5">
       <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
@@ -42,8 +36,9 @@ const TagPage: FC = () => {
       <TagList
         tagData={tagData}
         totalTags={totalCount}
+        activePage={1 + offset / 10} // activePage = 1 + offset / 10
+        onChangePage={setOffsetByPageNumber}
         limit={LIMIT}
-        onHandlePagination={getTagList}
       />
     </div>
   );
