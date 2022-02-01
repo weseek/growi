@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import PageList from './PageList/PageList';
-
 import { useSWRxPageList } from '~/stores/page';
 
+import PageList from './PageList/PageList';
+import PaginationWrapper from './PaginationWrapper';
 
 type Props = {
   path: string,
@@ -39,7 +39,17 @@ const DescendantsPageList = (props: Props): JSX.Element => {
   }
 
   return (
-    <PageList pages={data} />
+    <>
+      <PageList pages={data} />
+
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={setPageNumber}
+        totalItemsCount={data.totalCount}
+        pagingLimit={data.limit}
+        align="center"
+      />
+    </>
   );
 };
 

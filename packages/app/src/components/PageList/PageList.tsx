@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '~/interfaces/page';
@@ -10,18 +10,11 @@ import PaginationWrapper from '../PaginationWrapper';
 
 type Props = {
   pages: IPagingResult<IPageHasId>,
-  liClasses?: string[],
 }
 
 const PageList = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { pages, liClasses } = props;
-
-  const [activePage, setActivePage] = useState(1);
-
-  function setPageNumber(selectedPageNumber) {
-    setActivePage(selectedPageNumber);
-  }
+  const { pages } = props;
 
   if (pages == null) {
     return (
@@ -32,8 +25,6 @@ const PageList = (props: Props): JSX.Element => {
       </div>
     );
   }
-
-  const liClassesStr = (liClasses ?? ['mb-3']).join(' ');
 
   const pageList = pages.items.map(page => (
     <li key={page._id} className={liClassesStr}>
@@ -54,13 +45,6 @@ const PageList = (props: Props): JSX.Element => {
       <ul className="page-list-ul page-list-ul-flat">
         {pageList}
       </ul>
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setPageNumber}
-        totalItemsCount={pages.totalCount}
-        pagingLimit={pages.limit}
-        align="center"
-      />
     </div>
   );
 };
