@@ -2,6 +2,7 @@ import { pagePathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 import { generateGrantCondition } from '~/server/models/page';
+
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import ActivityDefine from '../util/activityDefine';
@@ -224,6 +225,7 @@ class PageService {
 
     return renamedPage;
   }
+
 
   async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
