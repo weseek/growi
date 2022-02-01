@@ -7,6 +7,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
 import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 /*
  * Utility to generate initial node
@@ -93,6 +94,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+
+  const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
+  // targetElem is HTML collection but only one target HTML element in it always
+  if (targetElem[0] != null) {
+    smoothScrollIntoView(targetElem[0] as HTMLElement);
+  }
 
   const DeleteModal = (
     <PageDeleteModal
