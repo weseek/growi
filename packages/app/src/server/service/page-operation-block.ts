@@ -61,10 +61,8 @@ class PageOperationBlockService {
   shouldBlockOperation = async(pagePath) => {
     try {
       const relatedPaths = await this.findRelatedPaths(pagePath);
-      console.log('relatedPaths', relatedPaths);
       // blockingPath seems to be one element but set as an array just in case
       const blockingPaths = await PageOperationBlock.findActiveDocumentsByPaths(relatedPaths);
-      console.log('blockingPaths_fuga', blockingPaths);
       return blockingPaths.length > 0;
     }
     catch (err) {
