@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
-  selectableUserGroups?: IUserGroupHasId[]
+  headerLabel: string
+  selectableUserGroups: IUserGroupHasId[]
   onClickAddButton?(userGroup: IUserGroupHasId): void
 };
 
@@ -27,7 +28,7 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h2 className="admin-setting-header">Select a child group</h2>
+      <h2 className="admin-setting-header">{props.headerLabel}</h2>
       {
         (props.selectableUserGroups != null && props.selectableUserGroups.length > 0) ? (
           <>

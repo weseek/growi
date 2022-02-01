@@ -11,6 +11,7 @@ import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
+  headerLabel: string
   userGroup?: IUserGroupHasId,
   successedMessage: TFunctionResult;
   failedMessage: TFunctionResult;
@@ -62,7 +63,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     <form onSubmit={onSubmitHandler}>
 
       <fieldset>
-        <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+        <h2 className="admin-setting-header">{props.headerLabel}</h2>
         {/* TODO 85062: improve style */}
         {
           props.userGroup?.createdAt != null && (
