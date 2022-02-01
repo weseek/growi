@@ -20,14 +20,14 @@ type Props = {
   shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
-  onClickSearchResultItem?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
 const PageListItem: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
     showPageUpdatedTime,
   } = props;
 
@@ -58,10 +58,10 @@ const PageListItem: FC<Props> = memo((props:Props) => {
       return;
     }
 
-    if (onClickSearchResultItem != null) {
-      onClickSearchResultItem(pageData._id);
+    if (onClickItem != null) {
+      onClickItem(pageData._id);
     }
-  }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
+  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'

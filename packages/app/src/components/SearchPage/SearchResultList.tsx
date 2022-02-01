@@ -16,7 +16,7 @@ type Props = {
   shortBodiesMap?: Record<string, string>
   focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
-  onClickSearchResultItem?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
   onClickCheckbox?: (pageId: string) => void,
   onClickInvoked?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -39,7 +39,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             page={page}
             isEnableActions={isEnableActions}
             shortBody={shortBodiesMap?.[page.pageData._id]}
-            onClickSearchResultItem={props.onClickSearchResultItem}
+            onClickItem={props.onClickItem}
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
