@@ -802,7 +802,7 @@ class PageService {
       newPages.push(newPage);
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -848,7 +848,7 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });

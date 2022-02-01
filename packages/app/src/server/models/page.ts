@@ -602,8 +602,7 @@ export default (crowi: Crowi): any => {
      * After save
      */
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
@@ -658,8 +657,7 @@ export default (crowi: Crowi): any => {
     // update existing page
     let savedPage = await newPageData.save();
     const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
