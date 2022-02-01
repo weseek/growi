@@ -15,10 +15,10 @@ export interface PageOperationBlockDocument extends IPageOperationBlock, Documen
 }
 
 export interface PageOperationBlockModel extends Model<PageOperationBlockDocument> {
-  create(path): IPageOperationBlock
-  findOneAndDeleteByPagePath(path): IPageOperationBlock
-  findActiveDocumentsByPaths(paths): IPageOperationBlock
-  findDocuments(path): IPageOperationBlock
+  create(path)
+  findOneAndDeleteByPagePath(path)
+  findActiveDocumentsByPaths(paths)
+  findDocuments(path)
 }
 
 const pageOperationBlockSchema = new Schema<PageOperationBlockDocument, PageOperationBlockModel>({
@@ -43,9 +43,10 @@ pageOperationBlockSchema.statics.create = function(path) {
   return pageOperationBlock;
 };
 
-pageOperationBlockSchema.statics.findOneAndDeleteByPath = function(path) {
+pageOperationBlockSchema.statics.findOneAndDeleteByPath = async function(path) {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return PageOperationBlock.findOneAndDelete({ path });
+
 };
 
 
