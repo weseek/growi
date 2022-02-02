@@ -298,6 +298,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  ELASTICSEARCH_REINDEX_ON_BOOT: {
+    ns:      'crowi',
+    key:     'app:elasticsearchReindexOnBoot',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   USE_ELASTICSEARCH_V6: {
     ns:      'crowi',
     key:     'app:useElasticsearchV6',

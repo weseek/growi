@@ -120,21 +120,24 @@ class PageService {
 
     const Page = this.crowi.model('Page');
 
+    let pagePath = path;
+
     let page;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
+      pagePath = page.path;
     }
     else {
-      page = await Page.findByPathAndViewer(path, user);
+      page = await Page.findByPathAndViewer(pagePath, user);
     }
 
     const result = {};
 
     if (page == null) {
-      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { path: pagePath }] }) > 0;
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
-      result.isCreatable = isCreatablePage(path);
+      result.isCreatable = isCreatablePage(pagePath);
       result.isDeletable = false;
       result.canDeleteCompletely = false;
       result.page = page;
@@ -146,7 +149,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
-    result.isDeletable = isDeletablePage(path);
+    result.isDeletable = isDeletablePage(pagePath);
     result.isDeleted = page.isDeleted();
     result.canDeleteCompletely = user != null && this.canDeleteCompletely(page.creator, user);
 
