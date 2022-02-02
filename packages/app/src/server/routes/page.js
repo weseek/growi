@@ -606,13 +606,6 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
 
-    if (pages.length === 0) {
-      const pageRedirect = await PageRedirect.findOne({ fromPath: path });
-      if (pageRedirect != null) {
-        return res.redirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
-      }
-    }
-
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
@@ -634,7 +627,17 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    req.isForbidden = await Page.count({ path }) > 0;
+    const isForbidden = await Page.exists({ path });
+    if (isForbidden) {
+      req.isForbidden = true;
+      return _notFound(req, res);
+    }
+
+    const pageRedirect = await PageRedirect.findOne({ fromPath: path });
+    if (pageRedirect != null) {
+      return res.safeRedirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
+    }
+
     return _notFound(req, res);
   }
 
