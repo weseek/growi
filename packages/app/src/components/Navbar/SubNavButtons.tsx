@@ -17,10 +17,10 @@ type SubNavButtonsProps= {
   pageId: string,
   revisionId: string,
   path: string,
-  isViewMode: boolean
-  isAbleToShowPageManagement: boolean,
-  isDeletable: boolean,
-  isAbleToDeleteCompletely: boolean,
+  isViewMode?: boolean
+  isAbleToShowPageManagement?: boolean,
+  isDeletable?: boolean,
+  isAbleToDeleteCompletely?: boolean,
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {

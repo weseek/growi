@@ -1,20 +1,17 @@
 import React, { FC, Suspense, useState } from 'react';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
-type TagLabels = {
+type Props = {
   tags: string[],
-  appContainer: AppContainer,
-  tagsUpdateInvoked?: () => Promise<void>,
+  isGuestUser: boolean,
+  tagsUpdateInvoked?: (tags: string[]) => Promise<void>,
 }
 
 
-const TagLabels:FC<TagLabels> = (props:TagLabels) => {
-  const { tags, appContainer, tagsUpdateInvoked } = props;
+const TagLabels:FC<Props> = (props: Props) => {
+  const { tags, isGuestUser, tagsUpdateInvoked } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
@@ -34,7 +31,7 @@ const TagLabels:FC<TagLabels> = (props:TagLabels) => {
           <RenderTagLabels
             tags={tags}
             openEditorModal={openEditorModal}
-            isGuestUser={appContainer.isGuestUser}
+            isGuestUser={isGuestUser}
           />
         </Suspense>
       </form>
@@ -50,9 +47,4 @@ const TagLabels:FC<TagLabels> = (props:TagLabels) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
-
-export default TagLabelsUnstatedWrapper;
+export default TagLabels;

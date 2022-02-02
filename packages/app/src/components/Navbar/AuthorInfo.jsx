@@ -34,7 +34,7 @@ const AuthorInfo = (props) => {
       if (err instanceof RangeError) {
         return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm" /> {userLabel}</p>;
       }
-      return;
+      return <></>;
     }
   }
 
