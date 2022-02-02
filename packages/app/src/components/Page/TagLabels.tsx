@@ -1,10 +1,10 @@
-import React, { FC, Suspense, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
 type Props = {
-  tags: string[],
+  tags?: string[],
   isGuestUser: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void>,
 }
@@ -27,13 +27,18 @@ const TagLabels:FC<Props> = (props: Props) => {
     <>
       <form className="grw-tag-labels form-inline">
         <i className="tag-icon icon-tag mr-2"></i>
-        <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
-          <RenderTagLabels
-            tags={tags}
-            openEditorModal={openEditorModal}
-            isGuestUser={isGuestUser}
-          />
-        </Suspense>
+        { tags == null
+          ? (
+            <span className="grw-tag-label badge badge-secondary">―</span>
+          )
+          : (
+            <RenderTagLabels
+              tags={tags}
+              openEditorModal={openEditorModal}
+              isGuestUser={isGuestUser}
+            />
+          )
+        }
       </form>
 
       <TagEditModal
@@ -42,7 +47,6 @@ const TagLabels:FC<Props> = (props: Props) => {
         onClose={closeEditorModal}
         onTagsUpdated={tagsUpdateInvoked}
       />
-
     </>
   );
 };
