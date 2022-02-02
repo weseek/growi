@@ -457,9 +457,10 @@ describe('PageService', () => {
   describe('duplicate page', () => {
     let duplicateDescendantsWithStreamSpy;
 
-    jest.mock('~/server/models/serializers/page-serializer');
-    const { serializePageSecurely } = require('~/server/models/serializers/page-serializer');
-    serializePageSecurely.mockImplementation(page => page);
+    // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
+    // jest.mock('~/server/models/serializers/page-serializer');
+    // const { serializePageSecurely } = require('~/server/models/serializers/page-serializer');
+    // serializePageSecurely.mockImplementation(page => page);
 
     beforeEach(async() => {
       duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
@@ -477,7 +478,8 @@ describe('PageService', () => {
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
-      expect(serializePageSecurely).toHaveBeenCalled();
+      // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
+      // expect(serializePageSecurely).toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParentDuplicate');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
       expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
@@ -497,7 +499,8 @@ describe('PageService', () => {
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
-      expect(serializePageSecurely).toHaveBeenCalled();
+      // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
+      // expect(serializePageSecurely).toHaveBeenCalled();
       expect(resultPageRecursivly.path).toBe('/newParentDuplicateRecursively');
       expect(resultPageRecursivly.lastUpdateUser._id).toEqual(testUser2._id);
       expect(duplicatedRecursivelyToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
@@ -509,7 +512,7 @@ describe('PageService', () => {
       const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementationOnce();
       await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
 
-      const childForDuplicateRevision = await Revision.findOne({ path: childForDuplicate.path });
+      const childForDuplicateRevision = await Revision.findOne({ pageId: childForDuplicate._id });
       const insertedPage = await Page.findOne({ path: '/newPathPrefix/child' });
       const insertedRevision = await Revision.findOne({ pageId: insertedPage._id });
 
@@ -631,10 +634,9 @@ describe('PageService', () => {
       expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ path: { $in: [parentForDeleteCompletely.path] } });
+      expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyPageSpy).toHaveBeenCalledWith({
         $or: [{ path: { $in: [parentForDeleteCompletely.path] } },
-              { path: { $in: [] } },
               { _id: { $in: [parentForDeleteCompletely._id] } }],
       });
       expect(removeAllAttachmentsSpy).toHaveBeenCalled();
@@ -677,7 +679,6 @@ describe('PageService', () => {
       const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
-      expect(deleteCompletelySpy).toHaveBeenCalled();
       expect(revertDeletedDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
       expect(resultPage.path).toBe('/parentForRevert1');
@@ -708,18 +709,12 @@ describe('PageService', () => {
     });
 
     test('revert deleted descendants', async() => {
-
-      findSpy = jest.spyOn(Page, 'find').mockImplementation(() => {
-        return [{ path: '/parentForRevert/child' }];
-      });
-
       await crowi.pageService.revertDeletedDescendants([childForRevert], testUser2);
       const resultPage = await Page.findOne({ path: '/parentForRevert/child' });
       const revrtedFromPage = await Page.findOne({ path: '/trash/parentForRevert/child' });
-      const revrtedFromPageRevision = await Revision.findOne({ pageId: revrtedFromPage._id });
+      const revrtedFromPageRevision = await Revision.findOne({ pageId: resultPage._id });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(childForRevert.path);
-      expect(findSpy).toHaveBeenCalledWith({ path: { $in: ['/parentForRevert/child'] } });
 
       expect(resultPage.path).toBe('/parentForRevert/child');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
