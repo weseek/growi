@@ -87,7 +87,7 @@ module.exports = function(crowi) {
     // add owner after creating admin user
     const Revision = crowi.model('Revision');
     const rootPage = await Page.findOne({ path: '/' });
-    const rootRevision = await Revision.findOne({ path: '/' });
+    const rootRevision = await Revision.findOne({ pageId: rootPage._id });
     rootPage.creator = adminUser;
     rootRevision.creator = adminUser;
     await Promise.all([rootPage.save(), rootRevision.save()]);

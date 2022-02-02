@@ -29,7 +29,7 @@ class RevisionDiff extends React.Component {
       }
 
       const patch = createPatch(
-        currentRevision.path,
+        '', // currentRevision.path is DEPRECATED
         previousText,
         currentRevision.body,
       );

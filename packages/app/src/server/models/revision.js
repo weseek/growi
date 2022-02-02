@@ -30,13 +30,6 @@ module.exports = function(crowi) {
   });
   revisionSchema.plugin(mongoosePaginate);
 
-  revisionSchema.statics.findRevisionIdList = function(path) {
-    return this.find({ path })
-      .select('_id author createdAt hasDiffToPrev')
-      .sort({ createdAt: -1 })
-      .exec();
-  };
-
   revisionSchema.statics.updateRevisionListByPageId = async function(pageId, updateData) {
     return this.updateMany({ pageId }, { $set: updateData });
   };
