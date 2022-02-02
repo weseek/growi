@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PaginationWrapper from './PaginationWrapper';
-import { ITagDataHasId } from '~/interfaces/tag';
+import { ITagCountHasId } from '~/interfaces/tag';
 
 type TagListProps = {
-  tagData: ITagDataHasId[],
+  tagData: ITagCountHasId[],
   totalTags: number,
   activePage: number,
   onChangePage?: (selectedPageNumber: number) => void,

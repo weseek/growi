@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { TagCloud } from 'react-tagcloud';
-import { ITagDataHasId } from '~/interfaces/tag';
+import { ITagCountHasId } from '~/interfaces/tag';
 
 type Props = {
-  tags:ITagDataHasId[],
+  tags:ITagCountHasId[],
   minSize?: number,
   maxSize?: number,
 }

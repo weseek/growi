@@ -5,7 +5,7 @@ import TagList from '../TagList';
 import TagCloudBox from '../TagCloudBox';
 
 import { useSWRxTagDataList } from '~/stores/tag';
-import { ITagDataHasId } from '~/interfaces/tag';
+import { ITagCountHasId } from '~/interfaces/tag';
 
 const LIMIT = 10;
 
@@ -13,7 +13,7 @@ const Tag: FC = () => {
   const [offset, setOffset] = useState<number>(0);
 
   const { data: tagDataList, mutate: mutateTagDataList } = useSWRxTagDataList(LIMIT, offset);
-  const tagData: ITagDataHasId[] = tagDataList?.data || [];
+  const tagData: ITagCountHasId[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
 
   const { t } = useTranslation('');

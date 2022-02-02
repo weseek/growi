@@ -1,9 +1,9 @@
 import useSWR, { SWRResponse } from 'swr';
-import { ITagDataHasId } from '~/interfaces/tag';
+import { ITagCountHasId } from '~/interfaces/tag';
 import { apiGet } from '~/client/util/apiv1-client';
 
 type ITagDataListResponse = {
-  data: ITagDataHasId[],
+  data: ITagCountHasId[],
   totalCount: number,
 }
 

@@ -4,8 +4,7 @@ export type ITag = {
   name: string,
   createdAt: Date;
 }
-export type ITagData = {
-  name: string,
-  count: number,
-}
-export type ITagDataHasId = ITagData & HasObjectId
+
+export type ITagCount = Omit<ITag, 'createdAt'> & {count: number}
+
+export type ITagCountHasId = ITagCount & HasObjectId
