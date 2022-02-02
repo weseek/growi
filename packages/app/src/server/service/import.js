@@ -24,7 +24,7 @@ const CollectionProgressingStatus = require('../models/vo/collection-progressing
 
 const BULK_IMPORT_SIZE = 100;
 
-// { collection name: [fileds] }
+// map collection name with fields that don't exist but are permitted to be overwritten
 const OVERWRITE_PERMITTED_NON_EXISTANT_FIELD_MAP = {
   pages: OVERWRITE_PERMITTED_PAGES_FIELDS,
 };
