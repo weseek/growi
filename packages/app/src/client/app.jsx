@@ -117,7 +117,6 @@ Object.assign(componentMappings, {
   'renamed-alert': <RenamedAlert />,
   'not-found-alert': <NotFoundAlert
     isGuestUserMode={appContainer.isGuestUser}
-    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
   />,
 });
 
