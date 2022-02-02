@@ -1945,7 +1945,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(filter) && shouldContinue) {
+    const existsFilter = { $and: [...grantFilter.$and, ...filter.$and] };
+    if (await Page.exists(existsFilter) && shouldContinue) {
       return this.normalizeParentRecursively(grant, regexps, publicOnly);
     }
 
