@@ -633,6 +633,7 @@ module.exports = function(crowi, app) {
       return _notFound(req, res);
     }
 
+    // redirect by PageRedirect
     const pageRedirect = await PageRedirect.findOne({ fromPath: path });
     if (pageRedirect != null) {
       return res.safeRedirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
