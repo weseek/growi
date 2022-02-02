@@ -331,13 +331,12 @@ export const useDeleteModalOpened = (): SWRResponse<boolean, Error> => {
 };
 
 export const useDeleteModalPath = (): SWRResponse<any | null | undefined, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useDeleteModalStatus();
 
   return useSWR(
-    currentPagePath != null && status != null ? [currentPagePath, status] : null,
-    (currentPagePath, status) => {
-      return status?.pages || currentPagePath;
+    status != null ? [status] : null,
+    (status) => {
+      return status?.pages || null;
     },
   );
 };
