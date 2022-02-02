@@ -319,10 +319,9 @@ describe('PageService', () => {
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
       expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
-      expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
       expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
-      // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed
-      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).toBeNull();
 
       // Check that pages that are not to be renamed have not been renamed
       expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
@@ -348,7 +347,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
+        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled(); // single rename is deprecated
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename1, testUser2);
 
@@ -362,7 +361,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
+        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename2, testUser2);
 
@@ -376,7 +375,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(renameDescendantsWithStreamSpy).not.toHaveBeenCalled();
+        expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename3, testUser2);
 
         expect(resultPage.path).toBe('/renamed3');
