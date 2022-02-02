@@ -31,7 +31,7 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageForPageDeleteModal[],
+  // pages: IPageForPageDeleteModal[],
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -44,9 +44,12 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   } = props;
 
 
-  const { close: closeDeleteModal } = useDeleteModalStatus();
+  const { data: closeDeleteModalData, close: closeDeleteModal } = useDeleteModalStatus();
   const { data: isOpened } = useDeleteModalOpened();
-  const { data: pages } = useDeleteModalPath();
+  const { data: modalPages } = useDeleteModalPath();
+
+  console.log('modalPages', modalPages);
+  console.log('closeDeleteModalData', closeDeleteModalData);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -149,6 +152,17 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     );
   }
 
+  const renderHoge = () => {
+    if (closeDeleteModalData != null && closeDeleteModalData.pages != null) {
+      const { pages } = closeDeleteModalData;
+      console.log('pages_hoi', pages);
+      console.log('pages_hoe', typeof pages);
+
+      return pages.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    }
+    return <></>;
+  };
+
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -160,9 +174,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
-          {/* {pages?.map((page) => {
+          {/* {closeDeleteModalData?.pages.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })} */}
+          {renderHoge()}
         </div>
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
