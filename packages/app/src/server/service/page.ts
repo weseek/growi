@@ -1821,30 +1821,29 @@ class PageService {
     }
 
     // generate filter
-    let filter: any = {
-      parent: null,
-      path: { $ne: '/' },
-      status: Page.STATUS_PUBLISHED,
+    const filter: any = {
+      $and: [
+        {
+          parent: null,
+          status: Page.STATUS_PUBLISHED,
+          path: { $ne: '/' },
+        },
+      ],
     };
     if (regexps != null && regexps.length !== 0) {
-      filter = {
-        ...filter,
-        path: {
-          $in: regexps,
-        },
-      };
+      filter.$and.push({
+        parent: null,
+        status: Page.STATUS_PUBLISHED,
+        path: { $in: regexps },
+      });
     }
 
     const total = await Page.countDocuments(filter);
 
     let baseAggregation = Page
       .aggregate([
-        {
-          $match: grantFilter,
-        },
-        {
-          $match: filter,
-        },
+        { $match: grantFilter },
+        { $match: filter },
         {
           $project: { // minimize data to fetch
             _id: 1,
