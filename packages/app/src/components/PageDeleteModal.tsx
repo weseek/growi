@@ -46,9 +46,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
 
   const { data: closeDeleteModalData, close: closeDeleteModal } = useDeleteModalStatus();
   const { data: isOpened } = useDeleteModalOpened();
-  const { data: modalPages } = useDeleteModalPath();
 
-  console.log('modalPages', modalPages);
   console.log('closeDeleteModalData', closeDeleteModalData);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
