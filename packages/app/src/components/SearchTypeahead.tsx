@@ -10,7 +10,8 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { apiGet } from '~/client/util/apiv1-client';
-import { IPageSearchResultData, IFormattedSearchResult } from '~/interfaces/search';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
 
 
 type ResetFormButtonProps = {
@@ -33,7 +34,7 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
 
 
 type Props = TypeaheadProps & {
-  onSearchSuccess?: (res: IPageSearchResultData[]) => void,
+  onSearchSuccess?: (res: IPageWithMeta<IPageSearchMeta>[]) => void,
   onSearchError?: (err: Error) => void,
   onSubmit?: (input: string) => void,
   inputName?: string,
@@ -60,7 +61,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [input, setInput] = useState(props.keywordOnInit!);
-  const [pages, setPages] = useState<IPageSearchResultData[]>();
+  const [pages, setPages] = useState<IPageWithMeta<IPageSearchMeta>[]>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchError, setSearchError] = useState<Error | null>(null);
   const [isLoading, setLoading] = useState(false);
@@ -187,7 +188,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     inputProps.name = props.inputName;
   }
 
-  const renderMenuItemChildren = (option: IPageSearchResultData) => {
+  const renderMenuItemChildren = (option: IPageWithMeta<IPageSearchMeta>) => {
     const { pageData } = option;
     return (
       <span>

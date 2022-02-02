@@ -4,7 +4,6 @@ import { IRevision } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 
-
 export type IPage = {
   path: string,
   status: string,
@@ -35,3 +34,18 @@ export type IPage = {
 export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
+
+export type IPageInfo = {
+  bookmarkCount: number,
+  sumOfLikers: number,
+  likerIds: string[],
+  sumOfSeenUsers: number,
+  seenUserIds: string[],
+  isSeen?: boolean,
+  isLiked?: boolean,
+}
+
+export type IPageWithMeta<M = Record<string, unknown>> = {
+  pageData: IPageHasId,
+  pageMeta?: Partial<IPageInfo> & M,
+};

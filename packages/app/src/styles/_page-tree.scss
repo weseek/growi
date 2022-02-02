@@ -45,6 +45,13 @@ $grw-pagetree-item-padding-left: 10px;
     }
   }
 
+  .grw-pagetree-item-container {
+    .grw-triangle-container {
+      min-width: 35px;
+      height: 40px;
+    }
+  }
+
   // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
   > .grw-pagetree-item-container {
     > .list-group-item {

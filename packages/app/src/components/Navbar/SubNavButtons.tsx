@@ -10,7 +10,6 @@ import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { toastError } from '../../client/util/apiNotification';
 import { apiv3Put } from '../../client/util/apiv3-client';
 import { useSWRxLikerList } from '../../stores/user';
-import { useEditorMode } from '~/stores/ui';
 import { useIsGuestUser } from '~/stores/context';
 
 type SubNavButtonsProps= {
@@ -18,17 +17,15 @@ type SubNavButtonsProps= {
   pageId: string,
   revisionId: string,
   path: string,
-  willShowPageManagement: boolean,
+  isViewMode: boolean
+  isAbleToShowPageManagement: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
-    isCompactMode, pageId, revisionId, path, willShowPageManagement, isDeletable, isAbleToDeleteCompletely,
+    isCompactMode, pageId, revisionId, path, isViewMode, isAbleToShowPageManagement, isDeletable, isAbleToDeleteCompletely,
   } = props;
-
-  const { data: editorMode } = useEditorMode();
-  const isViewMode = editorMode === 'view';
 
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -95,18 +92,18 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
             onBookMarkClicked={bookmarkClickHandler}
           >
           </PageReactionButtons>
+          { isAbleToShowPageManagement && (
+            <PageManagement
+              pageId={pageId}
+              revisionId={revisionId}
+              path={path}
+              isCompactMode={isCompactMode}
+              isDeletable={isDeletable}
+              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+            >
+            </PageManagement>
+          )}
         </>
-      )}
-      {willShowPageManagement && (
-        <PageManagement
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
-          isCompactMode={isCompactMode}
-          isDeletable={isDeletable}
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        >
-        </PageManagement>
       )}
     </div>
   );

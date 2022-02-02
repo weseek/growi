@@ -17,10 +17,10 @@ $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcol
 $color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
-$bgcolor-search-item-active: lighten($primary, 76%) !default;
-$color-search-item-pagelist-meta: $gray-500 !default;
+$bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
+$color-page-list-group-item-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
-$color-search-page-list-snippet: $gray-600 !default;
+$color-page-list-snippet: $gray-600 !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
@@ -511,6 +511,34 @@ ul.pagination {
 }
 
 /*
+ * GROWI page-list
+ */
+.page-list {
+  // List group
+  .list-group {
+    .list-group-item {
+      .page-list-meta {
+        color: $color-page-list-group-item-meta;
+        svg {
+          fill: $color-page-list-group-item-meta;
+        }
+      }
+
+      .page-list-snippet {
+        color: $color-page-list-snippet;
+      }
+
+      &.list-group-item-action {
+        &.active {
+          background-color: $bgcolor-page-list-group-item-active;
+          border-left-color: $primary;
+        }
+      }
+    }
+  }
+}
+
+/*
  * GROWI on-edit
  */
 body.on-edit {
@@ -616,33 +644,13 @@ body.pathname-sidebar {
   .grw-search-page-nav {
     background-color: $bgcolor-subnav;
   }
-  .search-result-list {
-    .search-control {
-      background-color: $bgcolor-global;
-    }
-    .page-list {
-      .highlighted-keyword {
-        background-color: $bgcolor-keyword-highlighted;
-      }
-      .page-list-ul {
-        .grw-search-result-item {
-          &.active {
-            background-color: $bgcolor-search-item-active;
-            border-color: $primary;
-          }
-        }
-      }
-      .page-list-meta {
-        color: $color-search-item-pagelist-meta;
-        svg {
-          fill: $color-search-item-pagelist-meta;
-        }
-      }
-    }
+  .search-control {
+    background-color: $bgcolor-global;
   }
-
-  .grw-search-result-list-snippet {
-    color: $color-search-page-list-snippet;
+  .page-list {
+    .highlighted-keyword {
+      background-color: $bgcolor-keyword-highlighted;
+    }
   }
 }
 
