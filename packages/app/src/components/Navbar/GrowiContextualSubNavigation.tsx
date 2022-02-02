@@ -9,7 +9,7 @@ import {
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
-  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsGuestUser,
+  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -25,7 +25,7 @@ import PagePathNav from '../PagePathNav';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 
-const GrowiSubNavigation = (props) => {
+const GrowiContextualSubNavigation = (props) => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
@@ -53,19 +53,20 @@ const GrowiSubNavigation = (props) => {
 
   const isViewMode = editorMode === EditorMode.View;
   const isEditorMode = !isViewMode;
+  const isPageExist = pageId != null;
 
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
 
-  const tagsUpdatedHandler = useCallback(async(newTags) => {
+  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
-    if (editorMode === 'edit') {
+    if (editorMode === EditorMode.Editor) {
       return editorContainer.setState({ tags: newTags });
     }
 
     try {
-      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -79,6 +80,10 @@ const GrowiSubNavigation = (props) => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
+
+  if (path == null) {
+    return <></>;
+  }
 
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
@@ -94,7 +99,7 @@ const GrowiSubNavigation = (props) => {
         <div className="grw-path-nav-container">
           { isAbleToShowTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
-              <TagLabels tags={TagsInfoData?.tags || []} tagsUpdateInvoked={tagsUpdatedHandler} />
+              <TagLabels tags={TagsInfoData?.tags || []} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
@@ -104,18 +109,22 @@ const GrowiSubNavigation = (props) => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end">
-          <SubNavButtons
-            isCompactMode={isCompactMode}
-            pageId={pageId}
-            revisionId={revisionId}
-            path={path}
-            isDeletable={isDeletable}
-            isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            isViewMode={isViewMode}
-            isAbleToShowPageManagement={isAbleToShowPageManagement}
-          />
-          <div className="mt-2">
+        <div>
+          <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+            { isPageExist && (
+              <SubNavButtons
+                isCompactMode={isCompactMode}
+                pageId={pageId}
+                revisionId={revisionId}
+                path={path}
+                isDeletable={isDeletable}
+                isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+                isViewMode={isViewMode}
+                isAbleToShowPageManagement={isAbleToShowPageManagement}
+              />
+            ) }
+          </div>
+          <div className="h-50 d-flex flex-column align-items-end justify-content-center">
             {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
@@ -146,13 +155,13 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [EditorContainer]);
+const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer]);
 
 
-GrowiSubNavigation.propTypes = {
+GrowiContextualSubNavigation.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
 };
 
-export default GrowiSubNavigationWrapper;
+export default GrowiContextualSubNavigationWrapper;
