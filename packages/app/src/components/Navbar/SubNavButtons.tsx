@@ -17,14 +17,13 @@ type SubNavButtonsProps= {
   pageId: string,
   revisionId: string,
   path: string,
-  isViewMode?: boolean
   isAbleToShowPageManagement?: boolean,
   isDeletable?: boolean,
   isAbleToDeleteCompletely?: boolean,
 }
 const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
   const {
-    isCompactMode, pageId, revisionId, path, isViewMode, isAbleToShowPageManagement, isDeletable, isAbleToDeleteCompletely,
+    isCompactMode, pageId, revisionId, path, isAbleToShowPageManagement, isDeletable, isAbleToDeleteCompletely,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -75,35 +74,31 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      {isViewMode && (
-        <>
-          <span>
-            <SubscribeButton pageId={props.pageId} />
-          </span>
-          <PageReactionButtons
-            isCompactMode={isCompactMode}
-            sumOfLikers={sumOfLikers}
-            isLiked={isLiked}
-            likers={likers || []}
-            onLikeClicked={likeClickhandler}
-            sumOfBookmarks={sumOfBookmarks}
-            isBookmarked={isBookmarked}
-            bookmarkedUsers={bookmarkedUsers}
-            onBookMarkClicked={bookmarkClickHandler}
-          >
-          </PageReactionButtons>
-          { isAbleToShowPageManagement && (
-            <PageManagement
-              pageId={pageId}
-              revisionId={revisionId}
-              path={path}
-              isCompactMode={isCompactMode}
-              isDeletable={isDeletable}
-              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            >
-            </PageManagement>
-          )}
-        </>
+      <span>
+        <SubscribeButton pageId={props.pageId} />
+      </span>
+      <PageReactionButtons
+        isCompactMode={isCompactMode}
+        sumOfLikers={sumOfLikers}
+        isLiked={isLiked}
+        likers={likers || []}
+        onLikeClicked={likeClickhandler}
+        sumOfBookmarks={sumOfBookmarks}
+        isBookmarked={isBookmarked}
+        bookmarkedUsers={bookmarkedUsers}
+        onBookMarkClicked={bookmarkClickHandler}
+      >
+      </PageReactionButtons>
+      { isAbleToShowPageManagement && (
+        <PageManagement
+          pageId={pageId}
+          revisionId={revisionId}
+          path={path}
+          isCompactMode={isCompactMode}
+          isDeletable={isDeletable}
+          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        >
+        </PageManagement>
       )}
     </div>
   );
