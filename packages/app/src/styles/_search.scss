@@ -142,9 +142,6 @@
     padding-bottom: unset;
   }
 
-  .search-control {
-    padding: 5px 0;
-  }
   // To fix the sort options position
   .search-sort-option-btn {
     min-width: 12rem;
@@ -155,10 +152,6 @@
     }
   }
   .search-result-list {
-    position: sticky;
-    top: 0px;
-    z-index: 10; // to avoid dropdown menu in this class to be placed behind elements displayed on the right pane
-
     .search-result-list-scroll {
       // subtract the height of GrowiNavbar + (SearchControl component + other factors)
       height: calc(100vh - (($grw-navbar-height + $grw-navbar-border-width) + 110px));
@@ -166,41 +159,6 @@
 
       @include media-breakpoint-down(sm) {
         height: calc(100vh - (($grw-navbar-height + $grw-navbar-border-width + $grw-navbar-bottom-height) + 123px));
-      }
-    }
-
-    .nav.nav-pills {
-      > .grw-search-result-item {
-        min-height: 136px;
-        &.active {
-          border-left: solid 3px transparent;
-          .search-item-checkbox {
-            // subtract 3px from padding left applied by .search-item-checkbox
-            // as 3px of border-left is added above
-            padding-left: 4px !important;
-          }
-        }
-        > a {
-          word-break: break-all;
-
-          &:hover {
-            color: inherit;
-            text-decoration: none;
-          }
-          > * {
-            margin-right: 3px;
-          }
-        }
-        .page-list-meta {
-          .meta-icon {
-            width: 14px;
-            height: 14px;
-            margin-right: 14px;
-          }
-          .footstamp-icon {
-            margin-right: 2px;
-          }
-        }
       }
     }
 
@@ -216,14 +174,14 @@
       margin: 0 10px 0 0;
       vertical-align: middle;
     }
-  }
-  .search-item-text {
-    .item-meta {
+    // not show top label in search result list
+    .page-list-meta {
       .top-label {
-        display: none; // not show top label in search result list
+        display: none;
       }
     }
   }
+
   .search-result-content {
     .search-result-content-nav {
       min-height: $grw-subnav-search-preview-min-height;

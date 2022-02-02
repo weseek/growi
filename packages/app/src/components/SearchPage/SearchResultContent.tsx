@@ -1,18 +1,16 @@
 import React, { FC } from 'react';
 
-import { IPageSearchResultData } from '../../interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
 
-// TODO : set focusedPage type to ?IPageSearchResultData once #80214 is merged
-// PR: https://github.com/weseek/growi/pull/4649
-
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  focusedSearchResultData : IPageSearchResultData,
+  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
 }
 
 

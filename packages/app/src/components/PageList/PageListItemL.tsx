@@ -5,28 +5,29 @@ import Clamp from 'react-multiline-clamp';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { pagePathUtils, DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
-import { IPageSearchResultData } from '../../interfaces/search';
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
 const { isTopPage, isUserNamePage } = pagePathUtils;
 
 type Props = {
-  page: IPageSearchResultData,
-  isSelected: boolean, // is item selected(focused)
-  isChecked: boolean, // is checkbox of item checked
-  isEnableActions: boolean,
+  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta>,
+  isSelected?: boolean, // is item selected(focused)
+  isChecked?: boolean, // is checkbox of item checked
+  isEnableActions?: boolean,
   shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
-  onClickSearchResultItem?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-const PageListItem: FC<Props> = memo((props:Props) => {
+export const PageListItemL: FC<Props> = memo((props:Props) => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickSearchResultItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
     showPageUpdatedTime,
   } = props;
 
@@ -34,19 +35,21 @@ const PageListItem: FC<Props> = memo((props:Props) => {
 
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
+  const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
+
   const pageTitle = (
     <PagePathLabel
-      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      path={elasticSearchResult?.highlightedPath || pageData.path}
       isLatterOnly
-      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
     >
     </PagePathLabel>
   );
   const pagePathElem = (
     <PagePathLabel
-      path={pageMeta.elasticSearchResult?.highlightedPath || pageData.path}
+      path={elasticSearchResult?.highlightedPath || pageData.path}
       isFormerOnly
-      isPathIncludedHtml={pageMeta.elasticSearchResult?.isHtmlInPath}
+      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
     />
   );
 
@@ -57,27 +60,27 @@ const PageListItem: FC<Props> = memo((props:Props) => {
       return;
     }
 
-    if (onClickSearchResultItem != null) {
-      onClickSearchResultItem(pageData._id);
+    if (onClickItem != null) {
+      onClickItem(pageData._id);
     }
-  }, [isDeviceSmallerThanLg, onClickSearchResultItem, pageData._id]);
+  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
-  // background color of list item changes when class "active" exists under 'grw-search-result-item'
+  // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
   const styleBorder = onClickCheckbox != null ? 'border-bottom' : 'list-group-item p-0';
 
   return (
     <li
       key={pageData._id}
-      className={`w-100 grw-search-result-item search-result-list ${styleListGroupItem} ${styleActive} ${styleBorder}}`
+      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive} ${styleBorder}}`
       }
     >
       <div
-        className="h-100 text-break"
+        className="text-break"
         onClick={clickHandler}
       >
-        <div className="d-flex h-100">
+        <div className="d-flex">
           {/* checkbox */}
           {onClickCheckbox != null && (
             <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
@@ -90,7 +93,7 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               />
             </div>
           )}
-          <div className="search-item-text p-md-3 pl-2 py-3 pr-3 flex-grow-1">
+          <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
             {/* page path */}
             <h6 className="mb-1 py-1 d-flex">
               <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
@@ -112,8 +115,8 @@ const PageListItem: FC<Props> = memo((props:Props) => {
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex item-meta py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
+              <div className="d-none d-md-flex py-0 px-1">
+                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
@@ -125,11 +128,11 @@ const PageListItem: FC<Props> = memo((props:Props) => {
                 />
               </div>
             </div>
-            <div className="grw-search-result-list-snippet py-1">
+            <div className="page-list-snippet py-1">
               <Clamp lines={2}>
                 {
-                  pageMeta.elasticSearchResult != null && pageMeta.elasticSearchResult?.snippet.length !== 0 ? (
-                    <div dangerouslySetInnerHTML={{ __html: pageMeta.elasticSearchResult.snippet }}></div>
+                  elasticSearchResult != null && elasticSearchResult?.snippet.length !== 0 ? (
+                    <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                   ) : (
                     <div>{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator
                   )
@@ -143,5 +146,3 @@ const PageListItem: FC<Props> = memo((props:Props) => {
     </li>
   );
 });
-
-export default PageListItem;
