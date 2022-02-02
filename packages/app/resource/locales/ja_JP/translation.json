@@ -429,7 +429,8 @@
   "Delete Completely": "完全削除",
   "modal_delete": {
     "delete_page": "ページを削除する",
-    "deleting_page": "ページパス",
+    "deleting_page": "削除するページパス",
+    "not_deleting_page": "削除されないページパス",
     "delete_recursively": "全ての子ページも削除",
     "delete_completely": "完全削除",
     "delete_completely_restriction": "完全削除をするための権限がありません。",
