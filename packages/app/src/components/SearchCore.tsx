@@ -309,7 +309,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const renderControl = useCallback(() => {
     if (props.renderControl != null) {
       // eslint-disable-next-line max-len
-      return props.renderControl(searchingKeyword, onSearchInvoked, searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox);
+      return props.renderControl(searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox, searchingKeyword, onSearchInvoked);
     }
     return <></>;
   }, []);
@@ -331,6 +331,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onPagingLimitChanged={onPagingLimitChanged}
         pagingLimit={pagingLimit}
         activePage={activePage}
+        alertMessage={props.alertMessage}
       >
       </SearchPageLayout>
       {props.renderActionToPageModal(getSelectedPagesToAction)}
