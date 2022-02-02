@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
-import PageListItem from '../Page/PageListItem';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+
+import { PageListItemL } from '../PageList/PageListItemL';
 import PaginationWrapper from '../PaginationWrapper';
-import { IPageSearchResultData } from '../../interfaces/search';
 
 
 type Props = {
-  pages: IPageSearchResultData[],
+  pages: IPageWithMeta<IPageSearchMeta>[],
   selectedPagesIdList: Set<string>
   isEnableActions: boolean,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
   shortBodiesMap?: Record<string, string>
-  focusedSearchResultData?: IPageSearchResultData,
+  focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
-  onClickSearchResultItem?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
   onClickCheckbox?: (pageId: string) => void,
   onClickInvoked?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -27,17 +29,17 @@ const SearchResultList: FC<Props> = (props:Props) => {
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
-    <>
+    <ul className="page-list-ul list-group list-group-flush">
       {Array.isArray(props.pages) && props.pages.map((page) => {
         const isChecked = selectedPagesIdList.has(page.pageData._id);
 
         return (
-          <PageListItem
+          <PageListItemL
             key={page.pageData._id}
             page={page}
             isEnableActions={isEnableActions}
             shortBody={shortBodiesMap?.[page.pageData._id]}
-            onClickSearchResultItem={props.onClickSearchResultItem}
+            onClickItem={props.onClickItem}
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
@@ -56,7 +58,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         </div>
       )}
 
-    </>
+    </ul>
   );
 
 };

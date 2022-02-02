@@ -60,6 +60,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
   "Create Archive Page": "Create Archive Page",
@@ -206,7 +207,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 6 characters long.",
+      "password": "Your password must be at least 8 characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
