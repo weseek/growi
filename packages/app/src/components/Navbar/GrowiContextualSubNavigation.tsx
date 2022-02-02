@@ -80,7 +80,7 @@ const GrowiContextualSubNavigation = (props) => {
     return (
       <>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          { isPageExist && path != null && (
+          { isViewMode && isPageExist && path != null && (
             <SubNavButtons
               isCompactMode={isCompactMode}
               pageId={pageId}
@@ -88,7 +88,6 @@ const GrowiContextualSubNavigation = (props) => {
               path={path}
               isDeletable={isDeletable}
               isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-              isViewMode={isViewMode}
               isAbleToShowPageManagement={isAbleToShowPageManagement}
             />
           ) }
