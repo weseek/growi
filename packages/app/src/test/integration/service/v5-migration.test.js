@@ -28,12 +28,6 @@ describe('V5 page migration', () => {
       // initialize pages for test
       const pages = await Page.insertMany([
         {
-          path: '/',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser1,
-          lastUpdateUser: testUser1,
-        },
-        {
           path: '/private1',
           grant: Page.GRANT_OWNER,
           creator: testUser1,
