@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { pagePathUtils } from '@growi/core';
+import { useDeleteModalStatus } from '~/stores/ui';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageDeleteModal from '../PageDeleteModal';
@@ -21,6 +23,8 @@ const LegacyPageManagemenet = (props) => {
   const {
     t, appContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
+
+  const { open: openDeleteModal } = useDeleteModalStatus();
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
@@ -54,13 +58,13 @@ const LegacyPageManagemenet = (props) => {
     setIsPageTempleteModalShown(false);
   }
 
-  function openPageDeleteModalHandler() {
-    setIsPageDeleteModalShown(true);
-  }
+  // function openPageDeleteModalHandler() {
+  //   setIsPageDeleteModalShown(true);
+  // }
 
-  function closePageDeleteModalHandler() {
-    setIsPageDeleteModalShown(false);
-  }
+  // function closePageDeleteModalHandler() {
+  //   setIsPageDeleteModalShown(false);
+  // }
 
   function openPagePresentationModalHandler() {
     setIsPagePresentationModalShown(true);
@@ -146,7 +150,7 @@ const LegacyPageManagemenet = (props) => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item text-danger" type="button" onClick={openPageDeleteModalHandler}>
+        <button className="dropdown-item text-danger" type="button" onClick={openDeleteModal}>
           <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
@@ -183,12 +187,12 @@ const LegacyPageManagemenet = (props) => {
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
-        <PageDeleteModal
+        {/* <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           pages={[pageToDelete]}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        />
+        /> */}
         <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}

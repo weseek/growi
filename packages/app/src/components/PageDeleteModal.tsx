@@ -6,6 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // import { apiPost } from '~/client/util/apiv1-client';
+import { useDeleteModalStatus, useDeleteModalOpened, useDeleteModalPath } from '~/stores/ui';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -39,8 +40,14 @@ type Props = {
 const PageDeleteModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
-    isOpen, onClose, isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
+    /* isOpen, onClose, */ isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
   } = props;
+
+
+  const { close: closeDeleteModal } = useDeleteModalStatus();
+  const { data: isOpened } = useDeleteModalOpened();
+  const { data: path } = useDeleteModalPath();
+
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
@@ -143,8 +150,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>

@@ -252,6 +252,7 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
+// PageCreateModal
 type CreateModalStatus = {
   isOpened: boolean,
   path?: string,
@@ -284,6 +285,49 @@ export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
 };
 
 export const useCreateModalPath = (): SWRResponse<string | null | undefined, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: status } = useCreateModalStatus();
+
+  return useSWR(
+    currentPagePath != null && status != null ? [currentPagePath, status] : null,
+    (currentPagePath, status) => {
+      return status?.path || currentPagePath;
+    },
+  );
+};
+// PageDeleteModal
+type DeleteModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DeleteModalStatusUtils = {
+  open(path?: string): Promise<DeleteModalStatus | undefined>
+  close(): Promise<DeleteModalStatus | undefined>
+}
+
+export const useDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+  const initialData: DeleteModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DeleteModalStatus, Error>('modalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const useDeleteModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = useCreateModalStatus();
+  return useSWR(
+    data != null ? ['isModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+export const useDeleteModalPath = (): SWRResponse<string | null | undefined, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useCreateModalStatus();
 
