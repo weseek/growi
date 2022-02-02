@@ -80,7 +80,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
       <div className="d-flex">
 
         <div>
-          <Controls></Controls>
+          { Controls && <Controls></Controls> }
         </div>
 
         {/* Page Authors */}
