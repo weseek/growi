@@ -40,13 +40,13 @@ type Props = {
 const PageDeleteModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
-    /* isOpen, onClose, */ isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
+    /* isOpen, onClose, */ isDeleteCompletelyModal, /* pages , */ isAbleToDeleteCompletely,
   } = props;
 
 
   const { close: closeDeleteModal } = useDeleteModalStatus();
   const { data: isOpened } = useDeleteModalOpened();
-  const { data: path } = useDeleteModalPath();
+  const { data: pages } = useDeleteModalPath();
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -160,9 +160,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
-          {pages.map((page) => {
+          {/* {pages?.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
-          })}
+          })} */}
         </div>
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}

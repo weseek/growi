@@ -17,6 +17,8 @@ import {
 import { IFocusable } from '~/client/interfaces/focusable';
 import { isSharedPage } from '^/../core/src/utils/page-path-utils';
 
+import IPageForPageDeleteModal from '~/components/PageDeleteModal';
+
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
@@ -265,7 +267,7 @@ type CreateModalStatusUtils = {
 
 export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
   const initialData: CreateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<CreateModalStatus, Error>('modalStatus', status, { fallbackData: initialData });
+  const swrResponse = useStaticSWR<CreateModalStatus, Error>('createModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -277,14 +279,14 @@ export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<Cr
 export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = useCreateModalStatus();
   return useSWR(
-    data != null ? ['isModalOpened', data] : null,
+    data != null ? ['isCreaateModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
     },
   );
 };
 
-export const useCreateModalPath = (): SWRResponse<string | null | undefined, Error> => {
+export const useCreateModalPath = (): SWRResponse<any | null | undefined, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useCreateModalStatus();
 
@@ -298,43 +300,44 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 // PageDeleteModal
 type DeleteModalStatus = {
   isOpened: boolean,
-  path?: string,
+  pages?: typeof IPageForPageDeleteModal[],
 }
 
 type DeleteModalStatusUtils = {
-  open(path?: string): Promise<DeleteModalStatus | undefined>
+  open(pages?: typeof IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
   close(): Promise<DeleteModalStatus | undefined>
 }
 
 export const useDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<DeleteModalStatus, Error>('modalStatus', status, { fallbackData: initialData });
+  const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
+    open: (pages?: typeof IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
 export const useDeleteModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = useCreateModalStatus();
+  const { data } = useDeleteModalStatus();
+  console.log('data', data);
   return useSWR(
-    data != null ? ['isModalOpened', data] : null,
+    data != null ? ['isDeleteModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
     },
   );
 };
 
-export const useDeleteModalPath = (): SWRResponse<string | null | undefined, Error> => {
+export const useDeleteModalPath = (): SWRResponse<any | null | undefined, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: status } = useCreateModalStatus();
+  const { data: status } = useDeleteModalStatus();
 
   return useSWR(
     currentPagePath != null && status != null ? [currentPagePath, status] : null,
     (currentPagePath, status) => {
-      return status?.path || currentPagePath;
+      return status?.pages || currentPagePath;
     },
   );
 };

@@ -146,26 +146,28 @@ const LegacyPageManagemenet = (props) => {
     );
   }
 
+  function generatePageObjectToDelete() {
+    return { pageId, revisionId, path };
+  }
+  const pageToDelete = generatePageObjectToDelete();
+
   function renderDropdownItemForDeletablePage() {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item text-danger" type="button" onClick={openDeleteModal}>
+        <button className="dropdown-item text-danger" type="button" onClick={() => openDeleteModal({ pages: pageToDelete })}>
           <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
     );
   }
 
-  function generatePageObjectToDelete() {
-    return { pageId, revisionId, path };
-  }
 
   function renderModals() {
     if (currentUser == null) {
       return null;
     }
-    const pageToDelete = generatePageObjectToDelete();
+    // const pageToDelete = generatePageObjectToDelete();
 
     return (
       <>
