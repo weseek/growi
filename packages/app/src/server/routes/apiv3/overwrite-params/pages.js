@@ -41,6 +41,11 @@ class PageOverwriteParamsFactory {
       return value;
     };
 
+    params.parent = (value, { document, schema, propertyName }) => {
+      if (value === undefined) return null;
+      return value;
+    };
+
     if (option.initPageMetadatas) {
       params.liker = [];
       params.seenUsers = [];
