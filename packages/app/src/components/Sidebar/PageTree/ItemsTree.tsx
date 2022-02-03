@@ -94,10 +94,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
+  // TODO: show PageDeleteModal with usePageDeleteModalStatus by 87568
   const DeleteModal = (
     <PageDeleteModal
       isOpen={isDeleteModalOpen}
-      pages={pagesToDelete}
+      // pages={pagesToDelete}
       isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       isDeleteCompletelyModal={isDeleteCompletelyModal}
       onClose={onCloseDelete}

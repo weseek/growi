@@ -31,7 +31,6 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean,
-  // pages: IPageForPageDeleteModal[],
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -40,14 +39,12 @@ type Props = {
 const PageDeleteModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
-    /* isOpen, onClose, */ isDeleteCompletelyModal, /* pages , */ isAbleToDeleteCompletely,
+    isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
 
   const { data: closeDeleteModalData, close: closeDeleteModal } = usePageDeleteModalStatus();
   const { data: isOpened } = useDeleteModalOpened();
-
-  console.log('closeDeleteModalData', closeDeleteModalData);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -151,7 +148,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     );
   }
 
-  const renderHoge = () => {
+  const renderPagePathsToDelete = () => {
     if (closeDeleteModalData != null && closeDeleteModalData.pages != null) {
       const { pages } = closeDeleteModalData;
       return pages.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
@@ -173,7 +170,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           {/* {closeDeleteModalData?.pages.pages.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })} */}
-          {renderHoge()}
+          {renderPagePathsToDelete()}
         </div>
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
