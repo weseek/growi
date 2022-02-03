@@ -46,6 +46,9 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
+  // TODO 85844: Fetch /user-groups/selectable-groups with SWR
+  const selectableUserGroups: IUserGroupHasId[] = [];
+
   /*
    * Function
    */
@@ -104,10 +107,12 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
+  // TODO: 87671 Add existing group
   const onClickAddChildButton = (userGroup: IUserGroupHasId) => {
     console.log(userGroup);
   };
 
+  // TODO 87614: UserGroup New creation form can be displayed in modal
   const onClickCreateGroupButton = () => {
     console.log('button clicked!');
   };
@@ -148,7 +153,7 @@ const UserGroupDetailPage: FC = () => {
 
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {
-            userGroups.map(userGroup => (
+            selectableUserGroups.map(userGroup => (
               <button
                 key={userGroup._id}
                 type="button"
