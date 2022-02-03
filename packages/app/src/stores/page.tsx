@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
@@ -49,7 +50,7 @@ export const useSWRxPageList = (
 export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
   const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWR(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
+  return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
     return {
       tags: response.tags,
     };
@@ -57,7 +58,7 @@ export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<I
 };
 
 export const useSWRxPageInfo = (pageId: string | null | undefined): SWRResponse<IPageInfoCommon | IPageInfo, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     pageId != null ? ['/page/info', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
