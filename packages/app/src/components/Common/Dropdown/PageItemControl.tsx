@@ -102,7 +102,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         <>
           <DropdownItem divider />
           <DropdownItem
-            className="text-danger pt-2"
+            className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
             disabled={!pageInfo.isDeletable}
             onClick={deleteItemClickedHandler}
           >
