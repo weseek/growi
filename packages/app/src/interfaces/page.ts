@@ -38,6 +38,7 @@ export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
 export type IPageInfoCommon = {
   isEmpty: boolean,
+  isMovable: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
 }

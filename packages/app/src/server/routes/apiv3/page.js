@@ -1,7 +1,7 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
-import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
+import { AllSubscriptionStatusType } from '~/interfaces/subscription';
 import Subscription from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
@@ -10,7 +10,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath } = pagePathUtils;
+const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -382,6 +382,7 @@ module.exports = (crowi) => {
         seenUserIds: page.seenUsers.slice(0, 15),
         sumOfSeenUsers: page.seenUsers.length,
         bookmarkCount,
+        isMovable: false,
         isDeletable: Page.isDeletableName(page.path),
         isAbleToDeleteCompletely: false,
       };
@@ -393,12 +394,14 @@ module.exports = (crowi) => {
 
       const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
       const isLiked = page.isLiked(user);
+      const isMovable = !isTopPage(page.path);
       const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
 
       const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
       const responseBody = {
         ...responseBodyForGuest,
+        isMovable,
         isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,
