@@ -22,6 +22,7 @@ const CollectionProgressingStatus = require('../models/vo/collection-progressing
 
 const BULK_IMPORT_SIZE = 100;
 
+
 class ImportSettings {
 
   constructor(mode) {
@@ -473,6 +474,7 @@ class ImportService {
     Object.entries(overwriteParams).forEach(([propertyName, overwriteValue]) => {
       const value = document[propertyName];
 
+      // distinguish between null and undefined
       if (value !== undefined) {
         const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
         _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : overwriteValue;
