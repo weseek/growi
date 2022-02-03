@@ -16,7 +16,7 @@ import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
-const { isTopPage, isUserPage } = pagePathUtils;
+const { isTopPage, isUserNamePage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -132,7 +132,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
 
-  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string);
+  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserNamePage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',

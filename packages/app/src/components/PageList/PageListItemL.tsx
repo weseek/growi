@@ -10,7 +10,7 @@ import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
 import PageItemControl from '../Common/Dropdown/PageItemControl';
 
-const { isTopPage } = pagePathUtils;
+const { isTopPage, isUserNamePage } = pagePathUtils;
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageSearchMeta>,
@@ -124,8 +124,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
                   page={pageData}
                   onClickDeleteButtonHandler={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
-                  isDeletable={!isTopPage(pageData.path)}
-                  // Todo: add onClickRenameButtonHandler
+                  isDeletable={!isTopPage(pageData.path) && !isUserNamePage(pageData.path)}
                 />
               </div>
             </div>

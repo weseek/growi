@@ -61,8 +61,10 @@ export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfo, Er
   }));
 };
 
-export const useSWRTagsInfo = (pageId: string): SWRResponse<IPageTagsInfo, Error> => {
-  return useSWR(`/pages.getPageTag?pageId=${pageId}`, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
+export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
+  const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
+
+  return useSWR(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
     return {
       tags: response.tags,
     };

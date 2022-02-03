@@ -7,8 +7,8 @@ import LinkedPagePath from '../models/linked-page-path';
 
 
 type Props = {
-  pageId :string,
-  pagePath:string,
+  pagePath: string,
+  pageId?: string | null,
   isSingleLineMode?:boolean,
   isCompactMode?:boolean,
 }
@@ -43,11 +43,13 @@ const PagePathNav: FC<Props> = (props: Props) => {
       {formerLink}
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        <div className="mx-2">
-          <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
-            <i className="ti-clipboard"></i>
-          </CopyDropdown>
-        </div>
+        { pageId != null && (
+          <div className="mx-2">
+            <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
+              <i className="ti-clipboard"></i>
+            </CopyDropdown>
+          </div>
+        ) }
       </span>
     </div>
   );

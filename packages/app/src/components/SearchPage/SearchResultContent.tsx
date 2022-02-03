@@ -1,5 +1,5 @@
 import React, {
-  FC, useRef, useState, useEffect,
+  FC, useRef, useState, useEffect, useCallback,
 } from 'react';
 
 import { IPageWithMeta } from '~/interfaces/page';
@@ -8,9 +8,10 @@ import { IPageSearchMeta } from '~/interfaces/search';
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
+import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtons } from '../Navbar/SubNavButtons';
 
-const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + subnavigation)
+const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
 
 type Props ={
   appContainer: AppContainer,
@@ -22,31 +23,54 @@ type Props ={
 const SearchResultContent: FC<Props> = (props: Props) => {
   const [isRevisionBodyRendered, setIsRevisionBodyRendered] = useState(false);
   const contentRef = useRef(null);
+
   useEffect(() => {
     // reset state
     if (isRevisionBodyRendered) {
-      const searchResultPageContent = contentRef.current as HTMLElement| null;
-      if (searchResultPageContent == null) return;
-      const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
-      if (highlightedWord == null) return;
-      smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
-    }
-    setIsRevisionBodyRendered(false);
 
-  }, [isRevisionBodyRendered, contentRef]);
+      const searchResultPageContent = contentRef.current as HTMLElement | null;
+      if (searchResultPageContent == null) {
+        return setIsRevisionBodyRendered(false);
+      }
+      const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
+      if (highlightedWord == null) {
+        return setIsRevisionBodyRendered(false);
+      }
+      smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
+      setIsRevisionBodyRendered(false);
+    }
+
+  }, [isRevisionBodyRendered, contentRef.current]);
 
   const page = props.focusedSearchResultData?.pageData;
+
+  const growiRenderer = props.appContainer.getRenderer('searchresult');
+
+  const ControlComponents = useCallback(() => {
+    if (page == null) {
+      return <></>;
+    }
+
+    return (
+      <>
+        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+          <SubNavButtons pageId={page._id} />
+        </div>
+        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        </div>
+      </>
+    );
+  }, [page]);
+
   // return if page is null
   if (page == null) return <></>;
-  const growiRenderer = props.appContainer.getRenderer('searchresult');
+
   return (
     <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <SearchResultContentSubNavigation
-        pageId={page._id}
-        revisionId={page.revision}
-        path={page.path}
-      >
-      </SearchResultContentSubNavigation>
+      <GrowiSubNavigation
+        page={page}
+        controls={ControlComponents}
+      />
       <div className="search-result-page-content" ref={contentRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
