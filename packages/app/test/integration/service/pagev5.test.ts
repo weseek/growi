@@ -56,16 +56,35 @@ describe('PageService page operations with only public pages', () => {
 
   });
 
-  describe('Should NOT rename top page', async() => {
-    let isThrown = false;
-    try {
-      await crowi.pageService.renamePage(rootPage, '/new_root', testUser1, {});
-    }
-    catch (err) {
-      isThrown = true;
-    }
+  describe('Rename', () => {
+    test('Should NOT rename top page', async() => {
 
-    expect(isThrown).toBe(true);
+      let isThrown = false;
+      try {
+        await crowi.pageService.renamePage(rootPage, '/new_root', testUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(isThrown).toBe(true);
+    });
+
+    test('Should move to under non-empty page', async() => {
+      // a
+    });
+
+    test('Should move to under empty page', async() => {
+      // a
+    });
+
+    test('Should move with option updateMetadata: true', async() => {
+      // a
+    });
+
+    test('Should move with option createRedirectPage: true', async() => {
+      // a
+    });
   });
 });
 
