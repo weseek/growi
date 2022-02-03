@@ -892,7 +892,7 @@ class PageService {
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
-    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
+    const normalizeParentAndDescendantCountOfDescendants = this.normalizeParentAndDescendantCountOfDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
@@ -914,9 +914,7 @@ class PageService {
         const shouldNormalize = shouldNormalizeParent(page);
         if (shouldNormalize) {
           try {
-            const escapedPath = escapeStringRegexp(newPagePath);
-            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
-            await normalizeParentRecursively(null, regexps);
+            await normalizeParentAndDescendantCountOfDescendants(newPagePath);
             logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
           }
           catch (err) {
@@ -1010,16 +1008,15 @@ class PageService {
     }
 
     if (isRecursively) {
-      const deleteDescendantsWithStream = this.deleteDescendantsWithStream.bind(this);
-
       // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
       (async() => {
-        const deletedCount = await deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+        const deletedCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
 
         // update descendantCount of ancestors'
-        const exParent = await Page.findOne({ _id: page.parent });
-        if (exParent != null) {
-          await this.updateDescendantCountOfAncestors(exParent._id, deletedCount * -1, true);
+        if (page.parent != null) {
+          await this.updateDescendantCountOfAncestors(page.parent, deletedCount * -1, true);
+
+          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
         }
       })();
     }
@@ -1028,6 +1025,11 @@ class PageService {
       const shouldReplace = await Page.exists({ parent: page._id });
       if (shouldReplace) {
         await Page.replaceTargetWithEmptyPage(page);
+      }
+
+      const shouldDeleteLeafEmptyPages = !shouldReplace;
+      if (shouldDeleteLeafEmptyPages) {
+        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
       }
     }
 
@@ -1175,9 +1177,13 @@ class PageService {
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
+    let nDeletedNonEmptyPages = 0; // used for updating descendantCount
+
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
+        nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
+
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
@@ -1202,7 +1208,7 @@ class PageService {
 
     await streamToPromise(readStream);
 
-    return count;
+    return nDeletedNonEmptyPages;
   }
 
   private async deleteCompletelyOperation(pageIds, pagePaths) {
@@ -1272,7 +1278,22 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+      // no await for deleteCompletelyDescendantsWithStream
+      (async() => {
+        const deletedCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+        // update descendantCount of ancestors'
+        if (page.parent != null) {
+          await this.updateDescendantCountOfAncestors(page.parent, deletedCount * -1, true);
+        }
+
+        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+      })();
+    }
+    else {
+      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+
+      // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
     }
 
     if (!page.isEmpty && !preventEmitting) {
@@ -1308,7 +1329,7 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
     let readStream;
 
     if (shouldUseV4Process) { // pages don't have parents
@@ -1319,11 +1340,15 @@ class PageService {
       readStream = await factory.generateReadable();
     }
 
-    const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
+    let nDeletedNonEmptyPages = 0; // used for updating descendantCount
+
+    const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
+        nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
+
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
@@ -1345,6 +1370,10 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(readStream);
+
+    return nDeletedNonEmptyPages;
   }
 
   // use the same process in both v4 and v5
@@ -1408,13 +1437,26 @@ class PageService {
     page.lastUpdateUser = user;
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id,
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id, descendantCount: 0,
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
     if (isRecursively) {
-      this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+      // no await for revertDeletedDescendantsWithStream
+      (async() => {
+        const revertedCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+        // update descendantCount of ancestors'
+        if (page.parent != null) {
+          await this.updateDescendantCountOfAncestors(page.parent, revertedCount * -1, true);
+
+          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+        }
+      })();
+    }
+    else {
+      await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
 
     return updatedPage;
@@ -1450,7 +1492,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true) {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
     if (shouldUseV4Process) {
       return this.revertDeletedDescendantsWithStreamV4(targetPage, user, options);
     }
@@ -1458,7 +1500,7 @@ class PageService {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
-    const normalizeParentRecursively = this.normalizeParentRecursively.bind(this);
+    const normalizeParentAndDescendantCountOfDescendants = this.normalizeParentAndDescendantCountOfDescendants.bind(this);
     const shouldNormalizeParent = this.shouldNormalizeParent.bind(this);
     let count = 0;
     const writeStream = new Writable({
@@ -1482,9 +1524,7 @@ class PageService {
         if (shouldNormalize) {
           try {
             const newPath = Page.getRevertDeletedPageName(targetPage.path);
-            const escapedPath = escapeStringRegexp(newPath);
-            const regexps = [new RegExp(`^${escapedPath}`, 'i')];
-            await normalizeParentRecursively(null, regexps);
+            await normalizeParentAndDescendantCountOfDescendants(newPath);
             logger.info(`Successfully normalized reverted descendant pages under "${newPath}"`);
           }
           catch (err) {
@@ -1501,6 +1541,10 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(readStream);
+
+    return count;
   }
 
   private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
@@ -1532,6 +1576,10 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(readStream);
+
+    return count;
   }
 
 
@@ -1837,6 +1885,15 @@ class PageService {
     }
   }
 
+  private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
+    const escapedPath = escapeStringRegexp(path);
+    const regexps = [new RegExp(`^${escapedPath}`, 'i')];
+    await this.normalizeParentRecursively(null, regexps);
+
+    // update descendantCount of descendant pages
+    await this.updateDescendantCountOfSelfAndDescendants(path);
+  }
+
   // TODO: use websocket to show progress
   private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
     const BATCH_SIZE = 100;
@@ -2025,7 +2082,7 @@ class PageService {
    * - page that has the same path as the provided path
    * - pages that are descendants of the above page
    */
-  async updateDescendantCountOfSelfAndDescendants(path = '/') {
+  async updateDescendantCountOfSelfAndDescendants(path) {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 

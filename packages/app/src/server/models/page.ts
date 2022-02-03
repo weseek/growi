@@ -458,6 +458,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
         $project: {
           path: 1,
           parent: 1,
+          isEmpty: 1,
           descendantCount: 1,
         },
       },
@@ -468,7 +469,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
             $sum: '$descendantCount',
           },
           sumOfDocsCount: {
-            $sum: 1,
+            $sum: { $cond: { if: { $ne: ['$isEmpty', true] }, then: 0, else: 1 } }, // exclude isEmpty true page from sumOfDocsCount
           },
         },
       },
