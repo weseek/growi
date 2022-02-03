@@ -1,20 +1,17 @@
-import React, { FC, Suspense, useState } from 'react';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import React, { FC, useState } from 'react';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
-type TagLabels = {
-  tags: string[],
-  appContainer: AppContainer,
-  tagsUpdateInvoked?: () => Promise<void>,
+type Props = {
+  tags?: string[],
+  isGuestUser: boolean,
+  tagsUpdateInvoked?: (tags: string[]) => Promise<void>,
 }
 
 
-const TagLabels:FC<TagLabels> = (props:TagLabels) => {
-  const { tags, appContainer, tagsUpdateInvoked } = props;
+const TagLabels:FC<Props> = (props: Props) => {
+  const { tags, isGuestUser, tagsUpdateInvoked } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
@@ -30,13 +27,18 @@ const TagLabels:FC<TagLabels> = (props:TagLabels) => {
     <>
       <form className="grw-tag-labels form-inline">
         <i className="tag-icon icon-tag mr-2"></i>
-        <Suspense fallback={<span className="grw-tag-label badge badge-secondary">―</span>}>
-          <RenderTagLabels
-            tags={tags}
-            openEditorModal={openEditorModal}
-            isGuestUser={appContainer.isGuestUser}
-          />
-        </Suspense>
+        { tags == null
+          ? (
+            <span className="grw-tag-label badge badge-secondary">―</span>
+          )
+          : (
+            <RenderTagLabels
+              tags={tags}
+              openEditorModal={openEditorModal}
+              isGuestUser={isGuestUser}
+            />
+          )
+        }
       </form>
 
       <TagEditModal
@@ -45,14 +47,8 @@ const TagLabels:FC<TagLabels> = (props:TagLabels) => {
         onClose={closeEditorModal}
         onTagsUpdated={tagsUpdateInvoked}
       />
-
     </>
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const TagLabelsUnstatedWrapper = withUnstatedContainers(TagLabels, [AppContainer]);
-
-export default TagLabelsUnstatedWrapper;
+export default TagLabels;
