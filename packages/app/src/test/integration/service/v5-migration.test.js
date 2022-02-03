@@ -76,7 +76,7 @@ describe('V5 page migration', () => {
   });
 
   describe('v5InitialMigration()', () => {
-    jest.setTimeout(100000);
+    jest.setTimeout(60000);
     let createPagePaths;
     let allPossiblePagePaths;
     beforeAll(async() => {
