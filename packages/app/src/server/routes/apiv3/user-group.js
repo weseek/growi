@@ -47,6 +47,12 @@ module.exports = (crowi) => {
       body('description', 'Description must be a string').optional().isString(),
       body('parentId', 'ParentId must be a string').optional().isString(),
     ],
+    update: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Group description must be a string').optional().isString(),
+      body('parentId', 'parentId must be a string').optional().isString(),
+      body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
+    ],
     delete: [
       param('id').trim().exists({ checkFalsy: true }),
       query('actionName').trim().exists({ checkFalsy: true }),
@@ -137,11 +143,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.create = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-    body('description', 'Description must be a string').optional().isString(),
-    body('parentId', 'ParentId must be a string').optional().isString(),
-  ];
 
   /**
    * @swagger
@@ -190,11 +191,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    query('actionName').trim().exists({ checkFalsy: true }),
-    query('transferToUserGroupId').trim(),
-  ];
 
   router.get('/non-family-lineage', async(req, res) => {
     const { groupId } = req.query;
