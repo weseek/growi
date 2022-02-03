@@ -167,6 +167,24 @@ module.exports = (crowi) => {
     query('transferToUserGroupId').trim(),
   ];
 
+  router.get('/test', async(req, res) => {
+    const { groupId } = req.query;
+    const userGroup = await UserGroup.findById(groupId);
+
+    try {
+      const upperGeneration = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
+      const lowerGeneration = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
+      const excludeUserGroupIds = [...[userGroup], ...upperGeneration, ...lowerGeneration].map(userGroups => userGroups._id.toString());
+      const userGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ userGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
+
   /**
    * @swagger
    *
