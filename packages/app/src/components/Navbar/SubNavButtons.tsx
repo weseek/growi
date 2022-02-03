@@ -1,10 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { toastError } from '../../client/util/apiNotification';
-import { apiv3Put } from '../../client/util/apiv3-client';
-
 import { IPageInfo, isExistPageInfo } from '~/interfaces/page';
-import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
@@ -15,6 +11,7 @@ import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
 import BookmarkButtons from '../BookmarkButtons';
 import SeenUserInfo from '../User/SeenUserInfo';
+import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 
 
 type CommonProps = {
@@ -37,7 +34,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likerIds = pageInfo.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
   const seenUserIds = pageInfo.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
@@ -52,53 +49,33 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return;
     }
 
-    const newStatus = pageInfo.subscriptionStatus === SubscriptionStatusType.SUBSCRIBE
-      ? SubscriptionStatusType.UNSUBSCRIBE
-      : SubscriptionStatusType.SUBSCRIBE;
-
-    try {
-      await apiv3Put('/page/subscribe', { pageId, status: newStatus });
-      mutatePageInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+    await toggleSubscribe(pageId, pageInfo.subscriptionStatus);
+    mutatePageInfo();
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo.subscriptionStatus]);
 
   const likeClickhandler = useCallback(async() => {
     if (isGuestUser == null || isGuestUser) {
       return;
     }
 
-    try {
-      await apiv3Put('/page/likes', { pageId, bool: !pageInfo.isLiked });
-      mutatePageInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+    await toggleLike(pageId, pageInfo.isLiked);
+    mutatePageInfo();
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo.isLiked]);
 
   const bookmarkClickHandler = useCallback(async() => {
-    if (isGuestUser == null || isGuestUser || bookmarkInfo == null) {
+    if (isGuestUser == null || isGuestUser) {
       return;
     }
-    try {
-      await apiv3Put('/bookmarks', { pageId, bool: !bookmarkInfo.isBookmarked });
-      mutateBookmarkInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [bookmarkInfo, isGuestUser, mutateBookmarkInfo, pageId]);
+
+    await toggleBookmark(pageId, pageInfo.isBookmarked);
+    mutatePageInfo();
+    mutateBookmarkInfo();
+  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo.isBookmarked]);
 
 
-  if (bookmarkInfoError != null || bookmarkInfo == null) {
-    return <></>;
-  }
-
-  const { sumOfLikers, isLiked } = pageInfo;
-  const { sumOfBookmarks, isBookmarked, bookmarkedUsers } = bookmarkInfo;
+  const {
+    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+  } = pageInfo;
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
@@ -117,9 +94,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       />
       <BookmarkButtons
         hideTotalNumber={isCompactMode}
-        sumOfBookmarks={sumOfBookmarks}
+        bookmarkCount={bookmarkCount}
         isBookmarked={isBookmarked}
-        bookmarkedUsers={bookmarkedUsers}
+        bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
         onBookMarkClicked={bookmarkClickHandler}
       />
       <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
