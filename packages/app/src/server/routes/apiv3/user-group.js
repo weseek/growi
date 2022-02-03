@@ -195,9 +195,13 @@ module.exports = (crowi) => {
 
     try {
       const userGroup = await UserGroup.findById(groupId);
-      const upperGeneration = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
-      const lowerGeneration = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
-      const excludeUserGroupIds = [...[userGroup], ...upperGeneration, ...lowerGeneration].map(userGroups => userGroups._id.toString());
+
+      const [upperGeneration, lowerGeneration] = await Promise.all([
+        UserGroup.findGroupsWithAncestorsRecursively(userGroup, []),
+        UserGroup.findGroupsWithDescendantsRecursively([userGroup], []),
+      ]);
+
+      const excludeUserGroupIds = [userGroup, ...upperGeneration, ...lowerGeneration].map(userGroups => userGroups._id.toString());
       const userGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
       return res.apiv3({ userGroups });
     }
