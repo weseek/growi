@@ -301,7 +301,9 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 // PageDeleteModal
 type DeleteModalStatus = {
   isOpened: boolean,
-  pages?: IPageForPageDeleteModal[],
+  // TODO: refactoring
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pages?: any,
 }
 
 type DeleteModalStatusUtils = {
