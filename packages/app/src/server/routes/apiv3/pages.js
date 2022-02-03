@@ -384,7 +384,9 @@ module.exports = (crowi) => {
         if (!relationsMap.has(pageId)) {
           relationsMap.set(pageId, []);
         }
-        relationsMap.get(pageId).push(relation.relatedTag);
+        if (relation.relatedTag != null) {
+          relationsMap.get(pageId).push(relation.relatedTag);
+        }
       });
       // add tags to each page
       result.pages.forEach((page) => {

@@ -1,55 +1,12 @@
 import loggerFactory from '~/utils/logger';
 
+import { InstallerService, FailedToCreateAdminUserError } from '../service/installer';
+
+const logger = loggerFactory('growi:routes:installer');
+
 module.exports = function(crowi) {
-  const logger = loggerFactory('growi:routes:installer');
-  const path = require('path');
-  const fs = require('graceful-fs');
-
-  const models = crowi.models;
-  const { appService } = crowi;
-
-  const User = models.User;
-  const Page = models.Page;
 
   const actions = {};
-
-  async function initSearchIndex() {
-    const { searchService } = crowi;
-    if (!searchService.isReachable) {
-      return;
-    }
-
-    await searchService.rebuildIndex();
-  }
-
-  async function createPage(filePath, pagePath, owner, lang) {
-    try {
-      const markdown = fs.readFileSync(filePath);
-      return Page.create(pagePath, markdown, owner, {});
-    }
-    catch (err) {
-      logger.error(`Failed to create ${pagePath}`, err);
-    }
-  }
-
-  async function createInitialPages(owner, lang) {
-    /*
-     * Keep in this order to avoid creating the same pages
-     */
-    await createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang);
-    await Promise.all([
-      createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang),
-      createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner, lang),
-      createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang),
-    ]);
-
-    try {
-      await initSearchIndex();
-    }
-    catch (err) {
-      logger.error('Failed to build Elasticsearch Indices', err);
-    }
-  }
 
   actions.index = function(req, res) {
     return res.render('installer');
@@ -68,35 +25,26 @@ module.exports = function(crowi) {
     const password = registerForm.password;
     const language = registerForm['app:globalLang'] || 'en_US';
 
-    await appService.initDB(language);
+    const installerService = new InstallerService(crowi);
 
-    // create the root page before creating admin user
-    await createPage(path.join(crowi.localeDir, language, 'welcome.md'), '/', { _id: '000000000000000000000000' }, language); // use 0 as a mock user id
-
-    // create first admin user
-    // TODO: with transaction
     let adminUser;
     try {
-      adminUser = await User.createUser(name, username, email, password, language);
-      await adminUser.asyncMakeAdmin();
+      adminUser = await installerService.install({
+        name,
+        username,
+        email,
+        password,
+      }, language);
     }
     catch (err) {
-      req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
+      if (err instanceof FailedToCreateAdminUserError) {
+        req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
+      }
       return res.render('installer');
     }
-    // add owner after creating admin user
-    const Revision = crowi.model('Revision');
-    const rootPage = await Page.findOne({ path: '/' });
-    const rootRevision = await Revision.findOne({ pageId: rootPage._id });
-    rootPage.creator = adminUser;
-    rootRevision.creator = adminUser;
-    await Promise.all([rootPage.save(), rootRevision.save()]);
 
-    // create initial pages
-    await createInitialPages(adminUser, language);
-
+    const appService = crowi.appService;
     appService.setupAfterInstall();
-    appService.publishPostInstallationMessage();
 
     // login with passport
     req.logIn(adminUser, (err) => {

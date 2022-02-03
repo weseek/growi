@@ -13,7 +13,7 @@ import { useSWRBookmarkInfo } from '~/stores/bookmark';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
-  isEnableActions: boolean
+  isEnableActions?: boolean
   isDeletable: boolean
   onClickDeleteButtonHandler?: (pageId: string) => void
   onClickRenameButtonHandler?: (pageId: string) => void
