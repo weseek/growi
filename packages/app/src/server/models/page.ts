@@ -44,6 +44,7 @@ export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete methods
   createEmptyPagesByPaths(paths: string[], publicOnly?: boolean): Promise<void>
   getParentAndFillAncestors(path: string): Promise<PageDocument & { _id: any }>
+  findByIdsAndViewer(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument[]>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>
@@ -264,6 +265,18 @@ const addViewerCondition = async(queryBuilder: PageQueryBuilder, user, userGroup
   }
 
   queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, false);
+};
+
+/*
+ * Find pages by ID and viewer.
+ */
+schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]> {
+  const baseQuery = this.find({ _id: { $in: pageIds } });
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await addViewerCondition(queryBuilder, user, userGroups);
+
+  return queryBuilder.query.exec();
 };
 
 /*

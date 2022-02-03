@@ -1,5 +1,5 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose, { QueryCursor } from 'mongoose';
+import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
@@ -13,9 +13,14 @@ import {
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
-import { IPage } from '~/interfaces/page';
+import {
+  IPage, IPageInfo, IPageInfoCommon,
+} from '~/interfaces/page';
 import { PageRedirectModel } from '../models/page-redirect';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { IUserHasId } from '~/interfaces/user';
+import { Ref } from '~/interfaces/common';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 const debug = require('debug')('growi:services:page');
 
@@ -1568,13 +1573,15 @@ class PageService {
     };
 
   }
+
+  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
     const Page = mongoose.model('Page');
     const MAX_LENGTH = 350;
 
     // aggregation options
     const viewerCondition = await generateGrantCondition(user, null);
     const filterByIds = {
-      _id: { $in: pageIds.map(id => new mongoose.Types.ObjectId(id)) },
+      _id: { $in: pageIds },
     };
 
     let pages;

@@ -1,6 +1,6 @@
 import { Ref } from './common';
 import { IUser } from './user';
-import { IRevision } from './revision';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 import { SubscriptionStatusType } from './subscription';
@@ -54,6 +54,8 @@ export type IPageInfo = IPageInfoCommon & {
   isLiked?: boolean,
   subscriptionStatus?: SubscriptionStatusType,
 }
+
+export type IPageInfoForList = IPageInfo & HasRevisionShortbody;
 
 export const isExistPageInfo = (pageInfo: IPageInfoCommon | IPageInfo | undefined): pageInfo is IPageInfo => {
   return pageInfo != null && !pageInfo.isEmpty;
