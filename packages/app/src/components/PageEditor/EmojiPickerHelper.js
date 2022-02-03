@@ -7,7 +7,7 @@ class EmojiPickerHelper {
   }
 
   getSearchCursor() {
-    const pattern = /:[^:\s]+/;
+    const pattern = /:[^:\s]+(?<!:)$/;
     const currentPos = this.editor.getCursor();
     const sc = this.editor.getSearchCursor(pattern, currentPos, { multiline: false });
     return sc;
@@ -20,11 +20,36 @@ class EmojiPickerHelper {
     if (sc.findPrevious()) {
       sc.replace(emoji.colons, this.editor.getTokenAt(currentPos).string);
       this.editor.focus();
+      this.editor.refresh();
     }
     else {
       doc.replaceRange(emoji.colons, currentPos);
       this.editor.focus();
+      this.editor.refresh();
     }
+  }
+
+  getEmoji() {
+    const cm = this.editor;
+    const sc = this.getSearchCursor();
+    const currentPos = cm.getCursor();
+
+    if (sc.findPrevious()) {
+      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+      // current search cursor position
+      if (!isInputtingEmoji) {
+        return;
+      }
+      const pos = {
+        line: sc.to().line,
+        ch: sc.to().ch,
+      };
+      const currentSearchText = sc.matches(true, pos).match[0];
+      const searchValue = currentSearchText.replace(':', '');
+      return searchValue;
+    }
+
+    return;
 
   }
 
