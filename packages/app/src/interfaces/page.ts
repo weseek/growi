@@ -17,7 +17,6 @@ export interface IPage {
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  redirectTo: string,
   grant: number,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
