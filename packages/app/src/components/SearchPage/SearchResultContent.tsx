@@ -28,14 +28,12 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     // reset state
     if (isRevisionBodyRendered) {
       const searchResultPageContent = contentRef.current as HTMLElement | null;
-      if (searchResultPageContent == null) {
-        return setIsRevisionBodyRendered(false);
+      if (searchResultPageContent !== null) {
+        const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
+        if (highlightedWord != null) {
+          smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
+        }
       }
-      const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
-      if (highlightedWord == null) {
-        return setIsRevisionBodyRendered(false);
-      }
-      smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
       setIsRevisionBodyRendered(false);
     }
 
