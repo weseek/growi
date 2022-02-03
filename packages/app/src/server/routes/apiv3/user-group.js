@@ -189,7 +189,36 @@ module.exports = (crowi) => {
     }
   });
 
-
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /non-family-lineage:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getNonFamilyLineage
+   *        summary: /non-family-lineage
+   *        description: Get non-family user groups.
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
   router.get('/non-family-lineage', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { groupId } = req.query;
 
