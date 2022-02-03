@@ -12,23 +12,25 @@ import LikeButtons from '../LikeButtons';
 import BookmarkButtons from '../BookmarkButtons';
 import SeenUserInfo from '../User/SeenUserInfo';
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
-import { PageItemControl } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 
 type CommonProps = {
   isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
+  additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
 
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
+  revisionId: string,
   pageInfo: IPageInfo,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    pageInfo, pageId, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown,
+    pageInfo, pageId, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -106,6 +108,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
+          additionalMenuItemRenderer={additionalMenuItemRenderer}
           hideBookmarkMenuItem
         />
         // <PageManagement
@@ -123,15 +126,16 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 };
 
 type SubNavButtonsProps= CommonProps & {
-  pageId?: string | null,
+  pageId: string,
+  revisionId?: string | null,
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, revisionId } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
 
-  if (pageId == null || pageInfo == null || error != null) {
+  if (revisionId == null || pageInfo == null || error != null) {
     return <></>;
   }
 
@@ -139,5 +143,5 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-  return <SubNavButtonsSubstance {...props} pageInfo={pageInfo} pageId={pageId} />;
+  return <SubNavButtonsSubstance {...props} pageInfo={pageInfo} pageId={pageId} revisionId={revisionId} />;
 };

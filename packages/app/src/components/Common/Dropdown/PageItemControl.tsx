@@ -15,6 +15,9 @@ import { useSWRxPageInfo } from '~/stores/page';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
+
+export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoCommon | IPageInfo };
+
 type CommonProps = {
   pageInfo?: IPageInfoCommon | IPageInfo,
   isEnableActions?: boolean,
@@ -22,6 +25,8 @@ type CommonProps = {
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickRenameMenuItem?: (pageId: string) => Promise<void>,
   onClickDeleteMenuItem?: (pageId: string) => Promise<void>,
+
+  additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
 
 
@@ -35,6 +40,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, pageInfo, isEnableActions, hideBookmarkMenuItem,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
 
 
@@ -106,6 +112,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           {t('Move/Rename')}
         </DropdownItem>
       ) }
+
+      { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
 
       {/* divider */}
       {/* Delete */}
