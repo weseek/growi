@@ -3,7 +3,9 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { IPageInfo, IPageInfoCommon, IPageHasId } from '~/interfaces/page';
+import {
+  IPageInfo, IPageInfoCommon, IPageInfoForList, IPageHasId,
+} from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 
@@ -61,5 +63,15 @@ export const useSWRxPageInfo = (pageId: string | null | undefined): SWRResponse<
   return useSWRImmutable(
     pageId != null ? ['/page/info', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export const useSWRxPageInfoForList = (pageIds: string[] | null | undefined): SWRResponse<Record<string, IPageInfoCommon|IPageInfoForList>, Error> => {
+
+  const shouldFetch = pageIds != null && pageIds.length > 0;
+
+  return useSWRImmutable(
+    shouldFetch ? ['/page-listing/info', pageIds] : null,
+    (endpoint, pageIds) => apiv3Get(endpoint, { pageIds }).then(response => response.data),
   );
 };

@@ -57,8 +57,13 @@ export type IPageInfo = IPageInfoCommon & {
 
 export type IPageInfoForList = IPageInfo & HasRevisionShortbody;
 
-export const isExistPageInfo = (pageInfo: IPageInfoCommon | IPageInfo | undefined): pageInfo is IPageInfo => {
+export const isExistPageInfo = (pageInfo: IPageInfoCommon | undefined): pageInfo is IPageInfo => {
   return pageInfo != null && !pageInfo.isEmpty;
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+export const isIPageInfoForList = (pageInfo: any): pageInfo is IPageInfoForList => {
+  return pageInfo != null && pageInfo.revisionShortBody != null;
 };
 
 export type IPageWithMeta<M = Record<string, unknown>> = {
