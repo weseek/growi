@@ -143,7 +143,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
 };
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
+    path: string, parent: any, descendantCount: number, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
@@ -154,6 +154,7 @@ schema.statics.createEmptyPage = async function(
   page.path = path;
   page.isEmpty = true;
   page.parent = parent;
+  page.descendantCount = descendantCount;
 
   return page.save();
 };
@@ -172,7 +173,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   }
 
   // create empty page at path
-  const newTarget = pageToReplaceWith == null ? await this.createEmptyPage(exPage.path, parent) : pageToReplaceWith;
+  const newTarget = pageToReplaceWith == null ? await this.createEmptyPage(exPage.path, parent, exPage.descendantCount) : pageToReplaceWith;
 
   // find children by ex-page _id
   const children = await this.find({ parent: exPage._id });
@@ -440,21 +441,12 @@ schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
  */
-schema.statics.incrementDescendantCountOfPaths = async function(paths:string[], increment: number):Promise<void> {
-  const pages = await this.aggregate([{ $match: { path: { $in: paths } } }]);
-  const operations = pages.map((page) => {
-    return {
-      updateOne: {
-        filter: { path: page.path },
-        update: { descendantCount: page.descendantCount + increment },
-      },
-    };
-  });
-  await this.bulkWrite(operations);
+schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: ObjectIdLike[], increment: number): Promise<void> {
+  await this.updateMany({ _id: { $in: pageIds } }, { $inc: { descendantCount: increment } });
 };
 
 // update descendantCount of a page with provided id
-schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mongoose.Types.ObjectId):Promise<void> {
+schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: ObjectIdLike):Promise<void> {
   const res = await this.aggregate(
     [
       {
@@ -492,6 +484,21 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id:mo
 
   const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
   await this.findByIdAndUpdate(id, query);
+};
+
+schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
+  const target = await this.findById(pageId);
+
+  async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {
+    const parent = await this.findOne({ _id: target.parent });
+    if (parent == null) {
+      return ancestors;
+    }
+
+    return findAncestorsRecursively(parent);
+  }
+
+  return findAncestorsRecursively(target);
 };
 
 export type PageCreateOptions = {

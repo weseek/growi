@@ -1010,7 +1010,18 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+      const deleteDescendantsWithStream = this.deleteDescendantsWithStream.bind(this);
+
+      // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
+      (async() => {
+        const deletedCount = await deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+        // update descendantCount of ancestors'
+        const exParent = await Page.findOne({ _id: page.parent });
+        if (exParent != null) {
+          await this.updateDescendantCountOfAncestors(exParent._id, deletedCount * -1, true);
+        }
+      })();
     }
     else {
       // replace with an empty page
@@ -1149,9 +1160,9 @@ class PageService {
   }
 
   /**
-   * Create delete stream
+   * Create delete stream and return deleted document count
    */
-  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true) {
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true): Promise<number> {
     let readStream;
     if (shouldUseV4Process) {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
@@ -1188,6 +1199,10 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(readStream);
+
+    return count;
   }
 
   private async deleteCompletelyOperation(pageIds, pagePaths) {
@@ -2020,8 +2035,7 @@ class PageService {
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
-        for (const document of pageDocuments) {
-          // eslint-disable-next-line no-await-in-loop
+        for await (const document of pageDocuments) {
           await Page.recountDescendantCountOfSelfAndDescendants(document._id);
         }
         callback();
@@ -2038,10 +2052,11 @@ class PageService {
   }
 
   // update descendantCount of all pages that are ancestors of a provided path by count
-  async updateDescendantCountOfAncestors(path = '/', count = 0) {
+  async updateDescendantCountOfAncestors(pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean): Promise<void> {
     const Page = this.crowi.model('Page');
-    const ancestors = collectAncestorPaths(path);
-    await Page.incrementDescendantCountOfPaths(ancestors, count);
+    const ancestors = await Page.findAncestorsUsingParentRecursively(pageId, shouldIncludeTarget);
+    const ancestorPageIds = ancestors.map(p => p._id);
+    await Page.incrementDescendantCountOfPageIds(ancestorPageIds, inc);
   }
 
 }
