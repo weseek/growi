@@ -286,7 +286,7 @@ export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useCreateModalPath = (): SWRResponse<any | null | undefined, Error> => {
+export const useCreateModalPath = (): SWRResponse<string | null | undefined, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: status } = useCreateModalStatus();
 
