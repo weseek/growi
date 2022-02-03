@@ -301,7 +301,7 @@ export const useCreateModalPath = (): SWRResponse<any | null | undefined, Error>
 // PageDeleteModal
 type DeleteModalStatus = {
   isOpened: boolean,
-  pages?: any,
+  pages?: IPageForPageDeleteModal[],
 }
 
 type DeleteModalStatusUtils = {
