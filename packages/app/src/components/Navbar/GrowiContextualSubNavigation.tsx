@@ -38,7 +38,7 @@ type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageInfo, pageId, revisionId } = props;
+  const { pageId, revisionId } = props;
 
   const exportPageHandler = useCallback(async(format: string): Promise<void> => {
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
