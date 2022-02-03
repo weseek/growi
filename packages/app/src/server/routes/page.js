@@ -1,9 +1,11 @@
 import { pagePathUtils } from '@growi/core';
 import urljoin from 'url-join';
 import { body } from 'express-validator';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import UpdatePost from '../models/update-post';
+import { PageRedirectModel } from '../models/page-redirect';
 
 const { isCreatablePage, isTopPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
@@ -71,10 +73,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  *            type: string
  *            description: page path
  *            example: /
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
  *          status:
@@ -143,9 +141,11 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
+  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
+  const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -283,8 +283,23 @@ module.exports = function(crowi, app) {
     renderVars.notFoundTargetPathOrId = pathOrId;
   }
 
-  function addRenderVarsWhenNotCreatableOrForbidden(renderVars) {
-    renderVars.isAlertHidden = true;
+  async function addRenderVarsForIdenticalPage(renderVars, pages) {
+    const pageIds = pages.map(p => p._id);
+    const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
+
+    const identicalPageDataList = await Promise.all(pages.map(async(page) => {
+      const bookmarkCount = await Bookmark.countByPageId(page._id);
+      page._doc.seenUserCount = (page.seenUsers && page.seenUsers.length) || 0;
+      return {
+        pageData: page,
+        pageMeta: {
+          bookmarkCount,
+        },
+      };
+    }));
+
+    renderVars.identicalPageDataList = identicalPageDataList;
+    renderVars.shortBodyMap = shortBodyMap;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -310,11 +325,9 @@ module.exports = function(crowi, app) {
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/not_creatable';
     }
     else if (req.isForbidden) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       view = 'layout-growi/forbidden';
     }
     else {
@@ -429,11 +442,6 @@ module.exports = function(crowi, app) {
 
     const { path } = page; // this must exist
 
-    if (page.redirectTo) {
-      debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(`${encodeURI(page.redirectTo)}?redirectFrom=${encodeURIComponent(path)}`);
-    }
-
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, path);
 
     const limit = 50;
@@ -508,7 +516,6 @@ module.exports = function(crowi, app) {
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
-      addRenderVarsWhenNotCreatableOrForbidden(renderVars);
       return res.render('layout-growi/forbidden');
     }
 
@@ -611,11 +618,19 @@ module.exports = function(crowi, app) {
    */
   async function redirector(req, res, next, path) {
     const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
+
     const { redirectFrom } = req.query;
 
     if (pages.length >= 2) {
-      return res.render('layout-growi/identical-path-page-list', {
-        pages, redirectFrom,
+
+      const renderVars = {};
+
+      await addRenderVarsForIdenticalPage(renderVars, pages);
+
+      return res.render('layout-growi/identical-path-page', {
+        ...renderVars,
+        redirectFrom,
+        path,
       });
     }
 
@@ -632,7 +647,18 @@ module.exports = function(crowi, app) {
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    req.isForbidden = await Page.count({ path }) > 0;
+    const isForbidden = await Page.exists({ path });
+    if (isForbidden) {
+      req.isForbidden = true;
+      return _notFound(req, res);
+    }
+
+    // redirect by PageRedirect
+    const pageRedirect = await PageRedirect.findOne({ fromPath: path });
+    if (pageRedirect != null) {
+      return res.safeRedirect(`${encodeURI(pageRedirect.toPath)}?redirectFrom=${encodeURIComponent(path)}`);
+    }
+
     return _notFound(req, res);
   }
 
@@ -1181,7 +1207,7 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!req.user.canDeleteCompletely(page.creator)) {
+        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user)) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);

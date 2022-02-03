@@ -76,7 +76,6 @@ const schema = new Schema<PageDocument, PageModel>({
     type: String, required: true, index: true,
   },
   revision: { type: ObjectId, ref: 'Revision' },
-  redirectTo: { type: String, index: true },
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
@@ -281,6 +280,7 @@ schema.statics.findByPathAndViewer = async function(
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();

@@ -2,13 +2,16 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd,
+  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
-import { useCurrentCreatedAt, useCurrentUpdatedAt } from '~/stores/context';
+import {
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
+  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsPageExist, useIsGuestUser,
+} from '~/stores/context';
+import { useSWRTagsInfo } from '~/stores/page';
 
 import TagLabels from '../Page/TagLabels';
 import SubNavButtons from './SubNavButtons';
@@ -28,30 +31,29 @@ const GrowiSubNavigation = (props) => {
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: createdAt } = useCurrentCreatedAt();
   const { data: updatedAt } = useCurrentUpdatedAt();
+  const { data: pageId } = useCurrentPageId();
+  const { data: revisionId } = useRevisionId();
+  const { data: path } = useCurrentPagePath();
+  const { data: isDeletable } = useIsDeletable();
+  const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
+  const { data: creator } = useCreator();
+  const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
+  const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
+
+  const { mutate: mutateSWRTagsInfo, data: TagsInfoData } = useSWRTagsInfo(pageId);
 
   const {
-    appContainer, pageContainer, editorContainer, isCompactMode,
+    editorContainer, isCompactMode,
   } = props;
 
-  const {
-    pageId,
-    revisionId,
-    path,
-    isDeletable,
-    isAbleToDeleteCompletely,
-    creator,
-    revisionAuthor,
-    isPageExist,
-    isTrashPage,
-    tags,
-  } = pageContainer.state;
+  const isViewMode = editorMode === EditorMode.View;
+  const isEditorMode = !isViewMode;
 
-  const { isGuestUser, isSharedUser } = appContainer;
-  const isEditorMode = editorMode !== EditorMode.View;
-  // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== EditorMode.Editor && !isPageExist);
-
-  const isAbleToShowPageManagement = isPageExist && !isTrashPage && !isSharedUser && !isEditorMode;
   function onPageEditorModeButtonClicked(viewType) {
     mutateEditorMode(viewType);
   }
@@ -63,10 +65,10 @@ const GrowiSubNavigation = (props) => {
     }
 
     try {
-      const { tags } = await apiPost('/tags.update', { pageId, tags: newTags });
+      const { tags } = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
-      // update pageContainer.state
-      pageContainer.setState({ tags });
+      // revalidate SWRTagsInfo
+      mutateSWRTagsInfo();
       // update editorContainer.state
       editorContainer.setState({ tags });
 
@@ -90,9 +92,9 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
-              <TagLabels tags={tags} tagsUpdateInvoked={tagsUpdatedHandler} />
+              <TagLabels tags={TagsInfoData?.tags || []} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
@@ -110,10 +112,11 @@ const GrowiSubNavigation = (props) => {
             path={path}
             isDeletable={isDeletable}
             isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            willShowPageManagement={isAbleToShowPageManagement}
+            isViewMode={isViewMode}
+            isAbleToShowPageManagement={isAbleToShowPageManagement}
           />
           <div className="mt-2">
-            {pageContainer.isAbleToShowPageEditorModeManager && (
+            {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
@@ -125,7 +128,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+        { (isAbleToShowPageAuthors && !isCompactMode) && (
           <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
             <li className="pb-1">
               <AuthorInfo user={creator} date={createdAt} locate="subnav" />
@@ -143,12 +146,10 @@ const GrowiSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, PageContainer, EditorContainer]);
+const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [EditorContainer]);
 
 
 GrowiSubNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,

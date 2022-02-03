@@ -110,10 +110,6 @@ const LIMIT_FOR_LIST = 10;
  *            type: string
  *            description: page path
  *            example: /Sandbox/Math
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: revision ID
@@ -384,7 +380,9 @@ module.exports = (crowi) => {
         if (!relationsMap.has(pageId)) {
           relationsMap.set(pageId, []);
         }
-        relationsMap.get(pageId).push(relation.relatedTag);
+        if (relation.relatedTag != null) {
+          relationsMap.get(pageId).push(relation.relatedTag);
+        }
       });
       // add tags to each page
       result.pages.forEach((page) => {
