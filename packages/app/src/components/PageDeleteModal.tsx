@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // import { apiPost } from '~/client/util/apiv1-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened, useDeleteModalPages } from '~/stores/ui';
+import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
