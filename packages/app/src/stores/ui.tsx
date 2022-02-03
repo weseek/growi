@@ -320,7 +320,7 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
   };
 };
 
-export const useDeleteModalOpened = (): SWRResponse<boolean, Error> => {
+export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageDeleteModalStatus();
   return useSWR(
     data != null ? ['isDeleteModalOpened', data] : null,
