@@ -3,6 +3,8 @@ import React from 'react';
 export const FootstampIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    width={16}
+    height={16}
     viewBox="0 0 16 16"
   >
     <path d="M7.34,8,3.31,9a1.83,1.83,0,0,1-1.24-.08A1.28,1.28,0,0,1,1.34,8a3.24,3.24,0,0,1,.2-1.82A6.06,6.06,0,0,1,2.6,4.35h0a2.56,
