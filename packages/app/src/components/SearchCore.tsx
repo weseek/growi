@@ -17,11 +17,13 @@ import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
 import {
-  CheckboxType, IPageSearchResultData, SearchResultMeta,
+  CheckboxType, IPageSearchMeta, SearchResultMeta,
 } from '~/interfaces/search';
+
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageWithMeta } from '~/interfaces/page';
 
 
 export const specificPathNames = {
@@ -78,7 +80,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   // should be <[IPageSearchResultData] | []> but gives lint errors.
   const [searchResults, setSearchResults] = useState<any>([]);
   const [searchResultMeta, setSearchResultMeta] = useState<SearchResultMeta>({});
-  const [focusedSearchResultData, setFocusedSearchResultData] = useState<IPageSearchResultData | null>(null);
+  const [focusedSearchResultData, setFocusedSearchResultData] = useState<IPageWithMeta<IPageSearchMeta> | null>(null);
   const [selectedPagesIdList, setSelectedPagesIdList] = useState<Set<string>>(new Set());
   const [searchResultCount, setSearchResultCount] = useState<number>(0);
   const [shortBodiesMap, setShortBodiesMap] = useState<Record<string, string> | null>(null);
@@ -297,7 +299,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         shortBodiesMap={shortBodiesMap!}
         activePage={activePage}
         pagingLimit={pagingLimit}
-        onClickSearchResultItem={selectPage}
+        onClickItem={selectPage}
         onClickCheckbox={toggleCheckBox}
         onPagingNumberChanged={onPagingNumberChanged}
         onClickDeleteButton={actionToSinglePageButtonHandler}

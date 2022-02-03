@@ -107,6 +107,22 @@ class PageService {
     });
   }
 
+  canDeleteCompletely(creatorId, operator) {
+    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    if (operator.admin) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
+      const operatorId = operator?._id;
+      return (operatorId != null && operatorId.equals(creatorId));
+    }
+
+    return false;
+  }
+
   async findPageAndMetaDataByViewer({ pageId, path, user }) {
 
     const Page = this.crowi.model('Page');
@@ -139,7 +155,7 @@ class PageService {
     result.isCreatable = false;
     result.isDeletable = isDeletablePage(path);
     result.isDeleted = page.isDeleted();
-    result.canDeleteCompletely = user != null && user.canDeleteCompletely(page.creator);
+    result.canDeleteCompletely = user != null && this.canDeleteCompletely(page.creator, user);
 
     return result;
   }

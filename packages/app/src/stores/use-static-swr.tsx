@@ -6,14 +6,14 @@ import useSWRImmutable from 'swr/immutable';
 
 
 export function useStaticSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | null): SWRResponse<Data, Error>;
-export function useStaticSWR<Data, Error>(key: Key, data: Data | null,
+export function useStaticSWR<Data, Error>(key: Key, data: Data | undefined): SWRResponse<Data, Error>;
+export function useStaticSWR<Data, Error>(key: Key, data: Data | undefined,
   configuration: SWRConfiguration<Data, Error> | undefined): SWRResponse<Data, Error>;
 
 export function useStaticSWR<Data, Error>(
     ...args: readonly [Key]
-    | readonly [Key, Data | null]
-    | readonly [Key, Data | null, SWRConfiguration<Data, Error> | undefined]
+    | readonly [Key, Data | undefined]
+    | readonly [Key, Data | undefined, SWRConfiguration<Data, Error> | undefined]
 ): SWRResponse<Data, Error> {
   const [key, data, configuration] = args;
 
@@ -22,7 +22,7 @@ export function useStaticSWR<Data, Error>(
   const swrResponse = useSWRImmutable(key, null, configuration);
 
   // mutate
-  if (data != null) {
+  if (data !== undefined) {
     const { mutate } = swrResponse;
     mutate(data);
   }

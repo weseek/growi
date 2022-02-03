@@ -1,4 +1,4 @@
-import { IPageHasId } from './page';
+import { IPageWithMeta } from './page';
 
 export enum CheckboxType {
   NONE_CHECKED = 'noneChecked',
@@ -6,20 +6,20 @@ export enum CheckboxType {
   ALL_CHECKED = 'allChecked',
 }
 
-export type IPageSearchResultData = {
-  pageData: IPageHasId;
-  pageMeta: {
-    bookmarkCount?: number;
-    elasticSearchResult?: {
-      snippet: string;
-      highlightedPath: string;
-      isHtmlInPath: boolean;
-    };
+export type IPageSearchMeta = {
+  elasticSearchResult?: {
+    snippet: string;
+    highlightedPath: string;
+    isHtmlInPath: boolean;
   };
+}
+
+export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
+  return !!(meta as IPageSearchMeta)?.elasticSearchResult;
 };
 
 export type IFormattedSearchResult = {
-  data: IPageSearchResultData[]
+  data: IPageWithMeta<IPageSearchMeta>[]
 
   totalCount: number
 
