@@ -9,12 +9,13 @@ import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '../interfaces/user';
 
 type LikeButtonsProps = {
-  appContainer: AppContainer,
 
   hideTotalNumber?: boolean,
   sumOfLikers: number,
-  isLiked: boolean,
   likers: IUser[],
+
+  isGuestUser?: boolean,
+  isLiked?: boolean,
   onLikeClicked?: ()=>void,
 }
 
@@ -27,30 +28,22 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     setIsPopoverOpen(!isPopoverOpen);
   };
 
-  const handleClick = () => {
-    if (props.onLikeClicked == null) {
-      return;
-    }
-    props.onLikeClicked();
-  };
-
   const {
-    appContainer, hideTotalNumber, isLiked, sumOfLikers,
+    hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
   } = props;
-  const { isGuestUser } = appContainer;
 
   return (
     <div className="btn-group" role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"
-        onClick={handleClick}
+        onClick={onLikeClicked}
         className={`btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
-      {isGuestUser && (
+      { isGuestUser && (
         <UncontrolledTooltip placement="top" target="like-button" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>

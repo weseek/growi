@@ -3,6 +3,7 @@ import { IUser } from './user';
 import { IRevision } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { SubscriptionStatusType } from './subscription';
 
 export type IPage = {
   path: string,
@@ -35,17 +36,27 @@ export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
-export type IPageInfo = {
+export type IPageInfoCommon = {
+  isEmpty: boolean,
+  isDeletable: boolean,
+  isAbleToDeleteCompletely: boolean,
+}
+
+export type IPageInfo = IPageInfoCommon & {
   bookmarkCount: number,
   sumOfLikers: number,
   likerIds: string[],
   sumOfSeenUsers: number,
   seenUserIds: string[],
-  isDeletable: boolean,
-  isAbleToDeleteCompletely: boolean,
+
   isBookmarked?: boolean,
   isLiked?: boolean,
+  subscriptionStatus?: SubscriptionStatusType,
 }
+
+export const isExistPageInfo = (pageInfo: IPageInfoCommon | IPageInfo | undefined): pageInfo is IPageInfo => {
+  return pageInfo != null && !pageInfo.isEmpty;
+};
 
 export type IPageWithMeta<M = Record<string, unknown>> = {
   pageData: IPageHasId,

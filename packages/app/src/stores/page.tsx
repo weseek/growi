@@ -2,12 +2,11 @@ import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { IPageInfo, IPageHasId } from '~/interfaces/page';
+import { IPageInfo, IPageInfoCommon, IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
-import { useIsGuestUser } from './context';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
@@ -47,10 +46,10 @@ export const useSWRxPageList = (
   );
 };
 
-export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfo, Error> => {
+export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfoCommon | IPageInfo, Error> => {
   return useSWR(
     pageId != null ? `/page/info?pageId=${pageId}` : null,
-    endpoint => apiv3Get<IPageInfo>(endpoint).then(response => response.data),
+    endpoint => apiv3Get<IPageInfoCommon | IPageInfo>(endpoint).then(response => response.data),
   );
 };
 
