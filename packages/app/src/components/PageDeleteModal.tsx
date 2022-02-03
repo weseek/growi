@@ -161,12 +161,14 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })}
         </div>
-        {pagesNotToBeDeleted.length > 0 && <div className="form-group grw-scrollable-modal-body pb-1">
-          <label>{ t('modal_delete.not_deleting_page') }:</label><br />
-          {pagesNotToBeDeleted.map((page) => {
-            return <div key={page.pageId}><code>{ page.path }</code></div>;
-          })}
-        </div>}
+        {pagesNotToBeDeleted.length > 0 && (
+          <div className="form-group grw-scrollable-modal-body pb-1">
+            <label>{ t('modal_delete.not_deleting_page') }:</label><br />
+            {pagesNotToBeDeleted.map((page) => {
+              return <div key={page.pageId}><code>{ page.path }</code></div>;
+            })}
+          </div>
+        )}
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
