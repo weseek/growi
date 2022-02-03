@@ -4,9 +4,9 @@ import { SearchResultMeta } from '~/interfaces/search';
 
 
 type Props = {
-  Control: any|React.FunctionComponent,
-  SearchResultList: React.FunctionComponent,
-  SearchResultContent: React.FunctionComponent,
+  Control: React.ReactNode,
+  SearchResultList: React.ReactNode,
+  SearchResultContent: React.ReactNode,
   searchResultMeta: SearchResultMeta,
   searchingKeyword: string,
   pagingLimit: number,
@@ -33,7 +33,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
       <div className="search-result d-flex" id="search-result">
         <div className="mw-0 flex-grow-1 flex-basis-0 page-list border boder-gray search-result-list" id="search-result-list">
 
-          <Control></Control>
+          {Control}
           <div className="search-result-list-scroll">
             <div className="d-flex align-items-center justify-content-between my-3 ml-4">
               <div className="search-result-meta text-nowrap">
@@ -61,12 +61,12 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
 
             <div className="page-list">
               {props.alertMessage}
-              <ul className="page-list-ul page-list-ul-flat px-md-4 nav nav-pills"><SearchResultList></SearchResultList></ul>
+              <ul className="page-list-ul page-list-ul-flat px-md-4 nav nav-pills">{SearchResultList}</ul>
             </div>
           </div>
         </div>
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-          <SearchResultContent></SearchResultContent>
+          {SearchResultContent}
         </div>
       </div>
     </div>

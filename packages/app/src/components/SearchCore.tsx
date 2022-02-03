@@ -306,13 +306,6 @@ const SearchCore: FC<Props> = (props: Props) => {
   };
 
 
-  const renderControl = useCallback(() => {
-    if (props.renderControl != null) {
-      // eslint-disable-next-line max-len
-      return props.renderControl(searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox, searchingKeyword, onSearchInvoked);
-    }
-    return <></>;
-  }, []);
   /*
    * Dependencies
    */
@@ -323,9 +316,10 @@ const SearchCore: FC<Props> = (props: Props) => {
   return (
     <div>
       <SearchPageLayout
-        Control={renderControl}
-        SearchResultList={renderSearchResultList}
-        SearchResultContent={renderSearchResultContent}
+        // eslint-disable-next-line max-len
+        Control={props.renderControl(searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox, searchingKeyword, onSearchInvoked)}
+        SearchResultList={renderSearchResultList()}
+        SearchResultContent={renderSearchResultContent()}
         searchResultMeta={searchResultMeta}
         searchingKeyword={currentSearchedKeyword}
         onPagingLimitChanged={onPagingLimitChanged}

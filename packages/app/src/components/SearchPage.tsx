@@ -32,7 +32,7 @@ const SearchPage : FC<Props> = (props: Props) => {
         isAbleToDeleteCompletely={false}
       />
     );
-  }, []);
+  }, [isActionToPageModalShown]);
 
   const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
     const actionIconAndText = (
@@ -75,7 +75,7 @@ const SearchPage : FC<Props> = (props: Props) => {
       >
       </SearchControl>
     );
-  }, []);
+  }, [props.appContainer, renderActionToPages]);
 
   return (
     <SearchCore
