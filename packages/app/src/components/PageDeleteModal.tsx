@@ -5,9 +5,12 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
+import { pagePathUtils } from '@growi/core';
 // import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+
+const { isUserNamePage } = pagePathUtils;
 
 export type IPageForPageDeleteModal = {
   pageId: string,
@@ -46,6 +49,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
   const [errs, setErrs] = useState(null);
+
+  const pagesToBeDeleted = pages.filter(page => !isUserNamePage(page.path));
+  const pagesNotToBeDeleted = pages.filter(page => isUserNamePage(page.path));
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -151,12 +157,16 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
-          {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
-          {pages.map((page) => {
+          {pagesToBeDeleted.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })}
         </div>
+        {pagesNotToBeDeleted.length > 0 && <div className="form-group grw-scrollable-modal-body pb-1">
+          <label>{ t('modal_delete.not_deleting_page') }:</label><br />
+          {pagesNotToBeDeleted.map((page) => {
+            return <div key={page.pageId}><code>{ page.path }</code></div>;
+          })}
+        </div>}
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
       </ModalBody>
