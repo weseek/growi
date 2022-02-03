@@ -262,7 +262,6 @@ class PageService {
 
     const builder = new PageQueryBuilder(Page.find(), true)
       .addConditionAsNotMigrated() // to avoid affecting v5 pages
-      .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPagePath);
 
     await Page.addConditionToFilteringByViewerToEdit(builder, userToOperate);
