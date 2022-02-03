@@ -462,6 +462,7 @@
       "backward_match": "後方一致"
     },
     "group_list": "グループ一覧",
+    "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",

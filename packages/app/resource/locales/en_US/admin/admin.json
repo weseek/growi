@@ -463,6 +463,7 @@
       "backward_match": "Backward match"
     },
     "group_list": "Group list",
+    "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
     "basic_info": "Basic info",
     "user_list": "User list",
