@@ -158,7 +158,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
-
+    this.emojiPickerHandler = this.emojiPickerHandler.bind(this);
 
   }
 
@@ -570,7 +570,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.updateCheatsheetStates(null, value);
-    this.searchEmojiPattern();
+    this.emojiPickerHandler();
   }
 
   /**
@@ -592,6 +592,30 @@ export default class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
+  }
+
+  /**
+   * Show emoji picker component when emoji pattern found
+   */
+  emojiPickerHandler() {
+    const emoji = this.emojiPickerHelper.getEmoji();
+
+    if (!emoji) {
+      this.setState({ isEmojiPickerShown: false });
+      this.setState({ emojiSearchText: null });
+    }
+    else {
+
+      if (this.state.searchEmojiTimeout) {
+        clearTimeout(this.state.searchEmojiTimeout);
+      }
+      // Show emoji picker after user stop typing
+      const timeout = setTimeout(() => {
+        this.setState({ isEmojiPickerShown: true });
+        this.setState({ emojiSearchText: emoji });
+      }, 700);
+      this.setState({ searchEmojiTimeout: timeout });
+    }
   }
 
   /**
@@ -930,41 +954,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Emoji" />
       </Button>,
     ];
-  }
-
-  searchEmojiPattern() {
-    const cm = this.getCodeMirror();
-    const sc = this.emojiPickerHelper.getSearchCursor();
-    const currentPos = cm.getCursor();
-
-    if (sc.findPrevious()) {
-      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-      this.setState({ isInputtingEmoji });
-      // current search cursor position
-      const pos = {
-        line: sc.to().line,
-        ch: sc.to().ch,
-      };
-      // Add delay between search emoji and display emoji picker
-      if (this.state.searchEmojiTimeout) {
-        clearTimeout(this.state.searchEmojiTimeout);
-      }
-      const timeout = setTimeout(() => {
-        const currentSearchText = sc.matches(true, pos).match[0];
-        const searchValue = currentSearchText.replace(':', '');
-        this.setState({ isEmojiPickerShown: isInputtingEmoji });
-        this.setState({ emojiSearchText: searchValue });
-      }, 700);
-      this.setState({ searchEmojiTimeout: timeout });
-      // return if it isn't inputting emoji
-      if (!isInputtingEmoji) {
-        return;
-      }
-    }
-    else {
-      return;
-    }
-
   }
 
 
