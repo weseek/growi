@@ -175,14 +175,14 @@ module.exports = (crowi) => {
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
     ],
-
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
-    v5PageMigration: [
-      body('action').isString().withMessage('action is required'),
+    legacyPagesMigration: [
+      body('pageIds').isArray().withMessage('pageIds is required'),
+      body('isRecursively').isBoolean().withMessage('isRecursively is required'),
     ],
   };
 
@@ -380,7 +380,9 @@ module.exports = (crowi) => {
         if (!relationsMap.has(pageId)) {
           relationsMap.set(pageId, []);
         }
-        relationsMap.get(pageId).push(relation.relatedTag);
+        if (relation.relatedTag != null) {
+          relationsMap.get(pageId).push(relation.relatedTag);
+        }
       });
       // add tags to each page
       result.pages.forEach((page) => {
@@ -704,26 +706,14 @@ module.exports = (crowi) => {
 
   });
 
-  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.v5PageMigration, apiV3FormValidator, async(req, res) => {
-    const { action, pageIds } = req.body;
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const Page = crowi.model('Page');
 
     try {
-      switch (action) {
-        case 'initialMigration':
-          if (!isV5Compatible) {
-            // this method throws and emit socketIo event when error occurs
-            crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
-          }
-          break;
-        case 'privateLegacyPages':
-          crowi.pageService.v5MigrationByPageIds(pageIds);
-          break;
-
-        default:
-          logger.error(`${action} action is not supported.`);
-          return res.apiv3Err(new ErrorV3('This action is not supported.', 'not_supported'), 400);
+      if (!isV5Compatible) {
+        // this method throws and emit socketIo event when error occurs
+        crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
       }
     }
     catch (err) {
@@ -731,6 +721,26 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3({ isV5Compatible });
+  });
+
+  // eslint-disable-next-line max-len
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+    const { pageIds, isRecursively } = req.body;
+
+    if (isRecursively) {
+      // this method innerly uses socket to send message
+      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+    }
+    else {
+      try {
+        await crowi.pageService.normalizeParentByPageIds(pageIds);
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+      }
+    }
+
+    return res.apiv3({});
   });
 
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {

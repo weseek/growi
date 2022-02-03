@@ -15,6 +15,7 @@ import { stringifySnapshot } from '~/models/serializers/in-app-notification-snap
 import ActivityDefine from '../util/activityDefine';
 import { IPage } from '~/interfaces/page';
 import { PageRedirectModel } from '../models/page-redirect';
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 
 const debug = require('debug')('growi:services:page');
 
@@ -226,13 +227,20 @@ class PageService {
   private shouldUseV4Process(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    const isTrashPage = page.status === Page.STATUS_DELETED;
+
+    return !isTrashPage && this.shouldUseV4ProcessForRevert(page);
+  }
+
+  private shouldUseV4ProcessForRevert(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const isTrashPage = page.status === Page.STATUS_DELETED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && !isTrashPage && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
@@ -366,11 +374,6 @@ class PageService {
     // update Rivisions
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
-    /*
-     * TODO: https://redmine.weseek.co.jp/issues/86577
-     * bulkWrite PageRedirectDocument if createRedirectPage is true
-     */
-
     this.pageEvent.emit('rename', page, user);
 
     return renamedPage;
@@ -386,7 +389,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
-    const { updateMetadata } = options;
+    const { updateMetadata, createRedirectPage } = options;
 
     const updatePathOperations: any[] = [];
     const insertPageRedirectOperations: any[] = [];
@@ -396,11 +399,19 @@ class PageService {
 
       // increment updatePathOperations
       let update;
-      if (updateMetadata && !page.isEmpty) {
+      if (!page.isEmpty && updateMetadata) {
         update = {
           $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() },
         };
 
+      }
+      else {
+        update = {
+          $set: { path: newPagePath },
+        };
+      }
+
+      if (!page.isEmpty && createRedirectPage) {
         // insert PageRedirect
         insertPageRedirectOperations.push({
           insertOne: {
@@ -410,11 +421,6 @@ class PageService {
             },
           },
         });
-      }
-      else {
-        update = {
-          $set: { path: newPagePath },
-        };
       }
 
       updatePathOperations.push({
@@ -429,11 +435,19 @@ class PageService {
 
     try {
       await Page.bulkWrite(updatePathOperations);
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
         throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
@@ -443,7 +457,7 @@ class PageService {
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const pageCollection = mongoose.connection.collection('pages');
-    const { updateMetadata } = options;
+    const { updateMetadata, createRedirectPage } = options;
 
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const insertPageRedirectOperations: any[] = [];
@@ -460,23 +474,33 @@ class PageService {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
       }
       // insert PageRedirect
-      insertPageRedirectOperations.push({
-        insertOne: {
-          document: {
-            fromPath: page.path,
-            toPath: newPagePath,
+      if (!page.isEmpty && createRedirectPage) {
+        insertPageRedirectOperations.push({
+          insertOne: {
+            document: {
+              fromPath: page.path,
+              toPath: newPagePath,
+            },
           },
-        },
-      });
+        });
+      }
     });
 
     try {
       await unorderedBulkOp.execute();
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
         throw new Error(`Failed to rename pages: ${err}`);
+      }
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
@@ -687,7 +711,6 @@ class PageService {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
       this.tagEvent.emit('update', createdPage, savedTags);
     }
-
     const result = serializePageSecurely(createdPage);
     result.tags = savedTags;
 
@@ -784,7 +807,7 @@ class PageService {
       newPages.push(newPage);
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -830,7 +853,7 @@ class PageService {
       });
 
       newRevisions.push({
-        _id: revisionId, path: newPagePath, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -964,6 +987,12 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    // replace with an empty page
+    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
+    if (shouldReplace) {
+      await Page.replaceTargetWithPage(page);
+    }
+
     if (isRecursively) {
       this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
     }
@@ -1083,7 +1112,6 @@ class PageService {
 
     try {
       await Page.bulkWrite(deletePageOperations);
-      await PageRedirect.bulkWrite(insertPageRedirectOperations);
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1092,6 +1120,15 @@ class PageService {
     }
     finally {
       this.pageEvent.emit('syncDescendantsDelete', pages, user);
+    }
+
+    try {
+      await PageRedirect.bulkWrite(insertPageRedirectOperations);
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw Error(`Failed to create PageRedirect documents: ${err}`);
+      }
     }
   }
 
@@ -1156,7 +1193,7 @@ class PageService {
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Revision.deleteMany({ pageId: { $in: pageIds } }),
       Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
       PageRedirect.deleteMany({ $or: [{ toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
@@ -1198,7 +1235,7 @@ class PageService {
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
-      await Page.replaceTargetWithEmptyPage(page);
+      await Page.replaceTargetWithPage(page);
     }
 
     await this.deleteCompletelyOperation(ids, paths);
@@ -1285,7 +1322,7 @@ class PageService {
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const revertPageOperations: any[] = [];
-    const fromPaths: string[] = [];
+    const fromPathsToDelete: string[] = [];
 
     pages.forEach((page) => {
       // e.g. page.path = /trash/test, toPath = /test
@@ -1301,12 +1338,12 @@ class PageService {
         },
       });
 
-      fromPaths.push(page.path);
+      fromPathsToDelete.push(page.path);
     });
 
     try {
       await Page.bulkWrite(revertPageOperations);
-      await PageRedirect.deleteMany({ fromPath: { $in: fromPaths } });
+      await PageRedirect.deleteMany({ fromPath: { $in: fromPathsToDelete } });
     }
     catch (err) {
       if (err.code !== 11000) {
@@ -1320,7 +1357,7 @@ class PageService {
     const PageTagRelation = this.crowi.model('PageTagRelation');
 
     // v4 compatible process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
+    const shouldUseV4Process = this.shouldUseV4ProcessForRevert(page);
     if (shouldUseV4Process) {
       return this.revertDeletedPageV4(page, user, options, isRecursively);
     }
@@ -1573,16 +1610,76 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async v5MigrationByPageIds(pageIds) {
-    const Page = mongoose.model('Page');
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[]): Promise<void> {
+    for await (const pageId of pageIds) {
+      try {
+        await this.normalizeParentByPageId(pageId);
+      }
+      catch (err) {
+        // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
+      }
+    }
+  }
 
+  private async normalizeParentByPageId(pageId: ObjectIdLike) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const target = await Page.findById(pageId);
+    if (target == null) {
+      throw Error('target does not exist');
+    }
+
+    const {
+      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+    } = target;
+
+    /*
+     * UserGroup & Owner validation
+     */
+    if (target.grant !== Page.GRANT_RESTRICTED) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = true;
+
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${path}"`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.');
+      }
+    }
+    else {
+      throw Error('Restricted pages can not be migrated');
+    }
+
+    // getParentAndFillAncestors
+    const parent = await Page.getParentAndFillAncestors(target.path);
+
+    return Page.updateOne({ _id: pageId }, { parent: parent._id });
+  }
+
+  async normalizeParentRecursivelyByPageIds(pageIds) {
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
     }
 
+    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+
+    if (normalizedIds.length === 0) {
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+      return;
+    }
+
+    if (notNormalizedPaths.length !== 0) {
+      // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+    }
+
     // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(pageIds);
+    const regexps = await this._generateRegExpsByPageIds(normalizedIds);
 
     // migrate recursively
     try {
@@ -1590,7 +1687,7 @@ class PageService {
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
-      // socket.emit('v5InitialMirationFailed', { error: err.message }); TODO: use socket to tell user
+      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
 
       throw err;
     }
@@ -1691,7 +1788,7 @@ class PageService {
     }
 
     const { pages } = result;
-    const regexps = pages.map(page => new RegExp(`^${page.path}`));
+    const regexps = pages.map(page => new RegExp(`^${escapeStringRegexp(page.path)}`));
 
     return regexps;
   }
@@ -1729,30 +1826,29 @@ class PageService {
     }
 
     // generate filter
-    let filter: any = {
-      parent: null,
-      path: { $ne: '/' },
-      status: Page.STATUS_PUBLISHED,
+    const filter: any = {
+      $and: [
+        {
+          parent: null,
+          status: Page.STATUS_PUBLISHED,
+          path: { $ne: '/' },
+        },
+      ],
     };
     if (regexps != null && regexps.length !== 0) {
-      filter = {
-        ...filter,
-        path: {
-          $in: regexps,
-        },
-      };
+      filter.$and.push({
+        parent: null,
+        status: Page.STATUS_PUBLISHED,
+        path: { $in: regexps },
+      });
     }
 
     const total = await Page.countDocuments(filter);
 
     let baseAggregation = Page
       .aggregate([
-        {
-          $match: grantFilter,
-        },
-        {
-          $match: filter,
-        },
+        { $match: grantFilter },
+        { $match: filter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -1854,7 +1950,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(filter) && shouldContinue) {
+    const existsFilter = { $and: [...grantFilter.$and, ...filter.$and] };
+    if (await Page.exists(existsFilter) && shouldContinue) {
       return this.normalizeParentRecursively(grant, regexps, publicOnly);
     }
 

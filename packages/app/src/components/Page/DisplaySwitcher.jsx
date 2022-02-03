@@ -35,20 +35,22 @@ const DisplaySwitcher = (props) => {
         <TabPane tabId={EditorMode.View}>
           <div className="d-flex flex-column flex-lg-row-reverse">
 
-            <div className="grw-side-contents-container">
-              <div className="grw-side-contents-sticky-container">
-                <div className="border-bottom pb-1">
-                  <PageAccessories isNotFoundPage={!isPageExist} />
-                </div>
-
-                <div className="d-none d-lg-block">
-                  <div id="revision-toc" className="revision-toc">
-                    <TableOfContents />
+            { isPageExist && (
+              <div className="grw-side-contents-container">
+                <div className="grw-side-contents-sticky-container">
+                  <div className="border-bottom pb-1">
+                    <PageAccessories />
                   </div>
-                  <ContentLinkButtons />
+
+                  <div className="d-none d-lg-block">
+                    <div id="revision-toc" className="revision-toc">
+                      <TableOfContents />
+                    </div>
+                    <ContentLinkButtons />
+                  </div>
                 </div>
               </div>
-            </div>
+            ) }
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
               {pageUser && <UserInfo pageUser={pageUser} />}

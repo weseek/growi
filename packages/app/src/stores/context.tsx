@@ -11,122 +11,139 @@ import { TargetAndAncestors, NotFoundTargetPathOrId } from '../interfaces/page-l
 
 type Nullable<T> = T | null;
 
-export const useCurrentUser = (initialData?: IUser): SWRResponse<Nullable<IUser>, Error> => {
-  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData ?? null);
+export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
+  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionId', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('revisionId', initialData);
 };
 
 export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
 };
 
-
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData);
 };
 
 export const useCurrentCreatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
-  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData ?? null);
+  return useStaticSWR<Nullable<Date>, Error>('createdAt', initialData);
 };
 
 export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
-  return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData ?? null);
+  return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData);
 };
 
 export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData);
 };
 
-export const useIsUserPage = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isUserPage', initialData ?? null);
+export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
 
-export const useIsTrashPage = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isTrashPage', initialData ?? null);
+export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isUserPage', initialData, { fallbackData: false });
 };
 
-export const useIsDeleted = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isDeleted', initialData ?? null);
+export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsDeletable = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isDeletable', initialData ?? null);
+export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
 };
 
-export const useIsNotCreatable = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('isNotCreatable', initialData ?? null);
+export const useIsDeletable = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isDeletable', initialData, { fallbackData: false });
 };
 
-export const useIsAbleToDeleteCompletely = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isAbleToDeleteCompletely', initialData ?? null);
+export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
 
-export const useIsPageExist = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isPageExist', initialData ?? null);
+export const useIsAbleToDeleteCompletely = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isAbleToDeleteCompletely', initialData, { fallbackData: false });
+};
+
+export const useIsPageExist = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isPageExist', initialData, { fallbackData: false });
+};
+
+export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
 export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageUser', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
 };
 
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
 
 export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
 
 export const useShareLinkId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinkId', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('shareLinkId', initialData);
 };
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
 };
 
 export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('lastUpdateUsername', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('lastUpdateUsername', initialData);
 };
 
 export const useDeleteUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('deleteUsername', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('deleteUsername', initialData);
 };
 
 export const usePageIdOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageIdOnHackmd', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('pageIdOnHackmd', initialData);
 };
 
 export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
 };
 
 export const useCreator = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('creator', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('creator', initialData);
 };
 
 export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
 };
 
 export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData ?? null);
+  return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
+
+export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
+  return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
+};
+
+export const useNotFoundTargetPathOrId = (initialData?: Nullable<NotFoundTargetPathOrId>): SWRResponse<Nullable<NotFoundTargetPathOrId>, Error> => {
+  return useStaticSWR<Nullable<NotFoundTargetPathOrId>, Error>('notFoundTargetPathOrId', initialData);
+};
+
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
@@ -163,12 +180,4 @@ export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
       return isGuestUser && pagePathUtils.isSharedPage(currentPagePath as string);
     },
   );
-};
-
-export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
-  return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData || null);
-};
-
-export const useNotFoundTargetPathOrId = (initialData?: NotFoundTargetPathOrId): SWRResponse<NotFoundTargetPathOrId, Error> => {
-  return useStaticSWR<NotFoundTargetPathOrId, Error>('notFoundTargetPathOrId', initialData || null);
 };

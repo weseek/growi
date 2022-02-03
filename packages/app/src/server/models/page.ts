@@ -165,7 +165,7 @@ schema.statics.createEmptyPage = async function(
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithEmptyPage = async function(exPage): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?): Promise<void> {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -173,7 +173,7 @@ schema.statics.replaceTargetWithEmptyPage = async function(exPage): Promise<void
   }
 
   // create empty page at path
-  const newTarget = await this.createEmptyPage(exPage.path, parent);
+  const newTarget = pageToReplaceWith == null ? await this.createEmptyPage(exPage.path, parent) : pageToReplaceWith;
 
   // find children by ex-page _id
   const children = await this.find({ parent: exPage._id });
@@ -279,6 +279,7 @@ schema.statics.findByPathAndViewer = async function(
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();
@@ -612,8 +613,7 @@ export default (crowi: Crowi): any => {
     }
 
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
@@ -668,8 +668,7 @@ export default (crowi: Crowi): any => {
     // update existing page
     let savedPage = await newPageData.save();
     const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
