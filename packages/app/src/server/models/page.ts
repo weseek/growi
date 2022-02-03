@@ -469,7 +469,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
             $sum: '$descendantCount',
           },
           sumOfDocsCount: {
-            $sum: { $cond: { if: { $ne: ['$isEmpty', true] }, then: 0, else: 1 } }, // exclude isEmpty true page from sumOfDocsCount
+            $sum: { $cond: { if: { $eq: ['$isEmpty', true] }, then: 0, else: 1 } }, // exclude isEmpty true page from sumOfDocsCount
           },
         },
       },
@@ -488,10 +488,11 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
 };
 
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
+  const self = this;
   const target = await this.findById(pageId);
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {
-    const parent = await this.findOne({ _id: target.parent });
+    const parent = await self.findOne({ _id: target.parent });
     if (parent == null) {
       return ancestors;
     }
