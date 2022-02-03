@@ -165,6 +165,14 @@ const UserGroupDetailPage: FC = () => {
               </button>
             ))
           }
+
+          <div className="dropdown-divider"></div>
+
+          <button
+            className="dropdown-item"
+            type="button"
+          >Create child group
+          </button>
         </div>
       </div>
 
