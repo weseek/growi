@@ -21,6 +21,8 @@ describe('PageService page operations with only public pages', () => {
   let ShareLink;
   let xssSpy;
 
+  let rootPage;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -50,7 +52,20 @@ describe('PageService page operations with only public pages', () => {
     /*
      * Rename
      */
+    rootPage = await Page.create('/', 'body', testUser1._id, {});
 
+  });
+
+  describe('Should NOT rename top page', async() => {
+    let isThrown = false;
+    try {
+      await crowi.pageService.renamePage(rootPage, '/new_root', testUser1, {});
+    }
+    catch (err) {
+      isThrown = true;
+    }
+
+    expect(isThrown).toBe(true);
   });
 });
 
