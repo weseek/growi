@@ -297,6 +297,7 @@ export const useCreateModalPath = (): SWRResponse<any | null | undefined, Error>
     },
   );
 };
+
 // PageDeleteModal
 type DeleteModalStatus = {
   isOpened: boolean,
@@ -321,7 +322,6 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 
 export const useDeleteModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageDeleteModalStatus();
-  console.log('data', data);
   return useSWR(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {

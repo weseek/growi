@@ -53,6 +53,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
@@ -153,9 +154,6 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   const renderHoge = () => {
     if (closeDeleteModalData != null && closeDeleteModalData.pages != null) {
       const { pages } = closeDeleteModalData;
-      console.log('pages_hoi', pages);
-      console.log('pages_hoe', typeof pages);
-
       return pages.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
@@ -172,7 +170,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
-          {/* {closeDeleteModalData?.pages.map((page) => {
+          {/* {closeDeleteModalData?.pages.pages.map((page) => {
             return <div key={page.pageId}><code>{ page.path }</code></div>;
           })} */}
           {renderHoge()}
