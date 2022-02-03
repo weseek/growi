@@ -130,6 +130,7 @@ const UserGroupDetailPage: FC = () => {
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
       <UserGroupUserModal />
+      <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
         <UserGroupPageList />
