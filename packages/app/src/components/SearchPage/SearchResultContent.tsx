@@ -27,7 +27,6 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   useEffect(() => {
     // reset state
     if (isRevisionBodyRendered) {
-
       const searchResultPageContent = contentRef.current as HTMLElement | null;
       if (searchResultPageContent == null) {
         return setIsRevisionBodyRendered(false);
