@@ -60,6 +60,9 @@ module.exports = (crowi) => {
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
     ],
+    selectableGroups: [
+      query('groupId', 'groupId must be a string').optional().isString(),
+    ],
     users: {
       post: [
         param('id').trim().exists({ checkFalsy: true }),
@@ -193,12 +196,12 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /non-family-lineage:
+   *    /selectable-groups:
    *      get:
    *        tags: [UserGroup]
-   *        operationId: getNonFamilyLineage
-   *        summary: /non-family-lineage
-   *        description: Get non-family user groups.
+   *        operationId: getSelectableGroups
+   *        summary: /selectable-groups
+   *        description: Get selectable user groups.
    *        parameters:
    *          - name: groupId
    *            in: query
@@ -219,18 +222,18 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/non-family-lineage', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/selectable-groupse', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
 
-      const [upperGeneration, lowerGeneration] = await Promise.all([
+      const [ancestorGroups, descendantGroups] = await Promise.all([
         UserGroup.findGroupsWithAncestorsRecursively(userGroup, []),
         UserGroup.findGroupsWithDescendantsRecursively([userGroup], []),
       ]);
 
-      const excludeUserGroupIds = [userGroup, ...upperGeneration, ...lowerGeneration].map(userGroups => userGroups._id.toString());
+      const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
       const userGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
       return res.apiv3({ userGroups });
     }
