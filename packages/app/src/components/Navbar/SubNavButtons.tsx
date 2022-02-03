@@ -1,10 +1,7 @@
-import React, {
-  FC, useCallback,
-} from 'react';
+import React, { useCallback } from 'react';
 
 import SubscribeButton from '../SubscribeButton';
 import PageReactionButtons from '../PageReactionButtons';
-import PageManagement from '../Page/PageManagement';
 import { useSWRPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { toastError } from '../../client/util/apiNotification';
@@ -12,19 +9,14 @@ import { apiv3Put } from '../../client/util/apiv3-client';
 import { useSWRxLikerList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
 
-type SubNavButtonsProps= {
+
+type SubNavButtonsSubstanceProps= {
   isCompactMode?: boolean,
-  pageId: string,
-  revisionId: string,
-  path: string,
-  isViewMode: boolean
-  isAbleToShowPageManagement: boolean,
-  isDeletable: boolean,
-  isAbleToDeleteCompletely: boolean,
+  showPageControlDropdown?: boolean,
 }
-const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
+const SubNavButtonsSubstance = (props: { pageId: string } & SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    isCompactMode, pageId, revisionId, path, isViewMode, isAbleToShowPageManagement, isDeletable, isAbleToDeleteCompletely,
+    isCompactMode, pageId, showPageControlDropdown,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -62,6 +54,7 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
     }
   }, [bookmarkInfo, isGuestUser, mutateBookmarkInfo, pageId]);
 
+
   if (pageInfoError != null || pageInfo == null) {
     return <></>;
   }
@@ -75,38 +68,52 @@ const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      {isViewMode && (
-        <>
-          <span>
-            <SubscribeButton pageId={props.pageId} />
-          </span>
-          <PageReactionButtons
-            isCompactMode={isCompactMode}
-            sumOfLikers={sumOfLikers}
-            isLiked={isLiked}
-            likers={likers || []}
-            onLikeClicked={likeClickhandler}
-            sumOfBookmarks={sumOfBookmarks}
-            isBookmarked={isBookmarked}
-            bookmarkedUsers={bookmarkedUsers}
-            onBookMarkClicked={bookmarkClickHandler}
-          >
-          </PageReactionButtons>
-          { isAbleToShowPageManagement && (
-            <PageManagement
-              pageId={pageId}
-              revisionId={revisionId}
-              path={path}
-              isCompactMode={isCompactMode}
-              isDeletable={isDeletable}
-              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            >
-            </PageManagement>
-          )}
-        </>
+      <span>
+        <SubscribeButton pageId={props.pageId} />
+      </span>
+      <PageReactionButtons
+        isCompactMode={isCompactMode}
+        sumOfLikers={sumOfLikers}
+        isLiked={isLiked}
+        likers={likers || []}
+        onLikeClicked={likeClickhandler}
+        sumOfBookmarks={sumOfBookmarks}
+        isBookmarked={isBookmarked}
+        bookmarkedUsers={bookmarkedUsers}
+        onBookMarkClicked={bookmarkClickHandler}
+      >
+      </PageReactionButtons>
+
+      { showPageControlDropdown && (
+        /*
+          TODO:
+          replace with PageItemControl
+        */
+        <></>
+        // <PageManagement
+        //   pageId={pageId}
+        //   revisionId={revisionId}
+        //   path={path}
+        //   isCompactMode={isCompactMode}
+        //   isDeletable={isDeletable}
+        //   isAbleToDeleteCompletely={isAbleToDeleteCompletely}
+        // >
+        // </PageManagement>
       )}
     </div>
   );
 };
 
-export default SubNavButtons;
+type SubNavButtonsProps= SubNavButtonsSubstanceProps & {
+  pageId?: string | null,
+};
+
+export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
+  const { pageId, isCompactMode } = props;
+
+  if (pageId == null) {
+    return <></>;
+  }
+
+  return <SubNavButtonsSubstance pageId={pageId} isCompactMode={isCompactMode} />;
+};
