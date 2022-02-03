@@ -74,10 +74,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: page path
  *            example: /
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: page revision
