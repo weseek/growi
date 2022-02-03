@@ -70,11 +70,4 @@ module.exports = {
     '/node_modules/',
   ],
 
-  // see: https://github.com/facebook/jest/issues/8973
-  globals: {
-    'ts-jest': {
-      babelConfig: true,
-    }
-  },
-
 };
