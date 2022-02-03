@@ -41,10 +41,39 @@ module.exports = (crowi) => {
     Page,
   } = crowi.models;
 
-  validator.listChildren = [
-    query('parentIds', 'parentIds must be an array').optional().isArray(),
-    query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
-  ];
+  const validator = {
+    create: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Description must be a string').optional().isString(),
+      body('parentId', 'ParentId must be a string').optional().isString(),
+    ],
+    delete: [
+      param('id').trim().exists({ checkFalsy: true }),
+      query('actionName').trim().exists({ checkFalsy: true }),
+      query('transferToUserGroupId').trim(),
+    ],
+    listChildren: [
+      query('parentIds', 'parentIds must be an array').optional().isArray(),
+      query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+    ],
+    users: {
+      post: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+      delete: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+    },
+    pages: {
+      get: [
+        param('id').trim().exists({ checkFalsy: true }),
+        sanitizeQuery('limit').customSanitizer(toPagingLimit),
+        sanitizeQuery('offset').customSanitizer(toPagingOffset),
+      ],
+    },
+  };
 
   /**
    * @swagger
@@ -167,7 +196,7 @@ module.exports = (crowi) => {
     query('transferToUserGroupId').trim(),
   ];
 
-  router.get('/test', async(req, res) => {
+  router.get('/non-family-lineage', async(req, res) => {
     const { groupId } = req.query;
     const userGroup = await UserGroup.findById(groupId);
 
@@ -239,13 +268,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.update = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-    body('description', 'Group description must be a string').optional().isString(),
-    body('parentId', 'parentId must be a string').optional().isString(),
-    body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
-  ];
-
   /**
    * @swagger
    *
@@ -292,7 +314,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users = {};
 
   /**
    * @swagger
@@ -405,10 +426,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.post = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -475,10 +492,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -539,7 +552,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.userGroupRelations = {};
 
   /**
    * @swagger
@@ -587,13 +599,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.pages = {};
-
-  validator.pages.get = [
-    param('id').trim().exists({ checkFalsy: true }),
-    sanitizeQuery('limit').customSanitizer(toPagingLimit),
-    sanitizeQuery('offset').customSanitizer(toPagingOffset),
-  ];
 
   /**
    * @swagger
