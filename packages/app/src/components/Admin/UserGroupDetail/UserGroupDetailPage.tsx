@@ -17,7 +17,7 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
+import { useSWRxUserGroupList, useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
 
 
 const UserGroupDetailPage: FC = () => {
@@ -104,6 +104,19 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
+  const onClickAddChildButton = (userGroup: IUserGroupHasId) => {
+    console.log(userGroup);
+  };
+
+
+  // 消す
+  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  if (userGroups == null) {
+    return <></>;
+  }
+  // 消す
+
+
   /*
    * Dependencies
    */
@@ -131,6 +144,32 @@ const UserGroupDetailPage: FC = () => {
       <UserGroupUserTable />
       <UserGroupUserModal />
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
+
+      {/* ここから */}
+
+      <div className="dropdown">
+        {/* eslint-disable-next-line max-len */}
+        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+          Add child group
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {
+            userGroups.map(userGroup => (
+              <button
+                key={userGroup._id}
+                type="button"
+                className="dropdown-item"
+                onClick={() => onClickAddChildButton(userGroup)}
+              >
+                {userGroup.name}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      {/* ここまで */}
+
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
         <UserGroupPageList />
