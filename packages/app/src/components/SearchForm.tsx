@@ -4,8 +4,9 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IPageSearchResultData } from '~/interfaces/search';
 import { IFocusable } from '~/client/interfaces/focusable';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 
 import SearchTypeahead from './SearchTypeahead';
 
@@ -84,7 +85,7 @@ type Props = {
 
   dropup?: boolean,
   keyword?: string,
-  onChange?: (data: IPageSearchResultData[]) => void,
+  onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
   onBlur?: () => void,
   onFocus?: () => void,
   onSubmit?: (input: string) => void,

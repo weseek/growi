@@ -27,7 +27,6 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     setIsPopoverOpen(!isPopoverOpen);
   };
 
-
   const handleClick = () => {
     if (props.onLikeClicked == null) {
       return;

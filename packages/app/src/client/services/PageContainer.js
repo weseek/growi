@@ -54,15 +54,6 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
 
-      seenUsers: [],
-      seenUserIds: [],
-      sumOfSeenUsers: [],
-
-      isLiked: false,
-      likers: [],
-      likerIds: [],
-      sumOfLikers: 0,
-
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -117,23 +108,9 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.checkAndUpdateImageUrlCached(this.state.likers);
-
-    const { isSharedUser } = this.appContainer;
-
-    // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
-
-    if (isAbleToGetAttachedInformationAboutPages) {
-      // We don't retrieve bookmarks in the initial page load
-      // as it is stored in a separate collection to like and seen user
-      // data so it has a separate api endpoint.
-      this.initialPageLoad();
-    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
-    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
     this.emitJoinPageRoomRequest();
@@ -264,64 +241,6 @@ export default class PageContainer extends Container {
     const markdown = entities.decodeHTML(pageContent);
 
     this.state.markdown = markdown;
-  }
-
-
-  async initialPageLoad() {
-    {
-      const {
-        data: {
-          likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
-        },
-      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
-
-      await this.setState({
-        sumOfLikers,
-        isLiked,
-        likerIds,
-        seenUserIds,
-        sumOfSeenUsers,
-        isSeen,
-      });
-    }
-
-    await this.retrieveLikersAndSeenUsers();
-  }
-
-
-  async retrieveLikersAndSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
-
-    await this.setState({
-      likers: users.filter(({ id }) => this.state.likerIds.includes(id)).slice(0, 15),
-      seenUsers: users.filter(({ id }) => this.state.seenUserIds.includes(id)).slice(0, 15),
-    });
-
-    this.checkAndUpdateImageUrlCached(users);
-  }
-
-  async retrieveBookmarkInfo() {
-    const response = await this.appContainer.apiv3Get('/bookmarks/info', { pageId: this.state.pageId });
-    this.setState({
-      sumOfBookmarks: response.data.sumOfBookmarks,
-      isBookmarked: response.data.isBookmarked,
-    });
-  }
-
-  async checkAndUpdateImageUrlCached(users) {
-    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
-    if (noImageCacheUsers.length === 0) {
-      return;
-    }
-
-    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-    try {
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-    }
-    catch (err) {
-      // Error alert doesn't apear, because user don't need to notice this error.
-      logger.error(err);
-    }
   }
 
   setLatestRemotePageData(s2cMessagePageUpdated) {
