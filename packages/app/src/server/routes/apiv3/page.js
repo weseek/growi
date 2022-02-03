@@ -118,15 +118,11 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        description: PageInfo
  *        type: object
  *        required:
- *          - isSeen
  *          - sumOfLikers
  *          - likerIds
  *          - sumOfSeenUsers
  *          - seenUserIds
  *        properties:
- *          isSeen:
- *            type: boolean
- *            description: Whether the page has ever been seen
  *          isLiked:
  *            type: boolean
  *            description: Whether the page is liked by the logged in user
@@ -169,7 +165,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
 
   const validator = {
@@ -362,26 +358,45 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/info', loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findById(pageId);
+      const page = await Page.findByIdAndViewer(pageId, user);
 
-      const guestUserResponse = {
+      if (page == null) {
+        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
+      }
+
+      const bookmarkCount = await Bookmark.countByPageId(pageId);
+
+      const responseBodyForGuest = {
         sumOfLikers: page.liker.length,
         likerIds: page.liker.slice(0, 15),
         seenUserIds: page.seenUsers.slice(0, 15),
         sumOfSeenUsers: page.seenUsers.length,
-        isSeen: page.seenUsers.length > 0,
+        bookmarkCount,
+        isDeletable: Page.isDeletableName(page.path),
+        isAbleToDeleteCompletely: false,
       };
 
       const isGuestUser = !req.user;
       if (isGuestUser) {
-        return res.apiv3(guestUserResponse);
+        return res.apiv3(responseBodyForGuest);
       }
 
-      const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
-      return res.apiv3(userResponse);
+      const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+      const isLiked = page.isLiked(user);
+      const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
+
+      const responseBody = {
+        ...responseBodyForGuest,
+        isAbleToDeleteCompletely,
+        isBookmarked,
+        isLiked,
+      };
+
+      return res.apiv3(responseBody);
     }
     catch (err) {
       logger.error('get-page-info', err);

@@ -41,7 +41,9 @@ export type IPageInfo = {
   likerIds: string[],
   sumOfSeenUsers: number,
   seenUserIds: string[],
-  isSeen?: boolean,
+  isDeletable: boolean,
+  isAbleToDeleteCompletely: boolean,
+  isBookmarked?: boolean,
   isLiked?: boolean,
 }
 

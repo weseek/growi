@@ -2,12 +2,11 @@ import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { IPage, IPageHasId } from '~/interfaces/page';
+import { IPageInfo, IPageHasId } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
 
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
-import { IPageInfo } from '../interfaces/page-info';
 import { useIsGuestUser } from './context';
 
 
@@ -49,16 +48,10 @@ export const useSWRxPageList = (
 };
 
 export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfo, Error> => {
-  return useSWR(pageId != null ? `/page/info?pageId=${pageId}` : null, endpoint => apiv3Get(endpoint).then((response) => {
-    return {
-      sumOfLikers: response.data.sumOfLikers,
-      likerIds: response.data.likerIds,
-      seenUserIds: response.data.seenUserIds,
-      sumOfSeenUsers: response.data.sumOfSeenUsers,
-      isSeen: response.data.isSeen,
-      isLiked: response.data?.isLiked,
-    };
-  }));
+  return useSWR(
+    pageId != null ? `/page/info?pageId=${pageId}` : null,
+    endpoint => apiv3Get<IPageInfo>(endpoint).then(response => response.data),
+  );
 };
 
 export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
