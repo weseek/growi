@@ -4,6 +4,8 @@ import { HasObjectId } from './has-object-id';
 export type IUser = {
   name: string;
   username: string;
+  email: string;
+  password: string;
   imageUrlCached: string;
   admin: boolean;
 }

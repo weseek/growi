@@ -278,6 +278,7 @@ schema.statics.findByPathAndViewer = async function(
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   await addViewerCondition(queryBuilder, user, userGroups);
 
   return queryBuilder.query.exec();

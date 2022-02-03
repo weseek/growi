@@ -21,8 +21,8 @@ module.exports = {
       preset: 'ts-jest/presets/js-with-ts',
 
       rootDir: '.',
-      roots: ['<rootDir>/src'],
-      testMatch: ['<rootDir>/src/test/unit/**/*.test.ts', '<rootDir>/src/test/unit/**/*.test.js'],
+      roots: ['<rootDir>'],
+      testMatch: ['<rootDir>/test/unit/**/*.test.ts', '<rootDir>/test/unit/**/*.test.js'],
 
       testEnvironment: 'node',
 
@@ -36,23 +36,18 @@ module.exports = {
       preset: 'ts-jest/presets/js-with-ts',
 
       rootDir: '.',
-      roots: ['<rootDir>/src'],
-      testMatch: ['<rootDir>/src/test/integration/**/*.test.ts', '<rootDir>/src/test/integration/**/*.test.js'],
+      roots: ['<rootDir>'],
+      testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js'],
 
       testEnvironment: 'node',
-      globalSetup: '<rootDir>/src/test/integration/global-setup.js',
-      globalTeardown: '<rootDir>/src/test/integration/global-teardown.js',
-      setupFilesAfterEnv: ['<rootDir>/src/test/integration/setup.js'],
+      globalSetup: '<rootDir>/test/integration/global-setup.js',
+      globalTeardown: '<rootDir>/test/integration/global-teardown.js',
+      setupFilesAfterEnv: ['<rootDir>/test/integration/setup.js'],
 
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
       moduleNameMapper: MODULE_NAME_MAPPING,
     },
-    // {
-    //   displayName: 'client',
-    //   rootDir: '.',
-    //   testMatch: ['<rootDir>/src/test/client/**/*.test.js'],
-    // },
   ],
 
   // Automatically clear mock calls and instances between every test
