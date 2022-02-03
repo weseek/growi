@@ -108,6 +108,9 @@ const UserGroupDetailPage: FC = () => {
     console.log(userGroup);
   };
 
+  const onClickCreateGroupButton = () => {
+    console.log('button clicked!');
+  };
 
   // 消す
   const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
@@ -171,6 +174,7 @@ const UserGroupDetailPage: FC = () => {
           <button
             className="dropdown-item"
             type="button"
+            onClick={() => onClickCreateGroupButton()}
           >Create child group
           </button>
         </div>
