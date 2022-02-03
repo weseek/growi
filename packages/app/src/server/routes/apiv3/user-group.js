@@ -94,13 +94,7 @@ module.exports = (crowi) => {
   router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
-
-      if (parentIds == null || parentIds.length < 0) {
-        return res.apiv3Err(new ErrorV3('parentId is required', 'child-user-group-list-fetch-failed'));
-      }
-
       const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
-
       return res.apiv3({
         childUserGroups: userGroupsResult.childUserGroups,
         grandChildUserGroups: userGroupsResult.grandChildUserGroups,
