@@ -9,7 +9,7 @@ import {
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useIsGuestUser,
+  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -33,6 +33,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSharedUser } = useIsSharedUser();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -81,6 +82,7 @@ const GrowiContextualSubNavigation = (props) => {
             <SubNavButtons
               isCompactMode={isCompactMode}
               pageId={pageId}
+              disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
             />
           ) }
@@ -100,7 +102,7 @@ const GrowiContextualSubNavigation = (props) => {
   }, [
     pageId,
     editorMode, mutateEditorMode,
-    isCompactMode, isDeviceSmallerThanMd, isGuestUser,
+    isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
   ]);
 

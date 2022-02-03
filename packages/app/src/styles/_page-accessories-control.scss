@@ -15,31 +15,4 @@
     height: 25px;
     border-left: solid 1px transparent;
   }
-
-  .seen-user-count {
-    font-size: 12px;
-    font-weight: bolder;
-  }
-  .grw-seen-user-info {
-    .btn {
-      white-space: nowrap;
-    }
-  }
-
-  .seen-user-popover {
-    max-width: 200px;
-
-    .user-list-content {
-      direction: rtl;
-
-      .liker-user-count,
-      .seen-user-count {
-        font-size: 12px;
-        font-weight: bolder;
-      }
-    }
-    .cls-1 {
-      isolation: isolate;
-    }
-  }
 }
