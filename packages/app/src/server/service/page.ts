@@ -227,13 +227,20 @@ class PageService {
   private shouldUseV4Process(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
+    const isTrashPage = page.status === Page.STATUS_DELETED;
+
+    return !isTrashPage && this.shouldUseV4ProcessForRevert(page);
+  }
+
+  private shouldUseV4ProcessForRevert(page): boolean {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-    const isTrashPage = page.status === Page.STATUS_DELETED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && !isTrashPage && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
 
     return shouldUseV4Process;
   }
@@ -705,7 +712,6 @@ class PageService {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
       this.tagEvent.emit('update', createdPage, savedTags);
     }
-
     const result = serializePageSecurely(createdPage);
     result.tags = savedTags;
 
@@ -1188,7 +1194,7 @@ class PageService {
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Revision.deleteMany({ pageId: { $in: pageIds } }),
       Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
       PageRedirect.deleteMany({ $or: [{ toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
@@ -1352,7 +1358,7 @@ class PageService {
     const PageTagRelation = this.crowi.model('PageTagRelation');
 
     // v4 compatible process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
+    const shouldUseV4Process = this.shouldUseV4ProcessForRevert(page);
     if (shouldUseV4Process) {
       return this.revertDeletedPageV4(page, user, options, isRecursively);
     }
@@ -1821,30 +1827,29 @@ class PageService {
     }
 
     // generate filter
-    let filter: any = {
-      parent: null,
-      path: { $ne: '/' },
-      status: Page.STATUS_PUBLISHED,
+    const filter: any = {
+      $and: [
+        {
+          parent: null,
+          status: Page.STATUS_PUBLISHED,
+          path: { $ne: '/' },
+        },
+      ],
     };
     if (regexps != null && regexps.length !== 0) {
-      filter = {
-        ...filter,
-        path: {
-          $in: regexps,
-        },
-      };
+      filter.$and.push({
+        parent: null,
+        status: Page.STATUS_PUBLISHED,
+        path: { $in: regexps },
+      });
     }
 
     const total = await Page.countDocuments(filter);
 
     let baseAggregation = Page
       .aggregate([
-        {
-          $match: grantFilter,
-        },
-        {
-          $match: filter,
-        },
+        { $match: grantFilter },
+        { $match: filter },
         {
           $project: { // minimize data to fetch
             _id: 1,
@@ -1946,7 +1951,8 @@ class PageService {
 
     await streamToPromise(migratePagesStream);
 
-    if (await Page.exists(filter) && shouldContinue) {
+    const existsFilter = { $and: [...grantFilter.$and, ...filter.$and] };
+    if (await Page.exists(existsFilter) && shouldContinue) {
       return this.normalizeParentRecursively(grant, regexps, publicOnly);
     }
 

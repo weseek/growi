@@ -27,6 +27,7 @@ import { UserNotificationService } from '../service/user-notification';
 
 import Activity from '../models/activity';
 import UserGroup from '../models/user-group';
+import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -319,6 +320,7 @@ Crowi.prototype.setupModels = async function() {
   // include models that independent from crowi
   allModels.Activity = Activity;
   allModels.UserGroup = UserGroup;
+  allModels.PageRedirect = PageRedirect;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
