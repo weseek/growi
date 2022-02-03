@@ -100,7 +100,6 @@ const GrowiContextualSubNavigation = (props) => {
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
-  const isPageExists = pageId != null;
 
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
@@ -132,7 +131,7 @@ const GrowiContextualSubNavigation = (props) => {
     return (
       <>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          { isPageExists && isViewMode && (
+          { pageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
               pageId={pageId}
@@ -156,7 +155,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId, isPageExists,
+    pageId, revisionId,
     editorMode, mutateEditorMode,
     isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,

@@ -23,8 +23,8 @@ type CommonProps = {
   isEnableActions?: boolean,
   hideBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
-  onClickRenameMenuItem?: (pageId: string) => Promise<void>,
-  onClickDeleteMenuItem?: (pageId: string) => Promise<void>,
+  onClickRenameMenuItem?: (pageId: string) => void,
+  onClickDeleteMenuItem?: (pageId: string) => void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -44,15 +44,13 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   } = props;
 
 
-  const isEmpty = !isExistPageInfo(pageInfo);
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
-    if (isEmpty || onClickBookmarkMenuItem == null) {
+    if (!isExistPageInfo(pageInfo) || onClickBookmarkMenuItem == null) {
       return;
     }
     await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
-  }, [isEmpty, onClickBookmarkMenuItem, pageId, pageInfo]);
+  }, [onClickBookmarkMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
@@ -64,7 +62,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
-    if (isEmpty || onClickDeleteMenuItem == null) {
+    if (!isExistPageInfo(pageInfo) || onClickDeleteMenuItem == null) {
       return;
     }
     if (!pageInfo.isDeletable) {
@@ -72,7 +70,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       return;
     }
     await onClickDeleteMenuItem(pageId);
-  }, [isEmpty, onClickDeleteMenuItem, pageId, pageInfo]);
+  }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
   if (pageId == null || pageInfo == null) {
     return <></>;

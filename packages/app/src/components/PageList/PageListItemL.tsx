@@ -17,9 +17,9 @@ type Props = {
   isEnableActions?: boolean,
   shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
-  onClickCheckbox?: (pageId: string) => Promise<void>,
-  onClickItem?: (pageId: string) => Promise<void>,
-  onClickDeleteButton?: (pageId: string) => Promise<void>,
+  onClickCheckbox?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
+  onClickDeleteButton?: (pageId: string) => void,
 }
 
 export const PageListItemL: FC<Props> = memo((props:Props) => {
