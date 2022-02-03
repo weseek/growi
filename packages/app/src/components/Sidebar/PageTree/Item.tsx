@@ -41,65 +41,6 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
   });
 };
 
-type ItemControlProps = {
-  page: Partial<IPageHasId>
-  isEnableActions: boolean
-  isDeletable: boolean
-  onClickPlusButton?(): void
-  onClickDeleteButton?(): void
-  onClickRenameButton?(): void
-}
-
-
-const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
-  const onClickPlusButton = () => {
-    if (props.onClickPlusButton == null) {
-      return;
-    }
-
-    props.onClickPlusButton();
-  };
-
-  const onClickDeleteButtonHandler = () => {
-    if (props.onClickDeleteButton == null) {
-      return;
-    }
-
-    props.onClickDeleteButton();
-  };
-
-  const onClickRenameButtonHandler = () => {
-    if (props.onClickRenameButton == null) {
-      return;
-    }
-
-    props.onClickRenameButton();
-  };
-
-  if (props.page == null) {
-    return <></>;
-  }
-
-  return (
-    <>
-      <PageItemControl
-        page={props.page}
-        onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-        isEnableActions={props.isEnableActions}
-        isDeletable={props.isDeletable}
-        onClickRenameButtonHandler={onClickRenameButtonHandler}
-      />
-      <button
-        type="button"
-        className="border-0 rounded grw-btn-page-management p-0"
-        onClick={onClickPlusButton}
-      >
-        <i className="icon-plus text-muted d-block p-1" />
-      </button>
-    </>
-  );
-});
-
 
 type ItemCountProps = {
   descendantCount: number
@@ -294,14 +235,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         )}
         <div className="grw-pagetree-control d-none">
-          <ItemControl
+          <PageItemControl
             page={page}
-            onClickPlusButton={onClickPlusButton}
-            onClickDeleteButton={onClickDeleteButton}
-            onClickRenameButton={onClickRenameButton}
+            onClickDeleteButtonHandler={onClickDeleteButton}
             isEnableActions={isEnableActions}
             isDeletable={isDeletable}
+            onClickRenameButtonHandler={onClickRenameButton}
           />
+          <button
+            type="button"
+            className="border-0 rounded grw-btn-page-management p-0"
+            onClick={onClickPlusButton}
+          >
+            <i className="icon-plus text-muted d-block p-1" />
+          </button>
         </div>
       </li>
 
