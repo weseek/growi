@@ -145,7 +145,7 @@ const LegacyPageManagemenet = (props) => {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item text-danger" type="button" onClick={() => openDeleteModal({ pages: [pageToDelete] })}>
+        <button className="dropdown-item text-danger" type="button" onClick={() => openDeleteModal([pageToDelete])}>
           <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>

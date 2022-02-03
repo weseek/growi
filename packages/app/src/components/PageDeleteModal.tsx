@@ -151,7 +151,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
 
   const renderPagePathsToDelete = () => {
     if (pagesDataToDelete != null) {
-      return pagesDataToDelete.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+      return pagesDataToDelete.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
   };
