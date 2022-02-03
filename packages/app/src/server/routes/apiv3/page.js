@@ -368,6 +368,7 @@ module.exports = (crowi) => {
       if (page.isEmpty) {
         return res.apiv3({
           isEmpty: true,
+          isMovable: true,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
         });
