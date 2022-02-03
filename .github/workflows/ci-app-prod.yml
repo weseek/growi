@@ -1,0 +1,44 @@
+name: Node CI for app production
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+
+  test-prod-node14:
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    with:
+      node-version: 14.x
+      skip-cypress: true
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  test-prod-node16:
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    with:
+      node-version: 16.x
+      cypress-report-artifact-name: Cypress report
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  run-reg-suit-node16:
+    needs: [test-prod-node16]
+
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+
+    if: always()
+
+    with:
+      node-version: 16.x
+      cypress-report-artifact-name: Cypress report
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,91 @@
+name: Reusable build app workflow for production
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+      checkout-ref:
+        type: string
+        default: ${{ github.head_ref }}
+      cypress-report-artifact-name:
+        required: true
+        type: string
+    secrets:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+    outputs:
+      EXPECTED_IMAGES_EXIST:
+        value: ${{ jobs.run-reg-suit.outputs.EXPECTED_IMAGES_EXIST }}
+
+
+jobs:
+
+  run-reg-suit:
+    # use secrets for "VRT" environment
+    # https://github.com/weseek/growi/settings/environments/376165508/edit
+    environment: VRT
+
+    env:
+      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      EXPECTED_IMAGES_EXIST: ${{ steps.check-expected-images.outputs.EXPECTED_IMAGES_EXIST }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.checkout-ref }}
+        fetch-depth: 0
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ inputs.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
+
+    - name: Download screenshots taken by cypress
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.cypress-report-artifact-name }}
+        path: packages/app/test/cypress
+
+    - name: Run reg-suit
+      working-directory: ./packages/app
+      run: |
+        yarn reg:run
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - run-reg-suit (${{ inputs.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}

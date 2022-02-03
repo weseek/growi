@@ -1,10 +1,15 @@
 import React, { FC } from 'react';
+
 import { pagePathUtils } from '@growi/core';
+
+import { EditorMode, useEditorMode } from '~/stores/ui';
+
 import PagePathNav from '../PagePathNav';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../client/services/AppContainer';
 import { useSWRTagsInfo } from '../../stores/page';
 import SubNavButtons from '../Navbar/SubNavButtons';
+
 
 type Props = {
   appContainer:AppContainer
@@ -23,11 +28,16 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
 
   const { isTrashPage, isDeletablePage } = pagePathUtils;
 
+  const { data: editorMode } = useEditorMode();
+
   const { data: tagInfoData, error: tagInfoError } = useSWRTagsInfo(pageId);
 
   if (tagInfoError != null || tagInfoData == null) {
     return <></>;
   }
+
+  const isViewMode = editorMode === EditorMode.View;
+
   const isPageDeletable = isDeletablePage(path);
   const { isSharedUser } = appContainer;
   const isAbleToShowPageManagement = !(isTrashPage(path)) && !isSharedUser;
@@ -50,9 +60,10 @@ const SearchResultContentSubNavigation: FC<Props> = (props : Props) => {
             pageId={pageId}
             revisionId={revisionId}
             path={path}
+            isViewMode={isViewMode}
             isDeletable={isPageDeletable}
             isAbleToDeleteCompletely={false}
-            willShowPageManagement={isAbleToShowPageManagement}
+            isAbleToShowPageManagement={isAbleToShowPageManagement}
           >
           </SubNavButtons>
         </div>

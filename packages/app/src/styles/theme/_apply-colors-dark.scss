@@ -218,6 +218,19 @@ ul.pagination {
       }
     }
   }
+
+  // List group
+  .list-group-item {
+    &.active {
+      background-color: lighten($bgcolor-global, 9%) !important;
+    }
+    .list-group-item-action:hover {
+      background-color: $bgcolor-list-hover;
+    }
+    .page-list-snippet {
+      color: theme-color('light');
+    }
+  }
 }
 
 /*
@@ -441,22 +454,4 @@ ul.pagination {
  */
 .grw-modal-head {
   border-color: $border-color-global;
-}
-
-/*
- * search page
- */
-.on-search {
-  .grw-search-result-item {
-    &.active {
-      background-color: lighten($bgcolor-global, 9%) !important;
-    }
-  }
-  .list-group-item-action:hover {
-    background-color: $bgcolor-list-hover;
-  }
-
-  .grw-search-result-list-snippet {
-    color: theme-color('light');
-  }
 }
