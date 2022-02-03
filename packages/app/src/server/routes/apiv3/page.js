@@ -1,7 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
-import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
+import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
+import Subscription from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -199,7 +200,7 @@ module.exports = (crowi) => {
     ],
     subscribe: [
       body('pageId').isString(),
-      body('status').isBoolean(),
+      body('status').isIn(AllSubscriptionStatusType),
     ],
     subscribeStatus: [
       query('pageId').isString(),
@@ -362,15 +363,24 @@ module.exports = (crowi) => {
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findByIdAndViewer(pageId, user);
+      const page = await Page.findByIdAndViewer(pageId, user, null, true);
 
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
+      if (page.isEmpty) {
+        return res.apiv3({
+          isEmpty: true,
+          isDeletable: false,
+          isAbleToDeleteCompletely: false,
+        });
+      }
+
       const bookmarkCount = await Bookmark.countByPageId(pageId);
 
       const responseBodyForGuest = {
+        isEmpty: false,
         sumOfLikers: page.liker.length,
         likerIds: page.liker.slice(0, 15),
         seenUserIds: page.seenUsers.slice(0, 15),
@@ -389,11 +399,14 @@ module.exports = (crowi) => {
       const isLiked = page.isLiked(user);
       const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
 
+      const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+
       const responseBody = {
         ...responseBodyForGuest,
         isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,
+        subscriptionStatus: subscription?.status,
       };
 
       return res.apiv3(responseBody);
@@ -627,9 +640,9 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.body;
+    const { pageId, status } = req.body;
     const userId = req.user._id;
-    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
+
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
       return res.apiv3({ subscription });
@@ -637,50 +650,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to update subscribe status', err);
       return res.apiv3Err(err, 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /page/subscribe:
-   *      get:
-   *        tags: [Page]
-   *        summary: /page/subscribe
-   *        description: Get subscription status
-   *        operationId: getSubscriptionStatus
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get subscription status.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/Page'
-   *          500:
-   *            description: Internal server error.
-   */
-  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
-    const userId = req.user._id;
-
-    const page = await Page.findById(pageId);
-    if (!page) throw new Error('Page not found');
-
-    try {
-      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
-      const subscribing = subscription ? subscription.isSubscribing() : null;
-      return res.apiv3({ subscribing });
-    }
-    catch (err) {
-      logger.error('Failed to ge subscribe status', err);
-      return res.apiv3(err, 500);
     }
   });
 

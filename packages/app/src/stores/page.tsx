@@ -63,21 +63,6 @@ export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<I
     };
   }));
 };
-type GetSubscriptionStatusResult = { subscribing: boolean };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-  const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
-  return useSWR(
-    key,
-    (endpoint, pageId) => apiv3Get<GetSubscriptionStatusResult>(endpoint, { pageId }).then((response) => {
-      return {
-        status: response.data.subscribing,
-      };
-    }),
-  );
-};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useSWRxPageInfo = <Data, Error>(pageId: string | undefined): SWRResponse<IPageInfo, Error> => {
