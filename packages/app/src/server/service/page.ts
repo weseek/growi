@@ -1534,7 +1534,40 @@ class PageService {
     }
   }
 
-  async shortBodiesMapByPageIds(pageIds: string[] = [], user) {
+  private extractStringIds(refs: Ref<HasObjectId>[]) {
+    return refs.map((ref: Ref<HasObjectId>) => {
+      return (typeof ref === 'string') ? ref : ref._id.toString();
+    });
+  }
+
+  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfoCommon | IPageInfo {
+    if (page.isEmpty) {
+      return {
+        isEmpty: true,
+        isMovable: true,
+        isDeletable: false,
+        isAbleToDeleteCompletely: false,
+      };
+    }
+
+    const isMovable = isGuestUser ? false : !isTopPage(page.path);
+
+    const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
+    const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+
+    const Page = this.crowi.model('Page');
+    return {
+      isEmpty: false,
+      sumOfLikers: page.liker.length,
+      likerIds: this.extractStringIds(likers),
+      seenUserIds: this.extractStringIds(seenUsers),
+      sumOfSeenUsers: page.seenUsers.length,
+      isMovable,
+      isDeletable: Page.isDeletableName(page.path),
+      isAbleToDeleteCompletely: false,
+    };
+
+  }
     const Page = mongoose.model('Page');
     const MAX_LENGTH = 350;
 

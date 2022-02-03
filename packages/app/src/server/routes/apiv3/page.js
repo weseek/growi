@@ -365,30 +365,16 @@ module.exports = (crowi) => {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      if (page.isEmpty) {
-        return res.apiv3({
-          isEmpty: true,
-          isMovable: true,
-          isDeletable: false,
-          isAbleToDeleteCompletely: false,
-        });
-      }
+      const isGuestUser = !req.user;
+      const pageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
       const bookmarkCount = await Bookmark.countByPageId(pageId);
 
       const responseBodyForGuest = {
-        isEmpty: false,
-        sumOfLikers: page.liker.length,
-        likerIds: page.liker.slice(0, 15),
-        seenUserIds: page.seenUsers.slice(0, 15),
-        sumOfSeenUsers: page.seenUsers.length,
+        ...pageInfo,
         bookmarkCount,
-        isMovable: false,
-        isDeletable: Page.isDeletableName(page.path),
-        isAbleToDeleteCompletely: false,
       };
 
-      const isGuestUser = !req.user;
       if (isGuestUser) {
         return res.apiv3(responseBodyForGuest);
       }
