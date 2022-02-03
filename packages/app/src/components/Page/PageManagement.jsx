@@ -157,7 +157,6 @@ const LegacyPageManagemenet = (props) => {
     if (currentUser == null) {
       return null;
     }
-    // const pageToDelete = generatePageObjectToDelete();
 
     return (
       <>
