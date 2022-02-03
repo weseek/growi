@@ -28,7 +28,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     }
 
     // find private legacy pages
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
 
     const queryBuilder = new PageQueryBuilder(Page.find());

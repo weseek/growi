@@ -1,15 +1,21 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
+
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
-const NotFoundAlert = (props) => {
-  const { t } = useTranslation();
-  const { isHidden, isGuestUserMode } = props;
+type Props = {
+  isGuestUserMode?: boolean,
+}
 
-  const { mutate: mutateEditorMode } = useEditorMode();
+const NotFoundAlert = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
+  const { isGuestUserMode } = props;
+
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+
+  const isEditorMode = editorMode !== EditorMode.View;
 
   const clickHandler = useCallback(() => {
     // check guest user,
@@ -22,10 +28,9 @@ const NotFoundAlert = (props) => {
 
   }, [isGuestUserMode, mutateEditorMode]);
 
-  if (isHidden) {
-    return null;
+  if (isEditorMode) {
+    return <></>;
   }
-
 
   return (
     <div className="border border-info p-3">
@@ -58,10 +63,5 @@ const NotFoundAlert = (props) => {
   );
 };
 
-
-NotFoundAlert.propTypes = {
-  isHidden: PropTypes.bool.isRequired,
-  isGuestUserMode: PropTypes.bool.isRequired,
-};
 
 export default NotFoundAlert;
