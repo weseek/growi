@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // import { apiPost } from '~/client/util/apiv1-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+import { usePageDeleteModalStatus, usePageDeleteModalOpened, useDeleteModalPages } from '~/stores/ui';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -43,7 +43,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   } = props;
 
 
-  const { data: closeDeleteModalData, close: closeDeleteModal } = usePageDeleteModalStatus();
+  const { close: closeDeleteModal } = usePageDeleteModalStatus();
+  const { data: deletePagesData } = useDeleteModalPages();
   const { data: isOpened } = usePageDeleteModalOpened();
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
@@ -149,9 +150,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (closeDeleteModalData != null && closeDeleteModalData.pages != null) {
-      const { pages } = closeDeleteModalData;
-      return pages.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    if (deletePagesData != null) {
+      return deletePagesData.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
   };
