@@ -46,13 +46,6 @@ export const useSWRxPageList = (
   );
 };
 
-export const useSWRPageInfo = (pageId: string | null): SWRResponse<IPageInfoCommon | IPageInfo, Error> => {
-  return useSWR(
-    pageId != null ? `/page/info?pageId=${pageId}` : null,
-    endpoint => apiv3Get<IPageInfoCommon | IPageInfo>(endpoint).then(response => response.data),
-  );
-};
-
 export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
   const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
@@ -63,8 +56,7 @@ export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<I
   }));
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageInfo = <Data, Error>(pageId: string | undefined): SWRResponse<IPageInfo, Error> => {
+export const useSWRxPageInfo = (pageId: string | null | undefined): SWRResponse<IPageInfoCommon | IPageInfo, Error> => {
   return useSWR(
     pageId != null ? ['/page/info', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),

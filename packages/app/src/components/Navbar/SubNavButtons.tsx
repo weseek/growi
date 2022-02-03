@@ -5,7 +5,7 @@ import { apiv3Put } from '../../client/util/apiv3-client';
 
 import { IPageInfo, isExistPageInfo } from '~/interfaces/page';
 
-import { useSWRPageInfo } from '../../stores/page';
+import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
@@ -33,7 +33,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { mutate: mutatePageInfo } = useSWRPageInfo(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const { data: likers } = useSWRxUsersList(pageInfo.likerIds);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId, true);
@@ -140,7 +140,7 @@ type SubNavButtonsProps= CommonProps & {
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const { pageId, isCompactMode } = props;
 
-  const { data: pageInfo, error } = useSWRPageInfo(pageId ?? null);
+  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
 
   if (pageId == null || pageInfo == null || error != null) {
     return <></>;
