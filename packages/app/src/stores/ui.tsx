@@ -17,7 +17,7 @@ import {
 import { IFocusable } from '~/client/interfaces/focusable';
 import { isSharedPage } from '^/../core/src/utils/page-path-utils';
 
-import IPageForPageDeleteModal from '~/components/PageDeleteModal';
+import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -305,7 +305,7 @@ type DeleteModalStatus = {
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: typeof IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
   close(): Promise<DeleteModalStatus | undefined>
 }
 
@@ -315,7 +315,7 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 
   return {
     ...swrResponse,
-    open: (pages?: any) => swrResponse.mutate({ isOpened: true, pages }),
+    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
