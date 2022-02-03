@@ -10,11 +10,6 @@ import { usePageDeleteModalStatus, usePageDeleteModalOpened, useDeleteModalPages
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-export type IPageForPageDeleteModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
-}
 
 const deleteIconAndKey = {
   completely: {

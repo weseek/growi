@@ -6,7 +6,8 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import PageDeleteModal from '~/components/PageDeleteModal';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
