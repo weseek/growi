@@ -7,6 +7,7 @@ import GrowiNavbar from '../components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from '../components/Navbar/GrowiNavbarBottom';
 import HotkeysManager from '../components/Hotkeys/HotkeysManager';
 import PageCreateModal from '../components/PageCreateModal';
+import PageDeleteModal from '../components/PageDeleteModal';
 
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
@@ -40,6 +41,7 @@ const componentMappings = {
   'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
   'page-create-modal': <PageCreateModal />,
+  'page-deletee-modal': <PageDeleteModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 

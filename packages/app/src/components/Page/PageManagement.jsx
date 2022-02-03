@@ -5,9 +5,10 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { pagePathUtils } from '@growi/core';
+import { usePageDeleteModalStatus } from '~/stores/ui';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -22,12 +23,13 @@ const LegacyPageManagemenet = (props) => {
     t, appContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
 
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
+
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
-  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
   const presentationHref = urljoin(window.location.origin, path, '?presentation=1');
 
@@ -52,14 +54,6 @@ const LegacyPageManagemenet = (props) => {
 
   function closePageTemplateModalHandler() {
     setIsPageTempleteModalShown(false);
-  }
-
-  function openPageDeleteModalHandler() {
-    setIsPageDeleteModalShown(true);
-  }
-
-  function closePageDeleteModalHandler() {
-    setIsPageDeleteModalShown(false);
   }
 
   function openPagePresentationModalHandler() {
@@ -142,26 +136,27 @@ const LegacyPageManagemenet = (props) => {
     );
   }
 
+  function generatePageObjectToDelete() {
+    return { pageId, revisionId, path };
+  }
+  const pageToDelete = generatePageObjectToDelete();
+
   function renderDropdownItemForDeletablePage() {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item text-danger" type="button" onClick={openPageDeleteModalHandler}>
+        <button className="dropdown-item text-danger" type="button" onClick={() => openDeleteModal([pageToDelete])}>
           <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
     );
   }
 
-  function generatePageObjectToDelete() {
-    return { pageId, revisionId, path };
-  }
 
   function renderModals() {
     if (currentUser == null) {
       return null;
     }
-    const pageToDelete = generatePageObjectToDelete();
 
     return (
       <>
@@ -182,12 +177,6 @@ const LegacyPageManagemenet = (props) => {
           path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
-        />
-        <PageDeleteModal
-          isOpen={isPageDeleteModalShown}
-          onClose={closePageDeleteModalHandler}
-          pages={[pageToDelete]}
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal
           isOpen={isPagePresentationModalShown}

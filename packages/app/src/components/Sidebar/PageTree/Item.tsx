@@ -12,7 +12,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
-import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
