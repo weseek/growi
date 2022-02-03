@@ -5,7 +5,8 @@ import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
 import { SubscriptionStatusType } from './subscription';
 
-export type IPage = {
+
+export interface IPage {
   path: string,
   status: string,
   revision: Ref<IRevision>,
@@ -17,7 +18,6 @@ export type IPage = {
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  redirectTo: string,
   grant: number,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,

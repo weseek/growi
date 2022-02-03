@@ -452,10 +452,9 @@ export default class AdminAppContainer extends Container {
   /**
    * Start v5 page migration
    * @memberOf AdminAppContainer
-   * @property action takes only 'initialMigration' for now. 'initialMigration' will start or resume migration
    */
-  async v5PageMigrationHandler(action) {
-    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration', { action });
+  async v5PageMigrationHandler() {
+    const response = await this.appContainer.apiv3.post('/pages/v5-schema-migration');
     const { isV5Compatible } = response.data;
     return { isV5Compatible };
   }

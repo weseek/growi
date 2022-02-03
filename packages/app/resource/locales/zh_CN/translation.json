@@ -179,7 +179,8 @@
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。"
+    "title_required": "标题是必需的。",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -976,7 +977,8 @@
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
   },
   "pagetree": {
-    "private_legacy_pages": "私人遗留页面"
+    "private_legacy_pages": "私人遗留页面",
+    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
