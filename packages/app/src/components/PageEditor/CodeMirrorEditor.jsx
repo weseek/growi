@@ -14,6 +14,7 @@ import * as loadCssSync from 'load-css-file';
 import { createValidator } from '@growi/codemirror-textlint';
 import 'emoji-mart/css/emoji-mart.css';
 import EmojiPicker from './EmojiPicker';
+import EmojiPickerHelper from './EmojiPickerHelper';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -157,8 +158,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this);
-    this.getSearchCursor = this.getSearchCursor.bind(this);
-    this.addEmoji = this.addEmoji.bind(this);
+
 
   }
 
@@ -194,6 +194,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // fold drawio section
     this.foldDrawioSection();
+    this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -665,31 +666,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
-  getSearchCursor() {
-    const cm = this.getCodeMirror();
-    const pattern = /:[^:\s]+/;
-    const currentPos = cm.getCursor();
-    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
-    return sc;
-  }
-
-  addEmoji(emoji) {
-    const cm = this.getCodeMirror();
-    const currentPos = cm.getCursor();
-    const doc = cm.getDoc();
-    const sc = this.getSearchCursor();
-    if (sc.findPrevious() && this.state.isInputtingEmoji) {
-      sc.replace(emoji.colons, cm.getTokenAt(currentPos).string);
-      this.setState({ emojiSearchText: null });
-      cm.focus();
-    }
-    else {
-      doc.replaceRange(emoji.colons, currentPos);
-      cm.focus();
-    }
-
-  }
-
   toggleEmojiPicker() {
     this.setState({ isEmojiPickerShown: !this.state.isEmojiPickerShown });
   }
@@ -700,7 +676,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
-            <EmojiPicker close={this.toggleEmojiPicker} selectEmoji={this.addEmoji} emojiSearchText={emojiSearchText} />
+            <EmojiPicker close={this.toggleEmojiPicker} selectEmoji={this.emojiPickerHelper.addEmoji} emojiSearchText={emojiSearchText} />
           </div>
         </div>
       )
@@ -957,8 +933,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   searchEmojiPattern() {
-    const sc = this.getSearchCursor();
     const cm = this.getCodeMirror();
+    const sc = this.emojiPickerHelper.getSearchCursor();
     const currentPos = cm.getCursor();
 
     if (sc.findPrevious()) {
