@@ -37,7 +37,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId, true);
+  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
   const likerIds = pageInfo.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
   const seenUserIds = pageInfo.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];

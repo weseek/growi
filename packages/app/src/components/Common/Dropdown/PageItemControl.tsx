@@ -6,132 +6,191 @@ import {
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
-import { IPageHasId } from '~/interfaces/page';
+import loggerFactory from '~/utils/logger';
+
+import {
+  IPageHasId, IPageInfo, IPageInfoCommon, isExistPageInfo,
+} from '~/interfaces/page';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import { useSWRxPageInfo } from '~/stores/page';
 
-type PageItemControlProps = {
-  page: Partial<IPageHasId>
+const logger = loggerFactory('growi:cli:PageItemControl');
+
+type CommonProps = {
+  pageInfo?: IPageInfoCommon | IPageInfo,
   isEnableActions?: boolean
-  isDeletable: boolean
-  onClickDeleteButtonHandler?: (pageId: string) => void
-  onClickRenameButtonHandler?: (pageId: string) => void
+  onClickBookmarkMenuItem?: (pageId: string, bool: boolean) => void
+  onClickRenameMenuItem?: (pageId: string) => void
+  onClickDeleteMenuItem?: (pageId: string) => void
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
+
+type DropdownMenuProps = CommonProps & {
+  pageId: string,
+}
+
+const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
+  const { t } = useTranslation('');
 
   const {
-    page, isEnableActions, onClickDeleteButtonHandler, isDeletable, onClickRenameButtonHandler,
+    pageId, pageInfo, isEnableActions,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
-  const { t } = useTranslation('');
-  const [isOpen, setIsOpen] = useState(false);
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
-  const deleteButtonClickedHandler = useCallback(() => {
-    if (onClickDeleteButtonHandler != null && page._id != null) {
-      onClickDeleteButtonHandler(page._id);
+
+  const isEmpty = isExistPageInfo(pageInfo);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const bookmarkItemClickedHandler = useCallback(() => {
+    if (!isEmpty || onClickBookmarkMenuItem == null) {
+      return;
     }
-  }, [onClickDeleteButtonHandler, page._id]);
+    onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
+  }, [isEmpty, onClickBookmarkMenuItem, pageId, pageInfo]);
 
-  const renameButtonClickedHandler = useCallback(() => {
-    if (onClickRenameButtonHandler != null && page._id != null) {
-      onClickRenameButtonHandler(page._id);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const renameItemClickedHandler = useCallback(() => {
+    if (onClickRenameMenuItem == null) {
+      return;
     }
-  }, [onClickRenameButtonHandler, page._id]);
+    onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
 
-
-  const bookmarkToggleHandler = (async() => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
-      mutateBookmarkInfo();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const deleteItemClickedHandler = useCallback(() => {
+    if (!isEmpty || onClickDeleteMenuItem == null) {
+      return;
     }
-    catch (err) {
-      toastError(err);
+    if (!pageInfo.isDeletable) {
+      logger.warn('This page could not be deleted.');
+      return;
     }
-  });
+    onClickDeleteMenuItem(pageId);
+  }, [isEmpty, onClickDeleteMenuItem, pageId, pageInfo]);
 
-  const renderBookmarkText = () => {
-    if (bookmarkInfoError != null || bookmarkInfo == null) {
-      return '';
-    }
-    return bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark');
-  };
+  // const bookmarkToggleHandler = (async() => {
+  //   try {
+  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //     await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
+  //     mutateBookmarkInfo();
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // });
 
-
-  const dropdownToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
+  if (pageId == null || pageInfo == null) {
+    return <></>;
+  }
 
   return (
-    <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
+    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+      { !isEnableActions && (
+        <DropdownItem>
+          <p>
+            {t('search_result.currently_not_implemented')}
+          </p>
+        </DropdownItem>
+      ) }
+      { isExistPageInfo(pageInfo) && isEnableActions && (
+        <DropdownItem onClick={bookmarkItemClickedHandler}>
+          <i className="fa fa-fw fa-bookmark-o"></i>
+          { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
+        </DropdownItem>
+      ) }
+      { isExistPageInfo(pageInfo) && isEnableActions && (
+        <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+          <i className="icon-fw icon-docs"></i>
+          {t('Duplicate')}
+        </DropdownItem>
+      ) }
+      { isEnableActions && (
+        <DropdownItem onClick={renameItemClickedHandler}>
+          <i className="icon-fw  icon-action-redo"></i>
+          {t('Move/Rename')}
+        </DropdownItem>
+      ) }
+      { isExistPageInfo(pageInfo) && isEnableActions && (
+        <>
+          <DropdownItem divider />
+          <DropdownItem
+            className="text-danger pt-2"
+            disabled={!pageInfo.isDeletable}
+            onClick={deleteItemClickedHandler}
+          >
+            <i className="icon-fw icon-trash"></i>
+            {t('Delete')}
+          </DropdownItem>
+        </>
+      )}
+    </DropdownMenu>
+  );
+});
+
+
+type PageItemControlSubstanceProps = CommonProps & {
+  pageId: string,
+  fetchOnOpen?: boolean,
+}
+
+export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
+
+  const {
+    pageId, pageInfo: presetPageInfo, fetchOnOpen,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+  } = props;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const shouldFetch = presetPageInfo == null && (!fetchOnOpen || isOpen);
+  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+
+  return (
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
-      <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
 
-        {/* TODO: if there is the following button in XD add it here
-        <button
-          type="button"
-          className="btn btn-link p-0"
-          value={page.path}
-          onClick={(e) => {
-            window.location.href = e.currentTarget.value;
-          }}
-        >
-          <i className="icon-login" />
-        </button>
-        */}
-
-        {/*
-          TODO: add function to the following buttons like using modal or others
-          ref: https://estoc.weseek.co.jp/redmine/issues/79026
-        */}
-
-        {/* TODO: show dropdown when permalink section is implemented */}
-
-        {!isEnableActions && (
-          <DropdownItem>
-            <p>
-              {t('search_result.currently_not_implemented')}
-            </p>
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={bookmarkToggleHandler}>
-            <i className="fa fa-fw fa-bookmark-o"></i>
-            {renderBookmarkText()}
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-            <i className="icon-fw icon-docs"></i>
-            {t('Duplicate')}
-          </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={renameButtonClickedHandler}>
-            <i className="icon-fw  icon-action-redo"></i>
-            {t('Move/Rename')}
-          </DropdownItem>
-        )}
-        {isDeletable && isEnableActions && (
-          <>
-            <DropdownItem divider />
-            <DropdownItem className="text-danger pt-2" onClick={deleteButtonClickedHandler}>
-              <i className="icon-fw icon-trash"></i>
-              {t('Delete')}
-            </DropdownItem>
-          </>
-        )}
-      </DropdownMenu>
-
-
+      <PageItemControlDropdownMenu
+        pageId={pageId}
+        pageInfo={presetPageInfo ?? fetchedPageInfo}
+        onClickBookmarkMenuItem={onClickBookmarkMenuItem}
+        onClickRenameMenuItem={onClickRenameMenuItem}
+        onClickDeleteMenuItem={onClickDeleteMenuItem}
+      />
     </Dropdown>
   );
 
 };
 
-export default PageItemControl;
+
+type PageItemControlProps = CommonProps & {
+  pageId?: string,
+}
+
+export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
+  const { pageId } = props;
+
+  if (pageId == null) {
+    return <></>;
+  }
+
+  return <PageItemControlSubstance pageId={pageId} {...props} />;
+};
+
+
+type AsyncPageItemControlProps = CommonProps & {
+  pageId?: string,
+}
+
+export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
+  const { pageId } = props;
+
+  if (pageId == null) {
+    return <></>;
+  }
+
+  return <PageItemControlSubstance pageId={pageId} fetchOnOpen {...props} />;
+};

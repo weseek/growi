@@ -11,7 +11,7 @@ import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import PageItemControl from '../../Common/Dropdown/PageItemControl';
+import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -73,7 +73,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
 
-  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserNamePage(page.path as string);
+  const isDeletable = true; // TODO: retrieve from IPageInfo
+  // const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserNamePage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -235,12 +236,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         )}
         <div className="grw-pagetree-control d-none">
-          <PageItemControl
-            page={page}
-            onClickDeleteButtonHandler={onClickDeleteButton}
+          <AsyncPageItemControl
+            pageId={page._id}
             isEnableActions={isEnableActions}
-            isDeletable={isDeletable}
-            onClickRenameButtonHandler={onClickRenameButton}
+            onClickDeleteMenuItem={onClickDeleteButton}
+            onClickRenameMenuItem={onClickRenameButton}
           />
           <button
             type="button"

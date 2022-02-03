@@ -8,7 +8,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
-import PageItemControl from '../Common/Dropdown/PageItemControl';
+import { AsyncPageItemControl } from '../Common/Dropdown/PageItemControl';
 
 const { isTopPage, isUserNamePage } = pagePathUtils;
 
@@ -120,11 +120,11 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
               </div>
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
-                <PageItemControl
-                  page={pageData}
-                  onClickDeleteButtonHandler={props.onClickDeleteButton}
+                {/* TODO: use PageItemControl with prefetched IPageInfo object */}
+                <AsyncPageItemControl
+                  pageId={pageData._id}
+                  onClickDeleteMenuItem={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
-                  isDeletable={!isTopPage(pageData.path) && !isUserNamePage(pageData.path)}
                 />
               </div>
             </div>
