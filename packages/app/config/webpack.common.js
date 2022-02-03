@@ -86,13 +86,21 @@ module.exports = (options) => {
               /node_modules\/codemirror/,
             ],
           },
-          use: [{
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              configFile: path.resolve(__dirname, '../tsconfig.build.client.json'),
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                plugins: ['@babel/plugin-proposal-optional-chaining']
+              }
             },
-          }],
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+                configFile: path.resolve(__dirname, '../tsconfig.build.client.json'),
+              },
+            },
+          ],
         },
         {
           test: /locales/,
