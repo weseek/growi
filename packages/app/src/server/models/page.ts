@@ -31,8 +31,6 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export const OVERWRITE_PERMITTED_PAGES_FIELDS = ['parent'];
-
 export interface PageDocument extends IPage, Document {}
 
 

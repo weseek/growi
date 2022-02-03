@@ -42,8 +42,7 @@ class PageOverwriteParamsFactory {
     };
 
     params.parent = (value, { document, schema, propertyName }) => {
-      if (value === undefined) return null;
-      return value;
+      return null;
     };
 
     if (option.initPageMetadatas) {

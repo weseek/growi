@@ -16,19 +16,11 @@ const mongoose = require('mongoose');
 
 const { ObjectId } = mongoose.Types;
 
-const { OVERWRITE_PERMITTED_PAGES_FIELDS } = require('../../server/models/page');
-
 const { createBatchStream } = require('../util/batch-stream');
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
 
 const BULK_IMPORT_SIZE = 100;
-
-// map collection name to fields that don't exist or are undefined but are permitted to be overwritten
-const OVERWRITE_PERMITTED_FIELD_MAP = {
-  pages: OVERWRITE_PERMITTED_PAGES_FIELDS,
-};
-
 
 class ImportSettings {
 
@@ -481,10 +473,7 @@ class ImportService {
     Object.entries(overwriteParams).forEach(([propertyName, overwriteValue]) => {
       const value = document[propertyName];
 
-      // check if the field does not exist or is undefined but it's permitted to be overwritten
-      const isOverwritePermittedValue = OVERWRITE_PERMITTED_FIELD_MAP[collectionName].includes(propertyName);
-
-      if (value !== undefined || isOverwritePermittedValue) {
+      if (value !== undefined) {
         const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
         _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : overwriteValue;
       }
