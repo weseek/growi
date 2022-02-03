@@ -6,7 +6,7 @@ import { IPageSearchMeta } from '~/interfaces/search';
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
-import SubNavButtons from '../Navbar/SubNavButtons';
+import { SubNavButtons } from '../Navbar/SubNavButtons';
 
 type Props ={
   appContainer: AppContainer,
@@ -28,11 +28,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     return (
       <>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          <SubNavButtons
-            pageId={page._id}
-            revisionId={page.revision as string}
-            path={page.path}
-          />
+          <SubNavButtons pageId={page._id} />
         </div>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
         </div>

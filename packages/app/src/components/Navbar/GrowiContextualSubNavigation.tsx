@@ -8,12 +8,12 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath, useIsDeletable,
-  useIsAbleToDeleteCompletely, useCreator, useRevisionAuthor, useIsGuestUser,
+  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
+  useCreator, useRevisionAuthor, useIsGuestUser,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
-import SubNavButtons from './SubNavButtons';
+import { SubNavButtons } from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -30,8 +30,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: pageId } = useCurrentPageId();
   const { data: revisionId } = useRevisionId();
   const { data: path } = useCurrentPagePath();
-  const { data: isDeletable } = useIsDeletable();
-  const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: isGuestUser } = useIsGuestUser();
@@ -48,7 +46,6 @@ const GrowiContextualSubNavigation = (props) => {
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
-  const isPageExist = pageId != null;
 
   const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
     // It will not be reflected in the DB until the page is refreshed
@@ -80,15 +77,11 @@ const GrowiContextualSubNavigation = (props) => {
     return (
       <>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          { isViewMode && isPageExist && path != null && (
+          { isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
               pageId={pageId}
-              revisionId={revisionId}
-              path={path}
-              isDeletable={isDeletable}
-              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-              isAbleToShowPageManagement={isAbleToShowPageManagement}
+              showPageControlDropdown={isAbleToShowPageManagement}
             />
           ) }
         </div>
@@ -105,10 +98,10 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, path, revisionId,
+    pageId,
     editorMode, mutateEditorMode,
-    isAbleToDeleteCompletely, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    isCompactMode, isDeletable, isDeviceSmallerThanMd, isGuestUser, isPageExist, isViewMode,
+    isCompactMode, isDeviceSmallerThanMd, isGuestUser,
+    isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
   ]);
 
 
