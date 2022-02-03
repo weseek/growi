@@ -9,6 +9,7 @@ import { useCurrentPagePath } from '~/stores/context';
 
 import { PageListItemL } from './PageList/PageListItemL';
 import { useSWRxPageInfoForList } from '~/stores/page';
+import { IPageInfoForList, IPageWithMeta } from '~/interfaces/page';
 
 
 type IdenticalPathAlertProps = {
@@ -85,9 +86,9 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
               const pageId = data.pageData._id;
               const pageInfo = (idToPageInfoMap ?? {})[pageId];
 
-              const pageWithMeta = {
+              const pageWithMeta: IPageWithMeta = {
                 pageData: data.pageData,
-                pegeMeta: pageInfo,
+                pageMeta: pageInfo,
               };
 
               return (
