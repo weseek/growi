@@ -148,30 +148,36 @@ const UserGroupDetailPage: FC = () => {
 
       <div className="dropdown">
         <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          Add child group
+          {t('admin:user_group_management.add_child_group')}
         </button>
 
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {
-            selectableUserGroups.map(userGroup => (
-              <button
-                key={userGroup._id}
-                type="button"
-                className="dropdown-item"
-                onClick={() => onClickAddChildButton(userGroup)}
-              >
-                {userGroup.name}
-              </button>
-            ))
-          }
 
-          <div className="dropdown-divider"></div>
+          {
+            (selectableUserGroups != null && selectableUserGroups.length > 0) && (
+              <>
+                {
+                  selectableUserGroups.map(userGroup => (
+                    <button
+                      key={userGroup._id}
+                      type="button"
+                      className="dropdown-item"
+                      onClick={() => onClickAddChildButton(userGroup)}
+                    >
+                      {userGroup.name}
+                    </button>
+                  ))
+                }
+                <div className="dropdown-divider"></div>
+              </>
+            )
+          }
 
           <button
             className="dropdown-item"
             type="button"
             onClick={() => onClickCreateGroupButton()}
-          >Create child group
+          >{t('admin:user_group_management.create_group')}
           </button>
         </div>
       </div>
