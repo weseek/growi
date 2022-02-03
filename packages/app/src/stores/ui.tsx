@@ -334,17 +334,6 @@ export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useDeleteModalPages = (): SWRResponse<IPageForPageDeleteModal[] | null | undefined, Error> => {
-  const { data: status } = usePageDeleteModalStatus();
-
-  return useSWR(
-    status != null ? [status] : null,
-    (status) => {
-      return status.pages;
-    },
-  );
-};
-
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);

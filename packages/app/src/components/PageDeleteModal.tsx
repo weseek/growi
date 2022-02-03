@@ -38,8 +38,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   } = props;
 
 
-  const { close: closeDeleteModal } = usePageDeleteModalStatus();
-  const { data: pagesDataToDelete } = useDeleteModalPages();
+  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
   const { data: isOpened } = usePageDeleteModalOpened();
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
@@ -145,8 +144,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (pagesDataToDelete != null) {
-      return pagesDataToDelete.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    if (pagesDataToDelete != null && pagesDataToDelete.pages != null) {
+      return pagesDataToDelete.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
   };
