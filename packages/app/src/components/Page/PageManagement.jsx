@@ -9,7 +9,6 @@ import { usePageDeleteModalStatus } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-// import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -31,7 +30,6 @@ const LegacyPageManagemenet = (props) => {
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
-  // const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
   const presentationHref = urljoin(window.location.origin, path, '?presentation=1');
 
@@ -57,14 +55,6 @@ const LegacyPageManagemenet = (props) => {
   function closePageTemplateModalHandler() {
     setIsPageTempleteModalShown(false);
   }
-
-  // function openPageDeleteModalHandler() {
-  //   setIsPageDeleteModalShown(true);
-  // }
-
-  // function closePageDeleteModalHandler() {
-  //   setIsPageDeleteModalShown(false);
-  // }
 
   function openPagePresentationModalHandler() {
     setIsPagePresentationModalShown(true);
@@ -189,12 +179,6 @@ const LegacyPageManagemenet = (props) => {
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
-        {/* <PageDeleteModal
-          isOpen={isPageDeleteModalShown}
-          onClose={closePageDeleteModalHandler}
-          pages={[pageToDelete]}
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        /> */}
         <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
