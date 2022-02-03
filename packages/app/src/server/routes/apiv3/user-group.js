@@ -18,8 +18,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
-const validator = {};
-
 const { ObjectId } = mongoose.Types;
 
 
@@ -61,9 +59,6 @@ module.exports = (crowi) => {
     listChildren: [
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
-    ],
-    nonFamilyLineage: [
-      query('userGroupId').trim().exists({ checkFalsy: true }),
     ],
     users: {
       post: [
@@ -195,11 +190,11 @@ module.exports = (crowi) => {
   });
 
 
-  router.get('/non-family-lineage', loginRequiredStrictly, adminRequired, validator.nonFamilyLineage, async(req, res) => {
-    const { id } = req.query;
-    const userGroup = await UserGroup.findById(id);
+  router.get('/non-family-lineage', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const { groupId } = req.query;
 
     try {
+      const userGroup = await UserGroup.findById(groupId);
       const upperGeneration = await UserGroup.findGroupsWithAncestorsRecursively(userGroup, []);
       const lowerGeneration = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
       const excludeUserGroupIds = [...[userGroup], ...upperGeneration, ...lowerGeneration].map(userGroups => userGroups._id.toString());
