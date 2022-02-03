@@ -18,8 +18,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
-const validator = {};
-
 const { ObjectId } = mongoose.Types;
 
 
@@ -41,10 +39,48 @@ module.exports = (crowi) => {
     Page,
   } = crowi.models;
 
-  validator.listChildren = [
-    query('parentIds', 'parentIds must be an array').optional().isArray(),
-    query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
-  ];
+  const validator = {
+    create: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Description must be a string').optional().isString(),
+      body('parentId', 'ParentId must be a string').optional().isString(),
+    ],
+    update: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Group description must be a string').optional().isString(),
+      body('parentId', 'parentId must be a string').optional().isString(),
+      body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
+    ],
+    delete: [
+      param('id').trim().exists({ checkFalsy: true }),
+      query('actionName').trim().exists({ checkFalsy: true }),
+      query('transferToUserGroupId').trim(),
+    ],
+    listChildren: [
+      query('parentIds', 'parentIds must be an array').optional().isArray(),
+      query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+    ],
+    selectableGroups: [
+      query('groupId', 'groupId must be a string').optional().isString(),
+    ],
+    users: {
+      post: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+      delete: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+    },
+    pages: {
+      get: [
+        param('id').trim().exists({ checkFalsy: true }),
+        sanitizeQuery('limit').customSanitizer(toPagingLimit),
+        sanitizeQuery('offset').customSanitizer(toPagingOffset),
+      ],
+    },
+  };
 
   /**
    * @swagger
@@ -108,11 +144,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.create = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-    body('description', 'Description must be a string').optional().isString(),
-    body('parentId', 'ParentId must be a string').optional().isString(),
-  ];
 
   /**
    * @swagger
@@ -161,11 +192,57 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    query('actionName').trim().exists({ checkFalsy: true }),
-    query('transferToUserGroupId').trim(),
-  ];
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /selectable-groups:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getSelectableGroups
+   *        summary: /selectable-groups
+   *        description: Get selectable user groups.
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
+  router.get('/selectable-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+
+      const [ancestorGroups, descendantGroups] = await Promise.all([
+        UserGroup.findGroupsWithAncestorsRecursively(userGroup, []),
+        UserGroup.findGroupsWithDescendantsRecursively([userGroup], []),
+      ]);
+
+      const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
+      const userGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ userGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
 
   /**
    * @swagger
@@ -221,13 +298,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.update = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-    body('description', 'Group description must be a string').optional().isString(),
-    body('parentId', 'parentId must be a string').optional().isString(),
-    body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
-  ];
-
   /**
    * @swagger
    *
@@ -274,7 +344,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users = {};
 
   /**
    * @swagger
@@ -387,10 +456,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.post = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -457,10 +522,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -521,7 +582,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.userGroupRelations = {};
 
   /**
    * @swagger
@@ -569,13 +629,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.pages = {};
-
-  validator.pages.get = [
-    param('id').trim().exists({ checkFalsy: true }),
-    sanitizeQuery('limit').customSanitizer(toPagingLimit),
-    sanitizeQuery('offset').customSanitizer(toPagingOffset),
-  ];
 
   /**
    * @swagger
