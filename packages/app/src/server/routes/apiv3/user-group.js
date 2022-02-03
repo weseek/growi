@@ -222,7 +222,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/selectable-groupse', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/selectable-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
     const { groupId } = req.query;
 
     try {
