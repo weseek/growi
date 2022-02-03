@@ -1,22 +1,19 @@
 import React, {
-  useCallback, useState, FC, useEffect, memo,
+  useCallback, useState, FC, useEffect,
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
-import { pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
 import { toastWarning } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
-import { IPageHasId } from '~/interfaces/page';
 import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-
-const { isTopPage, isUserNamePage } = pagePathUtils;
+import { bookmark, unbookmark } from '~/client/services/page-operation';
 
 
 interface ItemProps {
@@ -39,6 +36,12 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
     }
     return node;
   });
+};
+
+
+const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+  const bookmarkOperation = _newValue ? bookmark : unbookmark;
+  await bookmarkOperation(_pageId);
 };
 
 
@@ -72,9 +75,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
-
-  const isDeletable = true; // TODO: retrieve from IPageInfo
-  // const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserNamePage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -120,7 +120,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setNewPageInputShown(true);
   }, []);
 
-  const onClickDeleteButton = useCallback(() => {
+  const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
       return;
     }
@@ -141,7 +141,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [page, onClickDeleteByPage]);
 
 
-  const onClickRenameButton = useCallback(() => {
+  const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
     setRenameInputShown(true);
   }, []);
 
@@ -171,7 +171,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
-  }, []);
+  }, [hasChildren]);
 
   /*
    * Make sure itemNode.children and currentChildren are synced
@@ -181,7 +181,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, []);
+  }, [children, currentChildren.length, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -192,7 +192,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen]);
+  }, [data, error, isOpen, targetPathOrId]);
 
   return (
     <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
@@ -239,6 +239,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <AsyncPageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={onClickRenameButton}
           />

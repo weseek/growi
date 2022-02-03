@@ -3,14 +3,12 @@ import React, { FC, memo, useCallback } from 'react';
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { pagePathUtils, DevidedPagePath } from '@growi/core';
+import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
 import { AsyncPageItemControl } from '../Common/Dropdown/PageItemControl';
-
-const { isTopPage, isUserNamePage } = pagePathUtils;
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageSearchMeta>,
@@ -19,9 +17,9 @@ type Props = {
   isEnableActions?: boolean,
   shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
-  onClickCheckbox?: (pageId: string) => void,
-  onClickItem?: (pageId: string) => void,
-  onClickDeleteButton?: (pageId: string) => void,
+  onClickCheckbox?: (pageId: string) => Promise<void>,
+  onClickItem?: (pageId: string) => Promise<void>,
+  onClickDeleteButton?: (pageId: string) => Promise<void>,
 }
 
 export const PageListItemL: FC<Props> = memo((props:Props) => {
@@ -132,6 +130,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
               <Clamp lines={2}>
                 {
                   elasticSearchResult != null && elasticSearchResult?.snippet.length !== 0 ? (
+                    // eslint-disable-next-line react/no-danger
                     <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                   ) : (
                     <div>{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator

@@ -9,15 +9,19 @@ import UserPictureList from './User/UserPictureList';
 import { useIsGuestUser } from '~/stores/context';
 
 interface Props {
+  bookmarkCount: number
+  isBookmarked?: boolean
+  bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
-  isBookmarked: boolean
-  sumOfBookmarks: number
-  bookmarkedUsers: IUser[]
   onBookMarkClicked: ()=>void;
 }
 
 const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+
+  const {
+    bookmarkCount, isBookmarked, bookmarkedUsers, hideTotalNumber,
+  } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -40,9 +44,9 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         id="bookmark-button"
         onClick={handleClick}
         className={`btn btn-bookmark border-0
-          ${props.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={`fa ${props.isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
+        <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
       </button>
 
       {isGuestUser && (
@@ -51,18 +55,20 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         </UncontrolledTooltip>
       )}
 
-      { !props.hideTotalNumber && (
+      { !hideTotalNumber && (
         <>
           <button type="button" id="po-total-bookmarks" className={`btn btn-bookmark border-0 total-bookmarks ${props.isBookmarked ? 'active' : ''}`}>
-            {props.sumOfBookmarks}
+            {bookmarkCount}
           </button>
-          <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">
-            <PopoverBody className="user-list-popover">
-              <div className="px-2 text-right user-list-content text-truncate text-muted">
-                {props.bookmarkedUsers.length ? <UserPictureList users={props.bookmarkedUsers} /> : t('No users have bookmarked yet')}
-              </div>
-            </PopoverBody>
-          </Popover>
+          { bookmarkedUsers != null && (
+            <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">
+              <PopoverBody className="user-list-popover">
+                <div className="px-2 text-right user-list-content text-truncate text-muted">
+                  {bookmarkedUsers.length ? <UserPictureList users={props.bookmarkedUsers} /> : t('No users have bookmarked yet')}
+                </div>
+              </PopoverBody>
+            </Popover>
+          ) }
         </>
       ) }
     </div>

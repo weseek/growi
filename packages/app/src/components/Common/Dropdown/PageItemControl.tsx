@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -9,11 +9,8 @@ import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IPageHasId, IPageInfo, IPageInfoCommon, isExistPageInfo,
+  IPageInfo, IPageInfoCommon, isExistPageInfo,
 } from '~/interfaces/page';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxPageInfo } from '~/stores/page';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
@@ -21,9 +18,9 @@ const logger = loggerFactory('growi:cli:PageItemControl');
 type CommonProps = {
   pageInfo?: IPageInfoCommon | IPageInfo,
   isEnableActions?: boolean
-  onClickBookmarkMenuItem?: (pageId: string, bool: boolean) => void
-  onClickRenameMenuItem?: (pageId: string) => void
-  onClickDeleteMenuItem?: (pageId: string) => void
+  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>
+  onClickRenameMenuItem?: (pageId: string) => Promise<void>
+  onClickDeleteMenuItem?: (pageId: string) => Promise<void>
 }
 
 
@@ -40,46 +37,35 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   } = props;
 
 
-  const isEmpty = isExistPageInfo(pageInfo);
+  const isEmpty = !isExistPageInfo(pageInfo);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const bookmarkItemClickedHandler = useCallback(() => {
-    if (!isEmpty || onClickBookmarkMenuItem == null) {
+  const bookmarkItemClickedHandler = useCallback(async() => {
+    if (isEmpty || onClickBookmarkMenuItem == null) {
       return;
     }
-    onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
+    await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
   }, [isEmpty, onClickBookmarkMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const renameItemClickedHandler = useCallback(() => {
+  const renameItemClickedHandler = useCallback(async() => {
     if (onClickRenameMenuItem == null) {
       return;
     }
-    onClickRenameMenuItem(pageId);
+    await onClickRenameMenuItem(pageId);
   }, [onClickRenameMenuItem, pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const deleteItemClickedHandler = useCallback(() => {
-    if (!isEmpty || onClickDeleteMenuItem == null) {
+  const deleteItemClickedHandler = useCallback(async() => {
+    if (isEmpty || onClickDeleteMenuItem == null) {
       return;
     }
     if (!pageInfo.isDeletable) {
       logger.warn('This page could not be deleted.');
       return;
     }
-    onClickDeleteMenuItem(pageId);
+    await onClickDeleteMenuItem(pageId);
   }, [isEmpty, onClickDeleteMenuItem, pageId, pageInfo]);
-
-  // const bookmarkToggleHandler = (async() => {
-  //   try {
-  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
-  //     mutateBookmarkInfo();
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // });
 
   if (pageId == null || pageInfo == null) {
     return <></>;
@@ -139,13 +125,24 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnOpen,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
   const shouldFetch = presetPageInfo == null && (!fetchOnOpen || isOpen);
-  const { data: fetchedPageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+
+  // mutate after handle event
+  const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
+    if (onClickBookmarkMenuItem != null) {
+      await onClickBookmarkMenuItem(_pageId, _newValue);
+    }
+
+    if (shouldFetch) {
+      mutatePageInfo();
+    }
+  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
@@ -154,11 +151,9 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       </DropdownToggle>
 
       <PageItemControlDropdownMenu
-        pageId={pageId}
+        {...props}
         pageInfo={presetPageInfo ?? fetchedPageInfo}
-        onClickBookmarkMenuItem={onClickBookmarkMenuItem}
-        onClickRenameMenuItem={onClickRenameMenuItem}
-        onClickDeleteMenuItem={onClickDeleteMenuItem}
+        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
       />
     </Dropdown>
   );
