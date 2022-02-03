@@ -17,8 +17,6 @@ import {
 import { IFocusable } from '~/client/interfaces/focusable';
 import { isSharedPage } from '^/../core/src/utils/page-path-utils';
 
-import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
-
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
