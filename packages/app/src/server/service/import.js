@@ -24,8 +24,8 @@ const CollectionProgressingStatus = require('../models/vo/collection-progressing
 
 const BULK_IMPORT_SIZE = 100;
 
-// map collection name with fields that don't exist but are permitted to be overwritten
-const OVERWRITE_PERMITTED_NON_EXISTANT_FIELD_MAP = {
+// map collection name to fields that don't exist or are undefined but are permitted to be overwritten
+const OVERWRITE_PERMITTED_FIELD_MAP = {
   pages: OVERWRITE_PERMITTED_PAGES_FIELDS,
 };
 
@@ -481,8 +481,8 @@ class ImportService {
     Object.entries(overwriteParams).forEach(([propertyName, overwriteValue]) => {
       const value = document[propertyName];
 
-      // check if the field does not exist but it's permitted to be overwritten
-      const isOverwritePermittedValue = OVERWRITE_PERMITTED_NON_EXISTANT_FIELD_MAP[collectionName].includes(propertyName);
+      // check if the field does not exist or is undefined but it's permitted to be overwritten
+      const isOverwritePermittedValue = OVERWRITE_PERMITTED_FIELD_MAP[collectionName].includes(propertyName);
 
       if (value !== undefined || isOverwritePermittedValue) {
         const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
