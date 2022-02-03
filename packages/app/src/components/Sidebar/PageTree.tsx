@@ -8,7 +8,7 @@ import {
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
-import { IPageForPageDeleteModal } from '../PageDeleteModal';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 
 
 const PageTree: FC = memo(() => {

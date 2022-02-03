@@ -97,6 +97,7 @@ const TrashPageAlert = (props) => {
           pageId={pageId}
           path={path}
         />
+        {/* TODO: show PageDeleteModal with usePageDeleteModalStatus by 87567  */}
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={opclosePageDeleteModalHandler}

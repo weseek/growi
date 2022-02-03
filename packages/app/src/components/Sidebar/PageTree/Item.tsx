@@ -6,15 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
-import { ItemNode } from './ItemNode';
-import { useSWRxPageChildren } from '../../../stores/page-listing';
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
-import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
+import { ItemNode } from './ItemNode';
 
 
 interface ItemProps {

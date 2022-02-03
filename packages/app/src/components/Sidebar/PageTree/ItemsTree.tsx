@@ -6,7 +6,8 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import PageDeleteModal from '~/components/PageDeleteModal';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
@@ -94,10 +95,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
 
+  // TODO: show PageDeleteModal with usePageDeleteModalStatus by 87568
   const DeleteModal = (
     <PageDeleteModal
       isOpen={isDeleteModalOpen}
-      pages={pagesToDelete}
+      // pages={pagesToDelete}
       isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       isDeleteCompletelyModal={isDeleteCompletelyModal}
       onClose={onCloseDelete}
