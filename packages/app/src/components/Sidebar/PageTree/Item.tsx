@@ -5,7 +5,7 @@ import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
 import { pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
-import { toastWarning } from '~/client/util/apiNotification';
+import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { ItemNode } from './ItemNode';
 import { IPageHasId } from '~/interfaces/page';
@@ -13,10 +13,11 @@ import { useSWRxPageChildren } from '../../../stores/page-listing';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import PageItemControl from '../../Common/Dropdown/PageItemControl';
 import { IPageForPageDeleteModal } from '~/stores/ui';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 
-const { isTopPage, isUserPage } = pagePathUtils;
+const { isTopPage, isUserNamePage } = pagePathUtils;
 
 
 interface ItemProps {
@@ -123,6 +124,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { page, children } = itemNode;
 
+  const [pageTitle, setPageTitle] = useState(page.path);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -132,7 +134,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
 
-  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserPage(page.path as string);
+  const isDeletable = !page.isEmpty && !isTopPage(page.path as string) && !isUserNamePage(page.path as string);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
@@ -203,11 +205,27 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
-  // TODO: make a put request to pages/title
-  const onPressEnterForRenameHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
-    setRenameInputShown(false);
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
+      return;
+    }
+
+    const parentPath = nodePath.dirname(page.path as string);
+    const newPagePath = `${parentPath}/${inputText}`;
+
+    try {
+      setPageTitle(inputText);
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+    }
+    catch (err) {
+      // open ClosableInput and set pageTitle back to the previous title
+      setPageTitle(nodePath.basename(pageTitle as string));
+      setRenameInputShown(true);
+      toastError(err);
+    }
   };
+
 
   // TODO: go to create page page
   const onPressEnterForCreateHandler = () => {
@@ -216,10 +234,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '') {
+    if (title == null || title === '' || title.trim() === '') {
       return {
         type: AlertType.WARNING,
         message: t('form_validation.title_required'),
+      };
+    }
+
+    if (title.includes('/')) {
+      return {
+        type: AlertType.WARNING,
+        message: t('form_validation.slashed_are_not_yet_supported'),
       };
     }
 
@@ -274,6 +299,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         { isRenameInputShown && (
           <ClosableTextInput
             isShown
+            value={nodePath.basename(pageTitle as string)}
             placeholder={t('Input page name')}
             onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={onPressEnterForRenameHandler}
@@ -281,11 +307,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && (
-          <a
-            href={page._id}
-            className="grw-pagetree-title-anchor flex-grow-1"
-          >
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
           </a>
         )}
         {(page.descendantCount != null && page.descendantCount > 0) && (

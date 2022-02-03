@@ -71,10 +71,6 @@ export const useIsAbleToDeleteCompletely = (initialData?: boolean): SWRResponse<
   return useStaticSWR<boolean, Error>('isAbleToDeleteCompletely', initialData, { fallbackData: false });
 };
 
-export const useIsPageExist = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isPageExist', initialData, { fallbackData: false });
-};
-
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };

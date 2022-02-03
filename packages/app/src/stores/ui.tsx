@@ -11,7 +11,7 @@ import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
 import {
-  useCurrentPagePath, useIsEditable, useIsPageExist, useIsTrashPage, useIsUserPage,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
@@ -353,16 +353,16 @@ export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWR
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
-  const { data: isPageExist } = useIsPageExist();
+  const { data: currentPageId } = useCurrentPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isPageExist, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [currentPageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => isPageExist! && !isTrashPage && !isSharedUser,
+    () => isPageExist && !isTrashPage && !isSharedUser,
   );
 };
 
@@ -403,14 +403,14 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: isPageExist } = useIsPageExist();
+  const { data: currentPageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
 
-  const includesUndefined = [isPageExist, isUserPage].some(v => v === undefined);
+  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => isPageExist! && !isUserPage,
+    () => isPageExist && !isUserPage,
   );
 };

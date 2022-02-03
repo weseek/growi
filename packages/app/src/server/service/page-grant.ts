@@ -3,34 +3,34 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import UserGroup from '~/server/models/user-group';
-import { PageModel } from '~/server/models/page';
+import { PageDocument, PageModel } from '~/server/models/page';
 import { PageQueryBuilder } from '../models/obsolete-page';
-import { isIncludesObjectId, removeDuplicates, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
-type ObjectId = mongoose.Types.ObjectId;
+type ObjectIdLike = mongoose.Types.ObjectId | string;
 
 type ComparableTarget = {
   grant: number,
-  grantedUserIds?: ObjectId[],
-  grantedGroupId: ObjectId,
-  applicableUserIds?: ObjectId[],
-  applicableGroupIds?: ObjectId[],
+  grantedUserIds?: ObjectIdLike[],
+  grantedGroupId?: ObjectIdLike,
+  applicableUserIds?: ObjectIdLike[],
+  applicableGroupIds?: ObjectIdLike[],
 };
 
 type ComparableAncestor = {
   grant: number,
-  grantedUserIds: ObjectId[],
-  applicableUserIds?: ObjectId[],
-  applicableGroupIds?: ObjectId[],
+  grantedUserIds: ObjectIdLike[],
+  applicableUserIds?: ObjectIdLike[],
+  applicableGroupIds?: ObjectIdLike[],
 };
 
 type ComparableDescendants = {
   isPublicExist: boolean,
-  grantedUserIds: ObjectId[],
-  grantedGroupIds: ObjectId[],
+  grantedUserIds: ObjectIdLike[],
+  grantedGroupIds: ObjectIdLike[],
 };
 
 class PageGrantService {
@@ -42,7 +42,7 @@ class PageGrantService {
   }
 
   private validateComparableTarget(comparable: ComparableTarget) {
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     const { grant, grantedUserIds, grantedGroupId } = comparable;
 
@@ -61,7 +61,7 @@ class PageGrantService {
   private processValidation(target: ComparableTarget, ancestor: ComparableAncestor, descendants?: ComparableDescendants): boolean {
     this.validateComparableTarget(target);
 
-    const Page = mongoose.model('Page') as PageModel;
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     /*
      * ancestor side
@@ -80,7 +80,7 @@ class PageGrantService {
         return false;
       }
 
-      if (!ancestor.grantedUserIds[0].equals(target.grantedUserIds[0])) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
+      if (ancestor.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
         return false;
       }
     }
@@ -105,6 +105,10 @@ class PageGrantService {
       }
 
       if (target.grant === Page.GRANT_USER_GROUP) {
+        if (target.grantedGroupId == null) {
+          throw Error('grantedGroupId must not be null');
+        }
+
         if (!isIncludesObjectId(ancestor.applicableGroupIds, target.grantedGroupId)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
@@ -136,7 +140,7 @@ class PageGrantService {
         return false;
       }
 
-      if (descendants.grantedUserIds.length === 1 && !descendants.grantedUserIds[0].equals(target.grantedUserIds[0])) { // if Only me page exists, then all of them must be owned by the same user as the target page
+      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // if Only me page exists, then all of them must be owned by the same user as the target page
         return false;
       }
     }
@@ -165,14 +169,14 @@ class PageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, includeApplicable: boolean,
+      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupId: ObjectIdLike | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
-      const Page = mongoose.model('Page') as PageModel;
+      const Page = mongoose.model('Page') as unknown as PageModel;
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-      let applicableUserIds: ObjectId[] | undefined;
-      let applicableGroupIds: ObjectId[] | undefined;
+      let applicableUserIds: ObjectIdLike[] | undefined;
+      let applicableGroupIds: ObjectIdLike[] | undefined;
 
       if (grant === Page.GRANT_USER_GROUP) {
         const targetUserGroup = await UserGroup.findOne({ _id: grantedGroupId });
@@ -208,17 +212,20 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns Promise<ComparableAncestor>
    */
-  private async generateComparableAncestor(targetPath: string): Promise<ComparableAncestor> {
-    const Page = mongoose.model('Page') as PageModel;
+  private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
-    let applicableUserIds: ObjectId[] | undefined;
-    let applicableGroupIds: ObjectId[] | undefined;
+    let applicableUserIds: ObjectIdLike[] | undefined;
+    let applicableGroupIds: ObjectIdLike[] | undefined;
 
     /*
      * make granted users list of ancestor's
      */
     const builderForAncestors = new PageQueryBuilder(Page.find(), false);
+    if (!includeNotMigratedPages) {
+      builderForAncestors.addConditionAsMigrated();
+    }
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)
       .addConditionToSortPagesByDescPath()
@@ -234,7 +241,7 @@ class PageGrantService {
       const grantedRelations = await UserGroupRelation.find({ relatedGroup: testAncestor.grantedGroup }, { _id: 0, relatedUser: 1 });
       const grantedGroups = await UserGroup.findGroupsWithDescendantsById(testAncestor.grantedGroup);
       applicableGroupIds = grantedGroups.map(g => g._id);
-      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectId[];
+      applicableUserIds = Array.from(new Set(grantedRelations.map(r => r.relatedUser))) as ObjectIdLike[];
     }
 
     return {
@@ -250,8 +257,8 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns ComparableDescendants
    */
-  private async generateComparableDescendants(targetPath: string): Promise<ComparableDescendants> {
-    const Page = mongoose.model('Page') as PageModel;
+  private async generateComparableDescendants(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableDescendants> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     /*
      * make granted users list of descendant's
@@ -259,12 +266,17 @@ class PageGrantService {
     const pathWithTrailingSlash = addTrailingSlash(targetPath);
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
+    const $match: any = {
+      path: new RegExp(`^${startsPattern}`),
+      isEmpty: { $ne: true },
+    };
+    if (includeNotMigratedPages) {
+      $match.parent = { $ne: null };
+    }
+
     const result = await Page.aggregate([
       { // match to descendants excluding empty pages
-        $match: {
-          path: new RegExp(`^${startsPattern}`),
-          isEmpty: { $ne: true },
-        },
+        $match,
       },
       {
         $project: {
@@ -292,7 +304,7 @@ class PageGrantService {
     const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
     // GRANT_OWNER group
     const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
-    const grantedUserIds: ObjectId[] = grantOwnerResult?.grantedUsersSet ?? [];
+    const grantedUserIds: ObjectIdLike[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
     const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
     const grantedGroupIds = grantUserGroupResult?.grantedGroupSet ?? [];
@@ -306,16 +318,18 @@ class PageGrantService {
 
   /**
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
+   * Only v5 schema pages will be used to compare.
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      targetPath: string, grant, grantedUserIds: ObjectId[] | undefined, grantedGroupId: ObjectId, shouldCheckDescendants = false,
+      // eslint-disable-next-line max-len
+      targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupId?: ObjectIdLike, shouldCheckDescendants = false, includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
     }
 
-    const comparableAncestor = await this.generateComparableAncestor(targetPath);
+    const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
       const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, false);
@@ -323,9 +337,40 @@ class PageGrantService {
     }
 
     const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupId, true);
-    const comparableDescendants = await this.generateComparableDescendants(targetPath);
+    const comparableDescendants = await this.generateComparableDescendants(targetPath, includeNotMigratedPages);
 
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
+  }
+
+  async separateNormalizedAndNonNormalizedPages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+    const shouldCheckDescendants = true;
+    const shouldIncludeNotMigratedPages = true;
+
+    const normalizedPages: (PageDocument & { _id: any })[] = [];
+    const nonNormalizedPages: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
+
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListByPageIdsArray(pageIds);
+
+    const pages = await builder.query.exec();
+
+    for await (const page of pages) {
+      const {
+        path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+      } = page;
+
+      const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
+      if (isNormalized) {
+        normalizedPages.push(page);
+      }
+      else {
+        nonNormalizedPages.push(page);
+      }
+    }
+
+    return [normalizedPages, nonNormalizedPages];
   }
 
 }
