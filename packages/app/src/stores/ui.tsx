@@ -267,7 +267,7 @@ type CreateModalStatusUtils = {
 
 export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
   const initialData: CreateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<CreateModalStatus, Error>('createModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useStaticSWR<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
