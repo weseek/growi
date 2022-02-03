@@ -142,8 +142,6 @@ class PageService {
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
       result.isCreatable = isCreatablePage(path);
-      result.isDeletable = false;
-      result.canDeleteCompletely = false;
       result.page = page;
 
       return result;
@@ -153,9 +151,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
-    result.isDeletable = isDeletablePage(path);
     result.isDeleted = page.isDeleted();
-    result.canDeleteCompletely = user != null && this.canDeleteCompletely(page.creator, user);
 
     return result;
   }
