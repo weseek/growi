@@ -25,12 +25,14 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   const contentRef = useRef(null);
 
   useEffect(() => {
-    // if isRevisionBodyRendered is false then do nothing
-    if (isRevisionBodyRendered && contentRef.current != null) {
-      const searchResultPageContent = contentRef.current as HTMLElement;
-      const highlightedWord = searchResultPageContent.querySelector('.highlighted-keyword') as HTMLElement | null;
-      if (highlightedWord != null) {
-        smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
+    // reset state
+    if (isRevisionBodyRendered) {
+      const searchResultPageContent = contentRef.current as HTMLElement | null;
+      if (searchResultPageContent != null) {
+        const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
+        if (highlightedWord != null) {
+          smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
+        }
       }
       setIsRevisionBodyRendered(false);
     }
