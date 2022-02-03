@@ -17,10 +17,11 @@ const logger = loggerFactory('growi:cli:PageItemControl');
 
 type CommonProps = {
   pageInfo?: IPageInfoCommon | IPageInfo,
-  isEnableActions?: boolean
-  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>
-  onClickRenameMenuItem?: (pageId: string) => Promise<void>
-  onClickDeleteMenuItem?: (pageId: string) => Promise<void>
+  isEnableActions?: boolean,
+  hideBookmarkMenuItem?: boolean,
+  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
+  onClickRenameMenuItem?: (pageId: string) => Promise<void>,
+  onClickDeleteMenuItem?: (pageId: string) => Promise<void>,
 }
 
 
@@ -32,7 +33,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    pageId, pageInfo, isEnableActions,
+    pageId, pageInfo, isEnableActions, hideBookmarkMenuItem,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
@@ -73,6 +74,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   return (
     <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+
       { !isEnableActions && (
         <DropdownItem>
           <p>
@@ -80,25 +82,34 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </p>
         </DropdownItem>
       ) }
-      { isExistPageInfo(pageInfo) && isEnableActions && (
+
+      {/* Bookmark */}
+      { !hideBookmarkMenuItem && isExistPageInfo(pageInfo) && isEnableActions && (
         <DropdownItem onClick={bookmarkItemClickedHandler}>
           <i className="fa fa-fw fa-bookmark-o"></i>
           { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
         </DropdownItem>
       ) }
+
+      {/* Duplicate */}
       { isExistPageInfo(pageInfo) && isEnableActions && (
         <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-docs"></i>
           {t('Duplicate')}
         </DropdownItem>
       ) }
-      { isEnableActions && (
+
+      {/* Move/Rename */}
+      { isEnableActions && pageInfo.isMovable && (
         <DropdownItem onClick={renameItemClickedHandler}>
           <i className="icon-fw  icon-action-redo"></i>
           {t('Move/Rename')}
         </DropdownItem>
       ) }
-      { isExistPageInfo(pageInfo) && isEnableActions && (
+
+      {/* divider */}
+      {/* Delete */}
+      { isExistPageInfo(pageInfo) && isEnableActions && pageInfo.isMovable && (
         <>
           <DropdownItem divider />
           <DropdownItem
@@ -146,7 +157,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-      <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
+      <DropdownToggle color="transparent" className="border-0 rounded grw-btn-page-management p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
 

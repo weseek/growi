@@ -12,6 +12,7 @@ import LikeButtons from '../LikeButtons';
 import BookmarkButtons from '../BookmarkButtons';
 import SeenUserInfo from '../User/SeenUserInfo';
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
+import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 
 type CommonProps = {
@@ -101,11 +102,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       />
       <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
       { showPageControlDropdown && (
-        /*
-          TODO:
-          replace with PageItemControl
-        */
-        <></>
+        <PageItemControl
+          pageId={pageId}
+          pageInfo={pageInfo}
+          isEnableActions={!isGuestUser}
+          hideBookmarkMenuItem
+        />
         // <PageManagement
         //   pageId={pageId}
         //   revisionId={revisionId}
@@ -125,7 +127,7 @@ type SubNavButtonsProps= CommonProps & {
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
-  const { pageId, isCompactMode } = props;
+  const { pageId } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
 
@@ -137,5 +139,5 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-  return <SubNavButtonsSubstance pageInfo={pageInfo} pageId={pageId} isCompactMode={isCompactMode} />;
+  return <SubNavButtonsSubstance {...props} pageInfo={pageInfo} pageId={pageId} />;
 };
