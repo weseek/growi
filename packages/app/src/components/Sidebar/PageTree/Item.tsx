@@ -22,7 +22,7 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  onClickDeleteByPage?(page: IPageForPageDeleteModal): void
+  onClickDeleteByPage?(): void
 }
 
 // Utility to mark target
@@ -139,7 +139,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDeleteByPage(pageToDelete);
+    onClickDeleteByPage();
   }, [page, onClickDeleteByPage]);
 
 

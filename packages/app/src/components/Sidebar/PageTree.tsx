@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPagePath, useCurrentPageId,useRevisionId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
@@ -17,6 +17,7 @@ const PageTree: FC = memo(() => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
+  const { data: revisionId } = useRevisionId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
 
@@ -74,6 +75,14 @@ const PageTree: FC = memo(() => {
 
   const path = currentPath || '/';
 
+  const pageId = targetId != null ? targetId : '';
+
+  const pageToDelete: IPageForPageDeleteModal = {
+    pageId,
+    path,
+    revisionId,
+  }
+
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
@@ -87,6 +96,7 @@ const PageTree: FC = memo(() => {
           targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
           isDeleteModalOpen={isDeleteModalOpen}
+          pageToDelete={pageToDelete}
           pagesToDelete={pagesToDelete}
           isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
           isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
