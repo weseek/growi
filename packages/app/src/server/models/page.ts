@@ -606,6 +606,8 @@ export default (crowi: Crowi): any => {
 
     let savedPage = await page.save();
 
+    await crowi.pageService?.updateDescendantCountOfAncestors(page._id, 1, false);
+
     /*
      * After save
      */
