@@ -1,0 +1,5 @@
+http.host: 0.0.0.0
+
+# for elasticsearch-head
+http.cors.enabled: true
+http.cors.allow-origin: "*"
