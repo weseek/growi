@@ -79,7 +79,7 @@ const PageRenameModal = (props) => {
       updateSubordinatedList();
       setPageNameInput(path);
     }
-  }, [isOpened, updateSubordinatedList]);
+  }, [isOpened, path, updateSubordinatedList]);
 
 
   const checkExistPaths = async(newParentPath) => {
@@ -100,10 +100,7 @@ const PageRenameModal = (props) => {
   );
 
   useEffect(() => {
-    console.log('path_useEffect_pageNameInput', pageNameInput);
-    console.log('path_useEffect_path', path);
     if (pageId != null && pageNameInput !== path) {
-      console.log('useEffect実行されてる?');
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
   }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
