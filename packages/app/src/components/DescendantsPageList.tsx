@@ -42,13 +42,15 @@ const DescendantsPageList = (props: Props): JSX.Element => {
     <>
       <PageList pages={data} />
 
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setPageNumber}
-        totalItemsCount={data.totalCount}
-        pagingLimit={data.limit}
-        align="center"
-      />
+      <div className="my-4">
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={data.totalCount}
+          pagingLimit={data.limit}
+          align="center"
+        />
+      </div>
     </>
   );
 };

@@ -39,7 +39,7 @@ const PageList = (props: Props): JSX.Element => {
 
   return (
     <div className="page-list">
-      <ul className="page-list-ul page-list-ul-flat">
+      <ul className="page-list-ul list-group-flush">
         {pageList}
       </ul>
     </div>
