@@ -4,6 +4,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
@@ -17,7 +18,7 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxUserGroupList } from '~/stores/user-group';
 
 
 const UserGroupDetailPage: FC = () => {
@@ -47,7 +48,8 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
   // TODO 85844: Fetch /user-groups/selectable-groups with SWR
-  const selectableUserGroups: IUserGroupHasId[] = [];
+  // const selectableUserGroups: IUserGroupHasId[] = [];
+  const { data: selectableUserGroups } = useSWRxUserGroupList();
 
   /*
    * Function
@@ -108,12 +110,12 @@ const UserGroupDetailPage: FC = () => {
   }, [userGroup, mutateUserGroupRelations]);
 
   // TODO: 87671 Add existing group
-  const onClickAddChildButton = (userGroup: IUserGroupHasId) => {
+  const onClickAddChildButtonHandler = (userGroup: IUserGroupHasId) => {
     console.log(userGroup);
   };
 
   // TODO 87614: UserGroup New creation form can be displayed in modal
-  const onClickCreateGroupButton = () => {
+  const onClickCreateChildGroupButtonHandler = () => {
     console.log('button clicked!');
   };
 
@@ -145,42 +147,11 @@ const UserGroupDetailPage: FC = () => {
       <UserGroupUserModal />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
-
-      <div className="dropdown">
-        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-          {t('admin:user_group_management.add_child_group')}
-        </button>
-
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-          {
-            (selectableUserGroups != null && selectableUserGroups.length > 0) && (
-              <>
-                {
-                  selectableUserGroups.map(userGroup => (
-                    <button
-                      key={userGroup._id}
-                      type="button"
-                      className="dropdown-item"
-                      onClick={() => onClickAddChildButton(userGroup)}
-                    >
-                      {userGroup.name}
-                    </button>
-                  ))
-                }
-                <div className="dropdown-divider"></div>
-              </>
-            )
-          }
-
-          <button
-            className="dropdown-item"
-            type="button"
-            onClick={() => onClickCreateGroupButton()}
-          >{t('admin:user_group_management.create_group')}
-          </button>
-        </div>
-      </div>
+      <UserGroupDropdown
+        selectableUserGroups={selectableUserGroups}
+        onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
+        onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
+      />
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
