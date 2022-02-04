@@ -1010,11 +1010,11 @@ class PageService {
     if (isRecursively) {
       // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
       (async() => {
-        const deletedCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
 
         // update descendantCount of ancestors'
         if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, deletedCount * -1, true);
+          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
 
           // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
         }
@@ -1280,11 +1280,11 @@ class PageService {
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
       (async() => {
-        const deletedCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+        const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
 
         // update descendantCount of ancestors'
         if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, deletedCount * -1, true);
+          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
         }
 
         // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
@@ -1445,11 +1445,11 @@ class PageService {
     if (isRecursively) {
       // no await for revertDeletedDescendantsWithStream
       (async() => {
-        const revertedCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+        const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
 
         // update descendantCount of ancestors'
         if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, revertedCount * -1, true);
+          await this.updateDescendantCountOfAncestors(page.parent, (revertedDescendantCount + 1) * -1, true);
 
           // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
         }
