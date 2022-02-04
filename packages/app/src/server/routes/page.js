@@ -354,8 +354,15 @@ module.exports = function(crowi, app) {
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-    await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
+    try {
+      await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
+      await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
+    }
+    catch (err) {
+      // handle as not found in most cases
+      return res.render(view, renderVars);
+    }
+
     addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
