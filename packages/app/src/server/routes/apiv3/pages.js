@@ -710,12 +710,11 @@ module.exports = (crowi) => {
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const Page = crowi.model('Page');
 
     try {
       if (!isV5Compatible) {
         // this method throws and emit socketIo event when error occurs
-        crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+        crowi.pageService.v5InitialMigration(); // not await
       }
     }
     catch (err) {

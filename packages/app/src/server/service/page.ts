@@ -1878,7 +1878,7 @@ class PageService {
   }
 
   // TODO: use socket to send status to the client
-  async v5InitialMigration(grant) {
+  async v5InitialMigration() {
     // const socket = this.crowi.socketIoService.getAdminSocket();
 
     let isUnique;
@@ -1904,7 +1904,8 @@ class PageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(grant, null, true);
+      const Page = mongoose.model('Page') as unknown as PageModel;
+      await this.normalizeParentRecursively(Page.GRANT_PUBLIC, null, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);

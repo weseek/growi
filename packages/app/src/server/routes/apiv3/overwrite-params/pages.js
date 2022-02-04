@@ -45,6 +45,10 @@ class PageOverwriteParamsFactory {
       return null;
     };
 
+    params.descendantCount = (value, { document, schema, propertyName }) => {
+      return 0;
+    };
+
     if (option.initPageMetadatas) {
       params.liker = [];
       params.seenUsers = [];
