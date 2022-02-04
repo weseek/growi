@@ -18,7 +18,7 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxSelectableUserGroups } from '~/stores/user-group';
 
 
 const UserGroupDetailPage: FC = () => {
@@ -46,9 +46,7 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-
-  // TODO 85844: Fetch /user-groups/selectable-groups with SWR
-  const selectableUserGroups: IUserGroupHasId[] = [];
+  const { data: selectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   /*
    * Function

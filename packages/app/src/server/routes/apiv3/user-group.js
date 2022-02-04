@@ -234,8 +234,8 @@ module.exports = (crowi) => {
       ]);
 
       const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
-      const userGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
-      return res.apiv3({ userGroups });
+      const selectableUserGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ selectableUserGroups });
     }
     catch (err) {
       const msg = 'Error occurred while searching user groups';
