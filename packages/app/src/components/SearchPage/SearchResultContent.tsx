@@ -1,34 +1,50 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
-import { IPageSearchResultData } from '../../interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
-import SearchResultContentSubNavigation from './SearchResultContentSubNavigation';
-
-// TODO : set focusedPage type to ?IPageSearchResultData once #80214 is merged
-// PR: https://github.com/weseek/growi/pull/4649
+import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtons } from '../Navbar/SubNavButtons';
 
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
-  focusedSearchResultData : IPageSearchResultData,
+  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
 }
 
 
 const SearchResultContent: FC<Props> = (props: Props) => {
   const page = props.focusedSearchResultData?.pageData;
+
+  const growiRenderer = props.appContainer.getRenderer('searchresult');
+
+  const ControlComponents = useCallback(() => {
+    if (page == null) {
+      return <></>;
+    }
+
+    return (
+      <>
+        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+          <SubNavButtons pageId={page._id} />
+        </div>
+        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        </div>
+      </>
+    );
+  }, [page]);
+
   // return if page is null
   if (page == null) return <></>;
-  const growiRenderer = props.appContainer.getRenderer('searchresult');
+
   return (
     <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <SearchResultContentSubNavigation
-        pageId={page._id}
-        revisionId={page.revision}
-        path={page.path}
-      >
-      </SearchResultContentSubNavigation>
+      <GrowiSubNavigation
+        page={page}
+        controls={ControlComponents}
+      />
       <div className="search-result-page-content">
         <RevisionLoader
           growiRenderer={growiRenderer}

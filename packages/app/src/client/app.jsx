@@ -37,10 +37,9 @@ import RecentCreated from '../components/RecentCreated/RecentCreated';
 import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
 import MyDraftList from '../components/MyDraftList/MyDraftList';
 import BookmarkList from '../components/PageList/BookmarkList';
-import LikerList from '../components/User/LikerList';
 import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
-import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 
@@ -89,7 +88,7 @@ Object.assign(componentMappings, {
 
   'search-page': <SearchPage crowi={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,
-  'identical-path-page-list': <IdenticalPathPage />,
+  'identical-path-page': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
@@ -102,7 +101,7 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'forbidden-page': <ForbiddenPage />,
+  'forbidden-page': <ForbiddenPage isSharePage={appContainer.config.disableLinkSharing} />,
 
   'page-timeline': <PageTimeline />,
 
@@ -118,7 +117,6 @@ Object.assign(componentMappings, {
   'renamed-alert': <RenamedAlert />,
   'not-found-alert': <NotFoundAlert
     isGuestUserMode={appContainer.isGuestUser}
-    isHidden={pageContainer.state.pageId != null ? (pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage) : false} // !!DO NOT MOVE THIS!! https://github.com/weseek/growi/pull/4899
   />,
 });
 
@@ -128,7 +126,6 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'page-management': <PageManagement />,
-    'liker-list': <LikerList />,
     'page-content-footer': <PageContentFooter />,
 
     'recent-created-icon': <RecentlyCreatedIcon />,
@@ -149,7 +146,7 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'grw-subnav-container': <GrowiSubNavigation />,
+    'grw-subnav-container': <GrowiContextualSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
     'display-switcher': <DisplaySwitcher />,
   });

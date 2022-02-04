@@ -15,7 +15,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
-const { isTopPage, isTrashPage } = pagePathUtils;
+const { isTopPage, isTrashPage, isUserNamePage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
@@ -101,11 +101,6 @@ export class PageQueryBuilder {
         ],
       });
 
-    return this;
-  }
-
-  addConditionToExcludeRedirect() {
-    this.query = this.query.and({ redirectTo: null });
     return this;
   }
 
@@ -324,6 +319,11 @@ export class PageQueryBuilder {
 
   populateDataToShowRevision(userPublicFields) {
     this.query = populateDataToShowRevision(this.query, userPublicFields);
+    return this;
+  }
+
+  addConditionToFilteringByParentId(parentId) {
+    this.query = this.query.and({ parent: parentId });
     return this;
   }
 
@@ -564,18 +564,7 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.statics.isDeletableName = function(path) {
-    const notDeletable = [
-      /^\/user\/[^/]+$/, // user page
-    ];
-
-    for (let i = 0; i < notDeletable.length; i++) {
-      const pattern = notDeletable[i];
-      if (path.match(pattern)) {
-        return false;
-      }
-    }
-
-    return true;
+    return !isTopPage(path) && !isUserNamePage(path);
   };
 
   pageSchema.statics.fixToCreatableName = function(path) {
@@ -632,6 +621,16 @@ export const getPageSchema = (crowi) => {
     return queryBuilder.query.exec();
   };
 
+  pageSchema.statics.findByIdAndViewerToEdit = async function(id, user, includeEmpty = false) {
+    const baseQuery = this.findOne({ _id: id });
+    const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(queryBuilder, user);
+
+    return queryBuilder.query.exec();
+  };
+
   // find page by path
   pageSchema.statics.findByPath = function(path, includeEmpty = false) {
     if (path == null) {
@@ -675,10 +674,6 @@ export const getPageSchema = (crowi) => {
     return queryBuilder.query.exec();
   };
 
-  pageSchema.statics.findByRedirectTo = function(path) {
-    return this.findOne({ redirectTo: path });
-  };
-
   /**
    * find pages that is match with `path` and its descendants
    */
@@ -699,7 +694,6 @@ export const getPageSchema = (crowi) => {
 
     const builder = new PageQueryBuilder(this.find(), includeEmpty);
     builder.addConditionToListWithDescendants(page.path, option);
-    builder.addConditionToExcludeRedirect();
 
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
@@ -750,9 +744,6 @@ export const getPageSchema = (crowi) => {
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
-    if (excludeRedirect) {
-      builder.addConditionToExcludeRedirect();
-    }
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     // count
@@ -788,10 +779,6 @@ export const getPageSchema = (crowi) => {
     // exclude trashed pages
     if (!opt.includeTrashed) {
       builder.addConditionToExcludeTrashed();
-    }
-    // exclude redirect pages
-    if (!opt.includeRedirect) {
-      builder.addConditionToExcludeRedirect();
     }
 
     // add grant conditions
@@ -994,7 +981,6 @@ export const getPageSchema = (crowi) => {
     const Page = this;
     const Revision = crowi.model('Revision');
     const format = options.format || 'markdown';
-    const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
 
     // sanitize path
@@ -1016,7 +1002,6 @@ export const getPageSchema = (crowi) => {
     page.path = path;
     page.creator = user;
     page.lastUpdateUser = user;
-    page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
@@ -1024,8 +1009,7 @@ export const getPageSchema = (crowi) => {
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     pageEvent.emit('create', savedPage, user);
@@ -1047,8 +1031,7 @@ export const getPageSchema = (crowi) => {
     // update existing page
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
-    const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path);
+    savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
@@ -1063,8 +1046,6 @@ export const getPageSchema = (crowi) => {
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(parentPage.path);
-
-    builder.addConditionToExcludeRedirect();
 
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
@@ -1088,29 +1069,6 @@ export const getPageSchema = (crowi) => {
       throw new Error('path is required');
     }
     return this.findOneAndRemove({ path }).exec();
-  };
-
-  /**
-   * remove the page that is redirecting to specified `pagePath` recursively
-   *  ex: when
-   *    '/page1' redirects to '/page2' and
-   *    '/page2' redirects to '/page3'
-   *    and given '/page3',
-   *    '/page1' and '/page2' will be removed
-   *
-   * @param {string} pagePath
-   */
-  pageSchema.statics.removeRedirectOriginPageByPath = async function(pagePath) {
-    const redirectPage = await this.findByRedirectTo(pagePath);
-
-    if (redirectPage == null) {
-      return;
-    }
-
-    // remove
-    await this.findByIdAndRemove(redirectPage.id);
-    // remove recursive
-    await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {

@@ -9,39 +9,39 @@ const { checkTemplatePath } = templateChecker;
 export class PageListMeta extends React.Component {
 
   render() {
-    const { page } = this.props;
+    const { page, shouldSpaceOutIcon } = this.props;
 
     // top check
     let topLabel;
     if (isTopPage(page.path)) {
-      topLabel = <span className="badge badge-info meta-icon top-label">TOP</span>;
+      topLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-3' : ''} top-label`}>TOP</span>;
     }
 
     // template check
     let templateLabel;
     if (checkTemplatePath(page.path)) {
-      templateLabel = <span className="badge badge-info meta-icon">TMPL</span>;
+      templateLabel = <span className={`badge badge-info ${shouldSpaceOutIcon ? 'mr-3' : ''}`}>TMPL</span>;
     }
 
     let commentCount;
     if (page.commentCount != null && page.commentCount > 0) {
-      commentCount = <span className="meta-icon"><i className="icon-bubble" />{page.commentCount}</span>;
+      commentCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
     let likerCount;
     if (page.liker != null && page.liker.length > 0) {
-      likerCount = <span className="meta-icon"><i className="fa fa-heart-o" />{page.liker.length}</span>;
+      likerCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-heart-o" />{page.liker.length}</span>;
     }
 
     let locked;
     if (page.grant !== 1) {
-      locked = <span className="meta-icon"><i className="icon-lock" /></span>;
+      locked = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="icon-lock" /></span>;
     }
 
     let seenUserCount;
     if (page.seenUserCount > 0) {
       seenUserCount = (
-        <span className="meta-icon">
+        <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}>
           <i className="footstamp-icon"><FootstampIcon /></i>
           {page.seenUsers.length}
         </span>
@@ -50,7 +50,7 @@ export class PageListMeta extends React.Component {
 
     let bookmarkCount;
     if (this.props.bookmarkCount > 0) {
-      bookmarkCount = <span className="meta-icon"><i className="fa fa-bookmark-o" />{this.props.bookmarkCount}</span>;
+      bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'mr-3' : ''}`}><i className="fa fa-bookmark-o" />{this.props.bookmarkCount}</span>;
     }
 
     return (
@@ -71,4 +71,5 @@ export class PageListMeta extends React.Component {
 PageListMeta.propTypes = {
   page: PropTypes.object.isRequired,
   bookmarkCount: PropTypes.number,
+  shouldSpaceOutIcon: PropTypes.bool,
 };

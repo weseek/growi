@@ -37,6 +37,19 @@ export const isUserPage = (path: string): boolean => {
 };
 
 /**
+ * Whether path is right under the path '/user'
+ * @param path
+ */
+export const isUserNamePage = (path: string): boolean => {
+  // https://regex101.com/r/GUZntH/1
+  if (path.match(/^\/user\/[^/]+$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * Whether path belongs to the shared page
  * @param path
  */

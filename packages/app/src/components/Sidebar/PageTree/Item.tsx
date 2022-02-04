@@ -1,22 +1,20 @@
 import React, {
-  useCallback, useState, FC, useEffect, memo,
+  useCallback, useState, FC, useEffect,
 } from 'react';
 import nodePath from 'path';
 import { useTranslation } from 'react-i18next';
-import { pagePathUtils } from '@growi/core';
 import { useDrag, useDrop } from 'react-dnd';
-import { toastWarning } from '~/client/util/apiNotification';
+import { toastWarning, toastError } from '~/client/util/apiNotification';
 
-import { ItemNode } from './ItemNode';
-import { IPageHasId } from '~/interfaces/page';
-import { useSWRxPageChildren } from '../../../stores/page-listing';
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import PageItemControl from '../../Common/Dropdown/PageItemControl';
-import { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
+import { IPageForPageDeleteModal } from '~/stores/ui';
+import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-
-const { isTopPage } = pagePathUtils;
+import { bookmark, unbookmark } from '~/client/services/page-operation';
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
+import { ItemNode } from './ItemNode';
 
 
 interface ItemProps {
@@ -41,64 +39,11 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
   });
 };
 
-type ItemControlProps = {
-  page: Partial<IPageHasId>
-  isEnableActions: boolean
-  isDeletable: boolean
-  onClickPlusButton?(): void
-  onClickDeleteButton?(): void
-  onClickRenameButton?(): void
-}
 
-
-const ItemControl: FC<ItemControlProps> = memo((props: ItemControlProps) => {
-  const onClickPlusButton = () => {
-    if (props.onClickPlusButton == null) {
-      return;
-    }
-
-    props.onClickPlusButton();
-  };
-
-  const onClickDeleteButtonHandler = () => {
-    if (props.onClickDeleteButton == null) {
-      return;
-    }
-
-    props.onClickDeleteButton();
-  };
-
-  const onClickRenameButtonHandler = () => {
-    if (props.onClickRenameButton == null) {
-      return;
-    }
-
-    props.onClickRenameButton();
-  };
-
-  if (props.page == null) {
-    return <></>;
-  }
-
-  return (
-    <>
-      <PageItemControl
-        page={props.page}
-        onClickDeleteButtonHandler={onClickDeleteButtonHandler}
-        isEnableActions={props.isEnableActions}
-        isDeletable={props.isDeletable}
-        onClickRenameButtonHandler={onClickRenameButtonHandler}
-      />
-      <button
-        type="button"
-        className="border-0 rounded grw-btn-page-management p-0"
-        onClick={onClickPlusButton}
-      >
-        <i className="icon-plus text-muted d-block p-1" />
-      </button>
-    </>
-  );
-});
+const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+  const bookmarkOperation = _newValue ? bookmark : unbookmark;
+  await bookmarkOperation(_pageId);
+};
 
 
 type ItemCountProps = {
@@ -123,6 +68,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { page, children } = itemNode;
 
+  const [pageTitle, setPageTitle] = useState(page.path);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -176,7 +122,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setNewPageInputShown(true);
   }, []);
 
-  const onClickDeleteButton = useCallback(() => {
+  const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
       return;
     }
@@ -197,15 +143,31 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [page, onClickDeleteByPage]);
 
 
-  const onClickRenameButton = useCallback(() => {
+  const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
     setRenameInputShown(true);
   }, []);
 
-  // TODO: make a put request to pages/title
-  const onPressEnterForRenameHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
-    setRenameInputShown(false);
+  const onPressEnterForRenameHandler = async(inputText: string) => {
+    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
+      return;
+    }
+
+    const parentPath = nodePath.dirname(page.path as string);
+    const newPagePath = `${parentPath}/${inputText}`;
+
+    try {
+      setPageTitle(inputText);
+      setRenameInputShown(false);
+      await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+    }
+    catch (err) {
+      // open ClosableInput and set pageTitle back to the previous title
+      setPageTitle(nodePath.basename(pageTitle as string));
+      setRenameInputShown(true);
+      toastError(err);
+    }
   };
+
 
   // TODO: go to create page page
   const onPressEnterForCreateHandler = () => {
@@ -214,10 +176,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
-    if (title == null || title === '') {
+    if (title == null || title === '' || title.trim() === '') {
       return {
         type: AlertType.WARNING,
         message: t('form_validation.title_required'),
+      };
+    }
+
+    if (title.includes('/')) {
+      return {
+        type: AlertType.WARNING,
+        message: t('form_validation.slashed_are_not_yet_supported'),
       };
     }
 
@@ -227,7 +196,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
-  }, []);
+  }, [hasChildren]);
 
   /*
    * Make sure itemNode.children and currentChildren are synced
@@ -237,7 +206,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, []);
+  }, [children, currentChildren.length, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -248,7 +217,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen]);
+  }, [data, error, isOpen, targetPathOrId]);
 
   return (
     <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
@@ -272,6 +241,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         { isRenameInputShown && (
           <ClosableTextInput
             isShown
+            value={nodePath.basename(pageTitle as string)}
             placeholder={t('Input page name')}
             onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={onPressEnterForRenameHandler}
@@ -279,11 +249,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && (
-          <a
-            href={page._id}
-            className="grw-pagetree-title-anchor flex-grow-1"
-          >
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path as string) || '/'}</p>
+          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
           </a>
         )}
         {(page.descendantCount != null && page.descendantCount > 0) && (
@@ -292,14 +259,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         )}
         <div className="grw-pagetree-control d-none">
-          <ItemControl
-            page={page}
-            onClickPlusButton={onClickPlusButton}
-            onClickDeleteButton={onClickDeleteButton}
-            onClickRenameButton={onClickRenameButton}
+          <AsyncPageItemControl
+            pageId={page._id}
             isEnableActions={isEnableActions}
-            isDeletable={!page.isEmpty && !isTopPage(page.path as string)}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickDeleteMenuItem={onClickDeleteButton}
+            onClickRenameMenuItem={onClickRenameButton}
           />
+          <button
+            type="button"
+            className="border-0 rounded grw-btn-page-management p-0"
+            onClick={onClickPlusButton}
+          >
+            <i className="icon-plus text-muted d-block p-1" />
+          </button>
         </div>
       </li>
 

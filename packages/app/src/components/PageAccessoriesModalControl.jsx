@@ -11,15 +11,18 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
+import { useCurrentPageId } from '~/stores/context';
+
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
   } = props;
   const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
+
+  const { data: pageId } = useCurrentPageId();
 
   const accessoriesBtnList = useMemo(() => {
     return [
@@ -38,23 +41,22 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage,
+        disabled: isGuestUser || isSharedUser,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: isNotFoundPage,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage || isLinkSharingDisabled,
+        disabled: isGuestUser || isSharedUser || isLinkSharingDisabled,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser, isNotFoundPage, isLinkSharingDisabled]);
+  }, [t, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
@@ -62,7 +64,7 @@ const PageAccessoriesModalControl = (props) => {
 
         let tooltipMessage;
         if (accessory.disabled) {
-          tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
+          tooltipMessage = t('Not available for guest');
           if (accessory.name === 'shareLink' && isLinkSharingDisabled) {
             tooltipMessage = t('Link sharing is disabled');
           }
@@ -88,10 +90,6 @@ const PageAccessoriesModalControl = (props) => {
           </Fragment>
         );
       })}
-      <div className="d-flex align-items-center">
-        <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo disabled={isSharedUser} />
-      </div>
     </div>
   );
 };
@@ -107,7 +105,6 @@ PageAccessoriesModalControl.propTypes = {
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
-  isNotFoundPage: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);

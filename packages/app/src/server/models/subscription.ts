@@ -3,11 +3,10 @@ import {
 } from 'mongoose';
 
 import { getOrCreateModel } from '@growi/core';
-import ActivityDefine from '../util/activityDefine';
 
-export const STATUS_SUBSCRIBE = 'SUBSCRIBE';
-export const STATUS_UNSUBSCRIBE = 'UNSUBSCRIBE';
-const STATUSES = [STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE];
+import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
+
+import ActivityDefine from '../util/activityDefine';
 
 export interface ISubscription {
   user: Types.ObjectId
@@ -50,17 +49,17 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   status: {
     type: String,
     require: true,
-    enum: STATUSES,
+    enum: AllSubscriptionStatusType,
   },
   createdAt: { type: Date, default: new Date() },
 });
 
 subscriptionSchema.methods.isSubscribing = function() {
-  return this.status === STATUS_SUBSCRIBE;
+  return this.status === SubscriptionStatusType.SUBSCRIBE;
 };
 
 subscriptionSchema.methods.isUnsubscribing = function() {
-  return this.status === STATUS_UNSUBSCRIBE;
+  return this.status === SubscriptionStatusType.UNSUBSCRIBE;
 };
 
 subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) {
@@ -81,11 +80,11 @@ subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
 };
 
 subscriptionSchema.statics.getSubscription = async function(target) {
-  return this.find({ target, status: STATUS_SUBSCRIBE }).distinct('user');
+  return this.find({ target, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
 subscriptionSchema.statics.getUnsubscription = async function(target) {
-  return this.find({ target, status: STATUS_UNSUBSCRIBE }).distinct('user');
+  return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

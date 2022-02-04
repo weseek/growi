@@ -60,6 +60,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
   "Create Archive Page": "Create Archive Page",
@@ -178,7 +179,9 @@
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required."
+    "title_required": "Title is required.",
+    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
+
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -206,7 +209,7 @@
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
-      "password": "Your password must be at least 6 characters long.",
+      "password": "Your password must be at least 8 characters long.",
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
@@ -972,7 +975,8 @@
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
   "pagetree": {
-    "private_legacy_pages": "Private Legacy Pages"
+    "private_legacy_pages": "Private Legacy Pages",
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",

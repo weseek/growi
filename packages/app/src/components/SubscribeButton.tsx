@@ -2,62 +2,30 @@ import React, { FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import { useSWRxSubscriptionStatus } from '../stores/page';
+import { SubscriptionStatusType } from '~/interfaces/subscription';
 
-
-import { toastError } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { useIsGuestUser } from '~/stores/context';
 
 type Props = {
-  pageId: string,
+  isGuestUser?: boolean,
+  status?: SubscriptionStatusType,
+  onClick?: () => Promise<void>,
 };
 
 const SubscribeButton: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { pageId } = props;
+  const { isGuestUser, status } = props;
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: subscriptionData, mutate } = useSWRxSubscriptionStatus(pageId);
+  const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
 
-  let isSubscribed;
-
-  switch (subscriptionData?.status) {
-    case true:
-      isSubscribed = true;
-      break;
-    case false:
-      isSubscribed = false;
-      break;
-    default:
-      isSubscribed = null;
-  }
-
-  const buttonClass = `${isSubscribed ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
-  const iconClass = isSubscribed || isSubscribed == null ? 'fa fa-eye' : 'fa fa-eye-slash';
-
-  const handleClick = async() => {
-    if (isGuestUser) {
-      return;
-    }
-
-    try {
-      const res = await apiv3Put('/page/subscribe', { pageId, status: !isSubscribed });
-      if (res) {
-        mutate();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
+  const buttonClass = `${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`;
+  const iconClass = isSubscribing === false ? 'fa fa-eye-slash' : 'fa fa-eye';
 
   return (
     <>
       <button
         type="button"
         id="subscribe-button"
-        onClick={handleClick}
+        onClick={props.onClick}
         className={`btn btn-subscribe border-0 ${buttonClass}`}
       >
         <i className={iconClass}></i>
