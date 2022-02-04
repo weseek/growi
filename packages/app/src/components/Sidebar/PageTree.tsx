@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
-  useCurrentPagePath, useCurrentPageId,useRevisionId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPagePath, useCurrentPageId, useRevisionId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
@@ -67,7 +67,7 @@ const PageTree: FC = memo(() => {
     pageId,
     path,
     revisionId,
-  }
+  };
 
   return (
     <>
