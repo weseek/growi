@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
@@ -12,17 +12,19 @@ type Props = {
 const UserGroupDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const onClickAddExistingUserGroupButton = (userGroup: IUserGroupHasId) => {
-    if (props.onClickAddExistingUserGroupButtonHandler != null) {
-      props.onClickAddExistingUserGroupButtonHandler(userGroup);
-    }
-  };
+  const { selectableUserGroups, onClickAddExistingUserGroupButtonHandler, onClickCreateUserGroupButtonHandler } = props;
 
-  const onClickCreateUserGroupButton = () => {
-    if (props.onClickCreateUserGroupButtonHandler != null) {
-      props.onClickCreateUserGroupButtonHandler();
+  const onClickAddExistingUserGroupButton = useCallback((userGroup: IUserGroupHasId) => {
+    if (onClickAddExistingUserGroupButtonHandler != null) {
+      onClickAddExistingUserGroupButtonHandler(userGroup);
     }
-  };
+  }, [onClickAddExistingUserGroupButtonHandler]);
+
+  const onClickCreateUserGroupButton = useCallback(() => {
+    if (onClickCreateUserGroupButtonHandler != null) {
+      onClickCreateUserGroupButtonHandler();
+    }
+  }, [onClickCreateUserGroupButtonHandler]);
 
   return (
     <>
@@ -34,10 +36,10 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
           {
-            (props.selectableUserGroups != null && props.selectableUserGroups.length > 0) && (
+            (selectableUserGroups != null && selectableUserGroups.length > 0) && (
               <>
                 {
-                  props.selectableUserGroups.map(userGroup => (
+                  selectableUserGroups.map(userGroup => (
                     <button
                       key={userGroup._id}
                       type="button"

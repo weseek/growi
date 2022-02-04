@@ -48,8 +48,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
   // TODO 85844: Fetch /user-groups/selectable-groups with SWR
-  // const selectableUserGroups: IUserGroupHasId[] = [];
-  const { data: selectableUserGroups } = useSWRxUserGroupList();
+  const selectableUserGroups: IUserGroupHasId[] = [];
 
   /*
    * Function
