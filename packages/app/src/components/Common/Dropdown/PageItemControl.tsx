@@ -9,17 +9,17 @@ import { useTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IPageInfo, IPageInfoCommon, isExistPageInfo,
+  IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useSWRxPageInfo } from '~/stores/page';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
 
-export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoCommon | IPageInfo };
+export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
 
 type CommonProps = {
-  pageInfo?: IPageInfoCommon | IPageInfo,
+  pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
   hideBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
@@ -46,7 +46,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
-    if (!isExistPageInfo(pageInfo) || onClickBookmarkMenuItem == null) {
+    if (!isIPageInfoForOperation(pageInfo) || onClickBookmarkMenuItem == null) {
       return;
     }
     await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
@@ -62,7 +62,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
-    if (!isExistPageInfo(pageInfo) || onClickDeleteMenuItem == null) {
+    if (pageInfo == null || onClickDeleteMenuItem == null) {
       return;
     }
     if (!pageInfo.isDeletable) {
@@ -88,7 +88,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       ) }
 
       {/* Bookmark */}
-      { !hideBookmarkMenuItem && isExistPageInfo(pageInfo) && isEnableActions && (
+      { !hideBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
         <DropdownItem onClick={bookmarkItemClickedHandler}>
           <i className="fa fa-fw fa-bookmark-o"></i>
           { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -96,7 +96,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       ) }
 
       {/* Duplicate */}
-      { isExistPageInfo(pageInfo) && isEnableActions && (
+      { isEnableActions && !pageInfo.isEmpty && (
         <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
           <i className="icon-fw icon-docs"></i>
           {t('Duplicate')}
@@ -115,7 +115,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
       {/* divider */}
       {/* Delete */}
-      { isExistPageInfo(pageInfo) && isEnableActions && pageInfo.isMovable && (
+      { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
         <>
           <DropdownItem divider />
           <DropdownItem

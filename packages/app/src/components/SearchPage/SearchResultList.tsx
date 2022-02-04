@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
 import { PageListItemL } from '../PageList/PageListItemL';
@@ -7,7 +7,7 @@ import PaginationWrapper from '../PaginationWrapper';
 
 
 type Props = {
-  pages: IPageWithMeta<IPageSearchMeta>[],
+  pages: IPageWithMeta<IPageInfoForEntity & IPageSearchMeta>[],
   selectedPagesIdList: Set<string>
   isEnableActions: boolean,
   searchResultCount?: number,

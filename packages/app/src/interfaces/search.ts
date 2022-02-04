@@ -1,4 +1,4 @@
-import { IPageWithMeta } from './page';
+import { IPageInfoAll, IPageWithMeta } from './page';
 
 export enum CheckboxType {
   NONE_CHECKED = 'noneChecked',
@@ -14,9 +14,8 @@ export type IPageSearchMeta = {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-export const isIPageSearchMeta = (meta: any): meta is IPageSearchMeta => {
-  return !!(meta as IPageSearchMeta)?.elasticSearchResult;
+export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSearchMeta) | undefined): meta is IPageInfoAll & IPageSearchMeta => {
+  return meta != null && 'elasticSearchResult' in meta;
 };
 
 export type IFormattedSearchResult = {
