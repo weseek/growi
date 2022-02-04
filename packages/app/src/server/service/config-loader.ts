@@ -292,6 +292,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  ELASTICSEARCH_REJECT_UNAUTHORIZED: {
+    ns:      'crowi',
+    key:     'app:elasticsearchRejectUnauthorized',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  ELASTICSEARCH_REINDEX_ON_BOOT: {
+    ns:      'crowi',
+    key:     'app:elasticsearchReindexOnBoot',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  USE_ELASTICSEARCH_V6: {
+    ns:      'crowi',
+    key:     'app:useElasticsearchV6',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',

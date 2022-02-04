@@ -242,7 +242,7 @@ module.exports = (crowi) => {
     const { pageId, path } = req.query;
 
     if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
+      return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
     }
 
     let result = {};

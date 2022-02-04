@@ -48,6 +48,7 @@ services:
     build:
       context: ../../growi-docker-compose/elasticsearch
       dockerfile: ./Dockerfile
+    container_name: elasticsearch
     restart: unless-stopped
     ports:
       - 9200:9200
@@ -62,11 +63,16 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-  elasticsearch-head:
-    image: tobias74/elasticsearch-head:6
+  #need to adjust kibana version based on elasticsearch version
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.8.0
     restart: unless-stopped
+    environment:
+      ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
     ports:
-      - 9100:9100
+      - 5601:5601
+    depends_on:
+      - elasticsearch
 
   # This container requires '../../growi-docker-compose' repository
   #   cloned from https://github.com/weseek/growi-docker-compose.git
