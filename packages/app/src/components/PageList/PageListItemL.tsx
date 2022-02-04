@@ -10,7 +10,7 @@ import {
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
-import { AsyncPageItemControl } from '../Common/Dropdown/PageItemControl';
+import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
@@ -122,9 +122,9 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
               ) }
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
-                {/* TODO: use PageItemControl with prefetched IPageInfo object */}
-                <AsyncPageItemControl
+                <PageItemControl
                   pageId={pageData._id}
+                  pageInfo={pageMeta}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                 />

@@ -1,19 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IPageHasId } from '~/interfaces/page';
+import { IPageWithMeta } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 
 import { PageListItemL } from './PageListItemL';
 
 
 type Props = {
-  pages: IPagingResult<IPageHasId>,
+  pages: IPagingResult<IPageWithMeta>,
+  isEnableActions?: boolean,
 }
 
 const PageList = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { pages } = props;
+  const { pages, isEnableActions } = props;
 
   if (pages == null) {
     return (
@@ -26,7 +27,7 @@ const PageList = (props: Props): JSX.Element => {
   }
 
   const pageList = pages.items.map(page => (
-    <PageListItemL page={{ pageData: page }} />
+    <PageListItemL page={page} isEnableActions={isEnableActions} />
   ));
 
   if (pageList.length === 0) {
