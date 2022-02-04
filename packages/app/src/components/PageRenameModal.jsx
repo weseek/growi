@@ -34,9 +34,7 @@ const PageRenameModal = (props) => {
 
   const { path, revisionId, pageId } = pagesDataToRename;
 
-  console.log('path_iii', path);
-
-  const [pageNameInput, setPageNameInput] = useState(path);
+  const [pageNameInput, setPageNameInput] = useState('');
 
   const [errs, setErrs] = useState(null);
 
@@ -79,6 +77,7 @@ const PageRenameModal = (props) => {
   useEffect(() => {
     if (isOpened) {
       updateSubordinatedList();
+      setPageNameInput(path);
     }
   }, [isOpened, updateSubordinatedList]);
 
@@ -101,7 +100,10 @@ const PageRenameModal = (props) => {
   );
 
   useEffect(() => {
-    if (pageNameInput !== path) {
+    console.log('path_useEffect_pageNameInput', pageNameInput);
+    console.log('path_useEffect_path', path);
+    if (pageId != null && pageNameInput !== path) {
+      console.log('useEffect実行されてる?');
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
   }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
