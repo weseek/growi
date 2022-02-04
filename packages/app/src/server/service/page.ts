@@ -1,5 +1,5 @@
 import { pagePathUtils } from '@growi/core';
-import mongoose, { QueryCursor } from 'mongoose';
+import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import escapeStringRegexp from 'escape-string-regexp';
 import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
@@ -13,15 +13,20 @@ import {
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
-import { IPage } from '~/interfaces/page';
+import {
+  IPage, IPageInfo, IPageInfoCommon,
+} from '~/interfaces/page';
 import { PageRedirectModel } from '../models/page-redirect';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { IUserHasId } from '~/interfaces/user';
+import { Ref } from '~/interfaces/common';
+import { HasObjectId } from '~/interfaces/has-object-id';
 
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isDeletablePage, isTrashPage, collectAncestorPaths, isTopPage,
+  isCreatablePage, isTrashPage, collectAncestorPaths, isTopPage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -222,8 +227,6 @@ class PageService {
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
       result.isCreatable = isCreatablePage(path);
-      result.isDeletable = false;
-      result.canDeleteCompletely = false;
       result.page = page;
 
       return result;
@@ -233,9 +236,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
-    result.isDeletable = isDeletablePage(path);
     result.isDeleted = page.isDeleted();
-    result.canDeleteCompletely = user != null && this.canDeleteCompletely(page.creator, user);
 
     return result;
   }
@@ -1538,14 +1539,49 @@ class PageService {
     }
   }
 
-  async shortBodiesMapByPageIds(pageIds: string[] = [], user) {
+  private extractStringIds(refs: Ref<HasObjectId>[]) {
+    return refs.map((ref: Ref<HasObjectId>) => {
+      return (typeof ref === 'string') ? ref : ref._id.toString();
+    });
+  }
+
+  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfoCommon | IPageInfo {
+    if (page.isEmpty) {
+      return {
+        isEmpty: true,
+        isMovable: true,
+        isDeletable: false,
+        isAbleToDeleteCompletely: false,
+      };
+    }
+
+    const isMovable = isGuestUser ? false : !isTopPage(page.path);
+
+    const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
+    const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+
+    const Page = this.crowi.model('Page');
+    return {
+      isEmpty: false,
+      sumOfLikers: page.liker.length,
+      likerIds: this.extractStringIds(likers),
+      seenUserIds: this.extractStringIds(seenUsers),
+      sumOfSeenUsers: page.seenUsers.length,
+      isMovable,
+      isDeletable: Page.isDeletableName(page.path),
+      isAbleToDeleteCompletely: false,
+    };
+
+  }
+
+  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
     const Page = mongoose.model('Page');
     const MAX_LENGTH = 350;
 
     // aggregation options
     const viewerCondition = await generateGrantCondition(user, null);
     const filterByIds = {
-      _id: { $in: pageIds.map(id => new mongoose.Types.ObjectId(id)) },
+      _id: { $in: pageIds },
     };
 
     let pages;
