@@ -10,7 +10,6 @@ import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
 import { IPageForPageDeleteModal } from '~/stores/ui';
 
-
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
@@ -21,10 +20,6 @@ const PageTree: FC = memo(() => {
   const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
-
-  // for delete modal
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
   const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
 
@@ -63,15 +58,6 @@ const PageTree: FC = memo(() => {
     return null;
   }
 
-  const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
-    setDeleteModalOpen(true);
-    setPagesToDelete([page]);
-  };
-
-  const onCloseDelete = () => {
-    setDeleteModalOpen(false);
-  };
-
   const path = currentPath || '/';
 
   return (
@@ -86,12 +72,6 @@ const PageTree: FC = memo(() => {
           targetPath={path}
           targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
-          isDeleteModalOpen={isDeleteModalOpen}
-          pagesToDelete={pagesToDelete}
-          isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
-          isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
-          onCloseDelete={onCloseDelete}
-          onClickDeleteByPage={onClickDeleteByPage}
         />
       </div>
 
