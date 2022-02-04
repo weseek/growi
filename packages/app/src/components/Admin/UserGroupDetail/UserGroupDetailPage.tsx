@@ -18,7 +18,7 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxUserGroupList } from '~/stores/user-group';
+import { useSWRxUserGroupPages, useSWRxUserGroupRelations } from '~/stores/user-group';
 
 
 const UserGroupDetailPage: FC = () => {
