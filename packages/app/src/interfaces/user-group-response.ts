@@ -16,3 +16,7 @@ export type UserGroupRelationListResult = {
 export type UserGroupPagesResult = {
   pages: IPageHasId[],
 }
+
+export type SelectableUserGroupsResult = {
+  selectableUserGroups: IUserGroupHasId[],
+}
