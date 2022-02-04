@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from 'react';
+import React, { FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
@@ -10,7 +10,6 @@ import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
 import { IPageForPageDeleteModal } from '~/stores/ui';
 
-
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
@@ -20,12 +19,7 @@ const PageTree: FC = memo(() => {
   const { data: revisionId } = useRevisionId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
-
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
-
-  // for delete modal
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [pagesToDelete, setPagesToDelete] = useState<IPageForPageDeleteModal[]>([]);
 
   const targetPathOrId = targetId || notFoundTargetPathOrIdData?.notFoundTargetPathOrId;
 
@@ -57,21 +51,13 @@ const PageTree: FC = memo(() => {
       </>
     );
   }
+
   /*
    * dependencies
    */
   if (isGuestUser == null) {
     return null;
   }
-
-  const onClickDeleteByPage = (page: IPageForPageDeleteModal) => {
-    setDeleteModalOpen(true);
-    setPagesToDelete([page]);
-  };
-
-  const onCloseDelete = () => {
-    setDeleteModalOpen(false);
-  };
 
   const path = currentPath || '/';
 
@@ -95,13 +81,7 @@ const PageTree: FC = memo(() => {
           targetPath={path}
           targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
-          isDeleteModalOpen={isDeleteModalOpen}
           pageToDelete={pageToDelete}
-          pagesToDelete={pagesToDelete}
-          isAbleToDeleteCompletely={false} // TODO: pass isAbleToDeleteCompletely
-          isDeleteCompletelyModal={false} // TODO: pass isDeleteCompletelyModal
-          onCloseDelete={onCloseDelete}
-          onClickDeleteByPage={onClickDeleteByPage}
         />
       </div>
 
