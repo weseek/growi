@@ -81,7 +81,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
         <IdenticalPathAlert path={currentPath} />
 
         <div className="page-list">
-          <ul className="page-list-ul list-group-flush border px-3">
+          <ul className="page-list-ul list-group-flush">
             {pageDataList.map((data) => {
               const pageId = data.pageData._id;
               const pageInfo = (idToPageInfoMap ?? {})[pageId];
