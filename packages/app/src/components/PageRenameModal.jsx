@@ -7,7 +7,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
@@ -35,6 +34,8 @@ const PageRenameModal = (props) => {
 
   const { path, revisionId, pageId } = pagesDataToRename;
 
+  console.log('path_iii', path);
+
   const [pageNameInput, setPageNameInput] = useState(path);
 
   const [errs, setErrs] = useState(null);
@@ -46,7 +47,6 @@ const PageRenameModal = (props) => {
   const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
   const [subordinatedError] = useState(null);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
-
 
   function changeIsRenameRecursivelyHandler() {
     SetIsRenameRecursively(!isRenameRecursively);
@@ -97,14 +97,14 @@ const PageRenameModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, checkExistPaths), [path],
   );
 
   useEffect(() => {
     if (pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
@@ -202,7 +202,7 @@ const PageRenameModal = (props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
@@ -259,13 +259,6 @@ const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppConta
 PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  // isOpen: PropTypes.bool.isRequired,
-  // onClose: PropTypes.func.isRequired,
-
-  // pageId: PropTypes.string.isRequired,
-  // revisionId: PropTypes.string.isRequired,
-  // path: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageRenameModalWrapper);
