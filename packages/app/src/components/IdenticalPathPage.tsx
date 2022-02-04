@@ -9,7 +9,7 @@ import { useCurrentPagePath } from '~/stores/context';
 
 import { PageListItemL } from './PageList/PageListItemL';
 import { useSWRxPageInfoForList } from '~/stores/page';
-import { IPageInfoForList, IPageWithMeta } from '~/interfaces/page';
+import { IPageWithMeta } from '~/interfaces/page';
 
 
 type IdenticalPathAlertProps = {

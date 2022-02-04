@@ -8,7 +8,7 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import loggerFactory from '../../../utils/logger';
 import Crowi from '../../crowi';
 import { ApiV3Response } from './interfaces/apiv3-response';
-import { IPageInfoForList, IPageInfoCommon, isExistPageInfo } from '~/interfaces/page';
+import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
 import PageService from '../../service/page';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
@@ -114,20 +114,20 @@ export default (crowi: Crowi): Router => {
       const shortBodiesMap = await pageService.shortBodiesMapByPageIds(foundIds, req.user);
       const bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
 
-      const idToPageInfoMap: Record<string, IPageInfoCommon|IPageInfoForList> = {};
+      const idToPageInfoMap: Record<string, IPageInfoAll> = {};
 
       for (const page of pages) {
-        // construct IPageInfoForList
+        // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page);
 
-        const pageInfo: IPageInfoCommon | IPageInfoForList = (!isExistPageInfo(basicPageInfo))
+        const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
           // create IPageInfoForList
           : {
             ...basicPageInfo,
             bookmarkCount: bookmarkCountMap[page._id],
             revisionShortBody: shortBodiesMap[page._id],
-          } as IPageInfoForList;
+          } as IPageInfoForListing;
 
         idToPageInfoMap[page._id] = pageInfo;
       }

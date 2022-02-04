@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { IPageInfo, isExistPageInfo } from '~/interfaces/page';
+import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
@@ -25,7 +25,7 @@ type CommonProps = {
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
   revisionId: string,
-  pageInfo: IPageInfo,
+  pageInfo: IPageInfoAll,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
@@ -39,8 +39,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
-  const likerIds = pageInfo.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
-  const seenUserIds = pageInfo.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
+  const likerIds = isIPageInfoForEntity(pageInfo) ? pageInfo.likerIds.slice(0, 15) : [];
+  const seenUserIds = isIPageInfoForEntity(pageInfo) ? pageInfo.seenUserIds.slice(0, 15) : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
@@ -51,30 +51,42 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (isGuestUser == null || isGuestUser) {
       return;
     }
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
+    }
 
     await toggleSubscribe(pageId, pageInfo.subscriptionStatus);
     mutatePageInfo();
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo.subscriptionStatus]);
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const likeClickhandler = useCallback(async() => {
     if (isGuestUser == null || isGuestUser) {
       return;
     }
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
+    }
 
     await toggleLike(pageId, pageInfo.isLiked);
     mutatePageInfo();
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo.isLiked]);
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const bookmarkClickHandler = useCallback(async() => {
     if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForOperation(pageInfo)) {
       return;
     }
 
     await toggleBookmark(pageId, pageInfo.isBookmarked);
     mutatePageInfo();
     mutateBookmarkInfo();
-  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo.isBookmarked]);
+  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
+  if (!isIPageInfoForOperation(pageInfo)) {
+    return <></>;
+  }
 
   const {
     sumOfLikers, isLiked, bookmarkCount, isBookmarked,
@@ -135,11 +147,11 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
 
-  if (revisionId == null || pageInfo == null || error != null) {
+  if (revisionId == null || error != null) {
     return <></>;
   }
 
-  if (!isExistPageInfo(pageInfo)) {
+  if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
 

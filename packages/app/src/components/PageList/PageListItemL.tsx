@@ -5,13 +5,15 @@ import Clamp from 'react-multiline-clamp';
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import { IPageInfoForList, IPageWithMeta, isIPageInfoForList } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+} from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
 import { AsyncPageItemControl } from '../Common/Dropdown/PageItemControl';
 
 type Props = {
-  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForList>,
+  page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isChecked?: boolean, // is checkbox of item checked
   isEnableActions?: boolean,
@@ -21,7 +23,7 @@ type Props = {
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-export const PageListItemL: FC<Props> = memo((props:Props) => {
+export const PageListItemL = memo((props: Props): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions,
@@ -33,7 +35,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
-  const revisionShortBody = isIPageInfoForList(pageMeta) ? pageMeta.revisionShortBody : null;
+  const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
   const pageTitle = (
     <PagePathLabel
@@ -113,9 +115,11 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
-              </div>
+              { isIPageInfoForEntity(pageMeta) && (
+                <div className="d-none d-md-flex py-0 px-1">
+                  <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
+                </div>
+              ) }
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
                 {/* TODO: use PageItemControl with prefetched IPageInfo object */}

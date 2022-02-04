@@ -14,7 +14,7 @@ import {
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
 import {
-  IPage, IPageInfo, IPageInfoCommon,
+  IPage, IPageInfo, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { PageRedirectModel } from '../models/page-redirect';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -1545,7 +1545,7 @@ class PageService {
     });
   }
 
-  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfoCommon | IPageInfo {
+  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     if (page.isEmpty) {
       return {
         isEmpty: true,
