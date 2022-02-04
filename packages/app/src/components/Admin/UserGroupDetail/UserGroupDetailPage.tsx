@@ -48,13 +48,7 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
   // TODO 85844: Fetch /user-groups/selectable-groups with SWR
-  const selectableUserGroups: IUserGroupHasId[] = [
-    {
-      _id: '61fb5136e3486530952682a2',
-      name: 'group-4',
-      description: '4',
-    } as IUserGroupHasId,
-  ];
+  const selectableUserGroups: IUserGroupHasId[] = [];
 
   /*
    * Function
@@ -114,11 +108,11 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
-  const onClickAddChildButtonHandler = async(childgroup: IUserGroupHasId) => {
+  const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
     try {
-      await apiv3Put(`/user-groups/${childgroup._id}`, {
-        name: childgroup.name,
-        description: childgroup.description,
+      await apiv3Put(`/user-groups/${selectedUserGroup._id}`, {
+        name: selectedUserGroup.name,
+        description: selectedUserGroup.description,
         parentId: userGroup._id,
         forceUpdateParents: true,
       });
