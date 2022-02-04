@@ -63,7 +63,7 @@ export const useSWRxUserGroupPages = (groupId: string | undefined, limit: number
   );
 };
 
-export const useSWRxSelectableUserGroups = (groupId: string): SWRResponse<IUserGroupHasId[], Error> => {
+export const useSWRxSelectableUserGroups = (groupId: string | undefined): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? ['/user-groups/selectable-groups'] : null,
     endpoint => apiv3Get<SelectableUserGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableUserGroups),
