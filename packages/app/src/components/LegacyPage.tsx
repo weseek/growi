@@ -72,6 +72,8 @@ const LegacyPage : FC<Props> = (props: Props) => {
       renderActionToPageModal={renderActionToPageModal}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
+      excludeUserPages={false}
+      excludeTrashPages={false}
     />
   );
 };

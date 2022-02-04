@@ -83,6 +83,8 @@ const SearchPage : FC<Props> = (props: Props) => {
       renderControl={renderSearchControl}
       renderActionToPageModal={renderActionToPageModal}
       setIsActionToPageModalShown={setIsActionToPageModalShown}
+      excludeTrashPages
+      excludeUserPages
     />
   );
 };

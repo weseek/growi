@@ -55,6 +55,8 @@ type Props = {
   renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
   query?: string,
+  excludeTrashPages: boolean,
+  excludeUserPages: boolean,
 };
 
 const SearchCore: FC<Props> = (props: Props) => {
@@ -270,7 +272,7 @@ const SearchCore: FC<Props> = (props: Props) => {
    */
   useEffect(() => {
     if (searchingKeyword !== '') {
-      search({ keyword: searchingKeyword });
+      search({ keyword: searchingKeyword, excludeTrashPages: props.excludeTrashPages, excludeUserPages: props.excludeUserPages });
     }
   }, []);
 
