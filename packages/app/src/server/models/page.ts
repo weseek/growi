@@ -497,7 +497,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
       return ancestors;
     }
 
-    return findAncestorsRecursively(parent);
+    return findAncestorsRecursively(parent, [...ancestors, parent]);
   }
 
   return findAncestorsRecursively(target);

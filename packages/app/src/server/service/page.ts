@@ -1001,12 +1001,6 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    // replace with an empty page
-    const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
-    if (shouldReplace) {
-      await Page.replaceTargetWithPage(page);
-    }
-
     if (isRecursively) {
       // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
       (async() => {
@@ -1024,8 +1018,11 @@ class PageService {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
       if (shouldReplace) {
-        await Page.replaceTargetWithEmptyPage(page);
+        await Page.replaceTargetWithPage(page);
       }
+
+      // update descendantCount of ancestors'
+      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
       const shouldDeleteLeafEmptyPages = !shouldReplace;
       if (shouldDeleteLeafEmptyPages) {
@@ -1449,7 +1446,7 @@ class PageService {
 
         // update descendantCount of ancestors'
         if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (revertedDescendantCount + 1) * -1, true);
+          await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
 
           // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
         }
@@ -2108,7 +2105,7 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
-  // update descendantCount of all pages that are ancestors of a provided path by count
+  // update descendantCount of all pages that are ancestors of a provided pageId by count
   async updateDescendantCountOfAncestors(pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean): Promise<void> {
     const Page = this.crowi.model('Page');
     const ancestors = await Page.findAncestorsUsingParentRecursively(pageId, shouldIncludeTarget);
