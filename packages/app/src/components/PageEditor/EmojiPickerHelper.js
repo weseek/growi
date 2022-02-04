@@ -7,7 +7,7 @@ class EmojiPickerHelper {
   }
 
   getSearchCursor() {
-    const pattern = /:[^:\s]+(?<!:)$/;
+    const pattern = /:[^:\s]+/;
     const currentPos = this.editor.getCursor();
     const sc = this.editor.getSearchCursor(pattern, currentPos, { multiline: false });
     return sc;
