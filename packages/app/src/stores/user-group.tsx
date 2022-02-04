@@ -6,7 +6,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
-  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupPagesResult,
+  UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupPagesResult, SelectableUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
 
@@ -66,6 +66,6 @@ export const useSWRxUserGroupPages = (groupId: string | undefined, limit: number
 export const useSWRxSelectableUserGroups = (groupId: string): SWRResponse<IUserGroupHasId[], Error> => {
   return useSWRImmutable(
     groupId != null ? ['/user-groups/selectable-groups'] : null,
-    endpoint => apiv3Get<UserGroupListResult>(endpoint, { groupId }).then(result => result.data.userGroups),
+    endpoint => apiv3Get<SelectableUserGroupsResult>(endpoint, { groupId }).then(result => result.data.selectableUserGroups),
   );
 };
