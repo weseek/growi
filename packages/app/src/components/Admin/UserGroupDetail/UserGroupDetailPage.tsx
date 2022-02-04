@@ -13,7 +13,7 @@ import AppContainer from '~/client/services/AppContainer';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
@@ -52,6 +52,7 @@ const UserGroupDetailPage: FC = () => {
     {
       _id: '61fb5136e3486530952682a2',
       name: 'group-4',
+      description: '4',
     } as IUserGroupHasId,
   ];
 
@@ -113,9 +114,19 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
-  // TODO: 87671 Add existing group
-  const onClickAddChildButtonHandler = (userGroup: IUserGroupHasId) => {
-    console.log(userGroup);
+  const onClickAddChildButtonHandler = async(childgroup: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${childgroup._id}`, {
+        name: childgroup.name,
+        description: childgroup.description,
+        parentId: userGroup._id,
+        forceUpdateParents: true,
+      });
+      toastSuccess('Child group was added');
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   // TODO 87614: UserGroup New creation form can be displayed in modal
