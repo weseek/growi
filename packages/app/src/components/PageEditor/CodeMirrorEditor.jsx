@@ -603,9 +603,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (!emoji) {
       this.setState({ isEmojiPickerShown: false });
       this.setState({ emojiSearchText: null });
+      this.setState({ isInputtingEmoji: false });
     }
     else {
-
+      this.setState({ isInputtingEmoji: true });
       if (this.state.searchEmojiTimeout) {
         clearTimeout(this.state.searchEmojiTimeout);
       }
@@ -695,12 +696,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderEmojiPicker() {
-    const { emojiSearchText } = this.state;
+    const { emojiSearchText, isInputtingEmoji } = this.state;
     return this.state.isEmojiPickerShown
       ? (
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
-            <EmojiPicker close={this.toggleEmojiPicker} selectEmoji={this.emojiPickerHelper.addEmoji} emojiSearchText={emojiSearchText} />
+            <EmojiPicker
+              close={this.toggleEmojiPicker}
+              selectEmoji={isInputtingEmoji ? this.emojiPickerHelper.addEmojiOnSearch : this.emojiPickerHelper.addEmoji}
+              emojiSearchText={emojiSearchText}
+            />
           </div>
         </div>
       )
