@@ -39,8 +39,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
-  const likerIds = isIPageInfoForEntity(pageInfo) ? pageInfo.likerIds.slice(0, 15) : [];
-  const seenUserIds = isIPageInfoForEntity(pageInfo) ? pageInfo.seenUserIds.slice(0, 15) : [];
+  const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
+  const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
