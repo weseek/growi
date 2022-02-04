@@ -456,7 +456,6 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
       },
       {
         $project: {
-          path: 1,
           parent: 1,
           isEmpty: 1,
           descendantCount: 1,
