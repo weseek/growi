@@ -122,7 +122,7 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
         forceUpdateParents: true,
       });
-      toastSuccess('Child group was added');
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
       toastError(err);
