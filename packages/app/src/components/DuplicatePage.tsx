@@ -18,7 +18,7 @@ const DuplicatePageAlert : FC<DuplicatePageAlertProps> = (props: DuplicatePageAl
       <p>
         {t('duplicated_page_alert.same_page_name_exists_at_path',
           { path: devidedPath.isFormerRoot ? '/' : devidedPath.former, pageName: devidedPath.latter })}<br />
-        <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
+        <p dangerouslySetInnerHTML={{ __html: t('See_more_details_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
       </p>
       <p className="mb-1">{t('duplicated_page_alert.select_page_to_see')}</p>
     </div>

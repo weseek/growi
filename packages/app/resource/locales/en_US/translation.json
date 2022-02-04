@@ -114,7 +114,7 @@
   "App Settings": "App Settings",
   "V5 Page Migration": "V5 Page Migration",
   "GROWI.5.x_new_schema": "GROWI.5.x new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_details_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -986,7 +986,7 @@
     "select_page_to_see" : "Select a page to see"
   },
   "legacy_pages_alert": {
-    "legacy_page_alert" : "This is legacy pages",
-    "migrate_help": "You can chose pages by marknig a checkbox and click 'Convert to new schema' above to do so."
+    "legacy_page_alert" : "Pages use old schema",
+    "migrate_help": "Select the checkbox on each page and then select 'Convert to new schema' to do so"
   }
 }

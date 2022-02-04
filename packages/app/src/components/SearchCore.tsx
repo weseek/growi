@@ -89,7 +89,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
-  const [actionTargetPageIds, sestActionToTargetPageIds] = useState<Set<string>>(new Set());
+  const [actionTargetPageIds, setActionToTargetPageIds] = useState<Set<string>>(new Set());
 
 
   /*
@@ -256,13 +256,13 @@ const SearchCore: FC<Props> = (props: Props) => {
 
 
   const actionToSinglePageButtonHandler = useCallback((pageId) => {
-    sestActionToTargetPageIds(new Set([pageId]));
+    setActionToTargetPageIds(new Set([pageId]));
     props.setIsActionToPageModalShown(true);
-  }, [props.setIsActionToPageModalShown, sestActionToTargetPageIds]);
+  }, [props.setIsActionToPageModalShown, setActionToTargetPageIds]);
 
   const actionToAllPagesButtonHandler = useCallback(() => {
     if (selectedPagesIdList.size === 0) { return }
-    sestActionToTargetPageIds(selectedPagesIdList);
+    setActionToTargetPageIds(selectedPagesIdList);
     props.setIsActionToPageModalShown(true);
   }, [selectedPagesIdList, props.setIsActionToPageModalShown]);
 

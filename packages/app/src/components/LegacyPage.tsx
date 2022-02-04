@@ -25,7 +25,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
         onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
       />
     );
-  }, [setIsActionToPageModalShown]);
+  }, [isActionToPageModalShown]);
 
 
   const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
@@ -50,7 +50,7 @@ const LegacyPage : FC<Props> = (props: Props) => {
     <div className="alert alert-warning py-3">
       <h5 className="font-weight-bold mt-1">{t('legacy_pages_alert.legacy_page_alert')}</h5>
       <p>{t('legacy_pages_alert.migrate_help')}</p>
-      <p dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
+      <p dangerouslySetInnerHTML={{ __html: t('See_more_details_on_new_schema', { url: t('GROWI.5.x_new_schema') }) }} />
     </div>
   );
 
@@ -65,11 +65,12 @@ const LegacyPage : FC<Props> = (props: Props) => {
         </div>
       </div>
     );
-  }, []);
+  }, [renderActionToPages]);
   return (
     <SearchCore
       renderControl={renderLegacyPageControl}
       renderActionToPageModal={renderActionToPageModal}
+      setIsActionToPageModalShown={setIsActionToPageModalShown}
       query="[nq:PrivateLegacyPages]"
       alertMessage={alertMessage}
       excludeUserPages={false}

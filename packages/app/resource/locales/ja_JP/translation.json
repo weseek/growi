@@ -114,7 +114,7 @@
   "App Settings": "アプリ設定",
   "V5 Page Migration": "V5 ページマイグレーション",
   "GROWI.5.x_new_schema": "GROWI v5.x系における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
+  "See_more_details_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
