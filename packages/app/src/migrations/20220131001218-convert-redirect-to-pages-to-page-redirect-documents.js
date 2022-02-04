@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 
-import getPageModel from '~/server/models/page';
 import PageRedirectModel from '~/server/models/page-redirect';
 import loggerFactory from '~/utils/logger';
 import { createBatchStream } from '~/server/util/batch-stream';
