@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
@@ -267,7 +269,14 @@ module.exports = (crowi) => {
      * import
      */
     try {
-      importService.import(collections, importSettingsMap);
+      (async() => {
+        // set isV5Compatible to false
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
+        // import
+        await importService.import(collections, importSettingsMap);
+        // run v5InitialMigration
+        await crowi.pageService.v5InitialMigration();
+      })();
     }
     catch (err) {
       logger.error(err);
