@@ -75,7 +75,9 @@ const renderByInitialNode = (initialNode: ItemNode, isEnableActions: boolean, ta
  * ItemsTree
  */
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
-  const { targetPath, targetPathOrId, targetAndAncestorsData, pageToDelete, isEnableActions } = props;
+  const {
+    targetPath, targetPathOrId, targetAndAncestorsData, pageToDelete, isEnableActions
+  } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
