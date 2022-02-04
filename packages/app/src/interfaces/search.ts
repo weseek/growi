@@ -7,6 +7,7 @@ export enum CheckboxType {
 }
 
 export type IPageSearchMeta = {
+  bookmarkCount?: number,
   elasticSearchResult?: {
     snippet: string;
     highlightedPath: string;

@@ -44,11 +44,11 @@ export type IPageInfo = {
 }
 
 export type IPageInfoForEntity = IPageInfo & {
-  bookmarkCount: number,
-  sumOfLikers: number,
-  likerIds: string[],
-  sumOfSeenUsers: number,
-  seenUserIds: string[],
+  bookmarkCount?: number,
+  sumOfLikers?: number,
+  likerIds?: string[],
+  sumOfSeenUsers?: number,
+  seenUserIds?: string[],
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {
@@ -62,7 +62,7 @@ export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
 export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperation | IPageInfoForListing;
 
 export const isIPageInfoForEntity = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && !pageInfo.isEmpty && 'bookmarkCount' in pageInfo;
+  return pageInfo != null && !pageInfo.isEmpty;
 };
 
 export const isIPageInfoForOperation = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForOperation => {
