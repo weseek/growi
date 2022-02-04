@@ -10,29 +10,32 @@ import { IPageHasId } from '~/interfaces/page';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import { usePageDeleteModalStatus, IPageForPageDeleteModal } from '~/stores/ui';
 
 type PageItemControlProps = {
   page: Partial<IPageHasId>
   isEnableActions?: boolean
   isDeletable: boolean
-  onClickDeleteButtonHandler?: (pageId: string) => void
+  // onClickDeleteButtonHandler?: (pageId: string) => void
   onClickRenameButtonHandler?: (pageId: string) => void
 }
 
 const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
 
-  const {
-    page, isEnableActions, onClickDeleteButtonHandler, isDeletable, onClickRenameButtonHandler,
-  } = props;
+  const { page, isEnableActions, isDeletable, onClickRenameButtonHandler } = props;
   const { t } = useTranslation('');
   const [isOpen, setIsOpen] = useState(false);
   const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
 
-  const deleteButtonClickedHandler = useCallback(() => {
-    if (onClickDeleteButtonHandler != null && page._id != null) {
-      onClickDeleteButtonHandler(page._id);
-    }
-  }, [onClickDeleteButtonHandler, page._id]);
+  // const deleteButtonClickedHandler = useCallback(() => {
+
+  //   openDeleteModal()
+
+  //   if (onClickDeleteButtonHandler != null && page._id != null) {
+  //     onClickDeleteButtonHandler(page._id);
+  //   }
+  // }, [onClickDeleteButtonHandler, page._id]);
 
   const renameButtonClickedHandler = useCallback(() => {
     if (onClickRenameButtonHandler != null && page._id != null) {
@@ -120,7 +123,7 @@ const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) 
         {isDeletable && isEnableActions && (
           <>
             <DropdownItem divider />
-            <DropdownItem className="text-danger pt-2" onClick={deleteButtonClickedHandler}>
+            <DropdownItem className="text-danger pt-2" onClick={() => openDeleteModal()}>
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
             </DropdownItem>
