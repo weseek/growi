@@ -46,7 +46,7 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const { data: selectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   /*
    * Function
@@ -114,6 +114,7 @@ const UserGroupDetailPage: FC = () => {
         parentId: userGroup._id,
         forceUpdateParents: true,
       });
+      mutateSelectableUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
