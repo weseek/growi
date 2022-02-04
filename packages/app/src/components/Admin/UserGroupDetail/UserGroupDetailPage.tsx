@@ -47,8 +47,6 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
   const { data: selectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
-  console.log(selectableUserGroups);
-
   /*
    * Function
    */
