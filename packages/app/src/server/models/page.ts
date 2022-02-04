@@ -6,13 +6,14 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import nodePath from 'path';
-
 import { getOrCreateModel, pagePathUtils } from '@growi/core';
+
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { IPage } from '../../interfaces/page';
 import { getPageSchema, PageQueryBuilder } from './obsolete-page';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import { PageRedirectModel } from './page-redirect';
 
 const { isTopPage, collectAncestorPaths } = pagePathUtils;
 
@@ -601,6 +602,17 @@ export default (crowi: Crowi): any => {
     /*
      * After save
      */
+    // Delete PageRedirect if exists
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+    try {
+      await PageRedirect.deleteOne({ from: path });
+      logger.warn(`Deleted page redirect after creating a new page at path "${path}".`);
+    }
+    catch (err) {
+      // no throw
+      logger.error('Failed to delete PageRedirect');
+    }
+
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
