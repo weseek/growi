@@ -282,6 +282,7 @@ module.exports = (crowi) => {
       logger.error('Error occurred while creating a page.', err);
       return res.apiv3Err(err);
     }
+    await crowi.pageService.updateDescendantCountOfAncestors(createdPage._id, 1, false);
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
