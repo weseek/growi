@@ -269,7 +269,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
           <button
             type="button"
-            className="border-0 rounded grw-btn-page-management p-0"
+            className="border-0 rounded btn-page-item-control p-0"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
