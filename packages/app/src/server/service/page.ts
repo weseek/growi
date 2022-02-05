@@ -342,9 +342,6 @@ class PageService {
       }
     }
 
-    // update descendants first
-    await this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
-
     /*
      * update target
      */
@@ -361,6 +358,10 @@ class PageService {
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     this.pageEvent.emit('rename', page, user);
+
+    // TODO: resume
+    // update descendants first
+    this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
 
     return renamedPage;
   }
@@ -569,7 +570,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
@@ -678,10 +679,6 @@ class PageService {
       newPagePath, page.revision.body, user, options,
     );
 
-    if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
-    }
-
     // take over tags
     const originTags = await page.findRelatedTagsById();
     let savedTags = [];
@@ -693,6 +690,11 @@ class PageService {
 
     const result = serializePageSecurely(createdPage);
     result.tags = savedTags;
+
+    // TODO: resume
+    if (isRecursively) {
+      this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+    }
 
     return result;
   }
@@ -1001,20 +1003,7 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (isRecursively) {
-      // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
-      (async() => {
-        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-
-          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
-        }
-      })();
-    }
-    else {
+    if (!isRecursively) {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
       if (shouldReplace) {
@@ -1048,6 +1037,21 @@ class PageService {
 
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
+    }
+
+    // TODO: resume
+    // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
+    if (isRecursively) {
+      (async() => {
+        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+        // update descendantCount of ancestors'
+        if (page.parent != null) {
+          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+
+          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+        }
+      })();
     }
 
     return deletedPage;
@@ -1274,6 +1278,17 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
+    if (!isRecursively) {
+      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+
+      // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+    }
+
+    if (!page.isEmpty && !preventEmitting) {
+      this.pageEvent.emit('deleteCompletely', page, user);
+    }
+
+    // TODO: resume
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
       (async() => {
@@ -1286,15 +1301,6 @@ class PageService {
 
         // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
       })();
-    }
-    else {
-      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
-
-      // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
-    }
-
-    if (!page.isEmpty && !preventEmitting) {
-      this.pageEvent.emit('deleteCompletely', page, user);
     }
 
     return;
@@ -1440,6 +1446,11 @@ class PageService {
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
     if (isRecursively) {
+      await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+    }
+
+    // TODO: resume
+    if (!isRecursively) {
       // no await for revertDeletedDescendantsWithStream
       (async() => {
         const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
@@ -1451,9 +1462,6 @@ class PageService {
           // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
         }
       })();
-    }
-    else {
-      await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
 
     return updatedPage;
