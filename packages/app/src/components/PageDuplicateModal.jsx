@@ -101,8 +101,9 @@ const PageDuplicateModal = (props) => {
   useEffect(() => {
     if (isOpened) {
       getSubordinatedList();
+      setPageNameInput(path);
     }
-  }, [isOpened, getSubordinatedList]);
+  }, [isOpened, getSubordinatedList, path]);
 
   function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
