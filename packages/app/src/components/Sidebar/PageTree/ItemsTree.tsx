@@ -55,7 +55,7 @@ type ItemsTreeProps = {
 }
 
 const renderByInitialNode = (
-  initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void
+    initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
   return (
     <ul className="grw-pagetree list-group p-3">
