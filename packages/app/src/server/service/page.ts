@@ -687,12 +687,12 @@ class PageService {
       );
     }
 
-    (async() => {
-      if (isRecursively) {
+    if (isRecursively) {
+      (async() => {
         const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
         await this.updateDescendantCountOfAncestors(createdPage._id, descendantCountAppliedToAncestors, false);
-      }
-    })();
+      })();
+    }
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
@@ -904,11 +904,13 @@ class PageService {
     const normalizeParentAndDescendantCountOfDescendants = this.normalizeParentAndDescendantCountOfDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
+    let nNonEmptyDuplicatedPages = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
+          nNonEmptyDuplicatedPages += (batch.filter(page => !page.isEmpty)).length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
@@ -944,15 +946,9 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    // ******************************************************************************
-    // * Returns all the data objects in an array
-    // * https://github.com/bendrucker/stream-to-promise/blob/master/index.js#L15
-    // * https://github.com/stream-utils/stream-to-array#toarraystream-callbackerr-arr
-    // ******************************************************************************
-    const data = await streamToPromise(readStream);
-    const nonEmptyPagesCount = (data.filter(page => !page.isEmpty)).length; // count of pages with 'isEmpty: true'
+    await streamToPromise(writeStream);
 
-    return nonEmptyPagesCount;
+    return nNonEmptyDuplicatedPages;
   }
 
   private async duplicateDescendantsWithStreamV4(page, newPagePath, user) {
@@ -990,6 +986,10 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(writeStream);
+
+    return count;
 
   }
 
