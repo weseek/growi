@@ -503,7 +503,7 @@ class ImportService {
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
-    if (false && meta.version !== this.crowi.version) {
+    if (meta.version !== this.crowi.version) {
       throw new Error('the version of this growi and the growi that exported the data are not met');
     }
 
