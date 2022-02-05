@@ -62,9 +62,7 @@ export default class PageContainer extends Container {
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
-      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       isPageExist: mainContent.getAttribute('data-page-id') != null,
 
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),

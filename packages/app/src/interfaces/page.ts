@@ -1,8 +1,9 @@
 import { Ref } from './common';
 import { IUser } from './user';
-import { IRevision } from './revision';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { SubscriptionStatusType } from './subscription';
 
 
 export interface IPage {
@@ -35,15 +36,35 @@ export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
-export type IPageInfo = {
+export type IPageInfoCommon = {
+  isEmpty: boolean,
+  isMovable: boolean,
+  isDeletable: boolean,
+  isAbleToDeleteCompletely: boolean,
+}
+
+export type IPageInfo = IPageInfoCommon & {
   bookmarkCount: number,
   sumOfLikers: number,
   likerIds: string[],
   sumOfSeenUsers: number,
   seenUserIds: string[],
-  isSeen?: boolean,
+
+  isBookmarked?: boolean,
   isLiked?: boolean,
+  subscriptionStatus?: SubscriptionStatusType,
 }
+
+export type IPageInfoForList = IPageInfo & HasRevisionShortbody;
+
+export const isExistPageInfo = (pageInfo: IPageInfoCommon | undefined): pageInfo is IPageInfo => {
+  return pageInfo != null && !pageInfo.isEmpty;
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+export const isIPageInfoForList = (pageInfo: any): pageInfo is IPageInfoForList => {
+  return pageInfo != null && pageInfo.revisionShortBody != null;
+};
 
 export type IPageWithMeta<M = Record<string, unknown>> = {
   pageData: IPageHasId,

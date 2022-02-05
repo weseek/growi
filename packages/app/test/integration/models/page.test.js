@@ -158,6 +158,7 @@ describe('Page', () => {
 
   describe('.isDeletableName', () => {
     test('should decide deletable or not', () => {
+      expect(Page.isDeletableName('/')).toBeFalsy();
       expect(Page.isDeletableName('/hoge')).toBeTruthy();
       expect(Page.isDeletableName('/user/xxx')).toBeFalsy();
       expect(Page.isDeletableName('/user/xxx123')).toBeFalsy();

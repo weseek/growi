@@ -2,8 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { pagePathUtils } from '@growi/core';
 
 import {
-  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd, useIsAbleToDeleteCompletely,
-  useIsDeletable, useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
+  useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
@@ -55,9 +55,7 @@ const ContextExtractorOnce: FC = () => {
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
   const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
-  const isDeletable = JSON.parse(mainContent?.getAttribute('data-page-is-deletable') || jsonNull) ?? false;
   const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull) ?? false;
-  const isAbleToDeleteCompletely = JSON.parse(mainContent?.getAttribute('data-page-is-able-to-delete-completely') || jsonNull) ?? false;
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
   const hasChildren = JSON.parse(mainContent?.getAttribute('data-page-has-children') || jsonNull);
@@ -100,8 +98,6 @@ const ContextExtractorOnce: FC = () => {
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
-  useIsAbleToDeleteCompletely(isAbleToDeleteCompletely);
-  useIsDeletable(isDeletable);
   useIsDeleted(isDeleted);
   useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
