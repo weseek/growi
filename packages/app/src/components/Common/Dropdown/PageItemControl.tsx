@@ -181,7 +181,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-      <DropdownToggle color="transparent" className="border-0 rounded grw-btn-page-management p-0">
+      <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
         <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
       </DropdownToggle>
 
