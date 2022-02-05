@@ -3,12 +3,11 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
-  useCurrentPagePath, useCurrentPageId, useRevisionId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
+  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser, useNotFoundTargetPathOrId,
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
-import { IPageForPageDeleteModal } from '~/stores/ui';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -16,7 +15,6 @@ const PageTree: FC = memo(() => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentPath } = useCurrentPagePath();
   const { data: targetId } = useCurrentPageId();
-  const { data: revisionId } = useRevisionId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: notFoundTargetPathOrIdData } = useNotFoundTargetPathOrId();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
@@ -61,14 +59,6 @@ const PageTree: FC = memo(() => {
 
   const path = currentPath || '/';
 
-  const pageId = targetId != null ? targetId : '';
-
-  const pageToDelete: IPageForPageDeleteModal = {
-    pageId,
-    path,
-    revisionId,
-  };
-
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
@@ -81,7 +71,6 @@ const PageTree: FC = memo(() => {
           targetPath={path}
           targetPathOrId={targetPathOrId}
           targetAndAncestorsData={targetAndAncestorsData}
-          pageToDelete={pageToDelete}
         />
       </div>
 
