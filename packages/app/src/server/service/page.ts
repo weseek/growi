@@ -675,9 +675,24 @@ class PageService {
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-    const createdPage = await (Page.create as CreateMethod)(
-      newPagePath, page.revision.body, user, options,
-    );
+    let createdPage;
+
+    if (page.isEmpty) {
+      const parent = await Page.getParentAndFillAncestors(newPagePath);
+      createdPage = await Page.createEmptyPage(newPagePath, parent);
+    }
+    else {
+      createdPage = await (Page.create as CreateMethod)(
+        newPagePath, page.revision.body, user, options,
+      );
+    }
+
+    (async() => {
+      if (isRecursively) {
+        const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+        await this.updateDescendantCountOfAncestors(createdPage._id, descendantCountAppliedToAncestors, false);
+      }
+    })();
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
@@ -802,14 +817,7 @@ class PageService {
       pageIdMapping[page._id] = newPageId;
 
       let newPage;
-      if (page.isEmpty) {
-        newPage = {
-          _id: newPageId,
-          path: newPagePath,
-          isEmpty: true,
-        };
-      }
-      else {
+      if (!page.isEmpty) {
         newPage = {
           _id: newPageId,
           path: newPagePath,
@@ -820,13 +828,12 @@ class PageService {
           lastUpdateUser: user._id,
           revision: revisionId,
         };
+        newRevisions.push({
+          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        });
+
       }
-
       newPages.push(newPage);
-
-      newRevisions.push({
-        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
-      });
 
     });
 
@@ -937,6 +944,15 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
+    // ******************************************************************************
+    // * Returns all the data objects in an array
+    // * https://github.com/bendrucker/stream-to-promise/blob/master/index.js#L15
+    // * https://github.com/stream-utils/stream-to-array#toarraystream-callbackerr-arr
+    // ******************************************************************************
+    const data = await streamToPromise(readStream);
+    const nonEmptyPagesCount = (data.filter(page => !page.isEmpty)).length; // count of pages with 'isEmpty: true'
+
+    return nonEmptyPagesCount;
   }
 
   private async duplicateDescendantsWithStreamV4(page, newPagePath, user) {
@@ -1891,6 +1907,7 @@ class PageService {
   }
 
   private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
+
     const escapedPath = escapeStringRegexp(path);
     const regexps = [new RegExp(`^${escapedPath}`, 'i')];
     await this.normalizeParentRecursively(null, regexps);
@@ -1969,7 +1986,9 @@ class PageService {
       async write(pages, encoding, callback) {
         // make list to create empty pages
         const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
+
         const parentPaths = Array.from(parentPathsSet);
+        console.log(parentPaths);
 
         // fill parents with empty pages
         await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
