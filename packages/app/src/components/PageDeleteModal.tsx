@@ -6,14 +6,10 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // import { apiPost } from '~/client/util/apiv1-client';
+import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-export type IPageForPageDeleteModal = {
-  pageId: string,
-  revisionId: string,
-  path: string
-}
 
 const deleteIconAndKey = {
   completely: {
@@ -30,7 +26,6 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean,
-  pages: IPageForPageDeleteModal[],
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -39,12 +34,18 @@ type Props = {
 const PageDeleteModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
   const {
-    isOpen, onClose, isDeleteCompletelyModal, pages, isAbleToDeleteCompletely,
+    isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
+
+
+  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
+  const { data: isOpened } = usePageDeleteModalOpened();
+
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState(null);
 
   function changeIsDeleteRecursivelyHandler() {
@@ -142,9 +143,16 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     );
   }
 
+  const renderPagePathsToDelete = () => {
+    if (pagesDataToDelete != null && pagesDataToDelete.pages != null) {
+      return pagesDataToDelete.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    }
+    return <></>;
+  };
+
   return (
-    <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
       </ModalHeader>
@@ -153,9 +161,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
-          {pages.map((page) => {
-            return <div key={page.pageId}><code>{ page.path }</code></div>;
-          })}
+          {renderPagePathsToDelete()}
         </div>
         {renderDeleteRecursivelyForm()}
         {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}

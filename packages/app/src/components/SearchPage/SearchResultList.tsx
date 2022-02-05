@@ -13,7 +13,6 @@ type Props = {
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
-  shortBodiesMap?: Record<string, string>
   focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
   onClickItem?: (pageId: string) => void,
@@ -24,7 +23,7 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    focusedSearchResultData, selectedPagesIdList, isEnableActions, shortBodiesMap,
+    focusedSearchResultData, selectedPagesIdList, isEnableActions,
   } = props;
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
@@ -38,7 +37,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
             key={page.pageData._id}
             page={page}
             isEnableActions={isEnableActions}
-            shortBody={shortBodiesMap?.[page.pageData._id]}
             onClickItem={props.onClickItem}
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}

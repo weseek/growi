@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import {
@@ -47,7 +48,7 @@ export const useSWRxPageChildren = (
 
 export const useSWRxV5MigrationStatus = (
 ): SWRResponse<V5MigrationStatus, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/pages/v5-migration-status',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {

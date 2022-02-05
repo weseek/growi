@@ -155,13 +155,6 @@ module.exports = function(crowi, req, locals) {
     return false;
   };
 
-  locals.isDeletablePage = function() {
-    const Page = crowi.model('Page');
-    const path = req.path || '';
-
-    return Page.isDeletableName(path);
-  };
-
   locals.userPageRoot = function(user) {
     if (!user || !user.username) {
       return '';
