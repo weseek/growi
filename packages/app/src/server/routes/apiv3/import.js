@@ -269,18 +269,7 @@ module.exports = (crowi) => {
      * import
      */
     try {
-      (async() => {
-        const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-        // set isV5Compatible to false
-        if (isV5Compatible) await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
-
-        // import
-        await importService.import(collections, importSettingsMap);
-
-        // run v5InitialMigration
-        if (isV5Compatible) await crowi.pageService.v5InitialMigration();
-      })();
+      importService.import(collections, importSettingsMap);
     }
     catch (err) {
       logger.error(err);
