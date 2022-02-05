@@ -121,7 +121,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
-          hideBookmarkMenuItem
         />
         // <PageManagement
         //   pageId={pageId}

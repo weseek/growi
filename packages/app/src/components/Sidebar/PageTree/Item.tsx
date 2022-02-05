@@ -262,6 +262,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <AsyncPageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
+            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={onClickRenameButton}
