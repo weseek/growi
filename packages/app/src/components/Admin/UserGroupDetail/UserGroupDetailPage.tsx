@@ -112,7 +112,7 @@ const UserGroupDetailPage: FC = () => {
         name: selectedUserGroup.name,
         description: selectedUserGroup.description,
         parentId: userGroup._id,
-        forceUpdateParents: true,
+        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
       });
       mutateSelectableUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
