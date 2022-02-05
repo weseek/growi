@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
