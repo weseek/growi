@@ -41,7 +41,7 @@ const componentMappings = {
   'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
   'page-create-modal': <PageCreateModal />,
-  'page-deletee-modal': <PageDeleteModal />,
+  'page-delete-modal': <PageDeleteModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 
