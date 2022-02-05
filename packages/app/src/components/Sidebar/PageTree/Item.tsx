@@ -123,12 +123,19 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setNewPageInputShown(true);
   }, []);
 
-  const duplicateMenuItemClickHandler = async(_pageId: string, _path: string): Promise<void> => {
+  const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {
       return;
     }
-    await onClickDuplicateMenuItem(_pageId, _path);
-  };
+
+    const { _id: pageId, path } = page;
+
+    if (pageId == null || path == null) {
+      throw Error('Any of _id and path must not be null.');
+    }
+
+    onClickDuplicateMenuItem(pageId, path);
+  }, [onClickDuplicateMenuItem, page]);
 
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
@@ -269,7 +276,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         <div className="grw-pagetree-control d-none">
           <AsyncPageItemControl
             pageId={page._id}
-            path={page.path}
             isEnableActions={isEnableActions}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
