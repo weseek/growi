@@ -326,8 +326,46 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 
 export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageDeleteModalStatus();
-  return useSWR(
+  return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+// PageDuplicateModal
+export type IPageForPageDuplicateModal = {
+  pageId: string,
+  path: string
+}
+
+type DuplicateModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  path?: string,
+}
+
+type DuplicateModalStatusUtils = {
+  open(pageId: string, path: string): Promise<DuplicateModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const usePageDuplicateModalStatus = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
+  const initialData: DuplicateModalStatus = { isOpened: false, pageId: '', path: '' };
+  const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, path: string) => swrResponse.mutate({ isOpened: true, pageId, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePageDuplicateModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePageDuplicateModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isDuplicateModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
     },
