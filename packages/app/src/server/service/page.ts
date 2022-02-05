@@ -701,13 +701,14 @@ class PageService {
 
     // TODO: resume
     if (isRecursively) {
-      (async() => {
-        const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
-        await this.updateDescendantCountOfAncestors(createdPage._id, descendantCountAppliedToAncestors, false);
-      })();
+      this.resumableDuplicateDescendants(page, newPagePath, user, shouldUseV4Process, createdPage._id);
     }
-
     return result;
+  }
+
+  async resumableDuplicateDescendants(page, newPagePath, user, shouldUseV4Process, createdPageId) {
+    const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+    await this.updateDescendantCountOfAncestors(createdPageId, descendantCountAppliedToAncestors, false);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
@@ -885,6 +886,7 @@ class PageService {
   }
 
   private async duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process = true) {
+    console.log('duplicateDescendantsWithStream');
     if (shouldUseV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
@@ -1902,6 +1904,8 @@ class PageService {
   }
 
   private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
+    console.log('normalizeParentAndDescendantCountOfDescendants/path:', path);
+
     const escapedPath = escapeStringRegexp(path);
     const regexps = [new RegExp(`^${escapedPath}`, 'i')];
     await this.normalizeParentRecursively(null, regexps);
@@ -1912,6 +1916,7 @@ class PageService {
 
   // TODO: use websocket to show progress
   private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
+    console.log('┗normalizeParentRecursively', 'grant:', grant, 'regexps:', regexps, 'publicOnly:', publicOnly);
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -1946,8 +1951,10 @@ class PageService {
         path: { $in: regexps },
       });
     }
+    console.log('┗filter:', filter);
 
     const total = await Page.countDocuments(filter);
+    console.log('total:', total);
 
     let baseAggregation = Page
       .aggregate([
@@ -1980,10 +1987,12 @@ class PageService {
       async write(pages, encoding, callback) {
         // make list to create empty pages
         const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
+        console.log('parentPathsSet', parentPathsSet);
         const parentPaths = Array.from(parentPathsSet);
 
         // fill parents with empty pages
         await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
+        console.log('┗parentPaths', parentPaths);
 
         // find parents again
         const builder = new PageQueryBuilder(Page.find({}, { _id: 1, path: 1 }), true);
@@ -1993,8 +2002,10 @@ class PageService {
           .lean()
           .exec();
 
+        console.log('┗parents', parents);
         // bulkWrite to update parent
         const updateManyOperations = parents.map((parent) => {
+
           const parentId = parent._id;
 
           // modify to adjust for RegExp
