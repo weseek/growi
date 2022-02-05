@@ -408,7 +408,7 @@ export const usePageRenameModalStatus = (status?: RenameModalStatus): SWRRespons
 
 export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageRenameModalStatus();
-  return useSWR(
+  return useSWRImmutable(
     data != null ? ['isRenameModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
