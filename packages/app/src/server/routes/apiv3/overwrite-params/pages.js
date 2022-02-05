@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { format } = require('date-fns');
+const { isTopPage } = require('^/../core/src/utils/page-path-utils');
 
 // eslint-disable-next-line no-unused-vars
 const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
@@ -27,6 +29,14 @@ class PageOverwriteParamsFactory {
       params.creator = userId;
       params.lastUpdateUser = userId;
     }
+
+    params.path = (value, { document, schema, propertyName }) => {
+      if (isTopPage(value)) {
+        return `/imported_top_page_${format(new Date(), 'yyyyMMddHHmmss a')}`;
+      }
+
+      return value;
+    };
 
     params.grant = (value, { document, schema, propertyName }) => {
       if (option.makePublicForGrant2 && value === 2) {

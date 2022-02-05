@@ -182,6 +182,13 @@ class ImportService {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isImportPagesCollection = collections.includes('pages');
+    const shouldMigratePages = isV5Compatible && isImportPagesCollection;
+
+    // set isV5Compatible to false
+    if (shouldMigratePages) await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': false });
+
     // process serially so as not to waste memory
     const promises = collections.map((collectionName) => {
       const importSettings = importSettingsMap[collectionName];
@@ -198,6 +205,9 @@ class ImportService {
         this.emitProgressEvent(collectionProgress, { message: err.message });
       }
     }
+
+    // run v5InitialMigration
+    if (shouldMigratePages) await this.crowi.pageService.v5InitialMigration();
 
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
@@ -493,7 +503,7 @@ class ImportService {
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
-    if (meta.version !== this.crowi.version) {
+    if (false && meta.version !== this.crowi.version) {
       throw new Error('the version of this growi and the growi that exported the data are not met');
     }
 
