@@ -52,10 +52,9 @@ type ItemsTreeProps = {
   targetPath: string
   targetPathOrId?: string
   targetAndAncestorsData?: TargetAndAncestors
-  pageToDelete: IPageForPageDeleteModal
 }
 
-const renderByInitialNode = (initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: () => void): JSX.Element => {
+const renderByInitialNode = (initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void): JSX.Element => {
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
@@ -76,14 +75,14 @@ const renderByInitialNode = (initialNode: ItemNode, isEnableActions: boolean, ta
  */
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, pageToDelete, isEnableActions,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
-  const onClickDeleteByPage = () => {
+  const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
     openDeleteModal([pageToDelete]);
   };
 

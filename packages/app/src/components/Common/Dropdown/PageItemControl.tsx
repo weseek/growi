@@ -69,6 +69,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       logger.warn('This page could not be deleted.');
       return;
     }
+    console.log('pageInfo', pageInfo);
+    console.log('pageId', pageId);
     await onClickDeleteMenuItem(pageId);
   }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
