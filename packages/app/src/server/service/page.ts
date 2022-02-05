@@ -1907,7 +1907,6 @@ class PageService {
   }
 
   private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
-
     const escapedPath = escapeStringRegexp(path);
     const regexps = [new RegExp(`^${escapedPath}`, 'i')];
     await this.normalizeParentRecursively(null, regexps);
