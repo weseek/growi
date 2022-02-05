@@ -520,7 +520,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -608,9 +608,7 @@ export default (crowi: Crowi): any => {
 
     let savedPage = await page.save();
 
-    if (crowi.pageService != null) {
-      await crowi.pageService.updateDescendantCountOfAncestors(page._id, 1, false);
-    }
+    await crowi.pageService.updateDescendantCountOfAncestors(page._id, 1, false);
 
     /*
      * After save
