@@ -21,7 +21,7 @@ export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
 type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
-  hideBookmarkMenuItem?: boolean,
+  showBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickRenameMenuItem?: (pageId: string) => void,
   onClickDeleteMenuItem?: (pageId: string) => void,
@@ -32,13 +32,15 @@ type CommonProps = {
 
 type DropdownMenuProps = CommonProps & {
   pageId: string,
+  isLoading?: boolean,
 }
 
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
 
   const {
-    pageId, pageInfo, isEnableActions, hideBookmarkMenuItem,
+    pageId, isLoading,
+    pageInfo, isEnableActions, showBookmarkMenuItem,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
@@ -72,62 +74,74 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     await onClickDeleteMenuItem(pageId);
   }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
-  if (pageId == null || pageInfo == null) {
-    return <></>;
+  let contents = <></>;
+
+  if (isLoading) {
+    contents = (
+      <div className="text-muted text-center my-2">
+        <i className="fa fa-spinner fa-pulse"></i>
+      </div>
+    );
+  }
+  else if (pageId != null && pageInfo != null) {
+    contents = (
+      <>
+        { !isEnableActions && (
+          <DropdownItem>
+            <p>
+              {t('search_result.currently_not_implemented')}
+            </p>
+          </DropdownItem>
+        ) }
+
+        {/* Bookmark */}
+        { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+          <DropdownItem onClick={bookmarkItemClickedHandler}>
+            <i className="fa fa-fw fa-bookmark-o"></i>
+            { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
+          </DropdownItem>
+        ) }
+
+        {/* Duplicate */}
+        { isEnableActions && !pageInfo.isEmpty && (
+          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+            <i className="icon-fw icon-docs"></i>
+            {t('Duplicate')}
+          </DropdownItem>
+        ) }
+
+        {/* Move/Rename */}
+        { isEnableActions && pageInfo.isMovable && (
+          <DropdownItem onClick={renameItemClickedHandler}>
+            <i className="icon-fw  icon-action-redo"></i>
+            {t('Move/Rename')}
+          </DropdownItem>
+        ) }
+
+        { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
+
+        {/* divider */}
+        {/* Delete */}
+        { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
+          <>
+            <DropdownItem divider />
+            <DropdownItem
+              className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
+              disabled={!pageInfo.isDeletable}
+              onClick={deleteItemClickedHandler}
+            >
+              <i className="icon-fw icon-trash"></i>
+              {t('Delete')}
+            </DropdownItem>
+          </>
+        )}
+      </>
+    );
   }
 
   return (
     <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
-
-      { !isEnableActions && (
-        <DropdownItem>
-          <p>
-            {t('search_result.currently_not_implemented')}
-          </p>
-        </DropdownItem>
-      ) }
-
-      {/* Bookmark */}
-      { !hideBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
-        <DropdownItem onClick={bookmarkItemClickedHandler}>
-          <i className="fa fa-fw fa-bookmark-o"></i>
-          { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
-        </DropdownItem>
-      ) }
-
-      {/* Duplicate */}
-      { isEnableActions && !pageInfo.isEmpty && (
-        <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
-          <i className="icon-fw icon-docs"></i>
-          {t('Duplicate')}
-        </DropdownItem>
-      ) }
-
-      {/* Move/Rename */}
-      { isEnableActions && pageInfo.isMovable && (
-        <DropdownItem onClick={renameItemClickedHandler}>
-          <i className="icon-fw  icon-action-redo"></i>
-          {t('Move/Rename')}
-        </DropdownItem>
-      ) }
-
-      { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
-
-      {/* divider */}
-      {/* Delete */}
-      { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
-        <>
-          <DropdownItem divider />
-          <DropdownItem
-            className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
-            disabled={!pageInfo.isDeletable}
-            onClick={deleteItemClickedHandler}
-          >
-            <i className="icon-fw icon-trash"></i>
-            {t('Delete')}
-          </DropdownItem>
-        </>
-      )}
+      {contents}
     </DropdownMenu>
   );
 });
@@ -163,6 +177,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
   }, [mutatePageInfo, onClickBookmarkMenuItem, shouldMutate]);
 
+  const isLoading = shouldFetch && fetchedPageInfo == null;
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       <DropdownToggle color="transparent" className="border-0 rounded grw-btn-page-management p-0">
@@ -171,6 +187,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
       <PageItemControlDropdownMenu
         {...props}
+        isLoading={isLoading}
         pageInfo={fetchedPageInfo ?? presetPageInfo}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
       />
