@@ -9,7 +9,7 @@ import { SubscriptionStatusType } from './subscription';
 export interface IPage {
   path: string,
   status: string,
-  revision: Ref<IRevision & HasObjectId>,
+  revision: Ref<IRevision>,
   tags: Ref<ITag>[],
   creator: Ref<IUser>,
   createdAt: Date,
