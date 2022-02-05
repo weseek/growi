@@ -150,12 +150,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
   fetchOnInit?: boolean,
+  children?: React.ReactNode,
 }
 
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
+    children,
     onClickBookmarkMenuItem,
   } = props;
 
@@ -181,9 +183,12 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-      <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
-        <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
-      </DropdownToggle>
+
+      { children ?? (
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
+          <i className="icon-options text-muted"></i>
+        </DropdownToggle>
+      ) }
 
       <PageItemControlDropdownMenu
         {...props}
@@ -199,6 +204,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
 type PageItemControlProps = CommonProps & {
   pageId?: string,
+  children?: React.ReactNode,
 }
 
 export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
@@ -214,6 +220,7 @@ export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
 
 type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
   pageId?: string,
+  children?: React.ReactNode,
 }
 
 export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
