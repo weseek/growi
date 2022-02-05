@@ -122,15 +122,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           isEnableActions={!isGuestUser}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
         />
-        // <PageManagement
-        //   pageId={pageId}
-        //   revisionId={revisionId}
-        //   path={path}
-        //   isCompactMode={isCompactMode}
-        //   isDeletable={isDeletable}
-        //   isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        // >
-        // </PageManagement>
       )}
     </div>
   );
