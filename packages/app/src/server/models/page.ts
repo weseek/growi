@@ -518,6 +518,38 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   return findAncestorsRecursively(target);
 };
 
+/**
+ * Recursively removes empty pages at leaf position.
+ * @param pageId ObjectIdLike
+ * @returns Promise<void>
+ */
+schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): Promise<void> {
+  const initialLeafPage = await this.findById(pageId);
+
+  if (initialLeafPage == null) {
+    return;
+  }
+
+  if (!initialLeafPage.isEmpty) {
+    return;
+  }
+
+  const initialPageIdsToRemove = [initialLeafPage._id];
+
+  async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
+    const nextPage = await this.findById(page.parent);
+    if (!nextPage?.isEmpty) {
+      return pageIds;
+    }
+
+    return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
+  }
+
+  const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
+
+  await this.removeMany({ _id: { $in: pageIdsToRemove } });
+};
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike

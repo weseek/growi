@@ -1014,9 +1014,10 @@ class PageService {
       // update descendantCount of ancestors'
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
+      // delete leaf empty pages
       const shouldDeleteLeafEmptyPages = !shouldReplace;
       if (shouldDeleteLeafEmptyPages) {
-        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+        await Page.removeLeafEmptyPagesById(page.parent);
       }
     }
 
@@ -1050,7 +1051,8 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
 
-          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+          // delete leaf empty pages
+          await Page.removeLeafEmptyPagesById(page.parent);
         }
       })();
     }
@@ -1281,8 +1283,12 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+    }
 
-      // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+    // delete leaf empty pages
+    const shouldDeleteLeafEmptyPages = !shouldReplace;
+    if (shouldDeleteLeafEmptyPages) {
+      await Page.removeLeafEmptyPagesById(page.parent);
     }
 
     if (!page.isEmpty && !preventEmitting) {
@@ -1299,8 +1305,6 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
         }
-
-        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
       })();
     }
 
@@ -1460,7 +1464,8 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
 
-          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+          // delete leaf empty pages
+          await Page.removeLeafEmptyPagesById(page.parent);
         }
       })();
     }
