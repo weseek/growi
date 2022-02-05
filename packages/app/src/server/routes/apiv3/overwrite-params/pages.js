@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { format } = require('date-fns');
-const { isTopPage } = require('^/../core/src/utils/page-path-utils');
+const { isTopPage } = require('~/utils/page-path-utils');
 
 // eslint-disable-next-line no-unused-vars
 const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
