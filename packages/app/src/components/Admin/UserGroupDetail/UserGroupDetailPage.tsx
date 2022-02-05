@@ -13,7 +13,7 @@ import AppContainer from '~/client/services/AppContainer';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
@@ -46,10 +46,7 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const { data: selectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
-
-  // TODO 85844: Fetch /user-groups/selectable-groups with SWR
-  const selectableUserGroups: IUserGroupHasId[] = [];
+  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   /*
    * Function
@@ -109,9 +106,20 @@ const UserGroupDetailPage: FC = () => {
     mutateUserGroupRelations();
   }, [userGroup, mutateUserGroupRelations]);
 
-  // TODO: 87671 Add existing group
-  const onClickAddChildButtonHandler = (userGroup: IUserGroupHasId) => {
-    console.log(userGroup);
+  const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${selectedUserGroup._id}`, {
+        name: selectedUserGroup.name,
+        description: selectedUserGroup.description,
+        parentId: userGroup._id,
+        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
+      });
+      mutateSelectableUserGroups();
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   // TODO 87614: UserGroup New creation form can be displayed in modal
