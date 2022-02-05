@@ -70,3 +70,8 @@ export type IPageWithMeta<M = Record<string, unknown>> = {
   pageData: IPageHasId,
   pageMeta?: Partial<IPageInfo> & M,
 };
+
+export type IPageApiv1Result = {
+  ok: boolean
+  page: IPageHasId,
+};
