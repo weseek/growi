@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { format } = require('date-fns');
-const { isTopPage } = require('~/utils/page-path-utils');
+const { pagePathUtils } = require('@growi/core');
+
+const { isTopPage } = pagePathUtils;
 
 // eslint-disable-next-line no-unused-vars
 const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
