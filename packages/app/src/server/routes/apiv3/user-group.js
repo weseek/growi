@@ -335,7 +335,7 @@ module.exports = (crowi) => {
     try {
       const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
-      res.apiv3({ userGroup });
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in updating a user group name';
