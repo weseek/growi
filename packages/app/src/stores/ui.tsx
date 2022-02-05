@@ -326,7 +326,7 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 
 export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageDeleteModalStatus();
-  return useSWR(
+  return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
@@ -364,7 +364,7 @@ export const usePageDuplicateModalStatus = (status?: DuplicateModalStatus): SWRR
 
 export const usePageDuplicateModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = usePageDuplicateModalStatus();
-  return useSWR(
+  return useSWRImmutable(
     data != null ? ['isDuplicateModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
