@@ -22,10 +22,10 @@ type CommonProps = {
   pageInfo?: IPageInfoCommon | IPageInfo,
   isEnableActions?: boolean,
   hideBookmarkMenuItem?: boolean,
-  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
-  onClickDuplicateMenuItem?: (pageId: string) => void,
-  onClickRenameMenuItem?: (pageId: string) => void,
-  onClickDeleteMenuItem?: (pageId: string) => void,
+  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void> | void,
+  onClickDuplicateMenuItem?: () => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -58,8 +58,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickDuplicateMenuItem == null) {
       return;
     }
-    await onClickDuplicateMenuItem(pageId);
-  }, [onClickDuplicateMenuItem, pageId]);
+    await onClickDuplicateMenuItem();
+  }, [onClickDuplicateMenuItem]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
@@ -170,15 +170,12 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
   }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
 
-  const duplicateMenuItemClickHandler = useCallback(async(_pageId: string) => {
-    if (onClickDuplicateMenuItem != null) {
-      await onClickDuplicateMenuItem(_pageId);
+  const duplicateMenuItemClickHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
     }
-
-    if (shouldFetch) {
-      mutatePageInfo();
-    }
-  }, [mutatePageInfo, onClickDuplicateMenuItem, shouldFetch]);
+    await onClickDuplicateMenuItem();
+  }, [onClickDuplicateMenuItem]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
