@@ -7,7 +7,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
 import PageDeleteModal from '~/components/PageDeleteModal';
-import { IPageForPageDeleteModal } from '~/stores/ui';
+import { IPageForPageDeleteModal, usePageDuplicateModalStatus } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
@@ -65,8 +65,14 @@ type ItemsTreeProps = {
 
 const renderByInitialNode = (
     // eslint-disable-next-line max-len
-    initialNode: ItemNode, DeleteModal: JSX.Element, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode,
+    DeleteModal: JSX.Element,
+    isEnableActions: boolean,
+    targetPathOrId?: string,
+    onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+    onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
+
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
@@ -75,6 +81,7 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
+        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickDeleteByPage={onClickDeleteByPage}
       />
       {DeleteModal}
@@ -88,12 +95,18 @@ const renderByInitialNode = (
  */
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
+    targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal,
+    onCloseDelete,
     onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+
+  const onClickDuplicateMenuItem = (pageId: string, path: string) => {
+    openDuplicateModal(pageId, path);
+  };
 
   // TODO: show PageDeleteModal with usePageDeleteModalStatus by 87568
   const DeleteModal = (
@@ -117,7 +130,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickDeleteByPage);
   }
 
   /*
@@ -125,7 +138,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickDeleteByPage);
   }
 
   return null;

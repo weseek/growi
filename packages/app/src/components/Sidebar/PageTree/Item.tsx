@@ -23,6 +23,7 @@ interface ItemProps {
   targetPathOrId?: string
   isOpen?: boolean
   onClickDeleteByPage?(page: IPageForPageDeleteModal): void
+  onClickDuplicateMenuItem?(pageId: string, path: string): void
 }
 
 // Utility to mark target
@@ -63,7 +64,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -121,6 +122,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
   }, []);
+
+  const duplicateMenuItemClickHandler = async(_pageId: string, _path: string): Promise<void> => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem(_pageId, _path);
+  };
 
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
@@ -261,8 +269,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         <div className="grw-pagetree-control d-none">
           <AsyncPageItemControl
             pageId={page._id}
+            path={page.path}
             isEnableActions={isEnableActions}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={onClickRenameButton}
           />
@@ -293,6 +303,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>

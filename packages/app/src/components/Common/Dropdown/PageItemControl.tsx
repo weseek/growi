@@ -23,6 +23,7 @@ type CommonProps = {
   isEnableActions?: boolean,
   hideBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
+  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
   onClickRenameMenuItem?: (pageId: string) => void,
   onClickDeleteMenuItem?: (pageId: string) => void,
 
@@ -32,14 +33,15 @@ type CommonProps = {
 
 type DropdownMenuProps = CommonProps & {
   pageId: string,
+  path: string,
 }
 
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
 
   const {
-    pageId, pageInfo, isEnableActions, hideBookmarkMenuItem,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageId, path, pageInfo, isEnableActions, hideBookmarkMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
 
@@ -51,6 +53,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
   }, [onClickBookmarkMenuItem, pageId, pageInfo]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const duplicateItemClickedHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem(pageId, path);
+  }, [pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
@@ -97,7 +107,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
       {/* Duplicate */}
       { isExistPageInfo(pageInfo) && isEnableActions && (
-        <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+        <DropdownItem onClick={duplicateItemClickedHandler}>
           <i className="icon-fw icon-docs"></i>
           {t('Duplicate')}
         </DropdownItem>
@@ -135,6 +145,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
+  path: string,
   fetchOnOpen?: boolean,
 }
 
@@ -142,7 +153,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnOpen,
-    onClickBookmarkMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -161,6 +172,16 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
   }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
 
+  const duplicateMenuItemClickHandler = useCallback(async(_pageId: string, _path: string) => {
+    if (onClickDuplicateMenuItem != null) {
+      await onClickDuplicateMenuItem(_pageId, _path);
+    }
+
+    if (shouldFetch) {
+      mutatePageInfo();
+    }
+  }, [mutatePageInfo, onClickDuplicateMenuItem, shouldFetch]);
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       <DropdownToggle color="transparent" className="border-0 rounded grw-btn-page-management p-0">
@@ -171,6 +192,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         {...props}
         pageInfo={presetPageInfo ?? fetchedPageInfo}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
       />
     </Dropdown>
   );
@@ -180,29 +202,31 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
 type PageItemControlProps = CommonProps & {
   pageId?: string,
+  path?: string,
 }
 
 export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, path } = props;
 
-  if (pageId == null) {
+  if (pageId == null || path == null) {
     return <></>;
   }
 
-  return <PageItemControlSubstance pageId={pageId} {...props} />;
+  return <PageItemControlSubstance pageId={pageId} path={path} {...props} />;
 };
 
 
 type AsyncPageItemControlProps = CommonProps & {
   pageId?: string,
+  path?: string,
 }
 
 export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, path } = props;
 
-  if (pageId == null) {
+  if (pageId == null || path == null) {
     return <></>;
   }
 
-  return <PageItemControlSubstance pageId={pageId} fetchOnOpen {...props} />;
+  return <PageItemControlSubstance pageId={pageId} path={path} fetchOnOpen {...props} />;
 };

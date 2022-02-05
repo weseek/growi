@@ -121,6 +121,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
                 {/* TODO: use PageItemControl with prefetched IPageInfo object */}
                 <AsyncPageItemControl
                   pageId={pageData._id}
+                  path={pageData.path}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
                 />
