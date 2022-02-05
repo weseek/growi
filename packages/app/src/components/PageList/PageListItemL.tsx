@@ -105,7 +105,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
             <div className="d-flex align-items-center mb-2">
               {/* Picture */}
               <span className="mr-2 d-none d-md-block">
-                {/* <UserPicture user={pageData.lastUpdateUser} size="md" /> */}
+                <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}
               <Clamp lines={1}>
