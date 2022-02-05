@@ -135,19 +135,21 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
-  fetchOnOpen?: boolean,
+  fetchOnInit?: boolean,
 }
 
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnOpen,
+    pageId, pageInfo: presetPageInfo, fetchOnInit,
     onClickBookmarkMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const shouldFetch = presetPageInfo == null && (!fetchOnOpen || isOpen);
+  const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
+  const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
+
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
   // mutate after handle event
@@ -156,10 +158,10 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       await onClickBookmarkMenuItem(_pageId, _newValue);
     }
 
-    if (shouldFetch) {
+    if (shouldMutate) {
       mutatePageInfo();
     }
-  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldFetch]);
+  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldMutate]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
@@ -169,7 +171,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
       <PageItemControlDropdownMenu
         {...props}
-        pageInfo={presetPageInfo ?? fetchedPageInfo}
+        pageInfo={fetchedPageInfo ?? presetPageInfo}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
       />
     </Dropdown>
@@ -193,7 +195,7 @@ export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
 };
 
 
-type AsyncPageItemControlProps = CommonProps & {
+type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
   pageId?: string,
 }
 
@@ -204,5 +206,5 @@ export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Elem
     return <></>;
   }
 
-  return <PageItemControlSubstance pageId={pageId} fetchOnOpen {...props} />;
+  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
 };
