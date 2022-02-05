@@ -1986,9 +1986,7 @@ class PageService {
       async write(pages, encoding, callback) {
         // make list to create empty pages
         const parentPathsSet = new Set<string>(pages.map(page => pathlib.dirname(page.path)));
-
         const parentPaths = Array.from(parentPathsSet);
-        console.log(parentPaths);
 
         // fill parents with empty pages
         await Page.createEmptyPagesByPaths(parentPaths, publicOnly);
