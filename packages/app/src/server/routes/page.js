@@ -1209,7 +1209,12 @@ module.exports = function(crowi, app) {
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
-        if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
+        const notRecursivelyAndEmpty = page.isEmpty && !isRecursively;
+        if (notRecursivelyAndEmpty) {
+          return res.json(ApiResponse.error(`Page '${pageId}' is not found.`, 'notfound'));
+        }
+
+        if (!page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 

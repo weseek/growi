@@ -22,7 +22,7 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  onClickDeleteByPage?(page: IPageForPageDeleteModal): void
+  onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
 // Utility to mark target
