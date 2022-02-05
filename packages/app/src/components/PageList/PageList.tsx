@@ -26,7 +26,7 @@ const PageList = (props: Props): JSX.Element => {
   }
 
   const pageList = pages.items.map(page => (
-    <PageListItemL page={{ pageData: page }} />
+    <PageListItemL key={page._id} page={{ pageData: page }} />
   ));
 
   if (pageList.length === 0) {
