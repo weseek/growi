@@ -687,13 +687,6 @@ class PageService {
       );
     }
 
-    if (isRecursively) {
-      (async() => {
-        const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
-        await this.updateDescendantCountOfAncestors(createdPage._id, descendantCountAppliedToAncestors, false);
-      })();
-    }
-
     // take over tags
     const originTags = await page.findRelatedTagsById();
     let savedTags = [];
@@ -708,7 +701,10 @@ class PageService {
 
     // TODO: resume
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+      (async() => {
+        const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+        await this.updateDescendantCountOfAncestors(createdPage._id, descendantCountAppliedToAncestors, false);
+      })();
     }
 
     return result;
