@@ -1,6 +1,7 @@
 import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
+import { format } from 'date-fns';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
@@ -40,6 +41,8 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+
+  const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -84,7 +87,9 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
             <div className="d-flex justify-content-between">
               {/* page path */}
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
-              {showPageUpdatedTime && (<span className="page-list-updated-at text-muted">Updated: 0000/00/00 00:00:00</span>)}
+              { showPageUpdatedTime && (
+                <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
+              ) }
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
