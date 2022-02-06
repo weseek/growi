@@ -26,6 +26,7 @@ interface ItemProps {
   targetPathOrId?: string
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
+  onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
   onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
@@ -67,7 +68,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -140,6 +141,30 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem(pageId, path);
   }, [onClickDuplicateMenuItem, page]);
 
+
+  /*
+  * Rename: TODO: rename page title on input form
+  */
+
+  // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
+  //   setRenameInputShown(true);
+  // }, []);
+
+  const renameMenuItemClickHandler = useCallback((): void => {
+    if (onClickRenameMenuItem == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId, path } = page;
+
+    if (pageId == null || revisionId == null || path == null) {
+      throw Error('Any of _id and revisionId and path must not be null.');
+    }
+
+    onClickRenameMenuItem(pageId, revisionId as string, path);
+  }, [onClickRenameMenuItem, page]);
+
+
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
       return;
@@ -159,11 +184,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
-
-
-  const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
-    setRenameInputShown(true);
-  }, []);
 
   const onPressEnterForRenameHandler = async(inputText: string) => {
     if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
@@ -284,7 +304,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
-            onClickRenameMenuItem={onClickRenameButton}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
@@ -318,6 +338,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isOpen={false}
               targetPathOrId={targetPathOrId}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+              onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>
