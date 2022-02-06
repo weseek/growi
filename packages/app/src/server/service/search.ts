@@ -367,7 +367,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     /*
      * Format ElasticSearch result
      */
-    const Page = this.crowi.model('Page') as PageModel;
+    const Page = this.crowi.model('Page') as unknown as PageModel;
     const User = this.crowi.model('User');
     const result = {} as IFormattedSearchResult;
 

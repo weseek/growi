@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 type Props = {
-  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: (action: string) => Promise<{ isV5Compatible: boolean }> },
+  adminAppContainer: typeof AdminAppContainer & { v5PageMigrationHandler: () => Promise<{ isV5Compatible: boolean }> },
 }
 
 const V5PageMigration: FC<Props> = (props: Props) => {
@@ -17,7 +17,7 @@ const V5PageMigration: FC<Props> = (props: Props) => {
   const onConfirm = async() => {
     setIsV5PageMigrationModalShown(false);
     try {
-      const { isV5Compatible } = await adminAppContainer.v5PageMigrationHandler('initialMigration');
+      const { isV5Compatible } = await adminAppContainer.v5PageMigrationHandler();
       if (isV5Compatible) {
 
         return toastSuccess(t('admin:v5_page_migration.already_upgraded'));

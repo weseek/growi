@@ -6,7 +6,7 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import { IPageForPageDeleteModal, usePageDeleteModalStatus } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
@@ -52,19 +52,10 @@ type ItemsTreeProps = {
   targetPath: string
   targetPathOrId?: string
   targetAndAncestorsData?: TargetAndAncestors
-
-  // for deleteModal
-  isDeleteModalOpen: boolean
-  pagesToDelete: IPageForPageDeleteModal[]
-  isAbleToDeleteCompletely: boolean
-  isDeleteCompletelyModal: boolean
-  onCloseDelete(): void
-  onClickDeleteByPage(page: IPageForPageDeleteModal): void
 }
 
 const renderByInitialNode = (
-    // eslint-disable-next-line max-len
-    initialNode: ItemNode, DeleteModal: JSX.Element, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
   return (
     <ul className="grw-pagetree list-group p-3">
@@ -76,7 +67,6 @@ const renderByInitialNode = (
         isEnableActions={isEnableActions}
         onClickDeleteByPage={onClickDeleteByPage}
       />
-      {DeleteModal}
     </ul>
   );
 };
@@ -87,22 +77,16 @@ const renderByInitialNode = (
  */
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    onClickDeleteByPage, isEnableActions,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
 
-  const DeleteModal = (
-    <PageDeleteModal
-      isOpen={isDeleteModalOpen}
-      pages={pagesToDelete}
-      isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-      isDeleteCompletelyModal={isDeleteCompletelyModal}
-      onClose={onCloseDelete}
-    />
-  );
+  const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
+    openDeleteModal([pageToDelete]);
+  };
 
   if (error1 != null || error2 != null) {
     // TODO: improve message
@@ -115,7 +99,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
   }
 
   /*
@@ -123,11 +107,10 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
   }
 
   return null;
 };
-
 
 export default ItemsTree;

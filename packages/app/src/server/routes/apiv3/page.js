@@ -1,7 +1,8 @@
 import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
-import Subscription, { STATUS_SUBSCRIBE, STATUS_UNSUBSCRIBE } from '~/server/models/subscription';
+import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import Subscription from '~/server/models/subscription';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -9,7 +10,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath } = pagePathUtils;
+const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -74,10 +75,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: page path
  *            example: /
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: page revision
@@ -118,15 +115,11 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        description: PageInfo
  *        type: object
  *        required:
- *          - isSeen
  *          - sumOfLikers
  *          - likerIds
  *          - sumOfSeenUsers
  *          - seenUserIds
  *        properties:
- *          isSeen:
- *            type: boolean
- *            description: Whether the page has ever been seen
  *          isLiked:
  *            type: boolean
  *            description: Whether the page is liked by the logged in user
@@ -169,7 +162,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
 
   const validator = {
@@ -203,7 +196,7 @@ module.exports = (crowi) => {
     ],
     subscribe: [
       body('pageId').isString(),
-      body('status').isBoolean(),
+      body('status').isIn(AllSubscriptionStatusType),
     ],
     subscribeStatus: [
       query('pageId').isString(),
@@ -362,26 +355,47 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/info', loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
     const { pageId } = req.query;
 
     try {
-      const page = await Page.findById(pageId);
+      const page = await Page.findByIdAndViewer(pageId, user, null, true);
 
-      const guestUserResponse = {
-        sumOfLikers: page.liker.length,
-        likerIds: page.liker.slice(0, 15),
-        seenUserIds: page.seenUsers.slice(0, 15),
-        sumOfSeenUsers: page.seenUsers.length,
-        isSeen: page.seenUsers.length > 0,
-      };
-
-      const isGuestUser = !req.user;
-      if (isGuestUser) {
-        return res.apiv3(guestUserResponse);
+      if (page == null) {
+        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
 
-      const userResponse = { ...guestUserResponse, isLiked: page.isLiked(req.user) };
-      return res.apiv3(userResponse);
+      const isGuestUser = !req.user;
+      const pageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
+
+      const bookmarkCount = await Bookmark.countByPageId(pageId);
+
+      const responseBodyForGuest = {
+        ...pageInfo,
+        bookmarkCount,
+      };
+
+      if (isGuestUser) {
+        return res.apiv3(responseBodyForGuest);
+      }
+
+      const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+      const isLiked = page.isLiked(user);
+      const isMovable = !isTopPage(page.path);
+      const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
+
+      const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+
+      const responseBody = {
+        ...responseBodyForGuest,
+        isMovable,
+        isAbleToDeleteCompletely,
+        isBookmarked,
+        isLiked,
+        subscriptionStatus: subscription?.status,
+      };
+
+      return res.apiv3(responseBody);
     }
     catch (err) {
       logger.error('get-page-info', err);
@@ -612,9 +626,9 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.body;
+    const { pageId, status } = req.body;
     const userId = req.user._id;
-    const status = req.body.status ? STATUS_SUBSCRIBE : STATUS_UNSUBSCRIBE;
+
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
       return res.apiv3({ subscription });
@@ -622,50 +636,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Failed to update subscribe status', err);
       return res.apiv3Err(err, 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /page/subscribe:
-   *      get:
-   *        tags: [Page]
-   *        summary: /page/subscribe
-   *        description: Get subscription status
-   *        operationId: getSubscriptionStatus
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get subscription status.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/Page'
-   *          500:
-   *            description: Internal server error.
-   */
-  router.get('/subscribe', loginRequiredStrictly, validator.subscribeStatus, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
-    const userId = req.user._id;
-
-    const page = await Page.findById(pageId);
-    if (!page) throw new Error('Page not found');
-
-    try {
-      const subscription = await Subscription.findByUserIdAndTargetId(userId, pageId);
-      const subscribing = subscription ? subscription.isSubscribing() : null;
-      return res.apiv3({ subscribing });
-    }
-    catch (err) {
-      logger.error('Failed to ge subscribe status', err);
-      return res.apiv3(err, 500);
     }
   });
 

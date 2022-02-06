@@ -19,7 +19,6 @@ import SearchControl from './SearchPage/SearchControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
 import { useIsGuestUser } from '~/stores/context';
-import { apiv3Get } from '~/client/util/apiv3-client';
 
 export const specificPathNames = {
   user: '/user',
@@ -40,7 +39,6 @@ class SearchPage extends React.Component {
       focusedSearchResultData: null,
       selectedPagesIdList: new Set(),
       searchResultCount: 0,
-      shortBodiesMap: null,
       activePage: 1,
       pagingLimit: this.props.appContainer.config.pageLimitationL || 50,
       excludeUserPages: true,
@@ -152,11 +150,6 @@ class SearchPage extends React.Component {
     this.setState({ pagingLimit: limit }, () => this.search({ keyword: this.state.searchedKeyword }));
   }
 
-  async fetchShortBodiesMap(pageIds) {
-    const res = await apiv3Get('/page-listing/short-bodies', { pageIds });
-    this.setState({ shortBodiesMap: res.data.shortBodiesMap });
-  }
-
   // todo: refactoring
   // refs: https://redmine.weseek.co.jp/issues/82139
   async search(data) {
@@ -194,18 +187,6 @@ class SearchPage extends React.Component {
         sort,
         order,
       });
-
-      /*
-       * non-await asynchronous short body fetch
-       */
-      const pageIds = res.data.map((page) => {
-        if (page.pageMeta?.elasticSearchResult != null && page.pageMeta?.elasticSearchResult?.snippet.length !== 0) {
-          return null;
-        }
-
-        return page.pageData._id;
-      }).filter(id => id != null);
-      this.fetchShortBodiesMap(pageIds);
 
       this.changeURL(keyword);
       if (res.data.length > 0) {
@@ -324,7 +305,6 @@ class SearchPage extends React.Component {
         focusedSearchResultData={this.state.focusedSearchResultData}
         selectedPagesIdList={this.state.selectedPagesIdList || []}
         searchResultCount={this.state.searchResultCount}
-        shortBodiesMap={this.state.shortBodiesMap}
         activePage={this.state.activePage}
         pagingLimit={this.state.pagingLimit}
         onClickItem={this.selectPage}
@@ -371,6 +351,7 @@ class SearchPage extends React.Component {
           activePage={this.state.activePage}
         >
         </SearchPageLayout>
+        {/* TODO: show PageDeleteModal with usePageDeleteModalStatus by 87569  */}
         <PageDeleteModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModalHandler}
