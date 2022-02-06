@@ -25,6 +25,7 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
+  onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
@@ -66,7 +67,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickDeleteByPage, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -124,6 +125,20 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const onClickPlusButton = useCallback(() => {
     setNewPageInputShown(true);
   }, []);
+
+  const duplicateMenuItemClickHandler = useCallback((): void => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+
+    const { _id: pageId, path } = page;
+
+    if (pageId == null || path == null) {
+      throw Error('Any of _id and path must not be null.');
+    }
+
+    onClickDuplicateMenuItem(pageId, path);
+  }, [onClickDuplicateMenuItem, page]);
 
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
@@ -267,6 +282,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             isEnableActions={isEnableActions}
             showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={onClickRenameButton}
           >
@@ -301,6 +317,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteByPage={onClickDeleteByPage}
             />
           </div>
