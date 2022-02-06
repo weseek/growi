@@ -20,7 +20,6 @@ $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 $bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
 $color-page-list-group-item-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
-$color-page-list-snippet: $gray-600 !default;
 $bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
@@ -517,6 +516,20 @@ ul.pagination {
   // List group
   .list-group {
     .list-group-item {
+      a {
+        color: $color-global;
+        svg {
+          fill: $color-global;
+        }
+
+        @include hover() {
+          color: $color-global;
+          svg {
+            fill: $color-global;
+          }
+        }
+      }
+
       .page-list-meta {
         color: $color-page-list-group-item-meta;
         svg {
@@ -525,7 +538,7 @@ ul.pagination {
       }
 
       .page-list-snippet {
-        color: $color-page-list-snippet;
+        color: $gray-600;
       }
 
       &.list-group-item-action {
