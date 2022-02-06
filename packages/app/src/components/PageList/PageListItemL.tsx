@@ -84,7 +84,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
             <div className="d-flex justify-content-between">
               {/* page path */}
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
-              {showPageUpdatedTime && (<span className="list-item-updated-time">Updated: 0000/00/00 00:00:00</span>)}
+              {showPageUpdatedTime && (<span className="page-list-updated-at text-muted">Updated: 0000/00/00 00:00:00</span>)}
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
