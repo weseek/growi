@@ -36,7 +36,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       }
       setIsRevisionBodyRendered(false);
     }
-  }, [isRevisionBodyRendered, contentRef.current]);
+  }, [isRevisionBodyRendered]);
 
   const page = props.focusedSearchResultData?.pageData;
 
