@@ -77,7 +77,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -143,12 +143,33 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
 
   /*
-  * Rename: TODO: rename page title on input form
+  * Rename: TODO: rename page title on input form by #87757
   */
 
   // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
   //   setRenameInputShown(true);
   // }, []);
+
+  // const onPressEnterForRenameHandler = async(inputText: string) => {
+  //   if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
+  //     return;
+  //   }
+
+  //   const parentPath = nodePath.dirname(page.path as string);
+  //   const newPagePath = `${parentPath}/${inputText}`;
+
+  //   try {
+  //     setPageTitle(inputText);
+  //     setRenameInputShown(false);
+  //     await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+  //   }
+  //   catch (err) {
+  //     // open ClosableInput and set pageTitle back to the previous title
+  //     setPageTitle(nodePath.basename(pageTitle as string));
+  //     setRenameInputShown(true);
+  //     toastError(err);
+  //   }
+  // };
 
   const renameMenuItemClickHandler = useCallback((): void => {
     if (onClickRenameMenuItem == null) {
@@ -184,27 +205,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
-
-  const onPressEnterForRenameHandler = async(inputText: string) => {
-    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-      return;
-    }
-
-    const parentPath = nodePath.dirname(page.path as string);
-    const newPagePath = `${parentPath}/${inputText}`;
-
-    try {
-      setPageTitle(inputText);
-      setRenameInputShown(false);
-      await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
-    }
-    catch (err) {
-      // open ClosableInput and set pageTitle back to the previous title
-      setPageTitle(nodePath.basename(pageTitle as string));
-      setRenameInputShown(true);
-      toastError(err);
-    }
-  };
 
 
   // TODO: go to create page page
@@ -276,7 +276,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown && (
+        {/* TODO: rename page title on input form by 87757 */}
+        {/* { isRenameInputShown && (
           <ClosableTextInput
             isShown
             value={nodePath.basename(pageTitle as string)}
@@ -286,11 +287,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && (
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
-          </a>
-        )}
+        { !isRenameInputShown && ( */}
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
+        </a>
+        {/* )} */}
         {(page.descendantCount != null && page.descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={page.descendantCount} />
