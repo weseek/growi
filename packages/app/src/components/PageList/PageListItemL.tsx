@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
-import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
@@ -11,6 +11,8 @@ import {
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
 import { PageItemControl } from '../Common/Dropdown/PageItemControl';
+import LinkedPagePath from '~/models/linked-page-path';
+import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
@@ -32,26 +34,12 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
 
-  const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
-
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
-  const pageTitle = (
-    <PagePathLabel
-      path={elasticSearchResult?.highlightedPath || pageData.path}
-      isLatterOnly
-      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
-    >
-    </PagePathLabel>
-  );
-  const pagePathElem = (
-    <PagePathLabel
-      path={elasticSearchResult?.highlightedPath || pageData.path}
-      isFormerOnly
-      isPathIncludedHtml={elasticSearchResult?.isHtmlInPath}
-    />
-  );
+  const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
+  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -91,24 +79,22 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
               />
             </div>
           )}
+
           <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
-            {/* page path */}
-            <h6 className="mb-1 py-1 d-flex">
-              <a className="d-inline-block" href={pagePath.isRoot ? pagePath.latter : pagePath.former}>
-                <i className="icon-fw icon-home"></i>
-                {pagePathElem}
-              </a>
-              {showPageUpdatedTime && (<p className="ml-auto mb-0 mr-4 list-item-updated-time">Updated: 0000/00/00 00:00:00</p>)}
-            </h6>
-            <div className="d-flex align-items-center mb-2">
+            <div className="d-flex justify-content-between">
+              {/* page path */}
+              <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+              {showPageUpdatedTime && (<span className="list-item-updated-time">Updated: 0000/00/00 00:00:00</span>)}
+            </div>
+            <div className="d-flex align-items-center mb-1">
               {/* Picture */}
               <span className="mr-2 d-none d-md-block">
                 <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}
               <Clamp lines={1}>
-                <span className="py-1 h5 mr-2 mb-0">
-                  <a href={`/${pageData._id}`}>{pageTitle}</a>
+                <span className="h5 mb-0">
+                  <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />
                 </span>
               </Clamp>
 
@@ -118,6 +104,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
                 </div>
               ) }
+
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
                 <PageItemControl
