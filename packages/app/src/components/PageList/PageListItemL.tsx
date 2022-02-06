@@ -68,13 +68,11 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
-  const styleBorder = onClickCheckbox != null ? 'border-bottom' : 'list-group-item p-0';
 
   return (
     <li
       key={pageData._id}
-      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive} ${styleBorder}}`
-      }
+      className={`list-group-item p-0 ${styleListGroupItem} ${styleActive}`}
     >
       <div
         className="text-break"
