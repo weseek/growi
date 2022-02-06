@@ -356,7 +356,16 @@ class PageService {
       update.lastUpdateUser = user;
       update.updatedAt = new Date();
     }
+
+    // reduce ancestore's descendantCount
+    const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
+    await this.updateDescendantCountOfAncestors(page._id, nToReduce, false);
+    // rename
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+
+    // increase ancestore's descendantCount
+    const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
+    await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
     this.pageEvent.emit('rename', page, user);
 
