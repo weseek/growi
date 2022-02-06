@@ -98,6 +98,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
                   isSelected={false}
                   isChecked={false}
                   isEnableActions
+                  showPageUpdatedTime
                 // Todo: add onClickDeleteButton when delete feature implemented
                 />
               );
