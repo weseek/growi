@@ -828,10 +828,8 @@ class PageService {
         newRevisions.push({
           _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
         });
-
       }
       newPages.push(newPage);
-
     });
 
     await Page.insertMany(newPages, { ordered: false });
