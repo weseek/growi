@@ -36,37 +36,64 @@ export type IPageHasId = IPage & HasObjectId;
 
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
-export type IPageInfoCommon = {
+export type IPageInfo = {
   isEmpty: boolean,
   isMovable: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
 }
 
-export type IPageInfo = IPageInfoCommon & {
-  bookmarkCount: number,
-  sumOfLikers: number,
-  likerIds: string[],
-  sumOfSeenUsers: number,
-  seenUserIds: string[],
+export type IPageInfoForEntity = IPageInfo & {
+  bookmarkCount?: number,
+  sumOfLikers?: number,
+  likerIds?: string[],
+  sumOfSeenUsers?: number,
+  seenUserIds?: string[],
+}
 
+export type IPageInfoForOperation = IPageInfoForEntity & {
   isBookmarked?: boolean,
   isLiked?: boolean,
   subscriptionStatus?: SubscriptionStatusType,
 }
 
-export type IPageInfoForList = IPageInfo & HasRevisionShortbody;
+export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
 
-export const isExistPageInfo = (pageInfo: IPageInfoCommon | undefined): pageInfo is IPageInfo => {
+export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperation | IPageInfoForListing;
+
+export const isIPageInfoForEntity = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForEntity => {
   return pageInfo != null && !pageInfo.isEmpty;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-export const isIPageInfoForList = (pageInfo: any): pageInfo is IPageInfoForList => {
-  return pageInfo != null && pageInfo.revisionShortBody != null;
+export const isIPageInfoForOperation = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForOperation => {
+  return pageInfo != null
+    && isIPageInfoForEntity(pageInfo)
+    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
 };
 
-export type IPageWithMeta<M = Record<string, unknown>> = {
+export const isIPageInfoForListing = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForListing => {
+  return pageInfo != null
+    && isIPageInfoForEntity(pageInfo)
+    && 'revisionShortBody' in pageInfo;
+};
+
+// export type IPageInfoTypeResolver<T extends IPageInfo> =
+//   T extends HasRevisionShortbody ? IPageInfoForListing :
+//   T extends { isBookmarked?: boolean } | { isLiked?: boolean } | { subscriptionStatus?: SubscriptionStatusType } ? IPageInfoForOperation :
+//   T extends { bookmarkCount: number } ? IPageInfoForEntity :
+//   T extends { isEmpty: number } ? IPageInfo :
+//   T;
+
+/**
+ * Union Distribution
+ * @param pageInfo
+ * @returns
+ */
+// export const resolvePageInfo = <T extends IPageInfo>(pageInfo: T | undefined): IPageInfoTypeResolver<T> => {
+//   return <IPageInfoTypeResolver<T>>pageInfo;
+// };
+
+export type IPageWithMeta<M = IPageInfoAll> = {
   pageData: IPageHasId,
-  pageMeta?: Partial<IPageInfo> & M,
+  pageMeta?: M,
 };

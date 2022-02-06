@@ -372,6 +372,49 @@ export const usePageDuplicateModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+// PageRenameModal
+export type IPageForPageRenameModal = {
+  pageId: string,
+  revisionId: string,
+  path: string
+}
+
+type RenameModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  revisionId?: string
+  path?: string,
+}
+
+type RenameModalStatusUtils = {
+  open(pageId: string, revisionId: string, path: string): Promise<RenameModalStatus | undefined>
+  close(): Promise<RenameModalStatus | undefined>
+}
+
+export const usePageRenameModalStatus = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
+  const initialData: RenameModalStatus = {
+    isOpened: false, pageId: '', revisionId: '', path: '',
+  };
+  const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, revisionId: string, path: string) => swrResponse.mutate({
+      isOpened: true, pageId, revisionId, path,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePageRenameModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isRenameModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);

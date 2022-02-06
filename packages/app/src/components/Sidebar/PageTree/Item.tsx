@@ -1,9 +1,12 @@
 import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
-import nodePath from 'path';
+import { DropdownToggle } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+
 import { useDrag, useDrop } from 'react-dnd';
+
+import nodePath from 'path';
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -277,14 +280,19 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <AsyncPageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
+            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
             onClickRenameMenuItem={onClickRenameButton}
-          />
+          >
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
+              <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
+            </DropdownToggle>
+          </AsyncPageItemControl>
           <button
             type="button"
-            className="border-0 rounded grw-btn-page-management p-0"
+            className="border-0 rounded btn-page-item-control p-0"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />

@@ -9,7 +9,7 @@ import { useCurrentPagePath } from '~/stores/context';
 
 import { PageListItemL } from './PageList/PageListItemL';
 import { useSWRxPageInfoForList } from '~/stores/page';
-import { IPageInfoForList, IPageWithMeta } from '~/interfaces/page';
+import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 
 
 type IdenticalPathAlertProps = {
@@ -57,9 +57,9 @@ const jsonNull = 'null';
 const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
 
   const identicalPageDocument = document.getElementById('identical-path-page');
-  const pageDataList = JSON.parse(identicalPageDocument?.getAttribute('data-identical-page-data-list') || jsonNull);
+  const pages = JSON.parse(identicalPageDocument?.getAttribute('data-identical-path-pages') || jsonNull) as IPageHasId[];
 
-  const pageIds = pageDataList.map(data => data.pageData._id) as string[];
+  const pageIds = pages.map(page => page._id) as string[];
 
   const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
 
@@ -81,19 +81,19 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
         <IdenticalPathAlert path={currentPath} />
 
         <div className="page-list">
-          <ul className="page-list-ul list-group-flush border px-3">
-            {pageDataList.map((data) => {
-              const pageId = data.pageData._id;
+          <ul className="page-list-ul list-group-flush">
+            {pages.map((page) => {
+              const pageId = page._id;
               const pageInfo = (idToPageInfoMap ?? {})[pageId];
 
               const pageWithMeta: IPageWithMeta = {
-                pageData: data.pageData,
+                pageData: page,
                 pageMeta: pageInfo,
               };
 
               return (
                 <PageListItemL
-                  key={data.pageData._id}
+                  key={pageId}
                   page={pageWithMeta}
                   isSelected={false}
                   isChecked={false}

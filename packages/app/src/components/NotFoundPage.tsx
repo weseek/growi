@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import PageListIcon from './Icons/PageListIcon';
@@ -14,11 +14,11 @@ const NotFoundPage = (): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const DescendantsPageListForThisPage = (): JSX.Element => {
+  const DescendantsPageListForThisPage = useCallback((): JSX.Element => {
     return currentPagePath != null
       ? <DescendantsPageList path={currentPagePath} />
       : <></>;
-  };
+  }, [currentPagePath]);
 
   const navTabMapping = useMemo(() => {
     return {
@@ -35,12 +35,12 @@ const NotFoundPage = (): JSX.Element => {
         index: 1,
       },
     };
-  }, [t]);
+  }, [DescendantsPageListForThisPage, t]);
 
 
   return (
     <div className="d-edit-none">
-      <CustomNavAndContents navTabMapping={navTabMapping} />
+      <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['py-4']} />
     </div>
   );
 };

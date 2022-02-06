@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import {
+  IPageHasId, IPageWithMeta,
+} from '~/interfaces/page';
+import { IPagingResult } from '~/interfaces/paging-result';
+import { useIsGuestUser } from '~/stores/context';
 
-import { useSWRxPageList } from '~/stores/page';
+import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
 
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
@@ -9,12 +14,54 @@ type Props = {
   path: string,
 }
 
+
+const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
+  return { pageData: page };
+};
+
 const DescendantsPageList = (props: Props): JSX.Element => {
   const { path } = props;
 
   const [activePage, setActivePage] = useState(1);
 
-  const { data, error } = useSWRxPageList(path, activePage);
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const { data: pagingResult, error } = useSWRxPageList(path, activePage);
+
+  const pageIds = pagingResult?.items?.map(page => page._id);
+  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);
+
+  let pagingResultWithMeta: IPagingResult<IPageWithMeta> | undefined;
+
+  // initial data
+  if (pagingResult != null) {
+    const pages = pagingResult.items;
+
+    // convert without meta at first
+    pagingResultWithMeta = {
+      ...pagingResult,
+      items: pages.map(page => convertToIPageWithEmptyMeta(page)),
+    };
+  }
+
+  // inject data for listing
+  if (pagingResult != null) {
+    const pages = pagingResult.items;
+
+    const pageWithMetas = pages.map((page) => {
+      const pageInfo = (idToPageInfo ?? {})[page._id];
+
+      return {
+        pageData: page,
+        pageMeta: pageInfo,
+      } as IPageWithMeta;
+    });
+
+    pagingResultWithMeta = {
+      ...pagingResult,
+      items: pageWithMetas,
+    };
+  }
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
@@ -28,7 +75,7 @@ const DescendantsPageList = (props: Props): JSX.Element => {
     );
   }
 
-  if (data === undefined) {
+  if (pagingResult == null || pagingResultWithMeta == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
@@ -40,15 +87,17 @@ const DescendantsPageList = (props: Props): JSX.Element => {
 
   return (
     <>
-      <PageList pages={data} />
+      <PageList pages={pagingResultWithMeta} isEnableActions={!isGuestUser} />
 
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setPageNumber}
-        totalItemsCount={data.totalCount}
-        pagingLimit={data.limit}
-        align="center"
-      />
+      <div className="my-4">
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={setPageNumber}
+          totalItemsCount={pagingResult.totalCount}
+          pagingLimit={pagingResult.limit}
+          align="center"
+        />
+      </div>
     </>
   );
 };
