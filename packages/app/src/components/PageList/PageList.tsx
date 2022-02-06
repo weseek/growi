@@ -27,7 +27,7 @@ const PageList = (props: Props): JSX.Element => {
   }
 
   const pageList = pages.items.map(page => (
-    <PageListItemL page={page} isEnableActions={isEnableActions} />
+    <PageListItemL key={page.pageData._id} page={page} isEnableActions={isEnableActions} />
   ));
 
   if (pageList.length === 0) {
