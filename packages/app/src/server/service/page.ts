@@ -1903,7 +1903,6 @@ class PageService {
   }
 
   private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
-
     const escapedPath = escapeStringRegexp(path);
     const regexps = [new RegExp(`^${escapedPath}`, 'i')];
     await this.normalizeParentRecursively(null, regexps);
@@ -1997,7 +1996,6 @@ class PageService {
 
         // bulkWrite to update parent
         const updateManyOperations = parents.map((parent) => {
-
           const parentId = parent._id;
 
           // modify to adjust for RegExp
