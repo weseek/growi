@@ -67,8 +67,6 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
 
     if (pagesDataToDelete?.pages != null && (pagesDataToDelete.pages.length > 0)) {
       try {
-        // control flag
-        // If is it not true, Request value must be `null`.
         const recursively = isDeleteRecursively === true ? true : undefined;
         const completely = isDeleteCompletely === true ? true : undefined;
 
