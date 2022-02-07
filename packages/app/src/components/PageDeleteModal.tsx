@@ -70,8 +70,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
       try {
         // control flag
         // If is it not true, Request value must be `null`.
-        const recursively = isDeleteRecursively != true ? true : null;
-        const completely = isDeleteCompletely != true　 ? true : null;
+        const recursively = isDeleteRecursively !== true ? true : null;
+        const completely = isDeleteCompletely !== true ? true : null;
 
         const result = await apiPost('/pages.remove', {
           page_id: pageToDelete.pageId,
@@ -83,10 +83,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         const trashPagePath = result.page.path;
 
         window.location.href = encodeURI(trashPagePath);
-    }
-    catch (err) {
-      setErrs(err);
-    }
+      }
+      catch (err) {
+        setErrs(err);
+      }
     }
   }
 

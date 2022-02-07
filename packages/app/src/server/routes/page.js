@@ -1230,7 +1230,7 @@ module.exports = function(crowi, app) {
     const result = {};
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
-    return res.json(ApiResponse.success(result));
+    res.json(ApiResponse.success(result));
 
     try {
       // global notification
