@@ -7,8 +7,8 @@ import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with only public pages', () => {
 
-  let testUser1;
-  let testUser2;
+  let dummyUser1;
+  let dummyUser2;
 
   let crowi;
   let Page;
@@ -40,19 +40,28 @@ describe('PageService page operations with only public pages', () => {
      * Common
      */
     await User.insertMany([
-      { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
-      { name: 'someone2', username: 'someone2', email: 'someone2@example.com' },
+      { name: 'dummyUser1', username: 'dummyUser1', email: 'dummyUser1@example.com' },
+      { name: 'dummyUser2', username: 'dummyUser2', email: 'dummyUser2@example.com' },
     ]);
 
-    testUser1 = await User.findOne({ username: 'someone1' });
-    testUser2 = await User.findOne({ username: 'someone2' });
+    dummyUser1 = await User.findOne({ username: 'dummyUser1' });
+    dummyUser2 = await User.findOne({ username: 'dummyUser2' });
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
     /*
      * Rename
      */
-    rootPage = await Page.create('/', 'body', testUser1._id, {});
+    rootPage = await Page.create('/', 'body', dummyUser1._id, {});
+
+    await Page.insertMany([
+      {
+        path: '/level1/level2/level2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+      },
+    ]);
 
   });
 
@@ -61,7 +70,7 @@ describe('PageService page operations with only public pages', () => {
 
       let isThrown = false;
       try {
-        await crowi.pageService.renamePage(rootPage, '/new_root', testUser1, {});
+        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
       }
       catch (err) {
         isThrown = true;
@@ -71,7 +80,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should move to under non-empty page', async() => {
-      // a
+
     });
 
     test('Should move to under empty page', async() => {
