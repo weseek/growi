@@ -14,7 +14,7 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDeleteModalStatus } from '~/stores/ui';
+import { usePageRenameModalStatus, usePageDeleteModalStatus } from '~/stores/ui';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -55,12 +55,17 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
   const page = focusedSearchResultData?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
+
+  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
+    openRenameModal(pageId, revisionId, path);
+  }, [openRenameModal]);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
     openDeleteModal([pageToDelete]);
@@ -84,6 +89,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
           />
         </div>
@@ -91,7 +97,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
