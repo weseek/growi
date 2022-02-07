@@ -27,6 +27,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
+import CreateTemplateModal from '../CreateTemplateModal';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 
 
@@ -34,16 +35,23 @@ type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
   revisionId: string,
   onClickPresentationMenuItem: (isPagePresentationModalShown: boolean) => void,
+  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
 
 }
 
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, revisionId, onClickPresentationMenuItem } = props;
+  const {
+    pageId, revisionId, onClickPresentationMenuItem, onClickTemplateMenuItem,
+  } = props;
 
   const openPagePresentationModalHandler = () => {
     onClickPresentationMenuItem(true);
+  };
+
+  const openPageTemplateModalHandler = () => {
+    onClickTemplateMenuItem(true);
   };
 
 
@@ -66,7 +74,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87673 */ }}>
+      <DropdownItem onClick={openPageTemplateModalHandler}>
         <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
@@ -101,6 +109,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
+  const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
     editorContainer, isCompactMode,
@@ -146,19 +155,33 @@ const GrowiContextualSubNavigation = (props) => {
     setIsPagePresentationModalShown(true);
   }, []);
 
+  const templateMenuItemClickHandler = useCallback(() => {
+    setIsPageTempleteModalShown(true);
+  }, []);
+
   const renderAdditionalModals = useCallback(() => {
     if (currentUser == null) {
       return <></>;
     }
     return (
-      <PagePresentationModal
-        isOpen={isPagePresentationModalShown}
-        onClose={() => setIsPagePresentationModalShown(false)}
-        href="?presentation=1"
-      />
-      // TODO: show template modal by https://redmine.weseek.co.jp/issues/87815
+      <>
+        <PagePresentationModal
+          isOpen={isPagePresentationModalShown}
+          onClose={() => setIsPagePresentationModalShown(false)}
+          href="?presentation=1"
+        />
+        {path
+        && (
+          <CreateTemplateModal
+            path={path}
+            isOpen={isPageTemplateModalShown}
+            onClose={() => setIsPageTempleteModalShown(false)}
+          />
+        )
+        }
+      </>
     );
-  }, [currentUser, isPagePresentationModalShown]);
+  }, [currentUser, isPagePresentationModalShown, isPageTemplateModalShown, path]);
 
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
@@ -182,6 +205,7 @@ const GrowiContextualSubNavigation = (props) => {
                   pageId={pageId}
                   revisionId={revisionId}
                   onClickPresentationMenuItem={presentationMenuItemClickHandler}
+                  onClickTemplateMenuItem={templateMenuItemClickHandler}
                 />
               )}
               onClickDuplicateMenuItem={duplicateItemClickedHandler}
