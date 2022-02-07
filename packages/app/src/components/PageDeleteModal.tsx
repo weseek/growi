@@ -66,16 +66,15 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     // setErrs(null);
 
     if (pagesDataToDelete?.pages != null && (pagesDataToDelete.pages.length > 0)) {
-      const pageToDelete = pagesDataToDelete?.pages[0];
       try {
         // control flag
         // If is it not true, Request value must be `null`.
         const recursively = isDeleteRecursively !== true ? true : null;
         const completely = isDeleteCompletely !== true ? true : null;
 
-        const result = await apiPost('/pages.remove', {
-          page_id: pageToDelete.pageId,
-          revision_id: pageToDelete.revisionId,
+        // TODO: Create an endpoint (pages.removeMany)
+        const result = await apiPost('/pages.removeMany', {
+          pages: pagesDataToDelete.pages,
           recursively,
           completely,
         }) as IPageApiv1Result;
