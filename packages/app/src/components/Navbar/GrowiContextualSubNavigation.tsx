@@ -13,7 +13,7 @@ import {
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -85,6 +85,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
@@ -145,6 +146,20 @@ const GrowiContextualSubNavigation = (props) => {
     setIsPagePresentationModalShown(true);
   }, []);
 
+  const renderAdditionalModals = useCallback(() => {
+    if (currentUser == null) {
+      return <></>;
+    }
+    return (
+      <PagePresentationModal
+        isOpen={isPagePresentationModalShown}
+        onClose={() => setIsPagePresentationModalShown(false)}
+        href="?presentation=1"
+      />
+      // TODO: show template modal by https://redmine.weseek.co.jp/issues/87815
+    );
+  }, [currentUser, isPagePresentationModalShown]);
+
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -184,21 +199,14 @@ const GrowiContextualSubNavigation = (props) => {
               isDeviceSmallerThanMd={isDeviceSmallerThanMd}
             />
           )}
-          <PagePresentationModal
-            isOpen={isPagePresentationModalShown}
-            onClose={() => setIsPagePresentationModalShown(false)}
-            href="?presentation=1"
-          />
         </div>
+        {renderAdditionalModals()}
       </>
     );
-  }, [
-    pageId, revisionId,
-    editorMode, mutateEditorMode,
-    isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
-    isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    duplicateItemClickedHandler, reameItemClickedHandler, deleteItemClickedHandler,
-    isPagePresentationModalShown, presentationMenuItemClickHandler, path,
+  }, [pageId, isViewMode, isCompactMode, revisionId, path, isSharedUser,
+      isAbleToShowPageManagement, duplicateItemClickedHandler, reameItemClickedHandler,
+      deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isDeviceSmallerThanMd,
+      renderAdditionalModals, mutateEditorMode, presentationMenuItemClickHandler,
   ]);
 
 
