@@ -906,7 +906,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          nNonEmptyDuplicatedPages += (batch.filter(page => !page.isEmpty)).length;
+          nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
