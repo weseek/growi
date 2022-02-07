@@ -4,6 +4,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
+import { PageQueryBuilder } from '../models/obsolete-page';
 import UpdatePost from '../models/update-post';
 import { PageRedirectModel } from '../models/page-redirect';
 
@@ -281,25 +282,6 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
-  }
-
-  async function addRenderVarsForIdenticalPage(renderVars, pages) {
-    const pageIds = pages.map(p => p._id);
-    const shortBodyMap = await crowi.pageService.shortBodiesMapByPageIds(pageIds);
-
-    const identicalPageDataList = await Promise.all(pages.map(async(page) => {
-      const bookmarkCount = await Bookmark.countByPageId(page._id);
-      page._doc.seenUserCount = (page.seenUsers && page.seenUsers.length) || 0;
-      return {
-        pageData: page,
-        pageMeta: {
-          bookmarkCount,
-        },
-      };
-    }));
-
-    renderVars.identicalPageDataList = identicalPageDataList;
-    renderVars.shortBodyMap = shortBodyMap;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -617,18 +599,21 @@ module.exports = function(crowi, app) {
    * redirector
    */
   async function redirector(req, res, next, path) {
-    const pages = await Page.findByPathAndViewer(path, req.user, null, false, true);
-
     const { redirectFrom } = req.query;
+
+    const builder = new PageQueryBuilder(Page.find({ path }));
+    await Page.addConditionToFilteringByViewerForList(builder, req.user);
+
+    const pages = await builder.query.lean().clone().exec('find');
 
     if (pages.length >= 2) {
 
-      const renderVars = {};
-
-      await addRenderVarsForIdenticalPage(renderVars, pages);
+      // populate to list
+      builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+      const identicalPathPages = await builder.query.lean().exec('find');
 
       return res.render('layout-growi/identical-path-page', {
-        ...renderVars,
+        identicalPathPages,
         redirectFrom,
         path,
       });

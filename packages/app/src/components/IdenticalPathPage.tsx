@@ -8,6 +8,8 @@ import { DevidedPagePath } from '@growi/core';
 import { useCurrentPagePath } from '~/stores/context';
 
 import { PageListItemL } from './PageList/PageListItemL';
+import { useSWRxPageInfoForList } from '~/stores/page';
+import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 
 
 type IdenticalPathAlertProps = {
@@ -34,7 +36,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
       <p>
         {t('duplicated_page_alert.same_page_name_exists_at_path',
           { path: _path, pageName: _pageName })}<br />
-        <p
+        <span
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }}
         />
@@ -55,8 +57,11 @@ const jsonNull = 'null';
 const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
 
   const identicalPageDocument = document.getElementById('identical-path-page');
-  const pageDataList = JSON.parse(identicalPageDocument?.getAttribute('data-identical-page-data-list') || jsonNull);
-  const shortbodyMap = JSON.parse(identicalPageDocument?.getAttribute('data-shortody-map') || jsonNull);
+  const pages = JSON.parse(identicalPageDocument?.getAttribute('data-identical-path-pages') || jsonNull) as IPageHasId[];
+
+  const pageIds = pages.map(page => page._id) as string[];
+
+  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
 
   const { data: currentPath } = useCurrentPagePath();
 
@@ -76,16 +81,23 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
         <IdenticalPathAlert path={currentPath} />
 
         <div className="page-list">
-          <ul className="page-list-ul list-group-flush border px-3">
-            {pageDataList.map((data) => {
+          <ul className="page-list-ul list-group-flush">
+            {pages.map((page) => {
+              const pageId = page._id;
+              const pageInfo = (idToPageInfoMap ?? {})[pageId];
+
+              const pageWithMeta: IPageWithMeta = {
+                pageData: page,
+                pageMeta: pageInfo,
+              };
+
               return (
                 <PageListItemL
-                  key={data.pageData._id}
-                  page={data}
+                  key={pageId}
+                  page={pageWithMeta}
                   isSelected={false}
                   isChecked={false}
                   isEnableActions
-                  shortBody={shortbodyMap[data.pageData._id]}
                 // Todo: add onClickDeleteButton when delete feature implemented
                 />
               );

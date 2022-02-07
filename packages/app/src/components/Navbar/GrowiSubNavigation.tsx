@@ -29,7 +29,7 @@ type Props = {
   tags?: string[],
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void>,
 
-  controls?: any,
+  controls?: React.FunctionComponent,
 }
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {

@@ -1,8 +1,9 @@
 import { Ref } from './common';
 import { IUser } from './user';
-import { IRevision } from './revision';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { SubscriptionStatusType } from './subscription';
 
 
 export interface IPage {
@@ -36,16 +37,63 @@ export type IPageHasId = IPage & HasObjectId;
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
 
 export type IPageInfo = {
-  bookmarkCount: number,
-  sumOfLikers: number,
-  likerIds: string[],
-  sumOfSeenUsers: number,
-  seenUserIds: string[],
-  isSeen?: boolean,
-  isLiked?: boolean,
+  isEmpty: boolean,
+  isMovable: boolean,
+  isDeletable: boolean,
+  isAbleToDeleteCompletely: boolean,
 }
 
-export type IPageWithMeta<M = Record<string, unknown>> = {
+export type IPageInfoForEntity = IPageInfo & {
+  bookmarkCount?: number,
+  sumOfLikers?: number,
+  likerIds?: string[],
+  sumOfSeenUsers?: number,
+  seenUserIds?: string[],
+}
+
+export type IPageInfoForOperation = IPageInfoForEntity & {
+  isBookmarked?: boolean,
+  isLiked?: boolean,
+  subscriptionStatus?: SubscriptionStatusType,
+}
+
+export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
+
+export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperation | IPageInfoForListing;
+
+export const isIPageInfoForEntity = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && !pageInfo.isEmpty;
+};
+
+export const isIPageInfoForOperation = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForOperation => {
+  return pageInfo != null
+    && isIPageInfoForEntity(pageInfo)
+    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
+};
+
+export const isIPageInfoForListing = (pageInfo: IPageInfoAll | undefined): pageInfo is IPageInfoForListing => {
+  return pageInfo != null
+    && isIPageInfoForEntity(pageInfo)
+    && 'revisionShortBody' in pageInfo;
+};
+
+// export type IPageInfoTypeResolver<T extends IPageInfo> =
+//   T extends HasRevisionShortbody ? IPageInfoForListing :
+//   T extends { isBookmarked?: boolean } | { isLiked?: boolean } | { subscriptionStatus?: SubscriptionStatusType } ? IPageInfoForOperation :
+//   T extends { bookmarkCount: number } ? IPageInfoForEntity :
+//   T extends { isEmpty: number } ? IPageInfo :
+//   T;
+
+/**
+ * Union Distribution
+ * @param pageInfo
+ * @returns
+ */
+// export const resolvePageInfo = <T extends IPageInfo>(pageInfo: T | undefined): IPageInfoTypeResolver<T> => {
+//   return <IPageInfoTypeResolver<T>>pageInfo;
+// };
+
+export type IPageWithMeta<M = IPageInfoAll> = {
   pageData: IPageHasId,
-  pageMeta?: Partial<IPageInfo> & M,
+  pageMeta?: M,
 };

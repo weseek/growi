@@ -11,7 +11,6 @@ import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -91,10 +90,6 @@ const PageAccessoriesModalControl = (props) => {
           </Fragment>
         );
       })}
-      <div className="d-flex align-items-center">
-        <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo disabled={isSharedUser} pageId={pageId} />
-      </div>
     </div>
   );
 };

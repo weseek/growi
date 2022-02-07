@@ -1,33 +1,32 @@
-import React, { FC, memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
-import { pagePathUtils, DevidedPagePath } from '@growi/core';
+import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import { IPageWithMeta } from '~/interfaces/page';
+import {
+  IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
+} from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
-import PageItemControl from '../Common/Dropdown/PageItemControl';
-
-const { isTopPage, isUserNamePage } = pagePathUtils;
+import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 type Props = {
-  page: IPageWithMeta | IPageWithMeta<IPageSearchMeta>,
+  page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isChecked?: boolean, // is checkbox of item checked
   isEnableActions?: boolean,
-  shortBody?: string
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-export const PageListItemL: FC<Props> = memo((props:Props) => {
+export const PageListItemL = memo((props: Props): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions, shortBody,
+    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions,
     showPageUpdatedTime,
   } = props;
 
@@ -36,6 +35,7 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
   const pagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
+  const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
   const pageTitle = (
     <PagePathLabel
@@ -115,28 +115,30 @@ export const PageListItemL: FC<Props> = memo((props:Props) => {
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1">
-                <PageListMeta page={pageData} bookmarkCount={pageMeta?.bookmarkCount} shouldSpaceOutIcon />
-              </div>
+              { isIPageInfoForEntity(pageMeta) && (
+                <div className="d-none d-md-flex py-0 px-1">
+                  <PageListMeta page={pageData} bookmarkCount={pageMeta.bookmarkCount} shouldSpaceOutIcon />
+                </div>
+              ) }
               {/* doropdown icon includes page control buttons */}
               <div className="item-control ml-auto">
                 <PageItemControl
-                  page={pageData}
-                  onClickDeleteButtonHandler={props.onClickDeleteButton}
+                  pageId={pageData._id}
+                  pageInfo={pageMeta}
+                  onClickDeleteMenuItem={props.onClickDeleteButton}
                   isEnableActions={isEnableActions}
-                  isDeletable={!isTopPage(pageData.path) && !isUserNamePage(pageData.path)}
                 />
               </div>
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
-                {
-                  elasticSearchResult != null && elasticSearchResult?.snippet.length !== 0 ? (
-                    <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
-                  ) : (
-                    <div>{ shortBody != null ? shortBody : 'Loading ...' }</div> // TODO: improve indicator
-                  )
-                }
+                { elasticSearchResult != null && elasticSearchResult?.snippet.length > 0 && (
+                  // eslint-disable-next-line react/no-danger
+                  <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
+                ) }
+                { revisionShortBody != null && (
+                  <div>{revisionShortBody}</div>
+                ) }
               </Clamp>
             </div>
           </div>

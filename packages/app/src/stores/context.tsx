@@ -59,16 +59,8 @@ export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error>
   return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
 };
 
-export const useIsDeletable = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isDeletable', initialData, { fallbackData: false });
-};
-
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
-};
-
-export const useIsAbleToDeleteCompletely = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isAbleToDeleteCompletely', initialData, { fallbackData: false });
 };
 
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
