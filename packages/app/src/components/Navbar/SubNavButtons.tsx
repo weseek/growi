@@ -98,7 +98,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
     const pageToDelete: IPageForPageDeleteModal = {
       pageId,
-      revisionId: revisionId as string,
+      revisionId,
       path,
     };
 
