@@ -214,7 +214,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
-  const redirectToEditor = (...paths) => {
+  const redirectToEditor = (...paths: string[]) => {
     try {
       const editorPath = generateEditorPath(...paths);
       window.location.href = editorPath;
