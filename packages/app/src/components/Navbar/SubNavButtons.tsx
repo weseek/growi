@@ -24,18 +24,21 @@ type CommonProps = {
 
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId: string,
   pageInfo: IPageInfoAll,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    pageInfo, pageId, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    pageInfo,
+    pageId, shareLinkId,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
@@ -129,13 +132,14 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 type SubNavButtonsProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId?: string | null,
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
-  const { pageId, revisionId } = props;
+  const { pageId, shareLinkId, revisionId } = props;
 
-  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
+  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   if (revisionId == null || error != null) {
     return <></>;

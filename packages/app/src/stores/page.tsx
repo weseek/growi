@@ -60,10 +60,14 @@ export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<I
   }));
 };
 
-export const useSWRxPageInfo = (pageId: string | null | undefined): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
+export const useSWRxPageInfo = (
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
+
   return useSWRImmutable(
-    pageId != null ? ['/page/info', pageId] : null,
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
 
