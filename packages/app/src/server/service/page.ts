@@ -1740,7 +1740,7 @@ class PageService {
   }
 
   // TODO: use socket to send status to the client
-  async v5InitialMigration() {
+  async normalizeAllPublicPages() {
     // const socket = this.crowi.socketIoService.getAdminSocket();
 
     let isUnique;

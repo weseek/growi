@@ -32,14 +32,6 @@ class PageOverwriteParamsFactory {
       params.lastUpdateUser = userId;
     }
 
-    params.path = (value, { document, schema, propertyName }) => {
-      if (isTopPage(value)) {
-        return `/imported_top_page_${format(new Date(), 'yyyyMMddHHmmss a')}`;
-      }
-
-      return value;
-    };
-
     params.grant = (value, { document, schema, propertyName }) => {
       if (option.makePublicForGrant2 && value === 2) {
         return GRANT_PUBLIC;
