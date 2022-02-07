@@ -536,16 +536,25 @@ schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): 
     return;
   }
 
-  const initialPageIdsToRemove = [initialLeafPage._id];
-
   async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
     const nextPage = await self.findById(page.parent);
-    if (!nextPage?.isEmpty) {
+
+    if (nextPage == null) {
+      return pageIds;
+    }
+
+    // delete leaf empty pages
+    const isNextPageEmpty = nextPage.isEmpty;
+    const isSiblingsExist = !isNextPageEmpty || await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } }); // evaluate (!isNextPageEmpty ||) first to reduce query
+
+    if (!isNextPageEmpty || isSiblingsExist) {
       return pageIds;
     }
 
     return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
   }
+
+  const initialPageIdsToRemove = [initialLeafPage._id];
 
   const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
 
