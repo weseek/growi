@@ -1170,8 +1170,8 @@ module.exports = function(crowi, app) {
   };
 
   validator.remove = [
-    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('completely').optional().custom(v => v === 'true' || v === true || v === null).withMessage('The body property "completely" must be "true" or true.'),
+    body('recursively').optional().custom(v => v === 'true' || v === true || v === null).withMessage('The body property "recursively" must be "true" or true.'),
   ];
 
   /**
@@ -1230,7 +1230,7 @@ module.exports = function(crowi, app) {
     const result = {};
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
-    res.json(ApiResponse.success(result));
+    return res.json(ApiResponse.success(result));
 
     try {
       // global notification
