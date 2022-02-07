@@ -14,6 +14,8 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
+import { usePageDeleteModalStatus } from '~/stores/ui';
+
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
@@ -53,9 +55,16 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
+
   const page = focusedSearchResultData?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
+
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
@@ -72,15 +81,17 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           <SubNavButtons
             pageId={page._id}
             revisionId={revisionId}
+            path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            onClickDeleteMenuItem={deleteItemClickedHandler}
           />
         </div>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
         </div>
       </>
     );
-  }, [page, showPageControlDropdown]);
+  }, [deleteItemClickedHandler, page, showPageControlDropdown]);
 
   // return if page is null
   if (page == null) return <></>;

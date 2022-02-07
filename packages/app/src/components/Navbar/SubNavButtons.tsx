@@ -92,8 +92,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return;
     }
 
-    if (pageId == null || revisionId == null || path == null) {
-      throw Error('Any of _id, revision, and path must not be null.');
+    if (path == null) {
+      throw Error('path must not be null.');
     }
 
     const pageToDelete: IPageForPageDeleteModal = {
