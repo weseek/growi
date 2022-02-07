@@ -192,7 +192,7 @@ const LegacyPageManagemenet = (props) => {
       <>
         <button
           type="button"
-          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management"
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded btn-page-item-control"
           data-toggle="dropdown"
         >
           <i className="text-muted icon-options"></i>

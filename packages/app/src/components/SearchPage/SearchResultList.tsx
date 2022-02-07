@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageInfoForEntity, IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { useSWRxPageInfoForList } from '~/stores/page';
 
 import { PageListItemL } from '../PageList/PageListItemL';
 import PaginationWrapper from '../PaginationWrapper';
 
 
 type Props = {
-  pages: IPageWithMeta<IPageSearchMeta>[],
+  pages: IPageWithMeta<IPageInfoForEntity & IPageSearchMeta>[],
   selectedPagesIdList: Set<string>
   isEnableActions: boolean,
   searchResultCount?: number,
@@ -23,13 +24,40 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    focusedSearchResultData, selectedPagesIdList, isEnableActions,
+    pages, focusedSearchResultData, selectedPagesIdList, isEnableActions,
   } = props;
+
+  const pageIdsWithNoSnippet = pages
+    .filter(page => (page.pageMeta?.elasticSearchResult?.snippet.length ?? 0) === 0)
+    .map(page => page.pageData._id);
+
+  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+
+  let injectedPage;
+  // inject data to list
+  if (idToPageInfo != null) {
+    injectedPage = pages.map((page) => {
+      const pageInfo = idToPageInfo[page.pageData._id];
+
+      if (!isIPageInfoForListing(pageInfo)) {
+        // return as is
+        return page;
+      }
+
+      return {
+        pageData: page.pageData,
+        pageMeta: {
+          ...page.pageMeta,
+          revisionShortBody: pageInfo.revisionShortBody,
+        },
+      };
+    });
+  }
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <ul className="page-list-ul list-group list-group-flush">
-      {Array.isArray(props.pages) && props.pages.map((page) => {
+      { (injectedPage ?? pages).map((page) => {
         const isChecked = selectedPagesIdList.has(page.pageData._id);
 
         return (

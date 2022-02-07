@@ -6,7 +6,7 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import { IPageForPageDeleteModal, usePageDeleteModalStatus } from '~/stores/ui';
+import { IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageDeleteModalStatus } from '~/stores/ui';
 
 /*
  * Utility to generate initial node
@@ -55,8 +55,13 @@ type ItemsTreeProps = {
 }
 
 const renderByInitialNode = (
-    initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    initialNode: ItemNode,
+    isEnableActions: boolean,
+    targetPathOrId?: string,
+    onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+    onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
+
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
@@ -65,6 +70,7 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
+        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickDeleteByPage={onClickDeleteByPage}
       />
     </ul>
@@ -82,7 +88,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
+
+  const onClickDuplicateMenuItem = (pageId: string, path: string) => {
+    openDuplicateModal(pageId, path);
+  };
 
   const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
     openDeleteModal([pageToDelete]);
@@ -99,7 +110,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickDeleteByPage);
   }
 
   /*
@@ -107,7 +118,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickDeleteByPage);
   }
 
   return null;
