@@ -61,7 +61,7 @@ const renderByInitialNode = (
     isEnableActions: boolean,
     targetPathOrId?: string,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-    onClickRenameMenuItem?: (pageId: string, reevisionId: string, path: string) => void,
+    onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
     onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
 
