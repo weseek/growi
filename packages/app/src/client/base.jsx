@@ -13,6 +13,7 @@ import PageRenameModal from '../components/PageRenameModal';
 
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -46,6 +47,7 @@ const componentMappings = {
   'page-delete-modal': <PageDeleteModal />,
   'page-duplicate-modal': <PageDuplicateModal />,
   'page-rename-modal': <PageRenameModal />,
+  'descendants-page-list-modal': <DescendantsPageListModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 

@@ -416,6 +416,30 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+type DescendantsPageListModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DescendantsPageListUtils = {
+  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const useDescendantsPageListModal = (
+    status?: DescendantsPageListModalStatus,
+): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
+
+  const initialData: DescendantsPageListModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);
 };
