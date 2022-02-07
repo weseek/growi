@@ -20,11 +20,6 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
     openEditorModal();
   }
 
-  // activate suspense
-  if (tags == null) {
-    throw new Promise(() => {});
-  }
-
   const isTagsEmpty = tags.length === 0;
   const tagElements = tags.map((tag) => {
     return (
