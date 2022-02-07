@@ -165,11 +165,11 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    if (pageInfo == null || onClickDeleteMenuItem == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
     await onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageInfo]);
+  }, [onClickDeleteMenuItem]);
 
   if (revisionId == null || error != null) {
     return <></>;
