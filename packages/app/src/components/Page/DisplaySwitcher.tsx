@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
+
+import { pagePathUtils } from '@growi/core';
 
 import { EditorMode, useEditorMode, useDescendantsPageListModal } from '~/stores/ui';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
 
+
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import PageListIcon from '../Icons/PageListIcon';
 import Editor from '../PageEditor';
@@ -19,8 +23,18 @@ import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import HashChanged from '../EventListeneres/HashChanged';
 
 
+const WIKI_HEADER_LINK = 120;
+
+const { isTopPage } = pagePathUtils;
+
+
 const DisplaySwitcher = (): JSX.Element => {
   const { t } = useTranslation();
+
+
+  // get element for smoothScroll
+  const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
+
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: currentPath } = useCurrentPagePath();
@@ -35,6 +49,7 @@ const DisplaySwitcher = (): JSX.Element => {
 
   const isPageExist = currentPageId != null;
   const isViewMode = editorMode === EditorMode.View;
+  const isTopPagePath = isTopPage(currentPath ?? '');
 
   return (
     <>
@@ -46,11 +61,12 @@ const DisplaySwitcher = (): JSX.Element => {
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
+                  {/* Page list */}
                   <div className="grw-page-accessories-control">
                     { currentPath != null && !isSharedUser && (
                       <button
                         type="button"
-                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between"
+                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
                         onClick={() => openDescendantPageListModal(currentPath)}
                       >
                         <PageListIcon />
@@ -59,6 +75,21 @@ const DisplaySwitcher = (): JSX.Element => {
                       </button>
                     ) }
                   </div>
+
+                  {/* Comments */}
+                  { getCommentListDom != null && !isTopPagePath && (
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+                        onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
+                      >
+                        <i className="mr-2 icon-fw icon-bubbles"></i>
+                        <span>Comments</span>
+                        <span></span> {/* for a count badge */}
+                      </button>
+                    </div>
+                  ) }
 
                   <div className="d-none d-lg-block">
                     <div id="revision-toc" className="revision-toc">
