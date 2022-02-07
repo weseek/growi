@@ -21,6 +21,7 @@ type CommonProps = {
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
+  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
   onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 }
@@ -35,7 +36,7 @@ type SubNavButtonsSubstanceProps= CommonProps & {
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
     pageInfo, pageId, revisionId, path, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown,
-    additionalMenuItemRenderer, onClickRenameMenuItem, onClickDeleteMenuItem,
+    additionalMenuItemRenderer, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -88,6 +89,18 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     mutatePageInfo();
     mutateBookmarkInfo();
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
+
+  const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+
+    if (path == null) {
+      throw Error('path must not be null.');
+    }
+
+    onClickDuplicateMenuItem(pageId, path);
+  }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickRenameMenuItem == null) {
@@ -158,6 +171,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           isEnableActions={!isGuestUser}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
           onClickDeleteMenuItem={deleteMenuItemClickHandler}
         />
       )}
@@ -173,11 +187,18 @@ type SubNavButtonsProps= CommonProps & {
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageId, revisionId, path, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
 
+
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem(pageId, path);
+  }, [onClickDuplicateMenuItem]);
 
   const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
     if (onClickRenameMenuItem == null) {
@@ -209,6 +230,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
+      onClickDuplicateMenuItem={duplicateItemClickedHandler}
       onClickRenameMenuItem={renameItemClickedHandler}
       onClickDeleteMenuItem={deleteItemClickedHandler}
     />

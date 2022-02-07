@@ -9,7 +9,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageRenameModalStatus, usePageDeleteModalStatus,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModalStatus,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -87,6 +87,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
@@ -118,6 +119,10 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal]);
+
   const reameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
@@ -143,6 +148,7 @@ const GrowiContextualSubNavigation = (props) => {
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
               additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} />}
+              onClickDuplicateMenuItem={duplicateItemClickedHandler}
               onClickRenameMenuItem={reameItemClickedHandler}
               onClickDeleteMenuItem={deleteItemClickedHandler}
             />
@@ -165,7 +171,7 @@ const GrowiContextualSubNavigation = (props) => {
     editorMode, mutateEditorMode,
     isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    reameItemClickedHandler, deleteItemClickedHandler, path,
+    duplicateItemClickedHandler, reameItemClickedHandler, deleteItemClickedHandler, path,
   ]);
 
 
