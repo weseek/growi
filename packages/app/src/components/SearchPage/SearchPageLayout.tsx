@@ -60,6 +60,7 @@ const SearchPageLayout: FC<Props> = (props: Props) => {
             </div>
 
             <div className="page-list px-md-4">
+              {props.alertMessage}
               {SearchResultList}
             </div>
           </div>
