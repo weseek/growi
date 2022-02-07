@@ -269,6 +269,20 @@ class PageService {
   }
 
   /**
+   * Remove all empty pages at leaf position by page whose parent will change or which will be deleted.
+   * @param page Page whose parent will change or which will be deleted
+   */
+  async removeLeafEmptyPages(page): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    // delete leaf empty pages
+    const shouldDeleteLeafEmptyPages = !(await Page.exists({ parent: page.parent, _id: { $ne: page._id } }));
+    if (shouldDeleteLeafEmptyPages) {
+      await Page.removeLeafEmptyPagesById(page.parent);
+    }
+  }
+
+  /**
    * Generate read stream to operate descendants of the specified page path
    * @param {string} targetPagePath
    * @param {User} viewer
@@ -1015,10 +1029,7 @@ class PageService {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
       // delete leaf empty pages
-      const shouldDeleteLeafEmptyPages = !shouldReplace;
-      if (shouldDeleteLeafEmptyPages) {
-        await Page.removeLeafEmptyPagesById(page.parent);
-      }
+      await this.removeLeafEmptyPages(page);
     }
 
     let deletedPage;
@@ -1052,7 +1063,7 @@ class PageService {
           await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
 
           // delete leaf empty pages
-          await Page.removeLeafEmptyPagesById(page.parent);
+          await this.removeLeafEmptyPages(page);
         }
       })();
     }
@@ -1286,10 +1297,7 @@ class PageService {
     }
 
     // delete leaf empty pages
-    const shouldDeleteLeafEmptyPages = !shouldReplace;
-    if (shouldDeleteLeafEmptyPages) {
-      await Page.removeLeafEmptyPagesById(page.parent);
-    }
+    await this.removeLeafEmptyPages(page);
 
     if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
@@ -1465,7 +1473,7 @@ class PageService {
           await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
 
           // delete leaf empty pages
-          await Page.removeLeafEmptyPagesById(page.parent);
+          await this.removeLeafEmptyPages(page);
         }
       })();
     }
