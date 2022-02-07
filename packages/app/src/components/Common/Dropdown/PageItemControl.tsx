@@ -24,7 +24,7 @@ type CommonProps = {
   showBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: () => Promise<void> | void,
-  onClickRenameMenuItem?: () => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string) => void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
@@ -68,8 +68,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem();
-  }, [onClickRenameMenuItem]);
+    await onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
@@ -201,8 +201,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (onClickRenameMenuItem == null) {
       return;
     }
-    await onClickRenameMenuItem();
-  }, [onClickRenameMenuItem]);
+    await onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
