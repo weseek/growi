@@ -2134,7 +2134,8 @@ class PageService {
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
         for await (const document of pageDocuments) {
-          await Page.recountDescendantCountOfSelfAndDescendants(document._id);
+          const descendantCount = await Page.recountSelfDescendantCount(document._id);
+          await Page.findByIdAndUpdate(document._id, { descendantCount });
         }
         callback();
       },

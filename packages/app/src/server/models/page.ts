@@ -459,8 +459,10 @@ schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: Objec
   await this.updateMany({ _id: { $in: pageIds } }, { $inc: { descendantCount: increment } });
 };
 
-// update descendantCount of a page with provided id
-schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: ObjectIdLike):Promise<void> {
+/**
+ * recount descendantCount of a page with the provided id and return it
+ */
+schema.statics.recountSelfDescendantCount = async function(id: ObjectIdLike):Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -498,8 +500,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
     ],
   );
 
-  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
-  await this.findByIdAndUpdate(id, query);
+  return res.length === 0 ? 0 : res[0].descendantCount;
 };
 
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
@@ -593,6 +594,9 @@ export default (crowi: Crowi): any => {
     let page;
     if (emptyPage != null) {
       page = emptyPage;
+      const descendantCount = await this.recountSelfDescendantCount(page._id);
+
+      page.descendantCount = descendantCount;
       page.isEmpty = false;
     }
     else {
