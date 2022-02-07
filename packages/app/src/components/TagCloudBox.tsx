@@ -7,11 +7,11 @@ type Props = {
   minSize?: number,
   maxSize?: number,
   maxTagTextLength?: number,
-  isEnableRandomColor?: boolean,
+  isDisableRandomColor?: boolean,
 };
 
 const defaultProps = {
-  isEnableRandomColor: true,
+  isDisableRandomColor: true,
 };
 
 const MIN_FONT_SIZE = 10;
@@ -20,9 +20,10 @@ const MAX_TAG_TEXT_LENGTH = 8;
 
 const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   const {
-    tags, minSize, maxSize, isEnableRandomColor,
+    tags, minSize, maxSize, isDisableRandomColor,
   } = props;
   const maxTagTextLength: number = props.maxTagTextLength || MAX_TAG_TEXT_LENGTH;
+
   return (
     <>
       <TagCloud
@@ -30,17 +31,21 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
         maxSize={maxSize || MAX_FONT_SIZE}
         tags={tags.map((tag:ITagCountHasId) => {
           return {
+            // text truncation
             value: (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name,
             count: tag.count,
           };
         })}
-        disableRandomColor={!isEnableRandomColor}
+        disableRandomColor={isDisableRandomColor}
         style={{ cursor: 'pointer' }}
         className="simple-cloud text-secondary"
         onClick={(target) => { window.location.href = `/_search?q=tag:${encodeURIComponent(target.value)}` }}
       />
     </>
   );
+
 });
+
+TagCloudBox.defaultProps = defaultProps;
 
 export default TagCloudBox;
