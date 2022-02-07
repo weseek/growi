@@ -22,7 +22,6 @@ import {
 
 import { useIsGuestUser } from '~/stores/context';
 import { apiGet } from '~/client/util/apiv1-client';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageWithMeta } from '~/interfaces/page';
 
 
@@ -313,7 +312,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         alertMessage={props.alertMessage}
       >
       </SearchPageLayout>
-      {props.renderActionToPageModal(getSelectedPagesToAction)}
+      {props.renderActionToPageModal != null && props.renderActionToPageModal(getSelectedPagesToAction)}
     </div>
   );
 };
