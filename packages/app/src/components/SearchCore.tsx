@@ -16,6 +16,7 @@ import { toastError } from '~/client/util/apiNotification';
 import SearchPageLayout from './SearchPage/SearchPageLayout';
 import SearchResultContent from './SearchPage/SearchResultContent';
 import SearchResultList from './SearchPage/SearchResultList';
+import { usePageDeleteModalStatus } from '~/stores/ui';
 import {
   CheckboxType, IPageSearchMeta, SearchResultMeta,
 } from '~/interfaces/search';
@@ -50,8 +51,8 @@ type Props = {
   onAfterSearchInvoked?: (keyword: string, searchedKeyword: string) => Promise<void> | void,
   // eslint-disable-next-line max-len
   renderControl: ((searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox, searchingKeyword, onSearchInvoked) => React.FunctionComponent) | ((searchResultCount, selectAllCheckboxType, actionToAllPagesButtonHandler, toggleAllCheckBox) => React.FunctionComponent),
-  setIsActionToPageModalShown: (x : boolean) => void,
-  renderActionToPageModal: (getSelectedPagesForAction) => React.FunctionComponent,
+  setIsActionToPageModalShown?: (x : boolean) => void,
+  renderActionToPageModal?: (pages : string[]) => React.FunctionComponent,
   alertMessage?: React.ReactNode,
   query?: string,
   excludeTrashPages: boolean,
@@ -63,6 +64,7 @@ const SearchCore: FC<Props> = (props: Props) => {
   const query = getQueryByLocation(window.location);
   // TODO: Move this code to the right place after completing the "omit unstated" initiative.
   const { interceptorManager } = props.appContainer;
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
   if (interceptorManager != null) {
     interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(props.appContainer), 10); // process as soon as possible
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(props.appContainer), 900); // process as late as possible
@@ -87,7 +89,6 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
   const [selectAllCheckboxType, setSelectAllCheckboxType] = useState<CheckboxType>(CheckboxType.NONE_CHECKED);
-  const [actionTargetPageIds, setActionToTargetPageIds] = useState<Set<string>>(new Set());
 
 
   /*
@@ -224,7 +225,7 @@ const SearchCore: FC<Props> = (props: Props) => {
     setSelectAllCheckboxType(next);
   };
 
-  const getSelectedPagesToAction = useCallback(() => {
+  const getSelectedPagesToAction = useCallback((actionTargetPageIds) => {
     const filteredPages = searchResults.filter((page) => {
       return Array.from(actionTargetPageIds).find(id => id === page.pageData._id);
     });
@@ -233,19 +234,24 @@ const SearchCore: FC<Props> = (props: Props) => {
       revisionId: page.pageData.revision,
       path: page.pageData.path,
     }));
-  }, [actionTargetPageIds, searchResults]);
+  }, [searchResults]);
 
 
-  const actionToSinglePageButtonHandler = useCallback((pageId) => {
-    setActionToTargetPageIds(new Set([pageId]));
-    props.setIsActionToPageModalShown(true);
-  }, [props.setIsActionToPageModalShown, setActionToTargetPageIds]);
+  const deleteSinglePageHandler = useCallback((pageId) => {
+    const pagesToDelete = getSelectedPagesToAction(new Set([pageId]));
+    openDeleteModal(pagesToDelete);
+  }, [getSelectedPagesToAction, openDeleteModal]);
 
   const actionToAllPagesButtonHandler = useCallback(() => {
     if (selectedPagesIdList.size === 0) { return }
-    setActionToTargetPageIds(selectedPagesIdList);
-    props.setIsActionToPageModalShown(true);
-  }, [selectedPagesIdList, props.setIsActionToPageModalShown]);
+    if (props.setIsActionToPageModalShown != null) {
+      props.setIsActionToPageModalShown(true);
+    }
+    else {
+      const pagesToDelete = getSelectedPagesToAction(selectedPagesIdList);
+      openDeleteModal(pagesToDelete);
+    }
+  }, [selectedPagesIdList, props, getSelectedPagesToAction, openDeleteModal]);
 
 
   /*
@@ -284,7 +290,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         onClickItem={selectPage}
         onClickCheckbox={toggleCheckBox}
         onPagingNumberChanged={onPagingNumberChanged}
-        onClickDeleteButton={actionToSinglePageButtonHandler}
+        onClickDeleteButton={deleteSinglePageHandler}
       />
     );
   };
@@ -312,7 +318,7 @@ const SearchCore: FC<Props> = (props: Props) => {
         alertMessage={props.alertMessage}
       >
       </SearchPageLayout>
-      {props.renderActionToPageModal != null && props.renderActionToPageModal(getSelectedPagesToAction)}
+      {props.renderActionToPageModal != null && props.renderActionToPageModal(getSelectedPagesToAction(selectedPagesIdList))}
     </div>
   );
 };

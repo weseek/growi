@@ -19,25 +19,6 @@ const SearchPage : FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  // TODO: show PageDeleteModal with usePageDeleteModalStatus by 87569
-
-
-  // const [isActionToPageModalShown, setIsActionToPageModalShown] = useState<boolean>(false);
-
-
-  // // Delete modal
-  // const renderActionToPageModal = useCallback((getSelectedPagesForAction) => {
-  //   return (
-  //     <PageDeleteModal
-  //       isOpen={isActionToPageModalShown}
-  //       pages={getSelectedPagesForAction()}
-  //       onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
-  //       isDeleteCompletelyModal={false}
-  //       isAbleToDeleteCompletely={false}
-  //     />
-  //   );
-  // }, [isActionToPageModalShown]);
-
   const renderActionToPages = useCallback((isSelectAllCheckboxDisabled, selectAllCheckboxType, onClickActionAllButton, onClickSelectAllCheckbox) => {
     const actionIconAndText = (
       <>
@@ -85,8 +66,6 @@ const SearchPage : FC<Props> = (props: Props) => {
     <SearchCore
       onAfterSearchInvoked={onAfterSearchHandler}
       renderControl={renderSearchControl}
-      // renderActionToPageModal={renderActionToPageModal}
-      // setIsActionToPageModalShown={setIsActionToPageModalShown}
       excludeTrashPages
       excludeUserPages
     />

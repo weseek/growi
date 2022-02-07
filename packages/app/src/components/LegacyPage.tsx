@@ -17,11 +17,11 @@ const LegacyPage : FC<Props> = (props: Props) => {
 
 
   // migrate modal
-  const renderActionToPageModal = useCallback((getSelectedPagesForAction) => {
+  const renderActionToPageModal = useCallback((pages) => {
     return (
       <PageMigrateModal
         isOpen={isActionToPageModalShown}
-        pages={getSelectedPagesForAction()}
+        pages={pages}
         onClose={() => { setIsActionToPageModalShown(prev => !prev) }}
       />
     );
