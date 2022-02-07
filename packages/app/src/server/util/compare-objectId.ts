@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Types.ObjectId;
 
-export const isIncludesObjectId = (arr: (IObjectId | string)[], id: IObjectId | string): boolean => {
+export const isIncludesObjectId = (arr: ObjectIdLike[], id: ObjectIdLike): boolean => {
   const _arr = arr.map(i => i.toString());
   const _id = id.toString();
 
@@ -17,7 +19,7 @@ export const isIncludesObjectId = (arr: (IObjectId | string)[], id: IObjectId | 
  * @returns Array of mongoose.Types.ObjectId
  */
 export const excludeTestIdsFromTargetIds = <T extends { toString: any } = IObjectId>(
-  targetIds: T[], testIds: (IObjectId | string)[],
+  targetIds: T[], testIds: ObjectIdLike[],
 ): T[] => {
   // cast to string
   const arr1 = targetIds.map(e => e.toString());
@@ -31,13 +33,4 @@ export const excludeTestIdsFromTargetIds = <T extends { toString: any } = IObjec
   };
 
   return shouldReturnString(targetIds) ? excluded : excluded.map(e => new ObjectId(e));
-};
-
-export const removeDuplicates = (objectIds: (IObjectId | string)[]): IObjectId[] => {
-  // cast to string
-  const strs = objectIds.map(id => id.toString());
-  const uniqueArr = Array.from(new Set(strs));
-
-  // cast to ObjectId
-  return uniqueArr.map(str => new ObjectId(str));
 };

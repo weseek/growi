@@ -8,7 +8,7 @@ import { debounce } from 'throttle-debounce';
 import loggerFactory from '~/utils/logger';
 import { useSidebarCollapsed } from '~/stores/ui';
 
-import GrowiSubNavigation from './GrowiSubNavigation';
+import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
 
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
@@ -110,7 +110,7 @@ const GrowiSubNavigationSwitcher = (props) => {
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed" ref={fixedContainerRef} style={{ width }}>
-        <GrowiSubNavigation isCompactMode />
+        <GrowiContextualSubNavigation isCompactMode />
       </div>
     </div>
   );

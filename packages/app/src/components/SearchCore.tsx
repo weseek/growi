@@ -87,7 +87,6 @@ const SearchCore: FC<Props> = (props: Props) => {
   const [focusedSearchResultData, setFocusedSearchResultData] = useState<IPageWithMeta<IPageSearchMeta> | null>(null);
   const [selectedPagesIdList, setSelectedPagesIdList] = useState<Set<string>>(new Set());
   const [searchResultCount, setSearchResultCount] = useState<number>(0);
-  const [shortBodiesMap, setShortBodiesMap] = useState<Record<string, string> | null>(null);
   const [activePage, setActivePage] = useState<number>(1);
   const [pagingLimit, setPagingLimit] = useState<number>(props.appContainer.config.pageLimitationL || 50);
   const [excludeUserPages, setExcludeUserPages] = useState<boolean>(true);
@@ -133,10 +132,6 @@ const SearchCore: FC<Props> = (props: Props) => {
     props.onAfterSearchInvoked(keyword, currentSearchedKeyword);
   }, [props.onAfterSearchInvoked, currentSearchedKeyword]);
 
-  const fetchShortBodiesMap = useCallback(async(pageIds) => {
-    const res = await apiv3Get('/page-listing/short-bodies', { pageIds });
-    setShortBodiesMap(res.data.shortBodiesMap);
-  }, []);
 
   const createSearchQuery = useCallback((keyword) => {
     let query = keyword;
@@ -176,18 +171,6 @@ const SearchCore: FC<Props> = (props: Props) => {
         order,
       });
 
-      /*
-       * non-await asynchronous short body fetch
-       */
-      const pageIds = res.data.map((page) => {
-        if (page.pageMeta?.elasticSearchResult != null && page.pageMeta?.elasticSearchResult?.snippet.length !== 0) {
-          return null;
-        }
-
-        return page.pageData._id;
-      }).filter(id => id != null);
-      fetchShortBodiesMap(pageIds);
-
       onAfterSearchHandler(keyword);
 
       if (res.data.length > 0) {
@@ -205,7 +188,7 @@ const SearchCore: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  }, [currentSearchedKeyword, activePage, createSearchQuery, fetchShortBodiesMap, onAfterSearchHandler, order, pagingLimit, sort]);
+  }, [currentSearchedKeyword, activePage, createSearchQuery, onAfterSearchHandler, order, pagingLimit, sort]);
 
   const onPagingNumberChanged = useCallback(async(activePage) => {
     setActivePage(activePage);
@@ -319,7 +302,6 @@ const SearchCore: FC<Props> = (props: Props) => {
         selectedPagesIdList={selectedPagesIdList || []}
         searchResultCount={searchResultCount}
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        shortBodiesMap={shortBodiesMap!}
         activePage={activePage}
         pagingLimit={pagingLimit}
         onClickItem={selectPage}

@@ -40,7 +40,7 @@ import MyDraftList from '../components/MyDraftList/MyDraftList';
 import BookmarkList from '../components/PageList/BookmarkList';
 import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
-import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 
@@ -148,7 +148,7 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'grw-subnav-container': <GrowiSubNavigation />,
+    'grw-subnav-container': <GrowiContextualSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
     'display-switcher': <DisplaySwitcher />,
   });

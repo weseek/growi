@@ -124,7 +124,7 @@ module.exports = (crowi) => {
       const page = await Page.findOne({ _id: pageId });
 
       const paginateResult = await Revision.paginate(
-        { path: page.path },
+        { pageId: page._id },
         {
           page: selectedPage,
           limit,
