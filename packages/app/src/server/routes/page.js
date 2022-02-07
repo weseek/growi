@@ -1159,8 +1159,8 @@ module.exports = function(crowi, app) {
   };
 
   validator.remove = [
-    body('completely').optional().custom(v => v === 'true' || v === true || v === null).withMessage('The body property "completely" must be "true" or true.'),
-    body('recursively').optional().custom(v => v === 'true' || v === true || v === null).withMessage('The body property "recursively" must be "true" or true.'),
+    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
+    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
   ];
 
   /**
