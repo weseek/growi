@@ -24,6 +24,7 @@ type Props = {
   onClickCheckbox?: (pageId: string) => void,
   onClickItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
+  onClickDuplicateButton?: () => void,
 }
 
 export const PageListItemL = memo((props: Props): JSX.Element => {
@@ -116,6 +117,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   pageId={pageData._id}
                   pageInfo={pageMeta}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
+                  onClickDuplicateMenuItem={props.onClickDuplicateButton}
                   isEnableActions={isEnableActions}
                 />
               </div>

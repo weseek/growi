@@ -127,6 +127,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
+    console.log('clicked!!');
     if (onClickDuplicateMenuItem == null) {
       return;
     }

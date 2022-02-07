@@ -67,6 +67,7 @@ class SearchPage extends React.Component {
     this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
     this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
     this.deleteAllPagesButtonHandler = this.deleteAllPagesButtonHandler.bind(this);
+    this.duplicateButtonHandler = this.duplicateButtonHandler.bind(this);
     this.closeDeleteConfirmModalHandler = this.closeDeleteConfirmModalHandler.bind(this);
   }
 
@@ -282,6 +283,10 @@ class SearchPage extends React.Component {
     this.setState({ isDeleteConfirmModalShown: true });
   }
 
+  duplicateButtonHandler(pageId) {
+    console.log('複製ボタンが押されました');
+  }
+
   closeDeleteConfirmModalHandler() {
     this.setState({ isDeleteConfirmModalShown: false });
   }
@@ -312,6 +317,7 @@ class SearchPage extends React.Component {
         onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
         onClickDeleteButton={this.deleteSinglePageButtonHandler}
+        onClickDuplicateButton={this.duplicateButtonHandler}
       />
     );
   }

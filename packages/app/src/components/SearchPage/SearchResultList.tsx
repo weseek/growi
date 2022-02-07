@@ -20,6 +20,7 @@ type Props = {
   onClickCheckbox?: (pageId: string) => void,
   onClickInvoked?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
+  onClickDuplicateButton?: () => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
@@ -70,6 +71,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
             onClickDeleteButton={props.onClickDeleteButton}
+            onClickDuplicateButton={props.onClickDuplicateButton}
           />
         );
       })}
