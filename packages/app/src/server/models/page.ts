@@ -518,6 +518,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   return findAncestorsRecursively(target);
 };
 
+// TODO: write test code
 /**
  * Recursively removes empty pages at leaf position.
  * @param pageId ObjectIdLike
