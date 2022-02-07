@@ -9,8 +9,10 @@ import DescendantsPageList from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import PageListIcon from './Icons/PageListIcon';
+import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
 import { useDescendantsPageListModal } from '~/stores/ui';
+import PageTimeline from './PageTimeline';
 
 
 type Props = {
@@ -19,6 +21,7 @@ type Props = {
 export const DescendantsPageListModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
+  const [activeTab, setActiveTab] = useState('pagelist');
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const { data: status, close } = useDescendantsPageListModal();
@@ -35,6 +38,12 @@ export const DescendantsPageListModal = (props: Props): JSX.Element => {
         },
         i18n: t('page_list'),
         index: 0,
+      },
+      timeline: {
+        Icon: TimeLineIcon,
+        Content: () => <PageTimeline />,
+        i18n: t('Timeline View'),
+        index: 1,
       },
     };
   }, [status, t]);
@@ -68,14 +77,15 @@ export const DescendantsPageListModal = (props: Props): JSX.Element => {
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab
-          activeTab="pagelist"
+          activeTab={activeTab}
           navTabMapping={navTabMapping}
           breakpointToHideInactiveTabsDown="md"
+          onNavSelected={v => setActiveTab(v)}
           hideBorderBottom
         />
       </ModalHeader>
       <ModalBody>
-        <CustomTabContent activeTab="pagelist" navTabMapping={navTabMapping} />
+        <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
       </ModalBody>
     </Modal>
   );
