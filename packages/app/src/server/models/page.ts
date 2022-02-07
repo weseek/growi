@@ -145,7 +145,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
 };
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, descendantCount: number, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
+    path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
@@ -534,7 +534,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -622,7 +622,7 @@ export default (crowi: Crowi): any => {
 
     let savedPage = await page.save();
 
-    await crowi.pageService?.updateDescendantCountOfAncestors(page._id, 1, false);
+    await crowi.pageService.updateDescendantCountOfAncestors(page._id, 1, false);
 
     /*
      * After save

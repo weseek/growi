@@ -700,9 +700,17 @@ class PageService {
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-    const createdPage = await (Page.create as CreateMethod)(
-      newPagePath, page.revision.body, user, options,
-    );
+    let createdPage;
+
+    if (page.isEmpty) {
+      const parent = await Page.getParentAndFillAncestors(newPagePath);
+      createdPage = await Page.createEmptyPage(newPagePath, parent);
+    }
+    else {
+      createdPage = await (Page.create as CreateMethod)(
+        newPagePath, page.revision.body, user, options,
+      );
+    }
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
@@ -718,10 +726,14 @@ class PageService {
 
     // TODO: resume
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+      this.resumableDuplicateDescendants(page, newPagePath, user, shouldUseV4Process, createdPage._id);
     }
-
     return result;
+  }
+
+  async resumableDuplicateDescendants(page, newPagePath, user, shouldUseV4Process, createdPageId) {
+    const descendantCountAppliedToAncestors = await this.duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process);
+    await this.updateDescendantCountOfAncestors(createdPageId, descendantCountAppliedToAncestors, false);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
@@ -827,14 +839,7 @@ class PageService {
       pageIdMapping[page._id] = newPageId;
 
       let newPage;
-      if (page.isEmpty) {
-        newPage = {
-          _id: newPageId,
-          path: newPagePath,
-          isEmpty: true,
-        };
-      }
-      else {
+      if (!page.isEmpty) {
         newPage = {
           _id: newPageId,
           path: newPagePath,
@@ -845,14 +850,11 @@ class PageService {
           lastUpdateUser: user._id,
           revision: revisionId,
         };
+        newRevisions.push({
+          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        });
       }
-
       newPages.push(newPage);
-
-      newRevisions.push({
-        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
-      });
-
     });
 
     await Page.insertMany(newPages, { ordered: false });
@@ -922,11 +924,13 @@ class PageService {
     const normalizeParentAndDescendantCountOfDescendants = this.normalizeParentAndDescendantCountOfDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
+    let nNonEmptyDuplicatedPages = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
+          nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
@@ -962,6 +966,9 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
+    await streamToPromise(writeStream);
+
+    return nNonEmptyDuplicatedPages;
   }
 
   private async duplicateDescendantsWithStreamV4(page, newPagePath, user) {
@@ -1000,6 +1007,9 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
+    await streamToPromise(writeStream);
+
+    return count;
   }
 
   /*
