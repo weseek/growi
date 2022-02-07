@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DevidedPagePath } from '@growi/core';
 
 import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
 import PageListIcon from './Icons/PageListIcon';
@@ -63,9 +63,10 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
   const pageIds = pages.map(page => page._id) as string[];
 
 
-  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
-
   const { data: currentPath } = useCurrentPagePath();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
@@ -73,8 +74,8 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
     <div className="d-flex flex-column flex-lg-row-reverse">
 
       <div className="grw-side-contents-container">
-        <div className="grw-page-accessories-control border-bottom pb-1">
-          { currentPath != null && (
+        <div className="grw-page-accessories-control pb-1">
+          { currentPath != null && !isSharedUser && (
             <button
               type="button"
               className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between px-3"
