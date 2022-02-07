@@ -119,6 +119,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
+  const getParentPagePath = (pagePath: string) => {
+    const dirname = nodePath.dirname(page.path as string);
+    return dirname === '/' ? '' : dirname;
+  };
+
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -226,8 +231,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    const parentPath = nodePath.dirname(page.path as string);
-
+    const parentPath = getParentPagePath(page.path as string);
     redirectToEditor(parentPath, inputText);
   };
 
