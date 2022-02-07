@@ -48,9 +48,9 @@ const Tag: FC = () => {
       <div className="px-3 text-center">
         <TagCloudBox tags={tagData} />
       </div>
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center my-5">
         <button
-          className="btn btn-primary rounded mt-3 mb-4 px-5"
+          className="btn btn-primary rounded px-5"
           type="button"
           onClick={() => { window.location.href = '/tags' }}
         >
