@@ -1,56 +1,55 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useMemo, useState } from 'react';
 
 import {
   Modal, ModalBody, ModalHeader, TabContent, TabPane,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
+import { useTranslation } from 'react-i18next';
+
+import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import AppContainer from '~/client/services/AppContainer';
+
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-
 import { withUnstatedContainers } from './UnstatedUtils';
-import PageContainer from '~/client/services/PageContainer';
-import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
-import PageTimeline from './PageTimeline';
-import DescendantsPageList from './DescendantsPageList';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import ExpandOrContractButton from './ExpandOrContractButton';
+import { usePageAccessoriesModal } from '~/stores/ui';
 
-const PageAccessoriesModal = (props) => {
+
+type Props = {
+  appContainer: AppContainer,
+  isLinkSharingDisabled: boolean,
+}
+
+const PageAccessoriesModal = (props: Props): JSX.Element => {
   const {
-    t, pageContainer, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
+    appContainer,
   } = props;
-  const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
-  const { switchActiveTab } = pageAccessoriesContainer;
-  const { activeTab, activeComponents } = pageAccessoriesContainer.state;
+
+  const isLinkSharingDisabled = appContainer.config.disableLinkSharing;
+
+  const { t } = useTranslation();
+
+  const [activeTab, setActiveTab] = useState('pageHistory');
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
+
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: isGuestUser } = useIsGuestUser();
+
+  const { data: status, close } = usePageAccessoriesModal();
 
   const navTabMapping = useMemo(() => {
     return {
-      pagelist: {
-        Icon: PageListIcon,
-        i18n: t('page_list'),
-        index: 0,
-        isLinkEnabled: v => !isSharedUser,
-      },
-      timeline: {
-        Icon: TimeLineIcon,
-        i18n: t('Timeline View'),
-        index: 1,
-        isLinkEnabled: v => !isSharedUser,
-      },
       pageHistory: {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser,
+        isLinkEnabled: () => !isGuestUser && !isSharedUser,
       },
       attachment: {
         Icon: AttachmentIcon,
@@ -61,100 +60,72 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
+        isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
   }, [t, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
-  const closeModalHandler = useCallback(() => {
-    if (onClose == null) {
-      return;
-    }
-    onClose();
-  }, [onClose]);
-
-  const expandWindow = () => {
-    setIsWindowExpanded(true);
-  };
-
-  const contractWindow = () => {
-    setIsWindowExpanded(false);
-  };
-
-  const buttons = (
+  const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
-        expandWindow={expandWindow}
-        contractWindow={contractWindow}
+        expandWindow={() => setIsWindowExpanded(true)}
+        contractWindow={() => setIsWindowExpanded(false)}
       />
-      <button type="button" className="close" onClick={closeModalHandler} aria-label="Close">
+      <button type="button" className="close" onClick={close} aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-  );
+  ), [close, isWindowExpanded]);
+
+  if (status == null) {
+    return <></>;
+  }
+
+  const { isOpened, activeComponents } = status;
 
   return (
-    <React.Fragment>
-      <Modal
-        size="xl"
-        isOpen={props.isOpen}
-        toggle={closeModalHandler}
-        className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
-      >
-        <ModalHeader className="p-0" toggle={closeModalHandler} close={buttons}>
-          <CustomNavTab
-            activeTab={activeTab}
-            navTabMapping={navTabMapping}
-            onNavSelected={switchActiveTab}
-            breakpointToHideInactiveTabsDown="md"
-            hideBorderBottom
-          />
-        </ModalHeader>
-        <ModalBody className="overflow-auto grw-modal-body-style">
-          {/* Do not use CustomTabContent because of performance problem:
-              the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId="pagelist">
-              {activeComponents.has('pagelist') && <DescendantsPageList path={pageContainer.state.path} />}
+    <Modal
+      size="xl"
+      isOpen={isOpened}
+      toggle={close}
+      className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
+    >
+      <ModalHeader className="p-0" toggle={close} close={buttons}>
+        <CustomNavTab
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          breakpointToHideInactiveTabsDown="md"
+          onNavSelected={v => setActiveTab(v)}
+          hideBorderBottom
+        />
+      </ModalHeader>
+      <ModalBody className="overflow-auto grw-modal-body-style">
+        {/* Do not use CustomTabContent because of performance problem:
+            the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
+        <TabContent activeTab={activeTab}>
+          {!isGuestUser && (
+            <TabPane tabId="pageHistory">
+              {activeComponents.has('pageHistory') && <PageHistory /> }
             </TabPane>
-            <TabPane tabId="timeline">
-              {activeComponents.has('timeline') && <PageTimeline /> }
+          )}
+          <TabPane tabId="attachment">
+            {activeComponents.has('attachment') && <PageAttachment />}
+          </TabPane>
+          {!isGuestUser && (
+            <TabPane tabId="shareLink">
+              {activeComponents.has('shareLink') && <ShareLink />}
             </TabPane>
-            {!isGuestUser && (
-              <TabPane tabId="pageHistory">
-                {activeComponents.has('pageHistory') && <PageHistory /> }
-              </TabPane>
-            )}
-            <TabPane tabId="attachment">
-              {activeComponents.has('attachment') && <PageAttachment />}
-            </TabPane>
-            {!isGuestUser && (
-              <TabPane tabId="shareLink">
-                {activeComponents.has('shareLink') && <ShareLink />}
-              </TabPane>
-            )}
-          </TabContent>
-        </ModalBody>
-      </Modal>
-    </React.Fragment>
+          )}
+        </TabContent>
+      </ModalBody>
+    </Modal>
   );
 };
 
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [PageContainer, PageAccessoriesContainer]);
+const PageAccessoriesModalWrapper = withUnstatedContainers(PageAccessoriesModal, [AppContainer]);
 
-PageAccessoriesModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
-
-  isGuestUser: PropTypes.bool.isRequired,
-  isSharedUser: PropTypes.bool.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-};
-
-export default withTranslation()(PageAccessoriesModalWrapper);
+export default PageAccessoriesModalWrapper;

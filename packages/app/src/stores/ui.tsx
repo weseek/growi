@@ -416,6 +416,7 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+
 type DescendantsPageListModalStatus = {
   isOpened: boolean,
   path?: string,
@@ -439,6 +440,48 @@ export const useDescendantsPageListModal = (
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+
+type PageAccessoriesModalStatus = {
+  isOpened: boolean,
+  activeComponents: Set<string>,
+}
+
+type PageAccessoriesModalUtils = {
+  open(activatedComponent: string): Promise<PageAccessoriesModalStatus> | void
+  close(): Promise<PageAccessoriesModalStatus> | void
+}
+
+export const usePageAccessoriesModal = (
+    status?: PageAccessoriesModalStatus,
+): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+
+  const initialData = { isOpened: false, activeComponents: new Set(['']) };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (activatedComponent: string) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: true,
+        activeComponents: swrResponse.data.activeComponents.add(activatedComponent),
+      });
+    },
+    close: () => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: false,
+        activeComponents: swrResponse.data.activeComponents,
+      });
+    },
+  };
+};
+
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);
