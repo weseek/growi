@@ -101,7 +101,7 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'forbidden-page': <ForbiddenPage isSharePage={appContainer.config.disableLinkSharing} />,
+  'forbidden-page': <ForbiddenPage isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
 
   'page-timeline': <PageTimeline />,
 
