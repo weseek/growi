@@ -5,8 +5,10 @@ import {
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-// import { apiPost } from '~/client/util/apiv1-client';
+import { apiPost } from '~/client/util/apiv1-client';
 import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+
+import { IPageApiv1Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -60,29 +62,33 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   async function deletePage() {
-    toastr.warning(t('search_result.currently_not_implemented'));
+    // toastr.warning(t('search_result.currently_not_implemented'));
     // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
     // setErrs(null);
 
-    // try {
-    //   // control flag
-    //   // If is it not true, Request value must be `null`.
-    //   const recursively = isDeleteRecursively ? true : null;
-    //   const completely = isDeleteCompletely ? true : null;
+    if (pagesDataToDelete?.pages != null && (pagesDataToDelete.pages.length > 0)) {
+      const pageToDelete = pagesDataToDelete?.pages[0];
+      try {
+        // control flag
+        // If is it not true, Request value must be `null`.
+        const recursively = isDeleteRecursively != true ? true : null;
+        const completely = isDeleteCompletely != true　 ? true : null;
 
-    //   const response = await apiPost('/pages.remove', {
-    //     page_id: pageId,
-    //     revision_id: revisionId,
-    //     recursively,
-    //     completely,
-    //   });
+        const result = await apiPost('/pages.remove', {
+          page_id: pageToDelete.pageId,
+          revision_id: pageToDelete.revisionId,
+          recursively,
+          completely,
+        }) as IPageApiv1Result;
 
-    //   const trashPagePath = response.page.path;
-    //   window.location.href = encodeURI(trashPagePath);
-    // }
-    // catch (err) {
-    //   setErrs(err);
-    // }
+        const trashPagePath = result.page.path;
+
+        window.location.href = encodeURI(trashPagePath);
+    }
+    catch (err) {
+      setErrs(err);
+    }
+    }
   }
 
   async function deleteButtonHandler() {
@@ -96,10 +102,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           className="custom-control-input"
           id="deleteRecursively"
           type="checkbox"
-          // checked={isDeleteRecursively}
-          checked={false}
+          checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
-          disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
@@ -123,7 +128,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           id="deleteCompletely"
           type="checkbox"
           // disabled={!isAbleToDeleteCompletely}
-          disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
