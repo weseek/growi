@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
+
+import { pagePathUtils } from '@growi/core';
+
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -19,6 +22,7 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
+const { generateEditorPath } = pagePathUtils;
 
 interface ItemProps {
   isEnableActions: boolean
@@ -185,7 +189,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
       return;
@@ -206,11 +209,26 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
+  const redirectToEditor = (...paths) => {
+    try {
+      const editorPath = generateEditorPath(...paths);
+      window.location.href = editorPath;
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
+  const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
+
+    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
+      return;
+    }
+
+    const parentPath = nodePath.dirname(page.path as string);
+
+    redirectToEditor(parentPath, inputText);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
