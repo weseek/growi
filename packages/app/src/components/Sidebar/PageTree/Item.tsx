@@ -160,11 +160,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // }, []);
 
   // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-  //     return;
-  //   }
-
-  //   const parentPath = getParentPagePath(page.path)
+  //   const parentPath = getParentPagePath(page.path as string)
   //   const newPagePath = `${parentPath}/${inputText}`;
 
   //   try {
@@ -226,11 +222,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
-
-    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-      return;
-    }
-
     const parentPath = getParentPagePath(page.path as string);
     redirectToEditor(parentPath, inputText);
   };
