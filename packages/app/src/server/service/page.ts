@@ -357,23 +357,38 @@ class PageService {
       update.updatedAt = new Date();
     }
 
+    // *************************
+    // * before rename target page
+    // *************************
+    const oldPageParentId = page.parent; // this is used to update descendantCount of old page's ancestors
+
+    // *************************
+    // * rename target page
+    // *************************
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    this.pageEvent.emit('rename', page, user);
+
+    // *************************
+    // * after rename target page
+    // *************************
+    // rename descendants and update descendantCount asynchronously
+    this.resumableRenameDescendants(page, newPagePath, user, options, shouldUseV4Process, renamedPage, oldPageParentId);
+
+    return renamedPage;
+  }
+
+  async resumableRenameDescendants(page, newPagePath, user, options, shouldUseV4Process, renamedPage, oldPageParentId) {
+    // TODO: resume
+    // update descendants first
+    await this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
+
     // reduce ancestore's descendantCount
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
-    await this.updateDescendantCountOfAncestors(page._id, nToReduce, false);
-    // rename
-    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    await this.updateDescendantCountOfAncestors(oldPageParentId, nToReduce, true);
 
     // increase ancestore's descendantCount
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
-
-    this.pageEvent.emit('rename', page, user);
-
-    // TODO: resume
-    // update descendants first
-    this.renameDescendantsWithStream(page, newPagePath, user, options, shouldUseV4Process);
-
-    return renamedPage;
   }
 
   // !!renaming always include descendant pages!!
