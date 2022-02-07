@@ -91,7 +91,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [deleteItemClickedHandler, page, showPageControlDropdown]);
+  }, [page, showPageControlDropdown, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
