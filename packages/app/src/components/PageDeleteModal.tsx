@@ -60,10 +60,6 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
-  function redicretToTrash(pagePath: string) {
-    window.location.href = encodeURI(pagePath);
-  }
-
   async function deletePage() {
     // toastr.warning(t('search_result.currently_not_implemented'));
     // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
@@ -83,7 +79,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IPageApiv1Result;
 
-        redicretToTrash(result.page.path);
+        const trashPagePath = result.page.path;
+
+        window.location.href = encodeURI(trashPagePath);
 
       }
       catch (err) {
