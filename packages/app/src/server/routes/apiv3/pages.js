@@ -714,7 +714,7 @@ module.exports = (crowi) => {
     try {
       if (!isV5Compatible) {
         // this method throws and emit socketIo event when error occurs
-        crowi.pageService.v5InitialMigration(); // not await
+        crowi.pageService.normalizeAllPublicPages(); // not await
       }
     }
     catch (err) {
