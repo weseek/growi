@@ -29,6 +29,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputText, setInputText] = useState(props.value);
+  const [canKeyDownHandler, setCanKeyDownHandler] = useState(false);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
   const onChangeHandler = async(e) => {
@@ -37,6 +38,9 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     const inputText = e.target.value;
 
     const alertInfo = await props.inputValidator(inputText);
+
+    // eslint-disable-next-line no-unused-expressions
+    alertInfo == null ? setCanKeyDownHandler(true) : setCanKeyDownHandler(false);
 
     setAlertInfo(alertInfo);
     setInputText(inputText);
@@ -53,12 +57,8 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   };
 
   const onKeyDownHandler = (e) => {
-    switch (e.key) {
-      case 'Enter':
-        onPressEnter();
-        break;
-      default:
-        break;
+    if (canKeyDownHandler && e.key === 'Enter') {
+      onPressEnter();
     }
   };
 
