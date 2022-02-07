@@ -462,7 +462,7 @@ schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: Objec
 /**
  * recount descendantCount of a page with the provided id and return it
  */
-schema.statics.recountSelfDescendantCount = async function(id: ObjectIdLike):Promise<number> {
+schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -594,7 +594,7 @@ export default (crowi: Crowi): any => {
     let page;
     if (emptyPage != null) {
       page = emptyPage;
-      const descendantCount = await this.recountSelfDescendantCount(page._id);
+      const descendantCount = await this.recountDescendantCount(page._id);
 
       page.descendantCount = descendantCount;
       page.isEmpty = false;
