@@ -27,7 +27,6 @@ const deleteIconAndKey = {
 };
 
 type Props = {
-  isOpen: boolean,
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
