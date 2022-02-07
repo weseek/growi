@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,7 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { IPageHasId } from '~/interfaces/page';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
+import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 
@@ -32,19 +33,26 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
   revisionId: string,
+  onClickPresentationMenuItem: (isPagePresentationModalShown: boolean) => void,
+
 }
 
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, revisionId } = props;
+  const { pageId, revisionId, onClickPresentationMenuItem } = props;
+
+  const openPagePresentationModalHandler = () => {
+    onClickPresentationMenuItem(true);
+  };
+
 
   return (
     <>
       <DropdownItem divider />
 
       {/* Presentation */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
+      <DropdownItem onClick={openPagePresentationModalHandler}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -91,6 +99,8 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
+  const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
+
   const {
     editorContainer, isCompactMode,
   } = props;
@@ -131,6 +141,10 @@ const GrowiContextualSubNavigation = (props) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
 
+  const presentationMenuItemClickHandler = useCallback(() => {
+    setIsPagePresentationModalShown(true);
+  }, []);
+
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -147,7 +161,14 @@ const GrowiContextualSubNavigation = (props) => {
               path={path}
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} />}
+              additionalMenuItemRenderer={props => (
+                <AdditionalMenuItems
+                  {...props}
+                  pageId={pageId}
+                  revisionId={revisionId}
+                  onClickPresentationMenuItem={presentationMenuItemClickHandler}
+                />
+              )}
               onClickDuplicateMenuItem={duplicateItemClickedHandler}
               onClickRenameMenuItem={reameItemClickedHandler}
               onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -163,6 +184,11 @@ const GrowiContextualSubNavigation = (props) => {
               isDeviceSmallerThanMd={isDeviceSmallerThanMd}
             />
           )}
+          <PagePresentationModal
+            isOpen={isPagePresentationModalShown}
+            onClose={() => setIsPagePresentationModalShown(false)}
+            href="?presentation=1"
+          />
         </div>
       </>
     );
@@ -171,7 +197,8 @@ const GrowiContextualSubNavigation = (props) => {
     editorMode, mutateEditorMode,
     isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    duplicateItemClickedHandler, reameItemClickedHandler, deleteItemClickedHandler, path,
+    duplicateItemClickedHandler, reameItemClickedHandler, deleteItemClickedHandler,
+    isPagePresentationModalShown, presentationMenuItemClickHandler, path,
   ]);
 
 
