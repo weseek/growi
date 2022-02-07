@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import urljoin from 'url-join';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
@@ -28,6 +26,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { IPageHasId } from '~/interfaces/page';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import PresentationIcon from '../Icons/PresentationIcon';
+import { exportAsMarkdown } from '~/client/services/page-operation';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -40,13 +39,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
   const { pageId, revisionId } = props;
 
-  const exportPageHandler = useCallback(async(format: string): Promise<void> => {
-    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
-    url.searchParams.append('format', format);
-    url.searchParams.append('revisionId', revisionId);
-    window.location.href = url.href;
-  }, [pageId, revisionId]);
-
   return (
     <>
       <DropdownItem divider />
@@ -58,7 +50,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       {/* Export markdown */}
-      <DropdownItem onClick={() => exportPageHandler('md')}>
+      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
         <i className="icon-fw icon-cloud-download"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>

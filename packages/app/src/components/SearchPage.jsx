@@ -19,7 +19,6 @@ import SearchControl from './SearchPage/SearchControl';
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import PageDeleteModal from './PageDeleteModal';
 import { useIsGuestUser } from '~/stores/context';
-import { apiv3Get } from '~/client/util/apiv3-client';
 
 export const specificPathNames = {
   user: '/user',
@@ -189,19 +188,6 @@ class SearchPage extends React.Component {
         order,
       });
 
-      // TODO: fetch with /page-listing/info
-      // https://redmine.weseek.co.jp/issues/87695
-      /*
-       * non-await asynchronous short body fetch
-       */
-      // const pageIds = res.data.map((page) => {
-      //   if (page.pageMeta?.elasticSearchResult != null && page.pageMeta?.elasticSearchResult?.snippet.length !== 0) {
-      //     return null;
-      //   }
-
-      //   return page.pageData._id;
-      // }).filter(id => id != null);
-
       this.changeURL(keyword);
       if (res.data.length > 0) {
         this.setState({
@@ -306,6 +292,7 @@ class SearchPage extends React.Component {
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
         focusedSearchResultData={this.state.focusedSearchResultData}
+        showPageControlDropdown={!this.props.isGuestUser}
       >
       </SearchResultContent>
     );

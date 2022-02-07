@@ -9,7 +9,7 @@ import UserPictureList from './User/UserPictureList';
 import { useIsGuestUser } from '~/stores/context';
 
 interface Props {
-  bookmarkCount: number
+  bookmarkCount?: number
   isBookmarked?: boolean
   bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
@@ -58,7 +58,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
       { !hideTotalNumber && (
         <>
           <button type="button" id="po-total-bookmarks" className={`btn btn-bookmark border-0 total-bookmarks ${props.isBookmarked ? 'active' : ''}`}>
-            {bookmarkCount}
+            {bookmarkCount ?? 0}
           </button>
           { bookmarkedUsers != null && (
             <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-bookmarks" toggle={togglePopover} trigger="legacy">

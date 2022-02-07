@@ -1,3 +1,5 @@
+import urljoin from 'url-join';
+
 import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 import { toastError } from '../util/apiNotification';
@@ -50,4 +52,11 @@ export const unbookmark = async(pageId: string): Promise<void> => {
   catch (err) {
     toastError(err);
   }
+};
+
+export const exportAsMarkdown = (pageId: string, revisionId: string, format: string): void => {
+  const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
+  url.searchParams.append('format', format);
+  url.searchParams.append('revisionId', revisionId);
+  window.location.href = url.href;
 };
