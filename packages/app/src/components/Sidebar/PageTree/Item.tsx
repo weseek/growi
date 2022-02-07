@@ -164,7 +164,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   //     return;
   //   }
 
-  //   const parentPath = nodePath.dirname(page.path as string);
+  //   const parentPath = getParentPagePath(page.path)
   //   const newPagePath = `${parentPath}/${inputText}`;
 
   //   try {
