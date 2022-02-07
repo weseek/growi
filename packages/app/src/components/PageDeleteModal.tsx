@@ -61,11 +61,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   function redicretToTrash(pagePath: string) {
-    const dirname = nodePath.dirname(pagePath as string);
-    if (dirname === '/trash') {
-      window.location.href = encodeURI(pagePath);
-    }
-    return;
+    window.location.href = encodeURI(pagePath);
   }
 
   async function deletePage() {
@@ -77,8 +73,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
       try {
         // control flag
         // If is it not true, Request value must be `null`.
-        const recursively = isDeleteRecursively !== true ? true : null;
-        const completely = isDeleteCompletely !== true ? true : null;
+        const recursively = isDeleteRecursively === true ? true : undefined;
+        const completely = isDeleteCompletely === true ? true : undefined;
 
         // TODO: Create an endpoint (pages.removeMany)
         const result = await apiPost('/pages.removeMany', {
