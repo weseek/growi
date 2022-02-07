@@ -9,7 +9,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageDeleteModalStatus,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -87,6 +87,8 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
+
   const {
     editorContainer, isCompactMode,
   } = props;
@@ -115,6 +117,10 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
+
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -128,9 +134,11 @@ const GrowiContextualSubNavigation = (props) => {
               isCompactMode={isCompactMode}
               pageId={pageId}
               revisionId={revisionId}
+              path={path}
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
               additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} />}
+              onClickDeleteMenuItem={deleteItemClickedHandler}
             />
           ) }
         </div>
@@ -151,6 +159,7 @@ const GrowiContextualSubNavigation = (props) => {
     editorMode, mutateEditorMode,
     isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
+    deleteItemClickedHandler, path,
   ]);
 
 
