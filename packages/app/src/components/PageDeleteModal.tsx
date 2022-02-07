@@ -1,9 +1,9 @@
 import React, { useState, FC } from 'react';
-import toastr from 'toastr';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+import nodePath from 'path';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
@@ -60,6 +60,14 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
+  function redicretToTrash(pagePath: string) {
+    const dirname = nodePath.dirname(pagePath as string);
+    if (dirname === '/trash') {
+      window.location.href = encodeURI(pagePath);
+    }
+    return;
+  }
+
   async function deletePage() {
     // toastr.warning(t('search_result.currently_not_implemented'));
     // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
@@ -79,9 +87,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IPageApiv1Result;
 
-        const trashPagePath = result.page.path;
+        redicretToTrash(result.page.path);
 
-        window.location.href = encodeURI(trashPagePath);
       }
       catch (err) {
         setErrs(err);
