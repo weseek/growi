@@ -115,6 +115,7 @@ export class InstallerService {
     const rootPage = await Page.findOne({ path: '/' });
     const rootRevision = await Revision.findOne({ path: '/' });
     rootPage.creator = adminUser._id;
+    rootPage.lastUpdateUser = adminUser._id;
     rootRevision.creator = adminUser._id;
     await Promise.all([rootPage.save(), rootRevision.save()]);
 

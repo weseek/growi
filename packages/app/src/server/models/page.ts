@@ -145,7 +145,7 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], publicO
 };
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, descendantCount: number, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
+    path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
 ): Promise<PageDocument & { _id: any }> {
   if (parent == null) {
     throw Error('parent must not be null');
@@ -459,8 +459,10 @@ schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: Objec
   await this.updateMany({ _id: { $in: pageIds } }, { $inc: { descendantCount: increment } });
 };
 
-// update descendantCount of a page with provided id
-schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: ObjectIdLike):Promise<void> {
+/**
+ * recount descendantCount of a page with the provided id and return it
+ */
+schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -498,8 +500,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
     ],
   );
 
-  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
-  await this.findByIdAndUpdate(id, query);
+  return res.length === 0 ? 0 : res[0].descendantCount;
 };
 
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
@@ -534,7 +535,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -593,6 +594,9 @@ export default (crowi: Crowi): any => {
     let page;
     if (emptyPage != null) {
       page = emptyPage;
+      const descendantCount = await this.recountDescendantCount(page._id);
+
+      page.descendantCount = descendantCount;
       page.isEmpty = false;
     }
     else {
@@ -622,7 +626,7 @@ export default (crowi: Crowi): any => {
 
     let savedPage = await page.save();
 
-    await crowi.pageService?.updateDescendantCountOfAncestors(page._id, 1, false);
+    await crowi.pageService.updateDescendantCountOfAncestors(page._id, 1, false);
 
     /*
      * After save

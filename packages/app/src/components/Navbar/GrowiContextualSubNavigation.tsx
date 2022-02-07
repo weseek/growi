@@ -175,6 +175,9 @@ const GrowiContextualSubNavigation = (props) => {
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}
+      isGuestUser={isGuestUser}
+      isDrawerMode={isDrawerMode}
+      isCompactMode={isCompactMode}
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
