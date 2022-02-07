@@ -1,32 +1,39 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
-import propTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '~/client/services/PageContainer';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode, useDescendantsPageListModal } from '~/stores/ui';
+import {
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
+} from '~/stores/context';
 
+
+import PageListIcon from '../Icons/PageListIcon';
 import Editor from '../PageEditor';
 import Page from '../Page';
 import UserInfo from '../User/UserInfo';
 import TableOfContents from '../TableOfContents';
 import ContentLinkButtons from '../ContentLinkButtons';
-import PageAccessories from '../PageAccessories';
 import PageEditorByHackmd from '../PageEditorByHackmd';
 import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
 import HashChanged from '../EventListeneres/HashChanged';
-import { useIsEditable } from '~/stores/context';
 
 
-const DisplaySwitcher = (props) => {
-  const {
-    pageContainer,
-  } = props;
-  const { isPageExist, pageUser } = pageContainer.state;
+const DisplaySwitcher = (): JSX.Element => {
+  const { t } = useTranslation();
 
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPath } = useCurrentPagePath();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: isUserPage } = useIsUserPage();
   const { data: isEditable } = useIsEditable();
+  const { data: pageUser } = usePageUser();
+
   const { data: editorMode } = useEditorMode();
 
+  const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+
+  const isPageExist = currentPageId != null;
   const isViewMode = editorMode === EditorMode.View;
 
   return (
@@ -38,8 +45,19 @@ const DisplaySwitcher = (props) => {
             { isPageExist && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
-                  <div className="border-bottom pb-1">
-                    <PageAccessories />
+
+                  <div className="grw-page-accessories-control">
+                    { currentPath != null && !isSharedUser && (
+                      <button
+                        type="button"
+                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between"
+                        onClick={() => openDescendantPageListModal(currentPath)}
+                      >
+                        <PageListIcon />
+                        {t('page_list')}
+                        <span></span> {/* for a count badge */}
+                      </button>
+                    ) }
                   </div>
 
                   <div className="d-none d-lg-block">
@@ -48,12 +66,13 @@ const DisplaySwitcher = (props) => {
                     </div>
                     <ContentLinkButtons />
                   </div>
+
                 </div>
               </div>
             ) }
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
-              {pageUser && <UserInfo pageUser={pageUser} />}
+              { isUserPage && <UserInfo pageUser={pageUser} />}
               <Page />
             </div>
 
@@ -81,9 +100,4 @@ const DisplaySwitcher = (props) => {
   );
 };
 
-DisplaySwitcher.propTypes = {
-  pageContainer: propTypes.instanceOf(PageContainer).isRequired,
-};
-
-
-export default withUnstatedContainers(DisplaySwitcher, [PageContainer]);
+export default DisplaySwitcher;
