@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.13...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.13](https://github.com/weseek/growi/compare/v4.5.12...v4.5.13) - 2022-02-08
+
+### 🐛 Bug Fixes
+
+- fix: fix: Sidebar collapsing (#5283) @yuki-takei
 
 ## [v4.5.12](https://github.com/weseek/growi/compare/v4.5.11...v4.5.12) - 2022-02-01
 
