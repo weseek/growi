@@ -29,7 +29,6 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputText, setInputText] = useState(props.value);
-  const [canKeyDownHandler, setCanKeyDownHandler] = useState(false);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
   const onChangeHandler = async(e) => {
@@ -39,11 +38,12 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
     const alertInfo = await props.inputValidator(inputText);
 
-    // eslint-disable-next-line no-unused-expressions
-    alertInfo == null ? setCanKeyDownHandler(true) : setCanKeyDownHandler(false);
-
     setAlertInfo(alertInfo);
     setInputText(inputText);
+  };
+
+  const onFocusHandler = async(e) => {
+    await onChangeHandler(e);
   };
 
   const onPressEnter = () => {
@@ -57,7 +57,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   };
 
   const onKeyDownHandler = (e) => {
-    if (canKeyDownHandler && e.key === 'Enter') {
+    if (e.key === 'Enter' && currentAlertInfo == null) {
       onPressEnter();
     }
   };
@@ -111,6 +111,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         onKeyDown={onKeyDownHandler}
         onBlur={onBlurHandler}
         autoFocus={false}
+        onFocus={onFocusHandler}
       />
       <AlertInfo />
     </div>
