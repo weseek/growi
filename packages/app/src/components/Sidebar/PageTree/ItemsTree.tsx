@@ -104,7 +104,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     if (targetElem[0] != null && startFrom != null) {
       smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
     }
-  }, [ancestorsChildrenData, rootPageData]);
+  }, [ancestorsChildrenData]);
 
   const onClickDuplicateMenuItem = (pageId: string, path: string) => {
     openDuplicateModal(pageId, path);
