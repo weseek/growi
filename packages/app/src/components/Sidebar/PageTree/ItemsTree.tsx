@@ -104,9 +104,12 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
+  const onDeletedHandler = (pagePath) => {
+    window.location.href = encodeURI(pagePath);
+  };
+
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    console.log('デリートボタンが押下されました');
-    openDeleteModal([pageToDelete]);
+    openDeleteModal([pageToDelete], onDeletedHandler);
   };
 
   if (error1 != null || error2 != null) {

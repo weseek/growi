@@ -306,10 +306,16 @@ export type IPageForPageDeleteModal = {
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
+  onDeleted?: (pagePath: string) => void,
+}
+
+type DeleteModalOpened = {
+  isOpend: boolean,
+  onDeleted?: (pagePath: string) => void,
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: (pagePath: string) => void): Promise<DeleteModalStatus | undefined>
   close(): Promise<DeleteModalStatus | undefined>
 }
 
@@ -319,17 +325,17 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 
   return {
     ...swrResponse,
-    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?:(pagePath: string) => void) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
-export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
+export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
   const { data } = usePageDeleteModalStatus();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
-      return data != null ? data.isOpened : false;
+      return data != null ? { isOpend: data.isOpened, onDeleted: data?.onDeleted } : null;
     },
   );
 };

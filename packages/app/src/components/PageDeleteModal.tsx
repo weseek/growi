@@ -3,7 +3,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import nodePath from 'path';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
@@ -38,9 +37,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
-
   const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
-  const { data: isOpened } = usePageDeleteModalOpened();
+  const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
+
+  const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -77,10 +77,11 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IPageApiv1Result;
 
-        const trashPagePath = result.page.path;
+        const redirectPagePath = result.page.path;
 
-        window.location.href = encodeURI(trashPagePath);
-
+        if (pageDeleteModalOpened?.onDeleted) {
+          pageDeleteModalOpened.onDeleted(redirectPagePath);
+        }
       }
       catch (err) {
         setErrs(err);
