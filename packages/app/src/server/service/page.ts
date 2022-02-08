@@ -1960,33 +1960,6 @@ class PageService {
     await this._setIsV5CompatibleTrue();
   }
 
-  /*
-   * returns an array of js RegExp instance instead of RE2 instance for mongo filter
-   */
-  private async _generateRegExpsByPageIds(pageIds, shouldOmitDuplicateAreaPath: boolean) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    let result;
-    try {
-      result = await Page.findListByPageIds(pageIds, null, false);
-    }
-    catch (err) {
-      logger.error('Failed to find pages by ids', err);
-      throw err;
-    }
-
-    const { pages } = result;
-
-    let paths = pages.map(p => p.path);
-    if (shouldOmitDuplicateAreaPath) {
-      paths = omitDuplicateAreaPathFromPaths(paths);
-    }
-
-    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
-
-    return regexps;
-  }
-
   private async _setIsV5CompatibleTrue() {
     try {
       await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
