@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, omitDuplicatePathAreaFromPaths,
+  isCreatablePage, isTrashPage, isTopPage, omitDuplicateAreaPathFromPaths,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -1943,7 +1943,7 @@ class PageService {
   /*
    * returns an array of js RegExp instance instead of RE2 instance for mongo filter
    */
-  private async _generateRegExpsByPageIds(pageIds, shouldOmitDuplicatePathArea: boolean) {
+  private async _generateRegExpsByPageIds(pageIds, shouldOmitDuplicateAreaPath: boolean) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     let result;
@@ -1958,8 +1958,8 @@ class PageService {
     const { pages } = result;
 
     let paths = pages.map(p => p.path);
-    if (shouldOmitDuplicatePathArea) {
-      paths = omitDuplicatePathAreaFromPaths(paths);
+    if (shouldOmitDuplicateAreaPath) {
+      paths = omitDuplicateAreaPathFromPaths(paths);
     }
 
     const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));

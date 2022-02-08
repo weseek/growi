@@ -164,11 +164,11 @@ export const collectAncestorPaths = (path: string, ancestorPaths: string[] = [])
 
 /**
  * return paths without duplicate area of regexp /^${path}\/.+/i
- * ex. expect(omitDuplicatePathAreaFromPaths(['/A', '/A/B', '/A/B/C'])).toStrictEqual(['/A'])
+ * ex. expect(omitDuplicateAreaPathFromPaths(['/A', '/A/B', '/A/B/C'])).toStrictEqual(['/A'])
  * @param paths paths to be tested
  * @returns omitted paths
  */
-export const omitDuplicatePathAreaFromPaths = (paths: string[]): string[] => {
+export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
   return paths.filter((path) => {
     const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
 

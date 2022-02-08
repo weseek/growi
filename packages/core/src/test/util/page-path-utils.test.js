@@ -1,5 +1,5 @@
 import {
-  isTopPage, convertToNewAffiliationPath, isCreatablePage, omitDuplicatePathAreaFromPaths,
+  isTopPage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
 } from '~/utils/page-path-utils';
 
 describe('TopPage Path test', () => {
@@ -106,33 +106,33 @@ describe('isCreatablePage test', () => {
     }
   });
 
-  describe('Test omitDuplicatePathAreaFromPaths', () => {
+  describe('Test omitDuplicateAreaPathFromPaths', () => {
     test('Should not omit when all paths are at unique area', () => {
       const paths = ['/A', '/B/A', '/C/B/A', '/D'];
       const expectedPaths = paths;
 
-      expect(omitDuplicatePathAreaFromPaths(paths)).toStrictEqual(paths);
+      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(paths);
     });
 
     test('Should omit when some paths are at duplicated area', () => {
       const paths = ['/A', '/A/A', '/A/B/A', '/B', '/B/A', '/AA'];
       const expectedPaths = ['/A', '/B', '/AA'];
 
-      expect(omitDuplicatePathAreaFromPaths(paths)).toStrictEqual(expectedPaths);
+      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
 
     test('Should omit when some long paths are at duplicated area', () => {
       const paths = ['/A/B/C', '/A/B/C/D', '/A/B/C/D/E'];
       const expectedPaths = ['/A/B/C'];
 
-      expect(omitDuplicatePathAreaFromPaths(paths)).toStrictEqual(expectedPaths);
+      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
 
     test('Should omit when some long paths are at duplicated area [case insensitivity]', () => {
       const paths = ['/a/B/C', '/A/b/C/D', '/A/B/c/D/E'];
       const expectedPaths = ['/a/B/C'];
 
-      expect(omitDuplicatePathAreaFromPaths(paths)).toStrictEqual(expectedPaths);
+      expect(omitDuplicateAreaPathFromPaths(paths)).toStrictEqual(expectedPaths);
     });
   });
 });
