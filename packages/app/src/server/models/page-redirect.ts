@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
-  Schema, Model, Document,
+  Schema, Model, Document, DeleteResult,
 } from 'mongoose';
 import { getOrCreateModel } from '@growi/core';
 
@@ -26,7 +26,7 @@ const schema = new Schema<PageRedirectDocument, PageRedirectModel>({
   toPath: { type: String, required: true },
 });
 
-schema.statics.removePageRedirectByFromPath = async function(fromPath: string): Promise<void> {
+schema.statics.removePageRedirectByFromPath = async function(fromPath: string): Promise<DeleteResult> {
   return this.deleteOne({ fromPath });
 };
 
