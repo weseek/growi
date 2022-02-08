@@ -62,7 +62,7 @@ const renderByInitialNode = (
     targetPathOrId?: string,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
 
   return (
@@ -75,7 +75,7 @@ const renderByInitialNode = (
         isEnableActions={isEnableActions}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickRenameMenuItem={onClickRenameMenuItem}
-        onClickDeleteByPage={onClickDeleteByPage}
+        onClickDeleteMenuItem={onClickDeleteMenuItem}
       />
     </ul>
   );
@@ -104,7 +104,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
+    console.log('デリートボタンが押下されました');
     openDeleteModal([pageToDelete]);
   };
 
@@ -119,7 +120,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
   }
 
   /*
@@ -127,7 +128,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
   }
 
   return null;
