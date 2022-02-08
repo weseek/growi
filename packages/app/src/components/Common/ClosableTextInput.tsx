@@ -31,29 +31,30 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
 
+  const createValidation = async(inputText: string) => {
+    if (props.inputValidator != null) {
+      const alertInfo = await props.inputValidator(inputText);
+      setAlertInfo(alertInfo);
+    }
+  };
+
   const onChangeHandler = async(e) => {
-    if (props.inputValidator == null) { return }
-
     const inputText = e.target.value;
-
-    const alertInfo = await props.inputValidator(inputText);
-
-    setAlertInfo(alertInfo);
+    createValidation(inputText);
     setInputText(inputText);
   };
 
   const onFocusHandler = async(e) => {
-    await onChangeHandler(e);
+    const inputText = e.target.value;
+    await createValidation(inputText);
   };
 
   const onPressEnter = () => {
-    if (props.onPressEnter == null) {
-      return;
-    }
-
-    const text = inputText != null ? inputText.trim() : null;
-    if (currentAlertInfo == null) {
-      props.onPressEnter(text);
+    if (props.onPressEnter != null) {
+      const text = inputText != null ? inputText.trim() : null;
+      if (currentAlertInfo == null) {
+        props.onPressEnter(text);
+      }
     }
   };
 
