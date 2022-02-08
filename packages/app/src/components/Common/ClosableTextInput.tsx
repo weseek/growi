@@ -52,13 +52,18 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     }
 
     const text = inputText != null ? inputText.trim() : null;
-
-    props.onPressEnter(text);
+    if (currentAlertInfo == null) {
+      props.onPressEnter(text);
+    }
   };
 
   const onKeyDownHandler = (e) => {
-    if (e.key === 'Enter' && currentAlertInfo == null) {
-      onPressEnter();
+    switch (e.key) {
+      case 'Enter':
+        onPressEnter();
+        break;
+      default:
+        break;
     }
   };
 
