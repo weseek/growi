@@ -161,3 +161,11 @@ export const collectAncestorPaths = (path: string, ancestorPaths: string[] = [])
   ancestorPaths.push(parentPath);
   return collectAncestorPaths(parentPath, ancestorPaths);
 };
+
+export const omitDuplicatePathAreaFromPaths = (paths: string[]): string[] => {
+  return paths.filter((path) => {
+    const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
+
+    return !isDuplicate;
+  });
+};
