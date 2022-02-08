@@ -26,4 +26,8 @@ const schema = new Schema<PageRedirectDocument, PageRedirectModel>({
   toPath: { type: String, required: true },
 });
 
+schema.statics.removePageRedirectByFromPath = async function(fromPath: string): Promise<void> {
+  return this.deleteOne({ fromPath });
+};
+
 export default getOrCreateModel<PageRedirectDocument, PageRedirectModel>('PageRedirect', schema);
