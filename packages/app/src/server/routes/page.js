@@ -1349,18 +1349,18 @@ module.exports = function(crowi, app) {
    * @apiParam {String} revision_id
    */
   api.unlink = async function(req, res) {
-    const fromPath = req.body.path;
+    const path = req.body.path;
 
     try {
-      await PageRedirect.removePageRedirectByFromPath(fromPath);
-      logger.debug('Redirect Page deleted', fromPath);
+      await PageRedirect.removePageRedirectByToPath(path);
+      logger.debug('Redirect Page deleted', path);
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to delete redirect page.'));
     }
 
-    const result = { path: fromPath };
+    const result = { path };
     return res.json(ApiResponse.success(result));
   };
 
