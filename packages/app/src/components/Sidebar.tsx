@@ -244,6 +244,10 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   // open/close resizable container
   useEffect(() => {
+    if (!isCollapsed) {
+      return;
+    }
+
     if (isHoverOnResizableContainer) {
       // schedule to open
       timeoutIdRef.current = setTimeout(() => {
@@ -262,7 +266,7 @@ const Sidebar: FC<Props> = (props: Props) => {
       setContentWidth(sidebarMinimizeWidth);
       timeoutIdRef.current = undefined;
     }
-  }, [isHover, isHoverOnResizableContainer, currentProductNavWidth, setContentWidth]);
+  }, [isCollapsed, isHover, isHoverOnResizableContainer, currentProductNavWidth, setContentWidth]);
 
   return (
     <>
