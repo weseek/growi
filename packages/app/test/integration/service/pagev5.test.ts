@@ -22,6 +22,7 @@ describe('PageService page operations with only public pages', () => {
   let xssSpy;
 
   let rootPage;
+  let objId1;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -54,8 +55,11 @@ describe('PageService page operations with only public pages', () => {
      */
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
+    objId1 = new mongoose.Types.ObjectId();
     await Page.insertMany([
+      // Should move to under non-empty page
       {
+        _id: objId1,
         path: '/level1/level2/level2',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -80,7 +84,8 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should move to under non-empty page', async() => {
-
+      const page = await Page.find({ _id: objId1 });
+      console.log(page);
     });
 
     test('Should move to under empty page', async() => {
