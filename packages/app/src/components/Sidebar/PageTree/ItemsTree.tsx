@@ -7,7 +7,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModalStatus,
+  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
 } from '~/stores/ui';
 
 /*
@@ -94,7 +94,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
-  const { open: openDeleteModal } = usePageDeleteModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const onClickDuplicateMenuItem = (pageId: string, path: string) => {
     openDuplicateModal(pageId, path);

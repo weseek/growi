@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
 
 import { IPageApiv1Result } from '~/interfaces/page';
 
@@ -37,7 +37,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
-  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
+  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModal();
   const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
 
   const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;

@@ -319,7 +319,7 @@ type DeleteModalStatusUtils = {
   close(): Promise<DeleteModalStatus | undefined>
 }
 
-export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
@@ -331,7 +331,7 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 };
 
 export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
-  const { data } = usePageDeleteModalStatus();
+  const { data } = usePageDeleteModal();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
