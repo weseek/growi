@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
+
+import { pathUtils } from '@growi/core';
+
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -18,7 +21,6 @@ import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
-
 
 interface ItemProps {
   isEnableActions: boolean
@@ -151,11 +153,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // }, []);
 
   // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-  //     return;
-  //   }
-
-  //   const parentPath = nodePath.dirname(page.path as string);
+  //   const parentPath = getParentPagePath(page.path as string)
   //   const newPagePath = `${parentPath}/${inputText}`;
 
   //   try {
@@ -185,7 +183,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteByPage == null) {
       return;
@@ -206,11 +203,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
-
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
+  const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
+    const parentPath = pathUtils.addTrailingSlash(page.path as string);
+    const newPagePath = `${parentPath}${inputText}`;
+    console.log(newPagePath);
+    // TODO: https://redmine.weseek.co.jp/issues/87943
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
