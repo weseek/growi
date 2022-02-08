@@ -10,7 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
 
-import Page from './Page';
+import PageListItemS from './PageListItemS';
 
 const logger = loggerFactory('growi:BookmarkList');
 
@@ -56,7 +56,7 @@ const BookmarkList = (props) => {
    */
   const generatePageList = pages.map(page => (
     <li key={`my-bookmarks:${page._id}`} className="mt-4">
-      <Page page={page.page} />
+      <PageListItemS page={page.page} />
     </li>
   ));
 

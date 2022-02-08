@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import UserGroup from '~/server/models/user-group';
 
 const logger = loggerFactory('growi:routes:admin');
 const debug = require('debug')('growi:routes:admin');
@@ -7,7 +8,6 @@ const debug = require('debug')('growi:routes:admin');
 module.exports = function(crowi, app) {
 
   const models = crowi.models;
-  const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
 

@@ -172,6 +172,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  IS_V5_COMPATIBLE: {
+    ns:      'crowi',
+    key:     'app:isV5Compatible',
+    type:    ValueType.BOOLEAN,
+    default: undefined,
+  },
   AUTO_INSTALL_ADMIN_USERNAME: {
     ns:      'crowi',
     key:     'autoInstall:adminUsername',

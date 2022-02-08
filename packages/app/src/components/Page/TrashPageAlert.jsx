@@ -7,21 +7,22 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUpdatedAt } from '~/stores/context';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
-import PageDeleteModal from '../PageDeleteModal';
 
+import { useCurrentUpdatedAt } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/ui';
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
-  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
@@ -40,11 +41,12 @@ const TrashPageAlert = (props) => {
   }
 
   function openPageDeleteModalHandler() {
-    setIsPageDeleteModalShown(true);
-  }
-
-  function opclosePageDeleteModalHandler() {
-    setIsPageDeleteModalShown(false);
+    const pageToDelete = {
+      pageId,
+      revisionId,
+      path,
+    };
+    openDeleteModal([pageToDelete]);
   }
 
   function renderEmptyButton() {
@@ -94,14 +96,8 @@ const TrashPageAlert = (props) => {
         <PutbackPageModal
           isOpen={isPutbackPageModalShown}
           onClose={closePutbackPageModalHandler}
+          pageId={pageId}
           path={path}
-        />
-        <PageDeleteModal
-          isOpen={isPageDeleteModalShown}
-          onClose={opclosePageDeleteModalHandler}
-          path={path}
-          isDeleteCompletelyModal
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
       </>
     );

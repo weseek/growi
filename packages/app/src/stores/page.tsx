@@ -1,15 +1,18 @@
 import useSWR, { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 
-import { IPage, IPageInfo } from '~/interfaces/page';
+import {
+  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing,
+} from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
+import { apiGet } from '../client/util/apiv1-client';
 
-import { useIsGuestUser } from './context';
+import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
 
 
-export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRResponse<IPage & HasObjectId, Error> => {
+export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
   return useSWR(
     ['/page', path],
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
@@ -21,22 +24,23 @@ export const useSWRxPageByPath = (path: string, initialData?: IPage): SWRRespons
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxRecentlyUpdated = (): SWRResponse<(IPage & HasObjectId)[], Error> => {
+export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get<{ pages:(IPage & HasObjectId)[] }>(endpoint).then(response => response.data?.pages),
+    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
   );
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (
-    path: string,
-    pageNumber?: number,
-): SWRResponse<IPagingResult<IPage>, Error> => {
-  const page = pageNumber || 1;
+export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+
+  const key = path != null
+    ? `/pages/list?path=${path}&page=${pageNumber ?? 1}`
+    : null;
+
   return useSWR(
-    `/pages/list?path=${path}&page=${page}`,
-    endpoint => apiv3Get<{pages: IPage[], totalCount: number, limit: number}>(endpoint).then((response) => {
+    key,
+    endpoint => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
@@ -46,26 +50,33 @@ export const useSWRxPageList = (
   );
 };
 
-type GetSubscriptionStatusResult = { subscribing: boolean };
+export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
+  const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxSubscriptionStatus = <Data, Error>(pageId: string): SWRResponse<{status: boolean | null}, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-  const key = isGuestUser === false ? ['/page/subscribe', pageId] : null;
-  return useSWR(
-    key,
-    (endpoint, pageId) => apiv3Get<GetSubscriptionStatusResult>(endpoint, { pageId }).then((response) => {
-      return {
-        status: response.data.subscribing,
-      };
-    }),
+  return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
+    return {
+      tags: response.tags,
+    };
+  }));
+};
+
+export const useSWRxPageInfo = (
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
+
+  return useSWRImmutable(
+    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageInfo = <Data, Error>(pageId: string): SWRResponse<IPageInfo, Error> => {
-  return useSWR(
-    ['/page/info', pageId],
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+export const useSWRxPageInfoForList = (pageIds: string[] | null | undefined): SWRResponse<Record<string, IPageInfo | IPageInfoForListing>, Error> => {
+
+  const shouldFetch = pageIds != null && pageIds.length > 0;
+
+  return useSWRImmutable(
+    shouldFetch ? ['/page-listing/info', pageIds] : null,
+    (endpoint, pageIds) => apiv3Get(endpoint, { pageIds }).then(response => response.data),
   );
 };

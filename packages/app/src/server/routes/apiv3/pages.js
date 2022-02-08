@@ -110,10 +110,6 @@ const LIMIT_FOR_LIST = 10;
  *            type: string
  *            description: page path
  *            example: /Sandbox/Math
- *          redirectTo:
- *            type: string
- *            description: redirect path
- *            example: ""
  *          revision:
  *            type: string
  *            description: revision ID
@@ -174,24 +170,26 @@ module.exports = (crowi) => {
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('revisionId').optional().isMongoId().withMessage('revisionId is required'), // required when v4
       body('newPagePath').isLength({ min: 1 }).withMessage('newPagePath is required'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
-      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
-
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+    ],
+    legacyPagesMigration: [
+      body('pageIds').isArray().withMessage('pageIds is required'),
+      body('isRecursively').isBoolean().withMessage('isRecursively is required'),
     ],
   };
 
   async function createPageAction({
     path, body, user, options,
   }) {
-    const createdPage = Page.create(path, body, user, options);
+    const createdPage = await Page.create(path, body, user, options);
     return createdPage;
   }
 
@@ -268,21 +266,22 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
-    // check page existence
-    const isExist = await Page.count({ path }) > 0;
-    if (isExist) {
-      return res.apiv3Err(new ErrorV3('Failed to post page', 'page_exists'), 500);
-    }
-
     const options = {};
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await createPageAction({
-      path, body, user: req.user, options,
-    });
+    let createdPage;
+    try {
+      createdPage = await createPageAction({
+        path, body, user: req.user, options,
+      });
+    }
+    catch (err) {
+      logger.error('Error occurred while creating a page.', err);
+      return res.apiv3Err(err);
+    }
 
     const savedTags = await saveTagsAction({ createdPage, pageTags });
 
@@ -452,7 +451,7 @@ module.exports = (crowi) => {
    *            description: page path is already existed
    */
   router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
-    const { pageId, isRecursively, revisionId } = req.body;
+    const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
 
@@ -462,7 +461,7 @@ module.exports = (crowi) => {
     };
 
     if (!isCreatablePage(newPagePath)) {
-      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
+      return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath}'`, 'invalid_path'), 409);
     }
 
     // check whether path starts slash
@@ -477,16 +476,21 @@ module.exports = (crowi) => {
     let page;
 
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
-      if (!page.isUpdatable(revisionId)) {
+      // empty page does not require revisionId validation
+      if (!page.isEmpty && revisionId == null) {
+        return res.apiv3Err(new ErrorV3('revisionId must be a mongoId', 'invalid_body'), 400);
+      }
+
+      if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
     }
     catch (err) {
       logger.error(err);
@@ -523,7 +527,7 @@ module.exports = (crowi) => {
     const options = {};
 
     try {
-      const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);
+      const pages = await crowi.pageService.emptyTrashPage(req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {
@@ -623,21 +627,22 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Page exists '${newPagePath})'`, 'already_exists'), 409);
     }
 
-    const page = await Page.findByIdAndViewer(pageId, req.user);
+    const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    // null check
     if (page == null) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
-      return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
+      return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
     }
 
     const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
     const result = { page: serializePageSecurely(newParentPage) };
 
-    page.path = newPagePath;
+    // copy the page since it's used and updated in crowi.pageService.duplicate
+    const copyPage = { ...page };
+    copyPage.path = newPagePath;
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
@@ -702,5 +707,53 @@ module.exports = (crowi) => {
     }
 
   });
+
+  router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    try {
+      if (!isV5Compatible) {
+        // this method throws and emit socketIo event when error occurs
+        crowi.pageService.normalizeAllPublicPages(); // not await
+      }
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+    }
+
+    return res.apiv3({ isV5Compatible });
+  });
+
+  // eslint-disable-next-line max-len
+  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+    const { pageIds, isRecursively } = req.body;
+
+    if (isRecursively) {
+      // this method innerly uses socket to send message
+      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+    }
+    else {
+      try {
+        await crowi.pageService.normalizeParentByPageIds(pageIds);
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+      }
+    }
+
+    return res.apiv3({});
+  });
+
+  router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
+    try {
+      const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+      const migratablePagesCount = req.user != null ? await crowi.pageService.v5MigratablePrivatePagesCount(req.user) : null;
+      return res.apiv3({ isV5Compatible, migratablePagesCount });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
+    }
+  });
+
   return router;
 };
