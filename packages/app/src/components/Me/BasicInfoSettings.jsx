@@ -79,6 +79,18 @@ class BasicInfoSettings extends React.Component {
             )}
           </div>
         </div>
+        <div className="form-group row">
+          <label htmlFor="userForm[slackId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack ID')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+              name="userForm[slackId]"
+              defaultValue={personalContainer.state.slackId}
+              onChange={(e) => { personalContainer.changeSlackId(e.target.value) }}
+            />
+          </div>
+        </div>
 
         <div className="form-group row">
           <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>

@@ -30,6 +30,7 @@ export default class PersonalContainer extends Container {
       uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       apiToken: '',
+      slackId: '',
     };
 
   }
@@ -115,6 +116,13 @@ export default class PersonalContainer extends Container {
   }
 
   /**
+   * Change Slack ID
+   */
+  changeSlackId(inputValue) {
+    this.setState({ slackId: inputValue });
+  }
+
+  /**
    * Change isEmailPublished
    */
   changeIsEmailPublished(boolean) {
@@ -147,6 +155,7 @@ export default class PersonalContainer extends Container {
         email: this.state.email,
         isEmailPublished: this.state.isEmailPublished,
         lang: this.state.lang,
+        slackId: this.state.slackId,
       });
       const { updatedUser } = response.data;
 
@@ -155,6 +164,7 @@ export default class PersonalContainer extends Container {
         email: updatedUser.email,
         isEmailPublished: updatedUser.isEmailPublished,
         lang: updatedUser.lang,
+        slackId: updatedUser.slackId,
       });
     }
     catch (err) {
