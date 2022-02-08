@@ -18,6 +18,7 @@ const { isCreatablePage } = pagePathUtils;
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 /**
  * @swagger
@@ -179,6 +180,17 @@ module.exports = (crowi) => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+    ],
+    deletePages: [
+      body('pageIds')
+        .custom(v => (v == null ? true : Array.isArray(v)))
+        .withMessage('The body property "pageId" must be an array or null. (null is the same as [])'),
+      body('isCompletely')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isCompletely" must be "true" or true. (Omit param for false)'),
+      body('isRecursively')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     legacyPagesMigration: [
       body('pageIds').isArray().withMessage('pageIds is required'),
@@ -708,6 +720,70 @@ module.exports = (crowi) => {
 
   });
 
+  router.delete('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
+    const { pageIds: _pageIds, isCompletely, isRecursively } = req.body;
+    const pageIds = _pageIds == null ? [] : _pageIds;
+
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
+    }
+
+    let pagesToDelete;
+    try {
+      pagesToDelete = await Page.findListByPageIds(pageIds, null, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages to delete.', err);
+      return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
+    }
+
+    /*
+     * Delete Completely
+     */
+    if (isCompletely) {
+      try {
+        const pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
+
+        // recursive
+        if (isRecursively) {
+
+        }
+
+        // non-recursive
+        else {
+
+        }
+      }
+      catch (err) {
+        const msg = 'Failed to process completely delete pages.';
+        logger.error(msg, err);
+        return res.apiv3Err(new ErrorV3(msg), 500);
+      }
+    }
+
+    /*
+     * Trash
+     */
+    else {
+      try {
+        // recursive
+        if (isRecursively) {
+
+        }
+
+        // non-recursive
+        else {
+
+        }
+      }
+      catch (err) {
+        const msg = 'Failed to process completely delete pages.';
+        logger.error(msg, err);
+        return res.apiv3Err(new ErrorV3(msg), 500);
+      }
+    }
+  });
+
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
@@ -726,7 +802,12 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
-    const { pageIds, isRecursively } = req.body;
+    const { pageIds: _pageIds, isRecursively } = req.body;
+    const pageIds = _pageIds == null ? [] : _pageIds;
+
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
+    }
 
     if (isRecursively) {
       // this method innerly uses socket to send message

@@ -1160,8 +1160,12 @@ module.exports = function(crowi, app) {
   };
 
   validator.remove = [
-    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('completely')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "completely" must be "true" or true. (Omit param for false)'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**
@@ -1233,7 +1237,9 @@ module.exports = function(crowi, app) {
   };
 
   validator.revertRemove = [
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**

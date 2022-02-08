@@ -208,6 +208,10 @@ class PageService {
     return false;
   }
 
+  filterPagesByCanDeleteCompletely(pages, user) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
+  }
+
   async findPageAndMetaDataByViewer({ pageId, path, user }) {
 
     const Page = this.crowi.model('Page');
@@ -1424,6 +1428,10 @@ class PageService {
     await streamToPromise(readStream);
 
     return nDeletedNonEmptyPages;
+  }
+
+  async deleteMultiplePages(pagesToDelete, isCompletely: boolean, isRecursively: boolean): Promise<void> {
+    return;
   }
 
   // use the same process in both v4 and v5
