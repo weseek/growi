@@ -1845,8 +1845,28 @@ class PageService {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(normalizedIds, true);
+    /*
+     * generate regexps
+     */
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    let result;
+    try {
+      result = await Page.findListByPageIds(pageIds, null, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages by ids', err);
+      throw err;
+    }
+    const { pages } = result;
+
+    // prepare no duplicated area paths
+    let paths = pages.map(p => p.path);
+    paths = omitDuplicateAreaPathFromPaths(paths);
+
+    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
+
+    // TODO: insertMany PageOperationBlock
 
     // migrate recursively
     try {
