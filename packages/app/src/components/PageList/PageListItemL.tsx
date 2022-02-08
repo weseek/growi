@@ -58,8 +58,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const renameHandler = useCallback(() => {
-    const str = 'revisionId';
-    openRenameModal(pageData._id, str, pageData.path);
+    openRenameModal(pageData._id, pageData.revision as string, pageData.path);
   }, [openRenameModal, pageData._id, pageData.path, pageData.revision]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
