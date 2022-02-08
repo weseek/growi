@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -97,6 +97,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModalStatus();
 
+  useEffect(() => {
+    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
+    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
+    //  targetElem is HTML collection but only one HTML element in it all the time
+    if (targetElem[0] != null && startFrom != null) {
+      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
+    }
+  }, [ancestorsChildrenData, rootPageData]);
+
   const onClickDuplicateMenuItem = (pageId: string, path: string) => {
     openDuplicateModal(pageId, path);
   };
@@ -113,13 +122,6 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     // TODO: improve message
     toastError('Error occurred while fetching pages to render PageTree');
     return null;
-  }
-
-  const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
-  const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
-  //  targetElem is HTML collection but only one HTML element in it all the time
-  if (targetElem[0] != null && startFrom != null) {
-    smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
   }
 
   /*
