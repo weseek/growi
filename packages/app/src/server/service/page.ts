@@ -1948,7 +1948,7 @@ class PageService {
 
     let result;
     try {
-      result = await Page.findListByPageIds(pageIds, null, false);
+      result = await Page.findListByPageIds(pageIds, null);
     }
     catch (err) {
       logger.error('Failed to find pages by ids', err);
