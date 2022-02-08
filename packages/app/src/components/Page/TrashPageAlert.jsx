@@ -7,11 +7,11 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { useCurrentUpdatedAt } from '~/stores/context';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
-import PageDeleteModal from '../PageDeleteModal';
 
+import { useCurrentUpdatedAt } from '~/stores/context';
+import { usePageDeleteModalStatus } from '~/stores/ui';
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
@@ -21,7 +21,8 @@ const TrashPageAlert = (props) => {
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
-  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
+
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
 
   function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
@@ -40,11 +41,12 @@ const TrashPageAlert = (props) => {
   }
 
   function openPageDeleteModalHandler() {
-    setIsPageDeleteModalShown(true);
-  }
-
-  function opclosePageDeleteModalHandler() {
-    setIsPageDeleteModalShown(false);
+    const pageToDelete = {
+      pageId,
+      revisionId,
+      path,
+    };
+    openDeleteModal([pageToDelete]);
   }
 
   function renderEmptyButton() {
@@ -96,16 +98,6 @@ const TrashPageAlert = (props) => {
           onClose={closePutbackPageModalHandler}
           pageId={pageId}
           path={path}
-        />
-        {/* TODO: show PageDeleteModal with usePageDeleteModal by 87567  */}
-        <PageDeleteModal
-          isOpen={isPageDeleteModalShown}
-          onClose={opclosePageDeleteModalHandler}
-          pageId={pageId}
-          revisionId={revisionId}
-          path={path}
-          isDeleteCompletelyModal
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
       </>
     );

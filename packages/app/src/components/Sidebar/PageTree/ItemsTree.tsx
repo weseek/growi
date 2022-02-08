@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -9,6 +9,7 @@ import { toastError } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
 } from '~/stores/ui';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 /*
  * Utility to generate initial node
@@ -95,6 +96,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  useEffect(() => {
+    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
+    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
+    //  targetElem is HTML collection but only one HTML element in it all the time
+    if (targetElem[0] != null && startFrom != null) {
+      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
+    }
+  }, [ancestorsChildrenData]);
 
   const onClickDuplicateMenuItem = (pageId: string, path: string) => {
     openDuplicateModal(pageId, path);
