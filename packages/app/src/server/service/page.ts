@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -217,21 +217,24 @@ class PageService {
 
     const Page = this.crowi.model('Page');
 
+    let pagePath = path;
+
     let page;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
+      pagePath = page.path;
     }
     else {
-      page = await Page.findByPathAndViewer(path, user);
+      page = await Page.findByPathAndViewer(pagePath, user);
     }
 
     const result: any = {};
 
     if (page == null) {
-      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { pat: pagePath }] }) > 0;
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
-      result.isCreatable = isCreatablePage(path);
+      result.isCreatable = isCreatablePage(pagePath);
       result.page = page;
 
       return result;
@@ -241,6 +244,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
+    result.isDeletable = isDeletablePage(pagePath);
     result.isDeleted = page.isDeleted();
 
     return result;

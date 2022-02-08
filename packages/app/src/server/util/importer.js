@@ -1,8 +1,7 @@
+import Esa from 'esa-node';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:util:importer');
-
-const esa = require('esa-nodejs');
 
 /**
  * importer
@@ -17,16 +16,15 @@ module.exports = (crowi) => {
   const configManager = crowi.configManager;
 
   const importer = {};
-  let esaClient = {};
+  let esaClient = () => {};
 
   /**
    * Initialize importer
    */
   importer.initializeEsaClient = () => {
-    esaClient = esa({
-      team:        configManager.getConfig('crowi', 'importer:esa:team_name'),
-      accessToken: configManager.getConfig('crowi', 'importer:esa:access_token'),
-    });
+    const team = configManager.getConfig('crowi', 'importer:esa:team_name');
+    const accessToken = configManager.getConfig('crowi', 'importer:esa:access_token');
+    esaClient = new Esa(accessToken, team);
     logger.debug('initialize esa importer');
   };
 
@@ -56,13 +54,9 @@ module.exports = (crowi) => {
    */
   const importPostsFromEsa = (pageNum, user, errors) => {
     return new Promise((resolve, reject) => {
-      esaClient.api.posts({ page: pageNum, per_page: 100 }, async(err, res) => {
-        const nextPage = res.body.next_page;
-        const postsReceived = res.body.posts;
-
-        if (err) {
-          reject(new Error(`error in page ${pageNum}: ${err}`));
-        }
+      esaClient.posts({ page: pageNum, per_page: 100 }).then(async(res) => {
+        const nextPage = res.next_page;
+        const postsReceived = res.posts;
 
         const data = convertEsaDataForGrowi(postsReceived, user);
         const newErrors = await createGrowiPages(data);
@@ -72,6 +66,9 @@ module.exports = (crowi) => {
         }
 
         resolve(errors.concat(newErrors));
+
+      }).catch((err) => {
+        reject(new Error(`error in page ${pageNum}: ${err}`));
       });
     });
   };
@@ -174,12 +171,13 @@ module.exports = (crowi) => {
    */
   const getTeamNameFromEsa = () => {
     return new Promise((resolve, reject) => {
-      esaClient.api.team((err, res) => {
-        if (err) {
-          return reject(err);
-        }
+      const team = configManager.getConfig('crowi', 'importer:esa:team_name');
+      esaClient.team(team).then((res) => {
         resolve(res);
+      }).catch((err) => {
+        return reject(err);
       });
+
     });
   };
 

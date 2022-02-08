@@ -188,7 +188,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId,
+    pageId, revisionId, shareLinkId,
     editorMode, mutateEditorMode,
     isCompactMode, isLinkSharingDisabled,
     isDeviceSmallerThanMd, isGuestUser, isSharedUser,

@@ -117,6 +117,17 @@
       padding: 4px;
       font-size: 16px;
     }
+    .btn-seen-user {
+      width: 48px;
+      height: 32px;
+      padding: 4px;
+      font-size: 16px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
     .btn-page-item-control {
       width: 32px;
       height: 32px;
