@@ -55,7 +55,7 @@ class UserGroupService {
     const parent = await UserGroup.findById(parentId);
 
     if (parent == null) { // it should not be null
-      throw Error('parent does not exist.');
+      throw Error('Parent group does not exist.');
     }
 
 
