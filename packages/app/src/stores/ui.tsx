@@ -451,40 +451,38 @@ export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[k
 
 type PageAccessoriesModalStatus = {
   isOpened: boolean,
-  activatedContents: Set<PageAccessoriesModalContents>,
+  // onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
 }
 
 type PageAccessoriesModalUtils = {
-  open(activatedContent: PageAccessoriesModalContents): Promise<PageAccessoriesModalStatus> | void
-  close(): Promise<PageAccessoriesModalStatus> | void
+  open(activatedContents: PageAccessoriesModalContents): void
+  close(): void
 }
 
 export const usePageAccessoriesModal = (
     status?: PageAccessoriesModalStatus,
 ): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
-  const initialData: PageAccessoriesModalStatus = { isOpened: false, activatedContents: new Set<PageAccessoriesModalContents>() };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialData });
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
-    open: (activatedContent: PageAccessoriesModalContents) => {
+    open: (activatedContents: PageAccessoriesModalContents) => {
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: true,
-        activatedContents: swrResponse.data.activatedContents.add(activatedContent),
-      });
+      swrResponse.mutate({ isOpened: true });
+
+      // if (swrResponse.data.onOpened != null) {
+      //   swrResponse.data.onOpened(activatedContents);
+      // }
     },
     close: () => {
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: false,
-        activatedContents: swrResponse.data.activatedContents,
-      });
+      swrResponse.mutate({ isOpened: false });
     },
   };
 };
