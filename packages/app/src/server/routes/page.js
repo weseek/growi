@@ -1352,7 +1352,7 @@ module.exports = function(crowi, app) {
     const path = req.body.path;
 
     try {
-      await Page.removeRedirectOriginPageByPath(path);
+      await PageRedirect.removePageRedirectByToPath(path);
       logger.debug('Redirect Page deleted', path);
     }
     catch (err) {
