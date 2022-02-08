@@ -24,9 +24,6 @@ export default class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
     }
-    if (this.props.onRevisionBodyRendered) {
-      this.props.onRevisionBodyRendered(true);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,6 +64,7 @@ export default class RevisionBody extends React.PureComponent {
             this.props.inputRef(elm);
           }
         }}
+        id="revision-body"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}
@@ -83,5 +81,4 @@ RevisionBody.propTypes = {
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,
-  onRevisionBodyRendered: PropTypes.func,
 };

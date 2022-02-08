@@ -21,22 +21,17 @@ type Props ={
 
 
 const SearchResultContent: FC<Props> = (props: Props) => {
-  const [isRevisionBodyRendered, setIsRevisionBodyRendered] = useState(false);
   const contentRef = useRef(null);
 
-  useEffect(() => {
-    // reset state
-    if (isRevisionBodyRendered) {
-      const searchResultPageContent = contentRef.current as HTMLElement | null;
-      if (searchResultPageContent != null) {
-        const highlightedWord = searchResultPageContent?.querySelector('.highlighted-keyword') as HTMLElement | null;
-        if (highlightedWord != null) {
-          smoothScrollIntoView(highlightedWord, SCROLL_OFFSET_TOP, searchResultPageContent);
-        }
-      }
-      setIsRevisionBodyRendered(false);
+
+  const scrollTo = (element) => {
+    console.log('scrollTo emitted');
+
+    const searchResultPageContent = contentRef.current as HTMLElement | null;
+    if (searchResultPageContent != null && element != null) {
+      smoothScrollIntoView(element, SCROLL_OFFSET_TOP, searchResultPageContent);
     }
-  }, [isRevisionBodyRendered]);
+  };
 
   const page = props.focusedSearchResultData?.pageData;
 
@@ -74,7 +69,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           pagePath={page.path}
           revisionId={page.revision}
           highlightKeywords={props.searchingKeyword}
-          onRevisionBodyRendered={setIsRevisionBodyRendered}
+          onRevisionBodyRendered={scrollTo}
         />
       </div>
     </div>

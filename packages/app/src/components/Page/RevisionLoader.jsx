@@ -36,6 +36,20 @@ class LegacyRevisionLoader extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    console.log('state.isLoaded', this.state.isLoaded);
+    console.log('state.isLoading', this.state.isLoading);
+
+    // after loading
+    if (this.state.isLoaded) {
+      const wiki = document.getElementById('revision-body');
+      console.log(wiki);
+      const hightlightedElement = wiki.querySelector('.highlighted-keyword');
+      console.log(hightlightedElement);
+      this.props.onRevisionBodyRendered(hightlightedElement);
+    }
+  }
+
   async loadData() {
     if (!this.state.isLoaded && !this.state.isLoading) {
       this.setState({ isLoading: true });

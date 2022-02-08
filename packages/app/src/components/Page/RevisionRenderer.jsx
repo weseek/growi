@@ -157,7 +157,6 @@ class LegacyRevisionRenderer extends React.PureComponent {
         isMathJaxEnabled={isMathJaxEnabled}
         additionalClassName={this.props.additionalClassName}
         renderMathJaxOnInit
-        onRevisionBodyRendered={this.props.onRevisionBodyRendered}
       />
     );
   }
@@ -170,7 +169,6 @@ LegacyRevisionRenderer.propTypes = {
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
   additionalClassName: PropTypes.string,
-  onRevisionBodyRendered: PropTypes.func,
 };
 
 /**
@@ -189,7 +187,6 @@ RevisionRenderer.propTypes = {
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
   additionalClassName: PropTypes.string,
-  onRevisionBodyRendered: PropTypes.func,
 };
 
 export default RevisionRenderer;
