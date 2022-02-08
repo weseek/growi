@@ -58,7 +58,9 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const onClickDuplicateMenuItem = () => {
-    openDuplicateModal(pageData._id, pageData.path);
+    if (pageData._id != null && pageData.path != null) {
+      openDuplicateModal(pageData._id, pageData.path);
+    }
   };
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
