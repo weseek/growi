@@ -12,6 +12,7 @@ module.exports = (crowi) => {
   const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
+  const { User } = crowi.models;
 
   handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
     await respondUtil.respond({
@@ -89,6 +90,11 @@ module.exports = (crowi) => {
     });
   }
 
+  function findUserBySlackId(slackId) {
+    const userData = User.findUserBySlackId(slackId);
+    return userData ? userData.username : slackId;
+  }
+
   handler.keepGetMessages = async function(client, channelId, newest, oldest) {
     let result;
 
@@ -148,16 +154,18 @@ module.exports = (crowi) => {
       .forEach((message) => {
         // increment contentsBody while removing the same headers
         // exclude header
+
+        const messageUsername = findUserBySlackId(message.user);
         const lastMessageTs = Math.floor(lastMessage.ts / 60);
         const messageTs = Math.floor(message.ts / 60);
-        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
+        if (lastMessage.user === messageUsername && lastMessageTs === messageTs) {
           cleanedContents.push(`${message.text}\n`);
         }
         // include header
         else {
           const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
           const time = format(new Date(ts), 'h:mm a');
-          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
+          cleanedContents.push(`${messageUsername}  ${time}\n${message.text}\n`);
           lastMessage = message;
         }
       });

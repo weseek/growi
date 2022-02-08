@@ -56,6 +56,7 @@ export default class PersonalContainer extends Container {
         lang: currentUser.lang,
         isGravatarEnabled: currentUser.isGravatarEnabled,
         apiToken: currentUser.apiToken,
+        slackId: currentUser.slackId,
       });
     }
     catch (err) {
