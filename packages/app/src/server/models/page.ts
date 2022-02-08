@@ -519,6 +519,54 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   return findAncestorsRecursively(target);
 };
 
+// TODO: write test code
+/**
+ * Recursively removes empty pages at leaf position.
+ * @param pageId ObjectIdLike
+ * @returns Promise<void>
+ */
+schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): Promise<void> {
+  const self = this;
+
+  const initialLeafPage = await this.findById(pageId);
+
+  if (initialLeafPage == null) {
+    return;
+  }
+
+  if (!initialLeafPage.isEmpty) {
+    return;
+  }
+
+  async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
+    const nextPage = await self.findById(page.parent);
+
+    if (nextPage == null) {
+      return pageIds;
+    }
+
+    // delete leaf empty pages
+    const isNextPageEmpty = nextPage.isEmpty;
+
+    if (!isNextPageEmpty) {
+      return pageIds;
+    }
+
+    const isSiblingsExist = await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } });
+    if (isSiblingsExist) {
+      return pageIds;
+    }
+
+    return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
+  }
+
+  const initialPageIdsToRemove = [initialLeafPage._id];
+
+  const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
+
+  await this.deleteMany({ _id: { $in: pageIdsToRemove } });
+};
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike

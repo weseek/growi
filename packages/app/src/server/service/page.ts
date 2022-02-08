@@ -269,6 +269,20 @@ class PageService {
   }
 
   /**
+   * Remove all empty pages at leaf position by page whose parent will change or which will be deleted.
+   * @param page Page whose parent will change or which will be deleted
+   */
+  async removeLeafEmptyPages(page): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    // delete leaf empty pages
+    const shouldDeleteLeafEmptyPages = !(await Page.exists({ parent: page.parent, _id: { $ne: page._id } }));
+    if (shouldDeleteLeafEmptyPages) {
+      await Page.removeLeafEmptyPagesById(page.parent);
+    }
+  }
+
+  /**
    * Generate read stream to operate descendants of the specified page path
    * @param {string} targetPagePath
    * @param {User} viewer
@@ -1048,10 +1062,8 @@ class PageService {
       // update descendantCount of ancestors'
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
-      const shouldDeleteLeafEmptyPages = !shouldReplace;
-      if (shouldDeleteLeafEmptyPages) {
-        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
-      }
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
     }
 
     let deletedPage;
@@ -1084,7 +1096,8 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
 
-          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+          // delete leaf empty pages
+          await this.removeLeafEmptyPages(page);
         }
       })();
     }
@@ -1315,9 +1328,10 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
-
-      // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
     }
+
+    // delete leaf empty pages
+    await this.removeLeafEmptyPages(page);
 
     if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
@@ -1333,8 +1347,6 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
         }
-
-        // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
       })();
     }
 
@@ -1494,7 +1506,8 @@ class PageService {
         if (page.parent != null) {
           await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
 
-          // TODO https://redmine.weseek.co.jp/issues/87667 : delete leaf empty pages here
+          // delete leaf empty pages
+          await this.removeLeafEmptyPages(page);
         }
       })();
     }
