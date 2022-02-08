@@ -100,5 +100,11 @@ export type IPageWithMeta<M = IPageInfoAll> = {
 
 export type IPageApiv1Result = {
   ok: boolean
-  page: IPageHasId,
+  path: string,
+  isRecursively: true | null | undefined,
+};
+
+export type IDeleteManyPageApiv3Result = {
+  paths: string[],
+  isRecursively: true | null | undefined,
 };

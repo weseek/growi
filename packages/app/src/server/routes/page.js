@@ -1223,7 +1223,8 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+    result.path = page.path; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+    result.isRecursively = isRecursively;
 
     res.json(ApiResponse.success(result));
 

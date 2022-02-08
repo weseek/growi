@@ -761,7 +761,7 @@ module.exports = (crowi) => {
     // run delete
     crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
 
-    return res.apiv3({});
+    return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively });
   });
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {

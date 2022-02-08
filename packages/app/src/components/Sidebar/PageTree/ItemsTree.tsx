@@ -1,13 +1,15 @@
 import React, { FC, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModalStatus,
+  OnDeletedFunction,
 } from '~/stores/ui';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -91,11 +93,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
+  const { t } = useTranslation();
+
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
 
   useEffect(() => {
     const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
@@ -114,8 +118,15 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onDeletedHandler = (pagePath) => {
-    window.location.href = encodeURI(pagePath);
+  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively) => {
+    if (typeof pathOrPathsToDelete === 'string') {
+      if (isRecursively) {
+        toastSuccess(t('deleted_single_page_recursively', { path: pathOrPathsToDelete }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page', { path: pathOrPathsToDelete }));
+      }
+    }
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
