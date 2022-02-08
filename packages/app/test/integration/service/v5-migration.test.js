@@ -5,6 +5,7 @@ const { getInstance } = require('../setup-crowi');
 describe('V5 page migration', () => {
   let crowi;
   let Page;
+  let User;
 
   let testUser1;
 
@@ -13,10 +14,14 @@ describe('V5 page migration', () => {
 
     crowi = await getInstance();
     Page = mongoose.model('Page');
+    User = mongoose.model('User');
+
+    await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
+    testUser1 = await User.findOne({ username: 'testUser1' });
   });
 
 
-  describe('v5MigrationByPageIds()', () => {
+  describe('normalizeParentRecursivelyByPageIds()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
 
@@ -27,30 +32,34 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
         {
           path: '/dummyParent/private1',
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
         {
           path: '/dummyParent/private1/private2',
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
         {
           path: '/dummyParent/private1/private3',
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
       ]);
 
       const pageIds = pages.map(page => page._id);
       // migrate
-      await crowi.pageService.v5MigrationByPageIds(pageIds);
+      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
 
       const migratedPages = await Page.find({
         path: {
@@ -66,7 +75,8 @@ describe('V5 page migration', () => {
 
   });
 
-  describe('v5InitialMigration()', () => {
+  describe('normalizeAllPublicPages()', () => {
+    jest.setTimeout(60000);
     let createPagePaths;
     let allPossiblePagePaths;
     beforeAll(async() => {
@@ -88,6 +98,7 @@ describe('V5 page migration', () => {
           grant: Page.GRANT_OWNER,
           creator: testUser1,
           lastUpdateUser: testUser1,
+          grantedUsers: [testUser1._id],
         },
         {
           path: '/publicA/privateB/publicC',
@@ -121,7 +132,8 @@ describe('V5 page migration', () => {
       ]);
 
       // migrate
-      await crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC);
+      await crowi.pageService.normalizeAllPublicPages(Page.GRANT_PUBLIC);
+      jest.setTimeout(30000);
     });
 
     test('should migrate all public pages', async() => {

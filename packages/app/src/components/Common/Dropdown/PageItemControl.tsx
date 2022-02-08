@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -6,132 +6,254 @@ import {
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
-import { IPageHasId } from '~/interfaces/page';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
-import { useSWRBookmarkInfo } from '~/stores/bookmark';
+import loggerFactory from '~/utils/logger';
 
-type PageItemControlProps = {
-  page: Partial<IPageHasId>
-  isEnableActions?: boolean
-  isDeletable: boolean
-  onClickDeleteButtonHandler?: (pageId: string) => void
-  onClickRenameButtonHandler?: (pageId: string) => void
+import {
+  IPageInfoAll, isIPageInfoForOperation,
+} from '~/interfaces/page';
+import { useSWRxPageInfo } from '~/stores/page';
+
+const logger = loggerFactory('growi:cli:PageItemControl');
+
+
+export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
+
+type CommonProps = {
+  pageInfo?: IPageInfoAll,
+  isEnableActions?: boolean,
+  showBookmarkMenuItem?: boolean,
+  onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
+  onClickDuplicateMenuItem?: () => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string) => void,
+
+  additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
 
-const PageItemControl: FC<PageItemControlProps> = (props: PageItemControlProps) => {
+
+type DropdownMenuProps = CommonProps & {
+  pageId: string,
+  isLoading?: boolean,
+}
+
+const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
+  const { t } = useTranslation('');
 
   const {
-    page, isEnableActions, onClickDeleteButtonHandler, isDeletable, onClickRenameButtonHandler,
+    pageId, isLoading,
+    pageInfo, isEnableActions, showBookmarkMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
-  const { t } = useTranslation('');
-  const [isOpen, setIsOpen] = useState(false);
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id, isOpen);
 
-  const deleteButtonClickedHandler = useCallback(() => {
-    if (onClickDeleteButtonHandler != null && page._id != null) {
-      onClickDeleteButtonHandler(page._id);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const bookmarkItemClickedHandler = useCallback(async() => {
+    if (!isIPageInfoForOperation(pageInfo) || onClickBookmarkMenuItem == null) {
+      return;
     }
-  }, [onClickDeleteButtonHandler, page._id]);
+    await onClickBookmarkMenuItem(pageId, !pageInfo.isBookmarked);
+  }, [onClickBookmarkMenuItem, pageId, pageInfo]);
 
-  const renameButtonClickedHandler = useCallback(() => {
-    if (onClickRenameButtonHandler != null && page._id != null) {
-      onClickRenameButtonHandler(page._id);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const duplicateItemClickedHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
     }
-  }, [onClickRenameButtonHandler, page._id]);
+    await onClickDuplicateMenuItem();
+  }, [onClickDuplicateMenuItem]);
 
-
-  const bookmarkToggleHandler = (async() => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await apiv3Put('/bookmarks', { pageId: page._id, bool: !bookmarkInfo!.isBookmarked });
-      mutateBookmarkInfo();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const renameItemClickedHandler = useCallback(async() => {
+    if (onClickRenameMenuItem == null) {
+      return;
     }
-    catch (err) {
-      toastError(err);
+    await onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const deleteItemClickedHandler = useCallback(async() => {
+    if (pageInfo == null || onClickDeleteMenuItem == null) {
+      return;
     }
-  });
-
-  const renderBookmarkText = () => {
-    if (bookmarkInfoError != null || bookmarkInfo == null) {
-      return '';
+    if (!pageInfo.isDeletable) {
+      logger.warn('This page could not be deleted.');
+      return;
     }
-    return bookmarkInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark');
-  };
+    await onClickDeleteMenuItem(pageId);
+  }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
+  let contents = <></>;
 
-  const dropdownToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-
-  return (
-    <Dropdown isOpen={isOpen} toggle={dropdownToggle}>
-      <DropdownToggle color="transparent" className="btn-link border-0 rounded grw-btn-page-management p-0">
-        <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
-      </DropdownToggle>
-      <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
-
-        {/* TODO: if there is the following button in XD add it here
-        <button
-          type="button"
-          className="btn btn-link p-0"
-          value={page.path}
-          onClick={(e) => {
-            window.location.href = e.currentTarget.value;
-          }}
-        >
-          <i className="icon-login" />
-        </button>
-        */}
-
-        {/*
-          TODO: add function to the following buttons like using modal or others
-          ref: https://estoc.weseek.co.jp/redmine/issues/79026
-        */}
-
-        {/* TODO: show dropdown when permalink section is implemented */}
-
-        {!isEnableActions && (
+  if (isLoading) {
+    contents = (
+      <div className="text-muted text-center my-2">
+        <i className="fa fa-spinner fa-pulse"></i>
+      </div>
+    );
+  }
+  else if (pageId != null && pageInfo != null) {
+    contents = (
+      <>
+        { !isEnableActions && (
           <DropdownItem>
             <p>
               {t('search_result.currently_not_implemented')}
             </p>
           </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={bookmarkToggleHandler}>
+        ) }
+
+        {/* Bookmark */}
+        { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+          <DropdownItem onClick={bookmarkItemClickedHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
-            {renderBookmarkText()}
+            { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={() => toastr.warning(t('search_result.currently_not_implemented'))}>
+        ) }
+
+        {/* Duplicate */}
+        { isEnableActions && !pageInfo.isEmpty && (
+          <DropdownItem onClick={duplicateItemClickedHandler}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
           </DropdownItem>
-        )}
-        {isEnableActions && (
-          <DropdownItem onClick={renameButtonClickedHandler}>
+        ) }
+
+        {/* Move/Rename */}
+        { isEnableActions && pageInfo.isMovable && (
+          <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
-        )}
-        {isDeletable && isEnableActions && (
+        ) }
+
+        { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
+
+        {/* divider */}
+        {/* Delete */}
+        { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
           <>
             <DropdownItem divider />
-            <DropdownItem className="text-danger pt-2" onClick={deleteButtonClickedHandler}>
+            <DropdownItem
+              className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
+              disabled={!pageInfo.isDeletable}
+              onClick={deleteItemClickedHandler}
+            >
               <i className="icon-fw icon-trash"></i>
               {t('Delete')}
             </DropdownItem>
           </>
         )}
-      </DropdownMenu>
+      </>
+    );
+  }
+
+  return (
+    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+      {contents}
+    </DropdownMenu>
+  );
+});
 
 
+type PageItemControlSubstanceProps = CommonProps & {
+  pageId: string,
+  fetchOnInit?: boolean,
+  children?: React.ReactNode,
+}
+
+export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
+
+  const {
+    pageId, pageInfo: presetPageInfo, fetchOnInit,
+    children,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem,
+  } = props;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const shouldFetch = fetchOnInit === true || (!isIPageInfoForOperation(presetPageInfo) && isOpen);
+  const shouldMutate = fetchOnInit === true || !isIPageInfoForOperation(presetPageInfo);
+
+  const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
+
+  // mutate after handle event
+  const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
+    if (onClickBookmarkMenuItem != null) {
+      await onClickBookmarkMenuItem(_pageId, _newValue);
+    }
+
+    if (shouldMutate) {
+      mutatePageInfo();
+    }
+  }, [mutatePageInfo, onClickBookmarkMenuItem, shouldMutate]);
+
+  const isLoading = shouldFetch && fetchedPageInfo == null;
+
+  const duplicateMenuItemClickHandler = useCallback(async() => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+    await onClickDuplicateMenuItem();
+  }, [onClickDuplicateMenuItem]);
+
+  const renameMenuItemClickHandler = useCallback(async() => {
+    if (onClickRenameMenuItem == null) {
+      return;
+    }
+    await onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
+
+  return (
+    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
+
+      { children ?? (
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control">
+          <i className="icon-options text-muted"></i>
+        </DropdownToggle>
+      ) }
+
+      <PageItemControlDropdownMenu
+        {...props}
+        isLoading={isLoading}
+        pageInfo={fetchedPageInfo ?? presetPageInfo}
+        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+        onClickRenameMenuItem={renameMenuItemClickHandler}
+      />
     </Dropdown>
   );
 
 };
 
-export default PageItemControl;
+
+type PageItemControlProps = CommonProps & {
+  pageId?: string,
+  children?: React.ReactNode,
+}
+
+export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
+  const { pageId } = props;
+
+  if (pageId == null) {
+    return <></>;
+  }
+
+  return <PageItemControlSubstance pageId={pageId} {...props} />;
+};
+
+
+type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
+  pageId?: string,
+  children?: React.ReactNode,
+}
+
+export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
+  const { pageId } = props;
+
+  if (pageId == null) {
+    return <></>;
+  }
+
+  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
+};

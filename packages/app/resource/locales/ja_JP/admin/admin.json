@@ -207,6 +207,9 @@
     "beta_warning": "この機能はベータ版です",
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
+    "error": {
+      "only_upsert_available": "pages コレクションには 'Upsert' オプションのみ対応しています"
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "既存のデータと同名であるデータをインポートする際の挙動は以下の3つのモードから選べます。",

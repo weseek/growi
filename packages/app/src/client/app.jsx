@@ -39,7 +39,7 @@ import MyDraftList from '../components/MyDraftList/MyDraftList';
 import BookmarkList from '../components/PageList/BookmarkList';
 import Fab from '../components/Fab';
 import PersonalSettings from '../components/Me/PersonalSettings';
-import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 import IdenticalPathPage from '~/components/IdenticalPathPage';
 
@@ -51,9 +51,9 @@ import CommentContainer from '~/client/services/CommentContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import TagContainer from '~/client/services/TagContainer';
 import PersonalContainer from '~/client/services/PersonalContainer';
-import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import { appContainer, componentMappings } from './base';
+import { toastError } from './util/apiNotification';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -70,10 +70,9 @@ const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
-const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
   appContainer, socketIoContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
-  commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
+  commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -101,7 +100,7 @@ Object.assign(componentMappings, {
 
   'not-found-page': <NotFoundPage />,
 
-  'forbidden-page': <ForbiddenPage isSharePage={appContainer.config.disableLinkSharing} />,
+  'forbidden-page': <ForbiddenPage isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
 
   'page-timeline': <PageTimeline />,
 
@@ -133,7 +132,8 @@ if (pageContainer.state.pageId != null) {
 
   // show the Page accessory modal when query of "compare" is requested
   if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
-    pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
+    toastError('Sorry, opening PageAccessoriesModal is not implemented yet in v5.');
+  //   pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
   }
 }
 if (pageContainer.state.creator != null) {
@@ -146,8 +146,8 @@ if (pageContainer.state.path != null) {
   Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'grw-subnav-container': <GrowiSubNavigation />,
-    'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
+    'grw-subnav-container': <GrowiContextualSubNavigation isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
+    'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher isLinkSharingDisabled={appContainer.config.disableLinkSharing} />,
     'display-switcher': <DisplaySwitcher />,
   });
 }

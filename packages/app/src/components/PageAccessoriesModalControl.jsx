@@ -4,14 +4,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-import SeenUserInfo from './User/SeenUserInfo';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -91,22 +89,18 @@ const PageAccessoriesModalControl = (props) => {
           </Fragment>
         );
       })}
-      <div className="d-flex align-items-center">
-        <span className="border-left grw-border-vr">&nbsp;</span>
-        <SeenUserInfo disabled={isSharedUser} pageId={pageId} />
-      </div>
     </div>
   );
 };
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, [PageAccessoriesContainer]);
+const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, []);
 
 PageAccessoriesModalControl.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
-  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+  pageAccessoriesContainer: PropTypes.any,
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,

@@ -62,9 +62,7 @@ export default class PageContainer extends Container {
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
-      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       isPageExist: mainContent.getAttribute('data-page-id') != null,
 
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
@@ -138,71 +136,6 @@ export default class PageContainer extends Container {
    */
   static getClassName() {
     return 'PageContainer';
-  }
-
-
-  /**
-   * whether to display reaction buttons
-   * ex.) like, bookmark
-   */
-  get isAbleToShowPageReactionButtons() {
-    const { isTrashPage, isPageExist } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isTrashPage && isPageExist && !isSharedUser);
-  }
-
-  /**
-   * whether to display tag labels
-   */
-  get isAbleToShowTagLabel() {
-    const { isUserPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isUserPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display page management
-   * ex.) duplicate, rename
-   */
-  get isAbleToShowPageManagement() {
-    const { isPageExist, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (isPageExist && !isTrashPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display pageEditorModeManager
-   * ex.) view, edit, hackmd
-   */
-  get isAbleToShowPageEditorModeManager() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isNotCreatable && !isTrashPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display pageAuthors
-   * ex.) creator, lastUpdateUser
-   */
-  get isAbleToShowPageAuthors() {
-    const { isPageExist, isUserPage } = this.state;
-
-    return (isPageExist && !isUserPage);
-  }
-
-  /**
-   * whether to like button
-   * not displayed on user page
-   */
-  get isAbleToShowLikeButtons() {
-    const { isUserPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isUserPage && !isSharedUser);
   }
 
   /**

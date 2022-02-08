@@ -1,112 +1,153 @@
-import React, {
-  FC, useCallback,
-} from 'react';
+import React, { useCallback } from 'react';
 
-import SubscribeButton from '../SubscribeButton';
-import PageReactionButtons from '../PageReactionButtons';
-import PageManagement from '../Page/PageManagement';
-import { useSWRPageInfo } from '../../stores/page';
+import { IPageInfoAll, isIPageInfoForEntity, isIPageInfoForOperation } from '~/interfaces/page';
+
+import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
-import { toastError } from '../../client/util/apiNotification';
-import { apiv3Put } from '../../client/util/apiv3-client';
-import { useSWRxLikerList } from '../../stores/user';
+import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
 
-type SubNavButtonsProps= {
+import SubscribeButton from '../SubscribeButton';
+import LikeButtons from '../LikeButtons';
+import BookmarkButtons from '../BookmarkButtons';
+import SeenUserInfo from '../User/SeenUserInfo';
+import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
+import { AdditionalMenuItemsRendererProps, PageItemControl } from '../Common/Dropdown/PageItemControl';
+
+
+type CommonProps = {
   isCompactMode?: boolean,
-  pageId: string,
-  revisionId: string,
-  path: string,
-  isViewMode: boolean
-  isAbleToShowPageManagement: boolean,
-  isDeletable: boolean,
-  isAbleToDeleteCompletely: boolean,
+  disableSeenUserInfoPopover?: boolean,
+  showPageControlDropdown?: boolean,
+  additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
-const SubNavButtons: FC<SubNavButtonsProps> = (props: SubNavButtonsProps) => {
+
+type SubNavButtonsSubstanceProps= CommonProps & {
+  pageId: string,
+  shareLinkId?: string | null,
+  revisionId: string,
+  pageInfo: IPageInfoAll,
+}
+
+const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    isCompactMode, pageId, revisionId, path, isViewMode, isAbleToShowPageManagement, isDeletable, isAbleToDeleteCompletely,
+    pageInfo,
+    pageId, shareLinkId,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { data: pageInfo, error: pageInfoError, mutate: mutatePageInfo } = useSWRPageInfo(pageId);
-  const { data: likers } = useSWRxLikerList(pageInfo?.likerIds);
-  const { data: bookmarkInfo, error: bookmarkInfoError, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId, true);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
+
+  const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
+
+  const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
+  const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
+
+  // Put in a mixture of seenUserIds and likerIds data to make the cache work
+  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
+  const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
+  const seenUsers = usersList != null ? usersList.filter(({ _id }) => seenUserIds.includes(_id)).slice(0, 15) : [];
+
+  const subscribeClickhandler = useCallback(async() => {
+    if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
+    }
+
+    await toggleSubscribe(pageId, pageInfo.subscriptionStatus);
+    mutatePageInfo();
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const likeClickhandler = useCallback(async() => {
     if (isGuestUser == null || isGuestUser) {
       return;
     }
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
+    }
 
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await apiv3Put('/page/likes', { pageId, bool: !pageInfo!.isLiked });
-      mutatePageInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
+    await toggleLike(pageId, pageInfo.isLiked);
+    mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
   const bookmarkClickHandler = useCallback(async() => {
     if (isGuestUser == null || isGuestUser) {
       return;
     }
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await apiv3Put('/bookmarks', { pageId, bool: !bookmarkInfo!.isBookmarked });
-      mutateBookmarkInfo();
+    if (!isIPageInfoForOperation(pageInfo)) {
+      return;
     }
-    catch (err) {
-      toastError(err);
-    }
-  }, [bookmarkInfo, isGuestUser, mutateBookmarkInfo, pageId]);
 
-  if (pageInfoError != null || pageInfo == null) {
+    await toggleBookmark(pageId, pageInfo.isBookmarked);
+    mutatePageInfo();
+    mutateBookmarkInfo();
+  }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
+
+  if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
 
-  if (bookmarkInfoError != null || bookmarkInfo == null) {
-    return <></>;
-  }
-
-  const { sumOfLikers, isLiked } = pageInfo;
-  const { sumOfBookmarks, isBookmarked, bookmarkedUsers } = bookmarkInfo;
+  const {
+    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+  } = pageInfo;
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      {isViewMode && (
-        <>
-          <span>
-            <SubscribeButton pageId={props.pageId} />
-          </span>
-          <PageReactionButtons
-            isCompactMode={isCompactMode}
-            sumOfLikers={sumOfLikers}
-            isLiked={isLiked}
-            likers={likers || []}
-            onLikeClicked={likeClickhandler}
-            sumOfBookmarks={sumOfBookmarks}
-            isBookmarked={isBookmarked}
-            bookmarkedUsers={bookmarkedUsers}
-            onBookMarkClicked={bookmarkClickHandler}
-          >
-          </PageReactionButtons>
-          { isAbleToShowPageManagement && (
-            <PageManagement
-              pageId={pageId}
-              revisionId={revisionId}
-              path={path}
-              isCompactMode={isCompactMode}
-              isDeletable={isDeletable}
-              isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-            >
-            </PageManagement>
-          )}
-        </>
+      <span>
+        <SubscribeButton
+          status={pageInfo.subscriptionStatus}
+          onClick={subscribeClickhandler}
+        />
+      </span>
+      <LikeButtons
+        hideTotalNumber={isCompactMode}
+        onLikeClicked={likeClickhandler}
+        sumOfLikers={sumOfLikers}
+        isLiked={isLiked}
+        likers={likers}
+      />
+      <BookmarkButtons
+        hideTotalNumber={isCompactMode}
+        bookmarkCount={bookmarkCount}
+        isBookmarked={isBookmarked}
+        bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
+        onBookMarkClicked={bookmarkClickHandler}
+      />
+      <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+      { showPageControlDropdown && (
+        <PageItemControl
+          pageId={pageId}
+          pageInfo={pageInfo}
+          isEnableActions={!isGuestUser}
+          additionalMenuItemRenderer={additionalMenuItemRenderer}
+        />
       )}
     </div>
   );
 };
 
-export default SubNavButtons;
+type SubNavButtonsProps= CommonProps & {
+  pageId: string,
+  shareLinkId?: string | null,
+  revisionId?: string | null,
+};
+
+export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
+  const { pageId, shareLinkId, revisionId } = props;
+
+  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+
+  if (revisionId == null || error != null) {
+    return <></>;
+  }
+
+  if (!isIPageInfoForOperation(pageInfo)) {
+    return <></>;
+  }
+
+  return <SubNavButtonsSubstance {...props} pageInfo={pageInfo} pageId={pageId} revisionId={revisionId} />;
+};
