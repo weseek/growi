@@ -453,6 +453,7 @@
   },
   "user_group_management": {
     "create_group": "新規グループの作成",
+    "add_child_group": "子グループの追加",
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",
@@ -465,6 +466,7 @@
       "backward_match": "後方一致"
     },
     "group_list": "グループ一覧",
+    "child_group_list": "子グループ一覧",
     "back_to_list": "グループ一覧に戻る",
     "basic_info": "基本情報",
     "user_list": "ユーザー一覧",

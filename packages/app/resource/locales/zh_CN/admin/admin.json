@@ -463,6 +463,7 @@
   },
   "user_group_management": {
     "create_group": "创建新组",
+    "add_child_group": "添加一个子组",
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
@@ -475,6 +476,7 @@
       "backward_match": "向后匹配"
     },
     "group_list": "组列表",
+    "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
     "basic_info": "基本信息",
     "user_list": "用户列表",
