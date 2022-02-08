@@ -737,22 +737,14 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
     }
 
+    let pagesCanBeDeleted;
+
     /*
      * Delete Completely
      */
     if (isCompletely) {
       try {
-        const pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
-
-        // recursive
-        if (isRecursively) {
-
-        }
-
-        // non-recursive
-        else {
-
-        }
+        pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
       }
       catch (err) {
         const msg = 'Failed to process completely delete pages.';
@@ -782,6 +774,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg), 500);
       }
     }
+
+    // run delete
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+
+    return res.apiv3({});
   });
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {

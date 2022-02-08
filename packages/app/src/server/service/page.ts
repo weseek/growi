@@ -26,10 +26,11 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, omitDuplicateAreaPathFromPaths,
+  isCreatablePage, isTrashPage, isTopPage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -1430,8 +1431,26 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  async deleteMultiplePages(pagesToDelete, isCompletely: boolean, isRecursively: boolean): Promise<void> {
-    return;
+  async deleteMultiplePages(pagesToDelete, user, isCompletely: boolean, isRecursively: boolean): Promise<void> {
+    if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
+    // omit duplicate paths if isRecursively true
+    const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete;
+
+    // TODO: insertMany PageOperationBlock
+
+    if (isCompletely) {
+      for await (const page of pages) {
+        await this.deleteCompletely(page, user, {}, isRecursively);
+      }
+    }
+    else {
+      for await (const page of pages) {
+        await this.deletePage(page, user, {}, isRecursively);
+      }
+    }
   }
 
   // use the same process in both v4 and v5
