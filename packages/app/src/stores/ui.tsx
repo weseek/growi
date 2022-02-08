@@ -10,8 +10,12 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
-import { useCurrentPagePath, useIsEditable } from './context';
+import {
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
+} from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
+import { isSharedPage } from '^/../core/src/utils/page-path-utils';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -37,7 +41,7 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
-export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
+export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isServer ? null : 'isMobile';
 
   let configuration;
@@ -48,7 +52,7 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
     };
   }
 
-  return useStaticSWR(key, null, configuration);
+  return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
@@ -145,7 +149,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   };
 };
 
-export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
+export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
 
   const { cache, mutate } = useSWRConfig();
@@ -169,7 +173,7 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
-export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean|null, Error> => {
+export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
 
   const { cache, mutate } = useSWRConfig();
@@ -194,23 +198,23 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean|null, Error> => 
 };
 
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeByUser', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeOnEditByUser', initialData ?? null, { fallbackData: true });
+  return useStaticSWR('preferDrawerModeOnEditByUser', initialData, { fallbackData: true });
 };
 
 export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarCollapsed', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('isSidebarCollapsed', initialData, { fallbackData: false });
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData ?? null, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('productNavWidth', initialData ?? null, { fallbackData: 320 });
+  return useStaticSWR('productNavWidth', initialData, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
@@ -241,15 +245,14 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
+  return useStaticSWR('isDrawerOpened', isOpened, { fallbackData: false });
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
+  return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
+// PageCreateModal
 type CreateModalStatus = {
   isOpened: boolean,
   path?: string,
@@ -261,7 +264,8 @@ type CreateModalStatusUtils = {
 }
 
 export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
-  const swrResponse = useStaticSWR<CreateModalStatus, Error>('modalStatus', status || null);
+  const initialData: CreateModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -273,7 +277,7 @@ export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<Cr
 export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
   const { data } = useCreateModalStatus();
   return useSWR(
-    data != null ? ['isModalOpened', data] : null,
+    data != null ? ['isCreaateModalOpened', data] : null,
     () => {
       return data != null ? data.isOpened : false;
     },
@@ -292,19 +296,276 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
   );
 };
 
+// PageDeleteModal
+export type IPageForPageDeleteModal = {
+  pageId: string,
+  revisionId: string,
+  path: string
+}
+
+type DeleteModalStatus = {
+  isOpened: boolean,
+  pages?: IPageForPageDeleteModal[],
+}
+
+type DeleteModalStatusUtils = {
+  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
+  close(): Promise<DeleteModalStatus | undefined>
+}
+
+export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+  const initialData: DeleteModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePageDeleteModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isDeleteModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+// PageDuplicateModal
+export type IPageForPageDuplicateModal = {
+  pageId: string,
+  path: string
+}
+
+type DuplicateModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  path?: string,
+}
+
+type DuplicateModalStatusUtils = {
+  open(pageId: string, path: string): Promise<DuplicateModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const usePageDuplicateModalStatus = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
+  const initialData: DuplicateModalStatus = { isOpened: false, pageId: '', path: '' };
+  const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, path: string) => swrResponse.mutate({ isOpened: true, pageId, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePageDuplicateModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePageDuplicateModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isDuplicateModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+// PageRenameModal
+export type IPageForPageRenameModal = {
+  pageId: string,
+  revisionId: string,
+  path: string
+}
+
+type RenameModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  revisionId?: string
+  path?: string,
+}
+
+type RenameModalStatusUtils = {
+  open(pageId: string, revisionId: string, path: string): Promise<RenameModalStatus | undefined>
+  close(): Promise<RenameModalStatus | undefined>
+}
+
+export const usePageRenameModalStatus = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
+  const initialData: RenameModalStatus = {
+    isOpened: false, pageId: '', revisionId: '', path: '',
+  };
+  const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, revisionId: string, path: string) => swrResponse.mutate({
+      isOpened: true, pageId, revisionId, path,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePageRenameModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isRenameModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
+
+type DescendantsPageListModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DescendantsPageListUtils = {
+  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const useDescendantsPageListModal = (
+    status?: DescendantsPageListModalStatus,
+): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
+
+  const initialData: DescendantsPageListModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
+export const PageAccessoriesModalContents = {
+  PageHistory: 'PageHistory',
+  Attachment: 'Attachment',
+  ShareLink: 'ShareLink',
+} as const;
+export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[keyof typeof PageAccessoriesModalContents];
+
+type PageAccessoriesModalStatus = {
+  isOpened: boolean,
+  activatedContents: Set<PageAccessoriesModalContents>,
+}
+
+type PageAccessoriesModalUtils = {
+  open(activatedContent: PageAccessoriesModalContents): Promise<PageAccessoriesModalStatus> | void
+  close(): Promise<PageAccessoriesModalStatus> | void
+}
+
+export const usePageAccessoriesModal = (
+    status?: PageAccessoriesModalStatus,
+): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+
+  const initialData: PageAccessoriesModalStatus = { isOpened: false, activatedContents: new Set<PageAccessoriesModalContents>() };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (activatedContent: PageAccessoriesModalContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: true,
+        activatedContents: swrResponse.data.activatedContents.add(activatedContent),
+      });
+    },
+    close: () => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: false,
+        activatedContents: swrResponse.data.activatedContents,
+      });
+    },
+  };
+};
+
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
-  return useStaticSWR<Nullable<number>, Error>('grant', initialData ?? null);
+  return useStaticSWR<Nullable<number>, Error>('grant', initialData);
 };
 
 export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
 };
 
 export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR('globalSearchTypeahead', initialData ?? null);
+  return useStaticSWR('globalSearchTypeahead', initialData);
+};
+
+export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageManagement';
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [currentPageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => isPageExist && !isTrashPage && !isSharedUser,
+  );
+};
+
+export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowTagLabel';
+  const { data: isUserPage } = useIsUserPage();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: editorMode } = useEditorMode();
+
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+
+  const isViewMode = editorMode === EditorMode.View;
+  const isNotFoundPage = notFoundTargetPathOrId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+  );
+};
+
+export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageEditorModeManager';
+  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+  );
+};
+
+export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageAuthors';
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: isUserPage } = useIsUserPage();
+
+  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => isPageExist && !isUserPage,
+  );
 };

@@ -10,6 +10,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
+import { usePageRenameModalStatus, usePageRenameModalOpened } from '~/stores/ui';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -24,12 +25,16 @@ import DuplicatedPathsTable from './DuplicatedPathsTable';
 
 const PageRenameModal = (props) => {
   const {
-    t, appContainer, path, pageId, revisionId,
+    t, appContainer,
   } = props;
 
   const { crowi } = appContainer.config;
+  const { data: isOpened } = usePageRenameModalOpened();
+  const { data: pagesDataToRename, close: closeRenameModal } = usePageRenameModalStatus();
 
-  const [pageNameInput, setPageNameInput] = useState(path);
+  const { path, revisionId, pageId } = pagesDataToRename;
+
+  const [pageNameInput, setPageNameInput] = useState('');
 
   const [errs, setErrs] = useState(null);
 
@@ -70,10 +75,11 @@ const PageRenameModal = (props) => {
   }, [path, t]);
 
   useEffect(() => {
-    if (props.isOpen) {
+    if (isOpened) {
       updateSubordinatedList();
+      setPageNameInput(path);
     }
-  }, [props.isOpen, updateSubordinatedList]);
+  }, [isOpened, path, updateSubordinatedList]);
 
 
   const checkExistPaths = async(newParentPath) => {
@@ -90,14 +96,14 @@ const PageRenameModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, checkExistPaths), [path],
   );
 
   useEffect(() => {
-    if (pageNameInput !== path) {
+    if (pageId != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
@@ -137,8 +143,8 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
@@ -195,7 +201,7 @@ const PageRenameModal = (props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
@@ -252,13 +258,6 @@ const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppConta
 PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
-  pageId: PropTypes.string.isRequired,
-  revisionId: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageRenameModalWrapper);

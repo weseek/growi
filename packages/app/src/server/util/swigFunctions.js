@@ -13,6 +13,7 @@ module.exports = function(crowi, req, locals) {
     appService,
     aclService,
     customizeService,
+    pageService,
   } = crowi;
   debug('initializing swigFunctions');
 
@@ -70,6 +71,7 @@ module.exports = function(crowi, req, locals) {
   locals.aclService = aclService;
   locals.customizeService = customizeService;
   locals.passportService = passportService;
+  locals.pageService = pageService;
   locals.pathUtils = pathUtils;
 
   locals.noCdn = function() {
@@ -144,20 +146,12 @@ module.exports = function(crowi, req, locals) {
     return false;
   };
 
-  locals.isTrashPage = function() {
-    const path = req.path || '';
+  locals.isTrashPage = function(path = '') {
     if (path.match(/^\/trash(\/.*)?$/)) {
       return true;
     }
 
     return false;
-  };
-
-  locals.isDeletablePage = function() {
-    const Page = crowi.model('Page');
-    const path = req.path || '';
-
-    return Page.isDeletableName(path);
   };
 
   locals.userPageRoot = function(user) {

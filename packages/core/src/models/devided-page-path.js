@@ -34,6 +34,7 @@ export class DevidedPagePath {
 
     let PATTERN_DEFAULT = /^((.*)\/)?(.+)$/; // this will not ignore html end tags https://regex101.com/r/jpZwIe/1
     try { // for non-chrome browsers
+      // eslint-disable-next-line regex/invalid
       PATTERN_DEFAULT = new RegExp('^((.*)(?<!<)\\/)?(.+)$'); // https://regex101.com/r/HJNvMW/1
     }
     catch (err) {

@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
-import PageListItem from '../Page/PageListItem';
+import { IPageInfoForEntity, IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
+import { IPageSearchMeta } from '~/interfaces/search';
+import { useSWRxPageInfoForList } from '~/stores/page';
+
+import { PageListItemL } from '../PageList/PageListItemL';
 import PaginationWrapper from '../PaginationWrapper';
-import { IPageSearchResultData } from '../../interfaces/search';
 
 
 type Props = {
-  pages: IPageSearchResultData[],
+  pages: IPageWithMeta<IPageInfoForEntity & IPageSearchMeta>[],
   selectedPagesIdList: Set<string>
   isEnableActions: boolean,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
-  shortBodiesMap?: Record<string, string>
-  focusedSearchResultData?: IPageSearchResultData,
+  focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
-  onClickSearchResultItem?: (pageId: string) => void,
+  onClickItem?: (pageId: string) => void,
   onClickCheckbox?: (pageId: string) => void,
   onClickInvoked?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
@@ -22,22 +24,48 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    focusedSearchResultData, selectedPagesIdList, isEnableActions, shortBodiesMap,
+    pages, focusedSearchResultData, selectedPagesIdList, isEnableActions,
   } = props;
+
+  const pageIdsWithNoSnippet = pages
+    .filter(page => (page.pageMeta?.elasticSearchResult?.snippet.length ?? 0) === 0)
+    .map(page => page.pageData._id);
+
+  const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+
+  let injectedPage;
+  // inject data to list
+  if (idToPageInfo != null) {
+    injectedPage = pages.map((page) => {
+      const pageInfo = idToPageInfo[page.pageData._id];
+
+      if (!isIPageInfoForListing(pageInfo)) {
+        // return as is
+        return page;
+      }
+
+      return {
+        pageData: page.pageData,
+        pageMeta: {
+          ...page.pageMeta,
+          revisionShortBody: pageInfo.revisionShortBody,
+        },
+      };
+    });
+  }
 
   const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
-    <>
-      {Array.isArray(props.pages) && props.pages.map((page) => {
+    <ul className="page-list-ul list-group list-group-flush">
+      { (injectedPage ?? pages).map((page) => {
         const isChecked = selectedPagesIdList.has(page.pageData._id);
 
         return (
-          <PageListItem
+          <PageListItemL
             key={page.pageData._id}
             page={page}
             isEnableActions={isEnableActions}
-            shortBody={shortBodiesMap?.[page.pageData._id]}
-            onClickSearchResultItem={props.onClickSearchResultItem}
+            onClickItem={props.onClickItem}
             onClickCheckbox={props.onClickCheckbox}
             isChecked={isChecked}
             isSelected={page.pageData._id === focusedPageId || false}
@@ -56,7 +84,7 @@ const SearchResultList: FC<Props> = (props:Props) => {
         </div>
       )}
 
-    </>
+    </ul>
   );
 
 };

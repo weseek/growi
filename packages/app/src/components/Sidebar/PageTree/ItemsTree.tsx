@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -6,7 +6,10 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import PageDeleteModal, { IPageForPageDeleteModal } from '~/components/PageDeleteModal';
+import {
+  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModalStatus,
+} from '~/stores/ui';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 /*
  * Utility to generate initial node
@@ -52,20 +55,17 @@ type ItemsTreeProps = {
   targetPath: string
   targetPathOrId?: string
   targetAndAncestorsData?: TargetAndAncestors
-
-  // for deleteModal
-  isDeleteModalOpen: boolean
-  pagesToDelete: IPageForPageDeleteModal[]
-  isAbleToDeleteCompletely: boolean
-  isDeleteCompletelyModal: boolean
-  onCloseDelete(): void
-  onClickDeleteByPage(page: IPageForPageDeleteModal): void
 }
 
 const renderByInitialNode = (
-    // eslint-disable-next-line max-len
-    initialNode: ItemNode, DeleteModal: JSX.Element, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (page: IPageForPageDeleteModal) => void,
+    initialNode: ItemNode,
+    isEnableActions: boolean,
+    targetPathOrId?: string,
+    onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+    onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
+    onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
+
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
@@ -74,9 +74,10 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
+        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+        onClickRenameMenuItem={onClickRenameMenuItem}
         onClickDeleteByPage={onClickDeleteByPage}
       />
-      {DeleteModal}
     </ul>
   );
 };
@@ -87,22 +88,35 @@ const renderByInitialNode = (
  */
 const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isDeleteModalOpen, pagesToDelete, isAbleToDeleteCompletely, isDeleteCompletelyModal, onCloseDelete,
-    onClickDeleteByPage, isEnableActions,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModalStatus();
 
-  const DeleteModal = (
-    <PageDeleteModal
-      isOpen={isDeleteModalOpen}
-      pages={pagesToDelete}
-      isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-      isDeleteCompletelyModal={isDeleteCompletelyModal}
-      onClose={onCloseDelete}
-    />
-  );
+  useEffect(() => {
+    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
+    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
+    //  targetElem is HTML collection but only one HTML element in it all the time
+    if (targetElem[0] != null && startFrom != null) {
+      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
+    }
+  }, [ancestorsChildrenData]);
+
+  const onClickDuplicateMenuItem = (pageId: string, path: string) => {
+    openDuplicateModal(pageId, path);
+  };
+
+  const onClickRenameMenuItem = (pageId: string, revisionId: string, path: string) => {
+    openRenameModal(pageId, revisionId, path);
+  };
+
+  const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
+    openDeleteModal([pageToDelete]);
+  };
 
   if (error1 != null || error2 != null) {
     // TODO: improve message
@@ -115,7 +129,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage);
   }
 
   /*
@@ -123,11 +137,10 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, DeleteModal, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage);
   }
 
   return null;
 };
-
 
 export default ItemsTree;

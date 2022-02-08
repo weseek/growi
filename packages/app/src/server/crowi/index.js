@@ -20,12 +20,14 @@ import AppService from '../service/app';
 import AclService from '../service/acl';
 import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
+import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-
+import { InstallerService } from '../service/installer';
 import Activity from '../models/activity';
 import UserGroup from '../models/user-group';
+import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -142,47 +144,8 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
   ]);
-};
 
-Crowi.prototype.initForTest = async function() {
-  await this.setupModels();
-  await this.setupConfigManager();
-
-  // setup messaging services
-  await this.setupSocketIoService();
-
-  // // customizeService depends on AppService and XssService
-  // // passportService depends on appService
-  await Promise.all([
-    this.setUpApp(),
-    this.setUpXss(),
-    // this.setUpGrowiBridge(),
-  ]);
-
-  await Promise.all([
-    // this.scanRuntimeVersions(),
-    this.setupPassport(),
-    // this.setupSearcher(),
-    // this.setupMailer(),
-    // this.setupSlackIntegrationService(),
-    // this.setupCsrf(),
-    // this.setUpFileUpload(),
-    this.setupAttachmentService(),
-    this.setUpAcl(),
-    // this.setUpCustomize(),
-    // this.setUpRestQiitaAPI(),
-    // this.setupUserGroup(),
-    // this.setupExport(),
-    // this.setupImport(),
-    this.setupPageService(),
-    this.setupInAppNotificationService(),
-    this.setupActivityService(),
-  ]);
-
-  // globalNotification depends on slack and mailer
-  // await Promise.all([
-  //   this.setUpGlobalNotification(),
-  // ]);
+  await this.autoInstall();
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -318,6 +281,7 @@ Crowi.prototype.setupModels = async function() {
   // include models that independent from crowi
   allModels.Activity = Activity;
   allModels.UserGroup = UserGroup;
+  allModels.PageRedirect = PageRedirect;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
@@ -414,6 +378,35 @@ Crowi.prototype.setupCsrf = async function() {
   this.tokens = new Tokens();
 
   return Promise.resolve();
+};
+
+Crowi.prototype.autoInstall = function() {
+  const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+  const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
+
+  if (isInstalled || username == null) {
+    return;
+  }
+
+  logger.info('Start automatic installation');
+
+  const firstAdminUserToSave = {
+    username,
+    name: this.configManager.getConfig('crowi', 'autoInstall:adminName'),
+    email: this.configManager.getConfig('crowi', 'autoInstall:adminEmail'),
+    password: this.configManager.getConfig('crowi', 'autoInstall:adminPassword'),
+    admin: true,
+  };
+  const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+
+  const installerService = new InstallerService(this);
+
+  try {
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+  }
+  catch (err) {
+    logger.warn('Automatic installation failed.', err);
+  }
 };
 
 Crowi.prototype.getTokens = function() {
@@ -679,9 +672,8 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  const PageEventService = require('../service/page');
   if (this.pageService == null) {
-    this.pageService = new PageEventService(this);
+    this.pageService = new PageService(this);
   }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
