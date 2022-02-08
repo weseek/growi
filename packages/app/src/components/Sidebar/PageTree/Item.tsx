@@ -8,7 +8,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
 
-import { pagePathUtils } from '@growi/core';
+import { pathUtils } from '@growi/core';
 
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
@@ -21,8 +21,6 @@ import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
-
-const { generateEditorPath } = pagePathUtils;
 
 interface ItemProps {
   isEnableActions: boolean
@@ -119,11 +117,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  const getParentPagePath = (pagePath: string) => {
-    const dirname = nodePath.dirname(page.path as string);
-    return dirname === '/' ? '' : dirname;
-  };
-
   const hasChildren = useCallback((): boolean => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
@@ -210,20 +203,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteByPage(pageToDelete);
   }, [page, onClickDeleteByPage]);
 
-  const redirectToEditor = (...paths: string[]) => {
-    try {
-      const editorPath = generateEditorPath(...paths);
-      window.location.href = editorPath;
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
-
   const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
-    const parentPath = getParentPagePath(page.path as string);
-    redirectToEditor(parentPath, inputText);
+    const parentPath = pathUtils.addTrailingSlash(page.path as string);
+    const newPagePath = `${parentPath}${inputText}`;
+    console.log(newPagePath);
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
