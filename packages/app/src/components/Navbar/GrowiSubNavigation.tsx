@@ -79,7 +79,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
       {/* Right side */}
       <div className="d-flex">
 
-        <div>
+        <div className="d-flex flex-column" style={{ gap: `${isCompactMode ? '5px' : '0'}` }}>
           { Controls && <Controls></Controls> }
         </div>
 
