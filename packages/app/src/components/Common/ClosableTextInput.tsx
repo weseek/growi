@@ -38,13 +38,13 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     }
   };
 
-  const onChangeHandler = async(e) => {
+  const onChangeHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
     createValidation(inputText);
     setInputText(inputText);
   };
 
-  const onFocusHandler = async(e) => {
+  const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
     await createValidation(inputText);
   };
@@ -113,11 +113,11 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         className="form-control"
         placeholder={props.placeholder}
         name="input"
+        onFocus={onFocusHandler}
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
         onBlur={onBlurHandler}
         autoFocus={false}
-        onFocus={onFocusHandler}
       />
       <AlertInfo />
     </div>
