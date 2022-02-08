@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   Modal, ModalBody, ModalHeader,
@@ -42,13 +42,20 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isGuestUser } = useIsGuestUser();
 
-  // const { data: status, close } = usePageAccessoriesModal({
-  //   isOpened: false,
-  //   onOpened: (activatedContents) => {
-  //     setActiveTab(activatedContents);
-  //   },
-  // });
-  const { data: status, close } = usePageAccessoriesModal();
+  const { data: status, mutate, close } = usePageAccessoriesModal();
+
+  // add event handler when opened
+  useEffect(() => {
+    if (status == null || status.onOpened != null) {
+      return;
+    }
+    mutate({
+      ...status,
+      onOpened: (activatedContents) => {
+        setActiveTab(activatedContents);
+      },
+    }, false);
+  }, [mutate, status]);
 
   const navTabMapping = useMemo(() => {
     return {

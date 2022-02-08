@@ -457,7 +457,7 @@ export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[k
 
 type PageAccessoriesModalStatus = {
   isOpened: boolean,
-  // onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
+  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
 }
 
 type PageAccessoriesModalUtils = {
@@ -465,12 +465,10 @@ type PageAccessoriesModalUtils = {
   close(): void
 }
 
-export const usePageAccessoriesModal = (
-    status?: PageAccessoriesModalStatus,
-): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialStatus });
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
@@ -480,9 +478,9 @@ export const usePageAccessoriesModal = (
       }
       swrResponse.mutate({ isOpened: true });
 
-      // if (swrResponse.data.onOpened != null) {
-      //   swrResponse.data.onOpened(activatedContents);
-      // }
+      if (swrResponse.data.onOpened != null) {
+        swrResponse.data.onOpened(activatedContents);
+      }
     },
     close: () => {
       if (swrResponse.data == null) {
