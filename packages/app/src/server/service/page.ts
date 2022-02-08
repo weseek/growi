@@ -1436,10 +1436,10 @@ class PageService {
       throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
-    // omit duplicate paths if isRecursively true
-    const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete;
+    // omit duplicate paths if isRecursively true, omit empty pages if isRecursively false
+    const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete.filter(p => !p.isEmpty);
 
-    // TODO: insertMany PageOperationBlock
+    // TODO: insertMany PageOperationBlock if isRecursively true
 
     if (isCompletely) {
       for await (const page of pages) {
@@ -1854,7 +1854,7 @@ class PageService {
     return Page.updateOne({ _id: pageId }, { parent: parent._id });
   }
 
-  async normalizeParentRecursivelyByPageIds(pageIds) {
+  async normalizeParentRecursivelyByPageIds(pageIds, user) {
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
@@ -1879,7 +1879,7 @@ class PageService {
 
     let result;
     try {
-      result = await Page.findListByPageIds(pageIds, null, false);
+      result = await Page.findByPageIdsToEdit(pageIds, user, false);
     }
     catch (err) {
       logger.error('Failed to find pages by ids', err);

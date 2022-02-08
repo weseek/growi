@@ -182,9 +182,8 @@ module.exports = (crowi) => {
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
     deletePages: [
-      body('pageIds')
-        .custom(v => (v == null ? true : Array.isArray(v)))
-        .withMessage('The body property "pageId" must be an array or null. (null is the same as [])'),
+      body('pageIdToRevisionIdMap')
+        .withMessage('The body property "pageIdToRevisionIdMap" must be an json map with pageId as key and revisionId as value.'),
       body('isCompletely')
         .custom(v => v === 'true' || v === true || v == null)
         .withMessage('The body property "isCompletely" must be "true" or true. (Omit param for false)'),
@@ -721,16 +720,19 @@ module.exports = (crowi) => {
   });
 
   router.delete('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
-    const { pageIds: _pageIds, isCompletely, isRecursively } = req.body;
-    const pageIds = _pageIds == null ? [] : _pageIds;
+    const { pageIdToRevisionIdMap, isCompletely, isRecursively } = req.body;
+    const pageIds = Object.keys(pageIdToRevisionIdMap);
 
+    if (pageIds.length === 0) {
+      return res.apiv3Err(new ErrorV3('Select pages to delete.', 'no_page_selected'), 400);
+    }
     if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
     let pagesToDelete;
     try {
-      pagesToDelete = await Page.findListByPageIds(pageIds, null, false);
+      pagesToDelete = await Page.findByPageIdsToEdit(pageIds, req.user, true);
     }
     catch (err) {
       logger.error('Failed to find pages to delete.', err);
@@ -738,41 +740,22 @@ module.exports = (crowi) => {
     }
 
     let pagesCanBeDeleted;
-
     /*
      * Delete Completely
      */
     if (isCompletely) {
-      try {
-        pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
-      }
-      catch (err) {
-        const msg = 'Failed to process completely delete pages.';
-        logger.error(msg, err);
-        return res.apiv3Err(new ErrorV3(msg), 500);
-      }
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
     }
-
     /*
      * Trash
      */
     else {
-      try {
-        // recursive
-        if (isRecursively) {
+      pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+    }
 
-        }
-
-        // non-recursive
-        else {
-
-        }
-      }
-      catch (err) {
-        const msg = 'Failed to process completely delete pages.';
-        logger.error(msg, err);
-        return res.apiv3Err(new ErrorV3(msg), 500);
-      }
+    if (pagesCanBeDeleted.length === 0) {
+      const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
     }
 
     // run delete
@@ -808,7 +791,7 @@ module.exports = (crowi) => {
 
     if (isRecursively) {
       // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
     }
     else {
       try {
