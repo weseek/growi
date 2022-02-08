@@ -208,6 +208,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
     console.log(newPagePath);
+    // TODO: https://redmine.weseek.co.jp/issues/87943
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
