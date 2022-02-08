@@ -29,7 +29,7 @@ interface ItemProps {
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
 // Utility to mark target
@@ -70,7 +70,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -184,7 +184,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [onClickRenameMenuItem, page]);
 
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteByPage == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
 
@@ -200,8 +200,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDeleteByPage(pageToDelete);
-  }, [page, onClickDeleteByPage]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [page, onClickDeleteMenuItem]);
 
   const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
@@ -338,7 +338,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               targetPathOrId={targetPathOrId}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
-              onClickDeleteByPage={onClickDeleteByPage}
+              onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>
         ))
