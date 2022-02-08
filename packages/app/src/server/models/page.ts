@@ -546,9 +546,13 @@ schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): 
 
     // delete leaf empty pages
     const isNextPageEmpty = nextPage.isEmpty;
-    const isSiblingsExist = !isNextPageEmpty || await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } }); // evaluate (!isNextPageEmpty ||) first to reduce query
 
-    if (!isNextPageEmpty || isSiblingsExist) {
+    if (!isNextPageEmpty) {
+      return pageIds;
+    }
+
+    const isSiblingsExist = await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } });
+    if (isSiblingsExist) {
       return pageIds;
     }
 
