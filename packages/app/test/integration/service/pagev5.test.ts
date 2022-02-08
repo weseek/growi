@@ -22,7 +22,16 @@ describe('PageService page operations with only public pages', () => {
   let xssSpy;
 
   let rootPage;
-  let objId1;
+  // parents
+  let parentForRename1;
+  // children
+  let childForRename1;
+  // revisions ids
+  let revisionIdOfParentForRename1;
+  let revisionIdOfChildForRename1;
+  // revisions
+  let revisionOfParentForRename1;
+  let revisionOfChildForRename1;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -55,37 +64,98 @@ describe('PageService page operations with only public pages', () => {
      */
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
-    objId1 = new mongoose.Types.ObjectId();
+    // RevisionIds
+    revisionIdOfParentForRename1 = new mongoose.Types.ObjectId();
+    revisionIdOfChildForRename1 = new mongoose.Types.ObjectId();
+
+    // Create Pages
     await Page.insertMany([
-      // Should move to under non-empty page
+      // parents
       {
-        _id: objId1,
-        path: '/level1/level2/level2',
+        path: '/parentForRename1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1,
+        revision: revisionIdOfParentForRename1,
+        parent: rootPage._id,
+        updatedAt: new Date(),
+      },
+      // children
+      {
+        path: '/childForRename1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        revision: revisionIdOfChildForRename1,
+        parent: rootPage._id,
       },
     ]);
+
+    // Find pages
+    parentForRename1 = await Page.findOne({ path: '/parentForRename1' });
+    childForRename1 = await Page.findOne({ path: '/childForRename1' });
+
+    // Create Revisions
+    await Revision.insertMany([
+      // parents
+      {
+        _id: revisionIdOfParentForRename1,
+        pageId: parentForRename1._id,
+        body: 'body_for_parentForRename1',
+        author: dummyUser1._id,
+      },
+      // children
+      {
+        _id: revisionIdOfChildForRename1,
+        pageId: childForRename1._id,
+        body: 'body_for_parentForRename1',
+        author: dummyUser1._id,
+      },
+    ]);
+
+    // Find Revisions
+    revisionOfParentForRename1 = await Revision.findOne({ _id: revisionIdOfParentForRename1 });
+    revisionOfChildForRename1 = await Revision.findOne({ _id: revisionIdOfChildForRename1 });
 
   });
 
   describe('Rename', () => {
-    test('Should NOT rename top page', async() => {
+    // test('Should NOT rename top page', async() => {
 
-      let isThrown = false;
-      try {
-        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
-      }
-      catch (err) {
-        isThrown = true;
-      }
+    //   let isThrown = false;
+    //   try {
+    //     await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
+    //   }
+    //   catch (err) {
+    //     isThrown = true;
+    //   }
 
-      expect(isThrown).toBe(true);
-    });
+    //   expect(isThrown).toBe(true);
+    // });
 
     test('Should move to under non-empty page', async() => {
-      const page = await Page.find({ _id: objId1 });
-      console.log(page);
+
+      // mock
+      const mockedRenameDescendantsWithStream = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream')
+        .mockReturnValue(null);
+      jest.spyOn(crowi.pageService, 'createAndSendNotifications')
+        .mockReturnValue(null);
+
+      // rename target page
+      const newPath = '/parentForRename1/renamed1';
+      const renamedPage = await crowi.pageService.renamePage(childForRename1, newPath, dummyUser1, {});
+
+      // retrieve arugemtns which method:'renameDescendantsWithStream' was called with
+      const argsForCreateAndSendNotifications = mockedRenameDescendantsWithStream.mock.calls[0];
+      // restore the mock to the original function
+      mockedRenameDescendantsWithStream.mockRestore();
+
+      // rename descendants
+      await crowi.pageService.renameDescendantsWithStream(...argsForCreateAndSendNotifications);
+
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
+
     });
 
     test('Should move to under empty page', async() => {
