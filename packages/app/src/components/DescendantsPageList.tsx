@@ -3,7 +3,7 @@ import {
   IPageHasId, IPageWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
 
@@ -25,8 +25,9 @@ const DescendantsPageList = (props: Props): JSX.Element => {
   const [activePage, setActivePage] = useState(1);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSharedUser } = useIsSharedUser();
 
-  const { data: pagingResult, error } = useSWRxPageList(path, activePage);
+  const { data: pagingResult, error } = useSWRxPageList(isSharedUser ? null : path, activePage);
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);

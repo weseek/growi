@@ -338,6 +338,7 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
+
     addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
@@ -1198,12 +1199,13 @@ module.exports = function(crowi, app) {
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
+        // behave like not found
         const notRecursivelyAndEmpty = page.isEmpty && !isRecursively;
         if (notRecursivelyAndEmpty) {
           return res.json(ApiResponse.error(`Page '${pageId}' is not found.`, 'notfound'));
         }
 
-        if (!page.isUpdatable(previousRevision)) {
+        if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 

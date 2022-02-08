@@ -416,6 +416,80 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+
+type DescendantsPageListModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DescendantsPageListUtils = {
+  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const useDescendantsPageListModal = (
+    status?: DescendantsPageListModalStatus,
+): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
+
+  const initialData: DescendantsPageListModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
+export const PageAccessoriesModalContents = {
+  PageHistory: 'PageHistory',
+  Attachment: 'Attachment',
+  ShareLink: 'ShareLink',
+} as const;
+export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[keyof typeof PageAccessoriesModalContents];
+
+type PageAccessoriesModalStatus = {
+  isOpened: boolean,
+  activatedContents: Set<PageAccessoriesModalContents>,
+}
+
+type PageAccessoriesModalUtils = {
+  open(activatedContent: PageAccessoriesModalContents): Promise<PageAccessoriesModalStatus> | void
+  close(): Promise<PageAccessoriesModalStatus> | void
+}
+
+export const usePageAccessoriesModal = (
+    status?: PageAccessoriesModalStatus,
+): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+
+  const initialData: PageAccessoriesModalStatus = { isOpened: false, activatedContents: new Set<PageAccessoriesModalContents>() };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (activatedContent: PageAccessoriesModalContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: true,
+        activatedContents: swrResponse.data.activatedContents.add(activatedContent),
+      });
+    },
+    close: () => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({
+        isOpened: false,
+        activatedContents: swrResponse.data.activatedContents,
+      });
+    },
+  };
+};
+
+
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);
 };

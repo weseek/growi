@@ -7,7 +7,7 @@ import DescendantsPageList from './DescendantsPageList';
 
 
 type Props = {
-  isSharePage?: boolean,
+  isLinkSharingDisabled?: boolean,
 }
 
 const ForbiddenPage = React.memo((props: Props): JSX.Element => {
@@ -39,12 +39,12 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
             <i className="icon-fw icon-lock" aria-hidden="true" />
-            { props.isSharePage ? t('custom_navigation.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
+            { props.isLinkSharingDisabled ? t('custom_navigation.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
           </p>
         </div>
       </div>
 
-      { !props.isSharePage && (
+      { !props.isLinkSharingDisabled && (
         <div className="mt-5">
           <CustomNavAndContents navTabMapping={navTabMapping} />
         </div>
