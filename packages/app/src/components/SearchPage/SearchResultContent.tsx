@@ -56,7 +56,7 @@ type Props ={
 const SearchResultContent: FC<Props> = (props: Props) => {
 
   // ***************************  Auto Scroll  ***************************
-  const scrollTo = (scrollElement) => {
+  const scrollTo = (scrollElement:HTMLElement) => {
     const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
     if (highlightedKeyword != null) {
       smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
@@ -67,7 +67,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     const scrollElement = document.querySelector('.search-result-page-content') as HTMLElement;
     if (scrollElement == null) return;
     const observerCallback = (mutationRecords) => {
-      mutationRecords.forEach((record:any) => {
+      mutationRecords.forEach((record) => {
         const targetId = record.target.id;
         if (targetId !== 'wiki') return;
         scrollTo(scrollElement);
@@ -75,7 +75,9 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     };
     const observer = new MutationObserver(observerCallback);
     observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-    return;
+    return () => {
+      observer.disconnect();
+    };
   });
   // ***************************  end  ***************************
 
