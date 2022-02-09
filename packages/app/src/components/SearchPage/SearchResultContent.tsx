@@ -54,7 +54,7 @@ type Props ={
 }
 
 const scrollTo = (scrollElement:HTMLElement) => {
-  // use querySelector to intentionally get element which is found first
+  // use querySelector to intentionally get the first element found
   const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
   if (highlightedKeyword != null) {
     smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
