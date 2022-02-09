@@ -90,11 +90,6 @@ module.exports = (crowi) => {
     });
   }
 
-  function findUserBySlackId(slackId) {
-    const userData = User.findUserBySlackId(slackId);
-    return userData ? userData.username : slackId;
-  }
-
   handler.keepGetMessages = async function(client, channelId, newest, oldest) {
     let result;
 
@@ -143,10 +138,20 @@ module.exports = (crowi) => {
     return result;
   };
 
+  handler.messagesWithGrowiUser = async function(messages) {
+    await Promise.all(messages.map(async(message) => {
+      const growiUser = await User.findUserBySlackId(message.user);
+      if (growiUser) {
+        message.user = `${growiUser.name} (@${growiUser.username})`;
+      }
+    }));
+  };
+
   handler.keepCleanMessages = async function(messages) {
     const cleanedContents = [];
     let lastMessage = {};
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
+    await this.messagesWithGrowiUser(messages);
     messages
       .sort((a, b) => {
         return a.ts - b.ts;
@@ -154,18 +159,16 @@ module.exports = (crowi) => {
       .forEach((message) => {
         // increment contentsBody while removing the same headers
         // exclude header
-
-        const messageUsername = findUserBySlackId(message.user);
         const lastMessageTs = Math.floor(lastMessage.ts / 60);
         const messageTs = Math.floor(message.ts / 60);
-        if (lastMessage.user === messageUsername && lastMessageTs === messageTs) {
+        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
           cleanedContents.push(`${message.text}\n`);
         }
         // include header
         else {
           const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
           const time = format(new Date(ts), 'h:mm a');
-          cleanedContents.push(`${messageUsername}  ${time}\n${message.text}\n`);
+          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
           lastMessage = message;
         }
       });
