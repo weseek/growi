@@ -25,11 +25,11 @@ fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
 
 module.exports = function(crowi) {
 
-  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer> => {
+  const isUserImageAttachment = (userImageUrlCached: string): boolean => {
+    return /^\/attachment\/.+/.test(userImageUrlCached);
+  };
 
-    const isUserImageAttachment = (userImageUrlCached: string): boolean => {
-      return /^\/attachment\/.+/.test(userImageUrlCached);
-    };
+  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer> => {
 
     let bufferedUserImage: Buffer;
 
@@ -56,14 +56,10 @@ module.exports = function(crowi) {
       const { configManager } = crowi;
       const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
 
-      if (ogpUri == null) return res.status(400).send('OGP URI for GROWI has not been setup');
-
-
       const pageId = req.params.pageId;
       let user;
       let pageTitle: string;
-      let bufferedUserImage:Buffer;
-
+      let bufferedUserImage: Buffer;
 
       try {
         const Page = crowi.model('Page');
@@ -77,9 +73,8 @@ module.exports = function(crowi) {
         user = await User.findById(page.creator._id.toString());
 
         bufferedUserImage = user.imageUrlCached === DEFAULT_USER_IMAGE_URL ? bufferedDefaultUserImageCache : (await getBufferedUserImage(user.imageUrlCached));
-
-        pageTitle = (new DevidedPagePath(page.path)).latter; // todo: consider page title
-
+        // todo: consider page title
+        pageTitle = (new DevidedPagePath(page.path)).latter;
       }
       catch (err) {
         logger.error(err);
