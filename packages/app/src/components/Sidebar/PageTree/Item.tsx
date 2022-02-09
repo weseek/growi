@@ -105,7 +105,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     end: () => {
-      // set d-none to dropped Item
+      // in order to set d-none to dropped Item
       setRenamed(true);
     },
     collect: monitor => ({
@@ -145,7 +145,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       removeDisplayNoneFromItemByPageId(droppedPage._id);
 
       if (err.code === 'operation__blocked') {
-        toastError('TODO: i18n You cannot move this page now.');
+        toastWarning('TODO: i18n You cannot move this page now.');
       }
       else {
         toastError('TODO: i18n Something went wrong with moving page.');
