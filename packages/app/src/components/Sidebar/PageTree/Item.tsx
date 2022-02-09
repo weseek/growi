@@ -88,12 +88,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const isChildrenLoaded = currentChildren?.length > 0;
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
 
+  // to re-show hidden item when useDrag end() callback
   const removeDisplayNoneFromItemByPageId = useCallback((pageId) => {
     const target = document.getElementById(`pagetree-item-${pageId}`);
     if (target == null) {
       return;
     }
 
+    // wait 500ms to avoid removing before d-none is set by useDrag end() callback
     setTimeout(() => {
       target.classList.remove('d-none');
     }, 500);
@@ -123,7 +125,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const newPagePath = nodePath.join(newParentPath, pageTitle);
 
     try {
-      throw Error();
       await apiv3Put('/pages/rename', {
         pageId: droppedPage._id,
         revisionId: droppedPage.revision,
@@ -134,9 +135,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       await mutateChildren();
 
+      // force open
       setIsOpen(true);
 
-      toastSuccess('Renamed!');
+      toastSuccess('TODO: i18n Successfully moved pages.');
     }
     catch (err) {
       // display the dropped item
