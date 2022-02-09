@@ -120,11 +120,9 @@ describe('PageService page operations with only public pages', () => {
   });
 
 
-  const safeRename = async(renameArg) => {
-    const {
-      page, newPagePath, user, options,
-    } = renameArg;
-    // mock
+  const safeRename = async(page, newPagePath, user, options) => {
+
+    // mock return value
     const mockedRenameDescendantsWithStream = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream')
       .mockReturnValue(null);
     jest.spyOn(crowi.pageService, 'createAndSendNotifications')
@@ -162,13 +160,7 @@ describe('PageService page operations with only public pages', () => {
 
       // rename target page
       const newPath = '/parentForRename1/renamed1';
-      const renameArg = {
-        page: childForRename1,
-        newPagePath: newPath,
-        user: dummyUser1,
-        options: {},
-      };
-      const renamedPage = await safeRename(renameArg);
+      const renamedPage = await safeRename(childForRename1, newPath, dummyUser1, {});
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
