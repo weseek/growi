@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
@@ -6,7 +6,10 @@ import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError } from '~/client/util/apiNotification';
-import { IPageForPageDeleteModal, usePageDeleteModalStatus } from '~/stores/ui';
+import {
+  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+} from '~/stores/ui';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 /*
  * Utility to generate initial node
@@ -55,8 +58,14 @@ type ItemsTreeProps = {
 }
 
 const renderByInitialNode = (
-    initialNode: ItemNode, isEnableActions: boolean, targetPathOrId?: string, onClickDeleteByPage?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    initialNode: ItemNode,
+    isEnableActions: boolean,
+    targetPathOrId?: string,
+    onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+    onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 ): JSX.Element => {
+
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
@@ -65,7 +74,9 @@ const renderByInitialNode = (
         itemNode={initialNode}
         isOpen
         isEnableActions={isEnableActions}
-        onClickDeleteByPage={onClickDeleteByPage}
+        onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+        onClickRenameMenuItem={onClickRenameMenuItem}
+        onClickDeleteMenuItem={onClickDeleteMenuItem}
       />
     </ul>
   );
@@ -82,10 +93,33 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
-  const { open: openDeleteModal } = usePageDeleteModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
-  const onClickDeleteByPage = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete]);
+  useEffect(() => {
+    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
+    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
+    //  targetElem is HTML collection but only one HTML element in it all the time
+    if (targetElem[0] != null && startFrom != null) {
+      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
+    }
+  }, [ancestorsChildrenData]);
+
+  const onClickDuplicateMenuItem = (pageId: string, path: string) => {
+    openDuplicateModal(pageId, path);
+  };
+
+  const onClickRenameMenuItem = (pageId: string, revisionId: string, path: string) => {
+    openRenameModal(pageId, revisionId, path);
+  };
+
+  const onDeletedHandler = (pagePath) => {
+    window.location.href = encodeURI(pagePath);
+  };
+
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
+    openDeleteModal([pageToDelete], onDeletedHandler);
   };
 
   if (error1 != null || error2 != null) {
@@ -99,7 +133,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
   }
 
   /*
@@ -107,7 +141,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDeleteByPage);
+    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
   }
 
   return null;

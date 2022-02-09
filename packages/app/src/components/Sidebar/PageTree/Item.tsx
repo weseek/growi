@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
+
+import { pathUtils } from '@growi/core';
+
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -19,13 +22,14 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
-
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
+  onClickDuplicateMenuItem?(pageId: string, path: string): void
+  onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
 // Utility to mark target
@@ -66,7 +70,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -75,7 +79,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -125,8 +129,62 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setNewPageInputShown(true);
   }, []);
 
+  const duplicateMenuItemClickHandler = useCallback((): void => {
+    if (onClickDuplicateMenuItem == null) {
+      return;
+    }
+
+    const { _id: pageId, path } = page;
+
+    if (pageId == null || path == null) {
+      throw Error('Any of _id and path must not be null.');
+    }
+
+    onClickDuplicateMenuItem(pageId, path);
+  }, [onClickDuplicateMenuItem, page]);
+
+
+  /*
+  * Rename: TODO: rename page title on input form by #87757
+  */
+
+  // const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
+  //   setRenameInputShown(true);
+  // }, []);
+
+  // const onPressEnterForRenameHandler = async(inputText: string) => {
+  //   const parentPath = getParentPagePath(page.path as string)
+  //   const newPagePath = `${parentPath}/${inputText}`;
+
+  //   try {
+  //     setPageTitle(inputText);
+  //     setRenameInputShown(false);
+  //     await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
+  //   }
+  //   catch (err) {
+  //     // open ClosableInput and set pageTitle back to the previous title
+  //     setPageTitle(nodePath.basename(pageTitle as string));
+  //     setRenameInputShown(true);
+  //     toastError(err);
+  //   }
+  // };
+
+  const renameMenuItemClickHandler = useCallback((): void => {
+    if (onClickRenameMenuItem == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId, path } = page;
+
+    if (pageId == null || revisionId == null || path == null) {
+      throw Error('Any of _id and revisionId and path must not be null.');
+    }
+
+    onClickRenameMenuItem(pageId, revisionId as string, path);
+  }, [onClickRenameMenuItem, page]);
+
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteByPage == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
 
@@ -142,40 +200,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDeleteByPage(pageToDelete);
-  }, [page, onClickDeleteByPage]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [page, onClickDeleteMenuItem]);
 
-
-  const onClickRenameButton = useCallback(async(_pageId: string): Promise<void> => {
-    setRenameInputShown(true);
-  }, []);
-
-  const onPressEnterForRenameHandler = async(inputText: string) => {
-    if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-      return;
-    }
-
-    const parentPath = nodePath.dirname(page.path as string);
-    const newPagePath = `${parentPath}/${inputText}`;
-
-    try {
-      setPageTitle(inputText);
-      setRenameInputShown(false);
-      await apiv3Put('/pages/rename', { newPagePath, pageId: page._id, revisionId: page.revision });
-    }
-    catch (err) {
-      // open ClosableInput and set pageTitle back to the previous title
-      setPageTitle(nodePath.basename(pageTitle as string));
-      setRenameInputShown(true);
-      toastError(err);
-    }
-  };
-
-
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
+  const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
+    const parentPath = pathUtils.addTrailingSlash(page.path as string);
+    const newPagePath = `${parentPath}${inputText}`;
+    console.log(newPagePath);
+    // TODO: https://redmine.weseek.co.jp/issues/87943
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -241,7 +274,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             </button>
           )}
         </div>
-        { isRenameInputShown && (
+        {/* TODO: rename page title on input form by 87757 */}
+        {/* { isRenameInputShown && (
           <ClosableTextInput
             isShown
             value={nodePath.basename(pageTitle as string)}
@@ -251,11 +285,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             inputValidator={inputValidator}
           />
         )}
-        { !isRenameInputShown && (
-          <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
-          </a>
-        )}
+        { !isRenameInputShown && ( */}
+        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+          <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
+        </a>
+        {/* )} */}
         {(page.descendantCount != null && page.descendantCount > 0) && (
           <div className="grw-pagetree-count-wrapper">
             <ItemCount descendantCount={page.descendantCount} />
@@ -267,8 +301,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             isEnableActions={isEnableActions}
             showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={onClickDeleteButton}
-            onClickRenameMenuItem={onClickRenameButton}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
@@ -301,7 +336,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
-              onClickDeleteByPage={onClickDeleteByPage}
+              onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+              onClickRenameMenuItem={onClickRenameMenuItem}
+              onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>
         ))

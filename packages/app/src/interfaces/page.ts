@@ -97,3 +97,8 @@ export type IPageWithMeta<M = IPageInfoAll> = {
   pageData: IPageHasId,
   pageMeta?: M,
 };
+
+export type IPageApiv1Result = {
+  ok: boolean
+  page: IPageHasId,
+};

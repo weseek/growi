@@ -638,9 +638,11 @@ module.exports = (crowi) => {
     const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
     const result = { page: serializePageSecurely(newParentPage) };
 
-    page.path = newPagePath;
+    // copy the page since it's used and updated in crowi.pageService.duplicate
+    const copyPage = { ...page };
+    copyPage.path = newPagePath;
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
@@ -708,12 +710,11 @@ module.exports = (crowi) => {
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const Page = crowi.model('Page');
 
     try {
       if (!isV5Compatible) {
         // this method throws and emit socketIo event when error occurs
-        crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+        crowi.pageService.normalizeAllPublicPages(); // not await
       }
     }
     catch (err) {

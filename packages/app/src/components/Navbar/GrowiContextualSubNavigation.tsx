@@ -5,52 +5,52 @@ import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
-import urljoin from 'url-join';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents, usePageDeleteModal,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser,
+  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
-import { SubNavButtons } from './SubNavButtons';
-import PageEditorModeManager from './PageEditorModeManager';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { IPageHasId } from '~/interfaces/page';
+
+import HistoryIcon from '../Icons/HistoryIcon';
+import AttachmentIcon from '../Icons/AttachmentIcon';
+import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import { SubNavButtons } from './SubNavButtons';
+import PageEditorModeManager from './PageEditorModeManager';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import PresentationIcon from '../Icons/PresentationIcon';
+import { exportAsMarkdown } from '~/client/services/page-operation';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
   revisionId: string,
+  isLinkSharingDisabled?: boolean,
 }
 
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, revisionId } = props;
+  const { pageId, revisionId, isLinkSharingDisabled } = props;
 
-  const exportPageHandler = useCallback(async(format: string): Promise<void> => {
-    const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
-    url.searchParams.append('format', format);
-    url.searchParams.append('revisionId', revisionId);
-    window.location.href = url.href;
-  }, [pageId, revisionId]);
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const { open } = usePageAccessoriesModal();
 
   return (
     <>
-      <DropdownItem divider />
-
       {/* Presentation */}
       <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
         <i className="icon-fw"><PresentationIcon /></i>
@@ -58,9 +58,38 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       {/* Export markdown */}
-      <DropdownItem onClick={() => exportPageHandler('md')}>
+      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
         <i className="icon-fw icon-cloud-download"></i>
         {t('export_bulk.export_page_markdown')}
+      </DropdownItem>
+
+      <DropdownItem divider />
+
+      {/*
+        TODO: show Tooltip when menu is disabled
+        refs: PageAccessoriesModalControl
+      */}
+      <DropdownItem
+        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        disabled={isGuestUser || isSharedUser}
+      >
+        <span className="mr-1"><HistoryIcon /></span>
+        {t('History')}
+      </DropdownItem>
+
+      <DropdownItem
+        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+      >
+        <span className="mr-1"><AttachmentIcon /></span>
+        {t('attachment_data')}
+      </DropdownItem>
+
+      <DropdownItem
+        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+      >
+        <span className="mr-1"><ShareLinkIcon /></span>
+        {t('share_links.share_link_management')}
       </DropdownItem>
 
       <DropdownItem divider />
@@ -87,6 +116,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: revisionAuthor } = useRevisionAuthor();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -95,8 +125,10 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
+  const { open: openDeleteModal } = usePageDeleteModal();
+
   const {
-    editorContainer, isCompactMode,
+    editorContainer, isCompactMode, isLinkSharingDisabled,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
@@ -123,6 +155,10 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
+
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -135,10 +171,15 @@ const GrowiContextualSubNavigation = (props) => {
             <SubNavButtons
               isCompactMode={isCompactMode}
               pageId={pageId}
+              shareLinkId={shareLinkId}
               revisionId={revisionId}
+              path={path}
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} />}
+              additionalMenuItemRenderer={props => (
+                <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} isLinkSharingDisabled={isLinkSharingDisabled} />
+              )}
+              onClickDeleteMenuItem={deleteItemClickedHandler}
             />
           ) }
         </div>
@@ -155,10 +196,12 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId,
+    pageId, revisionId, shareLinkId,
     editorMode, mutateEditorMode,
-    isCompactMode, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
+    isCompactMode, isLinkSharingDisabled,
+    isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
+    deleteItemClickedHandler, path,
   ]);
 
 
@@ -183,6 +226,9 @@ const GrowiContextualSubNavigation = (props) => {
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}
+      isGuestUser={isGuestUser}
+      isDrawerMode={isDrawerMode}
+      isCompactMode={isCompactMode}
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
@@ -200,6 +246,7 @@ GrowiContextualSubNavigation.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
+  isLinkSharingDisabled: PropTypes.bool,
 };
 
 export default GrowiContextualSubNavigationWrapper;

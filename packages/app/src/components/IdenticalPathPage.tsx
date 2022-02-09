@@ -1,15 +1,15 @@
-import React, {
-  FC,
-} from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DevidedPagePath } from '@growi/core';
 
-import { useCurrentPagePath } from '~/stores/context';
-
-import { PageListItemL } from './PageList/PageListItemL';
-import { useSWRxPageInfoForList } from '~/stores/page';
 import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
+import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
+import { useDescendantsPageListModal } from '~/stores/ui';
+import { useSWRxPageInfoForList } from '~/stores/page';
+
+import PageListIcon from './Icons/PageListIcon';
+import { PageListItemL } from './PageList/PageListItemL';
 
 
 type IdenticalPathAlertProps = {
@@ -55,24 +55,37 @@ type IdenticalPathPageProps= {
 const jsonNull = 'null';
 
 const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
+  const { t } = useTranslation();
 
   const identicalPageDocument = document.getElementById('identical-path-page');
   const pages = JSON.parse(identicalPageDocument?.getAttribute('data-identical-path-pages') || jsonNull) as IPageHasId[];
 
   const pageIds = pages.map(page => page._id) as string[];
 
-  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
 
   const { data: currentPath } = useCurrentPagePath();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const { data: idToPageInfoMap } = useSWRxPageInfoForList(pageIds);
+
+  const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
   return (
     <div className="d-flex flex-column flex-lg-row-reverse">
 
       <div className="grw-side-contents-container">
-        <div className="grw-side-contents-sticky-container">
-          <div className="border-bottom pb-1">
-            {/* <PageAccessories isNotFoundPage={!isPageExist} /> */}
-          </div>
+        <div className="grw-page-accessories-control pb-1">
+          { currentPath != null && !isSharedUser && (
+            <button
+              type="button"
+              className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between"
+              onClick={() => openDescendantPageListModal(currentPath)}
+            >
+              <PageListIcon />
+              {t('page_list')}
+              <span></span> {/* for a count badge */}
+            </button>
+          ) }
         </div>
       </div>
 
@@ -81,7 +94,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
         <IdenticalPathAlert path={currentPath} />
 
         <div className="page-list">
-          <ul className="page-list-ul list-group-flush">
+          <ul className="page-list-ul list-group list-group-flush">
             {pages.map((page) => {
               const pageId = page._id;
               const pageInfo = (idToPageInfoMap ?? {})[pageId];
@@ -98,6 +111,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
                   isSelected={false}
                   isChecked={false}
                   isEnableActions
+                  showPageUpdatedTime
                 // Todo: add onClickDeleteButton when delete feature implemented
                 />
               );

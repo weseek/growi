@@ -189,6 +189,9 @@
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
+    "error": {
+      "only_upsert_available": "Only 'Upsert' option is available for pages collection."
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
@@ -451,6 +454,7 @@
   },
   "user_group_management": {
     "create_group": "Create new group",
+    "add_child_group": "Add child group",
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
@@ -463,6 +467,7 @@
       "backward_match": "Backward match"
     },
     "group_list": "Group list",
+    "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
     "basic_info": "Basic info",
     "user_list": "User list",

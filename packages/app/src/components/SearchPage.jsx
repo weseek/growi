@@ -292,6 +292,7 @@ class SearchPage extends React.Component {
         appContainer={this.props.appContainer}
         searchingKeyword={this.state.searchingKeyword}
         focusedSearchResultData={this.state.focusedSearchResultData}
+        showPageControlDropdown={!this.props.isGuestUser}
       >
       </SearchResultContent>
     );

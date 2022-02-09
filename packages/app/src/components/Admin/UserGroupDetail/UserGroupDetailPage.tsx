@@ -1,9 +1,10 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  FC, useState, useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
@@ -12,11 +13,13 @@ import AppContainer from '~/client/services/AppContainer';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
-  IUserGroup, IUserGroupHasId, IUserGroupRelation, IUserGroupRelationHasId,
+  IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
+import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxSelectableUserGroups } from '~/stores/user-group';
+
 
 const UserGroupDetailPage: FC = () => {
   const rootElem = document.getElementById('admin-user-group-detail');
@@ -26,7 +29,6 @@ const UserGroupDetailPage: FC = () => {
    * State (from AdminUserGroupDetailContainer)
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-  const [userGroupRelations, setUserGroupRelations] = useState<IUserGroupRelationHasId[]>([]); // For user list
 
   // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
   const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
@@ -40,26 +42,15 @@ const UserGroupDetailPage: FC = () => {
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
 
   /*
+   * Fetch
+   */
+  const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  /*
    * Function
    */
-  const sync = useCallback(async() => {
-    try {
-      const [
-        userGroupRelations,
-        relatedPages,
-      ] = await Promise.all([
-        apiv3Get(`/user-groups/${userGroup._id}/user-group-relations`).then(res => res.data.userGroupRelations),
-        apiv3Get(`/user-groups/${userGroup._id}/pages`).then(res => res.data.pages),
-      ]);
-
-      setUserGroupRelations(userGroupRelations);
-      setRelatedPages(relatedPages);
-    }
-    catch (err) {
-      toastError(new Error('Failed to fetch data'));
-    }
-  }, [userGroup]);
-
   // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
     setAlsoMailSearched(prev => !prev);
@@ -107,22 +98,34 @@ const UserGroupDetailPage: FC = () => {
   // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
     await apiv3Post(`/user-groups/${userGroup._id}/users/${username}`);
-
-    await sync();
-  }, [userGroup, sync]);
+    mutateUserGroupRelations();
+  }, [userGroup, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
-    const res = await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
+    await apiv3Delete(`/user-groups/${userGroup._id}/users/${username}`);
+    mutateUserGroupRelations();
+  }, [userGroup, mutateUserGroupRelations]);
 
-    setUserGroupRelations(prev => prev.filter(u => u._id !== res.data.userGroupRelation._id)); // TODO 85062: use swr to sync
-  }, [userGroup]);
+  const onClickAddChildButtonHandler = async(selectedUserGroup: IUserGroupHasId) => {
+    try {
+      await apiv3Put(`/user-groups/${selectedUserGroup._id}`, {
+        name: selectedUserGroup.name,
+        description: selectedUserGroup.description,
+        parentId: userGroup._id,
+        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
+      });
+      mutateSelectableUserGroups();
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
-  /*
-   * componentDidMount
-   */
-  useEffect(() => {
-    sync();
-  }, []);
+  // TODO 87614: UserGroup New creation form can be displayed in modal
+  const onClickCreateChildGroupButtonHandler = () => {
+    console.log('button clicked!');
+  };
 
   /*
    * Dependencies
@@ -150,6 +153,14 @@ const UserGroupDetailPage: FC = () => {
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
       <UserGroupUserModal />
+
+      <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
+      <UserGroupDropdown
+        selectableUserGroups={selectableUserGroups}
+        onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
+        onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
+      />
+
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
         <UserGroupPageList />

@@ -1,12 +1,13 @@
 import React, { useState, FC } from 'react';
-import toastr from 'toastr';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-// import { apiPost } from '~/client/util/apiv1-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+import { apiPost } from '~/client/util/apiv1-client';
+import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
+
+import { IPageApiv1Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -25,7 +26,6 @@ const deleteIconAndKey = {
 };
 
 type Props = {
-  isOpen: boolean,
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -37,9 +37,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
+  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModal();
+  const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
 
-  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
-  const { data: isOpened } = usePageDeleteModalOpened();
+  const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -60,29 +61,32 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   async function deletePage() {
-    toastr.warning(t('search_result.currently_not_implemented'));
+    // toastr.warning(t('search_result.currently_not_implemented'));
     // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
     // setErrs(null);
 
-    // try {
-    //   // control flag
-    //   // If is it not true, Request value must be `null`.
-    //   const recursively = isDeleteRecursively ? true : null;
-    //   const completely = isDeleteCompletely ? true : null;
+    if (pagesDataToDelete?.pages != null && (pagesDataToDelete.pages.length > 0)) {
+      try {
+        const recursively = isDeleteRecursively === true ? true : undefined;
+        const completely = isDeleteCompletely === true ? true : undefined;
 
-    //   const response = await apiPost('/pages.remove', {
-    //     page_id: pageId,
-    //     revision_id: revisionId,
-    //     recursively,
-    //     completely,
-    //   });
+        // TODO: Create an endpoint (pages.removeMany)
+        const result = await apiPost('/pages.removeMany', {
+          pages: pagesDataToDelete.pages,
+          recursively,
+          completely,
+        }) as IPageApiv1Result;
 
-    //   const trashPagePath = response.page.path;
-    //   window.location.href = encodeURI(trashPagePath);
-    // }
-    // catch (err) {
-    //   setErrs(err);
-    // }
+        const redirectPagePath = result.page.path;
+
+        if (pageDeleteModalOpened?.onDeleted) {
+          pageDeleteModalOpened.onDeleted(redirectPagePath);
+        }
+      }
+      catch (err) {
+        setErrs(err);
+      }
+    }
   }
 
   async function deleteButtonHandler() {
@@ -96,10 +100,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           className="custom-control-input"
           id="deleteRecursively"
           type="checkbox"
-          // checked={isDeleteRecursively}
-          checked={false}
+          checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
-          disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
@@ -123,7 +126,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           id="deleteCompletely"
           type="checkbox"
           // disabled={!isAbleToDeleteCompletely}
-          disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />

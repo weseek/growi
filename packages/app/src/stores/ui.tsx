@@ -306,30 +306,36 @@ export type IPageForPageDeleteModal = {
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
+  onDeleted?: (pagePath: string) => void,
+}
+
+type DeleteModalOpened = {
+  isOpend: boolean,
+  onDeleted?: (pagePath: string) => void,
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: (pagePath: string) => void): Promise<DeleteModalStatus | undefined>
   close(): Promise<DeleteModalStatus | undefined>
 }
 
-export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?:(pagePath: string) => void) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
-export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = usePageDeleteModalStatus();
+export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
+  const { data } = usePageDeleteModal();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
-      return data != null ? data.isOpened : false;
+      return data != null ? { isOpend: data.isOpened, onDeleted: data?.onDeleted } : null;
     },
   );
 };
@@ -415,6 +421,76 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
     },
   );
 };
+
+
+type DescendantsPageListModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DescendantsPageListUtils = {
+  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const useDescendantsPageListModal = (
+    status?: DescendantsPageListModalStatus,
+): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
+
+  const initialData: DescendantsPageListModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
+export const PageAccessoriesModalContents = {
+  PageHistory: 'PageHistory',
+  Attachment: 'Attachment',
+  ShareLink: 'ShareLink',
+} as const;
+export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[keyof typeof PageAccessoriesModalContents];
+
+type PageAccessoriesModalStatus = {
+  isOpened: boolean,
+  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
+}
+
+type PageAccessoriesModalUtils = {
+  open(activatedContents: PageAccessoriesModalContents): void
+  close(): void
+}
+
+export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: (activatedContents: PageAccessoriesModalContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({ isOpened: true });
+
+      if (swrResponse.data.onOpened != null) {
+        swrResponse.data.onOpened(activatedContents);
+      }
+    },
+    close: () => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({ isOpened: false });
+    },
+  };
+};
+
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);
