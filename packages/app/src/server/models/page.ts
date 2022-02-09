@@ -567,6 +567,16 @@ schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): 
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
 };
 
+schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpty = false) {
+  const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
+
+  await this.addConditionToFilteringByViewerToEdit(builder, user);
+
+  const pages = await builder.query.lean().exec();
+
+  return pages;
+};
+
 export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
