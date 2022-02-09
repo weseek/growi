@@ -1,5 +1,5 @@
 import React, {
-  FC, useRef, useState, useEffect, useCallback,
+  FC, useRef, useCallback, useEffect,
 } from 'react';
 
 import { IPageWithMeta } from '~/interfaces/page';
@@ -10,6 +10,8 @@ import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
+
+import { useIsRevisionBodyRendered } from '../../stores/context';
 
 const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
 
@@ -23,15 +25,17 @@ type Props ={
 const SearchResultContent: FC<Props> = (props: Props) => {
   const contentRef = useRef(null);
 
+  const { data: isRevisionBodyRendered } = useIsRevisionBodyRendered();
 
-  const scrollTo = (element) => {
-    console.log('scrollTo emitted');
-
-    const searchResultPageContent = contentRef.current as HTMLElement | null;
-    if (searchResultPageContent != null && element != null) {
-      smoothScrollIntoView(element, SCROLL_OFFSET_TOP, searchResultPageContent);
+  useEffect(() => {
+    if (isRevisionBodyRendered && contentRef.current != null) {
+      const scrollTargetElement = contentRef.current as HTMLElement;
+      const highlightedKeyword = scrollTargetElement.querySelector('.highlighted-keyword') as HTMLElement;
+      if (highlightedKeyword) {
+        smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollTargetElement);
+      }
     }
-  };
+  }, [isRevisionBodyRendered]);
 
   const page = props.focusedSearchResultData?.pageData;
 
@@ -69,7 +73,6 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           pagePath={page.path}
           revisionId={page.revision}
           highlightKeywords={props.searchingKeyword}
-          onRevisionBodyRendered={scrollTo}
         />
       </div>
     </div>

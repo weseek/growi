@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { debounce } from 'throttle-debounce';
+import { useIsRevisionBodyRendered } from '~/stores/context';
 
-export default class RevisionBody extends React.PureComponent {
+class RevisionBody extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -23,6 +24,17 @@ export default class RevisionBody extends React.PureComponent {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
+    }
+    console.log('YOOOOOOOOOOOOOOOOOOOOOOOO');
+    console.log(this.props.isRevisionBodyRendered);
+    if (this.props.onRevisionBodyRendered && !this.props.isRevisionBodyRendered) {
+      this.props.onRevisionBodyRendered();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.onRivisionBodyWillUnmount && this.props.isRevisionBodyRendered) {
+      this.props.onRivisionBodyWillUnmount();
     }
   }
 
@@ -64,7 +76,6 @@ export default class RevisionBody extends React.PureComponent {
             this.props.inputRef(elm);
           }
         }}
-        id="revision-body"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}
@@ -81,4 +92,26 @@ RevisionBody.propTypes = {
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,
+  onRevisionBodyRendered: PropTypes.func,
+  onRivisionBodyWillUnmount: PropTypes.func,
+  isRevisionBodyRendered: PropTypes.bool,
+};
+
+export default (props) => {
+  const { mutate, data: isRevisionBodyRendered } = useIsRevisionBodyRendered();
+  const mutateOnComponentDidUpdate = () => {
+    mutate(true);
+  };
+  const mutateOnComponentWillUnmount = () => {
+    mutate(false);
+  };
+  return (
+    <RevisionBody
+      {...props}
+      onRevisionBodyRendered={mutateOnComponentDidUpdate}
+      onRivisionBodyWillUnmount={mutateOnComponentWillUnmount}
+      isRevisionBodyRendered={isRevisionBodyRendered}
+    >
+    </RevisionBody>
+  );
 };

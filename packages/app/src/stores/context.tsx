@@ -131,6 +131,10 @@ export const useNotFoundTargetPathOrId = (initialData?: Nullable<NotFoundTargetP
   return useStaticSWR<Nullable<NotFoundTargetPathOrId>, Error>('notFoundTargetPathOrId', initialData);
 };
 
+export const useIsRevisionBodyRendered = (initialData?: boolean): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('isRevisionBodyRendered', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
