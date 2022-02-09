@@ -1881,15 +1881,14 @@ class PageService {
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    let result;
+    let pages;
     try {
-      result = await Page.findByPageIdsToEdit(pageIds, user, false);
+      pages = await Page.findByPageIdsToEdit(pageIds, user, false);
     }
     catch (err) {
       logger.error('Failed to find pages by ids', err);
       throw err;
     }
-    const { pages } = result;
 
     // prepare no duplicated area paths
     let paths = pages.map(p => p.path);
