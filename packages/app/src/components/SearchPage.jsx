@@ -352,7 +352,7 @@ class SearchPage extends React.Component {
           activePage={this.state.activePage}
         >
         </SearchPageLayout>
-        {/* TODO: show PageDeleteModal with usePageDeleteModalStatus by 87569  */}
+        {/* TODO: show PageDeleteModal with usePageDeleteModal by 87569  */}
         <PageDeleteModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModalHandler}
