@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, collectAncestorPaths, isTopPage,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -212,21 +212,24 @@ class PageService {
 
     const Page = this.crowi.model('Page');
 
+    let pagePath = path;
+
     let page;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
+      pagePath = page.path;
     }
     else {
-      page = await Page.findByPathAndViewer(path, user);
+      page = await Page.findByPathAndViewer(pagePath, user);
     }
 
     const result: any = {};
 
     if (page == null) {
-      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { pat: pagePath }] }) > 0;
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
-      result.isCreatable = isCreatablePage(path);
+      result.isCreatable = isCreatablePage(pagePath);
       result.page = page;
 
       return result;
@@ -236,6 +239,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
+    result.isDeletable = isDeletablePage(pagePath);
     result.isDeleted = page.isDeleted();
 
     return result;
@@ -1845,8 +1849,28 @@ class PageService {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(normalizedIds);
+    /*
+     * generate regexps
+     */
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    let result;
+    try {
+      result = await Page.findListByPageIds(pageIds, null, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages by ids', err);
+      throw err;
+    }
+    const { pages } = result;
+
+    // prepare no duplicated area paths
+    let paths = pages.map(p => p.path);
+    paths = omitDuplicateAreaPathFromPaths(paths);
+
+    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
+
+    // TODO: insertMany PageOperationBlock
 
     // migrate recursively
     try {
@@ -1938,27 +1962,6 @@ class PageService {
     }
 
     await this._setIsV5CompatibleTrue();
-  }
-
-  /*
-   * returns an array of js RegExp instance instead of RE2 instance for mongo filter
-   */
-  private async _generateRegExpsByPageIds(pageIds) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    let result;
-    try {
-      result = await Page.findListByPageIds(pageIds, null);
-    }
-    catch (err) {
-      logger.error('Failed to find pages by ids', err);
-      throw err;
-    }
-
-    const { pages } = result;
-    const regexps = pages.map(page => new RegExp(`^${escapeStringRegexp(page.path)}`));
-
-    return regexps;
   }
 
   private async _setIsV5CompatibleTrue() {

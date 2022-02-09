@@ -306,30 +306,36 @@ export type IPageForPageDeleteModal = {
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
+  onDeleted?: (pagePath: string) => void,
+}
+
+type DeleteModalOpened = {
+  isOpend: boolean,
+  onDeleted?: (pagePath: string) => void,
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: (pagePath: string) => void): Promise<DeleteModalStatus | undefined>
   close(): Promise<DeleteModalStatus | undefined>
 }
 
-export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?:(pagePath: string) => void) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
-export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = usePageDeleteModalStatus();
+export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
+  const { data } = usePageDeleteModal();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
-      return data != null ? data.isOpened : false;
+      return data != null ? { isOpend: data.isOpened, onDeleted: data?.onDeleted } : null;
     },
   );
 };
@@ -451,40 +457,36 @@ export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[k
 
 type PageAccessoriesModalStatus = {
   isOpened: boolean,
-  activatedContents: Set<PageAccessoriesModalContents>,
+  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
 }
 
 type PageAccessoriesModalUtils = {
-  open(activatedContent: PageAccessoriesModalContents): Promise<PageAccessoriesModalStatus> | void
-  close(): Promise<PageAccessoriesModalStatus> | void
+  open(activatedContents: PageAccessoriesModalContents): void
+  close(): void
 }
 
-export const usePageAccessoriesModal = (
-    status?: PageAccessoriesModalStatus,
-): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
-  const initialData: PageAccessoriesModalStatus = { isOpened: false, activatedContents: new Set<PageAccessoriesModalContents>() };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', status, { fallbackData: initialData });
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
-    open: (activatedContent: PageAccessoriesModalContents) => {
+    open: (activatedContents: PageAccessoriesModalContents) => {
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: true,
-        activatedContents: swrResponse.data.activatedContents.add(activatedContent),
-      });
+      swrResponse.mutate({ isOpened: true });
+
+      if (swrResponse.data.onOpened != null) {
+        swrResponse.data.onOpened(activatedContents);
+      }
     },
     close: () => {
       if (swrResponse.data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: false,
-        activatedContents: swrResponse.data.activatedContents,
-      });
+      swrResponse.mutate({ isOpened: false });
     },
   };
 };

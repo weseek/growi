@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
-  Modal, ModalBody, ModalHeader, TabContent, TabPane,
+  Modal, ModalBody, ModalHeader,
 } from 'reactstrap';
 
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import ExpandOrContractButton from './ExpandOrContractButton';
+import CustomTabContent from './CustomNavigation/CustomTabContent';
 
 
 type Props = {
@@ -35,29 +36,45 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState(PageAccessoriesModalContents.PageHistory);
+  const [activeTab, setActiveTab] = useState<PageAccessoriesModalContents>(PageAccessoriesModalContents.PageHistory);
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { data: status, open, close } = usePageAccessoriesModal();
+  const { data: status, mutate, close } = usePageAccessoriesModal();
+
+  // add event handler when opened
+  useEffect(() => {
+    if (status == null || status.onOpened != null) {
+      return;
+    }
+    mutate({
+      ...status,
+      onOpened: (activatedContents) => {
+        setActiveTab(activatedContents);
+      },
+    }, false);
+  }, [mutate, status]);
 
   const navTabMapping = useMemo(() => {
     return {
       [PageAccessoriesModalContents.PageHistory]: {
         Icon: HistoryIcon,
+        Content: () => <PageHistory />,
         i18n: t('History'),
         index: 0,
         isLinkEnabled: () => !isGuestUser && !isSharedUser,
       },
       [PageAccessoriesModalContents.Attachment]: {
         Icon: AttachmentIcon,
+        Content: () => <PageAttachment />,
         i18n: t('attachment_data'),
         index: 1,
       },
       [PageAccessoriesModalContents.ShareLink]: {
         Icon: ShareLinkIcon,
+        Content: () => <ShareLink />,
         i18n: t('share_links.share_link_management'),
         index: 2,
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
@@ -82,7 +99,7 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  const { isOpened, activatedContents } = status;
+  const { isOpened } = status;
 
   return (
     <Modal
@@ -98,29 +115,12 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
           breakpointToHideInactiveTabsDown="md"
           onNavSelected={(v) => {
             setActiveTab(v);
-            open(v);
           }}
           hideBorderBottom
         />
       </ModalHeader>
       <ModalBody className="overflow-auto grw-modal-body-style">
-        {/* Do not use CustomTabContent because of performance problem:
-            the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activatedContents */}
-        <TabContent activeTab={activeTab}>
-          {!isGuestUser && (
-            <TabPane tabId={PageAccessoriesModalContents.PageHistory}>
-              {activatedContents.has(PageAccessoriesModalContents.PageHistory) && <PageHistory /> }
-            </TabPane>
-          )}
-          <TabPane tabId={PageAccessoriesModalContents.Attachment}>
-            {activatedContents.has(PageAccessoriesModalContents.Attachment) && <PageAttachment />}
-          </TabPane>
-          {!isGuestUser && (
-            <TabPane tabId={PageAccessoriesModalContents.ShareLink}>
-              {activatedContents.has(PageAccessoriesModalContents.ShareLink) && <ShareLink />}
-            </TabPane>
-          )}
-        </TabContent>
+        <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
       </ModalBody>
     </Modal>
   );
