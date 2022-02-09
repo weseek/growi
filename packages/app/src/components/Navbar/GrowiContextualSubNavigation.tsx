@@ -10,6 +10,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -125,6 +126,10 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
+
   const {
     editorContainer, isCompactMode, isLinkSharingDisabled,
   } = props;
@@ -153,6 +158,18 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal]);
+
+  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
+    openRenameModal(pageId, revisionId, path);
+  }, [openRenameModal]);
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
+
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -167,11 +184,15 @@ const GrowiContextualSubNavigation = (props) => {
               pageId={pageId}
               shareLinkId={shareLinkId}
               revisionId={revisionId}
+              path={path}
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
               additionalMenuItemRenderer={props => (
                 <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} isLinkSharingDisabled={isLinkSharingDisabled} />
               )}
+              onClickDuplicateMenuItem={duplicateItemClickedHandler}
+              onClickRenameMenuItem={renameItemClickedHandler}
+              onClickDeleteMenuItem={deleteItemClickedHandler}
             />
           ) }
         </div>
@@ -193,6 +214,7 @@ const GrowiContextualSubNavigation = (props) => {
     isCompactMode, isLinkSharingDisabled,
     isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
+    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, path,
   ]);
 
 
