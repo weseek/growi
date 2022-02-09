@@ -1160,8 +1160,12 @@ module.exports = function(crowi, app) {
   };
 
   validator.remove = [
-    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('completely')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "completely" must be "true" or true. (Omit param for false)'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**
@@ -1176,10 +1180,7 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
 
-    // get completely flag
-    const isCompletely = req.body.completely;
-    // get recursively flag
-    const isRecursively = req.body.recursively;
+    const { recursively: isRecursively, completely: isCompletely } = req.body;
 
     const options = {};
 
@@ -1219,7 +1220,9 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+    result.path = page.path;
+    result.isRecursively = isRecursively;
+    result.isCompletely = isCompletely;
 
     res.json(ApiResponse.success(result));
 
@@ -1233,7 +1236,9 @@ module.exports = function(crowi, app) {
   };
 
   validator.revertRemove = [
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**
