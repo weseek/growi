@@ -81,6 +81,4 @@ RevisionBody.propTypes = {
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,
-  onRevisionBodyRendered: PropTypes.func,
-  onRivisionBodyWillUnmount: PropTypes.func,
 };
