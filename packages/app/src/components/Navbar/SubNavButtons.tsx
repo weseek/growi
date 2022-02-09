@@ -38,7 +38,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
