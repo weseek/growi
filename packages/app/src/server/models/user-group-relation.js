@@ -240,6 +240,18 @@ class UserGroupRelation {
     });
   }
 
+  static async createRelations(userGroupIds, user) {
+    const documentsToInsertMany = userGroupIds.map((groupId) => {
+      return {
+        relatedGroup: groupId,
+        relatedUser: user._id,
+        createdAt: new Date(),
+      };
+    });
+
+    return this.insertMany(documentsToInsertMany);
+  }
+
   /**
    * remove all relation for UserGroup
    *
@@ -248,8 +260,12 @@ class UserGroupRelation {
    * @returns {Promise<any>}
    * @memberof UserGroupRelation
    */
-  static removeAllByUserGroup(userGroup) {
-    return this.deleteMany({ relatedGroup: userGroup });
+  static removeAllByUserGroups(groupsToDelete) {
+    if (!Array.isArray(groupsToDelete)) {
+      throw Error('groupsToDelete must be an array.');
+    }
+
+    return this.deleteMany({ relatedGroup: { $in: groupsToDelete } });
   }
 
   /**
@@ -270,6 +286,31 @@ class UserGroupRelation {
           relationData.remove();
         }
       });
+  }
+
+  static async findUserIdsByGroupId(groupId) {
+    const relations = await this.find({ relatedGroup: groupId }, { _id: 0, relatedUser: 1 }).lean().exec(); // .lean() to get not ObjectId but string
+
+    return relations.map(relation => relation.relatedUser);
+  }
+
+  static async createByGroupIdsAndUserIds(groupIds, userIds) {
+    const insertOperations = [];
+
+    groupIds.forEach((groupId) => {
+      userIds.forEach((userId) => {
+        insertOperations.push({
+          insertOne: {
+            document: {
+              relatedGroup: groupId,
+              relatedUser: userId,
+            },
+          },
+        });
+      });
+    });
+
+    await this.bulkWrite(insertOperations);
   }
 
 }

@@ -38,18 +38,43 @@
     }
   }
 
-  .btn-like,
-  .btn-bookmark,
   .btn-subscribe {
     height: 40px;
     font-size: 20px;
-    border-radius: $border-radius-xl;
   }
 
+  .btn-like,
+  .btn-bookmark,
+  .btn-seen-user {
+    height: 40px;
+    padding-right: 6px;
+    padding-left: 8px;
+    font-size: 20px;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
   .total-likes,
   .total-bookmarks {
-    font-size: 17px;
+    display: flex;
+    align-items: end;
+    padding-right: 8px;
+    padding-left: 6px;
+    font-size: 14px;
     font-weight: $font-weight-bold;
+  }
+  .seen-user-count {
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 14px;
+    font-weight: $font-weight-bold;
+    vertical-align: bottom;
+  }
+
+  .btn-page-item-control {
+    height: 40px;
+    font-size: 16px;
   }
 
   ul.authors {
@@ -87,19 +112,27 @@
     .btn-like,
     .btn-bookmark,
     .btn-subscribe {
-      @extend .btn-sm;
-
-      height: 30px;
-      font-size: 15px !important;
-      border-radius: $border-radius-xl;
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      font-size: 16px;
     }
+    .btn-seen-user {
+      width: 48px;
+      height: 32px;
+      padding: 4px;
+      font-size: 16px;
 
-    .total-likes,
-    .total-bookmarks {
-      height: auto;
+      svg {
+        width: 16px;
+        height: 16px;
+      }
     }
-    .total-bookmarks {
-      font-size: 15px;
+    .btn-page-item-control {
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      font-size: 12px;
     }
   }
 }
@@ -131,5 +164,22 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
       transition: unset;
       transform: translateY(-100%);
     }
+  }
+}
+
+.user-list-popover {
+  max-width: 200px;
+
+  .user-list-content {
+    direction: rtl;
+
+    .liker-user-count,
+    .seen-user-count {
+      font-size: 12px;
+      font-weight: bolder;
+    }
+  }
+  .cls-1 {
+    isolation: isolate;
   }
 }

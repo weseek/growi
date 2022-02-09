@@ -2,85 +2,80 @@ import React, { FC, useState } from 'react';
 
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-
 import UserPictureList from './User/UserPictureList';
-import { toastError } from '~/client/util/apiNotification';
-import { useIsGuestUser } from '~/stores/context';
-import { useSWRxPageInfo } from '~/stores/page';
-import { useSWRxUsersList } from '~/stores/user';
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { withUnstatedContainers } from './UnstatedUtils';
 
-interface Props {
-  pageId: string,
+import AppContainer from '~/client/services/AppContainer';
+import { IUser } from '../interfaces/user';
+
+type LikeButtonsProps = {
+
+  hideTotalNumber?: boolean,
+  sumOfLikers: number,
+  likers: IUser[],
+
+  isGuestUser?: boolean,
+  isLiked?: boolean,
+  onLikeClicked?: ()=>void,
 }
 
-const LikeButtons: FC<Props> = (props: Props) => {
+const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const { t } = useTranslation();
-  const { pageId } = props;
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { data: isGuestUser } = useIsGuestUser();
-
-  const { data: pageInfo, mutate } = useSWRxPageInfo(pageId);
-  const isLiked = pageInfo?.isLiked ?? false;
-  const sumOfLikers = pageInfo?.sumOfLikers != null ? pageInfo.sumOfLikers : 0;
-  const likerIds = pageInfo?.likerIds != null ? pageInfo.likerIds.slice(0, 15) : [];
-  const seenUserIds = pageInfo?.seenUserIds != null ? pageInfo.seenUserIds.slice(0, 15) : [];
-
-  // Put in a mixture of seenUserIds and likerIds data to make the cache work
-  const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
-  const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
-
-  const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
-
-  const handleClick = async() => {
-    if (isGuestUser) {
-      return;
-    }
-
-    try {
-      const res = await apiv3Put('/page/likes', { pageId, bool: !isLiked });
-      if (res) {
-        mutate();
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
+  const togglePopover = () => {
+    setIsPopoverOpen(!isPopoverOpen);
   };
+
+  const {
+    hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
+  } = props;
 
   return (
     <div className="btn-group" role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"
-        onClick={handleClick}
+        onClick={onLikeClicked}
         className={`btn btn-like border-0
-          ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+            ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className="icon-like"></i>
+        <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
-
-      {isGuestUser && (
+      { isGuestUser && (
         <UncontrolledTooltip placement="top" target="like-button" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
 
-      <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
-        {sumOfLikers}
-      </button>
-
-      <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
-        <PopoverBody className="seen-user-popover">
-          <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {likers.length ? <UserPictureList users={likers} /> : t('No users have liked this yet')}
-          </div>
-        </PopoverBody>
-      </Popover>
+      { !hideTotalNumber && (
+        <>
+          <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
+            {sumOfLikers}
+          </button>
+          <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
+            <PopoverBody className="user-list-popover">
+              <div className="px-2 text-right user-list-content text-truncate text-muted">
+                {props.likers?.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
+              </div>
+            </PopoverBody>
+          </Popover>
+        </>
+      ) }
     </div>
   );
+
 };
 
-export default LikeButtons;
+/**
+ * Wrapper component for using unstated
+ */
+const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const LikeButtonsWrapper = (props) => {
+  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
+};
+
+export default LikeButtonsWrapper;

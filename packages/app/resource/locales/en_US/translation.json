@@ -11,6 +11,7 @@
   "phone":"Smartphone",
   "tablet":"Tablet",
   "Click to copy": "Click to copy",
+  "Rename" : "Rename",
   "Move/Rename": "Move/Rename",
   "Moved": "Moved",
   "Redirected": "Redirected",
@@ -20,6 +21,7 @@
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
+  "Description": "Description",
   "Admin": "Admin",
   "administrator": "Admin",
   "Tag": "Tag",
@@ -39,6 +41,7 @@
   "account_id": "Account Id",
   "Update": "Update",
   "Update Page": "Update Page",
+  "Error": "Error",
   "Warning": "Warning",
   "Sign in": "Sign in",
   "Sign up is here": "Sign up",
@@ -66,6 +69,7 @@
   "Include Attachment File": "Include Attachment File",
   "Include Comment": "Include Comment",
   "Include Subordinated Page": "Include Subordinated Page",
+  "Include Subordinated Target Page": "include {{target}}",
   "All Subordinated Page": "All Subordinated Page",
   "Specify Hierarchy": "Specify Hierarchy",
   "Submitted the request to create the archive": "Submitted the request to create the archive",
@@ -108,6 +112,9 @@
   "Create under": "Create page under below:",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
+  "V5 Page Migration": "V5 Page Migration",
+  "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
+  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
@@ -117,6 +124,7 @@
   "Legacy_Slack_Integration": "Legacy Slack Integration",
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
+  "UserGroup": "UserGroup",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
@@ -150,8 +158,11 @@
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
+  "add_bookmark": "Add to Bookmarks",
+  "remove_bookmark": "Remove from Bookmarks",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "Page Tree": "Page Tree",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
@@ -167,7 +178,10 @@
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid."
+    "invalid_syntax": "The syntax of %s is invalid.",
+    "title_required": "Title is required.",
+    "slashed_are_not_yet_supported": "Titles containing slashes are not yet supported"
+
   },
   "not_found_page": {
     "Create Page": "Create Page",
@@ -239,7 +253,7 @@
     "expire": "Expiration",
     "Days": "Days",
     "Custom": "Custom",
-    "description": "description",
+    "description": "Description",
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
     "Issue": "Issue",
@@ -508,7 +522,10 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
     "update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}",
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
@@ -597,13 +614,24 @@
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
-    "result_meta": "Found \"{{keyword}}\" in {{total}}.",
+    "result_meta": "Search results for:",
     "deletion_mode_btn_lavel": "Select and delete page",
     "cancel": "Cancel",
     "delete": "Delete",
     "check_all": "Check all",
     "deletion_modal_header": "Delete page",
-    "delete_completely": "Delete completely"
+    "delete_completely": "Delete completely",
+    "include_certain_path" : "Include {{pathToInclude}} path ",
+    "delete_all_selected_page" : "Delete All",
+    "currently_not_implemented":"This is not currently implemented",
+    "search_again" : "Search again",
+    "number_of_list_to_display" : "Display",
+    "page_number_unit" : "pages",
+    "sort_axis": {
+      "relationScore": "Sort by relevance",
+      "createdAt": "Creation date",
+      "updatedAt": "Last update date"
+    }
   },
   "security_setting": {
     "Guest Users Access": "Guest users access",
@@ -945,5 +973,14 @@
     "success_to_send_email": "Success to send email",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
+  },
+  "pagetree": {
+    "private_legacy_pages": "Private Legacy Pages",
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "Same page name exits as「{{pageName}}」",
+    "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
+    "select_page_to_see" : "Select a page to see"
   }
 }

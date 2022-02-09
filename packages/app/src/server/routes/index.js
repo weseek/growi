@@ -2,11 +2,13 @@ import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
+import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 
 import * as loginFormValidator from '../middlewares/login-form-validator';
 import * as registerFormValidator from '../middlewares/register-form-validator';
 
 import * as forgotPassword from './forgot-password';
+import * as privateLegacyPages from './private-legacy-pages';
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
@@ -148,9 +150,7 @@ module.exports = function(crowi, app) {
   // my drafts
   app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'                  , loginRequired , page.redirector);
-  app.get('/_r/:id([0-9a-z]{24})'               , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})'       , certifySharedFile , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
@@ -168,8 +168,8 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
+  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   app.get('/tags'                     , loginRequired, tag.showPage);
@@ -201,6 +201,8 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleHttpErrosMiddleware));
 
+  app.use('/private-legacy-pages', express.Router()
+    .get('/', privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
@@ -208,11 +210,10 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.use('/ogp', express.Router()
-    .get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.renderOgp));
+  app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.renderOgp));
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
 
-
-  app.get('/*/$'                   , loginRequired, injectUserUISettings, page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired, autoReconnectToSearch, injectUserUISettings, page.showPage, page.notFound);
+  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
 
 };
