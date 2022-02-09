@@ -91,12 +91,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
+    if (onClickDeleteMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     const pageToDelete: IPageForPageDeleteModal = {
