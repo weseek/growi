@@ -94,12 +94,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDuplicateMenuItem == null) {
+    if (onClickDuplicateMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     onClickDuplicateMenuItem(pageId, path);
