@@ -22,13 +22,13 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   const {
     tags, minSize, maxSize, isDisableRandomColor,
   } = props;
-  const maxTagTextLength: number = props.maxTagTextLength || MAX_TAG_TEXT_LENGTH;
+  const maxTagTextLength: number = props.maxTagTextLength ?? MAX_TAG_TEXT_LENGTH;
 
   return (
     <>
       <TagCloud
-        minSize={minSize || MIN_FONT_SIZE}
-        maxSize={maxSize || MAX_FONT_SIZE}
+        minSize={minSize ?? MIN_FONT_SIZE}
+        maxSize={maxSize ?? MAX_FONT_SIZE}
         tags={tags.map((tag:ITagCountHasId) => {
           return {
             // text truncation
