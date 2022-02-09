@@ -93,10 +93,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  const pageItemDropHandler = () => {
+  const pageItemDropHandler = (item, monitor) => {
     // TODO: hit an api to rename the page by 85175
     // eslint-disable-next-line no-console
-    console.log('pageItem was droped!!');
+    console.log('pageItem was droped!!', item, monitor);
   };
 
   const [{ isOver }, drop] = useDrop(() => ({
