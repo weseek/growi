@@ -26,12 +26,17 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   const { t } = useTranslation('');
 
   const generateTagList = useCallback((tagData) => {
-    return tagData.map((data) => {
-      // todo: adjust design
+    return tagData.map((tag:ITagCountHasId, index:number) => {
+      const tagListClasses: string = index === 0 ? 'list-group-item d-flex' : 'list-group-item d-flex border-top-0';
+
       return (
-        <a key={data.name} href={`/_search?q=tag:${data.name}`} className="list-group-item">
-          <i className="icon-tag mr-2"></i>{data.name}
-          <span className="ml-4 list-tag-count badge badge-secondary text-muted">{data.count}</span>
+        <a
+          key={tag._id}
+          href={`/_search?q=tag:${encodeURIComponent(tag.name)}`}
+          className={tagListClasses}
+        >
+          <div className="text-truncate">{tag.name}</div>
+          <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
         </a>
       );
     });
