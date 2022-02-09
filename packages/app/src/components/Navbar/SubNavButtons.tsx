@@ -6,6 +6,7 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
+import { IPageForPageDeleteModal } from '~/stores/ui';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -20,20 +21,22 @@ type CommonProps = {
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
+  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 }
 
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string,
+  path?: string | null,
   pageInfo: IPageInfoAll,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
     pageInfo,
-    pageId, shareLinkId,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    pageId, revisionId, path, shareLinkId,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -87,9 +90,24 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     mutateBookmarkInfo();
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+    if (onClickDeleteMenuItem == null || path == null) {
+      return;
+    }
+
+    const pageToDelete: IPageForPageDeleteModal = {
+      pageId,
+      revisionId,
+      path,
+    };
+
+    onClickDeleteMenuItem(pageToDelete);
+  }, [onClickDeleteMenuItem, pageId, path, revisionId]);
+
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
+
 
   const {
     sumOfLikers, isLiked, bookmarkCount, isBookmarked,
@@ -124,6 +142,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
         />
       )}
     </div>
@@ -134,10 +153,13 @@ type SubNavButtonsProps= CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,
+  path?: string | null
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
-  const { pageId, shareLinkId, revisionId } = props;
+  const {
+    pageId, revisionId, path, shareLinkId, onClickDeleteMenuItem,
+  } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
@@ -149,5 +171,15 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-  return <SubNavButtonsSubstance {...props} pageInfo={pageInfo} pageId={pageId} revisionId={revisionId} />;
+
+  return (
+    <SubNavButtonsSubstance
+      {...props}
+      pageInfo={pageInfo}
+      pageId={pageId}
+      revisionId={revisionId}
+      path={path}
+      onClickDeleteMenuItem={onClickDeleteMenuItem}
+    />
+  );
 };
