@@ -25,8 +25,6 @@ class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
     }
-    console.log('YOOOOOOOOOOOOOOOOOOOOOOOO');
-    console.log(this.props.isRevisionBodyRendered);
     if (this.props.onRevisionBodyRendered && !this.props.isRevisionBodyRendered) {
       this.props.onRevisionBodyRendered();
     }
