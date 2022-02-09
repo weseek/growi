@@ -4,6 +4,7 @@ import useSWR, {
 import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 
 import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
@@ -15,13 +16,13 @@ import {
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
-import { isSharedPage } from '^/../core/src/utils/page-path-utils';
+import { Nullable } from '~/interfaces/common';
+
+const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
-
-type Nullable<T> = T | null;
 
 
 /** **********************************************************
@@ -299,24 +300,26 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 // PageDeleteModal
 export type IPageForPageDeleteModal = {
   pageId: string,
-  revisionId: string,
+  revisionId?: string,
   path: string
 }
+
+export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
-  onDeleted?: (pagePath: string) => void,
+  onDeleted?: OnDeletedFunction,
 }
 
 type DeleteModalOpened = {
   isOpend: boolean,
-  onDeleted?: (pagePath: string) => void,
+  onDeleted?: OnDeletedFunction,
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: IPageForPageDeleteModal[], onDeleted?: (pagePath: string) => void): Promise<DeleteModalStatus | undefined>
-  close(): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction): Promise<DeleteModalStatus | undefined>,
+  close(): Promise<DeleteModalStatus | undefined>,
 }
 
 export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
@@ -325,7 +328,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
 
   return {
     ...swrResponse,
-    open: (pages?: IPageForPageDeleteModal[], onDeleted?:(pagePath: string) => void) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };

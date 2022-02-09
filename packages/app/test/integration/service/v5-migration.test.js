@@ -59,7 +59,7 @@ describe('V5 page migration', () => {
 
       const pageIds = pages.map(page => page._id);
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, testUser1);
 
       const migratedPages = await Page.find({
         path: {
