@@ -43,22 +43,23 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
 type Props ={
   appContainer: AppContainer,
-  searchingKeyword:string,
-  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  highlightKeywords?: string,
   showPageControlDropdown?: boolean,
 }
 
-const SearchResultContent: FC<Props> = (props: Props) => {
+export const SearchResultContent: FC<Props> = (props: Props) => {
   const {
     appContainer,
-    focusedSearchResultData,
+    pageWithMeta,
+    highlightKeywords,
     showPageControlDropdown,
   } = props;
 
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const page = focusedSearchResultData?.pageData;
+  const page = pageWithMeta?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -114,12 +115,9 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           pageId={page._id}
           pagePath={page.path}
           revisionId={page.revision}
-          highlightKeywords={props.searchingKeyword}
+          highlightKeywords={highlightKeywords}
         />
       </div>
     </div>
   );
 };
-
-
-export default SearchResultContent;
