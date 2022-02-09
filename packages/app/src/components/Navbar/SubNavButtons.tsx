@@ -92,12 +92,8 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickRenameMenuItem == null) {
+    if (onClickRenameMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     onClickRenameMenuItem(pageId, revisionId, path);
@@ -177,14 +173,6 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    if (onClickRenameMenuItem == null) {
-      return;
-    }
-    await onClickRenameMenuItem(pageId, revisionId, path);
-  }, [onClickRenameMenuItem]);
-
   if (revisionId == null || error != null) {
     return <></>;
   }
@@ -201,7 +189,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
-      onClickRenameMenuItem={renameItemClickedHandler}
+      onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
     />
   );
