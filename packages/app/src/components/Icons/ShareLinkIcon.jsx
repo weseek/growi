@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ShareLink = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 20 20">
     <g transform="translate(-142 -502)">
       <rect width="20" height="20" transform="translate(142 502)" fill="none" />
       <g transform="translate(16 286.938)">

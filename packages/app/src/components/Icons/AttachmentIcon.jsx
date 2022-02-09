@@ -4,7 +4,8 @@ const Attachment = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 14 14"
-
+    width="14px"
+    height="14px"
   >
     <rect width="14" height="14" fillOpacity="0" />
     <g className="cls-1">

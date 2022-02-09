@@ -28,6 +28,7 @@ type CommonProps = {
 
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId: string,
   path?: string | null,
   pageInfo: IPageInfoAll,
@@ -35,13 +36,15 @@ type SubNavButtonsSubstanceProps= CommonProps & {
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    pageInfo, pageId, revisionId, path, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown,
-    additionalMenuItemRenderer, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageInfo,
+    pageId, revisionId, path, shareLinkId,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
@@ -91,36 +94,24 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
   const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDuplicateMenuItem == null) {
+    if (onClickDuplicateMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     onClickDuplicateMenuItem(pageId, path);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickRenameMenuItem == null) {
+    if (onClickRenameMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     onClickRenameMenuItem(pageId, revisionId, path);
   }, [onClickRenameMenuItem, pageId, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
+    if (onClickDeleteMenuItem == null || path == null) {
       return;
-    }
-
-    if (path == null) {
-      throw Error('path must not be null.');
     }
 
     const pageToDelete: IPageForPageDeleteModal = {
@@ -181,38 +172,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 type SubNavButtonsProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId?: string | null,
   path?: string | null
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageId, revisionId, path, shareLinkId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
-  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
-
-
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    if (onClickDuplicateMenuItem == null) {
-      return;
-    }
-    await onClickDuplicateMenuItem(pageId, path);
-  }, [onClickDuplicateMenuItem]);
-
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    if (onClickRenameMenuItem == null) {
-      return;
-    }
-    await onClickRenameMenuItem(pageId, revisionId, path);
-  }, [onClickRenameMenuItem]);
-
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-    await onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem]);
+  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
   if (revisionId == null || error != null) {
     return <></>;
@@ -230,9 +200,9 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
-      onClickDuplicateMenuItem={duplicateItemClickedHandler}
-      onClickRenameMenuItem={renameItemClickedHandler}
-      onClickDeleteMenuItem={deleteItemClickedHandler}
+      onClickDuplicateMenuItem={onClickDuplicateMenuItem}
+      onClickRenameMenuItem={onClickRenameMenuItem}
+      onClickDeleteMenuItem={onClickDeleteMenuItem}
     />
   );
 };
