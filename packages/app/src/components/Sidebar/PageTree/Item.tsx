@@ -79,7 +79,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
-  const [isRenamed, setRenamed] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -106,7 +106,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     item: { page },
     end: () => {
       // in order to set d-none to dropped Item
-      setRenamed(true);
+      setShouldHide(true);
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -310,7 +310,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   return (
-    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${isRenamed ? 'd-none' : ''}`}>
+    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
