@@ -26,6 +26,7 @@ type CommonProps = {
 
 type SubNavButtonsSubstanceProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId: string,
   path?: string | null,
   pageInfo: IPageInfoAll,
@@ -33,12 +34,14 @@ type SubNavButtonsSubstanceProps= CommonProps & {
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
-    pageInfo, pageId, revisionId, path, isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickDeleteMenuItem,
+    pageInfo,
+    pageId, revisionId, path, shareLinkId,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
-  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
@@ -152,16 +155,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 type SubNavButtonsProps= CommonProps & {
   pageId: string,
+  shareLinkId?: string | null,
   revisionId?: string | null,
   path?: string | null
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, onClickDeleteMenuItem,
+    pageId, revisionId, path, shareLinkId, onClickDeleteMenuItem,
   } = props;
 
-  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null);
+  const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete) => {

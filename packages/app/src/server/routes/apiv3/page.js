@@ -159,6 +159,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const socketIoService = crowi.socketIoService;
@@ -235,7 +236,7 @@ module.exports = (crowi) => {
     const { pageId, path } = req.query;
 
     if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Parameter pagePath or pageId is required.', 'invalid-request'));
+      return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
     }
 
     let result = {};
@@ -354,8 +355,8 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/info', loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
+  router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    const { user, isSharedPage } = req;
     const { pageId } = req.query;
 
     try {
@@ -363,6 +364,15 @@ module.exports = (crowi) => {
 
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
+      }
+
+      if (isSharedPage) {
+        return {
+          isEmpty: page.isEmpty,
+          isMovable: false,
+          isDeletable: false,
+          isAbleToDeleteCompletely: false,
+        };
       }
 
       const isGuestUser = !req.user;

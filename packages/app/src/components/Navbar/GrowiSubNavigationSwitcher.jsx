@@ -1,6 +1,7 @@
 import React, {
   useMemo, useState, useRef, useEffect, useCallback,
 } from 'react';
+import PropTypes from 'prop-types';
 
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
@@ -110,13 +111,14 @@ const GrowiSubNavigationSwitcher = (props) => {
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed" ref={fixedContainerRef} style={{ width }}>
-        <GrowiContextualSubNavigation isCompactMode />
+        <GrowiContextualSubNavigation isCompactMode isLinkSharingDisabled />
       </div>
     </div>
   );
 };
 
 GrowiSubNavigationSwitcher.propTypes = {
+  isLinkSharingDisabled: PropTypes.bool,
 };
 
 export default GrowiSubNavigationSwitcher;
