@@ -338,6 +338,7 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
+
     addRenderVarsWhenNotFound(renderVars, pathOrId);
 
     return res.render(view, renderVars);
@@ -1159,8 +1160,12 @@ module.exports = function(crowi, app) {
   };
 
   validator.remove = [
-    body('completely').optional().custom(v => v === 'true' || v === true).withMessage('The body property "completely" must be "true" or true.'),
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('completely')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "completely" must be "true" or true. (Omit param for false)'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || v == null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**
@@ -1175,10 +1180,7 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
 
-    // get completely flag
-    const isCompletely = req.body.completely;
-    // get recursively flag
-    const isRecursively = req.body.recursively;
+    const { recursively: isRecursively, completely: isCompletely } = req.body;
 
     const options = {};
 
@@ -1198,12 +1200,13 @@ module.exports = function(crowi, app) {
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
+        // behave like not found
         const notRecursivelyAndEmpty = page.isEmpty && !isRecursively;
         if (notRecursivelyAndEmpty) {
           return res.json(ApiResponse.error(`Page '${pageId}' is not found.`, 'notfound'));
         }
 
-        if (!page.isUpdatable(previousRevision)) {
+        if (!page.isEmpty && !page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
@@ -1217,7 +1220,9 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
+    result.path = page.path;
+    result.isRecursively = isRecursively;
+    result.isCompletely = isCompletely;
 
     res.json(ApiResponse.success(result));
 
@@ -1231,7 +1236,9 @@ module.exports = function(crowi, app) {
   };
 
   validator.revertRemove = [
-    body('recursively').optional().custom(v => v === 'true' || v === true).withMessage('The body property "recursively" must be "true" or true.'),
+    body('recursively')
+      .custom(v => v === 'true' || v === true || null)
+      .withMessage('The body property "recursively" must be "true" or true. (Omit param for false)'),
   ];
 
   /**
@@ -1350,7 +1357,7 @@ module.exports = function(crowi, app) {
     const path = req.body.path;
 
     try {
-      await Page.removeRedirectOriginPageByPath(path);
+      await PageRedirect.removePageRedirectByToPath(path);
       logger.debug('Redirect Page deleted', path);
     }
     catch (err) {

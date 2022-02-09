@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 import { useIsEditable } from '~/stores/context';
@@ -6,7 +6,7 @@ import { useIsEditable } from '~/stores/context';
 /**
  * Change editorMode by browser forward/back operation
  */
-const HashChanged: FC<void> = () => {
+const HashChanged = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
 
@@ -33,7 +33,7 @@ const HashChanged: FC<void> = () => {
 
   }, [hashchangeHandler, isEditable, mutateEditorMode]);
 
-  return null;
+  return <></>;
 };
 
 export default HashChanged;

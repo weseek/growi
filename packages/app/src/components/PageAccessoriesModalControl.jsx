@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
@@ -96,12 +95,12 @@ const PageAccessoriesModalControl = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, [PageAccessoriesContainer]);
+const PageAccessoriesModalControlWrapper = withUnstatedContainers(PageAccessoriesModalControl, []);
 
 PageAccessoriesModalControl.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
 
-  pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
+  pageAccessoriesContainer: PropTypes.any,
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,

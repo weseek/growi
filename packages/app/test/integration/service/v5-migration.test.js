@@ -59,7 +59,7 @@ describe('V5 page migration', () => {
 
       const pageIds = pages.map(page => page._id);
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+      await crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, testUser1);
 
       const migratedPages = await Page.find({
         path: {
@@ -75,7 +75,7 @@ describe('V5 page migration', () => {
 
   });
 
-  describe('v5InitialMigration()', () => {
+  describe('normalizeAllPublicPages()', () => {
     jest.setTimeout(60000);
     let createPagePaths;
     let allPossiblePagePaths;
@@ -132,7 +132,7 @@ describe('V5 page migration', () => {
       ]);
 
       // migrate
-      await crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC);
+      await crowi.pageService.normalizeAllPublicPages(Page.GRANT_PUBLIC);
       jest.setTimeout(30000);
     });
 

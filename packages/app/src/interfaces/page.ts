@@ -1,4 +1,4 @@
-import { Ref } from './common';
+import { Ref, Nullable } from './common';
 import { IUser } from './user';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { ITag } from './tag';
@@ -96,4 +96,17 @@ export const isIPageInfoForListing = (pageInfo: IPageInfoAll | undefined): pageI
 export type IPageWithMeta<M = IPageInfoAll> = {
   pageData: IPageHasId,
   pageMeta?: M,
+};
+
+export type IDeleteSinglePageApiv1Result = {
+  ok: boolean
+  path: string,
+  isRecursively: Nullable<true>,
+  isCompletely: Nullable<true>,
+};
+
+export type IDeleteManyPageApiv3Result = {
+  paths: string[],
+  isRecursively: Nullable<true>,
+  isCompletely: Nullable<true>,
 };
