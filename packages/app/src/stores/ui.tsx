@@ -318,10 +318,7 @@ type DeleteModalOpened = {
 }
 
 type DeleteModalStatusUtils = {
-  open(
-    pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
-  ): Promise<DeleteModalStatus | undefined>,
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
 
