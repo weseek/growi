@@ -25,7 +25,7 @@ type CommonProps = {
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: () => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickDeleteMenuItem?: (pageId: string) => void,
+  onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
