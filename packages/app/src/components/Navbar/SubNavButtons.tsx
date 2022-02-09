@@ -188,13 +188,6 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    if (onClickDuplicateMenuItem == null) {
-      return;
-    }
-    await onClickDuplicateMenuItem(pageId, path);
-  }, [onClickDuplicateMenuItem]);
-
   if (revisionId == null || error != null) {
     return <></>;
   }
@@ -211,7 +204,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
-      onClickDuplicateMenuItem={duplicateItemClickedHandler}
+      onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
     />
