@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { debounce } from 'throttle-debounce';
-import { useIsRevisionBodyRendered } from '~/stores/context';
 
-class RevisionBody extends React.PureComponent {
+export default class RevisionBody extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -25,15 +24,8 @@ class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
     }
-    if (this.props.onRevisionBodyRendered && !this.props.isRevisionBodyRendered) {
-      this.props.onRevisionBodyRendered();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.props.onRivisionBodyWillUnmount && this.props.isRevisionBodyRendered) {
-      this.props.onRivisionBodyWillUnmount();
-    }
+    const event = new CustomEvent('isRevisionBodyRendered');
+    document.dispatchEvent(event);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -92,24 +84,4 @@ RevisionBody.propTypes = {
   additionalClassName: PropTypes.string,
   onRevisionBodyRendered: PropTypes.func,
   onRivisionBodyWillUnmount: PropTypes.func,
-  isRevisionBodyRendered: PropTypes.bool,
-};
-
-export default (props) => {
-  const { mutate, data: isRevisionBodyRendered } = useIsRevisionBodyRendered();
-  const mutateOnComponentDidUpdate = () => {
-    mutate(true);
-  };
-  const mutateOnComponentWillUnmount = () => {
-    mutate(false);
-  };
-  return (
-    <RevisionBody
-      {...props}
-      onRevisionBodyRendered={mutateOnComponentDidUpdate}
-      onRivisionBodyWillUnmount={mutateOnComponentWillUnmount}
-      isRevisionBodyRendered={isRevisionBodyRendered}
-    >
-    </RevisionBody>
-  );
 };

@@ -139,7 +139,6 @@ const ContextExtractorOnce: FC = () => {
 
   // SearchResult
   useIsDeviceSmallerThanLg();
-  useIsRevisionBodyRendered(false);
 
   return null;
 };

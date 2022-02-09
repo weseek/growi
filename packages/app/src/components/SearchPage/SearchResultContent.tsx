@@ -25,17 +25,17 @@ type Props ={
 const SearchResultContent: FC<Props> = (props: Props) => {
   const contentRef = useRef(null);
 
-  const { data: isRevisionBodyRendered } = useIsRevisionBodyRendered();
-
   useEffect(() => {
-    if (isRevisionBodyRendered && contentRef.current != null) {
-      const scrollTargetElement = contentRef.current as HTMLElement;
-      const highlightedKeyword = scrollTargetElement.querySelector('.highlighted-keyword') as HTMLElement;
-      if (highlightedKeyword) {
-        smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollTargetElement);
+    document.addEventListener('isRevisionBodyRendered', (e) => {
+      if (contentRef.current != null) {
+        const scrollTargetElement = contentRef.current as HTMLElement;
+        const highlightedKeyword = scrollTargetElement.querySelector('.highlighted-keyword') as HTMLElement;
+        if (highlightedKeyword) {
+          smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollTargetElement);
+        }
       }
-    }
-  }, [isRevisionBodyRendered]);
+    });
+  }, []);
 
   const page = props.focusedSearchResultData?.pageData;
 
