@@ -98,7 +98,7 @@ export type IPageWithMeta<M = IPageInfoAll> = {
   pageMeta?: M,
 };
 
-export type IPageApiv1Result = {
+export type IDeleteSinglePageApiv1Result = {
   ok: boolean
   path: string,
   isRecursively: Nullable<true>,

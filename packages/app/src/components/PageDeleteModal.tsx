@@ -8,7 +8,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
 
-import { IPageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
+import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -106,7 +106,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           revision_id: page.revisionId,
           recursively,
           completely,
-        }) as IPageApiv1Result;
+        }) as IDeleteSinglePageApiv1Result;
 
         if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
           pageDeleteModalOpened.onDeleted(path, isRecursively, isCompletely);
