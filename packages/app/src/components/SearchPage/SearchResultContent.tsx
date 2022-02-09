@@ -44,7 +44,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
-
+const config = { childList: true, subtree: true };
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
@@ -53,19 +53,30 @@ type Props ={
 }
 
 const SearchResultContent: FC<Props> = (props: Props) => {
-  const contentRef = useRef(null);
+
+  // ***************************  Auto Scroll  ***************************
+  const scrollTo = (scrollElement) => {
+    const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
+    if (highlightedKeyword != null) {
+      smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
+    }
+  };
 
   useEffect(() => {
-    document.addEventListener('isRevisionBodyRendered', (e) => {
-      if (contentRef.current != null) {
-        const scrollTargetElement = contentRef.current as HTMLElement;
-        const highlightedKeyword = scrollTargetElement.querySelector('.highlighted-keyword') as HTMLElement;
-        if (highlightedKeyword) {
-          smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollTargetElement);
-        }
-      }
-    });
-  }, []);
+    const scrollElement = document.querySelector('.search-result-page-content') as HTMLElement;
+    if (scrollElement == null) return;
+    const observerCallback = (mutationRecords) => {
+      mutationRecords.forEach((record:any) => {
+        const targetId = record.target.id;
+        if (targetId !== 'wiki') return;
+        scrollTo(scrollElement);
+      });
+    };
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(scrollElement, config);
+    return;
+  });
+  // ***************************  end  ***************************
 
   const {
     appContainer,
@@ -120,7 +131,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         page={page}
         controls={ControlComponents}
       />
-      <div className="search-result-page-content" ref={contentRef}>
+      <div className="search-result-page-content">
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}
