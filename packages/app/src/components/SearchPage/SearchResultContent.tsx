@@ -1,5 +1,5 @@
 import React, {
-  FC, useRef, useCallback, useEffect,
+  FC, useCallback, useEffect,
 } from 'react';
 
 import { DropdownItem } from 'reactstrap';
@@ -44,7 +44,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
-const config = { childList: true, subtree: true };
+const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
+
 type Props ={
   appContainer: AppContainer,
   searchingKeyword:string,
@@ -73,7 +74,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       });
     };
     const observer = new MutationObserver(observerCallback);
-    observer.observe(scrollElement, config);
+    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
     return;
   });
   // ***************************  end  ***************************
