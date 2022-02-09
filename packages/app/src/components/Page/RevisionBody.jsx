@@ -24,8 +24,6 @@ export default class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
     }
-    const event = new CustomEvent('isRevisionBodyRendered');
-    document.dispatchEvent(event);
   }
 
   componentWillReceiveProps(nextProps) {
