@@ -1,13 +1,15 @@
 import React, { FC, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { toastError } from '~/client/util/apiNotification';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  OnDeletedFunction,
 } from '~/stores/ui';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -91,6 +93,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
+  const { t } = useTranslation();
+
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
@@ -114,8 +118,30 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onDeletedHandler = (pagePath) => {
-    window.location.href = encodeURI(pagePath);
+  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+
+    if (isRecursively) {
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page_recursively', { path }));
+      }
+    }
+    else {
+      // eslint-disable-next-line no-lonely-if
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page', { path }));
+      }
+    }
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
