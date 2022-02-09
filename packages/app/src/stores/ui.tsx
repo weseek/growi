@@ -4,6 +4,7 @@ import useSWR, {
 import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 
 import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
@@ -15,13 +16,13 @@ import {
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
-import { isSharedPage } from '^/../core/src/utils/page-path-utils';
+import { Nullable } from '~/interfaces/common';
+
+const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
-
-type Nullable<T> = T | null;
 
 
 /** **********************************************************
@@ -299,11 +300,11 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 // PageDeleteModal
 export type IPageForPageDeleteModal = {
   pageId: string,
-  revisionId: string,
+  revisionId?: string,
   path: string
 }
 
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: true | null | undefined) => void;
+export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
@@ -324,7 +325,7 @@ type DeleteModalStatusUtils = {
   close(): Promise<DeleteModalStatus | undefined>,
 }
 
-export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
@@ -336,7 +337,7 @@ export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRRespons
 };
 
 export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
-  const { data } = usePageDeleteModalStatus();
+  const { data } = usePageDeleteModal();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {

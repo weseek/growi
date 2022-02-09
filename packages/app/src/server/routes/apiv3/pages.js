@@ -183,6 +183,7 @@ module.exports = (crowi) => {
     ],
     deletePages: [
       body('pageIdToRevisionIdMap')
+        .exists()
         .withMessage('The body property "pageIdToRevisionIdMap" must be an json map with pageId as key and revisionId as value.'),
       body('isCompletely')
         .custom(v => v === 'true' || v === true || v == null)
@@ -761,7 +762,7 @@ module.exports = (crowi) => {
     // run delete
     crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
 
-    return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively });
+    return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
 
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {

@@ -8,7 +8,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModalStatus,
+  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
   OnDeletedFunction,
 } from '~/stores/ui';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -99,7 +99,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
-  const { open: openDeleteModal } = usePageDeleteModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   useEffect(() => {
     const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
@@ -118,13 +118,26 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively) => {
+  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete === 'string') {
+      const path = pathOrPathsToDelete;
+      console.log(pathOrPathsToDelete, isRecursively, isCompletely);
       if (isRecursively) {
-        toastSuccess(t('deleted_single_page_recursively', { path: pathOrPathsToDelete }));
+        if (isCompletely) {
+          toastSuccess(t('deleted_single_page_recursively_completely', { path }));
+        }
+        else {
+          toastSuccess(t('deleted_single_page_recursively', { path }));
+        }
       }
       else {
-        toastSuccess(t('deleted_single_page', { path: pathOrPathsToDelete }));
+        // eslint-disable-next-line no-lonely-if
+        if (isCompletely) {
+          toastSuccess(t('deleted_single_page_completely', { path }));
+        }
+        else {
+          toastSuccess(t('deleted_single_page', { path }));
+        }
       }
     }
   };

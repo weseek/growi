@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
 
 import { IPageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
@@ -38,7 +38,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
-  const { data: deleteModalStatus, close: closeDeleteModal } = usePageDeleteModalStatus();
+  const { data: deleteModalStatus, close: closeDeleteModal } = usePageDeleteModal();
   const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
 
   const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;
@@ -84,7 +84,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         });
 
         if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
-          pageDeleteModalOpened.onDeleted(data.paths, data.isRecursively);
+          pageDeleteModalOpened.onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
       }
       catch (err) {
@@ -101,7 +101,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
 
         const page = deleteModalStatus.pages[0];
 
-        const { path, isRecursively } = await apiPost('/pages.remove', {
+        const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
           page_id: page.pageId,
           revision_id: page.revisionId,
           recursively,
@@ -109,7 +109,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         }) as IPageApiv1Result;
 
         if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
-          pageDeleteModalOpened.onDeleted(path, isRecursively);
+          pageDeleteModalOpened.onDeleted(path, isRecursively, isCompletely);
         }
       }
       catch (err) {
@@ -119,7 +119,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   async function deleteButtonHandler() {
-    deletePage();
+    await closeDeleteModal();
+    await deletePage();
   }
 
   function renderDeleteRecursivelyForm() {

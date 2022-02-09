@@ -1,4 +1,4 @@
-import { Ref } from './common';
+import { Ref, Nullable } from './common';
 import { IUser } from './user';
 import { IRevision, HasRevisionShortbody } from './revision';
 import { ITag } from './tag';
@@ -101,10 +101,12 @@ export type IPageWithMeta<M = IPageInfoAll> = {
 export type IPageApiv1Result = {
   ok: boolean
   path: string,
-  isRecursively: true | null | undefined,
+  isRecursively: Nullable<true>,
+  isCompletely: Nullable<true>,
 };
 
 export type IDeleteManyPageApiv3Result = {
   paths: string[],
-  isRecursively: true | null | undefined,
+  isRecursively: Nullable<true>,
+  isCompletely: Nullable<true>,
 };
