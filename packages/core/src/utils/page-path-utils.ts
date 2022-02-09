@@ -161,3 +161,30 @@ export const collectAncestorPaths = (path: string, ancestorPaths: string[] = [])
   ancestorPaths.push(parentPath);
   return collectAncestorPaths(parentPath, ancestorPaths);
 };
+
+/**
+ * return paths without duplicate area of regexp /^${path}\/.+/i
+ * ex. expect(omitDuplicateAreaPathFromPaths(['/A', '/A/B', '/A/B/C'])).toStrictEqual(['/A'])
+ * @param paths paths to be tested
+ * @returns omitted paths
+ */
+export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
+  return paths.filter((path) => {
+    const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
+
+    return !isDuplicate;
+  });
+};
+
+/**
+ * return pages with path without duplicate area of regexp /^${path}\/.+/i
+ * @param paths paths to be tested
+ * @returns omitted paths
+ */
+export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
+  return pages.filter((page) => {
+    const isDuplicate = pages.filter(p => (new RegExp(`^${p.path}\\/.+`, 'i')).test(page.path)).length > 0;
+
+    return !isDuplicate;
+  });
+};

@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
+
+import { pathUtils } from '@growi/core';
+
 import { toastWarning, toastError } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -19,7 +22,6 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
-
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
@@ -27,7 +29,7 @@ interface ItemProps {
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
 // Utility to mark target
@@ -68,7 +70,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -151,11 +153,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // }, []);
 
   // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-  //     return;
-  //   }
-
-  //   const parentPath = nodePath.dirname(page.path as string);
+  //   const parentPath = getParentPagePath(page.path as string)
   //   const newPagePath = `${parentPath}/${inputText}`;
 
   //   try {
@@ -185,9 +183,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteByPage == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
 
@@ -203,14 +200,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDeleteByPage(pageToDelete);
-  }, [page, onClickDeleteByPage]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [page, onClickDeleteMenuItem]);
 
-
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
+  const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
+    const parentPath = pathUtils.addTrailingSlash(page.path as string);
+    const newPagePath = `${parentPath}${inputText}`;
+    console.log(newPagePath);
+    // TODO: https://redmine.weseek.co.jp/issues/87943
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -340,7 +338,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               targetPathOrId={targetPathOrId}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
-              onClickDeleteByPage={onClickDeleteByPage}
+              onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>
         ))

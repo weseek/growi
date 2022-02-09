@@ -459,8 +459,10 @@ schema.statics.incrementDescendantCountOfPageIds = async function(pageIds: Objec
   await this.updateMany({ _id: { $in: pageIds } }, { $inc: { descendantCount: increment } });
 };
 
-// update descendantCount of a page with provided id
-schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: ObjectIdLike):Promise<void> {
+/**
+ * recount descendantCount of a page with the provided id and return it
+ */
+schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise<number> {
   const res = await this.aggregate(
     [
       {
@@ -498,8 +500,7 @@ schema.statics.recountDescendantCountOfSelfAndDescendants = async function(id: O
     ],
   );
 
-  const query = { descendantCount: res.length === 0 ? 0 : res[0].descendantCount };
-  await this.findByIdAndUpdate(id, query);
+  return res.length === 0 ? 0 : res[0].descendantCount;
 };
 
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
@@ -516,6 +517,64 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   }
 
   return findAncestorsRecursively(target);
+};
+
+// TODO: write test code
+/**
+ * Recursively removes empty pages at leaf position.
+ * @param pageId ObjectIdLike
+ * @returns Promise<void>
+ */
+schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): Promise<void> {
+  const self = this;
+
+  const initialLeafPage = await this.findById(pageId);
+
+  if (initialLeafPage == null) {
+    return;
+  }
+
+  if (!initialLeafPage.isEmpty) {
+    return;
+  }
+
+  async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
+    const nextPage = await self.findById(page.parent);
+
+    if (nextPage == null) {
+      return pageIds;
+    }
+
+    // delete leaf empty pages
+    const isNextPageEmpty = nextPage.isEmpty;
+
+    if (!isNextPageEmpty) {
+      return pageIds;
+    }
+
+    const isSiblingsExist = await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } });
+    if (isSiblingsExist) {
+      return pageIds;
+    }
+
+    return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
+  }
+
+  const initialPageIdsToRemove = [initialLeafPage._id];
+
+  const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
+
+  await this.deleteMany({ _id: { $in: pageIdsToRemove } });
+};
+
+schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpty = false) {
+  const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }), shouldIncludeEmpty);
+
+  await this.addConditionToFilteringByViewerToEdit(builder, user);
+
+  const pages = await builder.query.lean().exec();
+
+  return pages;
 };
 
 export type PageCreateOptions = {
@@ -593,6 +652,9 @@ export default (crowi: Crowi): any => {
     let page;
     if (emptyPage != null) {
       page = emptyPage;
+      const descendantCount = await this.recountDescendantCount(page._id);
+
+      page.descendantCount = descendantCount;
       page.isEmpty = false;
     }
     else {
