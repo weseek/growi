@@ -425,6 +425,48 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+// PagePresentationModal
+export type IPageForPagePresentationModal = {
+  // pageId: string,
+  // revisionId: string,
+  // path: string
+}
+
+type PresentationModalStatus = {
+  isOpened: boolean,
+  href?: string
+}
+
+type PresentationModalStatusUtils = {
+  open(href: string): Promise<PresentationModalStatus | undefined>
+  close(): Promise<PresentationModalStatus | undefined>
+}
+
+export const usePagePresentationModalStatus = (
+    status?: PresentationModalStatus,
+): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
+  const initialData: PresentationModalStatus = {
+    isOpened: false, href: '?presentation=1',
+  };
+  const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (href: string) => swrResponse.mutate({ isOpened: true, href }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+export const usePagePresentationModalOpened = (): SWRResponse<boolean, Error> => {
+  const { data } = usePagePresentationModalStatus();
+  return useSWRImmutable(
+    data != null ? ['isPresentationModalOpened', data] : null,
+    () => {
+      return data != null ? data.isOpened : false;
+    },
+  );
+};
+
 
 type DescendantsPageListModalStatus = {
   isOpened: boolean,

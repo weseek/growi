@@ -10,7 +10,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal, usePagePresentationModalStatus,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -30,7 +30,6 @@ import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemCon
 import { SubNavButtons } from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 
@@ -46,22 +45,20 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    pageId, revisionId, isLinkSharingDisabled, onClickPresentationMenuItem,
+    pageId, revisionId, isLinkSharingDisabled,
   } = props;
-
-  const openPagePresentationModalHandler = () => {
-    onClickPresentationMenuItem(true);
-  };
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { open: openPresentationModal } = usePagePresentationModalStatus();
 
   const { open } = usePageAccessoriesModal();
+  const href = '?presentation=1';
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={openPagePresentationModalHandler}>
+      <DropdownItem onClick={() => openPresentationModal(href)}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -185,20 +182,6 @@ const GrowiContextualSubNavigation = (props) => {
     setIsPagePresentationModalShown(true);
   }, []);
 
-  const renderAdditionalModals = useCallback(() => {
-    if (currentUser == null) {
-      return <></>;
-    }
-    return (
-      <PagePresentationModal
-        isOpen={isPagePresentationModalShown}
-        onClose={() => setIsPagePresentationModalShown(false)}
-        href="?presentation=1"
-      />
-      // TODO: show template modal by https://redmine.weseek.co.jp/issues/87815
-    );
-  }, [currentUser, isPagePresentationModalShown]);
-
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
@@ -241,14 +224,13 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {renderAdditionalModals()}
       </>
     );
   }, [
     pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, path, renderAdditionalModals,
+    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, path,
     presentationMenuItemClickHandler,
   ]);
 
