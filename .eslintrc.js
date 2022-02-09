@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: [
     'jest',
+    'regex',
   ],
   rules: {
     'import/prefer-default-export': 'off',
@@ -30,5 +31,14 @@ module.exports = {
       'error',
       { additionalTestBlockFunctions: ['each.test'] },
     ],
+    'regex/invalid': ['error', [
+      {
+        regex: '\\?\\<\\!',
+        message: 'Do not use any negative lookbehind',
+      }, {
+        regex: '\\?\\<\\=',
+        message: 'Do not use any Positive lookbehind',
+      },
+    ]],
   },
 };

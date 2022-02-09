@@ -19,6 +19,17 @@
     "bug_report": "提交一个错误报告",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>然后提交你的问题到GitHub。</a>"
   },
+  "v5_page_migration": {
+    "page_tree_not_avaliable": "Page Tree 功能不可用",
+    "go_to_settings": "进入设置，启用该功能",
+    "migration_desc": "Some of the public pages have the old schema. To take advantage of new features such as page trees and easy renaming, please upgrade the schema of all your pages. ",
+    "migration_note": "Note: You will lose unique constraints from the page paths.",
+    "upgrade_to_v5": "Upgrade to V5",
+    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during migration.",
+    "start_upgrading": "Start upgrading",
+    "successfully_started": "Succeeded to start migration",
+    "already_upgraded": "You have already completed upgrading"
+  },
   "app_setting": {
     "site_name": "网站名称 ",
     "sitename_change": "您可以更改用于标题和HTML标题的网站名称。",
@@ -188,6 +199,9 @@
     "beta_warning": "这个函数是Beta。",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
+    "error": {
+      "only_upsert_available": "Only 'Upsert' option is available for pages collection."
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
@@ -449,6 +463,7 @@
   },
   "user_group_management": {
     "create_group": "创建新组",
+    "add_child_group": "添加一个子组",
     "deny_create_group": "不能用当前设置创建新组。",
     "group_name": "组名",
     "group_example": "e.g.：第1组",
@@ -461,6 +476,7 @@
       "backward_match": "向后匹配"
     },
     "group_list": "组列表",
+    "child_group_list": "儿童组名单",
     "back_to_list": "返回组列表",
     "basic_info": "基本信息",
     "user_list": "用户列表",

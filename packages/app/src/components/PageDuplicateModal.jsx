@@ -9,9 +9,9 @@ import { withTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
+import { usePageDuplicateModalStatus, usePageDuplicateModalOpened } from '~/stores/ui';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
@@ -20,12 +20,17 @@ import DuplicatePathsTable from './DuplicatedPathsTable';
 const LIMIT_FOR_LIST = 10;
 
 const PageDuplicateModal = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const {
+    t, appContainer,
+  } = props;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
-  const { pageId, path } = pageContainer.state;
   const { crowi } = appContainer.config;
+  const { data: pagesDataToDuplicate, close: closeDuplicateModal } = usePageDuplicateModalStatus();
+  const { data: isOpened } = usePageDuplicateModalOpened();
+
+  const { path, pageId } = pagesDataToDuplicate;
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
@@ -50,14 +55,14 @@ const PageDuplicateModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, checkExistPaths), [pageId, path],
   );
 
   useEffect(() => {
-    if (pageNameInput !== path) {
+    if (pageId != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, path, pageId, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -94,10 +99,11 @@ const PageDuplicateModal = (props) => {
   }, [appContainer, path, t]);
 
   useEffect(() => {
-    if (props.isOpen) {
+    if (isOpened) {
       getSubordinatedList();
+      setPageNameInput(path);
     }
-  }, [props.isOpen, getSubordinatedList]);
+  }, [isOpened, getSubordinatedList, path]);
 
   function changeIsDuplicateRecursivelyWithoutExistPathHandler() {
     setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath);
@@ -120,8 +126,8 @@ const PageDuplicateModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} className="grw-duplicate-page" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} className="grw-duplicate-page" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
@@ -188,7 +194,7 @@ const PageDuplicateModal = (props) => {
             )}
           </div>
           <div>
-            {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isDuplicateRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
             {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
           </div>
         </div>
@@ -213,16 +219,12 @@ const PageDuplicateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
+const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer]);
 
 
 PageDuplicateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageDuplicateModallWrapper);

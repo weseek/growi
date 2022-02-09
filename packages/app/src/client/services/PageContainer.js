@@ -54,15 +54,6 @@ export default class PageContainer extends Container {
       path,
       tocHtml: '',
 
-      seenUsers: [],
-      seenUserIds: [],
-      sumOfSeenUsers: [],
-
-      isLiked: false,
-      likers: [],
-      likerIds: [],
-      sumOfLikers: 0,
-
       createdAt: mainContent.getAttribute('data-page-created-at'),
       // please use useCurrentUpdatedAt instead
       updatedAt: mainContent.getAttribute('data-page-updated-at'),
@@ -71,9 +62,7 @@ export default class PageContainer extends Container {
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
-      isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
-      isAbleToDeleteCompletely: JSON.parse(mainContent.getAttribute('data-page-is-able-to-delete-completely')),
       isPageExist: mainContent.getAttribute('data-page-id') != null,
 
       pageUser: JSON.parse(mainContent.getAttribute('data-page-user')),
@@ -117,23 +106,9 @@ export default class PageContainer extends Container {
     interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
-    this.checkAndUpdateImageUrlCached(this.state.likers);
-
-    const { isSharedUser } = this.appContainer;
-
-    // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
-    const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
-
-    if (isAbleToGetAttachedInformationAboutPages) {
-      // We don't retrieve bookmarks in the initial page load
-      // as it is stored in a separate collection to like and seen user
-      // data so it has a separate api endpoint.
-      this.initialPageLoad();
-    }
 
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
-    this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
 
     this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
     this.emitJoinPageRoomRequest();
@@ -161,71 +136,6 @@ export default class PageContainer extends Container {
    */
   static getClassName() {
     return 'PageContainer';
-  }
-
-
-  /**
-   * whether to display reaction buttons
-   * ex.) like, bookmark
-   */
-  get isAbleToShowPageReactionButtons() {
-    const { isTrashPage, isPageExist } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isTrashPage && isPageExist && !isSharedUser);
-  }
-
-  /**
-   * whether to display tag labels
-   */
-  get isAbleToShowTagLabel() {
-    const { isUserPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isUserPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display page management
-   * ex.) duplicate, rename
-   */
-  get isAbleToShowPageManagement() {
-    const { isPageExist, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (isPageExist && !isTrashPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display pageEditorModeManager
-   * ex.) view, edit, hackmd
-   */
-  get isAbleToShowPageEditorModeManager() {
-    const { isNotCreatable, isTrashPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isNotCreatable && !isTrashPage && !isSharedUser);
-  }
-
-  /**
-   * whether to display pageAuthors
-   * ex.) creator, lastUpdateUser
-   */
-  get isAbleToShowPageAuthors() {
-    const { isPageExist, isUserPage } = this.state;
-
-    return (isPageExist && !isUserPage);
-  }
-
-  /**
-   * whether to like button
-   * not displayed on user page
-   */
-  get isAbleToShowLikeButtons() {
-    const { isUserPage } = this.state;
-    const { isSharedUser } = this.appContainer;
-
-    return (!isUserPage && !isSharedUser);
   }
 
   /**
@@ -264,72 +174,6 @@ export default class PageContainer extends Container {
     const markdown = entities.decodeHTML(pageContent);
 
     this.state.markdown = markdown;
-  }
-
-
-  async initialPageLoad() {
-    {
-      const {
-        data: {
-          likerIds, sumOfLikers, isLiked, seenUserIds, sumOfSeenUsers, isSeen,
-        },
-      } = await this.appContainer.apiv3Get('/page/info', { pageId: this.state.pageId });
-
-      await this.setState({
-        sumOfLikers,
-        isLiked,
-        likerIds,
-        seenUserIds,
-        sumOfSeenUsers,
-        isSeen,
-      });
-    }
-
-    await this.retrieveLikersAndSeenUsers();
-  }
-
-  async toggleLike() {
-    {
-      const toggledIsLiked = !this.state.isLiked;
-      await this.appContainer.apiv3Put('/page/likes', { pageId: this.state.pageId, bool: toggledIsLiked });
-
-      await this.setState(state => ({
-        isLiked: toggledIsLiked,
-        sumOfLikers: toggledIsLiked ? state.sumOfLikers + 1 : state.sumOfLikers - 1,
-        likerIds: toggledIsLiked
-          ? [...this.state.likerIds, this.appContainer.currentUserId]
-          : state.likerIds.filter(id => id !== this.appContainer.currentUserId),
-      }));
-    }
-
-    await this.retrieveLikersAndSeenUsers();
-  }
-
-  async retrieveLikersAndSeenUsers() {
-    const { users } = await this.appContainer.apiGet('/users.list', { user_ids: [...this.state.likerIds, ...this.state.seenUserIds].join(',') });
-
-    await this.setState({
-      likers: users.filter(({ id }) => this.state.likerIds.includes(id)).slice(0, 15),
-      seenUsers: users.filter(({ id }) => this.state.seenUserIds.includes(id)).slice(0, 15),
-    });
-
-    this.checkAndUpdateImageUrlCached(users);
-  }
-
-  async checkAndUpdateImageUrlCached(users) {
-    const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
-    if (noImageCacheUsers.length === 0) {
-      return;
-    }
-
-    const noImageCacheUserIds = noImageCacheUsers.map((user) => { return user.id });
-    try {
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-    }
-    catch (err) {
-      // Error alert doesn't apear, because user don't need to notice this error.
-      logger.error(err);
-    }
   }
 
   setLatestRemotePageData(s2cMessagePageUpdated) {
@@ -527,49 +371,6 @@ export default class PageContainer extends Container {
       throw new Error(res.error);
     }
     return res;
-  }
-
-  deletePage(isRecursively, isCompletely) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const completely = isCompletely ? true : null;
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.remove', {
-      recursively,
-      completely,
-      page_id: this.state.pageId,
-      revision_id: this.state.revisionId,
-    });
-
-  }
-
-  revertRemove(isRecursively) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // control flag
-    const recursively = isRecursively ? true : null;
-
-    return this.appContainer.apiPost('/pages.revertRemove', {
-      recursively,
-      page_id: this.state.pageId,
-    });
-  }
-
-  rename(newPagePath, isRecursively, isRenameRedirect, isRemainMetadata) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const { pageId, revisionId, path } = this.state;
-
-    return this.appContainer.apiv3Put('/pages/rename', {
-      revisionId,
-      pageId,
-      isRecursively,
-      isRenameRedirect,
-      isRemainMetadata,
-      newPagePath,
-      path,
-    });
   }
 
   showSuccessToastr() {

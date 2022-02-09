@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-pukiwiki-like-linker",
-  "version": "4.5.9-RC.0",
+  "version": "5.0.0-RC.0",
   "description": "GROWI plugin to add PukiwikiLikeLinker",
   "license": "MIT",
   "keywords": [
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "browser-bunyan": "^1.6.3",
+    "eslint-plugin-regex": "^1.8.0",
     "tsc-alias": "^1.2.9"
   }
 }

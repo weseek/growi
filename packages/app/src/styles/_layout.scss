@@ -32,6 +32,11 @@ body.growi-layout-fluid .grw-container-convertible {
   border-bottom: 1px solid transparent;
 }
 
+.grw-scrollable-modal-body {
+  max-height: calc(100vh - 330px);
+  overflow-y: scroll;
+}
+
 // padding settings for GrowiNavbarBottom
 .page-wrapper {
   padding-bottom: $grw-navbar-bottom-height;

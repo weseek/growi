@@ -81,7 +81,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## 依存関係
 
-- Node.js v12.x or v14.x
+- Node.js v14.x or v16.x
 - npm 6.x
 - yarn
 - MongoDB 4.x
@@ -89,7 +89,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 ### オプションの依存関係
 
 - Redis 3.x
-- ElasticSearch 6.x (needed when using Full-text search)
+- ElasticSearch 6.x or 7.x (needed when using Full-text search)
   - **注意: 次のプラグインが必要です**
     - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
     - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)

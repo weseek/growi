@@ -15,7 +15,7 @@ class LikerList extends React.Component {
       <div className="user-list-content text-truncate text-muted text-right">
         <span className="text-info">
           <span className="liker-user-count">{pageContainer.state.sumOfLikers}</span>
-          <i className="icon-fw icon-like"></i>
+          <i className="fa fa-fw fa-heart-o"></i>
         </span>
         <span className="mr-1">
           <UserPictureList users={pageContainer.state.likerUsers} />

@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '@growi/core';
+import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+import getPageModel from '~/server/models/page';
 
 const logger = loggerFactory('growi:migrate:add-column-is-trashed');
-const Page = require('~/server/models/page')();
 
 const LIMIT = 1000;
 
@@ -22,6 +22,7 @@ module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
+    const Page = getModelSafely('Page') || getPageModel();
 
     let updateDeletedPageIds = [];
 

@@ -12,6 +12,7 @@
   "tablet":"平板",
 	"Login": "登录",
 	"Click to copy": "点击复制",
+  "Rename": "重命名",
 	"Move/Rename": "移动/重命名",
 	"Moved": "移动",
 	"Redirected": "重定向",
@@ -21,6 +22,7 @@
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
+  "Description": "描述",
 	"Admin": "管理",
 	"administrator": "管理员",
 	"Tag": "标签",
@@ -41,6 +43,7 @@
 	"Initialize": "初始化",
   "Update": "更新",
 	"Update Page": "更新本页",
+	"Error": "误差",
 	"Warning": "警告",
   "Sign in": "登录",
 	"Sign up is here": "注册",
@@ -59,6 +62,7 @@
 	"Presentation Mode": "演示文稿",
   "The end": "结束",
   "Not available for guest": "Not available for guest",
+  "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
   "File type": "文件类型",
@@ -66,6 +70,7 @@
   "Include Attachment File": "包含附件",
   "Include Comment": "包含评论",
   "Include Subordinated Page": "包括子页面",
+  "Include Subordinated Target Page": "包括 {{target}}",
   "All Subordinated Page": "所有子页面",
   "Specify Hierarchy": "指定层级",
   "Submitted the request to create the archive": "提交创建归档请求",
@@ -115,6 +120,9 @@
 	"Create under": "Create page under below:",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
+  "V5 Page Migration": "V5 Page Migration",
+  "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Customize": "页面定制",
@@ -124,6 +132,7 @@
   "Legacy_Slack_Integration": "旧版Slack一体化",
 	"User_Management": "用户管理",
 	"external_account_management": "外部账户管理",
+  "UserGroup": "用户组",
 	"UserGroup Management": "用户组管理",
 	"Full Text Search Management": "全文搜索管理",
 	"Import Data": "导入数据",
@@ -157,8 +166,11 @@
 	"Sign out": "退出",
   "Disassociate": "解除关联",
   "No bookmarks yet": "暂无书签",
+  "add_bookmark": "添加到书签",
+  "remove_bookmark": "从书签中删除",
 	"Recent Created": "最新创建",
   "Recent Changes": "最新修改",
+  "Page Tree": "页面树",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
@@ -166,7 +178,9 @@
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
-		"invalid_syntax": "%s的语法无效。"
+		"invalid_syntax": "%s的语法无效。",
+    "title_required": "标题是必需的。",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "创建页面",
@@ -485,7 +499,10 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
 		"update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}",
     "initialize_successed": "Succeeded to initialize {{target}}",
 		"give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin ",
@@ -874,13 +891,24 @@
 		"use_os_settings": "使用操作系统设置"
 	},
 	"search_result": {
-		"result_meta": "在{{total}中找到了{{keyword}。",
+		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",
 		"delete": "删除",
 		"check_all": "全部检查",
 		"deletion_modal_header": "删除页",
-		"delete_completely": "完全删除"
+		"delete_completely": "完全删除",
+    "include_certain_path": "包含 {{pathToInclude}} 路径 ",
+    "delete_all_selected_page": "删除所有",
+    "currently_not_implemented": "这是当前未实现的功能",
+    "search_again" : "再次搜索",
+    "number_of_list_to_display" : "显示器的数量",
+    "page_number_unit" : "例",
+    "sort_axis": {
+      "relationScore": "按相关性排序",
+      "createdAt": "按创建日期排序",
+      "updatedAt": "按更新日期排序"
+    }
 	},
 	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {
@@ -947,5 +975,14 @@
     "success_to_send_email": "我发了一封电子邮件",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
+  },
+  "pagetree": {
+    "private_legacy_pages": "私人遗留页面",
+    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
+    "same_page_name_exists_at_path" : "在”{{path}}” 中，有不止一个名为”{{pageName}}”的页面",
+    "select_page_to_see" : "请在下面选择你想去的页面。"
   }
 }

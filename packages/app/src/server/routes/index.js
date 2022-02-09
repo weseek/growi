@@ -2,8 +2,13 @@ import express from 'express';
 
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
+import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+
+import * as loginFormValidator from '../middlewares/login-form-validator';
+import * as registerFormValidator from '../middlewares/register-form-validator';
 
 import * as forgotPassword from './forgot-password';
+import * as privateLegacyPages from './private-legacy-pages';
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as userActivation from './user-activation';
 
@@ -13,7 +18,7 @@ const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 5 requests per windowMs
+  max: 10, // limit each IP to 10 requests per windowMs
   message:
     'Too many requests sent from this IP, please try again after 15 minutes',
 });
@@ -33,7 +38,6 @@ module.exports = function(crowi, app) {
   const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
-  const form = require('../form');
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
@@ -60,10 +64,10 @@ module.exports = function(crowi, app) {
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
-  app.post('/login'                   , apiLimiter, applicationInstalled, form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/login/activateInvited'   , apiLimiter , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrf, login.invited);
+  app.post('/login'                   , apiLimiter , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
+  app.post('/register'                , apiLimiter , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
   app.get('/logout'                   , applicationInstalled, logout.logout);
 
@@ -74,7 +78,7 @@ module.exports = function(crowi, app) {
   if (!isInstalled) {
     const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled , installer.index);
-    app.post('/installer'             , applicationNotInstalled , form.register , csrf, installer.install);
+    app.post('/installer'             , apiLimiter , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrf, installer.install);
     return;
   }
 
@@ -91,7 +95,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
 
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    , apiLimiter , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // security admin
   app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
@@ -145,9 +149,7 @@ module.exports = function(crowi, app) {
   // my drafts
   app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
 
-  app.get('/:id([0-9a-z]{24})'                  , loginRequired , page.redirector);
-  app.get('/_r/:id([0-9a-z]{24})'               , loginRequired , page.redirector); // alias
-  app.get('/attachment/:id([0-9a-z]{24})'       , certifySharedFile , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
@@ -159,15 +161,14 @@ module.exports = function(crowi, app) {
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.update);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
+  app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
   app.get('/tags'                     , loginRequired, tag.showPage);
@@ -199,6 +200,8 @@ module.exports = function(crowi, app) {
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleHttpErrosMiddleware));
 
+  app.use('/private-legacy-pages', express.Router()
+    .get('/', privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
     .use(userActivation.tokenErrorHandlerMiddeware));
@@ -206,7 +209,9 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/*/$'                   , loginRequired, injectUserUISettings, page.showPageWithEndOfSlash, page.notFound);
-  app.get('/*'                     , loginRequired, autoReconnectToSearch, injectUserUISettings, page.showPage, page.notFound);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
+
+  app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
+  app.get('/*'                     , loginRequired , autoReconnectToSearch, injectUserUISettings, page.redirector);
 
 };

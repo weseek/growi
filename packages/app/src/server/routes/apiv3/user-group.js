@@ -1,4 +1,6 @@
 import loggerFactory from '~/utils/logger';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import UserGroup from '~/server/models/user-group';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -16,8 +18,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
-const validator = {};
-
 const { ObjectId } = mongoose.Types;
 
 
@@ -34,11 +34,53 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
-    UserGroup,
     UserGroupRelation,
     User,
     Page,
   } = crowi.models;
+
+  const validator = {
+    create: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Description must be a string').optional().isString(),
+      body('parentId', 'ParentId must be a string').optional().isString(),
+    ],
+    update: [
+      body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+      body('description', 'Group description must be a string').optional().isString(),
+      body('parentId', 'parentId must be a string').optional().isString(),
+      body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
+    ],
+    delete: [
+      param('id').trim().exists({ checkFalsy: true }),
+      query('actionName').trim().exists({ checkFalsy: true }),
+      query('transferToUserGroupId').trim(),
+    ],
+    listChildren: [
+      query('parentIds', 'parentIds must be an array').optional().isArray(),
+      query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
+    ],
+    selectableGroups: [
+      query('groupId', 'groupId must be a string').optional().isString(),
+    ],
+    users: {
+      post: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+      delete: [
+        param('id').trim().exists({ checkFalsy: true }),
+        param('username').trim().exists({ checkFalsy: true }),
+      ],
+    },
+    pages: {
+      get: [
+        param('id').trim().exists({ checkFalsy: true }),
+        sanitizeQuery('limit').customSanitizer(toPagingLimit),
+        sanitizeQuery('offset').customSanitizer(toPagingOffset),
+      ],
+    },
+  };
 
   /**
    * @swagger
@@ -61,10 +103,10 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: userGroups with no parent
     const { query } = req;
 
-    // TODO: filter with querystring
+    // TODO 85062: improve sort
     try {
       const page = query.page != null ? parseInt(query.page) : undefined;
       const limit = query.limit != null ? parseInt(query.limit) : undefined;
@@ -84,9 +126,24 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.create = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-  ];
+  // TODO 85062: improve sort
+  router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
+    try {
+      const { parentIds, includeGrandChildren = false } = req.query;
+
+      const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
+      return res.apiv3({
+        childUserGroups: userGroupsResult.childUserGroups,
+        grandChildUserGroups: userGroupsResult.grandChildUserGroups,
+      });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching child user group list';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'child-user-group-list-fetch-failed'));
+    }
+  });
+
 
   /**
    * @swagger
@@ -119,11 +176,12 @@ module.exports = (crowi) => {
    *                      description: A result of `UserGroup.createGroupByName`
    */
   router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
-    const { name } = req.body;
+    const { name, description = '', parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
-      const userGroup = await UserGroup.createGroupByName(userGroupName);
+      const userGroupDescription = crowi.xss.process(description);
+      const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
 
       return res.apiv3({ userGroup }, 201);
     }
@@ -134,11 +192,57 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    query('actionName').trim().exists({ checkFalsy: true }),
-    query('transferToUserGroupId').trim(),
-  ];
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /selectable-groups:
+   *      get:
+   *        tags: [UserGroup]
+   *        operationId: getSelectableGroups
+   *        summary: /selectable-groups
+   *        description: Get selectable user groups.
+   *        parameters:
+   *          - name: groupId
+   *            in: query
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: userGroups are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroup objects
+   */
+  router.get('/selectable-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+    const { groupId } = req.query;
+
+    try {
+      const userGroup = await UserGroup.findById(groupId);
+
+      const [ancestorGroups, descendantGroups] = await Promise.all([
+        UserGroup.findGroupsWithAncestorsRecursively(userGroup, []),
+        UserGroup.findGroupsWithDescendantsRecursively([userGroup], []),
+      ]);
+
+      const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
+      const selectableUserGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
+      return res.apiv3({ selectableUserGroups });
+    }
+    catch (err) {
+      const msg = 'Error occurred while searching user groups';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
+    }
+  });
 
   /**
    * @swagger
@@ -183,24 +287,16 @@ module.exports = (crowi) => {
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
-      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
 
-      return res.apiv3({ userGroup });
+      return res.apiv3({ userGroups });
     }
     catch (err) {
-      const msg = 'Error occurred in deleting a user group';
+      const msg = 'Error occurred while deleting user groups';
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-delete-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-groups-delete-failed'));
     }
   });
-
-  // return one group with the id
-  // router.get('/:id', async(req, res) => {
-  // });
-
-  validator.update = [
-    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -232,23 +328,14 @@ module.exports = (crowi) => {
    */
   router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const {
+      name, description, parentId, forceUpdateParents = false,
+    } = req.body;
 
     try {
-      const userGroup = await UserGroup.findById(id);
-      if (userGroup == null) {
-        throw new Error('The group does not exist');
-      }
+      const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
 
-      // check if the new group name is available
-      const isRegisterableName = await UserGroup.isRegisterableName(name);
-      if (!isRegisterableName) {
-        throw new Error('The group name is already taken');
-      }
-
-      await userGroup.updateName(name);
-
-      res.apiv3({ userGroup });
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in updating a user group name';
@@ -257,7 +344,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users = {};
 
   /**
    * @swagger
@@ -370,10 +456,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.post = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -419,18 +501,19 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
+      const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
+      const userGroupIds = userGroups.map(g => g._id);
+
       // check for duplicate users in groups
-      const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
+      const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
+      const existingGroupIds = existingRelations.map(r => r.relatedGroup);
 
-      if (isRelatedUserForGroup) {
-        logger.warn('The user is already joined');
-        return res.apiv3();
-      }
+      const groupIdsOfRelationToCreate = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
-      const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
+      const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
     }
     catch (err) {
       const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
@@ -439,10 +522,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.users.delete = [
-    param('id').trim().exists({ checkFalsy: true }),
-    param('username').trim().exists({ checkFalsy: true }),
-  ];
 
   /**
    * @swagger
@@ -488,19 +567,21 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
-      const userGroupRelation = await UserGroupRelation.findOneAndDelete({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
+
+      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
       const serializedUser = serializeUserSecurely(user);
 
-      return res.apiv3({ user: serializedUser, userGroup, userGroupRelation });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
     }
     catch (err) {
-      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      const msg = 'Error occurred while removing the user from groups.';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
   });
 
-  validator.userGroupRelations = {};
 
   /**
    * @swagger
@@ -548,13 +629,6 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.pages = {};
-
-  validator.pages.get = [
-    param('id').trim().exists({ checkFalsy: true }),
-    sanitizeQuery('limit').customSanitizer(toPagingLimit),
-    sanitizeQuery('offset').customSanitizer(toPagingOffset),
-  ];
 
   /**
    * @swagger

@@ -172,6 +172,42 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  IS_V5_COMPATIBLE: {
+    ns:      'crowi',
+    key:     'app:isV5Compatible',
+    type:    ValueType.BOOLEAN,
+    default: undefined,
+  },
+  AUTO_INSTALL_ADMIN_USERNAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminUsername',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_NAME: {
+    ns:      'crowi',
+    key:     'autoInstall:adminName',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_EMAIL: {
+    ns:      'crowi',
+    key:     'autoInstall:adminEmail',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_ADMIN_PASSWORD: {
+    ns:      'crowi',
+    key:     'autoInstall:adminPassword',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AUTO_INSTALL_GLOBAL_LANG: {
+    ns:      'crowi',
+    key:     'autoInstall:globalLang',
+    type:    ValueType.STRING,
+    default: null,
+  },
   S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
     key:     's2sMessagingPubsub:serverType',
@@ -261,6 +297,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:searchboxSslUrl',
     type:    ValueType.STRING,
     default: null,
+  },
+  ELASTICSEARCH_REJECT_UNAUTHORIZED: {
+    ns:      'crowi',
+    key:     'app:elasticsearchRejectUnauthorized',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  ELASTICSEARCH_REINDEX_ON_BOOT: {
+    ns:      'crowi',
+    key:     'app:elasticsearchReindexOnBoot',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  USE_ELASTICSEARCH_V6: {
+    ns:      'crowi',
+    key:     'app:useElasticsearchV6',
+    type:    ValueType.BOOLEAN,
+    default: true,
   },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
