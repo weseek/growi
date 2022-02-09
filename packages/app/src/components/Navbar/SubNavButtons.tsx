@@ -163,14 +163,6 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-    await onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem]);
-
   if (revisionId == null || error != null) {
     return <></>;
   }
@@ -187,7 +179,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
-      onClickDeleteMenuItem={deleteItemClickedHandler}
+      onClickDeleteMenuItem={onClickDeleteMenuItem}
     />
   );
 };
