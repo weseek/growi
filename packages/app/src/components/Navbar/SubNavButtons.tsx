@@ -21,6 +21,7 @@ type CommonProps = {
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
+  onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
 }
 
@@ -36,7 +37,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickDeleteMenuItem,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -90,6 +91,14 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     mutateBookmarkInfo();
   }, [isGuestUser, mutateBookmarkInfo, mutatePageInfo, pageId, pageInfo]);
 
+  const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+    if (onClickRenameMenuItem == null || path == null) {
+      return;
+    }
+
+    onClickRenameMenuItem(pageId, revisionId, path);
+  }, [onClickRenameMenuItem, pageId, path, revisionId]);
+
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteMenuItem == null || path == null) {
       return;
@@ -142,6 +151,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
+          onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDeleteMenuItem={deleteMenuItemClickHandler}
         />
       )}
@@ -158,7 +168,7 @@ type SubNavButtonsProps= CommonProps & {
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, onClickDeleteMenuItem,
+    pageId, revisionId, path, shareLinkId, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -179,6 +189,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId}
       path={path}
+      onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
     />
   );
