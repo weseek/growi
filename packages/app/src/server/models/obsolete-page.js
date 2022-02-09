@@ -738,7 +738,7 @@ export const getPageSchema = (crowi) => {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, option, excludeRedirect = true) {
+  pageSchema.statics.findListByPageIds = async function(ids, option) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
