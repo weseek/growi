@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useEffect,
+  FC, useCallback, useEffect, useRef,
 } from 'react';
 
 import { DropdownItem } from 'reactstrap';
@@ -53,19 +53,21 @@ type Props ={
   showPageControlDropdown?: boolean,
 }
 
+const scrollTo = (scrollElement:HTMLElement) => {
+  // querySelector returns element which is found first
+  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
+  if (highlightedKeyword != null) {
+    smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
+  }
+};
+
 const SearchResultContent: FC<Props> = (props: Props) => {
+  const scrollElementRef = useRef(null);
 
   // ***************************  Auto Scroll  ***************************
-  const scrollTo = (scrollElement:HTMLElement) => {
-    const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
-    if (highlightedKeyword != null) {
-      smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
-    }
-  };
-
   useEffect(() => {
-    const scrollElement = document.querySelector('.search-result-page-content') as HTMLElement;
-    if (scrollElement == null) return;
+    if (scrollElementRef.current == null) return;
+    const scrollElement = scrollElementRef.current as HTMLElement;
     const observerCallback = (mutationRecords) => {
       mutationRecords.forEach((record) => {
         const targetId = record.target.id;
@@ -134,7 +136,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         page={page}
         controls={ControlComponents}
       />
-      <div className="search-result-page-content">
+      <div className="search-result-page-content" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}
