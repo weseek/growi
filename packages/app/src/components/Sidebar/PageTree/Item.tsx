@@ -89,7 +89,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
 
   // to re-show hidden item when useDrag end() callback
-  const removeDisplayNoneFromItemByPageId = useCallback((pageId) => {
+  const displayDroppedItemByPageId = useCallback((pageId) => {
     const target = document.getElementById(`pagetree-item-${pageId}`);
     if (target == null) {
       return;
@@ -142,7 +142,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }
     catch (err) {
       // display the dropped item
-      removeDisplayNoneFromItemByPageId(droppedPage._id);
+      displayDroppedItemByPageId(droppedPage._id);
 
       if (err.code === 'operation__blocked') {
         toastWarning('TODO: i18n You cannot move this page now.');
