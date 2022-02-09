@@ -119,39 +119,56 @@ describe('PageService page operations with only public pages', () => {
 
   });
 
+
+  const safeRename = async(renameArg) => {
+    const {
+      page, newPagePath, user, options,
+    } = renameArg;
+    // mock
+    const mockedRenameDescendantsWithStream = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream')
+      .mockReturnValue(null);
+    jest.spyOn(crowi.pageService, 'createAndSendNotifications')
+      .mockReturnValue(null);
+
+    const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+
+    // retrieve arugemtns which method:'renameDescendantsWithStream' was called with
+    const argsForCreateAndSendNotifications = mockedRenameDescendantsWithStream.mock.calls[0];
+    // restore the mock to the original function
+    mockedRenameDescendantsWithStream.mockRestore();
+
+    // rename descendants
+    await crowi.pageService.renameDescendantsWithStream(...argsForCreateAndSendNotifications);
+
+    return renamedPage;
+  };
+
+
   describe('Rename', () => {
-    // test('Should NOT rename top page', async() => {
+    test('Should NOT rename top page', async() => {
 
-    //   let isThrown = false;
-    //   try {
-    //     await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
-    //   }
-    //   catch (err) {
-    //     isThrown = true;
-    //   }
+      let isThrown = false;
+      try {
+        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
 
-    //   expect(isThrown).toBe(true);
-    // });
+      expect(isThrown).toBe(true);
+    });
 
     test('Should move to under non-empty page', async() => {
 
-      // mock
-      const mockedRenameDescendantsWithStream = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream')
-        .mockReturnValue(null);
-      jest.spyOn(crowi.pageService, 'createAndSendNotifications')
-        .mockReturnValue(null);
-
       // rename target page
       const newPath = '/parentForRename1/renamed1';
-      const renamedPage = await crowi.pageService.renamePage(childForRename1, newPath, dummyUser1, {});
-
-      // retrieve arugemtns which method:'renameDescendantsWithStream' was called with
-      const argsForCreateAndSendNotifications = mockedRenameDescendantsWithStream.mock.calls[0];
-      // restore the mock to the original function
-      mockedRenameDescendantsWithStream.mockRestore();
-
-      // rename descendants
-      await crowi.pageService.renameDescendantsWithStream(...argsForCreateAndSendNotifications);
+      const renameArg = {
+        page: childForRename1,
+        newPagePath: newPath,
+        user: dummyUser1,
+        options: {},
+      };
+      const renamedPage = await safeRename(renameArg);
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
