@@ -121,7 +121,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete === 'string') {
       const path = pathOrPathsToDelete;
-      console.log(pathOrPathsToDelete, isRecursively, isCompletely);
+
       if (isRecursively) {
         if (isCompletely) {
           toastSuccess(t('deleted_single_page_recursively_completely', { path }));
