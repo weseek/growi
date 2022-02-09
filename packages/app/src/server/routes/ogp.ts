@@ -16,43 +16,54 @@ const logger = loggerFactory('growi:routes:ogp');
 const DEFAULT_USER_IMAGE_URL = '/images/icons/user.svg';
 const DEFAULT_USER_IMAGE_PATH = `public${DEFAULT_USER_IMAGE_URL}`;
 
-// default user image is cached
-let bufferedUserImage: Buffer = Buffer.from('');
+let bufferedDefaultUserImageCache: Buffer = Buffer.from('');
 fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
   if (err) throw err;
-  bufferedUserImage = buffer;
+  bufferedDefaultUserImageCache = buffer;
 });
 
+
 module.exports = function(crowi) {
-  const { configManager, aclService } = crowi;
 
-  const isUserImageAttachment = (userImageUrlCached: string): boolean => {
-    return /^\/attachment\/.+/.test(userImageUrlCached);
-  };
+  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer> => {
 
-  const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
-  if (ogpUri == null) {
-    return {
-      renderOgp: (req: Request, res: Response) => {
-        return res.status(400).send('OGP URI for GROWI has not been setup');
-      },
+    const isUserImageAttachment = (userImageUrlCached: string): boolean => {
+      return /^\/attachment\/.+/.test(userImageUrlCached);
     };
-  }
+
+    let bufferedUserImage: Buffer;
+
+    if (isUserImageAttachment(userImageUrlCached)) {
+      const { fileUploadService } = crowi;
+      const Attachment = crowi.model('Attachment');
+      const attachment = await Attachment.findById(userImageUrlCached);
+      const fileStream = await fileUploadService.findDeliveryFile(attachment);
+      bufferedUserImage = await convertStreamToBuffer(fileStream);
+      return bufferedUserImage;
+    }
+
+    return (await axios.get(
+      userImageUrlCached, {
+        responseType: 'arraybuffer',
+      },
+    )).data;
+
+  };
 
   return {
     async renderOgp(req: Request, res: Response) {
 
-      if (!aclService.isGuestAllowedToRead()) {
-        return res.status(400).send('This GROWI is not public');
-      }
+      const { configManager } = crowi;
+      const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
+
+      if (ogpUri == null) return res.status(400).send('OGP URI for GROWI has not been setup');
+
 
       const pageId = req.params.pageId;
-      if (pageId === '') {
-        return res.status(400).send('page id is not included in the parameter');
-      }
-
       let user;
       let pageTitle: string;
+      let bufferedUserImage:Buffer;
+
 
       try {
         const Page = crowi.model('Page');
@@ -65,26 +76,9 @@ module.exports = function(crowi) {
         const User = crowi.model('User');
         user = await User.findById(page.creator._id.toString());
 
-        if (user.imageUrlCached === DEFAULT_USER_IMAGE_URL) {
-          // use cached default user bufferedUserImage
-        }
-        else if (isUserImageAttachment(user.imageUrlCached)) {
-          const { fileUploadService } = crowi;
-          const Attachment = crowi.model('Attachment');
-          const attachment = await Attachment.findById(user.imageAttachment);
-          const fileStream = await fileUploadService.findDeliveryFile(attachment);
-          bufferedUserImage = await convertStreamToBuffer(fileStream);
-        }
-        else {
-          bufferedUserImage = (await axios.get(
-            user.imageUrlCached, {
-              responseType: 'arraybuffer',
-            },
-          )).data;
-        }
+        bufferedUserImage = user.imageUrlCached === DEFAULT_USER_IMAGE_URL ? bufferedDefaultUserImageCache : (await getBufferedUserImage(user.imageUrlCached));
 
-        // todo: consider page title
-        pageTitle = (new DevidedPagePath(page.path)).latter;
+        pageTitle = (new DevidedPagePath(page.path)).latter; // todo: consider page title
 
       }
       catch (err) {
