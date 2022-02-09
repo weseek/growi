@@ -157,7 +157,7 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
-  const reameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
+  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
@@ -185,7 +185,7 @@ const GrowiContextualSubNavigation = (props) => {
               additionalMenuItemRenderer={props => (
                 <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} isLinkSharingDisabled={isLinkSharingDisabled} />
               )}
-              onClickRenameMenuItem={reameItemClickedHandler}
+              onClickRenameMenuItem={renameItemClickedHandler}
               onClickDeleteMenuItem={deleteItemClickedHandler}
             />
           ) }
@@ -208,7 +208,7 @@ const GrowiContextualSubNavigation = (props) => {
     isCompactMode, isLinkSharingDisabled,
     isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    reameItemClickedHandler, deleteItemClickedHandler, path,
+    renameItemClickedHandler, deleteItemClickedHandler, path,
   ]);
 
 
