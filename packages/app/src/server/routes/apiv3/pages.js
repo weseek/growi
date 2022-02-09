@@ -720,7 +720,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.delete('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
+  router.post('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
     const { pageIdToRevisionIdMap, isCompletely, isRecursively } = req.body;
     const pageIds = Object.keys(pageIdToRevisionIdMap);
 
