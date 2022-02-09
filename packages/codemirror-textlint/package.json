@@ -1,6 +1,6 @@
 {
   "name": "@growi/codemirror-textlint",
-  "version": "4.6.0-RC.0",
+  "version": "5.0.0-RC.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
     "@textlint/kernel": "^12.0.2",
     "@types/codemirror": "^5.60.2",
+    "eslint-plugin-regex": "^1.8.0",
     "textlint-message-to-codemirror": "^1.0.0",
     "textlint-plugin-markdown": "^4.0.6",
     "textlint-rule-common-misspellings": "^1.0.1",

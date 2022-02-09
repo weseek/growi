@@ -1,3 +1,5 @@
+import nodePath from 'path';
+
 import escapeStringRegexp from 'escape-string-regexp';
 
 /**
@@ -28,6 +30,19 @@ export const isTrashPage = (path: string): boolean => {
 export const isUserPage = (path: string): boolean => {
   // https://regex101.com/r/SxPejV/1
   if (path.match(/^\/user(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Whether path is right under the path '/user'
+ * @param path
+ */
+export const isUserNamePage = (path: string): boolean => {
+  // https://regex101.com/r/GUZntH/1
+  if (path.match(/^\/user\/[^/]+$/)) {
     return true;
   }
 
@@ -131,4 +146,32 @@ export const generateEditorPath = (...paths: string[]): string => {
   catch (err) {
     throw new Error('Invalid path format');
   }
+};
+
+/**
+ * returns ancestors paths
+ * @param {string} path
+ * @param {string[]} ancestorPaths
+ * @returns {string[]}
+ */
+export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
+  if (isTopPage(path)) return ancestorPaths;
+
+  const parentPath = nodePath.dirname(path);
+  ancestorPaths.push(parentPath);
+  return collectAncestorPaths(parentPath, ancestorPaths);
+};
+
+/**
+ * return paths without duplicate area of regexp /^${path}\/.+/i
+ * ex. expect(omitDuplicateAreaPathFromPaths(['/A', '/A/B', '/A/B/C'])).toStrictEqual(['/A'])
+ * @param paths paths to be tested
+ * @returns omitted paths
+ */
+export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
+  return paths.filter((path) => {
+    const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
+
+    return !isDuplicate;
+  });
 };

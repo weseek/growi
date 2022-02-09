@@ -34,8 +34,8 @@ const TableOfContents = (props) => {
     const containerComputedStyle = getComputedStyle(containerElem);
     const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // get smaller bottom line of window height - the height of ContentLinkButtons and .system-version height) and containerTop
-    let bottom = Math.min(window.innerHeight - 41 - 20, parentBottom);
+    // get smaller bottom line of window height - .system-version height - margin 5px) and containerTop
+    let bottom = Math.min(window.innerHeight - 20 - 5, parentBottom);
 
     if (isUserPage) {
       // raise the bottom line by the height and margin-top of UserContentLinks

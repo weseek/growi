@@ -7,9 +7,14 @@ import GrowiNavbar from '../components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from '../components/Navbar/GrowiNavbarBottom';
 import HotkeysManager from '../components/Hotkeys/HotkeysManager';
 import PageCreateModal from '../components/PageCreateModal';
+import PageDeleteModal from '../components/PageDeleteModal';
+import PageDuplicateModal from '../components/PageDuplicateModal';
+import PageRenameModal from '../components/PageRenameModal';
+import PageAccessoriesModal from '../components/PageAccessoriesModal';
 
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
+import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -40,6 +45,11 @@ const componentMappings = {
   'grw-navbar-bottom-container': <GrowiNavbarBottom />,
 
   'page-create-modal': <PageCreateModal />,
+  'page-delete-modal': <PageDeleteModal />,
+  'page-duplicate-modal': <PageDuplicateModal />,
+  'page-rename-modal': <PageRenameModal />,
+  'page-accessories-modal': <PageAccessoriesModal />,
+  'descendants-page-list-modal': <DescendantsPageListModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 

@@ -2,15 +2,17 @@ import React, {
   FC, useState, useCallback, useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import assert from 'assert';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IPage } from '~/interfaces/page';
 import { IFocusable } from '~/client/interfaces/focusable';
+import { useGlobalSearchFormRef } from '~/stores/ui';
+import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SearchForm from '../SearchForm';
-import { useGlobalSearchFormRef } from '~/stores/ui';
 
 
 type Props = {
@@ -31,12 +33,14 @@ const GlobalSearch: FC<Props> = (props: Props) => {
   const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
   const [isFocused, setFocused] = useState<boolean>(false);
 
-  const gotoPage = useCallback((data: unknown[]) => {
-    const page = data[0] as IPage; // should be single page selected
+  const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
+    assert(data.length > 0);
+
+    const page = data[0].pageData; // should be single page selected
 
     // navigate to page
     if (page != null) {
-      window.location.href = page.path;
+      window.location.href = page._id;
     }
   }, []);
 

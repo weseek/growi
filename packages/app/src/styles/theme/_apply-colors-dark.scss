@@ -2,7 +2,7 @@
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
 $color-list-hover: $color-global !default;
-$bgcolor-list-hover: lighten($bgcolor-global, 3%) !default;
+$bgcolor-list-hover: lighten($bgcolor-global, 8%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
 $bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
@@ -18,6 +18,7 @@ $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
 
 // override bootstrap variables
+$text-muted: $gray-550;
 $table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
@@ -25,6 +26,7 @@ $table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
 
+@import 'reboot-bootstrap-text';
 @import 'reboot-bootstrap-border-colors';
 @import 'reboot-bootstrap-tables';
 
@@ -58,6 +60,9 @@ textarea.form-control {
   background-color: theme-color('secondary');
   border: 1px solid theme-color('secondary');
   border-right: none;
+  &.text-muted {
+    color: theme-color('light') !important;
+  }
 }
 
 .input-group input {
@@ -213,6 +218,19 @@ ul.pagination {
       }
     }
   }
+
+  // List group
+  .list-group-item {
+    &.active {
+      background-color: lighten($bgcolor-global, 9%) !important;
+    }
+    .list-group-item-action:hover {
+      background-color: $bgcolor-list-hover;
+    }
+    .page-list-snippet {
+      color: theme-color('light');
+    }
+  }
 }
 
 /*
@@ -249,6 +267,19 @@ ul.pagination {
 .grw-sidebar {
   // List
   @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
+  // Pagetree
+  .grw-pagetree {
+    @include override-list-group-item-for-pagetree(
+      $color-list,
+      $bgcolor-sidebar-list-group,
+      $color-list-hover,
+      $bgcolor-list-hover,
+      $color-list-active,
+      lighten($bgcolor-list-hover, 5%),
+      $gray-500
+    );
+  }
 }
 
 /*

@@ -14,9 +14,12 @@ $bordercolor-nav-tabs: $gray-300 !default;
 $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
-$color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
+$bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
+$color-page-list-group-item-meta: $gray-500 !default;
+$color-search-page-list-title: $color-global !default;
+$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -305,6 +308,19 @@ ul.pagination {
     }
   }
 
+  .grw-pagetree {
+    .list-group-item {
+      .grw-pagetree-title-anchor {
+        color: inherit;
+      }
+    }
+  }
+  .grw-pagetree-footer {
+    .h5.grw-private-legacy-pages-anchor {
+      color: inherit;
+    }
+  }
+
   .grw-recent-changes {
     .list-group {
       .list-group-item {
@@ -362,20 +378,6 @@ ul.pagination {
 
   .modal-footer {
     border-top-color: $border-color-theme;
-  }
-}
-
-.grw-page-accessories-control {
-  .grw-seen-user-info {
-    .btn {
-      color: $color-seen-user;
-      &:active {
-        color: $color-seen-user;
-      }
-      .footstamp-icon {
-        fill: $color-seen-user;
-      }
-    }
   }
 }
 
@@ -493,6 +495,48 @@ ul.pagination {
 }
 
 /*
+ * GROWI page-list
+ */
+.page-list {
+  // List group
+  .list-group {
+    .list-group-item {
+      a {
+        color: $color-global;
+        svg {
+          fill: $color-global;
+        }
+
+        @include hover() {
+          color: $color-global;
+          svg {
+            fill: $color-global;
+          }
+        }
+      }
+
+      .page-list-meta {
+        color: $color-page-list-group-item-meta;
+        svg {
+          fill: $color-page-list-group-item-meta;
+        }
+      }
+
+      .page-list-snippet {
+        color: $gray-600;
+      }
+
+      &.list-group-item-action {
+        &.active {
+          background-color: $bgcolor-page-list-group-item-active;
+          border-left-color: $primary;
+        }
+      }
+    }
+  }
+}
+
+/*
  * GROWI on-edit
  */
 body.on-edit {
@@ -595,22 +639,15 @@ body.pathname-sidebar {
  * GROWI search result
  */
 .search-result {
-  .search-result-list {
-    .page-list {
-      .page-list-ul {
-        > li.nav-item > a.nav-link {
-          color: inherit;
-        }
-        a {
-          &.hover {
-            background-color: darken($bgcolor-global, 4%);
-          }
-          &.active {
-            background-color: darken($bgcolor-global, 8%);
-            border-color: theme-color('primary');
-          }
-        }
-      }
+  .grw-search-page-nav {
+    background-color: $bgcolor-subnav;
+  }
+  .search-control {
+    background-color: $bgcolor-global;
+  }
+  .page-list {
+    .highlighted-keyword {
+      background-color: $bgcolor-keyword-highlighted;
     }
   }
 }
@@ -674,9 +711,14 @@ mark.rbt-highlight-text {
 }
 
 // Page Management Dropdown icon
-.grw-btn-page-management:hover,
-.grw-btn-page-management:focus {
-  background-color: rgba($color-link, 0.15);
+.btn-page-item-control {
+  &:hover,
+  &:focus {
+    background-color: rgba($color-link, 0.15);
+  }
+  &:active {
+    background-color: rgba($color-link, 0.2);
+  }
 }
 
 /*

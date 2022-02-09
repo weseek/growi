@@ -19,6 +19,17 @@
     "bug_report": "Submitting a bug report",
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature",
+    "migration_desc": "Some of the public pages have the old schema. To take advantage of new features such as page trees and easy renaming, please upgrade the schema of all your pages.",
+    "migration_note": "Note: You will lose unique constraints from the page paths.",
+    "upgrade_to_v5": "Upgrade to V5",
+    "modal_migration_warning": "This process may take long. It is highly recommended that administrators tell users not to create, modify, or delete pages during migration.",
+    "start_upgrading": "Start upgrading",
+    "successfully_started": "Succeeded to start migration",
+    "already_upgraded": "You have already completed upgrading"
+  },
   "app_setting": {
     "site_name": "Site name",
     "sitename_change": "You can change site name which is used for header and HTML title.",
@@ -178,6 +189,9 @@
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
+    "error": {
+      "only_upsert_available": "Only 'Upsert' option is available for pages collection."
+    },
     "growi_settings": {
       "description_of_import_mode": {
         "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
@@ -192,7 +206,7 @@
       "upload": "Upload",
       "discard": "Discard uploaded data",
       "errors": {
-        "different_versions": "this growi and the uploarded data versions are not met",
+        "different_versions": "This growi and the uploaded data versions are not met",
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
         "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
@@ -440,6 +454,7 @@
   },
   "user_group_management": {
     "create_group": "Create new group",
+    "add_child_group": "Add child group",
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
@@ -452,6 +467,7 @@
       "backward_match": "Backward match"
     },
     "group_list": "Group list",
+    "child_group_list": "Child group list",
     "back_to_list": "Go back to group list",
     "basic_info": "Basic info",
     "user_list": "User list",

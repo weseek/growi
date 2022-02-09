@@ -36,6 +36,7 @@ export const generateConfigsForInstalling = (): { [key: string]: any } => {
   config['app:installed'] = true;
   config['app:fileUpload'] = true;
   config['customize:isSavedStatesOfTabChanges'] = false;
+  config['app:isV5Compatible'] = true;
 
   return config;
 };
@@ -235,6 +236,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isSearchServiceReachable: crowi.searchService.isReachable,
     isMailerSetup: crowi.mailService.isMailerSetup,
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+    pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
   };
 

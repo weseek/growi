@@ -20,12 +20,18 @@ import StickyStretchableScroller from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
+const sidebarFixedWidthInDrawerMode = 320;
+
 
 const GlobalNavigation = () => {
+  const { data: isDrawerMode } = useDrawerMode();
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
 
   const itemSelectedHandler = useCallback((selectedContents) => {
+    if (isDrawerMode) {
+      return;
+    }
 
     let newValue = false;
 
@@ -38,7 +44,7 @@ const GlobalNavigation = () => {
     mutateSidebarCollapsed(newValue, false);
     scheduleToPutUserUISettings({ isSidebarCollapsed: newValue });
 
-  }, [currentContents, isCollapsed, mutateSidebarCollapsed]);
+  }, [currentContents, isCollapsed, isDrawerMode, mutateSidebarCollapsed]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
@@ -244,6 +250,10 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   // open/close resizable container
   useEffect(() => {
+    if (!isCollapsed) {
+      return;
+    }
+
     if (isHoverOnResizableContainer) {
       // schedule to open
       timeoutIdRef.current = setTimeout(() => {
@@ -262,7 +272,24 @@ const Sidebar: FC<Props> = (props: Props) => {
       setContentWidth(sidebarMinimizeWidth);
       timeoutIdRef.current = undefined;
     }
-  }, [isHover, isHoverOnResizableContainer, currentProductNavWidth, setContentWidth]);
+  }, [isCollapsed, isHover, isHoverOnResizableContainer, currentProductNavWidth, setContentWidth]);
+
+  // open/close resizable container when drawer mode
+  useEffect(() => {
+    if (isDrawerMode) {
+      setContentWidth(sidebarFixedWidthInDrawerMode);
+    }
+    else if (isCollapsed) {
+      setContentWidth(sidebarMinimizeWidth);
+    }
+    else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      setContentWidth(currentProductNavWidth!);
+    }
+  }, [currentProductNavWidth, isCollapsed, isDrawerMode, setContentWidth]);
+
+
+  const showContents = isDrawerMode || isHover || !isCollapsed;
 
   return (
     <>
@@ -285,7 +312,7 @@ const Sidebar: FC<Props> = (props: Props) => {
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
                 <div className="grw-contextual-navigation-child">
-                  <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
+                  <div role="group" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
                     <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>

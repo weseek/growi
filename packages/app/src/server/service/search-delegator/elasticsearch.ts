@@ -9,11 +9,12 @@ import streamToPromise from 'stream-to-promise';
 
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
-import { SearchDelegatorName } from '~/interfaces/named-query';
+import { PageDocument, PageModel } from '../../models/page';
 import {
   MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
 } from '../../interfaces/search';
+import { SearchDelegatorName } from '~/interfaces/named-query';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -39,7 +40,7 @@ type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data> {
 
-  name!: SearchDelegatorName
+  name!: SearchDelegatorName.DEFAULT
 
   configManager!: any
 
@@ -98,7 +99,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   shouldIndexed(page) {
-    return page.revision != null && page.redirectTo == null;
+    return page.revision != null;
   }
 
   initClient() {
@@ -414,7 +415,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   updateOrInsertDescendantsPagesById(page, user) {
-    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.find());
     builder.addConditionToListWithDescendants(page.path);
@@ -427,7 +428,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   async updateOrInsertPages(queryFactory, option: any = {}) {
     const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
 
-    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
     const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
@@ -440,8 +441,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     const shouldIndexed = this.shouldIndexed.bind(this);
     const bulkWrite = this.client.bulk.bind(this.client);
 
-    const findQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
-    const countQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+    const findQuery = new PageQueryBuilder(queryFactory()).query;
+    const countQuery = new PageQueryBuilder(queryFactory()).query;
 
     const totalCount = await countQuery.count();
 
@@ -830,7 +831,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
-    const Page = mongoose.model('Page') as any; // TODO: typescriptize model
+    const Page = mongoose.model('Page') as unknown as PageModel;
     const {
       GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
     } = Page;
