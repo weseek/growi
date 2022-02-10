@@ -40,6 +40,10 @@ describe('PageService page operations with only public pages', () => {
   let childForRename6;
   let childForRename7;
 
+  // rename
+  // parents
+  let parentForDuplicate1;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -182,7 +186,15 @@ describe('PageService page operations with only public pages', () => {
         isEmpty: true,
       },
     ]);
-
+    await Page.insertMany([
+      {
+        path: '/v5_ParentForDuplicate1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+    ]);
     // Find pages as Parent
     parentForRename1 = await Page.findOne({ path: '/v5_ParentForRename1' });
     parentForRename2 = await Page.findOne({ path: '/v5_ParentForRename2' });
@@ -223,6 +235,7 @@ describe('PageService page operations with only public pages', () => {
     /*
      * Duplicate
      */
+    parentForDuplicate1 = await Page.findOne({ path: '/v5_ParentForDuplicate1' });
 
   });
 
@@ -351,7 +364,7 @@ describe('PageService page operations with only public pages', () => {
 
   describe('Duplicate', () => {
     test('Should duplicate single page', async() => {
-      // a
+      crowi.pageService.duplicate(/* page, newPagePath, user, isRecursively */);
     });
     test('Should duplicate multiple pages', async() => {
       // a
