@@ -62,9 +62,10 @@ const scrollTo = (scrollElement:HTMLElement) => {
 };
 
 const MutationObserverWrapper = (scrollElement:HTMLElement) => {
-  const observerCallback = (mutationRecords) => {
-    mutationRecords.forEach((record) => {
-      const targetId = record.target.id;
+  const observerCallback = (mutationRecords:MutationRecord[]) => {
+    mutationRecords.forEach((record:MutationRecord) => {
+      const target = record.target as HTMLElement;
+      const targetId = target.id as string;
       if (targetId !== 'wiki') return;
       scrollTo(scrollElement);
     });
