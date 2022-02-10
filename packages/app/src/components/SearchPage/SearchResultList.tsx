@@ -12,6 +12,7 @@ type Props = {
   pages: IPageWithMeta<IPageSearchMeta>[],
   isCheckedAllItems?: boolean,
   searchResultCount?: number,
+  selectedPageId?: string,
   activePage?: number,
   pagingLimit?: number,
   onPagingNumberChanged?: (activePage: number) => void,
@@ -21,11 +22,9 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    pages, isCheckedAllItems,
+    pages, isCheckedAllItems, selectedPageId,
     onPageSelected,
   } = props;
-
-  const [selectedPageId, setSelectedPageId] = useState<string>();
 
   const pageIdsWithNoSnippet = pages
     .filter(page => (page.pageMeta?.elasticSearchResult?.snippet.length ?? 0) === 0)
@@ -35,8 +34,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
 
   const clickItemHandler = useCallback((pageId: string) => {
-    setSelectedPageId(pageId);
-
     if (onPageSelected != null) {
       const selectedPage = pages.find(page => page.pageData._id === pageId);
       onPageSelected(selectedPage);

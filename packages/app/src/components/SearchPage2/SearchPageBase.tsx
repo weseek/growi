@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
@@ -33,6 +33,13 @@ const SearchPageBase: FC<Props> = (props: Props) => {
 
   const isLoading = pages == null;
 
+  // select first item on load
+  useEffect(() => {
+    if (selectedPageWithMeta == null && pages != null && pages.length > 0) {
+      setSelectedPageWithMeta(pages[0]);
+    }
+  }, [pages, selectedPageWithMeta]);
+
   return (
     <div className="content-main">
       <div className="search-result d-flex" id="search-result">
@@ -56,6 +63,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                 <div className="page-list px-md-4">
                   <SearchResultList
                     pages={pages}
+                    selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
                   />
                 </div>
