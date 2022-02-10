@@ -177,7 +177,7 @@ describe('PageService page operations with only public pages', () => {
       },
       {
         path: '/v5_ChildForRename7',
-        grant: Page.GRANT_RESTRICTED,
+        grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
         isEmpty: true,
       },
