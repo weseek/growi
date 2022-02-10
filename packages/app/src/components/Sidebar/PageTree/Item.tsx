@@ -14,7 +14,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { IPageForPageDeleteModal } from '~/stores/ui';
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -257,12 +257,23 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteMenuItem(pageToDelete);
   }, [page, onClickDeleteMenuItem]);
 
-  const onPressEnterForCreateHandler = (inputText: string) => {
+  const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
-    console.log(newPagePath);
-    // TODO: https://redmine.weseek.co.jp/issues/87943
+    const initialBody = `# ${newPagePath}`;
+
+    const body = {
+      path: newPagePath,
+      body: initialBody,
+    };
+
+    try {
+      await apiv3Post('/pages/', body);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
