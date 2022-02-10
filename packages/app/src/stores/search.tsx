@@ -15,12 +15,23 @@ export type ISearchConfigurations = {
   includeUserPages?: boolean,
 }
 
-export type ISearchConditions = {
-  q: string,
-  configurations: ISearchConfigurations,
+type ISearchConfigurationsFixed = {
+  limit: number,
+  offset: number,
+  sort: SORT_AXIS,
+  order: SORT_ORDER,
+  includeTrashPages: boolean,
+  includeUserPages: boolean,
 }
 
-const createSearchQuery = (keyword: string, includeTrashPages = false, includeUserPages = false): string => {
+export type ISearchConditions = {
+  conditions: ISearchConfigurationsFixed & {
+    keyword: string,
+    rawQuery: string,
+  }
+}
+
+const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeUserPages: boolean): string => {
   let query = keyword;
 
   // pages included in specific path are not retrived when prefix is added
@@ -39,25 +50,33 @@ export const useSWRxFullTextSearch = (
 ): SWRResponse<IFormattedSearchResult, Error> & ISearchConditions => {
 
   const {
-    includeTrashPages, includeUserPages,
+    limit, offset, sort, order, includeTrashPages, includeUserPages,
   } = configurations;
 
-  const rawQuery = createSearchQuery(keyword, includeTrashPages, includeUserPages);
+  const fixedConfigurations: ISearchConfigurationsFixed = {
+    limit,
+    offset: offset ?? 0,
+    sort: sort ?? SORT_AXIS.RELATION_SCORE,
+    order: order ?? SORT_ORDER.DESC,
+    includeTrashPages: includeTrashPages ?? false,
+    includeUserPages: includeUserPages ?? false,
+  };
+  const rawQuery = createSearchQuery(keyword, fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
 
   const swrResult = useSWRImmutable(
-    ['/search', keyword, configurations],
-    (endpoint, keyword, configurations) => {
+    ['/search', keyword, fixedConfigurations],
+    (endpoint, keyword, fixedConfigurations) => {
       const {
         limit, offset, sort, order,
-      } = configurations;
+      } = fixedConfigurations;
 
       return apiGet(
         endpoint, {
           q: encodeURIComponent(rawQuery),
           limit,
-          offset: offset ?? 0,
-          sort: sort ?? SORT_AXIS.RELATION_SCORE,
-          order: order ?? SORT_ORDER.DESC,
+          offset,
+          sort,
+          order,
         },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ).then(result => result as IFormattedSearchResult);
@@ -66,7 +85,10 @@ export const useSWRxFullTextSearch = (
 
   return {
     ...swrResult,
-    q: rawQuery,
-    configurations,
+    conditions: {
+      keyword,
+      rawQuery,
+      ...fixedConfigurations,
+    },
   };
 };
