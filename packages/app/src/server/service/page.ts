@@ -26,10 +26,11 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -206,6 +207,10 @@ class PageService {
     }
 
     return false;
+  }
+
+  filterPagesByCanDeleteCompletely(pages, user) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
   }
 
   async findPageAndMetaDataByViewer({ pageId, path, user }) {
@@ -1430,6 +1435,28 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
+  async deleteMultiplePages(pagesToDelete, user, isCompletely: boolean, isRecursively: boolean): Promise<void> {
+    if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
+    // omit duplicate paths if isRecursively true, omit empty pages if isRecursively false
+    const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete.filter(p => !p.isEmpty);
+
+    // TODO: insertMany PageOperationBlock if isRecursively true
+
+    if (isCompletely) {
+      for await (const page of pages) {
+        await this.deleteCompletely(page, user, {}, isRecursively);
+      }
+    }
+    else {
+      for await (const page of pages) {
+        await this.deletePage(page, user, {}, isRecursively);
+      }
+    }
+  }
+
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
@@ -1831,7 +1858,7 @@ class PageService {
     return Page.updateOne({ _id: pageId }, { parent: parent._id });
   }
 
-  async normalizeParentRecursivelyByPageIds(pageIds) {
+  async normalizeParentRecursivelyByPageIds(pageIds, user) {
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
@@ -1854,15 +1881,14 @@ class PageService {
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    let result;
+    let pages;
     try {
-      result = await Page.findListByPageIds(pageIds, null, false);
+      pages = await Page.findByPageIdsToEdit(pageIds, user, false);
     }
     catch (err) {
       logger.error('Failed to find pages by ids', err);
       throw err;
     }
-    const { pages } = result;
 
     // prepare no duplicated area paths
     let paths = pages.map(p => p.path);
