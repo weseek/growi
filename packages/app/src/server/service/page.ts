@@ -1889,10 +1889,10 @@ class PageService {
       return;
     }
 
-    let normalizedIds;
-    let notNormalizedPaths;
+    let normalizedPages;
+    let nonNormalizedPages;
     try {
-      [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+      [normalizedPages, nonNormalizedPages] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
     }
     catch (err) {
       throw err;
@@ -1904,7 +1904,7 @@ class PageService {
     }
 
     if (nonNormalizedPages.length !== 0) {
-      // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
+      // TODO: iterate nonNormalizedPages and send socket error to client so that the user can know which path failed to migrate
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
