@@ -104,10 +104,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     }
   }, [mutateUserGroups, mutateUserGroupRelations]);
 
-  if (userGroups == null || userGroupRelations == null || childUserGroups == null) {
-    return <></>;
-  }
-
   return (
     <Fragment>
       {
@@ -129,23 +125,30 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-      <UserGroupTable
-        appContainer={props.appContainer}
-        userGroups={userGroups}
-        childUserGroups={childUserGroups}
-        isAclEnabled={isAclEnabled}
-        onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelations}
-      />
-      <UserGroupDeleteModal
-        appContainer={props.appContainer}
-        userGroups={userGroups}
-        deleteUserGroup={selectedUserGroup}
-        onDelete={deleteUserGroupById}
-        isShow={isDeleteModalShown}
-        onShow={showDeleteModal}
-        onHide={hideDeleteModal}
-      />
+
+      {
+        (userGroups != null && userGroupRelations != null && childUserGroups != null) && (
+          <>
+            <UserGroupTable
+              appContainer={props.appContainer}
+              userGroups={userGroups}
+              childUserGroups={childUserGroups}
+              isAclEnabled={isAclEnabled}
+              onDelete={showDeleteModal}
+              userGroupRelations={userGroupRelations}
+            />
+            <UserGroupDeleteModal
+              appContainer={props.appContainer}
+              userGroups={userGroups}
+              deleteUserGroup={selectedUserGroup}
+              onDelete={deleteUserGroupById}
+              isShow={isDeleteModalShown}
+              onShow={showDeleteModal}
+              onHide={hideDeleteModal}
+            />
+          </>
+        )
+      }
     </Fragment>
   );
 };
