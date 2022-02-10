@@ -436,7 +436,7 @@ type PresentationModalStatusUtils = {
   close(): Promise<PresentationModalStatus | undefined>
 }
 
-export const usePagePresentationModalStatus = (
+export const usePagePresentationModal = (
     status?: PresentationModalStatus,
 ): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
   const initialData: PresentationModalStatus = {
@@ -449,16 +449,6 @@ export const usePagePresentationModalStatus = (
     open: (href: string) => swrResponse.mutate({ isOpened: true, href }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
-};
-
-export const usePagePresentationModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = usePagePresentationModalStatus();
-  return useSWRImmutable(
-    data != null ? ['isPresentationModalOpened', data] : null,
-    () => {
-      return data != null ? data.isOpened : false;
-    },
-  );
 };
 
 

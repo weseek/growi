@@ -3,15 +3,14 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
-import { usePagePresentationModalStatus, usePagePresentationModalOpened } from '~/stores/ui';
+import { usePagePresentationModal } from '~/stores/ui';
 
 const PagePresentationModal = () => {
 
-  const { data: presentationData, close: closePresentationModal } = usePagePresentationModalStatus();
-  const { data: isOpened } = usePagePresentationModalOpened();
+  const { data: presentationData, close: closePresentationModal } = usePagePresentationModal();
 
   return (
-    <Modal isOpen={isOpened} toggle={closePresentationModal} className="grw-presentation-modal" unmountOnClose={false}>
+    <Modal isOpen={presentationData.isOpened} toggle={closePresentationModal} className="grw-presentation-modal" unmountOnClose={false}>
       <ModalBody className="modal-body">
         <iframe src={presentationData.href} />
       </ModalBody>

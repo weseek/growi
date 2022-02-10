@@ -10,7 +10,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal, usePagePresentationModalStatus,
+  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -57,7 +57,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { open: openPresentationModal } = usePagePresentationModalStatus();
+  const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
   const hrefForPresentationModal = '?presentation=1';
