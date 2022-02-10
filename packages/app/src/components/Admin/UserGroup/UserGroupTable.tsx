@@ -5,10 +5,14 @@ import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import Xss from '~/services/xss';
+import AppContainer from '~/client/services/AppContainer';
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 
+
 type Props = {
+  appContainer: AppContainer,
+
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
   childUserGroups: IUserGroupHasId[],
