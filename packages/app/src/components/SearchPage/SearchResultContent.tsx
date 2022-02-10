@@ -55,7 +55,7 @@ type Props ={
 
 const scrollTo = (scrollElement:HTMLElement) => {
   // use querySelector to intentionally get the first element found
-  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement;
+  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
   if (highlightedKeyword != null) {
     smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
   }
@@ -66,12 +66,12 @@ const SearchResultContent: FC<Props> = (props: Props) => {
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
-    if (scrollElementRef.current == null) return;
-    const scrollElement = scrollElementRef.current as HTMLElement;
+    const scrollElement = scrollElementRef.current as HTMLElement | null;
+    if (scrollElement == null) return;
     const observerCallback = (mutationRecords) => {
       mutationRecords.forEach((record) => {
         const targetId = record.target.id;
-        if (targetId !== 'wiki') return;
+        if (targetId === 'wiki') return;
         scrollTo(scrollElement);
       });
     };
@@ -81,7 +81,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
       observer.disconnect();
     };
   });
-  // ***************************  end  ***************************
+  // *******************************  end  *******************************
 
   const {
     appContainer,
