@@ -130,7 +130,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         (userGroups != null && userGroupRelations != null && childUserGroups != null) && (
           <>
             <UserGroupTable
-              appContainer={props.appContainer}
               userGroups={userGroups}
               childUserGroups={childUserGroups}
               isAclEnabled={isAclEnabled}
@@ -138,7 +137,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
               userGroupRelations={userGroupRelations}
             />
             <UserGroupDeleteModal
-              appContainer={props.appContainer}
               userGroups={userGroups}
               deleteUserGroup={selectedUserGroup}
               onDelete={deleteUserGroupById}

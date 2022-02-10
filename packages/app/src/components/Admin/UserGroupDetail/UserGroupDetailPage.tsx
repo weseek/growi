@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
 import UserGroupTable from '../UserGroup/UserGroupTable';
+import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
@@ -25,8 +25,8 @@ import {
 } from '~/stores/user-group';
 
 type Props = {
-  appContainer: AppContainer,
-};
+  isAclEnabled: boolean,
+}
 
 const UserGroupDetailPage: FC<Props> = (props: Props) => {
   const rootElem = document.getElementById('admin-user-group-detail');
@@ -132,6 +132,10 @@ const UserGroupDetailPage: FC<Props> = (props: Props) => {
     console.log('button clicked!');
   };
 
+  const showDeleteModal = () => {
+    console.log('showDeleteModal');
+  };
+
   /*
    * Dependencies
    */
@@ -166,14 +170,26 @@ const UserGroupDetailPage: FC<Props> = (props: Props) => {
         onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
       />
 
-      {/* <UserGroupTable
-        appContainer={props.appContainer}
-        userGroups={userGroups}
-        childUserGroups={childUserGroups}
-        isAclEnabled={isAclEnabled}
-        onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelations}
-      /> */}
+      { (childUserGroups != null && userGroupRelations != null) && (
+        <>
+          <UserGroupTable
+            userGroups={[userGroup]}
+            childUserGroups={childUserGroups}
+            isAclEnabled={props.isAclEnabled}
+            onDelete={showDeleteModal}
+            userGroupRelations={userGroupRelations}
+          />
+          {/* <UserGroupDeleteModal
+            userGroups={childUserGroups}
+            deleteUserGroup={selectedUserGroup}
+            onDelete={deleteUserGroupById}
+            isShow={isDeleteModalShown}
+            onShow={showDeleteModal}
+            onHide={hideDeleteModal}
+          /> */}
+        </>
+      )}
+
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
@@ -184,10 +200,4 @@ const UserGroupDetailPage: FC<Props> = (props: Props) => {
 
 };
 
-
-/**
- * Wrapper component for using unstated
- */
-const UserGroupDetailPageWrapper = withUnstatedContainers(UserGroupDetailPage, [AppContainer]);
-
-export default UserGroupDetailPageWrapper;
+export default UserGroupDetailPage;
