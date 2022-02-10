@@ -36,9 +36,7 @@ describe('PageService page operations with only public pages', () => {
   let childForRename3;
   let childForRename4;
   let childForRename5;
-  let childForRename6GrantRestricted;
-  // Grandchild
-  let grandchildForRename5;
+  let childForRename6;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -162,7 +160,7 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
-        path: '/v5_childForRename6GrantRestricted',
+        path: '/v5_childForRename6',
         grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -183,7 +181,7 @@ describe('PageService page operations with only public pages', () => {
     childForRename3 = await Page.findOne({ path: '/v5_childForRename3' });
     childForRename4 = await Page.findOne({ path: '/v5_childForRename4' });
     childForRename5 = await Page.findOne({ path: '/v5_childForRename5' });
-    childForRename6GrantRestricted = await Page.findOne({ path: '/v5_childForRename6GrantRestricted' });
+    childForRename6 = await Page.findOne({ path: '/v5_childForRename6' });
 
     // create grandchild
     await Page.insertMany([
@@ -301,12 +299,12 @@ describe('PageService page operations with only public pages', () => {
     test('Should move with same grant', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename6/renamedChildForRename6';
-      expect(childForRename6GrantRestricted.grant).toBe(2);
-      const renamedPage = await renamePage(childForRename6GrantRestricted, newPath, dummyUser1, {});
+      expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
+      const renamedPage = await renamePage(childForRename6, newPath, dummyUser1, {});
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename6._id);
-      expect(renamedPage.grant).toBe(2);
+      expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
     });
   });
 
