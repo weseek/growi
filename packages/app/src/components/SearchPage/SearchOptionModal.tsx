@@ -8,12 +8,12 @@ import {
 
 type Props = {
   isOpen: boolean,
-  excludeUserPages: boolean,
-  excludeTrashPages: boolean,
+  includeUserPages: boolean,
+  includeTrashPages: boolean,
   onClose?: () => void,
-  onExcludeUserPagesSwitched?: () => void,
-  onExcludeTrashPagesSwitched?: () => void,
-  onClickFilteringSearchResult?: () => void,
+  onIncludeUserPagesSwitched?: (isChecked: boolean) => void,
+  onIncludeTrashPagesSwitched?: (isChecked: boolean) => void,
+  onClickSearch?: () => void,
 }
 
 const SearchOptionModal: FC<Props> = (props: Props) => {
@@ -21,7 +21,11 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const {
-    isOpen, onClose, excludeUserPages, excludeTrashPages,
+    isOpen, includeUserPages, includeTrashPages,
+    onClose,
+    onIncludeUserPagesSwitched,
+    onIncludeTrashPagesSwitched,
+    onClickSearch,
   } = props;
 
   const onCloseModal = () => {
@@ -30,11 +34,23 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
     }
   };
 
-  const onClickFilteringSearchResult = () => {
-    if (props.onClickFilteringSearchResult != null) {
-      props.onClickFilteringSearchResult();
-      onCloseModal();
+  const includeUserPagesChangeHandler = (isChecked: boolean) => {
+    if (onIncludeUserPagesSwitched != null) {
+      onIncludeUserPagesSwitched(isChecked);
     }
+  };
+
+  const includeTrashPagesChangeHandler = (isChecked: boolean) => {
+    if (onIncludeTrashPagesSwitched != null) {
+      onIncludeTrashPagesSwitched(isChecked);
+    }
+  };
+
+  const clickSearchAgainHandler = () => {
+    if (onClickSearch != null) {
+      onClickSearch();
+    }
+    onCloseModal();
   };
 
   return (
@@ -49,8 +65,8 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onChange={props.onExcludeUserPagesSwitched}
-                checked={!excludeUserPages}
+                onChange={e => includeUserPagesChangeHandler(e.target.checked)}
+                checked={includeUserPages}
               />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
@@ -60,8 +76,8 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               <input
                 className="mr-2"
                 type="checkbox"
-                onChange={props.onExcludeTrashPagesSwitched}
-                checked={!excludeTrashPages}
+                onChange={e => includeTrashPagesChangeHandler(e.target.checked)}
+                checked={includeTrashPages}
               />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
@@ -72,7 +88,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={onClickFilteringSearchResult}
+          onClick={clickSearchAgainHandler}
         >{t('search_result.search_again')}
         </button>
       </ModalFooter>

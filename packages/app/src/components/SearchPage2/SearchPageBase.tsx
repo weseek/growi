@@ -12,16 +12,18 @@ type Props = {
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
 
+  onSelectedPagesByCheckboxesChanged?: (selectedCount: number) => void,
+
   SearchControl: React.FunctionComponent,
   SearchResultListHead: React.FunctionComponent,
   SearchPager: React.FunctionComponent,
-
 }
 
 const SearchPageBase: FC<Props> = (props: Props) => {
   const {
     appContainer,
     pages,
+    onSelectedPagesByCheckboxesChanged,
     SearchControl, SearchResultListHead, SearchPager,
   } = props;
 
@@ -31,7 +33,21 @@ const SearchPageBase: FC<Props> = (props: Props) => {
   // ref: RevisionRenderer
   //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
   const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
+  const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
+
+  const checkboxClickedHandler = (pageId: string) => {
+    if (selectedPageIdsByCheckboxes.has(pageId)) {
+      selectedPageIdsByCheckboxes.delete(pageId);
+    }
+    else {
+      selectedPageIdsByCheckboxes.add(pageId);
+    }
+
+    if (onSelectedPagesByCheckboxesChanged != null) {
+      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size);
+    }
+  };
 
   // select first item on load
   useEffect(() => {
@@ -68,6 +84,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                     pages={pages}
                     selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
+                    onClickCheckbox={checkboxClickedHandler}
                   />
                 </div>
                 <div className="my-4 d-flex justify-content-center">

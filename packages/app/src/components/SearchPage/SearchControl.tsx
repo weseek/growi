@@ -1,108 +1,87 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
+
 import SearchPageForm from './SearchPageForm';
-import AppContainer from '../../client/services/AppContainer';
 import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
-import { CheckboxType, SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 type Props = {
-  searchingKeyword: string,
-  sort: SORT_AXIS,
-  order: SORT_ORDER,
-  appContainer: AppContainer,
-  searchResultCount: number,
   selectAllCheckboxType: CheckboxType,
+  disableSelectAllbutton?: boolean,
+  initialSearchConditions?: Partial<ISearchConditions>,
   onClickDeleteAllButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
-  excludeUserPages: boolean,
-  excludeTrashPages: boolean,
-  onSearchInvoked: (data: {keyword: string}) => boolean,
-  onExcludeUserPagesSwitched?: () => void,
-  onExcludeTrashPagesSwitched?: () => void,
-  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
+  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 }
 
 const SearchControl: FC <Props> = (props: Props) => {
 
+  const {
+    disableSelectAllbutton,
+    initialSearchConditions,
+    onSearchInvoked,
+  } = props;
+
+  const [keyword, setKeyword] = useState(initialSearchConditions?.keyword ?? '');
+  const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions?.sort ?? SORT_AXIS.RELATION_SCORE);
+  const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions?.order ?? SORT_ORDER.DESC);
+  const [includeUserPages, setIncludeUserPages] = useState(true);
+  const [includeTrashPages, setIncludeTrashPages] = useState(true);
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
-  // Temporaly workaround for lint error
-  // later needs to be fixed: SearchControl to typescript componet
-  const SearchPageFormTypeAny : any = SearchPageForm;
+
   const { t } = useTranslation('');
-  const { searchResultCount } = props;
 
-  const switchExcludeUserPagesHandler = () => {
-    if (props.onExcludeUserPagesSwitched != null) {
-      props.onExcludeUserPagesSwitched();
+  const invokeSearch = useCallback(() => {
+    if (onSearchInvoked == null) {
+      return;
     }
-  };
 
-  const switchExcludeTrashPagesHandler = () => {
-    if (props.onExcludeTrashPagesSwitched != null) {
-      props.onExcludeTrashPagesSwitched();
-    }
-  };
+    onSearchInvoked(keyword, {
+      sort, order, includeUserPages, includeTrashPages,
+    });
+  }, [includeTrashPages, includeUserPages, keyword, onSearchInvoked, order, sort]);
 
-  const onChangeSortInvoked = (nextSort: SORT_AXIS, nextOrder:SORT_ORDER) => {
-    if (props.onChangeSortInvoked != null) {
-      props.onChangeSortInvoked(nextSort, nextOrder);
-    }
-  };
+  const searchFormChangedHandler = useCallback((keyword: string) => {
+    setKeyword(keyword);
 
-  const openSearchOptionModalHandler = () => {
-    setIsFileterOptionModalShown(true);
-  };
+    // invoke search
+    invokeSearch();
+  }, [invokeSearch]);
 
-  const closeSearchOptionModalHandler = () => {
-    setIsFileterOptionModalShown(false);
-  };
+  const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
+    setSort(nextSort);
+    setOrder(nextOrder);
 
-  const onRetrySearchInvoked = () => {
-    if (props.onSearchInvoked != null) {
-      props.onSearchInvoked({ keyword: props.searchingKeyword });
-    }
-  };
+    // invoke search
+    invokeSearch();
+  }, [invokeSearch]);
 
-  const rednerSearchOptionModal = () => {
-    return (
-      <SearchOptionModal
-        isOpen={isFileterOptionModalShown || false}
-        onClickFilteringSearchResult={onRetrySearchInvoked}
-        onClose={closeSearchOptionModalHandler}
-        onExcludeUserPagesSwitched={switchExcludeUserPagesHandler}
-        onExcludeTrashPagesSwitched={switchExcludeTrashPagesHandler}
-        excludeUserPages={props.excludeUserPages}
-        excludeTrashPages={props.excludeTrashPages}
-      />
-    );
-  };
-
-  const renderSortControl = () => {
-    return (
-      <SortControl
-        sort={props.sort}
-        order={props.order}
-        onChangeSortInvoked={onChangeSortInvoked}
-      />
-    );
-  };
+  const clickSearchBySearchOptionModalHandler = useCallback(() => {
+    // invoke search
+    invokeSearch();
+  }, [invokeSearch]);
 
   return (
     <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchPageFormTypeAny
-            keyword={props.searchingKeyword}
-            appContainer={props.appContainer}
-            onSearchFormChanged={props.onSearchInvoked}
+          <SearchPageForm
+            keyword={keyword}
+            onSearchFormChanged={searchFormChangedHandler}
           />
         </div>
 
         {/* sort option: show when screen is larger than lg */}
         <div className="mr-4 d-lg-flex d-none">
-          {renderSortControl()}
+          <SortControl
+            sort={sort}
+            order={order}
+            onChange={changeSortHandler}
+          />
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
@@ -110,7 +89,7 @@ const SearchControl: FC <Props> = (props: Props) => {
         <div className="d-flex pl-md-2">
           {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
           <DeleteSelectedPageGroup
-            isSelectAllCheckboxDisabled={searchResultCount === 0}
+            isSelectAllCheckboxDisabled={disableSelectAllbutton}
             selectAllCheckboxType={props.selectAllCheckboxType}
             onClickDeleteAllButton={props.onClickDeleteAllButton}
             onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
@@ -118,14 +97,18 @@ const SearchControl: FC <Props> = (props: Props) => {
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
-          {renderSortControl()}
+          <SortControl
+            sort={sort}
+            order={order}
+            onChange={changeSortHandler}
+          />
         </div>
         {/* filter option */}
         <div className="d-lg-none">
           <button
             type="button"
             className="btn"
-            onClick={openSearchOptionModalHandler}
+            onClick={() => setIsFileterOptionModalShown(true)}
           >
             <i className="icon-equalizer"></i>
           </button>
@@ -138,7 +121,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckDefault"
-                  onClick={switchExcludeUserPagesHandler}
+                  onChange={e => setIncludeUserPages(e.target.checked)}
                 />
                 {t('Include Subordinated Target Page', { target: '/user' })}
               </label>
@@ -151,7 +134,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckChecked"
-                  onClick={switchExcludeTrashPagesHandler}
+                  onChange={e => setIncludeTrashPages(e.target.checked)}
                 />
                 {t('Include Subordinated Target Page', { target: '/trash' })}
               </label>
@@ -159,7 +142,17 @@ const SearchControl: FC <Props> = (props: Props) => {
           </div>
         </div>
       </div>
-      {rednerSearchOptionModal()}
+
+      <SearchOptionModal
+        isOpen={isFileterOptionModalShown || false}
+        onClose={() => setIsFileterOptionModalShown(false)}
+        includeUserPages={includeUserPages}
+        includeTrashPages={includeTrashPages}
+        onClickSearch={clickSearchBySearchOptionModalHandler}
+        onIncludeUserPagesSwitched={setIncludeUserPages}
+        onIncludeTrashPagesSwitched={setIncludeTrashPages}
+      />
+
     </div>
   );
 };

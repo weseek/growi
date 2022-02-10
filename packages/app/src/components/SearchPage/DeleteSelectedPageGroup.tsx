@@ -1,11 +1,13 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, {
+  ChangeEvent, FC, useEffect, useRef,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 import { CheckboxType } from '../../interfaces/search';
 
 type Props = {
-  isSelectAllCheckboxDisabled: boolean,
   selectAllCheckboxType: CheckboxType,
+  isSelectAllCheckboxDisabled?: boolean,
   onClickDeleteAllButton?: () => void,
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
 }
@@ -16,7 +18,9 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
     onClickDeleteAllButton, onClickSelectAllCheckbox, selectAllCheckboxType,
   } = props;
 
-  const onClickCheckbox = () => {
+  const checkboxChangedHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
     if (onClickSelectAllCheckbox != null) {
       const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
       onClickSelectAllCheckbox(next);
@@ -44,7 +48,7 @@ const DeleteSelectedPageGroup:FC<Props> = (props:Props) => {
         className="grw-indeterminate-checkbox"
         ref={selectAllCheckboxElm}
         disabled={props.isSelectAllCheckboxDisabled}
-        onClick={onClickCheckbox}
+        onChange={checkboxChangedHandler}
         checked={selectAllCheckboxType === CheckboxType.ALL_CHECKED}
       />
       <button
