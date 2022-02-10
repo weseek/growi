@@ -19,19 +19,24 @@ describe('PageService page operations with only public pages', () => {
   let Bookmark;
   let Comment;
   let ShareLink;
+  let PageRedirect;
   let xssSpy;
 
   let rootPage;
   // parents
   let parentForRename1;
+  let parentForRename2;
+  let parentForRename3;
+  let parentForRename4;
+  let parentForRename5;
   // children
   let childForRename1;
-  // revisions ids
-  let revisionIdOfParentForRename1;
-  let revisionIdOfChildForRename1;
-  // revisions
-  let revisionOfParentForRename1;
-  let revisionOfChildForRename1;
+  let childForRename2;
+  let childForRename3;
+  let childForRename4;
+  let childForRename5;
+  // Grandchild
+  let grandchildForRename5;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -45,6 +50,7 @@ describe('PageService page operations with only public pages', () => {
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
+    PageRedirect = mongoose.model('PageRedirect');
 
     /*
      * Common
@@ -64,10 +70,6 @@ describe('PageService page operations with only public pages', () => {
      */
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
-    // RevisionIds
-    revisionIdOfParentForRename1 = new mongoose.Types.ObjectId();
-    revisionIdOfChildForRename1 = new mongoose.Types.ObjectId();
-
     // Create Pages
     await Page.insertMany([
       // parents
@@ -75,47 +77,104 @@ describe('PageService page operations with only public pages', () => {
         path: '/parentForRename1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
-        lastUpdateUser: dummyUser1,
-        revision: revisionIdOfParentForRename1,
+        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        updatedAt: new Date(),
+      },
+      {
+        path: '/parentForRename2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/parentForRename3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        path: '/parentForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        path: '/parentForRename5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
       },
       // children
       {
         path: '/childForRename1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
-        lastUpdateUser: dummyUser1,
-        revision: revisionIdOfChildForRename1,
+        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
+      {
+        path: '/childForRename2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        path: '/childForRename3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        updatedAt: new Date('2021'),
+      },
+      {
+        path: '/childForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        updatedAt: new Date('2021'),
+      },
+      {
+        path: '/childForRename5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        updatedAt: new Date('2021'),
+      },
     ]);
 
-    // Find pages
+    // Find pages as Parent
     parentForRename1 = await Page.findOne({ path: '/parentForRename1' });
+    parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
+    parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
+    parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
+    parentForRename5 = await Page.findOne({ path: '/parentForRename5' });
+    // Find pages as Child
     childForRename1 = await Page.findOne({ path: '/childForRename1' });
+    childForRename2 = await Page.findOne({ path: '/childForRename2' });
+    childForRename3 = await Page.findOne({ path: '/childForRename3' });
+    childForRename4 = await Page.findOne({ path: '/childForRename4' });
+    childForRename5 = await Page.findOne({ path: '/childForRename5' });
 
-    // Create Revisions
-    await Revision.insertMany([
-      // parents
+    // create grandchild
+    await Page.insertMany([
+      // Grandchild
       {
-        _id: revisionIdOfParentForRename1,
-        pageId: parentForRename1._id,
-        body: 'body_for_parentForRename1',
-        author: dummyUser1._id,
-      },
-      // children
-      {
-        _id: revisionIdOfChildForRename1,
-        pageId: childForRename1._id,
-        body: 'body_for_parentForRename1',
-        author: dummyUser1._id,
+        path: '/childForRename5/grandchildForRename5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: childForRename5._id,
+        updatedAt: new Date('2021'),
       },
     ]);
-
-    // Find Revisions
-    revisionOfParentForRename1 = await Revision.findOne({ _id: revisionIdOfParentForRename1 });
-    revisionOfChildForRename1 = await Revision.findOne({ _id: revisionIdOfChildForRename1 });
 
   });
 
@@ -123,20 +182,19 @@ describe('PageService page operations with only public pages', () => {
   const safeRename = async(page, newPagePath, user, options) => {
 
     // mock return value
-    const mockedRenameDescendantsWithStream = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream')
+    const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants')
       .mockReturnValue(null);
     jest.spyOn(crowi.pageService, 'createAndSendNotifications')
       .mockReturnValue(null);
-
     const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
-    // retrieve the arguments passed when calling method renameDescendantsWithStream inside renamePage method
-    const argsForCreateAndSendNotifications = mockedRenameDescendantsWithStream.mock.calls[0];
+    // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
+    const argsForCreateAndSendNotifications = mockedResumableRenameDescendants.mock.calls[0];
     // restores the original implementation
-    mockedRenameDescendantsWithStream.mockRestore();
+    mockedResumableRenameDescendants.mockRestore();
 
     // rename descendants
-    await crowi.pageService.renameDescendantsWithStream(...argsForCreateAndSendNotifications);
+    await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
 
     return renamedPage;
   };
@@ -168,15 +226,52 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should move to under empty page', async() => {
-      // a
+      // rename target page
+      const newPath = '/parentForRename2/renamed2';
+      const renamedPage = await safeRename(childForRename2, newPath, dummyUser1, {});
+
+      expect(renamedPage.path).toBe(newPath);
+      expect(parentForRename2.isEmpty).toBe(true);
+      expect(renamedPage.parent).toStrictEqual(parentForRename2._id);
     });
 
     test('Should move with option updateMetadata: true', async() => {
-      // a
+      // rename target page
+      const newPath = '/parentForRename3/renamed3';
+      const oldUdpateAt = childForRename3.updatedAt;
+      const renamedPage = await safeRename(childForRename3, newPath, dummyUser2, { updateMetadata: true });
+
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename3._id);
+      expect(renamedPage.lastUpdateUser).toStrictEqual(dummyUser2._id);
+      expect(renamedPage.updatedAt.getFullYear()).toBeGreaterThan(oldUdpateAt.getFullYear());
     });
 
-    test('Should move with option createRedirectPage: true', async() => {
-      // a
+    // ****************** TODO ******************
+    // uncomment the next test when working on 88097
+    // ******************************************
+    // test('Should move with option createRedirectPage: true', async() => {
+    //   // rename target page
+    //   const newPath = '/parentForRename4/renamed4';
+    //   const renamedPage = await safeRename(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
+    //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
+
+    //   expect(renamedPage.path).toBe(newPath);
+    //   expect(renamedPage.parent).toStrictEqual(parentForRename4._id);
+    //   expect(pageRedirect.length).toBeGreaterThan(0);
+    // });
+
+    test('Should move descendants', async() => {
+      // rename target page
+      const newPath = '/parentForRename5/renamed5';
+      const renamedPage = await safeRename(childForRename5, newPath, dummyUser1, {});
+      const grandchildren = await Page.find({ parent: renamedPage._id });
+      const grandchild = grandchildren[0];
+
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename5._id);
+      expect(grandchild.parent).toStrictEqual(renamedPage._id);
+      expect(grandchild.path).toBe('/parentForRename5/renamed5/grandchildForRename5');
     });
   });
 });
