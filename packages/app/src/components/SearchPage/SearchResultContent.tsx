@@ -71,7 +71,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     const observerCallback = (mutationRecords) => {
       mutationRecords.forEach((record) => {
         const targetId = record.target.id;
-        if (targetId === 'wiki') return;
+        if (targetId !== 'wiki') return;
         scrollTo(scrollElement);
       });
     };
