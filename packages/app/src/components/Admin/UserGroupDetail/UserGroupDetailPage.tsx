@@ -24,11 +24,7 @@ import {
   useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
 } from '~/stores/user-group';
 
-type Props = {
-  isAclEnabled: boolean,
-}
-
-const UserGroupDetailPage: FC<Props> = (props: Props) => {
+const UserGroupDetailPage: FC = () => {
   const rootElem = document.getElementById('admin-user-group-detail');
   const { t } = useTranslation();
 
@@ -43,6 +39,8 @@ const UserGroupDetailPage: FC<Props> = (props: Props) => {
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
    * Fetch
@@ -173,9 +171,9 @@ const UserGroupDetailPage: FC<Props> = (props: Props) => {
       { (childUserGroups != null && userGroupRelations != null) && (
         <>
           <UserGroupTable
-            userGroups={[userGroup]}
-            childUserGroups={childUserGroups}
-            isAclEnabled={props.isAclEnabled}
+            userGroups={childUserGroups}
+            childUserGroups={[]}
+            isAclEnabled
             onDelete={showDeleteModal}
             userGroupRelations={userGroupRelations}
           />
