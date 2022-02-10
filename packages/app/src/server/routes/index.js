@@ -50,7 +50,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
-  const ogp = require('./ogp')(crowi, app);
+  const ogp = require('./ogp')(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -210,7 +210,7 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.renderOgp));
+  app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
   app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
 
   app.get('/*/$'                   , loginRequired , injectUserUISettings, page.redirectorWithEndOfSlash);
