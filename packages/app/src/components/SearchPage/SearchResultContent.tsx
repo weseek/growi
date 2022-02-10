@@ -44,7 +44,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 type Props ={
   appContainer: AppContainer,
   pageWithMeta : IPageWithMeta<IPageSearchMeta>,
-  highlightKeywords?: string,
+  highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
 }
 

@@ -68,7 +68,8 @@ class LegacyRevisionRenderer extends React.PureComponent {
     // Separate keywords
     // - Surrounded by double quotation
     // - Split by both full-width and half-width spaces
-    [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    // [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    keywords.forEach((keyword, i) => {
       if (keyword === '') {
         return;
       }
@@ -138,7 +139,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     await interceptorManager.process('prePostProcess', context);
     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-    if (highlightKeywords != null) {
+    if (highlightKeywords != null || highlightKeywords.length === 0) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
@@ -185,7 +186,7 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
   additionalClassName: PropTypes.string,
 };
 
