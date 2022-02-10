@@ -641,7 +641,8 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    if (page == null) {
+    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
       return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
