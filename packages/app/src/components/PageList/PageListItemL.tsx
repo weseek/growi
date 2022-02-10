@@ -2,10 +2,11 @@ import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
+import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg, usePageRenameModalStatus } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg, usePageRenameModalStatus, usePageDuplicateModalStatus } from '~/stores/ui';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -34,6 +35,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
@@ -56,6 +58,11 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       onClickItem(pageData._id);
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+  const duplicateMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal, pageData]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, revision: revisionId, path } = pageData;
@@ -105,7 +112,10 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
               {/* page title */}
               <Clamp lines={1}>
                 <span className="h5 mb-0">
-                  <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />
+                  {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
+                  <span className="grw-page-path-hierarchical-link text-break">
+                    <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                  </span>
                 </span>
               </Clamp>
 
@@ -124,6 +134,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   onClickDeleteMenuItem={props.onClickDeleteButton}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
+                  onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                 />
               </div>
             </div>
