@@ -186,23 +186,6 @@ const GrowiContextualSubNavigation = (props) => {
     setIsPageTempleteModalShown(true);
   }, []);
 
-  const renderAdditionalModals = useCallback(() => {
-    if (currentUser == null) {
-      return <></>;
-    }
-    return (
-      <>
-        {path
-        && (
-          <CreateTemplateModal
-            path={path}
-            isOpen={isPageTemplateModalShown}
-            onClose={() => setIsPageTempleteModalShown(false)}
-          />
-        )}
-      </>
-    );
-  }, [currentUser, isPageTemplateModalShown, path]);
 
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
@@ -246,15 +229,21 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {renderAdditionalModals()}
+        {currentUser != null && path && (
+          <CreateTemplateModal
+            path={path}
+            isOpen={isPageTemplateModalShown}
+            onClose={() => setIsPageTempleteModalShown(false)}
+          />
+        )}
       </>
     );
   }, [
     pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
-    isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
+    isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, renderAdditionalModals, templateMenuItemClickHandler,
+    path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
 
