@@ -8,7 +8,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils } from '@growi/core';
 
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
@@ -266,6 +266,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const body = {
       path: newPagePath,
       body: initialBody,
+      grant: page.grant,
+      grantUserGroupId: page.grantedGroup,
     };
 
     try {
