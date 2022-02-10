@@ -58,11 +58,10 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
-  const onClickDuplicateMenuItem = () => {
-    if (!pageData.isEmpty) {
-      openDuplicateModal(pageData._id, pageData.path);
-    }
-  };
+  const onClickDuplicateMenuItem = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal, pageData]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, revision: revisionId, path } = pageData;
