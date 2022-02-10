@@ -384,14 +384,14 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method resumableDuplicateDescendants inside duplicate method
-      const argsForCreateAndSendNotifications = mockedResumableDuplicateDescendants.mock.calls[0];
+      const argsForResumableDuplicateDescendants = mockedResumableDuplicateDescendants.mock.calls[0];
 
       // restores the original implementation
       mockedResumableDuplicateDescendants.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
-      await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
+      await crowi.pageService.resumableRenameDescendants(...argsForResumableDuplicateDescendants);
 
       return duplicatedPage;
     };
