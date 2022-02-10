@@ -57,9 +57,10 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
-  const renameHandler = useCallback(() => {
-    openRenameModal(pageData._id, pageData.revision as string, pageData.path);
-  }, [openRenameModal, pageData._id, pageData.path, pageData.revision]);
+  const renameMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, revision: revisionId, path } = pageData;
+    openRenameModal(pageId, revisionId as string, path);
+  }, [openRenameModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -121,7 +122,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   pageId={pageData._id}
                   pageInfo={pageMeta}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
-                  onClickRenameMenuItem={renameHandler}
+                  onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
                 />
               </div>
