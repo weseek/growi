@@ -16,6 +16,7 @@ module.exports = function(crowi) {
     pageId: { type: ObjectId, required: true, index: true },
     body: {
       type: String,
+      require: true,
       get: (data) => {
       // replace CR/CRLF to LF above v3.1.5
       // see https://github.com/weseek/growi/issues/463
