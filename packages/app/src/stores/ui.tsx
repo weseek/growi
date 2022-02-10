@@ -426,11 +426,6 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
 };
 
 // PagePresentationModal
-export type IPageForPagePresentationModal = {
-  // pageId: string,
-  // revisionId: string,
-  // path: string
-}
 
 type PresentationModalStatus = {
   isOpened: boolean,

@@ -175,10 +175,6 @@ const GrowiContextualSubNavigation = (props) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
 
-  // const presentationMenuItemClickHandler = useCallback(() => {
-  //   onClickPresentationMenuItem();
-  // }, []);
-
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
