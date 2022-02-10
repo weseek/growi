@@ -254,25 +254,26 @@ describe('PageService page operations with only public pages', () => {
 
   });
 
-  const renamePage = async(page, newPagePath, user, options) => {
+  describe('Rename', () => {
+
+    const renamePage = async(page, newPagePath, user, options) => {
     // mock return value
-    const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
-    const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
-    const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
-    // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
-    const argsForCreateAndSendNotifications = mockedResumableRenameDescendants.mock.calls[0];
+      // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
+      const argsForCreateAndSendNotifications = mockedResumableRenameDescendants.mock.calls[0];
 
-    // restores the original implementation
-    mockedResumableRenameDescendants.mockRestore();
-    mockedCreateAndSendNotifications.mockRestore();
+      // restores the original implementation
+      mockedResumableRenameDescendants.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
 
-    // rename descendants
-    await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
+      // rename descendants
+      await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
 
-    return renamedPage;
-  };
-
+      return renamedPage;
+    };
 
   // describe('Rename', () => {
   //   test('Should NOT rename top page', async() => {
