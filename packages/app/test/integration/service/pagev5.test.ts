@@ -379,29 +379,36 @@ describe('PageService page operations with only public pages', () => {
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
       const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockRejectedValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method resumableDuplicateDescendants inside duplicate method
       const argsForResumableDuplicateDescendants = mockedResumableDuplicateDescendants.mock.calls[0];
 
       // restores the original implementation
-      mockedResumableDuplicateDescendants.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
+      jest.restoreAllMocks();
 
       // duplicate descendants
-      await crowi.pageService.resumableRenameDescendants(...argsForResumableDuplicateDescendants);
+      if (isRecursively) {
+        await crowi.pageService.resumableDuplicateDescendants(...argsForResumableDuplicateDescendants);
+      }
 
       return duplicatedPage;
     };
 
     test('Should duplicate single page', async() => {
-      const newPagePath = '/duplicatedSinglePage';
+      const newPagePath = '/duplicatedParentForDuplicate1';
       const duplicatedPage = await duplicate(parentForDuplicate1, newPagePath, dummyUser1, false);
-      const basePage = await Page.findOne({ path: '/v5_ParentForDuplicate1' });
+      const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
+      const baseRevision = await Revision.findOne({ pageId: parentForDuplicate1._id });
 
+      // new path
       expect(duplicatedPage.path).toBe(newPagePath);
-      expect(basePage).toBe(parentForDuplicate1);
+      expect(duplicatedPage._id).not.toStrictEqual(parentForDuplicate1._id);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
+      expect(duplicatedRevision.body).toEqual(baseRevision.body);
+
+
     });
     test('Should duplicate multiple pages', async() => {
       // a
@@ -414,6 +421,7 @@ describe('PageService page operations with only public pages', () => {
   afterAll(async() => {
     await Page.remove({});
     await User.remove({});
+    await Revision.remove({});
   });
 });
 
