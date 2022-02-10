@@ -61,20 +61,15 @@ const scrollTo = (scrollElement:HTMLElement) => {
   }
 };
 
-const MutationObserverWrapper = (scrollElement:HTMLElement) => {
-  const observerCallback = (mutationRecords:MutationRecord[]) => {
+const generateObserverCallback = (doScroll: ()=>void) => {
+  return (mutationRecords:MutationRecord[]) => {
     mutationRecords.forEach((record:MutationRecord) => {
       const target = record.target as HTMLElement;
       const targetId = target.id as string;
       if (targetId !== 'wiki') return;
-      scrollTo(scrollElement);
+      doScroll();
     });
   };
-
-  const observer = new MutationObserver(observerCallback);
-  observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-
-  return observer;
 };
 
 const SearchResultContent: FC<Props> = (props: Props) => {
@@ -84,8 +79,12 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
     if (scrollElement == null) return;
-    const observer = MutationObserverWrapper(scrollElement);
 
+    const observerCallback = generateObserverCallback(() => {
+      scrollTo(scrollElement);
+    });
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
     return () => {
       observer.disconnect();
     };
