@@ -275,108 +275,105 @@ describe('PageService page operations with only public pages', () => {
       return renamedPage;
     };
 
-  // describe('Rename', () => {
-  //   test('Should NOT rename top page', async() => {
+    test('Should NOT rename top page', async() => {
+      let isThrown = false;
+      try {
+        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
 
-  //     let isThrown = false;
-  //     try {
-  //       await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
-  //     }
-  //     catch (err) {
-  //       isThrown = true;
-  //     }
+      expect(isThrown).toBe(true);
+    });
 
-  //     expect(isThrown).toBe(true);
-  //   });
+    test('Should move to under non-empty page', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename1/renamedChildForRename1';
+      const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
 
-  //   test('Should move to under non-empty page', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename1/renamedChildForRename1';
-  //     const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
+    });
 
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
+    test('Should move to under empty page', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename2/renamedChildForRename2';
+      const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
 
-  //   });
+      expect(renamedPage.path).toBe(newPath);
+      expect(parentForRename2.isEmpty).toBe(true);
+      expect(renamedPage.parent).toStrictEqual(parentForRename2._id);
+    });
 
-  //   test('Should move to under empty page', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename2/renamedChildForRename2';
-  //     const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
+    test('Should move with option updateMetadata: true', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename3/renamedChildForRename3';
+      const oldUdpateAt = childForRename3.updatedAt;
+      const renamedPage = await renamePage(childForRename3, newPath, dummyUser2, { updateMetadata: true });
 
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(parentForRename2.isEmpty).toBe(true);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename2._id);
-  //   });
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename3._id);
+      expect(renamedPage.lastUpdateUser).toStrictEqual(dummyUser2._id);
+      expect(renamedPage.updatedAt.getFullYear()).toBeGreaterThan(oldUdpateAt.getFullYear());
+    });
 
-  //   test('Should move with option updateMetadata: true', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename3/renamedChildForRename3';
-  //     const oldUdpateAt = childForRename3.updatedAt;
-  //     const renamedPage = await renamePage(childForRename3, newPath, dummyUser2, { updateMetadata: true });
+    // ****************** TODO ******************
+    // uncomment the next test when working on 88097
+    // ******************************************
+    // test('Should move with option createRedirectPage: true', async() => {
+    //   // rename target page
+    //   const newPath = '/v5_ParentForRename4/renamedChildForRename4';
+    //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
+    //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
 
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename3._id);
-  //     expect(renamedPage.lastUpdateUser).toStrictEqual(dummyUser2._id);
-  //     expect(renamedPage.updatedAt.getFullYear()).toBeGreaterThan(oldUdpateAt.getFullYear());
-  //   });
+    //   expect(renamedPage.path).toBe(newPath);
+    //   expect(renamedPage.parent).toStrictEqual(parentForRename4._id);
+    //   expect(pageRedirect.length).toBeGreaterThan(0);
+    // });
 
-  //   // ****************** TODO ******************
-  //   // uncomment the next test when working on 88097
-  //   // ******************************************
-  //   // test('Should move with option createRedirectPage: true', async() => {
-  //   //   // rename target page
-  //   //   const newPath = '/v5_ParentForRename4/renamedChildForRename4';
-  //   //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
-  //   //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
+    test('Should move with descendants', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename5/renamedChildForRename5';
+      const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
+      // find child of renamed page
+      const grandchildren = await Page.find({ parent: renamedPage._id });
+      const grandchild = grandchildren[0];
 
-  //   //   expect(renamedPage.path).toBe(newPath);
-  //   //   expect(renamedPage.parent).toStrictEqual(parentForRename4._id);
-  //   //   expect(pageRedirect.length).toBeGreaterThan(0);
-  //   // });
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename5._id);
+      // grandchild's parent should be renamed page
+      expect(grandchild.parent).toStrictEqual(renamedPage._id);
+      expect(grandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
+    });
 
-  //   test('Should move with descendants', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename5/renamedChildForRename5';
-  //     const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
-  //     // find child of renamed page
-  //     const grandchildren = await Page.find({ parent: renamedPage._id });
-  //     const grandchild = grandchildren[0];
+    test('Should move with same grant', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename6/renamedChildForRename6';
+      expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
+      const renamedPage = await renamePage(childForRename6, newPath, dummyUser1, {});
 
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename5._id);
-  //     // grandchild's parent should be renamed page
-  //     expect(grandchild.parent).toStrictEqual(renamedPage._id);
-  //     expect(grandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
-  //   });
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename6._id);
+      expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
+    });
 
-  //   test('Should move with same grant', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename6/renamedChildForRename6';
-  //     expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
-  //     const renamedPage = await renamePage(childForRename6, newPath, dummyUser1, {});
+    test('Should move empty page', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename7/renamedChildForRename7';
+      const renamedPage = await renamePage(childForRename7, newPath, dummyUser1, {});
+      // find child of renamed page
+      const grandchildren = await Page.find({ parent: renamedPage._id });
+      const grandchild = grandchildren[0];
 
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename6._id);
-  //     expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
-  //   });
-
-  //   test('Should move empty page', async() => {
-  //     // rename target page
-  //     const newPath = '/v5_ParentForRename7/renamedChildForRename7';
-  //     const renamedPage = await renamePage(childForRename7, newPath, dummyUser1, {});
-  //     // find child of renamed page
-  //     const grandchildren = await Page.find({ parent: renamedPage._id });
-  //     const grandchild = grandchildren[0];
-
-  //     expect(renamedPage.path).toBe(newPath);
-  //     expect(renamedPage.isEmpty).toBe(true);
-  //     expect(renamedPage.parent).toStrictEqual(parentForRename7._id);
-  //     // grandchild's parent should be renamed page
-  //     expect(grandchild.parent).toStrictEqual(renamedPage._id);
-  //     expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
-  //   });
-  // });
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.isEmpty).toBe(true);
+      expect(renamedPage.parent).toStrictEqual(parentForRename7._id);
+      // grandchild's parent should be renamed page
+      expect(grandchild.parent).toStrictEqual(renamedPage._id);
+      expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
+    });
+  });
 
   describe('Duplicate', () => {
 
@@ -414,6 +411,7 @@ describe('PageService page operations with only public pages', () => {
       // a
     });
   });
+
   afterAll(async() => {
     await Page.remove({});
     await User.remove({});
