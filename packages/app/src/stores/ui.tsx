@@ -425,6 +425,32 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
   );
 };
 
+// PagePresentationModal
+type PresentationModalStatus = {
+  isOpened: boolean,
+  href?: string
+}
+
+type PresentationModalStatusUtils = {
+  open(href: string): Promise<PresentationModalStatus | undefined>
+  close(): Promise<PresentationModalStatus | undefined>
+}
+
+export const usePagePresentationModal = (
+    status?: PresentationModalStatus,
+): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
+  const initialData: PresentationModalStatus = {
+    isOpened: false, href: '?presentation=1',
+  };
+  const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (href: string) => swrResponse.mutate({ isOpened: true, href }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
 
 type DescendantsPageListModalStatus = {
   isOpened: boolean,
