@@ -261,15 +261,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
-    const initialBody = `# ${newPagePath}`;
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (isCreatable) {
       const body = {
         path: newPagePath,
-        body: initialBody,
+        body: '',
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
+        createFromPageTree: true,
       };
 
       try {

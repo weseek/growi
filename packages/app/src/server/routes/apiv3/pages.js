@@ -168,6 +168,7 @@ module.exports = (crowi) => {
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+      body('createFromPageTree').optional().isBoolean().withMessage('createFromPageTree must be boolean'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -244,6 +245,9 @@ module.exports = (crowi) => {
    *                    type: array
    *                    items:
    *                      $ref: '#/components/schemas/Tag'
+   *                  createFromPageTree:
+   *                    type: boolean
+   *                    description: Whether the page was created from the page tree or not
    *                required:
    *                  - body
    *                  - path
@@ -270,10 +274,10 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, createFromPageTree,
     } = req.body;
 
-    let { path } = req.body;
+    let { path, body } = req.body;
 
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
@@ -282,6 +286,11 @@ module.exports = (crowi) => {
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
+    }
+
+    const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+    if (createFromPageTree && isEnabledAttachTitleHeader) {
+      body = `# ${path}`;
     }
 
     let createdPage;
