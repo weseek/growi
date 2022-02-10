@@ -70,6 +70,12 @@ describe('PageService page operations with only public pages', () => {
     /*
      * Rename
      */
+    // delete root page if any created by other test file
+    const pages = await Page.find({ path: '/' });
+    if (pages.length > 0) {
+      await Page.deleteOne({ path: '/' });
+    }
+    // then create new root page
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
     // Create Pages
