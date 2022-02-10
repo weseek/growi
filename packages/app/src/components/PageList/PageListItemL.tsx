@@ -6,7 +6,7 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg, usePageRenameModalStatus } from '~/stores/ui';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -35,6 +35,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { open: openRenameModal } = usePageRenameModalStatus();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -56,6 +57,11 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       onClickItem(pageData._id);
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+  const renameMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, revision: revisionId, path } = pageData;
+    openRenameModal(pageId, revisionId as string, path);
+  }, [openRenameModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -120,6 +126,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   pageId={pageData._id}
                   pageInfo={pageMeta}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
+                  onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
                 />
               </div>
