@@ -130,9 +130,9 @@ describe('PageService page operations with only public pages', () => {
 
     const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
-    // retrieve arugemtns which method:'renameDescendantsWithStream' was called with
+    // retrieve the arguments passed when calling method renameDescendantsWithStream inside renamePage method
     const argsForCreateAndSendNotifications = mockedRenameDescendantsWithStream.mock.calls[0];
-    // restore the mock to the original function
+    // restores the original implementation
     mockedRenameDescendantsWithStream.mockRestore();
 
     // rename descendants
