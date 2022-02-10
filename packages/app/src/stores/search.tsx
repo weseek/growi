@@ -1,7 +1,7 @@
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiGet } from '~/client/util/apiv1-client';
 
 import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
@@ -42,7 +42,7 @@ export const useSWRxFullTextSearch = (
     includeTrashPages, includeUserPages,
   } = configurations;
 
-  const q = createSearchQuery(keyword, includeTrashPages, includeUserPages);
+  const rawQuery = createSearchQuery(keyword, includeTrashPages, includeUserPages);
 
   const swrResult = useSWRImmutable(
     ['/search', keyword, configurations],
@@ -51,21 +51,22 @@ export const useSWRxFullTextSearch = (
         limit, offset, sort, order,
       } = configurations;
 
-      return apiv3Get<IFormattedSearchResult>(
+      return apiGet(
         endpoint, {
-          q,
+          q: encodeURIComponent(rawQuery),
           limit,
           offset: offset ?? 0,
           sort: sort ?? SORT_AXIS.RELATION_SCORE,
           order: order ?? SORT_ORDER.DESC,
         },
-      ).then(result => result.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ).then(result => result as IFormattedSearchResult);
     },
   );
 
   return {
     ...swrResult,
-    q,
+    q: rawQuery,
     configurations,
   };
 };
