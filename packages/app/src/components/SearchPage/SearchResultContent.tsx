@@ -73,9 +73,8 @@ const MutationObserverWrapper = (scrollElement:HTMLElement) => {
 
   const observer = new MutationObserver(observerCallback);
   observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-  return () => {
-    observer.disconnect();
-  };
+
+  return observer;
 };
 
 const SearchResultContent: FC<Props> = (props: Props) => {
@@ -85,7 +84,11 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
     if (scrollElement == null) return;
-    MutationObserverWrapper(scrollElement);
+    const observer = MutationObserverWrapper(scrollElement);
+
+    return () => {
+      observer.disconnect();
+    };
   });
   // *******************************  end  *******************************
 
