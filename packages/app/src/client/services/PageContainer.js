@@ -459,6 +459,7 @@ export default class PageContainer extends Container {
 
     const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
     const options = editorContainer.getCurrentOptionsToSave();
     const optionsToSave = Object.assign({}, options);
 
@@ -466,6 +467,10 @@ export default class PageContainer extends Container {
 
     editorContainer.clearDraft(path);
     this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+
+    if (pageEditor != null) {
+      pageEditor.updateEditorValue(markdown);
+    }
 
     editorContainer.setState({ tags: res.tags });
 
