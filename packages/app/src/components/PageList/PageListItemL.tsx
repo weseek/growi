@@ -56,7 +56,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
-  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
+  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
