@@ -225,7 +225,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   /*
    * Fill parents if parent is null
    */
-  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPaths(path, [path]); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);

@@ -1914,7 +1914,7 @@ class PageService {
     // for updating descendantCount
     const pageIdToExDescendantCount = new Map<ObjectIdLike, number>();
 
-    // migrate recursively
+    // MAIN PROCESS migrate recursively
     try {
       for await (const path of pathsToNormalize) {
         await this.normalizeParentRecursively(null, [new RegExp(`^${escapeStringRegexp(path)}`, 'i')]);
@@ -1931,7 +1931,7 @@ class PageService {
       throw err;
     }
 
-    // update descendantCount
+    // POST MAIN PROCESS update descendantCount
     try {
       for await (const path of pathsToNormalize) {
         await this.updateDescendantCountOfSelfAndDescendants(path);
