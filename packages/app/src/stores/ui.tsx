@@ -4,6 +4,7 @@ import useSWR, {
 import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 
 import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
@@ -15,13 +16,13 @@ import {
   useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
 } from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
-import { isSharedPage } from '^/../core/src/utils/page-path-utils';
+import { Nullable } from '~/interfaces/common';
+
+const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
-
-type Nullable<T> = T | null;
 
 
 /** **********************************************************
@@ -299,37 +300,45 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
 // PageDeleteModal
 export type IPageForPageDeleteModal = {
   pageId: string,
-  revisionId: string,
+  revisionId?: string,
   path: string
 }
+
+export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
+  onDeleted?: OnDeletedFunction,
+}
+
+type DeleteModalOpened = {
+  isOpend: boolean,
+  onDeleted?: OnDeletedFunction,
 }
 
 type DeleteModalStatusUtils = {
-  open(pages?: IPageForPageDeleteModal[]): Promise<DeleteModalStatus | undefined>
-  close(): Promise<DeleteModalStatus | undefined>
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction): Promise<DeleteModalStatus | undefined>,
+  close(): Promise<DeleteModalStatus | undefined>,
 }
 
-export const usePageDeleteModalStatus = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
+export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
   const initialData: DeleteModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pages?: IPageForPageDeleteModal[]) => swrResponse.mutate({ isOpened: true, pages }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
-export const usePageDeleteModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = usePageDeleteModalStatus();
+export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
+  const { data } = usePageDeleteModal();
   return useSWRImmutable(
     data != null ? ['isDeleteModalOpened', data] : null,
     () => {
-      return data != null ? data.isOpened : false;
+      return data != null ? { isOpend: data.isOpened, onDeleted: data?.onDeleted } : null;
     },
   );
 };
@@ -415,6 +424,76 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
     },
   );
 };
+
+
+type DescendantsPageListModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type DescendantsPageListUtils = {
+  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
+  close(): Promise<DuplicateModalStatus | undefined>
+}
+
+export const useDescendantsPageListModal = (
+    status?: DescendantsPageListModalStatus,
+): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
+
+  const initialData: DescendantsPageListModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
+export const PageAccessoriesModalContents = {
+  PageHistory: 'PageHistory',
+  Attachment: 'Attachment',
+  ShareLink: 'ShareLink',
+} as const;
+export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[keyof typeof PageAccessoriesModalContents];
+
+type PageAccessoriesModalStatus = {
+  isOpened: boolean,
+  onOpened?: (initialActivatedContents: PageAccessoriesModalContents) => void,
+}
+
+type PageAccessoriesModalUtils = {
+  open(activatedContents: PageAccessoriesModalContents): void
+  close(): void
+}
+
+export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
+
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: (activatedContents: PageAccessoriesModalContents) => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({ isOpened: true });
+
+      if (swrResponse.data.onOpened != null) {
+        swrResponse.data.onOpened(activatedContents);
+      }
+    },
+    close: () => {
+      if (swrResponse.data == null) {
+        return;
+      }
+      swrResponse.mutate({ isOpened: false });
+    },
+  };
+};
+
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
   return useStaticSWR<Nullable<number>, Error>('grant', initialData);

@@ -1,12 +1,14 @@
 import React, { useState, FC } from 'react';
-import toastr from 'toastr';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
-// import { apiPost } from '~/client/util/apiv1-client';
-import { usePageDeleteModalStatus, usePageDeleteModalOpened } from '~/stores/ui';
+import { apiPost } from '~/client/util/apiv1-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
+
+import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -25,7 +27,6 @@ const deleteIconAndKey = {
 };
 
 type Props = {
-  isOpen: boolean,
   isDeleteCompletelyModal: boolean,
   isAbleToDeleteCompletely: boolean,
   onClose?: () => void,
@@ -37,16 +38,17 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
+  const { data: deleteModalStatus, close: closeDeleteModal } = usePageDeleteModal();
+  const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
 
-  const { data: pagesDataToDelete, close: closeDeleteModal } = usePageDeleteModalStatus();
-  const { data: isOpened } = usePageDeleteModalOpened();
+  const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [errs, setErrs] = useState(null);
+  const [errs, setErrs] = useState<Error[] | null>(null);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -60,33 +62,65 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   async function deletePage() {
-    toastr.warning(t('search_result.currently_not_implemented'));
-    // Todo implement page delete function at https://redmine.weseek.co.jp/issues/82222
-    // setErrs(null);
+    if (deleteModalStatus == null || deleteModalStatus.pages == null) {
+      return;
+    }
 
-    // try {
-    //   // control flag
-    //   // If is it not true, Request value must be `null`.
-    //   const recursively = isDeleteRecursively ? true : null;
-    //   const completely = isDeleteCompletely ? true : null;
+    /*
+     * When multiple pages
+     */
+    if (deleteModalStatus.pages.length > 1) {
+      try {
+        const isRecursively = isDeleteRecursively === true ? true : undefined;
+        const isCompletely = isDeleteCompletely === true ? true : undefined;
 
-    //   const response = await apiPost('/pages.remove', {
-    //     page_id: pageId,
-    //     revision_id: revisionId,
-    //     recursively,
-    //     completely,
-    //   });
+        const pageIdToRevisionIdMap = {};
+        deleteModalStatus.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
 
-    //   const trashPagePath = response.page.path;
-    //   window.location.href = encodeURI(trashPagePath);
-    // }
-    // catch (err) {
-    //   setErrs(err);
-    // }
+        const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
+          pageIdToRevisionIdMap,
+          isRecursively,
+          isCompletely,
+        });
+
+        if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
+          pageDeleteModalOpened.onDeleted(data.paths, data.isRecursively, data.isCompletely);
+        }
+      }
+      catch (err) {
+        setErrs([err]);
+      }
+    }
+    /*
+     * When single page
+     */
+    else {
+      try {
+        const recursively = isDeleteRecursively === true ? true : undefined;
+        const completely = isDeleteCompletely === true ? true : undefined;
+
+        const page = deleteModalStatus.pages[0];
+
+        const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
+          page_id: page.pageId,
+          revision_id: page.revisionId,
+          recursively,
+          completely,
+        }) as IDeleteSinglePageApiv1Result;
+
+        if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
+          pageDeleteModalOpened.onDeleted(path, isRecursively, isCompletely);
+        }
+      }
+      catch (err) {
+        setErrs([err]);
+      }
+    }
   }
 
   async function deleteButtonHandler() {
-    deletePage();
+    await closeDeleteModal();
+    await deletePage();
   }
 
   function renderDeleteRecursivelyForm() {
@@ -96,10 +130,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           className="custom-control-input"
           id="deleteRecursively"
           type="checkbox"
-          // checked={isDeleteRecursively}
-          checked={false}
+          checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
-          disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
@@ -123,7 +156,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           id="deleteCompletely"
           type="checkbox"
           // disabled={!isAbleToDeleteCompletely}
-          disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
@@ -144,8 +177,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (pagesDataToDelete != null && pagesDataToDelete.pages != null) {
-      return pagesDataToDelete.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    if (deleteModalStatus != null && deleteModalStatus.pages != null) {
+      return deleteModalStatus.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
   };

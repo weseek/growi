@@ -18,6 +18,7 @@ const { isCreatablePage } = pagePathUtils;
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 /**
  * @swagger
@@ -179,6 +180,17 @@ module.exports = (crowi) => {
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+    ],
+    deletePages: [
+      body('pageIdToRevisionIdMap')
+        .exists()
+        .withMessage('The body property "pageIdToRevisionIdMap" must be an json map with pageId as key and revisionId as value.'),
+      body('isCompletely')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isCompletely" must be "true" or true. (Omit param for false)'),
+      body('isRecursively')
+        .custom(v => v === 'true' || v === true || v == null)
+        .withMessage('The body property "isRecursively" must be "true" or true. (Omit param for false)'),
     ],
     legacyPagesMigration: [
       body('pageIds').isArray().withMessage('pageIds is required'),
@@ -629,7 +641,8 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    if (page == null) {
+    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
       return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
@@ -638,9 +651,11 @@ module.exports = (crowi) => {
     const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
     const result = { page: serializePageSecurely(newParentPage) };
 
-    page.path = newPagePath;
+    // copy the page since it's used and updated in crowi.pageService.duplicate
+    const copyPage = { ...page };
+    copyPage.path = newPagePath;
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
@@ -706,14 +721,58 @@ module.exports = (crowi) => {
 
   });
 
+  router.post('/delete', accessTokenParser, loginRequiredStrictly, csrf, validator.deletePages, apiV3FormValidator, async(req, res) => {
+    const { pageIdToRevisionIdMap, isCompletely, isRecursively } = req.body;
+    const pageIds = Object.keys(pageIdToRevisionIdMap);
+
+    if (pageIds.length === 0) {
+      return res.apiv3Err(new ErrorV3('Select pages to delete.', 'no_page_selected'), 400);
+    }
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
+    }
+
+    let pagesToDelete;
+    try {
+      pagesToDelete = await Page.findByPageIdsToEdit(pageIds, req.user, true);
+    }
+    catch (err) {
+      logger.error('Failed to find pages to delete.', err);
+      return res.apiv3Err(new ErrorV3('Failed to find pages to delete.'));
+    }
+
+    let pagesCanBeDeleted;
+    /*
+     * Delete Completely
+     */
+    if (isCompletely) {
+      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user);
+    }
+    /*
+     * Trash
+     */
+    else {
+      pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+    }
+
+    if (pagesCanBeDeleted.length === 0) {
+      const msg = 'No pages can be deleted.';
+      return res.apiv3Err(new ErrorV3(msg), 500);
+    }
+
+    // run delete
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+
+    return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
+  });
+
   router.post('/v5-schema-migration', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const Page = crowi.model('Page');
 
     try {
       if (!isV5Compatible) {
         // this method throws and emit socketIo event when error occurs
-        crowi.pageService.v5InitialMigration(Page.GRANT_PUBLIC); // not await
+        crowi.pageService.normalizeAllPublicPages(); // not await
       }
     }
     catch (err) {
@@ -725,11 +784,16 @@ module.exports = (crowi) => {
 
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, adminRequired, csrf, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
-    const { pageIds, isRecursively } = req.body;
+    const { pageIds: _pageIds, isRecursively } = req.body;
+    const pageIds = _pageIds == null ? [] : _pageIds;
+
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
+    }
 
     if (isRecursively) {
       // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds);
+      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
     }
     else {
       try {

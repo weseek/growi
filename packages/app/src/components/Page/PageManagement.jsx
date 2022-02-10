@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { pagePathUtils } from '@growi/core';
-import { usePageDeleteModalStatus } from '~/stores/ui';
+import { usePageDeleteModal } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
@@ -23,7 +23,7 @@ const LegacyPageManagemenet = (props) => {
     t, appContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
 
-  const { open: openDeleteModal } = usePageDeleteModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);

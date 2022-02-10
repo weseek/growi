@@ -32,13 +32,14 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (
-    path: string,
-    pageNumber?: number,
-): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-  const page = pageNumber || 1;
+export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+
+  const key = path != null
+    ? `/pages/list?path=${path}&page=${pageNumber ?? 1}`
+    : null;
+
   return useSWR(
-    `/pages/list?path=${path}&page=${page}`,
+    key,
     endpoint => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
@@ -59,10 +60,14 @@ export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<I
   }));
 };
 
-export const useSWRxPageInfo = (pageId: string | null | undefined): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
+export const useSWRxPageInfo = (
+    pageId: string | null | undefined,
+    shareLinkId?: string | null,
+): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
+
   return useSWRImmutable(
-    pageId != null ? ['/page/info', pageId] : null,
-    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    pageId != null ? ['/page/info', pageId, shareLinkId] : null,
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
   );
 };
 

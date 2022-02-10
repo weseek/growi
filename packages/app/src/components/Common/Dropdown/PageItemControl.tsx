@@ -23,9 +23,9 @@ type CommonProps = {
   isEnableActions?: boolean,
   showBookmarkMenuItem?: boolean,
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
-  onClickDuplicateMenuItem?: () => Promise<void> | void,
-  onClickRenameMenuItem?: (pageId: string) => void,
-  onClickDeleteMenuItem?: (pageId: string) => void,
+  onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -60,8 +60,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickDuplicateMenuItem == null) {
       return;
     }
-    await onClickDuplicateMenuItem();
-  }, [onClickDuplicateMenuItem]);
+    await onClickDuplicateMenuItem(pageId);
+  }, [onClickDuplicateMenuItem, pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
@@ -167,7 +167,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -194,8 +194,15 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     if (onClickDuplicateMenuItem == null) {
       return;
     }
-    await onClickDuplicateMenuItem();
-  }, [onClickDuplicateMenuItem]);
+    await onClickDuplicateMenuItem(pageId);
+  }, [onClickDuplicateMenuItem, pageId]);
+
+  const renameMenuItemClickHandler = useCallback(async() => {
+    if (onClickRenameMenuItem == null) {
+      return;
+    }
+    await onClickRenameMenuItem(pageId);
+  }, [onClickRenameMenuItem, pageId]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
@@ -212,6 +219,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         pageInfo={fetchedPageInfo ?? presetPageInfo}
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+        onClickRenameMenuItem={renameMenuItemClickHandler}
       />
     </Dropdown>
   );

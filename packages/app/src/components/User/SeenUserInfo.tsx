@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { Button, Popover, PopoverBody } from 'reactstrap';
+import { Popover, PopoverBody } from 'reactstrap';
 import { FootstampIcon } from '@growi/ui';
 
 import { IUser } from '~/interfaces/user';
@@ -21,12 +21,12 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   return (
     <div className="grw-seen-user-info">
-      <Button id="btn-seen-user" color="link" className="btn-seen-user">
+      <button type="button" id="btn-seen-user" className="btn btn-seen-user border-0">
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
         <span className="seen-user-count">{seenUsers.length}</span>
-      </Button>
+      </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="user-list-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
