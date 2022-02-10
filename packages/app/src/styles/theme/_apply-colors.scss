@@ -14,7 +14,6 @@ $bordercolor-nav-tabs: $gray-300 !default;
 $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
-$color-seen-user: #549c79 !default;
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: $grw-marker-yellow !default;
 $bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
@@ -379,20 +378,6 @@ ul.pagination {
 
   .modal-footer {
     border-top-color: $border-color-theme;
-  }
-}
-
-.grw-page-accessories-control {
-  .grw-seen-user-info {
-    .btn {
-      color: $color-seen-user;
-      &:active {
-        color: $color-seen-user;
-      }
-      .footstamp-icon {
-        fill: $color-seen-user;
-      }
-    }
   }
 }
 

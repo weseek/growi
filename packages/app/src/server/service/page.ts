@@ -26,10 +26,11 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, collectAncestorPaths, isTopPage,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -208,25 +209,32 @@ class PageService {
     return false;
   }
 
+  filterPagesByCanDeleteCompletely(pages, user) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
+  }
+
   async findPageAndMetaDataByViewer({ pageId, path, user }) {
 
     const Page = this.crowi.model('Page');
 
+    let pagePath = path;
+
     let page;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
+      pagePath = page.path;
     }
     else {
-      page = await Page.findByPathAndViewer(path, user);
+      page = await Page.findByPathAndViewer(pagePath, user);
     }
 
     const result: any = {};
 
     if (page == null) {
-      const isExist = await Page.count({ $or: [{ _id: pageId }, { path }] }) > 0;
+      const isExist = await Page.count({ $or: [{ _id: pageId }, { pat: pagePath }] }) > 0;
       result.isForbidden = isExist;
       result.isNotFound = !isExist;
-      result.isCreatable = isCreatablePage(path);
+      result.isCreatable = isCreatablePage(pagePath);
       result.page = page;
 
       return result;
@@ -236,6 +244,7 @@ class PageService {
     result.isForbidden = false;
     result.isNotFound = false;
     result.isCreatable = false;
+    result.isDeletable = isDeletablePage(pagePath);
     result.isDeleted = page.isDeleted();
 
     return result;
@@ -1426,6 +1435,28 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
+  async deleteMultiplePages(pagesToDelete, user, isCompletely: boolean, isRecursively: boolean): Promise<void> {
+    if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
+    // omit duplicate paths if isRecursively true, omit empty pages if isRecursively false
+    const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete.filter(p => !p.isEmpty);
+
+    // TODO: insertMany PageOperationBlock if isRecursively true
+
+    if (isCompletely) {
+      for await (const page of pages) {
+        await this.deleteCompletely(page, user, {}, isRecursively);
+      }
+    }
+    else {
+      for await (const page of pages) {
+        await this.deletePage(page, user, {}, isRecursively);
+      }
+    }
+  }
+
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
@@ -1827,7 +1858,7 @@ class PageService {
     return Page.updateOne({ _id: pageId }, { parent: parent._id });
   }
 
-  async normalizeParentRecursivelyByPageIds(pageIds) {
+  async normalizeParentRecursivelyByPageIds(pageIds, user) {
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
@@ -1845,8 +1876,27 @@ class PageService {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    // generate regexps
-    const regexps = await this._generateRegExpsByPageIds(normalizedIds);
+    /*
+     * generate regexps
+     */
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    let pages;
+    try {
+      pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+    }
+    catch (err) {
+      logger.error('Failed to find pages by ids', err);
+      throw err;
+    }
+
+    // prepare no duplicated area paths
+    let paths = pages.map(p => p.path);
+    paths = omitDuplicateAreaPathFromPaths(paths);
+
+    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
+
+    // TODO: insertMany PageOperationBlock
 
     // migrate recursively
     try {
@@ -1938,27 +1988,6 @@ class PageService {
     }
 
     await this._setIsV5CompatibleTrue();
-  }
-
-  /*
-   * returns an array of js RegExp instance instead of RE2 instance for mongo filter
-   */
-  private async _generateRegExpsByPageIds(pageIds) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    let result;
-    try {
-      result = await Page.findListByPageIds(pageIds, null);
-    }
-    catch (err) {
-      logger.error('Failed to find pages by ids', err);
-      throw err;
-    }
-
-    const { pages } = result;
-    const regexps = pages.map(page => new RegExp(`^${escapeStringRegexp(page.path)}`));
-
-    return regexps;
   }
 
   private async _setIsV5CompatibleTrue() {

@@ -7,7 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
-import { toastWarning, toastError } from '~/client/util/apiNotification';
+
+import { pathUtils } from '@growi/core';
+
+import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { IPageForPageDeleteModal } from '~/stores/ui';
@@ -16,9 +19,8 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import { AsyncPageItemControl } from '../../Common/Dropdown/PageItemControl';
+import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
-
 
 interface ItemProps {
   isEnableActions: boolean
@@ -27,7 +29,7 @@ interface ItemProps {
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteByPage?(pageToDelete: IPageForPageDeleteModal | null): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
 }
 
 // Utility to mark target
@@ -68,7 +70,7 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteByPage, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -77,24 +79,78 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { data, error } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0);
+  // hasDescendants flag
+  const isChildrenLoaded = currentChildren?.length > 0;
+  const hasDescendants = (page.descendantCount != null && page?.descendantCount > 0) || isChildrenLoaded;
+
+  // to re-show hidden item when useDrag end() callback
+  const displayDroppedItemByPageId = useCallback((pageId) => {
+    const target = document.getElementById(`pagetree-item-${pageId}`);
+    if (target == null) {
+      return;
+    }
+
+    // wait 500ms to avoid removing before d-none is set by useDrag end() callback
+    setTimeout(() => {
+      target.classList.remove('d-none');
+    }, 500);
+  }, []);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
     item: { page },
+    end: () => {
+      // in order to set d-none to dropped Item
+      setShouldHide(true);
+    },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
   }));
 
-  const pageItemDropHandler = () => {
-    // TODO: hit an api to rename the page by 85175
-    // eslint-disable-next-line no-console
-    console.log('pageItem was droped!!');
+  const pageItemDropHandler = async(item, monitor) => {
+    if (page == null || page.path == null) {
+      return;
+    }
+
+    const { page: droppedPage } = item;
+
+    const pageTitle = nodePath.basename(droppedPage.path);
+    const newParentPath = page.path;
+    const newPagePath = nodePath.join(newParentPath, pageTitle);
+
+    try {
+      await apiv3Put('/pages/rename', {
+        pageId: droppedPage._id,
+        revisionId: droppedPage.revision,
+        newPagePath,
+        isRenameRedirect: false,
+        isRemainMetadata: false,
+      });
+
+      await mutateChildren();
+
+      // force open
+      setIsOpen(true);
+
+      toastSuccess('TODO: i18n Successfully moved pages.');
+    }
+    catch (err) {
+      // display the dropped item
+      displayDroppedItemByPageId(droppedPage._id);
+
+      if (err.code === 'operation__blocked') {
+        toastWarning('TODO: i18n You cannot move this page now.');
+      }
+      else {
+        toastError('TODO: i18n Something went wrong with moving page.');
+      }
+    }
   };
 
   const [{ isOver }, drop] = useDrop(() => ({
@@ -151,11 +207,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // }, []);
 
   // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   if (inputText == null || inputText === '' || inputText.trim() === '' || inputText.includes('/')) {
-  //     return;
-  //   }
-
-  //   const parentPath = nodePath.dirname(page.path as string);
+  //   const parentPath = getParentPagePath(page.path as string)
   //   const newPagePath = `${parentPath}/${inputText}`;
 
   //   try {
@@ -185,9 +237,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-
   const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteByPage == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
 
@@ -203,14 +254,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       path,
     };
 
-    onClickDeleteByPage(pageToDelete);
-  }, [page, onClickDeleteByPage]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [page, onClickDeleteMenuItem]);
 
-
-  // TODO: go to create page page
-  const onPressEnterForCreateHandler = () => {
-    toastWarning(t('search_result.currently_not_implemented'));
+  const onPressEnterForCreateHandler = (inputText: string) => {
     setNewPageInputShown(false);
+    const parentPath = pathUtils.addTrailingSlash(page.path as string);
+    const newPagePath = `${parentPath}${inputText}`;
+    console.log(newPagePath);
+    // TODO: https://redmine.weseek.co.jp/issues/87943
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
@@ -250,15 +302,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
    * When swr fetch succeeded
    */
   useEffect(() => {
-    if (isOpen && error == null && data != null) {
+    if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
       markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, error, isOpen, targetPathOrId]);
+  }, [data, isOpen, targetPathOrId]);
 
   return (
-    <div className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}`}>
+    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
@@ -298,7 +350,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         )}
         <div className="grw-pagetree-control d-none">
-          <AsyncPageItemControl
+          <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
             showBookmarkMenuItem
@@ -310,7 +362,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
-          </AsyncPageItemControl>
+          </PageItemControl>
           <button
             type="button"
             className="border-0 rounded btn-page-item-control p-0"
@@ -340,7 +392,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               targetPathOrId={targetPathOrId}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
-              onClickDeleteByPage={onClickDeleteByPage}
+              onClickDeleteMenuItem={onClickDeleteMenuItem}
             />
           </div>
         ))

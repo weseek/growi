@@ -14,6 +14,8 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
+import { usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal } from '~/stores/ui';
+
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
@@ -53,9 +55,26 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
+
   const page = focusedSearchResultData?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
+
+
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal]);
+
+  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
+    openRenameModal(pageId, revisionId, path);
+  }, [openRenameModal]);
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
@@ -72,15 +91,19 @@ const SearchResultContent: FC<Props> = (props: Props) => {
           <SubNavButtons
             pageId={page._id}
             revisionId={revisionId}
+            path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            onClickDuplicateMenuItem={duplicateItemClickedHandler}
+            onClickRenameMenuItem={renameItemClickedHandler}
+            onClickDeleteMenuItem={deleteItemClickedHandler}
           />
         </div>
         <div className="h-50 d-flex flex-column align-items-end justify-content-center">
         </div>
       </>
     );
-  }, [page, showPageControlDropdown]);
+  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
