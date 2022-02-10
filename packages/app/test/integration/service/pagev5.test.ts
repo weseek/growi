@@ -29,12 +29,14 @@ describe('PageService page operations with only public pages', () => {
   let parentForRename3;
   let parentForRename4;
   let parentForRename5;
+  let parentForRename6;
   // children
   let childForRename1;
   let childForRename2;
   let childForRename3;
   let childForRename4;
   let childForRename5;
+  let childForRename6GrantRestricted;
   // Grandchild
   let grandchildForRename5;
 
@@ -109,6 +111,13 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
+      {
+        path: '/parentForRename6',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
       // children
       {
         path: '/childForRename1',
@@ -138,7 +147,6 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        updatedAt: new Date('2021'),
       },
       {
         path: '/childForRename5',
@@ -146,7 +154,13 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        updatedAt: new Date('2021'),
+      },
+      {
+        path: '/childForRename6GrantRestricted',
+        grant: Page.GRANT_RESTRICTED,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
       },
     ]);
 
@@ -156,12 +170,14 @@ describe('PageService page operations with only public pages', () => {
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
     parentForRename5 = await Page.findOne({ path: '/parentForRename5' });
+    parentForRename6 = await Page.findOne({ path: '/parentForRename6' });
     // Find pages as Child
     childForRename1 = await Page.findOne({ path: '/childForRename1' });
     childForRename2 = await Page.findOne({ path: '/childForRename2' });
     childForRename3 = await Page.findOne({ path: '/childForRename3' });
     childForRename4 = await Page.findOne({ path: '/childForRename4' });
     childForRename5 = await Page.findOne({ path: '/childForRename5' });
+    childForRename6GrantRestricted = await Page.findOne({ path: '/childForRename6GrantRestricted' });
 
     // create grandchild
     await Page.insertMany([
@@ -179,20 +195,18 @@ describe('PageService page operations with only public pages', () => {
   });
 
 
-  const safeRename = async(page, newPagePath, user, options) => {
+  const renamePage = async(page, newPagePath, user, options) => {
 
     // mock return value
-    const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants')
-      .mockReturnValue(null);
-    jest.spyOn(crowi.pageService, 'createAndSendNotifications')
-      .mockReturnValue(null);
+    const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
+    const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
     const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
     // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
     const argsForCreateAndSendNotifications = mockedResumableRenameDescendants.mock.calls[0];
     // restores the original implementation
     mockedResumableRenameDescendants.mockRestore();
-
+    mockedCreateAndSendNotifications.mockRestore();
     // rename descendants
     await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
 
@@ -217,8 +231,8 @@ describe('PageService page operations with only public pages', () => {
     test('Should move to under non-empty page', async() => {
 
       // rename target page
-      const newPath = '/parentForRename1/renamed1';
-      const renamedPage = await safeRename(childForRename1, newPath, dummyUser1, {});
+      const newPath = '/parentForRename1/renamedChildForRename1';
+      const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
@@ -227,8 +241,8 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should move to under empty page', async() => {
       // rename target page
-      const newPath = '/parentForRename2/renamed2';
-      const renamedPage = await safeRename(childForRename2, newPath, dummyUser1, {});
+      const newPath = '/parentForRename2/renamedChildForRename2';
+      const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
 
       expect(renamedPage.path).toBe(newPath);
       expect(parentForRename2.isEmpty).toBe(true);
@@ -237,9 +251,9 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should move with option updateMetadata: true', async() => {
       // rename target page
-      const newPath = '/parentForRename3/renamed3';
+      const newPath = '/parentForRename3/renamedChildForRename3';
       const oldUdpateAt = childForRename3.updatedAt;
-      const renamedPage = await safeRename(childForRename3, newPath, dummyUser2, { updateMetadata: true });
+      const renamedPage = await renamePage(childForRename3, newPath, dummyUser2, { updateMetadata: true });
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename3._id);
@@ -252,8 +266,8 @@ describe('PageService page operations with only public pages', () => {
     // ******************************************
     // test('Should move with option createRedirectPage: true', async() => {
     //   // rename target page
-    //   const newPath = '/parentForRename4/renamed4';
-    //   const renamedPage = await safeRename(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
+    //   const newPath = '/parentForRename4/renamedChildForRename4';
+    //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
     //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
 
     //   expect(renamedPage.path).toBe(newPath);
@@ -263,15 +277,26 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should move descendants', async() => {
       // rename target page
-      const newPath = '/parentForRename5/renamed5';
-      const renamedPage = await safeRename(childForRename5, newPath, dummyUser1, {});
+      const newPath = '/parentForRename5/renamedChildForRename5';
+      const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
       const grandchildren = await Page.find({ parent: renamedPage._id });
       const grandchild = grandchildren[0];
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename5._id);
       expect(grandchild.parent).toStrictEqual(renamedPage._id);
-      expect(grandchild.path).toBe('/parentForRename5/renamed5/grandchildForRename5');
+      expect(grandchild.path).toBe('/parentForRename5/renamedChildForRename5/grandchildForRename5');
+    });
+
+    test('Should move with same grant', async() => {
+      // rename target page
+      const newPath = '/parentForRename6/renamedChildForRename6';
+      expect(childForRename6GrantRestricted.grant).toBe(2);
+      const renamedPage = await renamePage(childForRename6GrantRestricted, newPath, dummyUser1, {});
+
+      expect(renamedPage.path).toBe(newPath);
+      expect(renamedPage.parent).toStrictEqual(parentForRename6._id);
+      expect(renamedPage.grant).toBe(2);
     });
   });
 });
