@@ -56,8 +56,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { open: openPresentationModal } = usePagePresentationModalStatus();
 
+  const { open: openPresentationModal } = usePagePresentationModalStatus();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
   const hrefForPresentationModal = '?presentation=1';
