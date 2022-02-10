@@ -19,16 +19,16 @@ export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSear
   return meta != null && 'elasticSearchResult' in meta;
 };
 
-export type IFormattedSearchResult = {
-  data: IPageWithMeta<IPageSearchMeta>[]
-
-  totalCount: number
-
+export type ISearchResultMeta = {
   meta: {
     total: number
     took: number
     hitsCount: number
-  }
+  },
+}
+
+export type IFormattedSearchResult = ISearchResultMeta & {
+  data: IPageWithMeta<IPageSearchMeta>[],
 }
 
 export const SORT_AXIS = {

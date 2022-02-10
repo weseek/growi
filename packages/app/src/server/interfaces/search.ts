@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import { ISearchResultMeta } from '~/interfaces/search';
 
 
 export type QueryTerms = {
@@ -25,18 +26,11 @@ export interface SearchResolver{
 
 export interface SearchDelegator<T = unknown> {
   name?: SearchDelegatorName
-  search(data: SearchableData | null, user, userGroups, option): Promise<Result<T> & MetaData>
+  search(data: SearchableData | null, user, userGroups, option): Promise<Result<T> & ISearchResultMeta>
 }
 
 export type Result<T> = {
   data: T[]
-}
-
-export type MetaData = {
-  meta: {
-    [key:string]: any,
-    total: number,
-  }
 }
 
 export type SearchableData = {
