@@ -33,8 +33,9 @@ module.exports = (crowi) => {
   handler.createPage = async function(client, payload, interactionPayloadAccessor, respondUtil) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
-    const userChannelId = payload.user.id;
+    const user = await User.findUserBySlackId(payload.user.id);
 
+    const userChannelId = user ? user._id : null;
     // validate form
     const { path, oldest, newest } = await this.keepValidateForm(client, payload, interactionPayloadAccessor);
     // get messages
@@ -138,11 +139,18 @@ module.exports = (crowi) => {
     return result;
   };
 
+  /**
+   * Convert slack ID to growi user if slack ID is found in messages
+   * @param {*} messages
+   */
   handler.messagesWithGrowiUser = async function(messages) {
     await Promise.all(messages.map(async(message) => {
       const growiUser = await User.findUserBySlackId(message.user);
       if (growiUser) {
         message.user = `${growiUser.name} (@${growiUser.username})`;
+      }
+      else {
+        message.user = `This slack ID is not registered (${message.user})`;
       }
     }));
   };
@@ -176,7 +184,7 @@ module.exports = (crowi) => {
   };
 
   handler.keepCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody, respondUtil) {
-    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil);
+    await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, userChannelId);
 
     // TODO: contentsBody text characters must be less than 3001
     // send preview to dm
