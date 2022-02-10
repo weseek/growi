@@ -262,20 +262,23 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
     const initialBody = `# ${newPagePath}`;
+    const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
-    const body = {
-      path: newPagePath,
-      body: initialBody,
-      grant: page.grant,
-      grantUserGroupId: page.grantedGroup,
-    };
+    if (isCreatable) {
+      const body = {
+        path: newPagePath,
+        body: initialBody,
+        grant: page.grant,
+        grantUserGroupId: page.grantedGroup,
+      };
 
-    try {
-      await apiv3Post('/pages/', body);
-      mutateChildren();
-    }
-    catch (err) {
-      toastError(err);
+      try {
+        await apiv3Post('/pages/', body);
+        mutateChildren();
+      }
+      catch (err) {
+        toastError(err);
+      }
     }
   };
 
