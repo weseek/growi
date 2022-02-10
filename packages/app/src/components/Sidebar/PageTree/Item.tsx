@@ -272,6 +272,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       await apiv3Post('/pages/', body);
+      mutateChildren();
     }
     catch (err) {
       toastError(err);
