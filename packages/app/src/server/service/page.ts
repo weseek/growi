@@ -1808,10 +1808,21 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentByPageIds(pageIds: ObjectIdLike[]): Promise<void> {
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     for await (const pageId of pageIds) {
       try {
-        await this.normalizeParentByPageId(pageId);
+        await this.normalizeParentByPageId(pageId, user);
+
+        const normalizedPage = await Page.findById(pageId);
+        if (typeof normalizedPage?.descendantCount !== 'number') {
+          logger.error(`Failed to update descendantCount of page "${normalizedPage?.path}"`);
+        }
+        else {
+          // update descendantCount of ancestors'
+          await this.updateDescendantCountOfAncestors(pageId, normalizedPage?.descendantCount, false);
+        }
       }
       catch (err) {
         // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
@@ -1819,16 +1830,22 @@ class PageService {
     }
   }
 
-  private async normalizeParentByPageId(pageId: ObjectIdLike) {
+  private async normalizeParentByPageId(pageId: ObjectIdLike, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const target = await Page.findById(pageId);
+    const target = await Page.findByIdAndViewerToEdit(pageId, user);
     if (target == null) {
-      throw Error('target does not exist');
+      throw Error('target does not exist or forbidden');
     }
 
     const {
       path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
     } = target;
+
+    // check if any page exists at target path already
+    const existingPage = await Page.findOne({ path });
+    if (existingPage != null && !existingPage.isEmpty) {
+      throw Error('Page already exists. Please rename the page to continue.');
+    }
 
     /*
      * UserGroup & Owner validation
@@ -1855,58 +1872,80 @@ class PageService {
     // getParentAndFillAncestors
     const parent = await Page.getParentAndFillAncestors(target.path);
 
-    return Page.updateOne({ _id: pageId }, { parent: parent._id });
+    const updatedPage = await Page.updateOne({ _id: pageId }, { parent: parent._id }, { new: true });
+
+    // replace if empty page exists
+    if (existingPage != null && existingPage.isEmpty) {
+      await Page.replaceTargetWithPage(existingPage, updatedPage, true);
+    }
   }
 
+  // TODO: this should be resumable
   async normalizeParentRecursivelyByPageIds(pageIds, user) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
     }
 
-    const [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+    const [normalizedPages, nonNormalizedPages] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
 
-    if (normalizedIds.length === 0) {
+    if (normalizedPages.length === 0) {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
       return;
     }
 
-    if (notNormalizedPaths.length !== 0) {
+    if (nonNormalizedPages.length !== 0) {
       // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    /*
-     * generate regexps
-     */
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    let pages;
-    try {
-      pages = await Page.findByPageIdsToEdit(pageIds, user, false);
-    }
-    catch (err) {
-      logger.error('Failed to find pages by ids', err);
-      throw err;
-    }
-
     // prepare no duplicated area paths
-    let paths = pages.map(p => p.path);
-    paths = omitDuplicateAreaPathFromPaths(paths);
-
-    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
+    let pathsToNormalize = normalizedPages.map(p => p.path);
+    pathsToNormalize = omitDuplicateAreaPathFromPaths(pathsToNormalize);
 
     // TODO: insertMany PageOperationBlock
 
+    const pageIdsToUpdateDescendantCount = nonNormalizedPages
+      .map((p): ObjectIdLike | undefined => (pathsToNormalize.includes(p.path) ? p._id : null))
+      .filter(id => id != null);
+
+    // for updating descendantCount
+    const pageIdToExDescendantCount = new Map<ObjectIdLike, number>();
+
     // migrate recursively
     try {
-      await this.normalizeParentRecursively(null, regexps);
+      for await (const path of pathsToNormalize) {
+        await this.normalizeParentRecursively(null, [new RegExp(`^${escapeStringRegexp(path)}`, 'i')]);
+      }
+      const pagesBeforeUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIds, user);
+      pagesBeforeUpdatingDescendantCount.forEach((p) => {
+        pageIdToExDescendantCount.set(p._id.toString(), p.descendantCount);
+      });
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
 
       throw err;
+    }
+
+    // update descendantCount
+    try {
+      for await (const path of pathsToNormalize) {
+        await this.updateDescendantCountOfSelfAndDescendants(path);
+      }
+
+      const pagesAfterUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToUpdateDescendantCount, user);
+      for await (const page of pagesAfterUpdatingDescendantCount) {
+        const inc = (page.descendantCount) - (pageIdToExDescendantCount.get(page._id.toString()) || 0);
+        await this.updateDescendantCountOfAncestors(page._id, inc, false);
+      }
+    }
+    catch (err) {
+      logger.error('Failed to update descendantCount after normalizing parent:', err);
+      throw Error(`Failed to update descendantCount after normalizing parent: ${err}`);
     }
   }
 
@@ -2187,12 +2226,23 @@ class PageService {
     }
   }
 
-  async v5MigratablePrivatePagesCount(user) {
+  async countPagesCanNormalizeParentByUser(user): Promise<number> {
     if (user == null) {
       throw Error('user is required');
     }
-    const Page = this.crowi.model('Page');
-    return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.count(), false);
+    builder.addConditionAsNotMigrated();
+    builder.addConditionAsNonRootPage();
+    builder.addConditionToExcludeTrashed();
+    await builder.addConditionForParentNormalization(user);
+
+    const nMigratablePages = await builder.query.exec();
+
+    return nMigratablePages;
   }
 
   /**
@@ -2200,7 +2250,7 @@ class PageService {
    * - page that has the same path as the provided path
    * - pages that are descendants of the above page
    */
-  async updateDescendantCountOfSelfAndDescendants(path) {
+  async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 

@@ -169,8 +169,9 @@ export const collectAncestorPaths = (path: string, ancestorPaths: string[] = [])
  * @returns omitted paths
  */
 export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
-  return paths.filter((path) => {
-    const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
+  const uniquePaths = Array.from(new Set(paths));
+  return uniquePaths.filter((path) => {
+    const isDuplicate = uniquePaths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
 
     return !isDuplicate;
   });
