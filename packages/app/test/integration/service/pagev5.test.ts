@@ -348,10 +348,6 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
     });
   });
-  afterAll(async() => {
-    await Page.remove({});
-    await User.remove({});
-  });
 
   describe('Duplicate', () => {
     test('Should duplicate single page', async() => {
@@ -363,6 +359,10 @@ describe('PageService page operations with only public pages', () => {
     test('Should keep grant', async() => {
       // a
     });
+  });
+  afterAll(async() => {
+    await Page.remove({});
+    await User.remove({});
   });
 });
 
