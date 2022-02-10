@@ -83,6 +83,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     const observerCallback = generateObserverCallback(() => {
       scrollTo(scrollElement);
     });
+
     const observer = new MutationObserver(observerCallback);
     observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
     return () => {
