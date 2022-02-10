@@ -11,7 +11,6 @@ import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
@@ -130,9 +129,35 @@ const UserGroupDetailPage: FC = () => {
     console.log('button clicked!');
   };
 
-  const showDeleteModal = () => {
-    console.log('showDeleteModal');
-  };
+  const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
+    setSelectedUserGroup(group);
+    setDeleteModalShown(true);
+  }, []);
+
+  const hideDeleteModal = useCallback(() => {
+    setSelectedUserGroup(undefined);
+    setDeleteModalShown(false);
+  }, []);
+
+  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+    try {
+      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+        actionName,
+        transferToUserGroupId,
+      });
+
+      // sync
+      await mutateChildUserGroups();
+
+      setSelectedUserGroup(undefined);
+      setDeleteModalShown(false);
+
+      toastSuccess(`Deleted ${res.data.userGroups.length} groups.`);
+    }
+    catch (err) {
+      toastError(new Error('Unable to delete the groups'));
+    }
+  }, [mutateChildUserGroups]);
 
   /*
    * Dependencies
@@ -177,17 +202,16 @@ const UserGroupDetailPage: FC = () => {
             onDelete={showDeleteModal}
             userGroupRelations={userGroupRelations}
           />
-          {/* <UserGroupDeleteModal
+          <UserGroupDeleteModal
             userGroups={childUserGroups}
             deleteUserGroup={selectedUserGroup}
             onDelete={deleteUserGroupById}
             isShow={isDeleteModalShown}
             onShow={showDeleteModal}
             onHide={hideDeleteModal}
-          /> */}
+          />
         </>
       )}
-
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
@@ -195,7 +219,6 @@ const UserGroupDetailPage: FC = () => {
       </div>
     </div>
   );
-
 };
 
 export default UserGroupDetailPage;
