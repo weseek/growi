@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg, usePageRenameModalStatus } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg, usePageRenameModalStatus, usePageDeleteModal } from '~/stores/ui';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -35,6 +35,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
   const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -61,6 +62,11 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
     const { _id: pageId, revision: revisionId, path } = pageData;
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
+
+  const deleteMennuItemClickHandler = useCallback(() => {
+    const { _id: pageId, revision: revisionId, path } = pageData;
+    openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
+  }, [openDeleteModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -121,7 +127,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                 <PageItemControl
                   pageId={pageData._id}
                   pageInfo={pageMeta}
-                  onClickDeleteMenuItem={props.onClickDeleteButton}
+                  onClickDeleteMenuItem={deleteMennuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
                 />
