@@ -426,7 +426,6 @@ export const usePageRenameModalOpened = (): SWRResponse<boolean, Error> => {
 };
 
 // PagePresentationModal
-
 type PresentationModalStatus = {
   isOpened: boolean,
   href?: string
