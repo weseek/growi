@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import {
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -38,7 +38,6 @@ type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
   revisionId: string,
   isLinkSharingDisabled?: boolean,
-  onClickPresentationMenuItem: (isPagePresentationModalShown: boolean) => void,
 }
 
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
@@ -53,12 +52,13 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openPresentationModal } = usePagePresentationModalStatus();
 
   const { open } = usePageAccessoriesModal();
-  const href = '?presentation=1';
+
+  const hrefForPresentationModal = '?presentation=1';
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => openPresentationModal(href)}>
+      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -120,7 +120,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
-  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
@@ -135,8 +134,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
 
   const {
     editorContainer, isCompactMode, isLinkSharingDisabled,
@@ -178,9 +175,9 @@ const GrowiContextualSubNavigation = (props) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
 
-  const presentationMenuItemClickHandler = useCallback(() => {
-    setIsPagePresentationModalShown(true);
-  }, []);
+  // const presentationMenuItemClickHandler = useCallback(() => {
+  //   onClickPresentationMenuItem();
+  // }, []);
 
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
@@ -205,7 +202,6 @@ const GrowiContextualSubNavigation = (props) => {
                   pageId={pageId}
                   revisionId={revisionId}
                   isLinkSharingDisabled={isLinkSharingDisabled}
-                  onClickPresentationMenuItem={presentationMenuItemClickHandler}
                 />
               )}
               onClickDuplicateMenuItem={duplicateItemClickedHandler}
@@ -231,7 +227,6 @@ const GrowiContextualSubNavigation = (props) => {
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, path,
-    presentationMenuItemClickHandler,
   ]);
 
 
