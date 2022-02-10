@@ -275,6 +275,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       try {
         await apiv3Post('/pages/', body);
         mutateChildren();
+        toastSuccess(t('successfully_saved_the_page'));
       }
       catch (err) {
         toastError(err);
