@@ -155,9 +155,8 @@ describe('PageService page operations with only public pages', () => {
       {
         path: '/v5_childForRename5',
         grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        isEmpty: true,
       },
       {
         path: '/v5_childForRename6',
@@ -279,7 +278,7 @@ describe('PageService page operations with only public pages', () => {
     //   expect(pageRedirect.length).toBeGreaterThan(0);
     // });
 
-    test('Should move descendants', async() => {
+    test('Should move with descendants', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
