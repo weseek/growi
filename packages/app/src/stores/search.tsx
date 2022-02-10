@@ -24,11 +24,9 @@ type ISearchConfigurationsFixed = {
   includeUserPages: boolean,
 }
 
-export type ISearchConditions = {
-  conditions: ISearchConfigurationsFixed & {
-    keyword: string,
-    rawQuery: string,
-  }
+export type ISearchConditions = ISearchConfigurationsFixed & {
+  keyword: string,
+  rawQuery: string,
 }
 
 const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeUserPages: boolean): string => {
@@ -47,7 +45,7 @@ const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeU
 
 export const useSWRxFullTextSearch = (
     keyword: string, configurations: ISearchConfigurations,
-): SWRResponse<IFormattedSearchResult, Error> & ISearchConditions => {
+): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
 
   const {
     limit, offset, sort, order, includeTrashPages, includeUserPages,
