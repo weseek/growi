@@ -231,14 +231,14 @@ describe('PageService page operations with only public pages', () => {
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
       // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
-      const argsForCreateAndSendNotifications = mockedResumableRenameDescendants.mock.calls[0];
+      const argsForResumableRenameDescendants = mockedResumableRenameDescendants.mock.calls[0];
 
       // restores the original implementation
       mockedResumableRenameDescendants.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
-      await crowi.pageService.resumableRenameDescendants(...argsForCreateAndSendNotifications);
+      await crowi.pageService.resumableRenameDescendants(...argsForResumableRenameDescendants);
 
       return renamedPage;
     };
