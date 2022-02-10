@@ -2,6 +2,7 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import Xss from '~/services/xss';
@@ -9,6 +10,7 @@ import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/us
 import { CustomWindow } from '~/interfaces/global';
 
 type Props = {
+  headerLabel?: TFunctionResult,
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
   childUserGroups: IUserGroupHasId[],
@@ -90,7 +92,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h2>{t('admin:user_group_management.group_list')}</h2>
+      <h2>{props.headerLabel}</h2>
 
       <table className="table table-bordered table-user-list">
         <thead>
