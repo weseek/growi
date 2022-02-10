@@ -18,7 +18,7 @@ import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
-  isChecked?: boolean, // is checkbox of item checked
+  isCheckedAllItems?: boolean, // is checkbox of item checked
   isEnableActions?: boolean,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
@@ -29,7 +29,7 @@ type Props = {
 export const PageListItemL = memo((props: Props): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions,
+    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isCheckedAllItems, isEnableActions,
     showPageUpdatedTime,
   } = props;
 
@@ -78,7 +78,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                 type="checkbox"
                 id="flexCheckDefault"
                 onChange={() => { onClickCheckbox(pageData._id) }}
-                checked={isChecked}
+                checked={isCheckedAllItems}
               />
             </div>
           )}

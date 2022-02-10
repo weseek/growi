@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import { IPageInfoForEntity, IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
+import React, { FC, useCallback, useState } from 'react';
+import { IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
 import { PageListItemL } from '../PageList/PageListItemL';
@@ -8,30 +9,43 @@ import PaginationWrapper from '../PaginationWrapper';
 
 
 type Props = {
-  pages: IPageWithMeta<IPageInfoForEntity & IPageSearchMeta>[],
-  selectedPagesIdList: Set<string>
-  isEnableActions: boolean,
+  pages: IPageWithMeta<IPageSearchMeta>[],
+  isCheckedAllItems?: boolean,
   searchResultCount?: number,
   activePage?: number,
   pagingLimit?: number,
-  focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
   onPagingNumberChanged?: (activePage: number) => void,
-  onClickItem?: (pageId: string) => void,
+  onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
   onClickCheckbox?: (pageId: string) => void,
-  onClickInvoked?: (pageId: string) => void,
-  onClickDeleteButton?: (pageId: string) => void,
 }
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    pages, focusedSearchResultData, selectedPagesIdList, isEnableActions,
+    pages, isCheckedAllItems,
+    onPageSelected,
   } = props;
+
+  const [selectedPageId, setSelectedPageId] = useState<string>();
 
   const pageIdsWithNoSnippet = pages
     .filter(page => (page.pageMeta?.elasticSearchResult?.snippet.length ?? 0) === 0)
     .map(page => page.pageData._id);
 
+  const { data: isGuestUser } = useIsGuestUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+
+  const clickItemHandler = useCallback((pageId: string) => {
+    setSelectedPageId(pageId);
+
+    if (onPageSelected != null) {
+      const selectedPage = pages.find(page => page.pageData._id === pageId);
+      onPageSelected(selectedPage);
+    }
+  }, [onPageSelected, pages]);
+
+  const clickDeleteButtonHandler = useCallback((pageId: string) => {
+    // TODO implement
+  }, []);
 
   let injectedPage;
   // inject data to list
@@ -54,22 +68,19 @@ const SearchResultList: FC<Props> = (props:Props) => {
     });
   }
 
-  const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <ul className="page-list-ul list-group list-group-flush">
       { (injectedPage ?? pages).map((page) => {
-        const isChecked = selectedPagesIdList.has(page.pageData._id);
-
         return (
           <PageListItemL
             key={page.pageData._id}
             page={page}
-            isEnableActions={isEnableActions}
-            onClickItem={props.onClickItem}
+            isCheckedAllItems={isCheckedAllItems}
+            isEnableActions={isGuestUser}
+            isSelected={page.pageData._id === selectedPageId}
+            onClickItem={clickItemHandler}
             onClickCheckbox={props.onClickCheckbox}
-            isChecked={isChecked}
-            isSelected={page.pageData._id === focusedPageId || false}
-            onClickDeleteButton={props.onClickDeleteButton}
+            onClickDeleteButton={clickDeleteButtonHandler}
           />
         );
       })}
