@@ -26,8 +26,8 @@ export type IFormattedSearchResult = {
 
   meta: {
     total: number
-    took?: number
-    count?: number
+    took: number
+    hitsCount: number
   }
 }
 

@@ -634,7 +634,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       meta: {
         took: result.took,
         total: totalValue,
-        results: result.hits.hits.length,
+        hitsCount: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
         return {

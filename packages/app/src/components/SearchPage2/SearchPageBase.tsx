@@ -57,7 +57,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
               <SearchControl></SearchControl>
 
               <div className="search-result-list-scroll">
-                <div className="d-flex align-items-center justify-content-between my-3 ml-4">
+                <div className="my-3 px-md-4">
                   <SearchResultListHead />
                 </div>
                 <div className="page-list px-md-4">
