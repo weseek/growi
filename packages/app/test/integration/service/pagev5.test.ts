@@ -305,6 +305,18 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.grant).toBe(2);
     });
   });
+
+  describe('Duplicate', () => {
+    test('Should duplicate single page', async() => {
+      // a
+    });
+    test('Should duplicate multiple pages', async() => {
+      // a
+    });
+    test('Should keep grant', async() => {
+      // a
+    });
+  });
 });
 
 describe('PageService page operations with non-public pages', () => {
