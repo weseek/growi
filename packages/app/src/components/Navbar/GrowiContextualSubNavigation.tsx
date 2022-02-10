@@ -229,7 +229,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
-        {currentUser != null && path && (
+        {currentUser != null && (
           <CreateTemplateModal
             path={path}
             isOpen={isPageTemplateModalShown}
