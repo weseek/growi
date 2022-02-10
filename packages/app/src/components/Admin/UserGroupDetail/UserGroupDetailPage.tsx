@@ -4,10 +4,12 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupTable from '../UserGroup/UserGroupTable';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import {
@@ -18,10 +20,15 @@ import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId, IUserGroupRelation,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxSelectableUserGroups } from '~/stores/user-group';
+import {
+  useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+} from '~/stores/user-group';
 
+type Props = {
+  appContainer: AppContainer,
+};
 
-const UserGroupDetailPage: FC = () => {
+const UserGroupDetailPage: FC<Props> = (props: Props) => {
   const rootElem = document.getElementById('admin-user-group-detail');
   const { t } = useTranslation();
 
@@ -29,11 +36,7 @@ const UserGroupDetailPage: FC = () => {
    * State (from AdminUserGroupDetailContainer)
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-
-  // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
-  const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
   const [grandChildUserGroups, setGrandChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
-
   const [childUserGroupRelations, setChildUserGroupRelations] = useState<IUserGroupRelation[]>([]); // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
@@ -46,6 +49,7 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+  const { data: childUserGroups, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], false);
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   /*
@@ -112,9 +116,10 @@ const UserGroupDetailPage: FC = () => {
         name: selectedUserGroup.name,
         description: selectedUserGroup.description,
         parentId: userGroup._id,
-        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
+        forceUpdateParents: true, //  TODO 87748: Make forceUpdateParents optionally selectable
       });
       mutateSelectableUserGroups();
+      mutateChildUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -160,6 +165,15 @@ const UserGroupDetailPage: FC = () => {
         onClickAddExistingUserGroupButtonHandler={onClickAddChildButtonHandler}
         onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
       />
+
+      {/* <UserGroupTable
+        appContainer={props.appContainer}
+        userGroups={userGroups}
+        childUserGroups={childUserGroups}
+        isAclEnabled={isAclEnabled}
+        onDelete={showDeleteModal}
+        userGroupRelations={userGroupRelations}
+      /> */}
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
