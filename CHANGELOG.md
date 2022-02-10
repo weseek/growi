@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.13...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.14](https://github.com/weseek/growi/compare/v4.5.13...v4.5.14) - 2022-02-10
+
+### 💎 Features
+
+- feat: OGP in public wiki (#5304) @yuto-oweseek
 
 ## [v4.5.13](https://github.com/weseek/growi/compare/v4.5.12...v4.5.13) - 2022-02-08
 
