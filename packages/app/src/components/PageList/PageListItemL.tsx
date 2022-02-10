@@ -58,7 +58,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const onClickDuplicateMenuItem = () => {
-    if (pageData._id != null && pageData.path != null) {
+    if (!pageData.isEmpty) {
       openDuplicateModal(pageData._id, pageData.path);
     }
   };
