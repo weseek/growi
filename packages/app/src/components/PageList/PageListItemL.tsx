@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg, usePageRenameModalStatus } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg, usePageRenameModalStatus, usePageDuplicateModalStatus } from '~/stores/ui';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -34,6 +34,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
   const { open: openRenameModal } = usePageRenameModalStatus();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
@@ -56,6 +57,11 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       onClickItem(pageData._id);
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+  const duplicateMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal, pageData]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, revision: revisionId, path } = pageData;
@@ -124,6 +130,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                   onClickDeleteMenuItem={props.onClickDeleteButton}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
+                  onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                 />
               </div>
             </div>
