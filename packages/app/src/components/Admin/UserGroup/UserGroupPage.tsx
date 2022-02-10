@@ -130,7 +130,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         (userGroups != null && userGroupRelations != null && childUserGroups != null) && (
           <>
             <UserGroupTable
-              headerLabel={t('admin:user_group_management.group_list')}
               userGroups={userGroups}
               childUserGroups={childUserGroups}
               isAclEnabled={isAclEnabled}
