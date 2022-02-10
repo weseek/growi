@@ -61,6 +61,22 @@ const scrollTo = (scrollElement:HTMLElement) => {
   }
 };
 
+const MutationObserverWrapper = (scrollElement:HTMLElement) => {
+  const observerCallback = (mutationRecords) => {
+    mutationRecords.forEach((record) => {
+      const targetId = record.target.id;
+      if (targetId !== 'wiki') return;
+      scrollTo(scrollElement);
+    });
+  };
+
+  const observer = new MutationObserver(observerCallback);
+  observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
+  return () => {
+    observer.disconnect();
+  };
+};
+
 const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
@@ -68,18 +84,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   useEffect(() => {
     const scrollElement = scrollElementRef.current as HTMLElement | null;
     if (scrollElement == null) return;
-    const observerCallback = (mutationRecords) => {
-      mutationRecords.forEach((record) => {
-        const targetId = record.target.id;
-        if (targetId !== 'wiki') return;
-        scrollTo(scrollElement);
-      });
-    };
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-    return () => {
-      observer.disconnect();
-    };
+    MutationObserverWrapper(scrollElement);
   });
   // *******************************  end  *******************************
 
