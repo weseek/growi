@@ -55,20 +55,13 @@ module.exports = function(crowi) {
 
     const { configManager } = crowi;
     const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
+    const page = req.body.page;
 
-    const pageId = req.params.pageId;
     let user;
     let pageTitle: string;
     let bufferedUserImage: Buffer;
 
     try {
-      const Page = crowi.model('Page');
-      const page = await Page.findByIdAndViewer(pageId);
-
-      if (page == null || page.status !== Page.STATUS_PUBLISHED || (page.grant !== Page.GRANT_PUBLIC && page.grant !== Page.GRANT_RESTRICTED)) {
-        return res.status(400).send('the page does not exist');
-      }
-
       const User = crowi.model('User');
       user = await User.findById(page.creator._id.toString());
 
@@ -121,6 +114,22 @@ module.exports = function(crowi) {
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
+
+      try {
+        const Page = crowi.model('Page');
+        const page = await Page.findByIdAndViewer(req.params.pageId);
+
+        if (page == null || page.status !== Page.STATUS_PUBLISHED || (page.grant !== Page.GRANT_PUBLIC && page.grant !== Page.GRANT_RESTRICTED)) {
+          return res.status(400).send('the page does not exist');
+        }
+
+        req.body.page = page;
+      }
+      catch (error) {
+        logger.error(error);
+        return res.status(500).send(`error: ${error}`);
+      }
+
       return next();
     }
 
