@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
+import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
@@ -111,7 +112,10 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
               {/* page title */}
               <Clamp lines={1}>
                 <span className="h5 mb-0">
-                  <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />
+                  {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
+                  <span className="grw-page-path-hierarchical-link text-break">
+                    <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                  </span>
                 </span>
               </Clamp>
 
