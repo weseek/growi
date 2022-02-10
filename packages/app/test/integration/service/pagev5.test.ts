@@ -257,7 +257,6 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should move to under non-empty page', async() => {
-
       // rename target page
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
