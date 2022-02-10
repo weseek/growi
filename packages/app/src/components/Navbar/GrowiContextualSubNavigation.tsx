@@ -58,7 +58,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
   const { open: openPresentationModal } = usePagePresentationModalStatus();
 
-  const { open } = usePageAccessoriesModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
   const hrefForPresentationModal = '?presentation=1';
 
@@ -83,7 +83,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         refs: PageAccessoriesModalControl
       */}
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
       >
         <span className="mr-1"><HistoryIcon /></span>
@@ -91,14 +91,14 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
       >
         <span className="mr-1"><ShareLinkIcon /></span>
