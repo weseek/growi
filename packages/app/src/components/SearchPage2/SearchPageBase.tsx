@@ -14,13 +14,15 @@ type Props = {
 
   SearchControl: React.FunctionComponent,
   SearchResultListHead: React.FunctionComponent,
+  SearchPager: React.FunctionComponent,
+
 }
 
 const SearchPageBase: FC<Props> = (props: Props) => {
   const {
     appContainer,
     pages,
-    SearchControl, SearchResultListHead,
+    SearchControl, SearchResultListHead, SearchPager,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -31,14 +33,15 @@ const SearchPageBase: FC<Props> = (props: Props) => {
   const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
 
-  const isLoading = pages == null;
-
   // select first item on load
   useEffect(() => {
     if (selectedPageWithMeta == null && pages != null && pages.length > 0) {
       setSelectedPageWithMeta(pages[0]);
     }
   }, [pages, selectedPageWithMeta]);
+
+  const isLoading = pages == null;
+
 
   return (
     <div className="content-main">
@@ -66,6 +69,9 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                     selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
                   />
+                </div>
+                <div className="my-4 d-flex justify-content-center">
+                  <SearchPager />
                 </div>
               </div>
 

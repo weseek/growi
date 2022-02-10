@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 
 import { useSWRxFullTextSearch } from '~/stores/search';
+import PaginationWrapper from './PaginationWrapper';
 
 import SearchPageBase from './SearchPage2/SearchPageBase';
 
@@ -67,8 +68,12 @@ export const SearchPage = (props: Props): JSX.Element => {
   } = props;
 
   const { data, conditions } = useSWRxFullTextSearch('sand', {
-    limit: 20,
+    limit: 5,
   });
+
+  const pagingNumberChangedHandler = useCallback((activePage: number) => {
+    // TODO implement
+  }, []);
 
   return (
     <SearchPageBase
@@ -89,6 +94,24 @@ export const SearchPage = (props: Props): JSX.Element => {
             offset={conditions.offset}
             pagingSize={conditions.limit}
             onPagingSizeChanged={() => {}}
+          />
+        );
+      }}
+      SearchPager={() => {
+        // when pager is not needed
+        if (data == null || data.meta.hitsCount === data.meta.total) {
+          return <></>;
+        }
+
+        const { total } = data.meta;
+        const { offset, limit } = conditions;
+
+        return (
+          <PaginationWrapper
+            activePage={Math.floor(offset / limit) + 1}
+            totalItemsCount={total}
+            pagingLimit={limit}
+            changePage={pagingNumberChangedHandler}
           />
         );
       }}

@@ -1,21 +1,16 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback } from 'react';
 import { IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
 import { PageListItemL } from '../PageList/PageListItemL';
-import PaginationWrapper from '../PaginationWrapper';
 
 
 type Props = {
   pages: IPageWithMeta<IPageSearchMeta>[],
   isCheckedAllItems?: boolean,
-  searchResultCount?: number,
   selectedPageId?: string,
-  activePage?: number,
-  pagingLimit?: number,
-  onPagingNumberChanged?: (activePage: number) => void,
   onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
   onClickCheckbox?: (pageId: string) => void,
 }
@@ -81,17 +76,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
           />
         );
       })}
-      {props.searchResultCount != null && props.searchResultCount > 0 && (
-        <div className="my-4 mx-auto">
-          <PaginationWrapper
-            activePage={props.activePage || 1}
-            changePage={props.onPagingNumberChanged}
-            totalItemsCount={props.searchResultCount || 0}
-            pagingLimit={props.pagingLimit}
-          />
-        </div>
-      )}
-
     </ul>
   );
 
