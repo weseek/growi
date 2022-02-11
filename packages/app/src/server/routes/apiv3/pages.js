@@ -274,10 +274,10 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, csrf, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, createFromPageTree,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
 
-    let { path, body } = req.body;
+    let { path } = req.body;
 
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
@@ -286,11 +286,6 @@ module.exports = (crowi) => {
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
-    }
-
-    const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
-    if (createFromPageTree && isEnabledAttachTitleHeader) {
-      body = `# ${path}`;
     }
 
     let createdPage;
