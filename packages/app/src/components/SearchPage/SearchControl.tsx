@@ -1,4 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC, useCallback, useEffect, useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
@@ -15,10 +17,10 @@ type Props = {
   initialSearchConditions?: Partial<ISearchConditions>,
   onClickDeleteAllButton?: () => void
   onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
-  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
+  onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 }
 
-const SearchControl: FC <Props> = (props: Props) => {
+const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
     disableSelectAllbutton,
@@ -29,8 +31,8 @@ const SearchControl: FC <Props> = (props: Props) => {
   const [keyword, setKeyword] = useState(initialSearchConditions?.keyword ?? '');
   const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions?.sort ?? SORT_AXIS.RELATION_SCORE);
   const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions?.order ?? SORT_ORDER.DESC);
-  const [includeUserPages, setIncludeUserPages] = useState(true);
-  const [includeTrashPages, setIncludeTrashPages] = useState(true);
+  const [includeUserPages, setIncludeUserPages] = useState(initialSearchConditions?.includeUserPages ?? false);
+  const [includeTrashPages, setIncludeTrashPages] = useState(initialSearchConditions?.includeTrashPages ?? false);
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
 
   const { t } = useTranslation('');
@@ -43,25 +45,22 @@ const SearchControl: FC <Props> = (props: Props) => {
     onSearchInvoked(keyword, {
       sort, order, includeUserPages, includeTrashPages,
     });
-  }, [includeTrashPages, includeUserPages, keyword, onSearchInvoked, order, sort]);
+  }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
 
-  const searchFormChangedHandler = useCallback((keyword: string) => {
-    setKeyword(keyword);
-
-    // invoke search
-    invokeSearch();
-  }, [invokeSearch]);
+  const searchFormChangedHandler = useCallback(({ keyword }) => {
+    setKeyword(keyword as string);
+  }, []);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
     setSort(nextSort);
     setOrder(nextOrder);
+  }, []);
 
-    // invoke search
+  const clickSearchBySearchOptionModalHandler = useCallback(() => {
     invokeSearch();
   }, [invokeSearch]);
 
-  const clickSearchBySearchOptionModalHandler = useCallback(() => {
-    // invoke search
+  useEffect(() => {
     invokeSearch();
   }, [invokeSearch]);
 
@@ -121,6 +120,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckDefault"
+                  defaultChecked={includeUserPages}
                   onChange={e => setIncludeUserPages(e.target.checked)}
                 />
                 {t('Include Subordinated Target Page', { target: '/user' })}
@@ -134,6 +134,7 @@ const SearchControl: FC <Props> = (props: Props) => {
                   className="mr-2"
                   type="checkbox"
                   id="flexCheckChecked"
+                  defaultChecked={includeTrashPages}
                   onChange={e => setIncludeTrashPages(e.target.checked)}
                 />
                 {t('Include Subordinated Target Page', { target: '/trash' })}
@@ -155,7 +156,7 @@ const SearchControl: FC <Props> = (props: Props) => {
 
     </div>
   );
-};
+});
 
 
 export default SearchControl;

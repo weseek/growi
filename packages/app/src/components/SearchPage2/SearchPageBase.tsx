@@ -1,4 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, {
+  FC, useEffect, useState,
+} from 'react';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
@@ -58,24 +60,24 @@ const SearchPageBase: FC<Props> = (props: Props) => {
 
   const isLoading = pages == null;
 
-
   return (
     <div className="content-main">
       <div className="search-result d-flex" id="search-result">
 
-        { isLoading && (
-          <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
-        ) }
+        <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
 
-        { !isLoading && (
-          <>
-            <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
+          <SearchControl></SearchControl>
 
-              <SearchControl></SearchControl>
+          <div className="search-result-list-scroll">
 
-              <div className="search-result-list-scroll">
+            { isLoading && (
+              <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
+                <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+              </div>
+            ) }
+
+            { !isLoading && (
+              <>
                 <div className="my-3 px-md-4">
                   <SearchResultListHead />
                 </div>
@@ -90,22 +92,23 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                 <div className="my-4 d-flex justify-content-center">
                   <SearchPager />
                 </div>
-              </div>
+              </>
+            ) }
 
-            </div>
+          </div>
 
-            <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
-              { selectedPageWithMeta != null && (
-                <SearchResultContent
-                  appContainer={appContainer}
-                  pageWithMeta={selectedPageWithMeta}
-                  highlightKeywords={highlightKeywords}
-                  showPageControlDropdown={isGuestUser}
-                />
-              )}
-            </div>
-          </>
-        ) }
+        </div>
+
+        <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
+          { selectedPageWithMeta != null && (
+            <SearchResultContent
+              appContainer={appContainer}
+              pageWithMeta={selectedPageWithMeta}
+              highlightKeywords={highlightKeywords}
+              showPageControlDropdown={isGuestUser}
+            />
+          )}
+        </div>
 
       </div>
     </div>
