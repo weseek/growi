@@ -10,7 +10,7 @@ import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
@@ -57,12 +57,15 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { open } = usePageAccessoriesModal();
+  const { open: openPresentationModal } = usePagePresentationModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModal();
+
+  const hrefForPresentationModal = '?presentation=1';
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
+      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -80,7 +83,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         refs: PageAccessoriesModalControl
       */}
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
       >
         <span className="mr-1"><HistoryIcon /></span>
@@ -88,14 +91,14 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
       >
         <span className="mr-1"><ShareLinkIcon /></span>
