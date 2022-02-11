@@ -148,7 +148,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const { t } = useTranslation();
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 

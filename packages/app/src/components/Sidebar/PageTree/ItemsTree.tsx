@@ -6,9 +6,9 @@ import { ItemNode } from './ItemNode';
 import Item from './Item';
 import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 import {
-  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
@@ -64,7 +64,7 @@ const renderByInitialNode = (
     targetPathOrId?: string,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 ): JSX.Element => {
 
   return (
@@ -92,14 +92,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions,
   } = props;
 
-  const { t } = useTranslation();
-
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
-  const { data: deleteModalData, open: openDeleteModal } = usePageDeleteModal();
-  console.log('deleteModalData_ItemsTree', deleteModalData);
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   useEffect(() => {
     const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
@@ -119,8 +116,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   };
 
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], true);
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely: boolean) => {
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely);
   };
 
   if (error1 != null || error2 != null) {
