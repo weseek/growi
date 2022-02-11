@@ -98,6 +98,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
+  const { data: deleteModalData, open: openDeleteModal } = usePageDeleteModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   useEffect(() => {
@@ -144,7 +145,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], onDeletedHandler);
+    openDeleteModal([pageToDelete], onDeletedHandler, false, true);
   };
 
   if (error1 != null || error2 != null) {

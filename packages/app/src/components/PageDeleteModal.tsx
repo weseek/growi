@@ -26,22 +26,15 @@ const deleteIconAndKey = {
   },
 };
 
-type Props = {
-  isDeleteCompletelyModal: boolean,
-  isAbleToDeleteCompletely: boolean,
-  onClose?: () => void,
-}
-
-const PageDeleteModal: FC<Props> = (props: Props) => {
+const PageDeleteModal: FC = () => {
   const { t } = useTranslation('');
-  const {
-    isDeleteCompletelyModal, isAbleToDeleteCompletely,
-  } = props;
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened != null ? deleteModalData.isOpened : false;
   const onDeleted = deleteModalData?.onDeleted != null ? deleteModalData.onDeleted : null;
+  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal != null ? deleteModalData.isDeleteCompletelyModal : false;
+  const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely != null ? deleteModalData.isAbleToDeleteCompletely : false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
