@@ -35,6 +35,8 @@ const PageDeleteModal: FC = () => {
   const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal != null ? deleteModalData.isDeleteCompletelyModal : false;
   const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely != null ? deleteModalData.isAbleToDeleteCompletely : false;
 
+  console.log('isDeleteCompletelyModal', isDeleteCompletelyModal);
+
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
@@ -69,15 +71,11 @@ const PageDeleteModal: FC = () => {
         const pageIdToRevisionIdMap = {};
         deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
 
-        const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
+        await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
           isRecursively,
           isCompletely,
         });
-
-        if (onDeleted != null) {
-          onDeleted(data.paths, data.isRecursively, data.isCompletely);
-        }
       }
       catch (err) {
         setErrs([err]);
@@ -93,16 +91,12 @@ const PageDeleteModal: FC = () => {
 
         const page = deleteModalData.pages[0];
 
-        const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
+        await apiPost('/pages.remove', {
           page_id: page.pageId,
           revision_id: page.revisionId,
           recursively,
           completely,
         }) as IDeleteSinglePageApiv1Result;
-
-        if (onDeleted != null) {
-          onDeleted(path, isRecursively, isCompletely);
-        }
       }
       catch (err) {
         setErrs([err]);
