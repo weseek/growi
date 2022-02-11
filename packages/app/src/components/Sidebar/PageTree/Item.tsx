@@ -267,6 +267,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
     if (!isCreatable) {
+      toastWarning(t('you_can_not_create_page_with_this_name'));
       return;
     }
 
