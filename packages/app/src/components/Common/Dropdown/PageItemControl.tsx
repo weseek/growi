@@ -46,9 +46,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
 
-  console.log('pageInfo_pageItemControl', pageInfo);
-
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
     if (!isIPageInfoForOperation(pageInfo) || onClickBookmarkMenuItem == null) {
