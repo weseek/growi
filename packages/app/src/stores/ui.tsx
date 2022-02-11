@@ -253,7 +253,9 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
-// PageCreateModal
+/*
+* PageCreateModal
+*/
 type CreateModalStatus = {
   isOpened: boolean,
   path?: string,
@@ -297,7 +299,9 @@ export const useCreateModalPath = (): SWRResponse<string | null | undefined, Err
   );
 };
 
-// PageDeleteModal
+/*
+* PageDeleteModal
+*/
 export type IPageForPageDeleteModal = {
   pageId: string,
   revisionId?: string,
@@ -343,7 +347,9 @@ export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | nul
   );
 };
 
-// PageDuplicateModal
+/*
+* PageDuplicateModal
+*/
 export type IPageForPageDuplicateModal = {
   pageId: string,
   path: string
@@ -372,7 +378,9 @@ export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRRespons
 };
 
 
-// PageRenameModal
+/*
+* PageRenameModal
+*/
 export type IPageForPageRenameModal = {
   pageId: string,
   revisionId: string,
@@ -406,7 +414,9 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
   };
 };
 
-// PagePresentationModal
+/*
+* PagePresentationModal
+*/
 type PresentationModalStatus = {
   isOpened: boolean,
   href?: string
@@ -432,7 +442,9 @@ export const usePagePresentationModal = (
   };
 };
 
-
+/*
+* DescendantsPageListModal
+*/
 type DescendantsPageListModalStatus = {
   isOpened: boolean,
   path?: string,
@@ -457,7 +469,9 @@ export const useDescendantsPageListModal = (
   };
 };
 
-
+/*
+* PageAccessoriesModal
+*/
 export const PageAccessoriesModalContents = {
   PageHistory: 'PageHistory',
   Attachment: 'Attachment',
