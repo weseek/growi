@@ -32,8 +32,8 @@ const PageDeleteModal: FC = () => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened != null ? deleteModalData.isOpened : false;
-  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal != null ? deleteModalData.isDeleteCompletelyModal : false;
   const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely != null ? deleteModalData.isAbleToDeleteCompletely : false;
+  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal != null ? deleteModalData.isDeleteCompletelyModal : false;
 
   console.log('isDeleteCompletelyModal', isDeleteCompletelyModal);
 
@@ -141,13 +141,10 @@ const PageDeleteModal: FC = () => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          // disabled={!isAbleToDeleteCompletely}
-          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          disabled={!isAbleToDeleteCompletely}
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
-        {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
         <label className="custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
