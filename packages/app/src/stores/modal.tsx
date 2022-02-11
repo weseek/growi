@@ -62,7 +62,6 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
-  console.log('usePageDeleteModal_status', status);
   return {
     ...swrResponse,
     open: (
