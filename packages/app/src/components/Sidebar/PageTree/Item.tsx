@@ -22,7 +22,10 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
+import AppContainer from '~/client/services/AppContainer';
+
 interface ItemProps {
+  appContainer: AppContainer
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
@@ -262,11 +265,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
+    let initialBody = '';
+
+    const isEnabledAttachTitleHeader = props.appContainer.getConfig().isEnabledAttachTitleHeader;
+    if (isEnabledAttachTitleHeader) {
+      initialBody = `# ${newPagePath}`;
+    }
 
     if (isCreatable) {
       const body = {
         path: newPagePath,
-        body: '',
+        body: initialBody,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
@@ -404,6 +413,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isOpen && hasChildren() && currentChildren.map(node => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
+              appContainer={props.appContainer}
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}

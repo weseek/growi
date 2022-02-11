@@ -13,6 +13,8 @@ import {
 } from '~/stores/ui';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
+import AppContainer from '~/client/services/AppContainer';
+
 /*
  * Utility to generate initial node
  */
@@ -30,7 +32,8 @@ const generateInitialNodeBeforeResponse = (targetAndAncestors: Partial<IPageHasI
   return rootNode;
 };
 
-const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPageHasId>[]>, rootNode: ItemNode): ItemNode => {
+const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Partial<IPageHasId>[]>, rootNode: ItemNode):
+ItemNode => {
   const paths = Object.keys(ancestorsChildren);
 
   let currentNode = rootNode;
@@ -53,6 +56,7 @@ const generateInitialNodeAfterResponse = (ancestorsChildren: Record<string, Part
 };
 
 type ItemsTreeProps = {
+  appContainer: AppContainer
   isEnableActions: boolean
   targetPath: string
   targetPathOrId?: string
@@ -60,6 +64,7 @@ type ItemsTreeProps = {
 }
 
 const renderByInitialNode = (
+    appContainer: AppContainer,
     initialNode: ItemNode,
     isEnableActions: boolean,
     targetPathOrId?: string,
@@ -71,6 +76,7 @@ const renderByInitialNode = (
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item
+        appContainer={appContainer}
         key={initialNode.page.path}
         targetPathOrId={targetPathOrId}
         itemNode={initialNode}
@@ -159,7 +165,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      props.appContainer, initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   /*
@@ -167,7 +175,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      props.appContainer, initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   return null;
