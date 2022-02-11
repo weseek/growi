@@ -12,6 +12,10 @@ export interface AbstractEditorProps extends ICodeMirror {
   onCtrlEnter?: (event: Event) => void;
 }
 
+interface defaultProps {
+  isGfmMode: true,
+}
+
 export default class AbstractEditor<T extends AbstractEditorProps> extends React.Component<T, Record<string, unknown>> {
 
   constructor(props: Readonly<T>) {
@@ -28,6 +32,10 @@ export default class AbstractEditor<T extends AbstractEditorProps> extends React
 
     this.dispatchSave = this.dispatchSave.bind(this);
   }
+
+  public static defaultProps: defaultProps = {
+    isGfmMode: true,
+  };
 
   forceToFocus(): void {}
 
