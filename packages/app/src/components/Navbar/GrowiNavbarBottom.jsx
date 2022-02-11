@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-import { useCreateModalStatus, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { usePageCreateModal, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 
 import GlobalSearch from './GlobalSearch';
@@ -11,7 +11,7 @@ const GrowiNavbarBottom = (props) => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const { open: openCreateModal } = useCreateModalStatus();
+  const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
 

@@ -266,7 +266,7 @@ type CreateModalStatusUtils = {
   close(): Promise<CreateModalStatus | undefined>
 }
 
-export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
+export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
   const initialData: CreateModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
 
@@ -275,28 +275,6 @@ export const useCreateModalStatus = (status?: CreateModalStatus): SWRResponse<Cr
     open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
-};
-
-export const useCreateModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = useCreateModalStatus();
-  return useSWR(
-    data != null ? ['isCreaateModalOpened', data] : null,
-    () => {
-      return data != null ? data.isOpened : false;
-    },
-  );
-};
-
-export const useCreateModalPath = (): SWRResponse<string | null | undefined, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: status } = useCreateModalStatus();
-
-  return useSWR(
-    currentPagePath != null && status != null ? [currentPagePath, status] : null,
-    (currentPagePath, status) => {
-      return status?.path || currentPagePath;
-    },
-  );
 };
 
 /*
