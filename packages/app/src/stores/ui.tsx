@@ -294,18 +294,13 @@ type DeleteModalStatus = {
   onDeleted?: OnDeletedFunction,
 }
 
-type DeleteModalOpened = {
-  isOpend: boolean,
-  onDeleted?: OnDeletedFunction,
-}
-
 type DeleteModalStatusUtils = {
   open(pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
 
 export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
-  const initialData: DeleteModalStatus = { isOpened: false };
+  const initialData: DeleteModalStatus = { isOpened: false, pages: [], onDeleted: () => {} };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
@@ -313,16 +308,6 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     open: (pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
-};
-
-export const usePageDeleteModalOpened = (): SWRResponse<(DeleteModalOpened | null), Error> => {
-  const { data } = usePageDeleteModal();
-  return useSWRImmutable(
-    data != null ? ['isDeleteModalOpened', data] : null,
-    () => {
-      return data != null ? { isOpend: data.isOpened, onDeleted: data?.onDeleted } : null;
-    },
-  );
 };
 
 /*
