@@ -360,7 +360,7 @@ type DuplicateModalStatusUtils = {
   close(): Promise<DuplicateModalStatus | undefined>
 }
 
-export const usePageDuplicateModalStatus = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
+export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
   const initialData: DuplicateModalStatus = { isOpened: false, pageId: '', path: '' };
   const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
@@ -371,15 +371,6 @@ export const usePageDuplicateModalStatus = (status?: DuplicateModalStatus): SWRR
   };
 };
 
-export const usePageDuplicateModalOpened = (): SWRResponse<boolean, Error> => {
-  const { data } = usePageDuplicateModalStatus();
-  return useSWRImmutable(
-    data != null ? ['isDuplicateModalOpened', data] : null,
-    () => {
-      return data != null ? data.isOpened : false;
-    },
-  );
-};
 
 // PageRenameModal
 export type IPageForPageRenameModal = {

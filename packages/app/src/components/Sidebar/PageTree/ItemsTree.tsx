@@ -8,7 +8,7 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, usePageDuplicateModalStatus, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
   OnDeletedFunction,
 } from '~/stores/ui';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
@@ -97,7 +97,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 

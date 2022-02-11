@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { usePageDuplicateModalStatus, usePageDuplicateModalOpened } from '~/stores/ui';
+import { usePageDuplicateModal } from '~/stores/ui';
 
 import AppContainer from '~/client/services/AppContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -27,10 +27,9 @@ const PageDuplicateModal = (props) => {
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const { crowi } = appContainer.config;
-  const { data: pagesDataToDuplicate, close: closeDuplicateModal } = usePageDuplicateModalStatus();
-  const { data: isOpened } = usePageDuplicateModalOpened();
+  const { data: pagesDataToDuplicate, close: closeDuplicateModal } = usePageDuplicateModal();
 
-  const { path, pageId } = pagesDataToDuplicate;
+  const { isOpened, path, pageId } = pagesDataToDuplicate;
 
   const [pageNameInput, setPageNameInput] = useState(path);
 
