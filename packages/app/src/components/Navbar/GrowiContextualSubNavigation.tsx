@@ -13,7 +13,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal,
 } from '~/stores/modal';
 
 
@@ -148,6 +148,8 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
+  const { t } = useTranslation();
+
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
@@ -186,8 +188,34 @@ const GrowiContextualSubNavigation = (props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
+  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+
+    if (isRecursively) {
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page_recursively', { path }));
+      }
+    }
+    else {
+      // eslint-disable-next-line no-lonely-if
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page', { path }));
+      }
+    }
+  };
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], onDeletedHandler, false, isAbleToDeleteCompletely);
   }, [openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
