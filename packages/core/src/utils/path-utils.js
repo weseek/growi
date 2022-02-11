@@ -106,3 +106,7 @@ export function normalizePath(path) {
   }
   return `/${match[3]}`;
 }
+
+export function attachTitleHeader(path) {
+  return `# ${path}`;
+}

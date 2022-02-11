@@ -269,7 +269,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     const isEnabledAttachTitleHeader = props.appContainer.getConfig().isEnabledAttachTitleHeader;
     if (isEnabledAttachTitleHeader) {
-      initialBody = `# ${newPagePath}`;
+      initialBody = pathUtils.attachTitleHeader(newPagePath);
     }
 
     if (isCreatable) {
