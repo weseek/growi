@@ -98,11 +98,11 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const page = focusedSearchResultData?.pageData;
+
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const page = focusedSearchResultData?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -115,8 +115,8 @@ const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
+  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely);
   }, [openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
@@ -146,7 +146,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
