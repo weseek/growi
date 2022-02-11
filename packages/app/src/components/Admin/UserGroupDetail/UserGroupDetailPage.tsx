@@ -31,7 +31,6 @@ const UserGroupDetailPage: FC = () => {
    * State (from AdminUserGroupDetailContainer)
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-  const [grandChildUserGroups, setGrandChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
   const [childUserGroupRelations, setChildUserGroupRelations] = useState<IUserGroupRelation[]>([]); // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
@@ -46,8 +45,11 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const { data: childUserGroups, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], false);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
+  const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
 
   /*
    * Function
@@ -193,11 +195,11 @@ const UserGroupDetailPage: FC = () => {
         onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
       />
 
-      { (childUserGroups != null && userGroupRelations != null) && (
+      { userGroupRelations && (
         <>
           <UserGroupTable
             userGroups={childUserGroups}
-            childUserGroups={[]}
+            childUserGroups={grandChildUserGroups}
             isAclEnabled
             onDelete={showDeleteModal}
             userGroupRelations={userGroupRelations}
