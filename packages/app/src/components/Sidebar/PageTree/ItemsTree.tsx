@@ -99,7 +99,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { data: deleteModalData, open: openDeleteModal } = usePageDeleteModal();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  console.log('deleteModalData_ItemsTree', deleteModalData);
 
   useEffect(() => {
     const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
@@ -118,34 +118,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
-    }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
-    }
-  };
 
   const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], onDeletedHandler, false, true);
+    openDeleteModal([pageToDelete], true);
   };
 
   if (error1 != null || error2 != null) {

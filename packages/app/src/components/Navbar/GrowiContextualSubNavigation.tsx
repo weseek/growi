@@ -188,34 +188,9 @@ const GrowiContextualSubNavigation = (props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
-    }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
-    }
-  };
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
-    openDeleteModal([pageToDelete], onDeletedHandler, false, isAbleToDeleteCompletely);
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely);
   }, [openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {

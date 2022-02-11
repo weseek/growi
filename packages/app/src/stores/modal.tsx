@@ -36,22 +36,19 @@ export type IPageForPageDeleteModal = {
   path: string
 }
 
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
-  onDeleted?: OnDeletedFunction,
-  isDeleteCompletelyModal?: boolean,
   isAbleToDeleteCompletely?: boolean,
+  isDeleteCompletelyModal?: boolean,
 }
 
 type DeleteModalStatusUtils = {
   open(
     pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
-    isDeleteCompletelyModal?: boolean,
     isAbleToDeleteCompletely?: boolean,
+    isDeleteCompletelyModal?: boolean,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
@@ -60,21 +57,20 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   const initialData: DeleteModalStatus = {
     isOpened: false,
     pages: [],
-    onDeleted: () => {},
-    isDeleteCompletelyModal: false,
     isAbleToDeleteCompletely: false,
+    isDeleteCompletelyModal: false,
   };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
+  console.log('usePageDeleteModal_status', status);
   return {
     ...swrResponse,
     open: (
         pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
-        isDeleteCompletelyModal?: boolean,
         isAbleToDeleteCompletely?: boolean,
+        isDeleteCompletelyModal?: boolean,
     ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isDeleteCompletelyModal, isAbleToDeleteCompletely,
+      isOpened: true, pages, isDeleteCompletelyModal, isAbleToDeleteCompletely,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
