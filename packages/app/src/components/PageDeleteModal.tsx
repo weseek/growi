@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { usePageDeleteModal } from '~/stores/ui';
+import { usePageDeleteModal } from '~/stores/modal';
 
 import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 

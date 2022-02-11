@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { usePageDuplicateModal } from '~/stores/ui';
+import { usePageDuplicateModal } from '~/stores/modal';
 
 import AppContainer from '~/client/services/AppContainer';
 import PagePathAutoComplete from './PagePathAutoComplete';

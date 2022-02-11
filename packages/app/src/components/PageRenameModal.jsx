@@ -10,7 +10,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
-import { usePageRenameModal } from '~/stores/ui';
+import { usePageRenameModal } from '~/stores/modal';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 

@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
 
-import { usePageCreateModal } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { withUnstatedContainers } from './UnstatedUtils';

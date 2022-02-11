@@ -7,7 +7,8 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd, usePageCreateModal } from '~/stores/ui';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
 import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';

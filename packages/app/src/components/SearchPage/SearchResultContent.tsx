@@ -17,7 +17,7 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/ui';
+import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {

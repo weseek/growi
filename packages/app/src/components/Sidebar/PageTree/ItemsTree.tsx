@@ -8,9 +8,8 @@ import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/p
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
-  OnDeletedFunction,
-} from '~/stores/ui';
+  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+} from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 /*

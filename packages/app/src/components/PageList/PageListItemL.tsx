@@ -6,7 +6,8 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg, usePageRenameModal, usePageDuplicateModal } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { usePageRenameModal, usePageDuplicateModal } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';

@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-import { usePageCreateModal, useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
 
 import GlobalSearch from './GlobalSearch';
