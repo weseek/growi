@@ -265,18 +265,18 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
-    let body = '';
+    let initBody = '';
 
     const isEnabledAttachTitleHeader = props.appContainer.getConfig().isEnabledAttachTitleHeader;
     if (isEnabledAttachTitleHeader) {
-      body = pathUtils.attachTitleHeader(newPagePath);
+      initBody = pathUtils.attachTitleHeader(newPagePath);
     }
 
     if (isCreatable) {
       try {
         await apiv3Post('/pages/', {
           path: newPagePath,
-          body,
+          body: initBody,
           grant: page.grant,
           grantUserGroupId: page.grantedGroup,
           createFromPageTree: true,
