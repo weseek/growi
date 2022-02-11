@@ -17,7 +17,7 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal } from '~/stores/ui';
+import { usePageDuplicateModalStatus, usePageRenameModal, usePageDeleteModal } from '~/stores/ui';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -99,7 +99,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   } = props;
 
   const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const page = focusedSearchResultData?.pageData;
