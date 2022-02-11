@@ -10,13 +10,16 @@ module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const mongoosePaginate = require('mongoose-paginate-v2');
 
+  // allow empty strings
+  mongoose.Schema.Types.String.checkRequired(v => v != null);
+
   const ObjectId = mongoose.Schema.Types.ObjectId;
   const revisionSchema = new mongoose.Schema({
     // OBSOLETE path: { type: String, required: true, index: true }
     pageId: { type: ObjectId, required: true, index: true },
     body: {
       type: String,
-      require: true,
+      required: true,
       get: (data) => {
       // replace CR/CRLF to LF above v3.1.5
       // see https://github.com/weseek/growi/issues/463
