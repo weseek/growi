@@ -265,24 +265,22 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
-    let initialBody = '';
+    let body = '';
 
     const isEnabledAttachTitleHeader = props.appContainer.getConfig().isEnabledAttachTitleHeader;
     if (isEnabledAttachTitleHeader) {
-      initialBody = pathUtils.attachTitleHeader(newPagePath);
+      body = pathUtils.attachTitleHeader(newPagePath);
     }
 
     if (isCreatable) {
-      const body = {
-        path: newPagePath,
-        body: initialBody,
-        grant: page.grant,
-        grantUserGroupId: page.grantedGroup,
-        createFromPageTree: true,
-      };
-
       try {
-        await apiv3Post('/pages/', body);
+        await apiv3Post('/pages/', {
+          path: newPagePath,
+          body,
+          grant: page.grant,
+          grantUserGroupId: page.grantedGroup,
+          createFromPageTree: true,
+        });
         mutateChildren();
         toastSuccess(t('successfully_saved_the_page'));
       }
