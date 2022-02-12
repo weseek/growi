@@ -9,13 +9,7 @@ import {
 import ItemsTree from './PageTree/ItemsTree';
 import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
 
-import AppContainer from '~/client/services/AppContainer';
-
-type Props = {
-  appContainer: AppContainer,
-};
-
-const PageTree: FC<Props> = memo((props: Props) => {
+const PageTree: FC = memo(() => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -73,7 +67,6 @@ const PageTree: FC<Props> = memo((props: Props) => {
 
       <div className="grw-sidebar-content-body">
         <ItemsTree
-          appContainer={props.appContainer}
           isEnableActions={!isGuestUser}
           targetPath={path}
           targetPathOrId={targetPathOrId}

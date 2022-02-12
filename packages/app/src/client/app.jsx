@@ -83,7 +83,7 @@ logger.info('unstated containers have been initialized');
  *  value: React Element
  */
 Object.assign(componentMappings, {
-  'grw-sidebar-wrapper': <Sidebar appContainer={appContainer} />,
+  'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage crowi={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,

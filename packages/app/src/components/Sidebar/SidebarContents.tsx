@@ -7,10 +7,7 @@ import CustomSidebar from './CustomSidebar';
 import PageTree from './PageTree';
 import Tag from './Tag';
 
-import AppContainer from '~/client/services/AppContainer';
-
 type Props = {
-  appContainer: AppContainer
 };
 
 const SidebarContents: FC<Props> = (props: Props) => {
@@ -32,7 +29,7 @@ const SidebarContents: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Contents appContainer={props.appContainer} />
+    <Contents />
   );
 
 };

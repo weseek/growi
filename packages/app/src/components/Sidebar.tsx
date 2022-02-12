@@ -18,15 +18,10 @@ import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import StickyStretchableScroller from './StickyStretchableScroller';
 
-import AppContainer from '~/client/services/AppContainer';
-
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
-type CommonProps = {
-  appContainer: AppContainer
-}
 
 const GlobalNavigation = () => {
   const { data: isDrawerMode } = useDrawerMode();
@@ -54,7 +49,7 @@ const GlobalNavigation = () => {
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
 
-const SidebarContentsWrapper: FC<CommonProps> = (props: CommonProps) => {
+const SidebarContentsWrapper = () => {
   const [resetKey, setResetKey] = useState(0);
 
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
@@ -78,7 +73,7 @@ const SidebarContentsWrapper: FC<CommonProps> = (props: CommonProps) => {
 
       <div id="grw-sidebar-contents-scroll-target" style={{ minHeight: '100%' }}>
         <div id="grw-sidebar-content-container" onLoad={() => setResetKey(Math.random())}>
-          <SidebarContents appContainer={props.appContainer} />
+          <SidebarContents />
         </div>
       </div>
 
@@ -87,7 +82,11 @@ const SidebarContentsWrapper: FC<CommonProps> = (props: CommonProps) => {
   );
 };
 
-const Sidebar: FC<CommonProps> = (props: CommonProps) => {
+
+type Props = {
+}
+
+const Sidebar: FC<Props> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
@@ -314,7 +313,7 @@ const Sidebar: FC<CommonProps> = (props: CommonProps) => {
               >
                 <div className="grw-contextual-navigation-child">
                   <div role="group" className={`grw-contextual-navigation-sub ${showContents ? '' : 'd-none'}`}>
-                    <SidebarContentsWrapper appContainer={props.appContainer} />
+                    <SidebarContentsWrapper></SidebarContentsWrapper>
                   </div>
                 </div>
               </div>

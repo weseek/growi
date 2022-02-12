@@ -22,10 +22,7 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
-import AppContainer from '~/client/services/AppContainer';
-
 interface ItemProps {
-  appContainer: AppContainer
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
@@ -271,16 +268,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    let initBody = '';
-    const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
-    if (isEnabledAttachTitleHeader) {
-      initBody = pathUtils.attachTitleHeader(newPagePath);
-    }
+    // const initBody = '';
+    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
+    // if (isEnabledAttachTitleHeader) {
+    //   initBody = pathUtils.attachTitleHeader(newPagePath);
+    // }
 
     try {
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: initBody,
+        body: '',
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
@@ -414,7 +411,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isOpen && hasChildren() && currentChildren.map(node => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
-              appContainer={props.appContainer}
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
