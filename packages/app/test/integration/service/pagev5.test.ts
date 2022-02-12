@@ -44,7 +44,6 @@ describe('PageService page operations with only public pages', () => {
   // parents
   let parentForDuplicate1;
   let parentForDuplicate3;
-  let childForDuplicate3;
 
   beforeAll(async() => {
     crowi = await getInstance();
