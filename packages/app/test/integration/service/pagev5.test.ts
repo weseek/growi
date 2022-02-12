@@ -224,29 +224,29 @@ describe('PageService page operations with only public pages', () => {
     ]);
 
     /*
-    * Duplicate
-    */
-    const idForPage1 = new mongoose.Types.ObjectId();
-    const idForRevision1 = new mongoose.Types.ObjectId();
+     * Duplicate
+     */
+    const pageIdForParent1 = new mongoose.Types.ObjectId();
+    const revisionIdForParent1 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
-        _id: idForPage1,
+        _id: pageIdForParent1,
         path: '/v5_ParentForDuplicate1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
-        revision: idForRevision1,
+        revision: revisionIdForParent1,
       },
     ]);
     // Revision
     await Revision.insertMany([
       {
-        _id: idForRevision1,
+        _id: revisionIdForParent1,
         body: 'body1',
         format: 'markdown',
-        pageId: idForPage1,
+        pageId: pageIdForParent1,
         author: dummyUser1,
       },
     ]);
@@ -407,8 +407,9 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedPage._id).not.toStrictEqual(parentForDuplicate1._id);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
       expect(duplicatedRevision.body).toEqual(baseRevision.body);
-
-
+    });
+    test('Should NOT duplicate empty page', async() => {
+      // a
     });
     test('Should duplicate multiple pages', async() => {
       // a
@@ -419,9 +420,9 @@ describe('PageService page operations with only public pages', () => {
   });
 
   afterAll(async() => {
-    await Page.remove({});
-    await User.remove({});
-    await Revision.remove({});
+    // await Page.remove({});
+    // await User.remove({});
+    // await Revision.remove({});
   });
 });
 
