@@ -134,6 +134,12 @@ export const SearchPage = (props: Props): JSX.Element => {
     };
   }, [initQ]);
 
+  // push state
+  useEffect(() => {
+    const newUrl = new URL('/_search', 'http://example.com');
+    newUrl.searchParams.append('q', keyword);
+    window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
+  }, [keyword]);
 
   const hitsCount = data?.meta.hitsCount;
   const { offset, limit } = conditions;
