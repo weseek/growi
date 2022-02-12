@@ -54,10 +54,6 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     setOrder(nextOrder);
   }, []);
 
-  const clickSearchBySearchOptionModalHandler = useCallback(() => {
-    invokeSearch();
-  }, [invokeSearch]);
-
   useEffect(() => {
     invokeSearch();
   }, [invokeSearch]);
@@ -141,7 +137,6 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
         onClose={() => setIsFileterOptionModalShown(false)}
         includeUserPages={includeUserPages}
         includeTrashPages={includeTrashPages}
-        onClickSearch={clickSearchBySearchOptionModalHandler}
         onIncludeUserPagesSwitched={setIncludeUserPages}
         onIncludeTrashPagesSwitched={setIncludeTrashPages}
       />

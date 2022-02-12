@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
 
@@ -13,7 +13,6 @@ type Props = {
   onClose?: () => void,
   onIncludeUserPagesSwitched?: (isChecked: boolean) => void,
   onIncludeTrashPagesSwitched?: (isChecked: boolean) => void,
-  onClickSearch?: () => void,
 }
 
 const SearchOptionModal: FC<Props> = (props: Props) => {
@@ -25,7 +24,6 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
     onClose,
     onIncludeUserPagesSwitched,
     onIncludeTrashPagesSwitched,
-    onClickSearch,
   } = props;
 
   const onCloseModal = () => {
@@ -44,13 +42,6 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
     if (onIncludeTrashPagesSwitched != null) {
       onIncludeTrashPagesSwitched(isChecked);
     }
-  };
-
-  const clickSearchAgainHandler = () => {
-    if (onClickSearch != null) {
-      onClickSearch();
-    }
-    onCloseModal();
   };
 
   return (
@@ -84,14 +75,6 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
           </div>
         </div>
       </ModalBody>
-      <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={clickSearchAgainHandler}
-        >{t('search_result.search_again')}
-        </button>
-      </ModalFooter>
     </Modal>
   );
 };
