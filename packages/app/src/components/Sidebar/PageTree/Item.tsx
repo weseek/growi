@@ -268,6 +268,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
+    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
     // const initBody = '';
     // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
     // if (isEnabledAttachTitleHeader) {
