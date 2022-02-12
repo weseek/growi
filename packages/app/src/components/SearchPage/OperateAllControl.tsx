@@ -88,7 +88,9 @@ export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
       />
-      {children}
+      <span className="ml-2">
+        {children}
+      </span>
     </div>
   );
 

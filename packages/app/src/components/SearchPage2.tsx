@@ -138,11 +138,11 @@ export const SearchPage = (props: Props): JSX.Element => {
       >
         <button
           type="button"
-          className="btn text-danger font-weight-light p-0 ml-2"
+          className="btn btn-outline-danger border-0 px-2"
           disabled={isDisabled}
           onClick={() => null /* TODO implement */}
         >
-          <i className="icon-trash"></i>
+          <i className="icon-fw icon-trash"></i>
           {t('search_result.delete_all_selected_page')}
         </button>
       </OperateAllControl>
