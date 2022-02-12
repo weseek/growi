@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useMemo, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -123,6 +123,7 @@ export const SearchPage = (props: Props): JSX.Element => {
     };
   }, []);
 
+
   const hitsCount = data?.meta.hitsCount;
   const { offset, limit } = conditions;
 
@@ -192,6 +193,13 @@ export const SearchPage = (props: Props): JSX.Element => {
       />
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
+
+  // reset selected count when data is refetched
+  useEffect(() => {
+    if (data != null) {
+      setSelectedPagesCount(0);
+    }
+  }, [data, setSelectedPagesCount]);
 
   return (
     <SearchPageBase
