@@ -43,6 +43,8 @@ describe('PageService page operations with only public pages', () => {
   // rename
   // parents
   let parentForDuplicate1;
+  let parentForDuplicate3;
+  let childForDuplicate3;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -226,8 +228,13 @@ describe('PageService page operations with only public pages', () => {
     /*
      * Duplicate
      */
+    // page ids
     const pageIdForParent1 = new mongoose.Types.ObjectId();
+    const pageIdForParent3 = new mongoose.Types.ObjectId();
+    const pageIdForChild3 = new mongoose.Types.ObjectId();
+    // revision ids
     const revisionIdForParent1 = new mongoose.Types.ObjectId();
+    const revisionIdForChild3 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -239,6 +246,22 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         revision: revisionIdForParent1,
       },
+      {
+        _id: pageIdForParent3,
+        path: '/v5_ParentForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+      },
+      // children
+      {
+        _id: pageIdForChild3,
+        path: '/v5_ChildForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForParent3,
+        revision: revisionIdForChild3,
+      },
     ]);
     // Revision
     await Revision.insertMany([
@@ -249,8 +272,16 @@ describe('PageService page operations with only public pages', () => {
         pageId: pageIdForParent1,
         author: dummyUser1,
       },
+      {
+        _id: revisionIdForChild3,
+        body: 'body3',
+        format: 'markdown',
+        pageId: pageIdForChild3,
+        author: dummyUser1,
+      },
     ]);
     parentForDuplicate1 = await Page.findOne({ path: '/v5_ParentForDuplicate1' });
+    parentForDuplicate3 = await Page.findOne({ path: '/v5_ParentForDuplicate3' });
 
   });
 
@@ -409,7 +440,18 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedRevision.body).toEqual(baseRevision.body);
     });
     test('Should NOT duplicate empty page', async() => {
-      // a
+      const newPagePath = '/duplicatedParentForDuplicate3';
+      let isThrown;
+      let duplicatedPage;
+      try {
+        duplicatedPage = await duplicate(parentForDuplicate3, newPagePath, dummyUser1, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(duplicatedPage).toBeFalsy();
+      expect(isThrown).toBe(true);
     });
     test('Should duplicate multiple pages', async() => {
       // a
