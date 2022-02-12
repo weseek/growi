@@ -44,6 +44,7 @@ describe('PageService page operations with only public pages', () => {
   // parents
   let parentForDuplicate1;
   let parentForDuplicate3;
+  let parentForDuplicate4;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -231,9 +232,16 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForParent1 = new mongoose.Types.ObjectId();
     const pageIdForParent3 = new mongoose.Types.ObjectId();
     const pageIdForChild3 = new mongoose.Types.ObjectId();
+    const pageIdForParent4 = new mongoose.Types.ObjectId();
+    const pageIdForChild4_1 = new mongoose.Types.ObjectId();
+    const pageIdForChild4_2 = new mongoose.Types.ObjectId();
+
     // revision ids
     const revisionIdForParent1 = new mongoose.Types.ObjectId();
     const revisionIdForChild3 = new mongoose.Types.ObjectId();
+    const revisionIdForParent4 = new mongoose.Types.ObjectId();
+    const revisionIdForChild4_1 = new mongoose.Types.ObjectId();
+    const revisionIdForChild4_2 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -251,6 +259,15 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
       },
+      {
+        _id: pageIdForParent4,
+        path: '/v5_ParentForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForParent4,
+      },
       // children
       {
         _id: pageIdForChild3,
@@ -261,7 +278,26 @@ describe('PageService page operations with only public pages', () => {
         parent: pageIdForParent3,
         revision: revisionIdForChild3,
       },
+      {
+        _id: pageIdForChild4_1,
+        path: '/v5_ChildForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForParent4,
+        revision: revisionIdForChild4_1,
+      },
+      {
+        _id: pageIdForChild4_2,
+        path: '/v5_ChildForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForParent4,
+        revision: revisionIdForChild4_2,
+      },
     ]);
+
     // Revision
     await Revision.insertMany([
       {
@@ -278,9 +314,31 @@ describe('PageService page operations with only public pages', () => {
         pageId: pageIdForChild3,
         author: dummyUser1,
       },
+      {
+        _id: revisionIdForParent4,
+        body: 'body4',
+        format: 'markdown',
+        pageId: pageIdForParent4,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForChild4_1,
+        body: 'body4',
+        format: 'markdown',
+        pageId: pageIdForChild4_1,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForChild4_2,
+        body: 'body4',
+        format: 'markdown',
+        pageId: pageIdForChild4_2,
+        author: dummyUser1,
+      },
     ]);
     parentForDuplicate1 = await Page.findOne({ path: '/v5_ParentForDuplicate1' });
     parentForDuplicate3 = await Page.findOne({ path: '/v5_ParentForDuplicate3' });
+    parentForDuplicate4 = await Page.findOne({ path: '/v5_ParentForDuplicate4' });
 
   });
 
