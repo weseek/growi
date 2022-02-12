@@ -1,73 +1,80 @@
 import React, {
   ChangeEvent, FC, useEffect, useMemo, useRef, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
-import { CheckboxType } from '../../interfaces/search';
+import { CheckboxType } from '~/interfaces/search';
 
 
 export type SelectAllHook = {
-  isIndeterminate: boolean,
+  checkboxType: CheckboxType,
   setSelectedCount: (selectedCount: number) => void,
 }
 
 export const useSelectAll = (totalItemsCount: number | undefined): SelectAllHook => {
   const [selectedCount, setSelectedCount] = useState(0);
 
-  const isIndeterminate = useMemo(() => {
-    return selectedCount > 0 && selectedCount !== totalItemsCount;
+  const checkboxType = useMemo(() => {
+    if (selectedCount === 0) {
+      return CheckboxType.NONE_CHECKED;
+    }
+    if (selectedCount === totalItemsCount) {
+      return CheckboxType.ALL_CHECKED;
+    }
+    return CheckboxType.INDETERMINATE;
   }, [selectedCount, totalItemsCount]);
 
   return {
-    isIndeterminate,
+    checkboxType,
     setSelectedCount,
   };
 };
 
 
 type Props = {
-  // selectAllCheckboxType: CheckboxType,
-  isSelectedPageCountIndeterminate?: boolean,
-  isSelectAllCheckboxDisabled?: boolean,
-  isDeleteAllButtonDisabled?: boolean,
-  onClickDeleteAllButton?: () => void,
-  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
+  checkboxType: CheckboxType,
+  isCheckboxDisabled?: boolean,
+  onCheckboxChanged?: (isChecked: boolean) => void,
+
+  children?: React.ReactNode,
 }
 
 export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
-  const { t } = useTranslation();
   const {
-    isSelectedPageCountIndeterminate,
-    isSelectAllCheckboxDisabled,
-    isDeleteAllButtonDisabled,
-    onClickDeleteAllButton, onClickSelectAllCheckbox,
+    checkboxType,
+    isCheckboxDisabled,
+    onCheckboxChanged,
+
+    children,
   } = props;
 
   const checkboxChangedHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    // e.preventDefault();
-
-    // if (onClickSelectAllCheckbox != null) {
-    //   const next = selectAllCheckboxType === CheckboxType.ALL_CHECKED ? CheckboxType.NONE_CHECKED : CheckboxType.ALL_CHECKED;
-    //   onClickSelectAllCheckbox(next);
-    // }
-  };
-
-  const onClickDeleteButton = () => {
-    if (onClickDeleteAllButton != null) { onClickDeleteAllButton() }
+    if (onCheckboxChanged != null) {
+      onCheckboxChanged(e.target.checked);
+    }
   };
 
   const selectAllCheckboxElm = useRef<IndeterminateInputElement>(null);
-  // useEffect(() => {
-  //   if (selectAllCheckboxElm.current != null) {
-  //     selectAllCheckboxElm.current.indeterminate = selectAllCheckboxType === CheckboxType.INDETERMINATE;
-  //   }
-  // }, [selectAllCheckboxType]);
-
   useEffect(() => {
-    if (selectAllCheckboxElm.current != null && isSelectedPageCountIndeterminate) {
-      selectAllCheckboxElm.current.indeterminate = true;
+    const checkbox = selectAllCheckboxElm.current;
+    if (checkbox == null) {
+      return;
     }
-  }, [isSelectedPageCountIndeterminate]);
+
+
+    switch (checkboxType) {
+      case CheckboxType.NONE_CHECKED:
+        checkbox.indeterminate = false;
+        checkbox.checked = false;
+        break;
+      case CheckboxType.ALL_CHECKED:
+        checkbox.indeterminate = false;
+        checkbox.checked = true;
+        break;
+      case CheckboxType.INDETERMINATE:
+        checkbox.indeterminate = true;
+        break;
+    }
+  }, [checkboxType]);
 
   return (
 
@@ -78,19 +85,10 @@ export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
         name="check-all-pages"
         className="grw-indeterminate-checkbox"
         ref={selectAllCheckboxElm}
-        // disabled={props.isSelectAllCheckboxDisabled}
-        // onChange={checkboxChangedHandler}
-        // checked={selectAllCheckboxType === CheckboxType.ALL_CHECKED}
+        disabled={isCheckboxDisabled}
+        onChange={checkboxChangedHandler}
       />
-      <button
-        type="button"
-        className="btn text-danger font-weight-light p-0 ml-2"
-        disabled={isDeleteAllButtonDisabled}
-        onClick={onClickDeleteButton}
-      >
-        <i className="icon-trash"></i>
-        {t('search_result.delete_all_selected_page')}
-      </button>
+      {children}
     </div>
   );
 

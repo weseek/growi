@@ -79,6 +79,7 @@ type Props = {
 }
 
 export const SearchPage = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
 
   const {
     appContainer,
@@ -98,7 +99,7 @@ export const SearchPage = (props: Props): JSX.Element => {
   });
 
   const {
-    isIndeterminate: isSelectedPageCountIndeterminate,
+    checkboxType: selectAllPagesCheckboxType,
     setSelectedCount: setSelectedPagesCount,
   } = useSelectAll(data?.meta.hitsCount);
 
@@ -126,17 +127,26 @@ export const SearchPage = (props: Props): JSX.Element => {
   const { offset, limit } = conditions;
 
   const deleteAllControl = useMemo(() => {
-    const disableSelectAllbutton = hitsCount === 0;
+    const isDisabled = hitsCount === 0;
 
     return (
       <OperateAllControl
-        isSelectAllCheckboxDisabled={disableSelectAllbutton}
-        isSelectedPageCountIndeterminate={isSelectedPageCountIndeterminate}
-        onClickDeleteAllButton={() => null /* TODO implement */}
-        onClickSelectAllCheckbox={() => null /* TODO implement */}
-      />
+        checkboxType={selectAllPagesCheckboxType}
+        isCheckboxDisabled={isDisabled}
+        onCheckboxChanged={() => null /* TODO implement */}
+      >
+        <button
+          type="button"
+          className="btn text-danger font-weight-light p-0 ml-2"
+          disabled={isDisabled}
+          onClick={() => null /* TODO implement */}
+        >
+          <i className="icon-trash"></i>
+          {t('search_result.delete_all_selected_page')}
+        </button>
+      </OperateAllControl>
     );
-  }, [hitsCount, isSelectedPageCountIndeterminate]);
+  }, [hitsCount, selectAllPagesCheckboxType, t]);
 
   const searchControl = useMemo(() => {
     return (
