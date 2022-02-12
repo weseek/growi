@@ -3,6 +3,8 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { parse as parseQuerystring } from 'querystring';
+
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 
@@ -74,6 +76,11 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
  * SearchPage
  */
 
+const getParsedUrlQuery = () => {
+  const search = window.location.search || '?';
+  return parseQuerystring(search.slice(1)); // remove heading '?' and parse
+};
+
 type Props = {
   appContainer: AppContainer,
 }
@@ -85,7 +92,11 @@ export const SearchPage = (props: Props): JSX.Element => {
     appContainer,
   } = props;
 
-  const [keyword, setKeyword] = useState<string>('sand');
+  // parse URL Query
+  const parsedQueries = getParsedUrlQuery().q;
+  const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
+
+  const [keyword, setKeyword] = useState<string>(initQ);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({
   });
   const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
@@ -118,10 +129,10 @@ export const SearchPage = (props: Props): JSX.Element => {
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
-      keyword: 'sand', // TODO get keyword from GET params
+      keyword: initQ,
       limit: INITIAL_PAGIONG_SIZE,
     };
-  }, []);
+  }, [initQ]);
 
 
   const hitsCount = data?.meta.hitsCount;
