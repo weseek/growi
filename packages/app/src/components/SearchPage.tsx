@@ -1,19 +1,21 @@
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { parse as parseQuerystring } from 'querystring';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IFormattedSearchResult } from '~/interfaces/search';
+import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithMeta } from '~/interfaces/page';
 
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl, useSelectAll } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
-import SearchPageBase from './SearchPage2/SearchPageBase';
+import { SearchPageBase } from './SearchPage2/SearchPageBase';
+import { ISelectableAll } from '~/client/interfaces/selectable-all';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -103,6 +105,8 @@ export const SearchPage = (props: Props): JSX.Element => {
     limit: INITIAL_PAGIONG_SIZE,
   });
 
+  const searchPageBaseRef = useRef<ISelectableAll|null>(null);
+
   const { data, conditions } = useSWRxFullTextSearch(keyword, {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
@@ -117,6 +121,21 @@ export const SearchPage = (props: Props): JSX.Element => {
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
     setConfigurationsByControl(newConfigurations);
+  }, []);
+
+  const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
+    const instance = searchPageBaseRef.current;
+
+    if (instance == null) {
+      return;
+    }
+
+    if (isChecked) {
+      instance.selectAll();
+    }
+    if (isChecked) {
+      instance.deselectAll();
+    }
   }, []);
 
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
@@ -151,7 +170,7 @@ export const SearchPage = (props: Props): JSX.Element => {
       <OperateAllControl
         checkboxType={selectAllPagesCheckboxType}
         isCheckboxDisabled={isDisabled}
-        onCheckboxChanged={() => null /* TODO implement */}
+        onCheckboxChanged={selectAllCheckboxChangedHandler}
       >
         <button
           type="button"
@@ -164,7 +183,7 @@ export const SearchPage = (props: Props): JSX.Element => {
         </button>
       </OperateAllControl>
     );
-  }, [hitsCount, selectAllPagesCheckboxType, t]);
+  }, [hitsCount, selectAllCheckboxChangedHandler, selectAllPagesCheckboxType, t]);
 
   const searchControl = useMemo(() => {
     return (
@@ -220,6 +239,7 @@ export const SearchPage = (props: Props): JSX.Element => {
 
   return (
     <SearchPageBase
+      ref={searchPageBaseRef}
       appContainer={appContainer}
       pages={data?.data}
       onSelectedPagesByCheckboxesChanged={setSelectedPagesCount}

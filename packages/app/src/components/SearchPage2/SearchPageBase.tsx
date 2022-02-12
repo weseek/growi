@@ -1,13 +1,14 @@
 import React, {
-  FC, useEffect, useState,
+  FC, forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser } from '~/stores/context';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
-import SearchResultList from '../SearchPage/SearchResultList';
+import { SearchResultList } from '../SearchPage/SearchResultList';
 
 type Props = {
   appContainer: AppContainer,
@@ -21,13 +22,31 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-const SearchPageBase: FC<Props> = (props: Props) => {
+const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
   const {
     appContainer,
     pages,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
   } = props;
+
+  const searchResultListRef = useRef<ISelectableAll|null>(null);
+
+  // publish selectAll()
+  useImperativeHandle(ref, () => ({
+    selectAll: () => {
+      const instance = searchResultListRef.current;
+      if (instance != null) {
+        instance.selectAll();
+      }
+    },
+    deselectAll: () => {
+      const instance = searchResultListRef.current;
+      if (instance != null) {
+        instance.deselectAll();
+      }
+    },
+  }));
 
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -83,6 +102,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                 </div>
                 <div className="page-list px-md-4">
                   <SearchResultList
+                    ref={searchResultListRef}
                     pages={pages}
                     selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
@@ -116,4 +136,4 @@ const SearchPageBase: FC<Props> = (props: Props) => {
 };
 
 
-export default SearchPageBase;
+export const SearchPageBase = forwardRef(SearchPageBaseSubstance);

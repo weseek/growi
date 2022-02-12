@@ -1,4 +1,7 @@
-import React, { memo, useCallback } from 'react';
+import React, {
+  forwardRef,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
+} from 'react';
 
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
@@ -14,6 +17,7 @@ import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+import { ISelectable } from '~/client/interfaces/selectable-all';
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
@@ -25,12 +29,30 @@ type Props = {
   onClickDeleteButton?: (pageId: string) => void,
 }
 
-export const PageListItemL = memo((props: Props): JSX.Element => {
+const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isEnableActions,
     showPageUpdatedTime,
   } = props;
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // publish ISelectable methods
+  useImperativeHandle(ref, () => ({
+    select: () => {
+      const input = inputRef.current;
+      if (input != null) {
+        input.checked = true;
+      }
+    },
+    deselect: () => {
+      const input = inputRef.current;
+      if (input != null) {
+        input.checked = false;
+      }
+    },
+  }));
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
 
@@ -76,6 +98,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                 className="form-check-input position-relative m-0"
                 type="checkbox"
                 id="flexCheckDefault"
+                ref={inputRef}
                 onChange={() => { onClickCheckbox(pageData._id) }}
               />
             </div>
@@ -135,4 +158,6 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       </div>
     </li>
   );
-});
+};
+
+export const PageListItemL = memo(forwardRef(PageListItemLSubstance));
