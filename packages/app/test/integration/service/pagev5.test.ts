@@ -466,7 +466,7 @@ describe('PageService page operations with only public pages', () => {
 
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
-      const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockRejectedValue(null);
+      const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockReturnValue(null);
       jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
