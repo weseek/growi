@@ -40,7 +40,7 @@ describe('PageService page operations with only public pages', () => {
   let childForRename6;
   let childForRename7;
 
-  // rename
+  // duplicate
   // parents
   let parentForDuplicate1;
   let parentForDuplicate3;
