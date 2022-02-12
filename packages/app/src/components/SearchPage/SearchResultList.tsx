@@ -9,7 +9,6 @@ import { PageListItemL } from '../PageList/PageListItemL';
 
 type Props = {
   pages: IPageWithMeta<IPageSearchMeta>[],
-  isCheckedAllItems?: boolean,
   selectedPageId?: string,
   onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
   onClickCheckbox?: (pageId: string) => void,
@@ -17,7 +16,7 @@ type Props = {
 
 const SearchResultList: FC<Props> = (props:Props) => {
   const {
-    pages, isCheckedAllItems, selectedPageId,
+    pages, selectedPageId,
     onPageSelected,
   } = props;
 
@@ -67,7 +66,6 @@ const SearchResultList: FC<Props> = (props:Props) => {
           <PageListItemL
             key={page.pageData._id}
             page={page}
-            isCheckedAllItems={isCheckedAllItems}
             isEnableActions={isGuestUser}
             isSelected={page.pageData._id === selectedPageId}
             onClickItem={clickItemHandler}
