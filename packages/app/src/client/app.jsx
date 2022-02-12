@@ -13,7 +13,7 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
-import { SearchPage } from '../components/SearchPage2';
+import { SearchPage } from '../components/SearchPage';
 import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
