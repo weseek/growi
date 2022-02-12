@@ -3,36 +3,34 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CheckboxType, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
 import SearchPageForm from './SearchPageForm';
-import DeleteSelectedPageGroup from './DeleteSelectedPageGroup';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 
 type Props = {
-  selectAllCheckboxType: CheckboxType,
-  disableSelectAllbutton?: boolean,
-  initialSearchConditions?: Partial<ISearchConditions>,
-  onClickDeleteAllButton?: () => void
-  onClickSelectAllCheckbox?: (nextSelectAllCheckboxType: CheckboxType) => void,
+  initialSearchConditions: Partial<ISearchConditions>,
+
   onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
+
+  deleteAllControl: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
-    disableSelectAllbutton,
     initialSearchConditions,
     onSearchInvoked,
+    deleteAllControl,
   } = props;
 
-  const [keyword, setKeyword] = useState(initialSearchConditions?.keyword ?? '');
-  const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions?.sort ?? SORT_AXIS.RELATION_SCORE);
-  const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions?.order ?? SORT_ORDER.DESC);
-  const [includeUserPages, setIncludeUserPages] = useState(initialSearchConditions?.includeUserPages ?? false);
-  const [includeTrashPages, setIncludeTrashPages] = useState(initialSearchConditions?.includeTrashPages ?? false);
+  const [keyword, setKeyword] = useState(initialSearchConditions.keyword ?? '');
+  const [sort, setSort] = useState<SORT_AXIS>(initialSearchConditions.sort ?? SORT_AXIS.RELATION_SCORE);
+  const [order, setOrder] = useState<SORT_ORDER>(initialSearchConditions.order ?? SORT_ORDER.DESC);
+  const [includeUserPages, setIncludeUserPages] = useState(initialSearchConditions.includeUserPages ?? false);
+  const [includeTrashPages, setIncludeTrashPages] = useState(initialSearchConditions.includeTrashPages ?? false);
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
 
   const { t } = useTranslation('');
@@ -86,13 +84,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex pl-md-2">
-          {/* Todo: design will be fixed in #80324. Function will be implemented in #77525 */}
-          <DeleteSelectedPageGroup
-            isSelectAllCheckboxDisabled={disableSelectAllbutton}
-            selectAllCheckboxType={props.selectAllCheckboxType}
-            onClickDeleteAllButton={props.onClickDeleteAllButton}
-            onClickSelectAllCheckbox={props.onClickSelectAllCheckbox}
-          />
+          {deleteAllControl}
         </div>
         {/* sort option: show when screen is smaller than lg */}
         <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">

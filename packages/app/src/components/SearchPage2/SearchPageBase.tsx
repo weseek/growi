@@ -16,9 +16,9 @@ type Props = {
 
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number) => void,
 
-  SearchControl: React.FunctionComponent,
-  SearchResultListHead: React.FunctionComponent,
-  SearchPager: React.FunctionComponent,
+  searchControl: React.ReactNode,
+  searchResultListHead: React.ReactNode,
+  searchPager: React.ReactNode,
 }
 
 const SearchPageBase: FC<Props> = (props: Props) => {
@@ -26,7 +26,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
     appContainer,
     pages,
     onSelectedPagesByCheckboxesChanged,
-    SearchControl, SearchResultListHead, SearchPager,
+    searchControl, searchResultListHead, searchPager,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -66,7 +66,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
 
         <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
 
-          <SearchControl></SearchControl>
+          {searchControl}
 
           <div className="search-result-list-scroll">
 
@@ -79,7 +79,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
             { !isLoading && (
               <>
                 <div className="my-3 px-md-4">
-                  <SearchResultListHead />
+                  {searchResultListHead}
                 </div>
                 <div className="page-list px-md-4">
                   <SearchResultList
@@ -90,7 +90,7 @@ const SearchPageBase: FC<Props> = (props: Props) => {
                   />
                 </div>
                 <div className="my-4 d-flex justify-content-center">
-                  <SearchPager />
+                  {searchPager}
                 </div>
               </>
             ) }

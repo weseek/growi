@@ -1,11 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback, useMemo, useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
-import { CheckboxType, IFormattedSearchResult } from '~/interfaces/search';
+import { IFormattedSearchResult } from '~/interfaces/search';
 
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
 import PaginationWrapper from './PaginationWrapper';
+import { OperateAllControl, useSelectAll } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
 import SearchPageBase from './SearchPage2/SearchPageBase';
@@ -27,7 +30,7 @@ type SearchResultListHeadProps = {
   onPagingSizeChanged: (size: number) => void,
 }
 
-const SearchResultListHead = (props: SearchResultListHeadProps): JSX.Element => {
+const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -64,7 +67,7 @@ const SearchResultListHead = (props: SearchResultListHeadProps): JSX.Element => 
       </div>
     </div>
   );
-};
+});
 
 
 /**
@@ -87,13 +90,17 @@ export const SearchPage = (props: Props): JSX.Element => {
   const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
     limit: INITIAL_PAGIONG_SIZE,
   });
-  const [selectedPagesCount, setSelectedPagesCount] = useState(0);
 
   const { data, conditions } = useSWRxFullTextSearch(keyword, {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
     ...configurationsByPagination,
   });
+
+  const {
+    isIndeterminate: isSelectedPageCountIndeterminate,
+    setSelectedCount: setSelectedPagesCount,
+  } = useSelectAll(data?.meta.hitsCount);
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
@@ -115,74 +122,76 @@ export const SearchPage = (props: Props): JSX.Element => {
     };
   }, []);
 
+  const hitsCount = data?.meta.hitsCount;
+  const { offset, limit } = conditions;
+
+  const deleteAllControl = useMemo(() => {
+    const disableSelectAllbutton = hitsCount === 0;
+
+    return (
+      <OperateAllControl
+        isSelectAllCheckboxDisabled={disableSelectAllbutton}
+        isSelectedPageCountIndeterminate={isSelectedPageCountIndeterminate}
+        onClickDeleteAllButton={() => null /* TODO implement */}
+        onClickSelectAllCheckbox={() => null /* TODO implement */}
+      />
+    );
+  }, [hitsCount, isSelectedPageCountIndeterminate]);
+
+  const searchControl = useMemo(() => {
+    return (
+      <SearchControl
+        initialSearchConditions={initialSearchConditions}
+        onSearchInvoked={searchInvokedHandler}
+        deleteAllControl={deleteAllControl}
+      >
+      </SearchControl>
+    );
+  }, [deleteAllControl, initialSearchConditions, searchInvokedHandler]);
+
+  const searchResultListHead = useMemo(() => {
+    if (data == null) {
+      return <></>;
+    }
+    return (
+      <SearchResultListHead
+        searchResult={data}
+        searchingKeyword={keyword}
+        offset={offset}
+        pagingSize={limit}
+        onPagingSizeChanged={() => {}}
+      />
+    );
+  }, [data, keyword, limit, offset]);
+
+  const searchPager = useMemo(() => {
+    // when pager is not needed
+    if (data == null || data.meta.hitsCount === data.meta.total) {
+      return <></>;
+    }
+
+    const { total } = data.meta;
+    const { offset, limit } = conditions;
+
+    return (
+      <PaginationWrapper
+        activePage={Math.floor(offset / limit) + 1}
+        totalItemsCount={total}
+        pagingLimit={configurationsByPagination?.limit}
+        changePage={pagingNumberChangedHandler}
+      />
+    );
+  }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
+
   return (
     <SearchPageBase
       appContainer={appContainer}
       pages={data?.data}
       onSelectedPagesByCheckboxesChanged={setSelectedPagesCount}
       // Components
-      SearchControl={useCallback(() => {
-        // let disableSelectAllbutton = true;
-        // let selectAllCheckboxType = CheckboxType.NONE_CHECKED;
-
-        // // determine checkbox state
-        // if (data != null && data.data.length > 0) {
-        //   disableSelectAllbutton = false;
-
-        //   if (selectedPagesCount > 0) {
-        //     selectAllCheckboxType = data.data.length === selectedPagesCount
-        //       ? CheckboxType.ALL_CHECKED
-        //       : CheckboxType.INDETERMINATE;
-        //   }
-        // }
-
-        return (
-          <SearchControl
-            // selectAllCheckboxType={selectAllCheckboxType}
-            selectAllCheckboxType={CheckboxType.NONE_CHECKED}
-            // disableSelectAllbutton={disableSelectAllbutton}
-            initialSearchConditions={initialSearchConditions}
-            onClickDeleteAllButton={() => null /* TODO implement */}
-            onClickSelectAllCheckbox={() => null /* TODO implement */}
-            onSearchInvoked={searchInvokedHandler}
-          />
-        );
-      }, [initialSearchConditions, searchInvokedHandler])}
-      SearchResultListHead={useCallback(() => {
-        if (data == null) {
-          return <></>;
-        }
-
-        const { keyword, offset, limit } = conditions;
-
-        return (
-          <SearchResultListHead
-            searchResult={data}
-            searchingKeyword={keyword}
-            offset={offset}
-            pagingSize={limit}
-            onPagingSizeChanged={() => {}}
-          />
-        );
-      }, [conditions, data])}
-      SearchPager={useCallback(() => {
-        // when pager is not needed
-        if (data == null || data.meta.hitsCount === data.meta.total) {
-          return <></>;
-        }
-
-        const { total } = data.meta;
-        const { offset, limit } = conditions;
-
-        return (
-          <PaginationWrapper
-            activePage={Math.floor(offset / limit) + 1}
-            totalItemsCount={total}
-            pagingLimit={configurationsByPagination?.limit}
-            changePage={pagingNumberChangedHandler}
-          />
-        );
-      }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler])}
+      searchControl={searchControl}
+      searchResultListHead={searchResultListHead}
+      searchPager={searchPager}
     />
   );
 };
