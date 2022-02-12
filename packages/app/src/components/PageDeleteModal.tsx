@@ -40,8 +40,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
-  const isOpened = deleteModalData?.isOpened != null ? deleteModalData.isOpened : false;
-  const onDeleted = deleteModalData?.onDeleted != null ? deleteModalData.onDeleted : null;
+  const isOpened = deleteModalData?.isOpened ?? false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -83,8 +82,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           isCompletely,
         });
 
-        if (onDeleted != null) {
-          onDeleted(data.paths, data.isRecursively, data.isCompletely);
+        if (deleteModalData.onDeleted != null) {
+          deleteModalData.onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
       }
       catch (err) {
@@ -108,8 +107,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IDeleteSinglePageApiv1Result;
 
-        if (onDeleted != null) {
-          onDeleted(path, isRecursively, isCompletely);
+        if (deleteModalData.onDeleted != null) {
+          deleteModalData.onDeleted(path, isRecursively, isCompletely);
         }
       }
       catch (err) {
