@@ -235,6 +235,7 @@ describe('PageService page operations with only public pages', () => {
     const pageId4 = new mongoose.Types.ObjectId();
     const pageId5 = new mongoose.Types.ObjectId();
     const pageId6 = new mongoose.Types.ObjectId();
+    const pageId7 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionId1 = new mongoose.Types.ObjectId();
@@ -242,6 +243,7 @@ describe('PageService page operations with only public pages', () => {
     const revisionId3 = new mongoose.Types.ObjectId();
     const revisionId4 = new mongoose.Types.ObjectId();
     const revisionId5 = new mongoose.Types.ObjectId();
+    const revisionId6 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -295,6 +297,15 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: pageId4,
         revision: revisionId5,
+      },
+      {
+        _id: pageId7,
+        path: '/v5_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionId6,
       },
     ]);
 
