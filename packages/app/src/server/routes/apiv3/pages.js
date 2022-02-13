@@ -641,7 +641,7 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
     if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
