@@ -10,6 +10,8 @@ import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/c
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
+
 type ObjectIdLike = mongoose.Types.ObjectId | string;
 
 type ComparableTarget = {
@@ -343,6 +345,10 @@ class PageGrantService {
   }
 
   async separateNormalizedAndNonNormalizedPages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const shouldCheckDescendants = true;

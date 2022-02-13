@@ -11,7 +11,7 @@ import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 
 import { useCurrentUpdatedAt } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/ui';
+import { usePageDeleteModal } from '~/stores/modal';
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
