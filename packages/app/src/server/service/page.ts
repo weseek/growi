@@ -314,6 +314,12 @@ class PageService {
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
 
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot rename to that path
+      throw new Error('the path already exists');
+    }
+
     if (isTopPage(page.path)) {
       throw Error('It is forbidden to rename the top page');
     }

@@ -31,6 +31,7 @@ describe('PageService page operations with only public pages', () => {
   let parentForRename5;
   let parentForRename6;
   let parentForRename7;
+  let parentForRename8;
   // children
   let childForRename1;
   let childForRename2;
@@ -138,6 +139,20 @@ describe('PageService page operations with only public pages', () => {
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
       },
+      {
+        path: '/v5_ParentForRename8',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
+      {
+        path: '/v5_ParentForRename9',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+      },
       // children
       {
         path: '/v5_ChildForRename1',
@@ -197,6 +212,7 @@ describe('PageService page operations with only public pages', () => {
     parentForRename5 = await Page.findOne({ path: '/v5_ParentForRename5' });
     parentForRename6 = await Page.findOne({ path: '/v5_ParentForRename6' });
     parentForRename7 = await Page.findOne({ path: '/v5_ParentForRename7' });
+    parentForRename8 = await Page.findOne({ path: '/v5_ParentForRename8' });
     // Find pages as Child
     childForRename1 = await Page.findOne({ path: '/v5_ChildForRename1' });
     childForRename2 = await Page.findOne({ path: '/v5_ChildForRename2' });
@@ -504,6 +520,19 @@ describe('PageService page operations with only public pages', () => {
       // grandchild's parent should be renamed page
       expect(grandchild.parent).toStrictEqual(renamedPage._id);
       expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
+    });
+    test('Should NOT rename/move with existing path', async() => {
+      // rename target page
+      const newPath = '/v5_ParentForRename9';
+      let isThrown;
+      try {
+        await renamePage(parentForRename8, newPath, dummyUser1, {});
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(isThrown).toBe(true);
     });
   });
 
