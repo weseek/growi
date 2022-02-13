@@ -13,8 +13,8 @@ import { pathUtils, pagePathUtils } from '@growi/core';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
-import { IPageForPageDeleteModal } from '~/stores/ui';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';

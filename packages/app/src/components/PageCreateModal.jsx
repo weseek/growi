@@ -13,7 +13,8 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-import { useCreateModalStatus, useCreateModalOpened, useCreateModalPath } from '~/stores/ui';
+
+import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -24,10 +25,8 @@ const {
 const PageCreateModal = (props) => {
   const { t, appContainer } = props;
 
-  const { close: closeCreateModal } = useCreateModalStatus();
-  const { data: isOpened } = useCreateModalOpened();
-  const { data: path } = useCreateModalPath();
-
+  const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
+  const { isOpened, path } = pageCreateModalData;
 
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;

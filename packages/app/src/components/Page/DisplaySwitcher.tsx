@@ -4,7 +4,8 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { pagePathUtils } from '@growi/core';
 
-import { EditorMode, useEditorMode, useDescendantsPageListModal } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useDescendantsPageListModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser,
 } from '~/stores/context';
