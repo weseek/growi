@@ -1890,46 +1890,43 @@ class PageService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
-    let normalizedPages;
-    let nonNormalizedPages;
+    let normalizablePages;
+    let nonNormalizablePages;
     try {
-      [normalizedPages, nonNormalizedPages] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pageIds);
     }
     catch (err) {
       throw err;
     }
 
-    if (normalizedPages.length === 0) {
+    if (normalizablePages.length === 0) {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
       return;
     }
 
-    if (nonNormalizedPages.length !== 0) {
-      // TODO: iterate nonNormalizedPages and send socket error to client so that the user can know which path failed to migrate
+    if (nonNormalizablePages.length !== 0) {
+      // TODO: iterate nonNormalizablePages and send socket error to client so that the user can know which path failed to migrate
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    // prepare no duplicated area paths
-    let pathsToNormalize = normalizedPages.map(p => p.path);
-    pathsToNormalize = omitDuplicateAreaPathFromPaths(pathsToNormalize);
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(normalizablePages);
+    const pageIdsToNormalize = pagesToNormalize.map(p => p._id);
+    const pathsToNormalize = Array.from(new Set(pagesToNormalize.map(p => p.path)));
 
     // TODO: insertMany PageOperationBlock
 
-    const pageIdsToUpdateDescendantCount = nonNormalizedPages
-      .map((p): ObjectIdLike | undefined => (pathsToNormalize.includes(p.path) ? p._id : null))
-      .filter(id => id != null);
-
     // for updating descendantCount
-    const pageIdToExDescendantCount = new Map<ObjectIdLike, number>();
+    const pageIdToExDescendantCountMap = new Map<ObjectIdLike, number>();
 
     // MAIN PROCESS migrate recursively
+    const regexps = pathsToNormalize.map(p => new RegExp(`^${escapeStringRegexp(p)}`, 'i'));
     try {
-      for await (const path of pathsToNormalize) {
-        await this.normalizeParentRecursively(null, [new RegExp(`^${escapeStringRegexp(path)}`, 'i')]);
-      }
-      const pagesBeforeUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIds, user);
+      await this.normalizeParentRecursively(null, regexps);
+
+      // find pages to save descendantCount of normalized pages (only pages in pageIds parameter of this method)
+      const pagesBeforeUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
       pagesBeforeUpdatingDescendantCount.forEach((p) => {
-        pageIdToExDescendantCount.set(p._id.toString(), p.descendantCount);
+        pageIdToExDescendantCountMap.set(p._id.toString(), p.descendantCount);
       });
     }
     catch (err) {
@@ -1941,13 +1938,18 @@ class PageService {
 
     // POST MAIN PROCESS update descendantCount
     try {
+      // update descendantCount of self and descendant pages first
       for await (const path of pathsToNormalize) {
         await this.updateDescendantCountOfSelfAndDescendants(path);
       }
 
-      const pagesAfterUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToUpdateDescendantCount, user);
+      // find pages again to get updated descendantCount
+      // then calculate inc
+      const pagesAfterUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
       for await (const page of pagesAfterUpdatingDescendantCount) {
-        const inc = (page.descendantCount) - (pageIdToExDescendantCount.get(page._id.toString()) || 0);
+        const exDescendantCount = pageIdToExDescendantCountMap.get(page._id.toString()) || 0;
+        const newDescendantCount = page.descendantCount;
+        const inc = newDescendantCount - exDescendantCount;
         await this.updateDescendantCountOfAncestors(page._id, inc, false);
       }
     }
