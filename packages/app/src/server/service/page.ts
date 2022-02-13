@@ -1065,14 +1065,14 @@ class PageService {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
       if (shouldReplace) {
-        await Page.replaceTargetWithPage(page);
+        await Page.replaceTargetWithPage(page, null, true);
       }
 
       // update descendantCount of ancestors'
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
       // delete leaf empty pages
-      await this.removeLeafEmptyPages(page, null, true);
+      await this.removeLeafEmptyPages(page);
     }
 
     let deletedPage;
