@@ -665,6 +665,11 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
+      throw new Error('Cannot find or duplicate the empty page');
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
