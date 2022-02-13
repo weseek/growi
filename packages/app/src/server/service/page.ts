@@ -1863,14 +1863,17 @@ class PageService {
       throw Error('Restricted pages can not be migrated');
     }
 
-    // getParentAndFillAncestors
-    const parent = await Page.getParentAndFillAncestors(target.path);
-
-    const updatedPage = await Page.findOneAndUpdate({ _id: pageId }, { parent: parent._id }, { new: true });
+    let updatedPage;
 
     // replace if empty page exists
     if (existingPage != null && existingPage.isEmpty) {
-      await Page.replaceTargetWithPage(existingPage, updatedPage, true);
+      await Page.replaceTargetWithPage(existingPage, target, true);
+      updatedPage = await Page.findById(pageId);
+    }
+    else {
+      // getParentAndFillAncestors
+      const parent = await Page.getParentAndFillAncestors(target.path);
+      updatedPage = await Page.findOneAndUpdate({ _id: pageId }, { parent: parent._id }, { new: true });
     }
 
     return updatedPage;
