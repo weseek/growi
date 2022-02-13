@@ -45,6 +45,7 @@ describe('PageService page operations with only public pages', () => {
   let v5PageForDuplicate1;
   let v5PageForDuplicate2;
   let v5PageForDuplicate3;
+  let v5PageForDuplicate4;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -236,6 +237,8 @@ describe('PageService page operations with only public pages', () => {
     const pageId5 = new mongoose.Types.ObjectId();
     const pageId6 = new mongoose.Types.ObjectId();
     const pageId7 = new mongoose.Types.ObjectId();
+    const pageId8 = new mongoose.Types.ObjectId();
+    const pageId9 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionId1 = new mongoose.Types.ObjectId();
@@ -244,6 +247,7 @@ describe('PageService page operations with only public pages', () => {
     const revisionId4 = new mongoose.Types.ObjectId();
     const revisionId5 = new mongoose.Types.ObjectId();
     const revisionId6 = new mongoose.Types.ObjectId();
+    const revisionId7 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -307,6 +311,22 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         revision: revisionId6,
       },
+      {
+        _id: pageId8,
+        path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageId7,
+        isEmpty: true,
+      },
+      {
+        _id: pageId9,
+        path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageId8,
+        revision: revisionId7,
+      },
     ]);
 
     // Revision
@@ -346,10 +366,25 @@ describe('PageService page operations with only public pages', () => {
         pageId: pageId6,
         author: dummyUser1,
       },
+      {
+        _id: revisionId6,
+        body: '/v5_PageForDuplicate4',
+        format: 'markdown',
+        pageId: pageId7,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionId7,
+        body: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
+        format: 'markdown',
+        pageId: pageId9,
+        author: dummyUser1,
+      },
     ]);
     v5PageForDuplicate1 = await Page.findOne({ path: '/v5_PageForDuplicate1' });
     v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
     v5PageForDuplicate3 = await Page.findOne({ path: '/v5_PageForDuplicate3' });
+    v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
 
   });
 
@@ -534,7 +569,15 @@ describe('PageService page operations with only public pages', () => {
       expect(childrenForDuplicatedPage.length).toBe(childrenForBasePage.length);
       expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodyOfChildrenForBasePage));
     });
-    test('should duplicate multiple page with empty child in it', async() => {
+    test('should duplicate multiple pages with empty child in it', async() => {
+      const newPagePath = '/duplicatedv5PageForDuplicate4';
+      const duplicatedPage = await duplicate(v5PageForDuplicate4, newPagePath, dummyUser1, true);
+      const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
+      const duplicatedGrandchild = await Page.find({ parent: duplicatedChild._id });
+
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedChild.isEmpty).toBe(true);
+      expect(duplicatedGrandchild.length).toBeGreaterThan(0);
 
     });
   });
