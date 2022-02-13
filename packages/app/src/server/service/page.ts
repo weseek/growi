@@ -1072,15 +1072,12 @@ class PageService {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
 
       // delete leaf empty pages
-      await this.removeLeafEmptyPages(page);
+      await this.removeLeafEmptyPages(page, null, true);
     }
 
     let deletedPage;
     // update Revisions
-    if (page.isEmpty) {
-      await Page.remove({ _id: page._id });
-    }
-    else {
+    if (!page.isEmpty) {
       await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
       deletedPage = await Page.findByIdAndUpdate(page._id, {
         $set: {
