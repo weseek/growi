@@ -251,18 +251,18 @@ describe('PageService page operations with only public pages', () => {
      * Duplicate
      */
     // page ids
-    const pageId1 = new mongoose.Types.ObjectId();
-    const pageId2 = new mongoose.Types.ObjectId();
-    const pageId3 = new mongoose.Types.ObjectId();
-    const pageId4 = new mongoose.Types.ObjectId();
-    const pageId5 = new mongoose.Types.ObjectId();
-    const pageId6 = new mongoose.Types.ObjectId();
-    const pageId7 = new mongoose.Types.ObjectId();
-    const pageId8 = new mongoose.Types.ObjectId();
-    const pageId9 = new mongoose.Types.ObjectId();
-    const pageId10 = new mongoose.Types.ObjectId();
-    const pageId11 = new mongoose.Types.ObjectId();
-    const pageId12 = new mongoose.Types.ObjectId();
+    const duplicatePageId1 = new mongoose.Types.ObjectId();
+    const duplicatePageId2 = new mongoose.Types.ObjectId();
+    const duplicatePageId3 = new mongoose.Types.ObjectId();
+    const duplicatePageId4 = new mongoose.Types.ObjectId();
+    const duplicatePageId5 = new mongoose.Types.ObjectId();
+    const duplicatePageId6 = new mongoose.Types.ObjectId();
+    const duplicatePageId7 = new mongoose.Types.ObjectId();
+    const duplicatePageId8 = new mongoose.Types.ObjectId();
+    const duplicatePageId9 = new mongoose.Types.ObjectId();
+    const duplicatePageId10 = new mongoose.Types.ObjectId();
+    const duplicatePageId11 = new mongoose.Types.ObjectId();
+    const duplicatePageId12 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionId1 = new mongoose.Types.ObjectId();
@@ -278,7 +278,7 @@ describe('PageService page operations with only public pages', () => {
 
     await Page.insertMany([
       {
-        _id: pageId1,
+        _id: duplicatePageId1,
         path: '/v5_PageForDuplicate1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -287,23 +287,23 @@ describe('PageService page operations with only public pages', () => {
         revision: revisionId1,
       },
       {
-        _id: pageId2,
+        _id: duplicatePageId2,
         path: '/v5_PageForDuplicate2',
         grant: Page.GRANT_PUBLIC,
         parent: rootPage._id,
         isEmpty: true,
       },
       {
-        _id: pageId3,
+        _id: duplicatePageId3,
         path: '/v5_PageForDuplicate2/v5_ChildForDuplicate2',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageId2,
+        parent: duplicatePageId2,
         revision: revisionId2,
       },
       {
-        _id: pageId4,
+        _id: duplicatePageId4,
         path: '/v5_PageForDuplicate3',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -312,25 +312,25 @@ describe('PageService page operations with only public pages', () => {
         revision: revisionId3,
       },
       {
-        _id: pageId5,
+        _id: duplicatePageId5,
         path: '/v5_PageForDuplicate3/v5_Child_1_ForDuplicate3',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageId4,
+        parent: duplicatePageId4,
         revision: revisionId4,
       },
       {
-        _id: pageId6,
+        _id: duplicatePageId6,
         path: '/v5_PageForDuplicate3/v5_Child_2_ForDuplicate3',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageId4,
+        parent: duplicatePageId4,
         revision: revisionId5,
       },
       {
-        _id: pageId7,
+        _id: duplicatePageId7,
         path: '/v5_PageForDuplicate4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -339,23 +339,23 @@ describe('PageService page operations with only public pages', () => {
         revision: revisionId6,
       },
       {
-        _id: pageId8,
+        _id: duplicatePageId8,
         path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4',
         grant: Page.GRANT_PUBLIC,
-        parent: pageId7,
+        parent: duplicatePageId7,
         isEmpty: true,
       },
       {
-        _id: pageId9,
+        _id: duplicatePageId9,
         path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageId8,
+        parent: duplicatePageId8,
         revision: revisionId7,
       },
       {
-        _id: pageId10,
+        _id: duplicatePageId10,
         path: '/v5_PageForDuplicate5',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -364,7 +364,7 @@ describe('PageService page operations with only public pages', () => {
         revision: revisionId8,
       },
       {
-        _id: pageId11,
+        _id: duplicatePageId11,
         path: '/v5_PageForDuplicate6',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -380,70 +380,70 @@ describe('PageService page operations with only public pages', () => {
         _id: revisionId1,
         body: 'body1',
         format: 'markdown',
-        pageId: pageId1,
+        pageId: duplicatePageId1,
         author: dummyUser1,
       },
       {
         _id: revisionId2,
         body: 'body3',
         format: 'markdown',
-        pageId: pageId3,
+        pageId: duplicatePageId3,
         author: dummyUser1,
       },
       {
         _id: revisionId3,
         body: 'parent_page_body4',
         format: 'markdown',
-        pageId: pageId4,
+        pageId: duplicatePageId4,
         author: dummyUser1,
       },
       {
         _id: revisionId4,
         body: 'revision_id_4_child_page_body',
         format: 'markdown',
-        pageId: pageId5,
+        pageId: duplicatePageId5,
         author: dummyUser1,
       },
       {
         _id: revisionId5,
         body: 'revision_id_5_child_page_body',
         format: 'markdown',
-        pageId: pageId6,
+        pageId: duplicatePageId6,
         author: dummyUser1,
       },
       {
         _id: revisionId6,
         body: '/v5_PageForDuplicate4',
         format: 'markdown',
-        pageId: pageId7,
+        pageId: duplicatePageId7,
         author: dummyUser1,
       },
       {
         _id: revisionId7,
         body: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
         format: 'markdown',
-        pageId: pageId9,
+        pageId: duplicatePageId9,
         author: dummyUser1,
       },
       {
         _id: revisionId8,
         body: '/v5_PageForDuplicate5',
         format: 'markdown',
-        pageId: pageId10,
+        pageId: duplicatePageId10,
         author: dummyUser1,
       },
       {
         _id: revisionId9,
         body: '/v5_PageForDuplicate6',
         format: 'markdown',
-        pageId: pageId11,
+        pageId: duplicatePageId11,
         author: dummyUser1,
       },
       {
         _id: revisionId10,
         body: '/v5_PageForDuplicate6',
         format: 'comment',
-        pageId: pageId12,
+        pageId: duplicatePageId12,
         author: dummyUser1,
       },
     ]);
