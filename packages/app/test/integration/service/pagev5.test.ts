@@ -380,8 +380,8 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   afterAll(async() => {
-    await Page.remove({});
-    await User.remove({});
+    await Page.deleteMany({});
+    await User.deleteMany({});
   });
 });
 
