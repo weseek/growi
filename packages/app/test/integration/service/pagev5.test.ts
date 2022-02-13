@@ -255,7 +255,7 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
 
-    test('Should move to under non-empty page', async() => {
+    test('Should rename/move to under non-empty page', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
@@ -265,7 +265,7 @@ describe('PageService page operations with only public pages', () => {
 
     });
 
-    test('Should move to under empty page', async() => {
+    test('Should rename/move to under empty page', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
       const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
@@ -275,7 +275,7 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.parent).toStrictEqual(parentForRename2._id);
     });
 
-    test('Should move with option updateMetadata: true', async() => {
+    test('Should rename/move with option updateMetadata: true', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
       const oldUdpateAt = childForRename3.updatedAt;
@@ -301,7 +301,7 @@ describe('PageService page operations with only public pages', () => {
     //   expect(pageRedirect.length).toBeGreaterThan(0);
     // });
 
-    test('Should move with descendants', async() => {
+    test('Should rename/move with descendants', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
@@ -316,7 +316,7 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
     });
 
-    test('Should move with same grant', async() => {
+    test('Should rename/move with same grant', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename6/renamedChildForRename6';
       expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
@@ -327,13 +327,12 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
     });
 
-    test('Should move empty page', async() => {
+    test('Should rename/move empty page', async() => {
       // rename target page
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childForRename7, newPath, dummyUser1, {});
       // find child of renamed page
-      const grandchildren = await Page.find({ parent: renamedPage._id });
-      const grandchild = grandchildren[0];
+      const grandchild = await Page.findOne({ parent: renamedPage._id });
 
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(true);
