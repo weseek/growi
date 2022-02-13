@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { usePageDeleteModal, usePageDeleteModalOpened } from '~/stores/ui';
+import { usePageDeleteModal } from '~/stores/modal';
 
 import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
@@ -38,10 +38,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     isDeleteCompletelyModal, isAbleToDeleteCompletely,
   } = props;
 
-  const { data: deleteModalStatus, close: closeDeleteModal } = usePageDeleteModal();
-  const { data: pageDeleteModalOpened } = usePageDeleteModalOpened();
+  const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
-  const isOpened = pageDeleteModalOpened?.isOpend != null ? pageDeleteModalOpened.isOpend : false;
+  const isOpened = deleteModalData?.isOpened ?? false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -62,20 +61,20 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   async function deletePage() {
-    if (deleteModalStatus == null || deleteModalStatus.pages == null) {
+    if (deleteModalData == null || deleteModalData.pages == null) {
       return;
     }
 
     /*
      * When multiple pages
      */
-    if (deleteModalStatus.pages.length > 1) {
+    if (deleteModalData.pages.length > 1) {
       try {
         const isRecursively = isDeleteRecursively === true ? true : undefined;
         const isCompletely = isDeleteCompletely === true ? true : undefined;
 
         const pageIdToRevisionIdMap = {};
-        deleteModalStatus.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
+        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.pageId] = p.revisionId });
 
         const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
@@ -83,8 +82,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           isCompletely,
         });
 
-        if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
-          pageDeleteModalOpened.onDeleted(data.paths, data.isRecursively, data.isCompletely);
+        if (deleteModalData.onDeleted != null) {
+          deleteModalData.onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
       }
       catch (err) {
@@ -99,7 +98,7 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         const recursively = isDeleteRecursively === true ? true : undefined;
         const completely = isDeleteCompletely === true ? true : undefined;
 
-        const page = deleteModalStatus.pages[0];
+        const page = deleteModalData.pages[0];
 
         const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
           page_id: page.pageId,
@@ -108,8 +107,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           completely,
         }) as IDeleteSinglePageApiv1Result;
 
-        if (pageDeleteModalOpened != null && pageDeleteModalOpened.onDeleted != null) {
-          pageDeleteModalOpened.onDeleted(path, isRecursively, isCompletely);
+        if (deleteModalData.onDeleted != null) {
+          deleteModalData.onDeleted(path, isRecursively, isCompletely);
         }
       }
       catch (err) {
@@ -177,8 +176,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   }
 
   const renderPagePathsToDelete = () => {
-    if (deleteModalStatus != null && deleteModalStatus.pages != null) {
-      return deleteModalStatus.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+    if (deleteModalData != null && deleteModalData.pages != null) {
+      return deleteModalData.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
     }
     return <></>;
   };

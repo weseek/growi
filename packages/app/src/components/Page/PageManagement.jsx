@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { pagePathUtils } from '@growi/core';
-import { usePageDeleteModal } from '~/stores/ui';
+import { usePageDeleteModal } from '~/stores/modal';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
