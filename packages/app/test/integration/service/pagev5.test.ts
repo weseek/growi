@@ -48,6 +48,7 @@ describe('PageService page operations with only public pages', () => {
   let v5PageForDuplicate3;
   let v5PageForDuplicate4;
   let v5PageForDuplicate5;
+  let v5PageForDuplicate6;
 
   let tag1;
   let tag2;
@@ -260,6 +261,8 @@ describe('PageService page operations with only public pages', () => {
     const pageId8 = new mongoose.Types.ObjectId();
     const pageId9 = new mongoose.Types.ObjectId();
     const pageId10 = new mongoose.Types.ObjectId();
+    const pageId11 = new mongoose.Types.ObjectId();
+    const pageId12 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionId1 = new mongoose.Types.ObjectId();
@@ -270,6 +273,8 @@ describe('PageService page operations with only public pages', () => {
     const revisionId6 = new mongoose.Types.ObjectId();
     const revisionId7 = new mongoose.Types.ObjectId();
     const revisionId8 = new mongoose.Types.ObjectId();
+    const revisionId9 = new mongoose.Types.ObjectId();
+    const revisionId10 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -358,6 +363,15 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         revision: revisionId8,
       },
+      {
+        _id: pageId11,
+        path: '/v5_PageForDuplicate6',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionId9,
+      },
     ]);
 
     // Revision
@@ -418,12 +432,27 @@ describe('PageService page operations with only public pages', () => {
         pageId: pageId10,
         author: dummyUser1,
       },
+      {
+        _id: revisionId9,
+        body: '/v5_PageForDuplicate6',
+        format: 'markdown',
+        pageId: pageId11,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionId10,
+        body: '/v5_PageForDuplicate6',
+        format: 'comment',
+        pageId: pageId12,
+        author: dummyUser1,
+      },
     ]);
     v5PageForDuplicate1 = await Page.findOne({ path: '/v5_PageForDuplicate1' });
     v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
     v5PageForDuplicate3 = await Page.findOne({ path: '/v5_PageForDuplicate3' });
     v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
     v5PageForDuplicate5 = await Page.findOne({ path: '/v5_PageForDuplicate5' });
+    v5PageForDuplicate6 = await Page.findOne({ path: '/v5_PageForDuplicate6' });
 
     await Tag.insertMany([
       { name: 'Tag1' },
@@ -436,6 +465,17 @@ describe('PageService page operations with only public pages', () => {
     await PageTagRelation.insertMany([
       { relatedPage: v5PageForDuplicate5._id, relatedTag: tag1 },
       { relatedPage: v5PageForDuplicate5._id, relatedTag: tag2 },
+    ]);
+
+    await Comment.insertMany([
+      {
+        commentPosition: -1,
+        isMarkdown: true,
+        page: v5PageForDuplicate6._id,
+        creator: dummyUser1._id,
+        revision: revisionId10,
+        comment: 'this is comment',
+      },
     ]);
 
   });
@@ -650,6 +690,16 @@ describe('PageService page operations with only public pages', () => {
 
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedTagRelations.length).toBeGreaterThanOrEqual(2);
+    });
+    test('Should NOT duplicate comments', async() => {
+      const newPagePath = '/duplicatedv5PageForDuplicate6';
+      const duplicatedPage = await duplicate(v5PageForDuplicate6, newPagePath, dummyUser1, false);
+      const comments = await Comment.find({ page: v5PageForDuplicate6._id });
+      const duplicatedComments = await Comment.find({ page: duplicatedPage._id });
+
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(comments.length).toBe(1);
+      expect(duplicatedComments.length).toBe(0);
     });
   });
 
