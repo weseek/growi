@@ -1886,6 +1886,10 @@ class PageService {
       return;
     }
 
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
     let normalizedPages;
     let nonNormalizedPages;
     try {
