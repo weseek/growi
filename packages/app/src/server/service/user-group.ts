@@ -59,16 +59,15 @@ class UserGroupService {
     }
 
 
-    // throw if parent was in its descendants
+    // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    const descendants = descendantsWithTarget.filter(d => d._id.equals(userGroup._id));
-    if (isIncludesObjectId(descendants, parent._id)) {
+    if (isIncludesObjectId(descendantsWithTarget, parent._id)) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }
 
     // find users for comparison
     const [targetGroupUsers, parentGroupUsers] = await Promise.all(
-      [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent?._id)], // TODO 85062: consider when parent is null to update the group as the root
+      [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent._id)],
     );
 
     const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
@@ -79,7 +78,7 @@ class UserGroupService {
 
       await UserGroupRelation.createByGroupIdsAndUserIds(ancestorGroupIds, usersBelongsToTargetButNotParent);
 
-      userGroup.parent = parent?._id; // TODO 85062: consider when parent is null to update the group as the root
+      userGroup.parent = parent._id;
     }
     // validate related users
     else {
