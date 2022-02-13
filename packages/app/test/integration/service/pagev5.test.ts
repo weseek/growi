@@ -485,7 +485,7 @@ describe('PageService page operations with only public pages', () => {
     const renamePage = async(page, newPagePath, user, options) => {
     // mock return value
       const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
-      const mockedcreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
       // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
@@ -493,7 +493,7 @@ describe('PageService page operations with only public pages', () => {
 
       // restores the original implementation
       mockedResumableRenameDescendants.mockRestore();
-      mockedcreateAndSendNotifications.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
       await crowi.pageService.resumableRenameDescendants(...argsForResumableRenameDescendants);
