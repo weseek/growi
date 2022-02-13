@@ -79,6 +79,8 @@ describe('PageService page operations with only public pages', () => {
     // then create new root page
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
+    const renamePageId1 = new mongoose.Types.ObjectId();
+
     // Create Pages
     await Page.insertMany([
       // parents
@@ -105,6 +107,7 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
+        _id: renamePageId1,
         path: '/v5_ParentForRename4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -170,11 +173,11 @@ describe('PageService page operations with only public pages', () => {
         updatedAt: new Date('2021'),
       },
       {
-        path: '/v5_ChildForRename4',
+        path: '/v5_ParentForRename4/v5_ChildForRename4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
+        parent: renamePageId1,
       },
       {
         path: '/v5_ChildForRename5',
@@ -211,7 +214,7 @@ describe('PageService page operations with only public pages', () => {
     childForRename1 = await Page.findOne({ path: '/v5_ChildForRename1' });
     childForRename2 = await Page.findOne({ path: '/v5_ChildForRename2' });
     childForRename3 = await Page.findOne({ path: '/v5_ChildForRename3' });
-    childForRename4 = await Page.findOne({ path: '/v5_ChildForRename4' });
+    childForRename4 = await Page.findOne({ path: '/v5_ParentForRename4/v5_ChildForRename4' });
     childForRename5 = await Page.findOne({ path: '/v5_ChildForRename5' });
     childForRename6 = await Page.findOne({ path: '/v5_ChildForRename6' });
     childForRename7 = await Page.findOne({ path: '/v5_ChildForRename7' });
@@ -307,20 +310,22 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPage.updatedAt.getFullYear()).toBeGreaterThan(oldUdpateAt.getFullYear());
     });
 
-    // ****************** TODO ******************
-    // uncomment the next test when working on 88097
-    // ******************************************
-    // test('Should move with option createRedirectPage: true', async() => {
-    //   // rename target page
-    //   const newPath = '/v5_ParentForRename4/renamedChildForRename4';
-    //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
-    //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
+    test('Should move with option createRedirectPage: true', async() => {
+      const newParentPath = '/duplicated_v5_ParentForRename4';
+      const oldParentPath = parentForRename4.path;
+      const oldChildPath = childForRename4.path;
 
-    // expect(xssSpy).toHaveBeenCalled();
-    //   expect(renamedPage.path).toBe(newPath);
-    //   expect(renamedPage.parent).toStrictEqual(parentForRename4._id);
-    //   expect(pageRedirect.length).toBeGreaterThan(0);
-    // });
+      const renamedParentPage = await renamePage(parentForRename4, newParentPath, dummyUser1, { createRedirectPage: true });
+      const renamedChildPage = await Page.findOne({ parent: renamedParentPage._id });
+      const pageRedirectForParent = await PageRedirect.find({ fromPath: oldParentPath, toPath: renamedParentPage.path });
+      const pageRedirectForChild = await PageRedirect.find({ fromPath: oldChildPath, toPath: renamedChildPage.path });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(renamedParentPage.path).toBe(newParentPath);
+      expect(renamedChildPage.parent).toStrictEqual(renamedParentPage._id);
+      expect(pageRedirectForParent.length).toBeGreaterThan(0);
+      expect(pageRedirectForChild.length).toBeGreaterThan(0);
+    });
 
     test('Should rename/move with descendants', async() => {
       // rename target page
@@ -380,8 +385,8 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   afterAll(async() => {
-    await Page.deleteMany({});
-    await User.deleteMany({});
+    // await Page.deleteMany({});
+    // await User.deleteMany({});
   });
 });
 
