@@ -9,9 +9,14 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal, usePagePresentationModal,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
+import {
+  usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
+
+
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
@@ -139,8 +144,8 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);

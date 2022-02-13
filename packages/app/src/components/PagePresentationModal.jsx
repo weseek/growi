@@ -3,7 +3,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
-import { usePagePresentationModal } from '~/stores/ui';
+import { usePagePresentationModal } from '~/stores/modal';
 
 const PagePresentationModal = () => {
 

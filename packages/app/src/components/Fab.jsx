@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
 
-import { useCreateModalStatus } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -19,7 +19,7 @@ const Fab = (props) => {
   const { appContainer } = props;
   const { currentUser } = appContainer;
 
-  const { open: openCreateModal } = useCreateModalStatus();
+  const { open: openCreateModal } = usePageCreateModal();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
