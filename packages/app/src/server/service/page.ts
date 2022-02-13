@@ -1808,7 +1808,7 @@ class PageService {
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
     for await (const pageId of pageIds) {
       try {
-        const normalizedPage = await this.normalizeParentByPageId(pageId, user) as unknown as PageDocument; // TODO: improve type
+        const normalizedPage = await this.normalizeParentByPageId(pageId, user);
 
         if (normalizedPage == null) {
           logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
@@ -1866,7 +1866,7 @@ class PageService {
     // getParentAndFillAncestors
     const parent = await Page.getParentAndFillAncestors(target.path);
 
-    const updatedPage = await Page.updateOne({ _id: pageId }, { parent: parent._id }, { new: true });
+    const updatedPage = await Page.findOneAndUpdate({ _id: pageId }, { parent: parent._id }, { new: true });
 
     // replace if empty page exists
     if (existingPage != null && existingPage.isEmpty) {
