@@ -17,7 +17,6 @@ class XssSerivce {
   }
 
   process(value) {
-    console.log(value);
     return this.xss.process(value);
   }
 
