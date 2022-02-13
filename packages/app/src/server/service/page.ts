@@ -9,7 +9,7 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
-  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel,
+  CreateMethod, generateGrantCondition, PageCreateOptions, PageDocument, PageModel,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
@@ -1806,19 +1806,16 @@ class PageService {
   }
 
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
     for await (const pageId of pageIds) {
       try {
-        await this.normalizeParentByPageId(pageId, user);
+        const normalizedPage = await this.normalizeParentByPageId(pageId, user) as unknown as PageDocument; // TODO: improve type
 
-        const normalizedPage = await Page.findById(pageId);
-        if (typeof normalizedPage?.descendantCount !== 'number') {
-          logger.error(`Failed to update descendantCount of page "${normalizedPage?.path}"`);
+        if (normalizedPage == null) {
+          logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
         }
         else {
           // update descendantCount of ancestors'
-          await this.updateDescendantCountOfAncestors(pageId, normalizedPage?.descendantCount, false);
+          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount, false);
         }
       }
       catch (err) {
@@ -1875,6 +1872,8 @@ class PageService {
     if (existingPage != null && existingPage.isEmpty) {
       await Page.replaceTargetWithPage(existingPage, updatedPage, true);
     }
+
+    return updatedPage;
   }
 
   // TODO: this should be resumable
