@@ -721,6 +721,8 @@ describe('PageService page operations with only public pages', () => {
     await Page.deleteMany({});
     await User.deleteMany({});
     await Revision.deleteMany({});
+    await Tag.deleteMany({});
+    await PageTagRelation.deleteMany({});
   });
 });
 
