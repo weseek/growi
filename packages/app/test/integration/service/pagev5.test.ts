@@ -625,14 +625,15 @@ describe('PageService page operations with only public pages', () => {
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
       const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockReturnValue(null);
-      jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method resumableDuplicateDescendants inside duplicate method
       const argsForResumableDuplicateDescendants = mockedResumableDuplicateDescendants.mock.calls[0];
 
       // restores the original implementation
-      jest.restoreAllMocks();
+      mockedResumableDuplicateDescendants.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
       if (isRecursively) {
@@ -649,6 +650,7 @@ describe('PageService page operations with only public pages', () => {
       const baseRevision = await Revision.findOne({ pageId: v5PageForDuplicate1._id });
 
       // new path
+      expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage._id).not.toStrictEqual(v5PageForDuplicate1._id);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
@@ -677,6 +679,7 @@ describe('PageService page operations with only public pages', () => {
       const revisionBodyOfChildrenForBasePage = childrenForBasePage.map(p => p.revision.body);
       const revisionBodyOfChildrenForDuplicatedPage = childrenForDuplicatedPage.map(p => p.revision.body);
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(childrenForDuplicatedPage.length).toBe(childrenForBasePage.length);
       expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodyOfChildrenForBasePage));
@@ -687,6 +690,7 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
       const duplicatedGrandchild = await Page.find({ parent: duplicatedChild._id });
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChild.isEmpty).toBe(true);
       expect(duplicatedGrandchild.length).toBeGreaterThan(0);
@@ -696,6 +700,7 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedPage = await duplicate(v5PageForDuplicate5, newPagePath, dummyUser1, false);
       const duplicatedTagRelations = await PageTagRelation.find({ relatedPage: duplicatedPage._id });
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedTagRelations.length).toBeGreaterThanOrEqual(2);
     });
@@ -705,6 +710,7 @@ describe('PageService page operations with only public pages', () => {
       const comments = await Comment.find({ page: v5PageForDuplicate6._id });
       const duplicatedComments = await Comment.find({ page: duplicatedPage._id });
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(comments.length).toBe(1);
       expect(duplicatedComments.length).toBe(0);
