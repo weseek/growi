@@ -316,7 +316,7 @@ class PageService {
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
-      // if page found, cannot cannot rename to that path
+      // if page found, cannot rename to that path
       throw new Error('the path already exists');
     }
 
