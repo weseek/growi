@@ -65,7 +65,6 @@ class SearchPage extends React.Component {
     this.onChangeSortInvoked = this.onChangeSortInvoked.bind(this);
     this.onPagingNumberChanged = this.onPagingNumberChanged.bind(this);
     this.onPagingLimitChanged = this.onPagingLimitChanged.bind(this);
-    this.deleteSinglePageButtonHandler = this.deleteSinglePageButtonHandler.bind(this);
     this.deleteAllPagesButtonHandler = this.deleteAllPagesButtonHandler.bind(this);
     this.closeDeleteConfirmModalHandler = this.closeDeleteConfirmModalHandler.bind(this);
   }
@@ -271,11 +270,6 @@ class SearchPage extends React.Component {
     }));
   }
 
-  deleteSinglePageButtonHandler(pageId) {
-    this.setState({ deleteTargetPageIds: new Set([pageId]) });
-    this.setState({ isDeleteConfirmModalShown: true });
-  }
-
   deleteAllPagesButtonHandler() {
     if (this.state.selectedPagesIdList.size === 0) { return }
     this.setState({ deleteTargetPageIds: this.state.selectedPagesIdList });
@@ -311,7 +305,6 @@ class SearchPage extends React.Component {
         onClickItem={this.selectPage}
         onClickCheckbox={this.toggleCheckBox}
         onPagingNumberChanged={this.onPagingNumberChanged}
-        onClickDeleteButton={this.deleteSinglePageButtonHandler}
       />
     );
   }
@@ -352,7 +345,7 @@ class SearchPage extends React.Component {
           activePage={this.state.activePage}
         >
         </SearchPageLayout>
-        {/* TODO: show PageDeleteModal with usePageDeleteModal by 87569  */}
+        {/* TODO: show PageDeleteModal with usePageDeleteModal for delete all pages 85465 */}
         <PageDeleteModal
           isOpen={this.state.isDeleteConfirmModalShown}
           onClose={this.closeDeleteConfirmModalHandler}

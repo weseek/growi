@@ -25,7 +25,6 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onClickCheckbox?: (pageId: string) => void,
   onClickItem?: (pageId: string) => void,
-  onClickDeleteButton?: (pageId: string) => void,
 }
 
 export const PageListItemL = memo((props: Props): JSX.Element => {
