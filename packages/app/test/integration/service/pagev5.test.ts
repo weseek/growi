@@ -49,6 +49,7 @@ describe('PageService page operations with only public pages', () => {
   let v5PageForDuplicate4;
   let v5PageForDuplicate5;
   let v5PageForDuplicate6;
+  let v5PageForDuplicate7;
 
   let tag1;
   let tag2;
@@ -263,6 +264,9 @@ describe('PageService page operations with only public pages', () => {
     const duplicatePageId10 = new mongoose.Types.ObjectId();
     const duplicatePageId11 = new mongoose.Types.ObjectId();
     const duplicatePageId12 = new mongoose.Types.ObjectId();
+    const duplicatePageId13 = new mongoose.Types.ObjectId();
+    const duplicatePageId14 = new mongoose.Types.ObjectId();
+    const duplicatePageId15 = new mongoose.Types.ObjectId();
 
     // revision ids
     const revisionId1 = new mongoose.Types.ObjectId();
@@ -275,6 +279,8 @@ describe('PageService page operations with only public pages', () => {
     const revisionId8 = new mongoose.Types.ObjectId();
     const revisionId9 = new mongoose.Types.ObjectId();
     const revisionId10 = new mongoose.Types.ObjectId();
+    const revisionId11 = new mongoose.Types.ObjectId();
+    const revisionId12 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -372,6 +378,31 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         revision: revisionId9,
       },
+      {
+        _id: duplicatePageId13,
+        path: '/v5_empty_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: duplicatePageId14,
+        path: '/v5_empty_PageForDuplicate7/v5_child_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: duplicatePageId13,
+        revision: revisionId11,
+      },
+      {
+        _id: duplicatePageId15,
+        path: '/v5_empty_PageForDuplicate7/v5_child_PageForDuplicate7/v5_grandchild_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: duplicatePageId14,
+        revision: revisionId12,
+      },
     ]);
 
     // Revision
@@ -446,6 +477,20 @@ describe('PageService page operations with only public pages', () => {
         pageId: duplicatePageId12,
         author: dummyUser1,
       },
+      {
+        _id: revisionId11,
+        body: '/v5_child_PageForDuplicate7',
+        format: 'markdown',
+        pageId: duplicatePageId14,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionId12,
+        body: '/v5_grandchild_PageForDuplicate7',
+        format: 'markdown',
+        pageId: duplicatePageId15,
+        author: dummyUser1,
+      },
     ]);
     v5PageForDuplicate1 = await Page.findOne({ path: '/v5_PageForDuplicate1' });
     v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
@@ -453,6 +498,7 @@ describe('PageService page operations with only public pages', () => {
     v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
     v5PageForDuplicate5 = await Page.findOne({ path: '/v5_PageForDuplicate5' });
     v5PageForDuplicate6 = await Page.findOne({ path: '/v5_PageForDuplicate6' });
+    v5PageForDuplicate7 = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
 
     await Tag.insertMany([
       { name: 'Tag1' },
@@ -714,6 +760,21 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(comments.length).toBe(1);
       expect(duplicatedComments.length).toBe(0);
+    });
+
+    test('Should duplicate empty page with descendants', async() => {
+      const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
+      const basePageChild = await Page.findOne({ parent: v5PageForDuplicate7._id }).populate({ path: 'revision', model: 'Revision' });
+      const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage = await duplicate(v5PageForDuplicate7, newPagePath, dummyUser1, true);
+      const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id }).populate({ path: 'revision', model: 'Revision' });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedPage.isEmpty).toBe(true);
+      expect(basePageChild.revision.body).toBe(duplicatedChild.revision.body);
+      expect(basePageGrandhild.revision.body).toBe(duplicatedGrandchild.revision.body);
     });
   });
 
