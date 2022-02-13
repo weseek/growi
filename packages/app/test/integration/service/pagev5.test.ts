@@ -485,14 +485,15 @@ describe('PageService page operations with only public pages', () => {
     const renamePage = async(page, newPagePath, user, options) => {
     // mock return value
       const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
-      jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const mockedcreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
       // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
       const argsForResumableRenameDescendants = mockedResumableRenameDescendants.mock.calls[0];
 
       // restores the original implementation
-      jest.restoreAllMocks();
+      mockedResumableRenameDescendants.mockRestore();
+      mockedcreateAndSendNotifications.mockRestore();
 
       // rename descendants
       await crowi.pageService.resumableRenameDescendants(...argsForResumableRenameDescendants);
@@ -517,6 +518,7 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename1._id);
     });
@@ -526,6 +528,7 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
       const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(parentForRename2.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentForRename2._id);
@@ -537,6 +540,7 @@ describe('PageService page operations with only public pages', () => {
       const oldUdpateAt = childForRename3.updatedAt;
       const renamedPage = await renamePage(childForRename3, newPath, dummyUser2, { updateMetadata: true });
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename3._id);
       expect(renamedPage.lastUpdateUser).toStrictEqual(dummyUser2._id);
@@ -552,6 +556,7 @@ describe('PageService page operations with only public pages', () => {
     //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
     //   const pageRedirect = await PageRedirect.find({ fromPath: childForRename4.path, toPath: renamedPage.path });
 
+    // expect(xssSpy).toHaveBeenCalled();
     //   expect(renamedPage.path).toBe(newPath);
     //   expect(renamedPage.parent).toStrictEqual(parentForRename4._id);
     //   expect(pageRedirect.length).toBeGreaterThan(0);
@@ -565,6 +570,7 @@ describe('PageService page operations with only public pages', () => {
       const grandchildren = await Page.find({ parent: renamedPage._id });
       const grandchild = grandchildren[0];
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename5._id);
       // grandchild's parent should be renamed page
@@ -578,6 +584,7 @@ describe('PageService page operations with only public pages', () => {
       expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
       const renamedPage = await renamePage(childForRename6, newPath, dummyUser1, {});
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentForRename6._id);
       expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
@@ -590,6 +597,7 @@ describe('PageService page operations with only public pages', () => {
       // find child of renamed page
       const grandchild = await Page.findOne({ parent: renamedPage._id });
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentForRename7._id);
@@ -704,9 +712,9 @@ describe('PageService page operations with only public pages', () => {
   });
 
   afterAll(async() => {
-    // await Page.remove({});
-    // await User.remove({});
-    // await Revision.remove({});
+    await Page.deleteMany({});
+    await User.deleteMany({});
+    await Revision.deleteMany({});
   });
 });
 
