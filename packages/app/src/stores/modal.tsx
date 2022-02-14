@@ -34,6 +34,8 @@ export type IPageForPageDeleteModal = {
   pageId: string,
   revisionId?: string,
   path: string
+  isAbleToDeleteCompletely?: boolean,
+  isDeleteCompletelyModal?: boolean,
 }
 
 export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
