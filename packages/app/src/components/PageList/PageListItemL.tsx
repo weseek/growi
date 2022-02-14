@@ -6,7 +6,8 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { useIsDeviceSmallerThanLg, usePageRenameModalStatus, usePageDuplicateModalStatus } from '~/stores/ui';
+import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { usePageRenameModal, usePageDuplicateModal } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -35,8 +36,8 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;

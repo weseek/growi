@@ -159,8 +159,8 @@ module.exports = (crowi) => {
 
   const validator = {
     createPage: [
-      body('body').exists().not().isEmpty({ ignore_whitespace: true })
-        .withMessage('body is required'),
+      body('body').exists()
+        .withMessage('body is re quired but an empty string is allowed'),
       body('path').exists().not().isEmpty({ ignore_whitespace: true })
         .withMessage('path is required'),
       body('grant').if(value => value != null).isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
@@ -168,6 +168,7 @@ module.exports = (crowi) => {
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+      body('createFromPageTree').optional().isBoolean().withMessage('createFromPageTree must be boolean'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -244,6 +245,9 @@ module.exports = (crowi) => {
    *                    type: array
    *                    items:
    *                      $ref: '#/components/schemas/Tag'
+   *                  createFromPageTree:
+   *                    type: boolean
+   *                    description: Whether the page was created from the page tree or not
    *                required:
    *                  - body
    *                  - path
@@ -797,7 +801,7 @@ module.exports = (crowi) => {
     }
     else {
       try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds);
+        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
       }
       catch (err) {
         return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
@@ -810,7 +814,7 @@ module.exports = (crowi) => {
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
       const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-      const migratablePagesCount = req.user != null ? await crowi.pageService.v5MigratablePrivatePagesCount(req.user) : null;
+      const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
     catch (err) {

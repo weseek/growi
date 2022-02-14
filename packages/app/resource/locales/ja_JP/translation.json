@@ -170,6 +170,8 @@
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
   "Link sharing is disabled": "リンクのシェアは無効化されています",
+  "successfully_saved_the_page": "ページが正常に保存されました",
+  "you_can_not_create_page_with_this_name": "この名前でページを作成することはできません",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",

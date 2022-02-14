@@ -176,6 +176,8 @@
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
   "Link sharing is disabled": "你不允许分享该链接",
+  "successfully_saved_the_page": "成功地保存了该页面",
+  "you_can_not_create_page_with_this_name": "您无法使用此名称创建页面",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
