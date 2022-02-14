@@ -35,5 +35,4 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-trash`, { capture: 'viewport' });
   });
 
-
 });
