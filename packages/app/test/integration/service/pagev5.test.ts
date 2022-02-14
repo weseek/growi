@@ -41,6 +41,11 @@ describe('PageService page operations with only public pages', () => {
   let childForRename6;
   let childForRename7;
 
+  /**
+   * Delete
+   */
+  let v5PageForTrash1;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -236,6 +241,21 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    /**
+     * Delete
+     */
+    await Page.insertMany([
+      {
+        path: '/trash/v5_PageForTrash1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: childForRename5._id,
+      },
+    ]);
+
+    v5PageForTrash1 = await Page.findOne({ path: '/trash/v5_PageForTrash1' });
+
   });
 
   describe('Rename', () => {
@@ -376,6 +396,32 @@ describe('PageService page operations with only public pages', () => {
         isThrown = true;
       }
 
+      expect(isThrown).toBe(true);
+    });
+  });
+  describe('Delete', () => {
+    const deletePage = async(page, user, options, isRecursively) => {
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+      return deletedPage;
+    };
+    test('Should NOT delete root page', async() => {
+      let isThrown;
+      try {
+        await deletePage(rootPage, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+      expect(isThrown).toBe(true);
+    });
+    test('Should NOT delete trashed page', async() => {
+      let isThrown;
+      try {
+        await deletePage(v5PageForTrash1, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
       expect(isThrown).toBe(true);
     });
   });
