@@ -41,6 +41,8 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
+  const pagesHoge = deleteModalData?.pages ?? false;
+  const firstPagePath = pagesHoge[0]?.path ?? '';
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -122,6 +124,13 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
     await deletePage();
   }
 
+  // const pagePath = deleteModalData.pages[0].path ?? '';
+
+  // const deleteModalDataHoge = deleteModalData ?? '';
+  // const pagePath = deleteModalData.pages[0]? ?? '';
+
+
+  console.log('deleteModalData.pages[0].path', firstPagePath);
   function renderDeleteRecursivelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -135,7 +144,9 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"> <code>{ firstPagePath }</code> { t('modal_delete.recursively') }</p>
         </label>
+
       </div>
     );
   }
