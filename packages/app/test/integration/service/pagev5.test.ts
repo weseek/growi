@@ -367,6 +367,7 @@ describe('PageService page operations with only public pages', () => {
     const revisionIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
     const revisionIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
     const revisionIdForDeleteCompletely3 = new mongoose.Types.ObjectId();
+    const revisionIdForDeleteCompletely4 = new mongoose.Types.ObjectId();
 
 
     await Page.insertMany([
@@ -440,6 +441,12 @@ describe('PageService page operations with only public pages', () => {
         pageId: pageIdForDeleteCompletely4,
         body: 'pageIdForDeleteCompletely4',
       },
+      {
+        _id: revisionIdForDeleteCompletely4,
+        format: 'markdown',
+        pageId: pageIdForDeleteCompletely1,
+        body: 'comment_pageIdForDeleteCompletely2',
+      },
     ]);
 
     await Tag.insertMany([
@@ -459,6 +466,28 @@ describe('PageService page operations with only public pages', () => {
       {
         page: v5PageForDeleteCompletely2._id,
         user: dummyUser1._id,
+      },
+    ]);
+
+    await Comment.insertMany([
+      {
+        commentPosition: -1,
+        isMarkdown: true,
+        page: v5PageForDeleteCompletely2._id,
+        creator: dummyUser1._id,
+        revision: revisionIdForDeleteCompletely4,
+        comment: 'comment_ForDeleteCompletely4',
+      },
+    ]);
+
+    await PageRedirect.insertMany([
+      {
+        fromPath: `/from${v5PageForDeleteCompletely2.path}`,
+        toPath: v5PageForDeleteCompletely2.path,
+      },
+      {
+        fromPath: `/from${v5PageForDeleteCompletely4.path}`,
+        toPath: v5PageForDeleteCompletely4.path,
       },
     ]);
 
@@ -729,31 +758,41 @@ describe('PageService page operations with only public pages', () => {
       const deletedPage1 = await Page.findOne({ _id: v5PageForDeleteCompletely2._id });
       const deletedPage2 = await Page.findOne({ _id: v5PageForDeleteCompletely3._id });
       const deletedPage3 = await Page.findOne({ _id: v5PageForDeleteCompletely4._id });
-      const deletedRevision1 = await Revision.findOne({ pageId: v5PageForDeleteCompletely2._id });
-      const deletedRevision2 = await Revision.findOne({ pageId: v5PageForDeleteCompletely4._id });
-      const tag1 = await Tag.findOne({ name: tagForDeleteCompletely1.name });
-      const tag2 = await Tag.findOne({ name: tagForDeleteCompletely2.name });
-      const deletedPageTagRelation1 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely2 });
-      const deletedPageTagRelation2 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely4 });
-      const deletedBookmark = await Bookmark.findOne({ page: v5PageForDeleteCompletely2._id, user: dummyUser1._id });
+      const deletedRevisions = await Revision.find({ pageId: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
+      const tags = await Tag.find({ name: { $in: [tagForDeleteCompletely1.name, tagForDeleteCompletely2.name] } });
+      const deletedPageTagRelations = await PageTagRelation.find({ relatedPage: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
+      const deletedBookmarks = await Bookmark.find({ page: v5PageForDeleteCompletely2._id });
+      const deletedComments = await Comment.find({ page: v5PageForDeleteCompletely2._id });
+      const deletedPageRedirects = await PageRedirect.find({ toPath: { $in: [v5PageForDeleteCompletely2.toPath, v5PageForDeleteCompletely4.path] } });
 
       // page should be null
       [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
         expect(deletedPage).toBeNull();
       });
       // revision should be null
-      [deletedRevision1, deletedRevision2].forEach((revision) => {
+      deletedRevisions.forEach((revision) => {
         expect(revision).toBeNull();
       });
       // tag should exist
-      [tag1, tag2].forEach((tag) => {
+      tags.forEach((tag) => {
         expect(tag).toBeTruthy();
       });
       // pageTagRelation should be null
-      [deletedPageTagRelation1, deletedPageTagRelation2].forEach((PTRelation) => {
+      deletedPageTagRelations.forEach((PTRelation) => {
         expect(PTRelation).toBeNull();
       });
-      expect(deletedBookmark).toBeNull();
+      // bookmark should be null
+      deletedBookmarks.forEach((bookmark) => {
+        expect(bookmark).toBeNull();
+      });
+      // comment should be null
+      deletedComments.forEach((comment) => {
+        expect(comment).toBeNull();
+      });
+      // pageRedirect should be null
+      deletedPageRedirects.forEach((pRedirect) => {
+        expect(pRedirect).toBeNull();
+      });
     });
     test('Should completely delete trashed page', async() => {
       await deleteCompletely(v5PageForDeleteCompletely5, dummyUser1, {}, false);
