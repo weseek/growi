@@ -1,4 +1,4 @@
-import React, { useState, VFC } from 'react';
+import React, { useState, FC } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -26,8 +26,8 @@ const deleteIconAndKey = {
   },
 };
 
-const PageDeleteModal: VFC = () => {
-  const { t } = useTranslation('');
+const PageDeleteModal: FC = () => {
+  const { t } = useTranslation();
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
@@ -136,7 +136,6 @@ const PageDeleteModal: VFC = () => {
   // DeleteCompletely is currently disabled
   // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
   // Story: https://redmine.weseek.co.jp/issues/82222
-
   // TODO2 : use toaster
   // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
