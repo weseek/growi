@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
-import { isIncludesObjectId } from '~/server/util/compare-objectId';
+import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
@@ -72,7 +72,7 @@ class UserGroupService {
     const [targetGroupUsers, parentGroupUsers] = await Promise.all(
       [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent._id)],
     );
-    const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
+    const usersBelongsToTargetButNotParent = excludeTestIdsFromTargetIds(targetGroupUsers, parentGroupUsers);
 
     // save if no users exist in both target and parent groups
     if (targetGroupUsers.length === 0 && parentGroupUsers.length === 0) {

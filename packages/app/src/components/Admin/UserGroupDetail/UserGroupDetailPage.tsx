@@ -121,7 +121,7 @@ const UserGroupDetailPage: FC = () => {
         name: selectedUserGroup.name,
         description: selectedUserGroup.description,
         parentId: userGroup._id,
-        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
+        forceUpdateParents: false,
       });
       mutateSelectableUserGroups();
       mutateChildUserGroups();
