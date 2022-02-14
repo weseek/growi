@@ -51,7 +51,9 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         {t('search_result.result_meta')}
         <span className="search-result-keyword">{`"${searchingKeyword}"`}</span>
         <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
-        <span className="ml-3 text-muted">({took}ms)</span>
+        { took != null && (
+          <span className="ml-3 text-muted">({took}ms)</span>
+        ) }
       </div>
       <div className="input-group search-result-select-group ml-4 d-lg-flex d-none">
         <div className="input-group-prepend">

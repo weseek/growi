@@ -52,6 +52,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
       data: pages,
       meta: {
         total: pages.length,
+        hitsCount: pages.length,
       },
     };
   }

@@ -19,8 +19,8 @@ export type ISearchResult<T > = ISearchResultMeta & {
 
 export type ISearchResultMeta = {
   meta: {
+    took?: number
     total: number
-    took: number
     hitsCount: number
   },
 }
