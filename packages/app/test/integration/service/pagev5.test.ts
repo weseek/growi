@@ -60,6 +60,9 @@ describe('PageService page operations with only public pages', () => {
    * Delete completely
    */
   let v5PageForDeleteCompletely1;
+  let v5PageForDeleteCompletely2;
+  let v5PageForDeleteCompletely3;
+  let v5PageForDeleteCompletely4;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -352,6 +355,10 @@ describe('PageService page operations with only public pages', () => {
     /**
      * Delete completely
      */
+    const pageIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
+
+
     await Page.insertMany([
       {
         path: '/v5_PageForDeleteCompletely1',
@@ -361,9 +368,37 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         status: Page.STATUS_PUBLISHED,
       },
+      {
+        _id: pageIdForDeleteCompletely1,
+        path: '/v5_PageForDeleteCompletely2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDeleteCompletely2,
+        path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdForDeleteCompletely1,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDeleteCompletely2,
+        status: Page.STATUS_PUBLISHED,
+      },
     ]);
 
     v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
+    v5PageForDeleteCompletely2 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
+    v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
+    v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
   });
 
   describe('Rename', () => {
@@ -603,7 +638,7 @@ describe('PageService page operations with only public pages', () => {
       mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
-        await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
+        await crowi.pageService.resumableDeleteCompletelyDescendants(...argsForResumableDeleteDescendants);
       }
 
       return;
@@ -626,7 +661,16 @@ describe('PageService page operations with only public pages', () => {
 
       expect(deletedPage).toBeNull();
     });
-    test('Should completely delete multiple pages', async() => {});
+    test('Should completely delete multiple pages', async() => {
+      await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
+      const deletedPage1 = await Page.findOne({ _id: v5PageForDeleteCompletely2._id });
+      const deletedPage2 = await Page.findOne({ _id: v5PageForDeleteCompletely3._id });
+      const deletedPage3 = await Page.findOne({ _id: v5PageForDeleteCompletely4._id });
+
+      [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
+        expect(deletedPage).toBeNull();
+      });
+    });
     test('Should completely delete trashed page', async() => {});
   });
 
