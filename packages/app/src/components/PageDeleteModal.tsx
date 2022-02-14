@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, VFC } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -26,21 +26,14 @@ const deleteIconAndKey = {
   },
 };
 
-type Props = {
-  isDeleteCompletelyModal: boolean,
-  isAbleToDeleteCompletely: boolean,
-  onClose?: () => void,
-}
-
-const PageDeleteModal: FC<Props> = (props: Props) => {
+const PageDeleteModal: VFC = () => {
   const { t } = useTranslation('');
-  const {
-    isDeleteCompletelyModal, isAbleToDeleteCompletely,
-  } = props;
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
+  const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely ?? false;
+  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal ?? false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -154,13 +147,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          // disabled={!isAbleToDeleteCompletely}
-          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          disabled={!isAbleToDeleteCompletely}
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
-        {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
         <label className="custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
