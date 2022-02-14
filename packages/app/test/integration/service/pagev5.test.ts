@@ -825,7 +825,6 @@ describe('PageService page operations with only public pages', () => {
     await User.deleteMany({});
     await Bookmark.deleteMany({});
     await Comment.deleteMany({});
-    await PageRedirect.deleteMany({});
     await ShareLink.deleteMany({});
   });
 });
