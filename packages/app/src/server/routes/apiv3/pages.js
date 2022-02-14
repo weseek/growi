@@ -801,7 +801,7 @@ module.exports = (crowi) => {
     }
     else {
       try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds);
+        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
       }
       catch (err) {
         return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
@@ -814,7 +814,7 @@ module.exports = (crowi) => {
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
       const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-      const migratablePagesCount = req.user != null ? await crowi.pageService.v5MigratablePrivatePagesCount(req.user) : null;
+      const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
     catch (err) {
