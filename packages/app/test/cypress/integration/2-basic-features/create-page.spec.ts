@@ -1,4 +1,4 @@
-context('Create page', () => {
+context('Create page modal', () => {
 
   const ssPrefix = 'create-page';
 
@@ -21,22 +21,15 @@ context('Create page', () => {
     }
   });
 
-  // it("/Page Hello under today's page is successfully created", () => {
-  //   cy.getByTestid('newPageBtn').click();
-  //   cy.screenshot(`${ssPrefix}-opne-modal`)
-  //   cy.getByTestid('createTodaysPageInput').type("Hello");
-  //   cy.screenshot('input Hello');
-  //   cy.getByTestid('createTodaysPageBtn').click();
-
-  // });
-
-  it("/Page Hola under / is successfully created", ()=>{
+  it("Page create modal is shown successfully", () => {
     cy.getByTestid('newPageBtn').click();
-    cy.screenshot(`${ssPrefix}-opne-modal`)
-    cy.getByTestid('createPageInput').type('Hola');
-    cy.screenshot('input Hola');
-    cy.getByTestid('createPageBtn');
+    cy.screenshot(`${ssPrefix}-opne-modal at '/' page`)
+  });
 
-  })
+  it("Page create modal is shown successfully at /Sandbox page", ()=>{
+    cy.visit('/Sandbox');
+    cy.getByTestid('newPageBtn').click();
+    cy.screenshot(`${ssPrefix}-open-modal-at /Sandbox`)
+  });
 
 });

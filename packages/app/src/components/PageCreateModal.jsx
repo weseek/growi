@@ -148,7 +148,6 @@ const PageCreateModal = (props) => {
                     className="page-today-input1 form-control text-center mx-2"
                     value={todayInput1}
                     onChange={e => onChangeTodayInput1Handler(e.target.value)}
-                    data-testid="createTodaysPageInput"
                   />
                 </form>
                 <span className="page-today-suffix">/{now}/</span>
@@ -167,7 +166,6 @@ const PageCreateModal = (props) => {
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
               <button
-                data-testid="createTodaysPageBtn"
                 type="button"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createTodayPage}
