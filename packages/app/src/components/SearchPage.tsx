@@ -6,16 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { parse as parseQuerystring } from 'querystring';
 
 import AppContainer from '~/client/services/AppContainer';
-import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
-import { IPageWithMeta } from '~/interfaces/page';
-
+import { IFormattedSearchResult } from '~/interfaces/search';
+import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
+
 import PaginationWrapper from './PaginationWrapper';
-import { OperateAllControl, useSelectAll } from './SearchPage/OperateAllControl';
+import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 
 import { SearchPageBase } from './SearchPage2/SearchPageBase';
-import { ISelectableAll } from '~/client/interfaces/selectable-all';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -105,6 +104,7 @@ export const SearchPage = (props: Props): JSX.Element => {
     limit: INITIAL_PAGIONG_SIZE,
   });
 
+  const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll|null>(null);
 
   const { data, conditions } = useSWRxFullTextSearch(keyword, {
@@ -112,11 +112,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     ...configurationsByControl,
     ...configurationsByPagination,
   });
-
-  const {
-    checkboxType: selectAllPagesCheckboxType,
-    setSelectedCount: setSelectedPagesCount,
-  } = useSelectAll(data?.meta.hitsCount);
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
@@ -133,7 +128,7 @@ export const SearchPage = (props: Props): JSX.Element => {
     if (isChecked) {
       instance.selectAll();
     }
-    if (!isChecked) {
+    else {
       instance.deselectAll();
     }
   }, []);
@@ -159,8 +154,8 @@ export const SearchPage = (props: Props): JSX.Element => {
     newUrl.searchParams.append('q', keyword);
     window.history.pushState('', `Search - ${keyword}`, `${newUrl.pathname}${newUrl.search}`);
   }, [keyword]);
-
   const hitsCount = data?.meta.hitsCount;
+
   const { offset, limit } = conditions;
 
   const deleteAllControl = useMemo(() => {
@@ -168,7 +163,7 @@ export const SearchPage = (props: Props): JSX.Element => {
 
     return (
       <OperateAllControl
-        checkboxType={selectAllPagesCheckboxType}
+        ref={selectAllControlRef}
         isCheckboxDisabled={isDisabled}
         onCheckboxChanged={selectAllCheckboxChangedHandler}
       >
@@ -183,7 +178,7 @@ export const SearchPage = (props: Props): JSX.Element => {
         </button>
       </OperateAllControl>
     );
-  }, [hitsCount, selectAllCheckboxChangedHandler, selectAllPagesCheckboxType, t]);
+  }, [hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
     return (
@@ -230,19 +225,12 @@ export const SearchPage = (props: Props): JSX.Element => {
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
 
-  // reset selected count when data is refetched
-  useEffect(() => {
-    if (data != null) {
-      setSelectedPagesCount(0);
-    }
-  }, [data, setSelectedPagesCount]);
-
   return (
     <SearchPageBase
       ref={searchPageBaseRef}
       appContainer={appContainer}
       pages={data?.data}
-      onSelectedPagesByCheckboxesChanged={setSelectedPagesCount}
+      onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
       // Components
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}

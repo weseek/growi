@@ -1,5 +1,5 @@
 import React, {
-  FC, forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
+  forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
@@ -15,7 +15,7 @@ type Props = {
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
 
-  onSelectedPagesByCheckboxesChanged?: (selectedCount: number) => void,
+  onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
   searchControl: React.ReactNode,
   searchResultListHead: React.ReactNode,
@@ -32,22 +32,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
 
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
-  // publish selectAll()
-  useImperativeHandle(ref, () => ({
-    selectAll: () => {
-      const instance = searchResultListRef.current;
-      if (instance != null) {
-        instance.selectAll();
-      }
-    },
-    deselectAll: () => {
-      const instance = searchResultListRef.current;
-      if (instance != null) {
-        instance.deselectAll();
-      }
-    },
-  }));
-
   const { data: isGuestUser } = useIsGuestUser();
 
   // TODO get search keywords and split
@@ -55,18 +39,45 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
   const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
+  // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
 
-  const checkboxClickedHandler = (pageId: string) => {
-    if (selectedPageIdsByCheckboxes.has(pageId)) {
-      selectedPageIdsByCheckboxes.delete(pageId);
+  // publish selectAll()
+  useImperativeHandle(ref, () => ({
+    selectAll: () => {
+      const instance = searchResultListRef.current;
+      if (instance != null) {
+        instance.selectAll();
+      }
+
+      if (pages != null) {
+        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.pageData._id));
+      }
+    },
+    deselectAll: () => {
+      const instance = searchResultListRef.current;
+      if (instance != null) {
+        instance.deselectAll();
+      }
+
+      selectedPageIdsByCheckboxes.clear();
+    },
+  }));
+
+  const checkboxChangedHandler = (isChecked: boolean, pageId: string) => {
+    if (pages == null || pages.length === 0) {
+      return;
+    }
+
+    if (isChecked) {
+      selectedPageIdsByCheckboxes.add(pageId);
     }
     else {
-      selectedPageIdsByCheckboxes.add(pageId);
+      selectedPageIdsByCheckboxes.delete(pageId);
     }
 
     if (onSelectedPagesByCheckboxesChanged != null) {
-      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size);
+      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size, pages.length);
     }
   };
 
@@ -76,6 +87,21 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       setSelectedPageWithMeta(pages[0]);
     }
   }, [pages, selectedPageWithMeta]);
+
+  // reset selectedPageIdsByCheckboxes
+  useEffect(() => {
+    if (pages == null) {
+      return;
+    }
+
+    if (pages.length > 0) {
+      selectedPageIdsByCheckboxes.clear();
+    }
+
+    if (onSelectedPagesByCheckboxesChanged != null) {
+      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size, pages.length);
+    }
+  }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
   const isLoading = pages == null;
 
@@ -106,7 +132,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                     pages={pages}
                     selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
-                    onClickCheckbox={checkboxClickedHandler}
+                    onCheckboxChanged={checkboxChangedHandler}
                   />
                 </div>
                 <div className="my-4 d-flex justify-content-center">

@@ -3,6 +3,10 @@ export interface ISelectable {
   deselect: () => void,
 }
 
+export interface ISelectableAndIndeterminatable extends ISelectable {
+  setIndeterminate: () => void,
+}
+
 export interface ISelectableAll {
   selectAll: () => void,
   deselectAll: () => void,

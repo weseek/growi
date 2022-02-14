@@ -26,7 +26,7 @@ type Props = {
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
-  onClickCheckbox?: (pageId: string) => void,
+  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
   onClickDeleteButton?: (pageId: string) => void,
 }
@@ -34,8 +34,9 @@ type Props = {
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isEnableActions,
+    page: { pageData, pageMeta }, isSelected, isEnableActions,
     showPageUpdatedTime,
+    onClickItem, onCheckboxChanged,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,13 +95,13 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       >
         <div className="d-flex">
           {/* checkbox */}
-          {onClickCheckbox != null && (
+          {onCheckboxChanged != null && (
             <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
               <CustomInput
                 type="checkbox"
                 id={`cbDelete-${pageData._id}`}
                 innerRef={inputRef}
-                onChange={() => { onClickCheckbox(pageData._id) }}
+                onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
               />
             </div>
           )}

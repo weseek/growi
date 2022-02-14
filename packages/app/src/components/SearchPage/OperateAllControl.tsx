@@ -1,81 +1,56 @@
 import React, {
-  ChangeEvent, FC, useEffect, useMemo, useRef, useState,
+  ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef,
 } from 'react';
 import { CustomInput } from 'reactstrap';
+import { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
-import { CheckboxType } from '~/interfaces/search';
-
-
-export type SelectAllHook = {
-  checkboxType: CheckboxType,
-  setSelectedCount: (selectedCount: number) => void,
-}
-
-export const useSelectAll = (totalItemsCount: number | undefined): SelectAllHook => {
-  const [selectedCount, setSelectedCount] = useState(0);
-
-  const checkboxType = useMemo(() => {
-    if (selectedCount === 0) {
-      return CheckboxType.NONE_CHECKED;
-    }
-    if (selectedCount === totalItemsCount) {
-      return CheckboxType.ALL_CHECKED;
-    }
-    return CheckboxType.INDETERMINATE;
-  }, [selectedCount, totalItemsCount]);
-
-  return {
-    checkboxType,
-    setSelectedCount,
-  };
-};
-
 
 type Props = {
-  checkboxType: CheckboxType,
   isCheckboxDisabled?: boolean,
   onCheckboxChanged?: (isChecked: boolean) => void,
 
   children?: React.ReactNode,
 }
 
-export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
+const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeterminatable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    checkboxType,
     isCheckboxDisabled,
     onCheckboxChanged,
 
     children,
   } = props;
 
+  const selectAllCheckboxElm = useRef<IndeterminateInputElement>(null);
+
+  // publish ISelectable methods
+  useImperativeHandle(ref, () => ({
+    select: () => {
+      const input = selectAllCheckboxElm.current;
+      if (input != null) {
+        input.checked = true;
+        input.indeterminate = false;
+      }
+    },
+    deselect: () => {
+      const input = selectAllCheckboxElm.current;
+      if (input != null) {
+        input.checked = false;
+        input.indeterminate = false;
+      }
+    },
+    setIndeterminate: () => {
+      const input = selectAllCheckboxElm.current;
+      if (input != null) {
+        input.indeterminate = true;
+      }
+    },
+  }));
+
   const checkboxChangedHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (onCheckboxChanged != null) {
       onCheckboxChanged(e.target.checked);
     }
   };
-
-  const selectAllCheckboxElm = useRef<IndeterminateInputElement>(null);
-  useEffect(() => {
-    const checkbox = selectAllCheckboxElm.current;
-    if (checkbox == null) {
-      return;
-    }
-
-
-    switch (checkboxType) {
-      case CheckboxType.NONE_CHECKED:
-        checkbox.indeterminate = false;
-        checkbox.checked = false;
-        break;
-      case CheckboxType.ALL_CHECKED:
-        checkbox.indeterminate = false;
-        checkbox.checked = true;
-        break;
-      case CheckboxType.INDETERMINATE:
-        checkbox.indeterminate = true;
-        break;
-    }
-  }, [checkboxType]);
 
   return (
 
@@ -93,4 +68,6 @@ export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
     </div>
   );
 
-});
+};
+
+export const OperateAllControl = React.memo(forwardRef(OperateAllControlSubstance));

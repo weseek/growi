@@ -15,7 +15,7 @@ type Props = {
   pages: IPageWithMeta<IPageSearchMeta>[],
   selectedPageId?: string,
   onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
-  onClickCheckbox?: (pageId: string) => void,
+  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
 }
 
 const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
@@ -93,7 +93,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             isEnableActions={isGuestUser}
             isSelected={page.pageData._id === selectedPageId}
             onClickItem={clickItemHandler}
-            onClickCheckbox={props.onClickCheckbox}
+            onCheckboxChanged={props.onCheckboxChanged}
             onClickDeleteButton={clickDeleteButtonHandler}
           />
         );
