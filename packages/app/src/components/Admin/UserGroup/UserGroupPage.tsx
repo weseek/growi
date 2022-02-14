@@ -28,11 +28,14 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   /*
    * Fetch
    */
-  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
-  const userGroupIds = userGroups?.map(group => group._id);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: childUserGroupsList } = useSWRxChildUserGroupList(userGroupIds);
+  const { data: userGroupList, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroups = userGroupList != null ? userGroupList : [];
+  const userGroupIds = userGroups.map(group => group._id);
 
+  const { data: userGroupRelationList } = useSWRxUserGroupRelationList(userGroupIds);
+  const userGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
+
+  const { data: childUserGroupsList } = useSWRxChildUserGroupList(userGroupIds);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
 
   /*
@@ -104,7 +107,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateUserGroups, mutateUserGroupRelations]);
+  }, [mutateUserGroups]);
 
   return (
     <Fragment>
@@ -127,29 +130,24 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-
-      {
-        (userGroups != null && userGroupRelations != null && childUserGroups != null) && (
-          <>
-            <UserGroupTable
-              headerLabel={t('admin:user_group_management.group_list')}
-              userGroups={userGroups}
-              childUserGroups={childUserGroups}
-              isAclEnabled={isAclEnabled}
-              onDelete={showDeleteModal}
-              userGroupRelations={userGroupRelations}
-            />
-            <UserGroupDeleteModal
-              userGroups={userGroups}
-              deleteUserGroup={selectedUserGroup}
-              onDelete={deleteUserGroupById}
-              isShow={isDeleteModalShown}
-              onShow={showDeleteModal}
-              onHide={hideDeleteModal}
-            />
-          </>
-        )
-      }
+      <>
+        <UserGroupTable
+          headerLabel={t('admin:user_group_management.group_list')}
+          userGroups={userGroups}
+          childUserGroups={childUserGroups}
+          isAclEnabled={isAclEnabled}
+          onDelete={showDeleteModal}
+          userGroupRelations={userGroupRelations}
+        />
+        <UserGroupDeleteModal
+          userGroups={userGroups}
+          deleteUserGroup={selectedUserGroup}
+          onDelete={deleteUserGroupById}
+          isShow={isDeleteModalShown}
+          onShow={showDeleteModal}
+          onHide={hideDeleteModal}
+        />
+      </>
     </Fragment>
   );
 };
