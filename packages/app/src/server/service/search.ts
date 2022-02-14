@@ -1,12 +1,12 @@
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult, ISearchResultMeta } from '~/interfaces/search';
+import { IFormattedSearchResult, ISearchResult, ISearchResultMeta } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, SearchableData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
@@ -236,7 +236,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<any>, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
     let parsedQuery;
     // parse
     try {
