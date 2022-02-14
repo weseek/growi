@@ -978,7 +978,9 @@
   },
   "pagetree": {
     "private_legacy_pages": "Private Legacy Pages",
-    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'"
+    "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
+    "you_cannot_move_this_page_now": "You cannot move this page now",
+    "something_went_wrong_with_moving_page": "Something went wrong with moving page"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",

@@ -980,7 +980,9 @@
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",
-    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题"
+    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
+    "you_cannot_move_this_page_now": "你现在不能移动这个页面",
+    "something_went_wrong_with_moving_page": "移动页面时出了问题"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
