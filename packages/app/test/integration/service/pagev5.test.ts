@@ -599,6 +599,9 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
+    test('Should completely delete single page', async() => {});
+    test('Should completely delete multiple pages', async() => {});
+    test('Should completely delete trashed page', async() => {});
   });
 
   afterAll(async() => {
