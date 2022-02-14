@@ -24,7 +24,10 @@ context('Access to page', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000);
     cy.getByTestid('sidebar-pagetree').click();
-    cy.screenshot(`${ssPrefix}-pagetree`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-pagetree-before-load`, { capture: 'viewport' });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2500);
+    cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
   });
 
 });
