@@ -755,9 +755,7 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should completely delete multiple pages', async() => {
       await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
-      const deletedPage1 = await Page.findOne({ _id: v5PageForDeleteCompletely2._id });
-      const deletedPage2 = await Page.findOne({ _id: v5PageForDeleteCompletely3._id });
-      const deletedPage3 = await Page.findOne({ _id: v5PageForDeleteCompletely4._id });
+      const deletedPages = await Page.find({ _id: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely3._id, v5PageForDeleteCompletely4._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
       const tags = await Tag.find({ name: { $in: [tagForDeleteCompletely1.name, tagForDeleteCompletely2.name] } });
       const deletedPageTagRelations = await PageTagRelation.find({ relatedPage: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
@@ -766,7 +764,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedPageRedirects = await PageRedirect.find({ toPath: { $in: [v5PageForDeleteCompletely2.toPath, v5PageForDeleteCompletely4.path] } });
 
       // page should be null
-      [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
+      deletedPages.forEach((deletedPage) => {
         expect(deletedPage).toBeNull();
       });
       // revision should be null
