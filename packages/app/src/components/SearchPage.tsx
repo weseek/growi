@@ -133,7 +133,7 @@ export const SearchPage = (props: Props): JSX.Element => {
     if (isChecked) {
       instance.selectAll();
     }
-    if (isChecked) {
+    if (!isChecked) {
       instance.deselectAll();
     }
   }, []);
