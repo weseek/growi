@@ -99,8 +99,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
               <CustomInput
                 type="checkbox"
-                id={`cbDelete-${pageData._id}`}
-                data-testid="cbDelete"
+                id={`cbSelect-${pageData._id}`}
+                data-testid="cb-select"
                 innerRef={inputRef}
                 onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
               />

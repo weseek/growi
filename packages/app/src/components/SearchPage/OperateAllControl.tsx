@@ -58,6 +58,7 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
       <CustomInput
         type="checkbox"
         id="cb-check-all"
+        data-testid="cb-select-all"
         innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}

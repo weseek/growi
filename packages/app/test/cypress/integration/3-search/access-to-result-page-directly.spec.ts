@@ -29,10 +29,20 @@ context('Access to search result page directly', () => {
   it('checkboxes behaviors', () => {
     cy.visit('/_search', { qs: { q: 'sandbox headers blockquotes' } });
 
-    cy.get('[data-testid=cbDelete]').first().click({force: true});
+    cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}-the-first-checkbox-on`, { capture: 'viewport' });
-    cy.get('[data-testid=cbDelete]').first().click({force: true});
+    cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}-the-first-checkbox-off`, { capture: 'viewport' });
+
+    // click select all checkbox
+    cy.getByTestid('cb-select-all').click({force: true});
+    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-1`, { capture: 'viewport' });
+    cy.getByTestid('cb-select').first().click({force: true});
+    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-2`, { capture: 'viewport' });
+    cy.getByTestid('cb-select').first().click({force: true});
+    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-3`, { capture: 'viewport' });
+    cy.getByTestid('cb-select-all').click({force: true});
+    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-4`, { capture: 'viewport' });
   });
 
 });
