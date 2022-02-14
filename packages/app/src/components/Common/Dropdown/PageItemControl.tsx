@@ -112,7 +112,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Duplicate */}
-        { isEnableActions && !pageInfo.isEmpty && (
+        { isEnableActions && (
           <DropdownItem onClick={duplicateItemClickedHandler}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
@@ -131,7 +131,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { isEnableActions && pageInfo.isMovable && !pageInfo.isEmpty && (
+        { isEnableActions && pageInfo.isMovable && (
           <>
             <DropdownItem divider />
             <DropdownItem

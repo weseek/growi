@@ -189,6 +189,39 @@ export class PageQueryBuilder {
     return this;
   }
 
+  async addConditionForParentNormalization(user) {
+    // determine UserGroup condition
+    let userGroups = null;
+    if (user != null) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const grantConditions = [
+      { grant: null },
+      { grant: GRANT_PUBLIC },
+    ];
+
+    if (user != null) {
+      grantConditions.push(
+        { grant: GRANT_OWNER, grantedUsers: user._id },
+      );
+    }
+
+    if (userGroups != null && userGroups.length > 0) {
+      grantConditions.push(
+        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      );
+    }
+
+    this.query = this.query
+      .and({
+        $or: grantConditions,
+      });
+
+    return this;
+  }
+
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
     const grantConditions = [
       { grant: null },
