@@ -1,6 +1,6 @@
-const ssPrefix = 'access-to-page-';
 
 context('Access to page', () => {
+  const ssPrefix = 'access-to-page-';
 
   let connectSid: string | undefined;
 
