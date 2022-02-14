@@ -9,7 +9,7 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
-  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel,
+  CreateMethod, generateGrantCondition, PageCreateOptions, PageDocument, PageModel,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
@@ -1071,7 +1071,7 @@ class PageService {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
       if (shouldReplace) {
-        await Page.replaceTargetWithPage(page);
+        await Page.replaceTargetWithPage(page, null, true);
       }
 
       // update descendantCount of ancestors'
@@ -1083,10 +1083,7 @@ class PageService {
 
     let deletedPage;
     // update Revisions
-    if (page.isEmpty) {
-      await Page.remove({ _id: page._id });
-    }
-    else {
+    if (!page.isEmpty) {
       await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
       deletedPage = await Page.findByIdAndUpdate(page._id, {
         $set: {
@@ -1814,10 +1811,18 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentByPageIds(pageIds: ObjectIdLike[]): Promise<void> {
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
     for await (const pageId of pageIds) {
       try {
-        await this.normalizeParentByPageId(pageId);
+        const normalizedPage = await this.normalizeParentByPageId(pageId, user);
+
+        if (normalizedPage == null) {
+          logger.error(`Failed to update descendantCount of page of id: "${pageId}"`);
+        }
+        else {
+          // update descendantCount of ancestors'
+          await this.updateDescendantCountOfAncestors(pageId, normalizedPage.descendantCount, false);
+        }
       }
       catch (err) {
         // socket.emit('normalizeParentByPageIds', { error: err.message }); TODO: use socket to tell user
@@ -1825,16 +1830,22 @@ class PageService {
     }
   }
 
-  private async normalizeParentByPageId(pageId: ObjectIdLike) {
+  private async normalizeParentByPageId(pageId: ObjectIdLike, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const target = await Page.findById(pageId);
+    const target = await Page.findByIdAndViewerToEdit(pageId, user);
     if (target == null) {
-      throw Error('target does not exist');
+      throw Error('target does not exist or forbidden');
     }
 
     const {
       path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
     } = target;
+
+    // check if any page exists at target path already
+    const existingPage = await Page.findOne({ path });
+    if (existingPage != null && !existingPage.isEmpty) {
+      throw Error('Page already exists. Please rename the page to continue.');
+    }
 
     /*
      * UserGroup & Owner validation
@@ -1858,68 +1869,101 @@ class PageService {
       throw Error('Restricted pages can not be migrated');
     }
 
-    // getParentAndFillAncestors
-    const parent = await Page.getParentAndFillAncestors(target.path);
+    let updatedPage;
 
-    return Page.updateOne({ _id: pageId }, { parent: parent._id });
+    // replace if empty page exists
+    if (existingPage != null && existingPage.isEmpty) {
+      await Page.replaceTargetWithPage(existingPage, target, true);
+      updatedPage = await Page.findById(pageId);
+    }
+    else {
+      // getParentAndFillAncestors
+      const parent = await Page.getParentAndFillAncestors(target.path);
+      updatedPage = await Page.findOneAndUpdate({ _id: pageId }, { parent: parent._id }, { new: true });
+    }
+
+    return updatedPage;
   }
 
+  // TODO: this should be resumable
   async normalizeParentRecursivelyByPageIds(pageIds, user) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     if (pageIds == null || pageIds.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
     }
 
-    let normalizedIds;
-    let notNormalizedPaths;
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
+    let normalizablePages;
+    let nonNormalizablePages;
     try {
-      [normalizedIds, notNormalizedPaths] = await this.crowi.pageGrantService.separateNormalizedAndNonNormalizedPages(pageIds);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pageIds);
     }
     catch (err) {
       throw err;
     }
 
-    if (normalizedIds.length === 0) {
+    if (normalizablePages.length === 0) {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
       return;
     }
 
-    if (notNormalizedPaths.length !== 0) {
-      // TODO: iterate notNormalizedPaths and send socket error to client so that the user can know which path failed to migrate
+    if (nonNormalizablePages.length !== 0) {
+      // TODO: iterate nonNormalizablePages and send socket error to client so that the user can know which path failed to migrate
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    /*
-     * generate regexps
-     */
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    let pages;
-    try {
-      pages = await Page.findByPageIdsToEdit(pageIds, user, false);
-    }
-    catch (err) {
-      logger.error('Failed to find pages by ids', err);
-      throw err;
-    }
-
-    // prepare no duplicated area paths
-    let paths = pages.map(p => p.path);
-    paths = omitDuplicateAreaPathFromPaths(paths);
-
-    const regexps = paths.map(path => new RegExp(`^${escapeStringRegexp(path)}`));
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(normalizablePages);
+    const pageIdsToNormalize = pagesToNormalize.map(p => p._id);
+    const pathsToNormalize = Array.from(new Set(pagesToNormalize.map(p => p.path)));
 
     // TODO: insertMany PageOperationBlock
 
-    // migrate recursively
+    // for updating descendantCount
+    const pageIdToExDescendantCountMap = new Map<ObjectIdLike, number>();
+
+    // MAIN PROCESS migrate recursively
+    const regexps = pathsToNormalize.map(p => new RegExp(`^${escapeStringRegexp(p)}`, 'i'));
     try {
       await this.normalizeParentRecursively(null, regexps);
+
+      // find pages to save descendantCount of normalized pages (only pages in pageIds parameter of this method)
+      const pagesBeforeUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
+      pagesBeforeUpdatingDescendantCount.forEach((p) => {
+        pageIdToExDescendantCountMap.set(p._id.toString(), p.descendantCount);
+      });
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
 
       throw err;
+    }
+
+    // POST MAIN PROCESS update descendantCount
+    try {
+      // update descendantCount of self and descendant pages first
+      for await (const path of pathsToNormalize) {
+        await this.updateDescendantCountOfSelfAndDescendants(path);
+      }
+
+      // find pages again to get updated descendantCount
+      // then calculate inc
+      const pagesAfterUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
+      for await (const page of pagesAfterUpdatingDescendantCount) {
+        const exDescendantCount = pageIdToExDescendantCountMap.get(page._id.toString()) || 0;
+        const newDescendantCount = page.descendantCount;
+        const inc = newDescendantCount - exDescendantCount;
+        await this.updateDescendantCountOfAncestors(page._id, inc, false);
+      }
+    }
+    catch (err) {
+      logger.error('Failed to update descendantCount after normalizing parent:', err);
+      throw Error(`Failed to update descendantCount after normalizing parent: ${err}`);
     }
   }
 
@@ -2200,12 +2244,23 @@ class PageService {
     }
   }
 
-  async v5MigratablePrivatePagesCount(user) {
+  async countPagesCanNormalizeParentByUser(user): Promise<number> {
     if (user == null) {
       throw Error('user is required');
     }
-    const Page = this.crowi.model('Page');
-    return Page.count({ parent: null, creator: user, grant: { $ne: Page.GRANT_PUBLIC } });
+
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.count(), false);
+    builder.addConditionAsNotMigrated();
+    builder.addConditionAsNonRootPage();
+    builder.addConditionToExcludeTrashed();
+    await builder.addConditionForParentNormalization(user);
+
+    const nMigratablePages = await builder.query.exec();
+
+    return nMigratablePages;
   }
 
   /**
@@ -2213,7 +2268,7 @@ class PageService {
    * - page that has the same path as the provided path
    * - pages that are descendants of the above page
    */
-  async updateDescendantCountOfSelfAndDescendants(path) {
+  async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
 
