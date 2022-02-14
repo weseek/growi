@@ -44,12 +44,15 @@ const UserGroupDetailPage: FC = () => {
    * Fetch
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
-  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+  const userGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
+
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
+
+  const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
   /*
    * Function
@@ -195,25 +198,23 @@ const UserGroupDetailPage: FC = () => {
         onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
       />
 
-      { userGroupRelations && (
-        <>
-          <UserGroupTable
-            userGroups={childUserGroups}
-            childUserGroups={grandChildUserGroups}
-            isAclEnabled
-            onDelete={showDeleteModal}
-            userGroupRelations={userGroupRelations}
-          />
-          <UserGroupDeleteModal
-            userGroups={childUserGroups}
-            deleteUserGroup={selectedUserGroup}
-            onDelete={deleteUserGroupById}
-            isShow={isDeleteModalShown}
-            onShow={showDeleteModal}
-            onHide={hideDeleteModal}
-          />
-        </>
-      )}
+      <>
+        <UserGroupTable
+          userGroups={childUserGroups}
+          childUserGroups={grandChildUserGroups}
+          isAclEnabled
+          onDelete={showDeleteModal}
+          userGroupRelations={userGroupRelations}
+        />
+        <UserGroupDeleteModal
+          userGroups={childUserGroups}
+          deleteUserGroup={selectedUserGroup}
+          onDelete={deleteUserGroupById}
+          isShow={isDeleteModalShown}
+          onShow={showDeleteModal}
+          onHide={hideDeleteModal}
+        />
+      </>
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
