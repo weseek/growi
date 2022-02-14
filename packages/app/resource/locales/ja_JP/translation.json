@@ -125,6 +125,7 @@
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
+  "ChildUserGroup": "子グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",

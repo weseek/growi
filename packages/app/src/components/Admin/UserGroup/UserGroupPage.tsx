@@ -80,14 +80,13 @@ const UserGroupPage: FC<Props> = (props: Props) => {
         description: userGroupData.description,
         parent: userGroupData.parent,
       });
-
-      // sync
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
       await mutateUserGroups();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateUserGroups]);
+  }, [t, mutateUserGroups]);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {

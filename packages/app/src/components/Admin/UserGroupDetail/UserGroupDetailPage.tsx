@@ -121,7 +121,7 @@ const UserGroupDetailPage: FC = () => {
         name: selectedUserGroup.name,
         description: selectedUserGroup.description,
         parentId: userGroup._id,
-        forceUpdateParents: true, //  TODO 87748: Make forceUpdateParents optionally selectable
+        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
       });
       mutateSelectableUserGroups();
       mutateChildUserGroups();
@@ -140,12 +140,12 @@ const UserGroupDetailPage: FC = () => {
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
     setDeleteModalShown(true);
-  }, []);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
 
   const hideDeleteModal = useCallback(() => {
     setSelectedUserGroup(undefined);
     setDeleteModalShown(false);
-  }, []);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
 
   const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -165,7 +165,7 @@ const UserGroupDetailPage: FC = () => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateChildUserGroups]);
+  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
   /*
    * Dependencies

@@ -100,7 +100,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('Child groups')}</th>
+            <th>{t('ChildUserGroup')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>
