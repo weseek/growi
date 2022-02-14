@@ -48,6 +48,9 @@ describe('PageService page operations with only public pages', () => {
    */
   let v5PageForDelete1;
   let v5PageForDelete2;
+  let v5PageForDelete3;
+  let v5PageForDelete4;
+  let v5PageForDelete5;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -259,6 +262,9 @@ describe('PageService page operations with only public pages', () => {
     /**
      * Delete
      */
+    const pageIdForDelete1 = new mongoose.Types.ObjectId();
+    const pageIdForDelete2 = new mongoose.Types.ObjectId();
+
     await Page.insertMany([
       {
         path: '/trash/v5_PageForDelete1',
@@ -276,11 +282,38 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
         status: Page.STATUS_PUBLISHED,
       },
+      {
+        _id: pageIdForDelete1,
+        path: '/v5_PageForDelete3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete2,
+        path: '/v5_PageForDelete3/v5_PageForDelete4',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdForDelete1,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDelete2,
+        status: Page.STATUS_PUBLISHED,
+      },
     ]);
 
     v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
     v5PageForDelete2 = await Page.findOne({ path: '/v5_PageForDelete2' });
-
+    v5PageForDelete3 = await Page.findOne({ path: '/v5_PageForDelete3' });
+    v5PageForDelete4 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
+    v5PageForDelete5 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
   });
 
   describe('Rename', () => {
@@ -426,10 +459,20 @@ describe('PageService page operations with only public pages', () => {
   });
   describe('Delete', () => {
     const deletePage = async(page, user, options, isRecursively) => {
+      const mockedResumableDeleteDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteDescendants').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
       const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
 
+      const argsForResumableDeleteDescendants = mockedResumableDeleteDescendants.mock.calls[0];
+
+      mockedResumableDeleteDescendants.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
+      }
+
       return deletedPage;
     };
     test('Should NOT delete root page', async() => {
@@ -470,10 +513,21 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedPage.parent).toBeNull();
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
+    test('Should delete multiple pages', async() => {
+      const deletedPage = await deletePage(v5PageForDelete3, dummyUser1, {}, true);
+      const deletedV5PageForDelete4 = await Page.findOne({ path: `/trash${v5PageForDelete4.path}` });
+      const deletedV5PageForDelete5 = await Page.findOne({ path: `/trash${v5PageForDelete5.path}` });
+
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedPage._id).toStrictEqual(v5PageForDelete3._id);
+      expect(deletedV5PageForDelete4).toBeNull();
+      expect(deletedV5PageForDelete5.status).toBe(Page.STATUS_DELETED);
+      expect(deletedV5PageForDelete5._id).toStrictEqual(v5PageForDelete5._id);
+    });
   });
   afterAll(async() => {
-    await Page.deleteMany({});
-    await User.deleteMany({});
+    // await Page.deleteMany({});
+    // await User.deleteMany({});
   });
 });
 

@@ -1101,20 +1101,22 @@ class PageService {
     // TODO: resume
     // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
     if (isRecursively) {
-      (async() => {
-        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableDeleteDescendants(page, user, shouldUseV4Process);
     }
 
     return deletedPage;
+  }
+
+  async resumableDeleteDescendants(page, user, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
