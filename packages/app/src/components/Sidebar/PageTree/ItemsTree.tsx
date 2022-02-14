@@ -84,6 +84,20 @@ const renderByInitialNode = (
 };
 
 
+const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
+const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
+
+
+const observerCallback = (mutationList) => {
+  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+  mutationList.forEach((record) => {
+    console.log(record.target.childList);
+    if (record.target.classList.contains('grw-pagetree-is-target')) {
+      smoothScrollIntoView(record.target, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
+    }
+  });
+};
+
 /*
  * ItemsTree
  */
@@ -101,13 +115,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDeleteModal } = usePageDeleteModal();
 
   useEffect(() => {
-    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
-    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
-    //  targetElem is HTML collection but only one HTML element in it all the time
-    if (targetElem[0] != null && startFrom != null) {
-      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
+    // The root page in page tree
+    const elementToObserve = document.querySelector('ul.grw-pagetree')?.childNodes[0];
+    const observer = new MutationObserver(observerCallback);
+    if (elementToObserve != null) {
+      observer.observe(elementToObserve, MUTATION_OBSERVER_CONFIG);
     }
-  }, [ancestorsChildrenData]);
+  }, []);
 
   const onClickDuplicateMenuItem = (pageId: string, path: string) => {
     openDuplicateModal(pageId, path);
