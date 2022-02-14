@@ -64,6 +64,9 @@ describe('PageService page operations with only public pages', () => {
   let v5PageForDeleteCompletely3;
   let v5PageForDeleteCompletely4;
 
+  let tagForDeleteCompletely1;
+  let tagForDeleteCompletely2;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -357,6 +360,10 @@ describe('PageService page operations with only public pages', () => {
      */
     const pageIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
     const pageIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely3 = new mongoose.Types.ObjectId();
+
+    const revisionIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
+    const revisionIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
 
 
     await Page.insertMany([
@@ -386,6 +393,7 @@ describe('PageService page operations with only public pages', () => {
         isEmpty: true,
       },
       {
+        _id: pageIdForDeleteCompletely3,
         path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -399,6 +407,37 @@ describe('PageService page operations with only public pages', () => {
     v5PageForDeleteCompletely2 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
     v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
     v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
+
+    await Revision.insertMany([
+      {
+        _id: revisionIdForDeleteCompletely1,
+        format: 'markdown',
+        pageId: pageIdForDeleteCompletely1,
+        body: 'pageIdForDeleteCompletely1',
+      },
+      {
+        _id: revisionIdForDeleteCompletely2,
+        format: 'markdown',
+        pageId: pageIdForDeleteCompletely3,
+        body: 'pageIdForDeleteCompletely3',
+      },
+    ]);
+
+    await Tag.insertMany([
+      { name: 'TagForDeleteCompletely1' },
+      { name: 'TagForDeleteCompletely2' },
+    ]);
+
+    tagForDeleteCompletely1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
+    tagForDeleteCompletely2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
+
+    await PageTagRelation.insertMany([
+      { relatedPage: v5PageForDeleteCompletely2._id, relatedTag: tagForDeleteCompletely1 },
+      { relatedPage: v5PageForDeleteCompletely4._id, relatedTag: tagForDeleteCompletely2 },
+    ]);
+
+    const pageTagRel1 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely2 });
+    const pageTagRel2 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely4 });
   });
 
   describe('Rename', () => {
@@ -666,9 +705,28 @@ describe('PageService page operations with only public pages', () => {
       const deletedPage1 = await Page.findOne({ path: v5PageForDeleteCompletely2.path });
       const deletedPage2 = await Page.findOne({ path: v5PageForDeleteCompletely3.path });
       const deletedPage3 = await Page.findOne({ path: v5PageForDeleteCompletely4.path });
+      const deletedRevision1 = await Revision.findOne({ pageId: v5PageForDeleteCompletely2._id });
+      const deletedRevision2 = await Revision.findOne({ pageId: v5PageForDeleteCompletely4._id });
+      const tag1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
+      const tag2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
+      const pageTagRelation1 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely2 });
+      const pageTagRelation2 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely4 });
 
+      // page should be null
       [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
         expect(deletedPage).toBeNull();
+      });
+      // revision should be null
+      [deletedRevision1, deletedRevision2].forEach((revision) => {
+        expect(revision).toBeNull();
+      });
+      // tag should exist
+      [tag1, tag2].forEach((tag) => {
+        expect(tag).toBeTruthy();
+      });
+      // pageTagRelation should be null
+      [pageTagRelation1, pageTagRelation2].forEach((PTRelation) => {
+        expect(PTRelation).toBeNull();
       });
     });
     test('Should completely delete trashed page', async() => {});
