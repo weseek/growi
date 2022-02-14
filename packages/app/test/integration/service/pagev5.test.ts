@@ -513,16 +513,21 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedPage.parent).toBeNull();
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
-    test('Should delete multiple pages', async() => {
+    test('Should delete multiple pages including empty child', async() => {
       const deletedPage = await deletePage(v5PageForDelete3, dummyUser1, {}, true);
       const deletedV5PageForDelete4 = await Page.findOne({ path: `/trash${v5PageForDelete4.path}` });
       const deletedV5PageForDelete5 = await Page.findOne({ path: `/trash${v5PageForDelete5.path}` });
 
-      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+      // originally NOT empty page should exist with status 'deleted' and parent set null
       expect(deletedPage._id).toStrictEqual(v5PageForDelete3._id);
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedPage.parent).toBeNull();
+      // originally empty page should NOT exist
       expect(deletedV5PageForDelete4).toBeNull();
-      expect(deletedV5PageForDelete5.status).toBe(Page.STATUS_DELETED);
+      // originally NOT empty page should exist with status 'deleted' and parent set null
       expect(deletedV5PageForDelete5._id).toStrictEqual(v5PageForDelete5._id);
+      expect(deletedV5PageForDelete5.status).toBe(Page.STATUS_DELETED);
+      expect(deletedV5PageForDelete5.parent).toBeNull();
     });
   });
   afterAll(async() => {
