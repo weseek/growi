@@ -396,9 +396,10 @@ class PageService {
     // *************************
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
     // create page redirect
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-    await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
-
+    if (options.createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
     this.pageEvent.emit('rename', page, user);
 
     // *************************
