@@ -45,4 +45,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-user-admin`, { capture: 'viewport' });
   });
 
+  it('Draft page is successfully shown', () => {
+    cy.visit('/me/drafts');
+    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
+  });
+  
 });
