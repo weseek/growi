@@ -491,6 +491,19 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    await ShareLink.insertMany([
+      {
+        relatedPage: v5PageForDeleteCompletely2._id,
+        expiredAt: null,
+        description: 'sharlink_v5PageForDeleteCompletely2',
+      },
+      {
+        relatedPage: v5PageForDeleteCompletely4._id,
+        expiredAt: null,
+        description: 'sharlink_v5PageForDeleteCompletely4',
+      },
+    ]);
+
   });
 
   describe('Rename', () => {
@@ -762,6 +775,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedBookmarks = await Bookmark.find({ page: v5PageForDeleteCompletely2._id });
       const deletedComments = await Comment.find({ page: v5PageForDeleteCompletely2._id });
       const deletedPageRedirects = await PageRedirect.find({ toPath: { $in: [v5PageForDeleteCompletely2.toPath, v5PageForDeleteCompletely4.path] } });
+      const deletedShareLinks = await ShareLink.find({ pageId: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
 
       // page should be null
       deletedPages.forEach((deletedPage) => {
@@ -790,6 +804,10 @@ describe('PageService page operations with only public pages', () => {
       // pageRedirect should be null
       deletedPageRedirects.forEach((pRedirect) => {
         expect(pRedirect).toBeNull();
+      });
+      // sharelink should be null
+      deletedShareLinks.forEach((sharelnk) => {
+        expect(sharelnk).toBeNull();
       });
     });
     test('Should completely delete trashed page', async() => {
