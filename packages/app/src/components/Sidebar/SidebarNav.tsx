@@ -34,6 +34,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   return (
     <button
       type="button"
+      data-testid={props.label === 'Page Tree' ? 'sidebar-pagetree' : ''}
       className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
       onClick={itemSelectedHandler}
     >
