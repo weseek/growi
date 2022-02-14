@@ -129,7 +129,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                 <div className="page-list px-md-4">
                   <SearchResultList
                     ref={searchResultListRef}
-                    pages={pages}
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    pages={pages!}
                     selectedPageId={selectedPageWithMeta?.pageData._id}
                     onPageSelected={page => setSelectedPageWithMeta(page)}
                     onCheckboxChanged={checkboxChangedHandler}
