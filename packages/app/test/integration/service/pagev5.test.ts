@@ -455,6 +455,13 @@ describe('PageService page operations with only public pages', () => {
       { relatedPage: v5PageForDeleteCompletely4._id, relatedTag: tagForDeleteCompletely2 },
     ]);
 
+    await Bookmark.insertMany([
+      {
+        page: v5PageForDeleteCompletely2._id,
+        user: dummyUser1._id,
+      },
+    ]);
+
   });
 
   describe('Rename', () => {
@@ -728,6 +735,7 @@ describe('PageService page operations with only public pages', () => {
       const tag2 = await Tag.findOne({ name: tagForDeleteCompletely2.name });
       const deletedPageTagRelation1 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely2 });
       const deletedPageTagRelation2 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely4 });
+      const deletedBookmark = await Bookmark.findOne({ page: v5PageForDeleteCompletely2._id, user: dummyUser1._id });
 
       // page should be null
       [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
@@ -745,6 +753,7 @@ describe('PageService page operations with only public pages', () => {
       [deletedPageTagRelation1, deletedPageTagRelation2].forEach((PTRelation) => {
         expect(PTRelation).toBeNull();
       });
+      expect(deletedBookmark).toBeNull();
     });
     test('Should completely delete trashed page', async() => {
       await deleteCompletely(v5PageForDeleteCompletely5, dummyUser1, {}, false);
