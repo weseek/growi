@@ -30,4 +30,8 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
+  it('/Sandbox with edit is successfully loaded', () => {
+    cy.visit('/Sandbox#edit');
+    cy.screenshot(`${ssPrefix}-sandbox-edit-page`, { capture: 'viewport' });
+  })
 });
