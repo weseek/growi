@@ -56,6 +56,11 @@ describe('PageService page operations with only public pages', () => {
   let tagForDelete1;
   let tagForDelete2;
 
+  /**
+   * Delete completely
+   */
+  let v5PageForDeleteCompletely1;
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -343,6 +348,22 @@ describe('PageService page operations with only public pages', () => {
       { relatedPage: v5PageForDelete6._id, relatedTag: tagForDelete1 },
       { relatedPage: v5PageForDelete6._id, relatedTag: tagForDelete2 },
     ]);
+
+    /**
+     * Delete completely
+     */
+    await Page.insertMany([
+      {
+        path: '/v5_PageForDeleteCompletely1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+    ]);
+
+    v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
   });
 
   describe('Rename', () => {
@@ -574,7 +595,7 @@ describe('PageService page operations with only public pages', () => {
       const mockedResumableDeleteCompletelyDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteCompletelyDescendants').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
-      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively, preventEmitting);
+      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
 
       const argsForResumableDeleteDescendants = mockedResumableDeleteCompletelyDescendants.mock.calls[0];
 
@@ -585,7 +606,7 @@ describe('PageService page operations with only public pages', () => {
         await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
       }
 
-      return deletedPage;
+      return;
     };
 
     test('Should NOT completely delete root page', async() => {
@@ -599,14 +620,19 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
-    test('Should completely delete single page', async() => {});
+    test('Should completely delete single page', async() => {
+      await deleteCompletely(v5PageForDeleteCompletely1, dummyUser1, {}, false);
+      const deletedPage = await Page.findOne({ _id: v5PageForDeleteCompletely1._id });
+
+      expect(deletedPage).toBeNull();
+    });
     test('Should completely delete multiple pages', async() => {});
     test('Should completely delete trashed page', async() => {});
   });
 
   afterAll(async() => {
-    await Page.deleteMany({});
-    await User.deleteMany({});
+    // await Page.deleteMany({});
+    // await User.deleteMany({});
   });
 });
 
