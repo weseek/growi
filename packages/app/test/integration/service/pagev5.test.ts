@@ -569,6 +569,38 @@ describe('PageService page operations with only public pages', () => {
     });
   });
 
+  describe('Delete completely', () => {
+    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
+      const mockedResumableDeleteCompletelyDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteCompletelyDescendants').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively, preventEmitting);
+
+      const argsForResumableDeleteDescendants = mockedResumableDeleteCompletelyDescendants.mock.calls[0];
+
+      mockedResumableDeleteCompletelyDescendants.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
+      }
+
+      return deletedPage;
+    };
+
+    test('Should NOT completely delete root page', async() => {
+      let isThrown;
+      try {
+        await deleteCompletely(rootPage, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(isThrown).toBe(true);
+    });
+  });
+
   afterAll(async() => {
     await Page.deleteMany({});
     await User.deleteMany({});
