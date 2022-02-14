@@ -698,6 +698,14 @@ module.exports = function(crowi) {
     return user;
   };
 
+  userSchema.statics.findUsersBySlackIds = async function(slackIds) {
+    const users = this.find({ slackId: { $in: slackIds } });
+    if (!users) {
+      throw new Error('No user found');
+    }
+    return users;
+  };
+
   class UserUpperLimitException {
 
     constructor() {

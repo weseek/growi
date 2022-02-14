@@ -140,19 +140,33 @@ module.exports = (crowi) => {
   };
 
   /**
+   * Get all growi users from messages
+   * @param {*} messages (array of messages)
+   * @returns users object with matching slack ID
+   */
+  handler.getGrowiUsersFromMessages = async function(messages) {
+    const users = messages.map((message) => {
+      return message.user;
+    });
+    const growiUsers = await User.findUsersBySlackIds(users);
+    return growiUsers;
+  };
+  /**
    * Convert slack ID to growi user if slack ID is found in messages
    * @param {*} messages
    */
   handler.messagesWithGrowiUser = async function(messages) {
-    await Promise.all(messages.map(async(message) => {
-      const growiUser = await User.findUserBySlackId(message.user);
+    const growiUsers = await this.getGrowiUsersFromMessages(messages);
+
+    messages.map(async(message) => {
+      const growiUser = growiUsers.find(user => user.slackId === message.user);
       if (growiUser) {
         message.user = `${growiUser.name} (@${growiUser.username})`;
       }
       else {
         message.user = `This slack ID is not registered (${message.user})`;
       }
-    }));
+    });
   };
 
   handler.keepCleanMessages = async function(messages) {
