@@ -100,6 +100,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               <CustomInput
                 type="checkbox"
                 id={`cbDelete-${pageData._id}`}
+                data-testid="cbDelete"
                 innerRef={inputRef}
                 onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
               />

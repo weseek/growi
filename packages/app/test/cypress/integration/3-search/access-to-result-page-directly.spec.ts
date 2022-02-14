@@ -21,7 +21,18 @@ context('Access to search result page directly', () => {
 
   it('/_search with "q" param is successfully loaded', () => {
     cy.visit('/_search', { qs: { q: 'sandbox headers blockquotes' } });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
     cy.screenshot(`${ssPrefix}-with-q`, { capture: 'viewport' });
+  });
+
+  it('checkboxes behaviors', () => {
+    cy.visit('/_search', { qs: { q: 'sandbox headers blockquotes' } });
+
+    cy.get('[data-testid=cbDelete]').first().click({force: true});
+    cy.screenshot(`${ssPrefix}-the-first-checkbox-on`, { capture: 'viewport' });
+    cy.get('[data-testid=cbDelete]').first().click({force: true});
+    cy.screenshot(`${ssPrefix}-the-first-checkbox-off`, { capture: 'viewport' });
   });
 
 });
