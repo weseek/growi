@@ -348,7 +348,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: Result<any> & ISearchResultMeta, delegatorName): Promise<IFormattedSearchResult> {
+  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
       const data = searchResult.data.map((page) => {
         return {
