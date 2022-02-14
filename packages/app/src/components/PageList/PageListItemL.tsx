@@ -93,7 +93,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
         <div className="d-flex">
           {/* checkbox */}
           {onClickCheckbox != null && (
-            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
+            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2">
               <input
                 className="form-check-input position-relative m-0"
                 type="checkbox"

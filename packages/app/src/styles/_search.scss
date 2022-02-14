@@ -219,21 +219,6 @@
   }
 }
 
-// 2021/9/22 TODO: Remove after moving to SearchResult
-.search-page-input {
-  position: sticky;
-  top: 15px;
-  // placed at front-most
-  z-index: 15;
-
-  margin-bottom: 15px;
-
-  .input-group-btn .btn {
-    height: 34px;
-    padding: 0px 10px;
-  }
-}
-
 // support for your search
 .grw-search-table {
   caption {
