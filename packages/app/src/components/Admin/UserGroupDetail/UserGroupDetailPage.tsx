@@ -17,10 +17,10 @@ import {
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
-  IUserGroup, IUserGroupHasId, IUserGroupRelation,
+  IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
 import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
 } from '~/stores/user-group';
 
 const UserGroupDetailPage: FC = () => {
@@ -31,7 +31,6 @@ const UserGroupDetailPage: FC = () => {
    * State (from AdminUserGroupDetailContainer)
    */
   const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-  const [childUserGroupRelations, setChildUserGroupRelations] = useState<IUserGroupRelation[]>([]); // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<string>('partial');
@@ -45,12 +44,13 @@ const UserGroupDetailPage: FC = () => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
 
-  const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const userGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
-
   const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
+  const childUserGroupIds = childUserGroups.map(group => group._id);
+
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
+  const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
 
@@ -205,7 +205,7 @@ const UserGroupDetailPage: FC = () => {
           childUserGroups={grandChildUserGroups}
           isAclEnabled
           onDelete={showDeleteModal}
-          userGroupRelations={userGroupRelations}
+          userGroupRelations={childUserGroupRelations}
         />
         <UserGroupDeleteModal
           userGroups={childUserGroups}
