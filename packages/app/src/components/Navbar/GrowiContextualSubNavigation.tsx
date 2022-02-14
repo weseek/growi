@@ -9,9 +9,14 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModalStatus, usePageRenameModalStatus, usePageDeleteModal,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
+import {
+  usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
+
+
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
@@ -57,12 +62,15 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { open } = usePageAccessoriesModal();
+  const { open: openPresentationModal } = usePagePresentationModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModal();
+
+  const hrefForPresentationModal = '?presentation=1';
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
+      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -80,7 +88,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         refs: PageAccessoriesModalControl
       */}
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
       >
         <span className="mr-1"><HistoryIcon /></span>
@@ -88,14 +96,14 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
       >
         <span className="mr-1"><ShareLinkIcon /></span>
@@ -136,8 +144,8 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
-  const { open: openDuplicateModal } = usePageDuplicateModalStatus();
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);

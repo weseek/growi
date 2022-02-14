@@ -35,4 +35,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-trash`, { capture: 'viewport' });
   });
 
+  it('/Sandbox/Math is successfully loaded', () => {
+    cy.visit('/Sandbox/Math');
+    cy.screenshot(`${ssPrefix}-sandbox-math`, { capture: 'viewport' });
+  });
+
 });
