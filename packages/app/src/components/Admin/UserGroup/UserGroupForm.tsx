@@ -5,15 +5,12 @@ import { TFunctionResult } from 'i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  successedMessage: TFunctionResult;
-  failedMessage: TFunctionResult;
   submitButtonLabel: TFunctionResult;
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
 };
@@ -48,15 +45,8 @@ const UserGroupForm: FC<Props> = (props: Props) => {
       return;
     }
 
-    try {
-      await props.onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
-
-      toastSuccess(props.successedMessage);
-    }
-    catch (err) {
-      toastError(props.failedMessage);
-    }
-  }, [currentName, currentDescription, currentParent, props.onSubmit, props.successedMessage, props.failedMessage]);
+    await props.onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
+  }, [currentName, currentDescription, currentParent, props.onSubmit]);
 
   return (
     <form onSubmit={onSubmitHandler}>

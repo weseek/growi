@@ -119,8 +119,6 @@ const UserGroupPage: FC<Props> = (props: Props) => {
             </button>
             <div id="createGroupForm" className="collapse">
               <UserGroupForm
-                successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
-                failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
                 submitButtonLabel={t('Create')}
                 onSubmit={createUserGroup}
               />

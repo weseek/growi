@@ -72,13 +72,16 @@ const UserGroupDetailPage: FC = () => {
   }, []);
 
   const updateUserGroup = useCallback(async(param: Partial<IUserGroup>) => {
-    const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
-    const { userGroup: newUserGroup } = res.data;
-
-    setUserGroup(newUserGroup);
-
-    return newUserGroup;
-  }, [userGroup]);
+    try {
+      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
+      const { userGroup: newUserGroup } = res.data;
+      setUserGroup(newUserGroup);
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, userGroup._id, setUserGroup]);
 
   const openUserGroupUserModal = useCallback(() => {
     setUserGroupUserModalOpen(true);
@@ -181,8 +184,6 @@ const UserGroupDetailPage: FC = () => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
-          successedMessage={t('toaster.update_successed', { target: t('UserGroup') })}
-          failedMessage={t('toaster.update_failed', { target: t('UserGroup') })}
           submitButtonLabel={t('Update')}
           onSubmit={updateUserGroup}
         />
