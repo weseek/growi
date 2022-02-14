@@ -144,7 +144,7 @@ const UserGroupDetailPage: FC = () => {
     setDeleteModalShown(false);
   }, []);
 
-  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
       const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
@@ -209,7 +209,7 @@ const UserGroupDetailPage: FC = () => {
         <UserGroupDeleteModal
           userGroups={childUserGroups}
           deleteUserGroup={selectedUserGroup}
-          onDelete={deleteUserGroupById}
+          onDelete={deleteChildUserGroupById}
           isShow={isDeleteModalShown}
           onShow={showDeleteModal}
           onHide={hideDeleteModal}

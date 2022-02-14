@@ -73,7 +73,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setDeleteModalShown(false);
   }, []);
 
-  const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
+  const createUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
@@ -122,7 +122,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
                 successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
                 failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
                 submitButtonLabel={t('Create')}
-                onSubmit={addUserGroup}
+                onSubmit={createUserGroup}
               />
             </div>
           </div>
