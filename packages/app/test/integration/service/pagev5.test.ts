@@ -821,8 +821,8 @@ describe('PageService page operations with only public pages', () => {
   });
 
   afterAll(async() => {
-    // await Page.deleteMany({});
-    // await User.deleteMany({});
+    await Page.deleteMany({});
+    await User.deleteMany({});
   });
 });
 
