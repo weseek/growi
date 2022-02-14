@@ -3,6 +3,8 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
+import { CustomInput } from 'reactstrap';
+
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
 
@@ -93,12 +95,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
         <div className="d-flex">
           {/* checkbox */}
           {onClickCheckbox != null && (
-            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2">
-              <input
-                className="form-check-input position-relative m-0"
+            <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
+              <CustomInput
                 type="checkbox"
-                id="flexCheckDefault"
-                ref={inputRef}
+                id={`cbDelete-${pageData._id}`}
+                innerRef={inputRef}
                 onChange={() => { onClickCheckbox(pageData._id) }}
               />
             </div>

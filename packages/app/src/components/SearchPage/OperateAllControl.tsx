@@ -1,6 +1,7 @@
 import React, {
   ChangeEvent, FC, useEffect, useMemo, useRef, useState,
 } from 'react';
+import { CustomInput } from 'reactstrap';
 import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 import { CheckboxType } from '~/interfaces/search';
 
@@ -79,12 +80,10 @@ export const OperateAllControl :FC<Props> = React.memo((props: Props) => {
   return (
 
     <div className="d-flex align-items-center">
-      <input
-        id="check-all-pages"
+      <CustomInput
         type="checkbox"
-        name="check-all-pages"
-        className="grw-indeterminate-checkbox"
-        ref={selectAllCheckboxElm}
+        id="cb-check-all"
+        innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
       />

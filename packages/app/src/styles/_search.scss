@@ -171,14 +171,14 @@
         max-width: 8rem;
       }
     }
-    .search-result-list-delete-checkbox {
-      margin: 0 10px 0 0;
-      vertical-align: middle;
-    }
-    // not show top label in search result list
-    .page-list-meta {
-      .top-label {
-        display: none;
+
+    // list group
+    .page-list {
+      // not show top label in search result list
+      .page-list-meta {
+        .top-label {
+          display: none;
+        }
       }
     }
   }
