@@ -663,9 +663,9 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should completely delete multiple pages', async() => {
       await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
-      const deletedPage1 = await Page.findOne({ _id: v5PageForDeleteCompletely2._id });
-      const deletedPage2 = await Page.findOne({ _id: v5PageForDeleteCompletely3._id });
-      const deletedPage3 = await Page.findOne({ _id: v5PageForDeleteCompletely4._id });
+      const deletedPage1 = await Page.findOne({ path: v5PageForDeleteCompletely2.path });
+      const deletedPage2 = await Page.findOne({ path: v5PageForDeleteCompletely3.path });
+      const deletedPage3 = await Page.findOne({ path: v5PageForDeleteCompletely4.path });
 
       [deletedPage1, deletedPage2, deletedPage3].forEach((deletedPage) => {
         expect(deletedPage).toBeNull();
