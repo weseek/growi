@@ -26,7 +26,7 @@ context('Access to page', () => {
     cy.getByTestid('sidebar-pagetree').click();
     cy.screenshot(`${ssPrefix}-pagetree-before-load`, { capture: 'viewport' });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2500);
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
   });
 
