@@ -50,4 +50,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
   });
   
+  it('/tags is successfully loaded', () => {
+    cy.visit('/tags');
+    cy.screenshot(`${ssPrefix}-tags`, { capture: 'viewport' });
+  });
+  
 });
