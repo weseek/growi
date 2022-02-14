@@ -823,6 +823,10 @@ describe('PageService page operations with only public pages', () => {
   afterAll(async() => {
     await Page.deleteMany({});
     await User.deleteMany({});
+    await Bookmark.deleteMany({});
+    await Comment.deleteMany({});
+    await PageRedirect.deleteMany({});
+    await ShareLink.deleteMany({});
   });
 });
 
