@@ -23,13 +23,7 @@ context('Create page modal', () => {
 
   it("Page create modal is shown successfully", () => {
     cy.getByTestid('newPageBtn').click();
-    cy.screenshot(`${ssPrefix}-opne-modal at '/' page`)
-  });
-
-  it("Page create modal is shown successfully at /Sandbox page", ()=>{
-    cy.visit('/Sandbox');
-    cy.getByTestid('newPageBtn').click();
-    cy.screenshot(`${ssPrefix}-open-modal-at /Sandbox`)
+    cy.screenshot(`${ssPrefix}-opne-modal`)
   });
 
 });
