@@ -133,6 +133,24 @@ export const SearchPage = (props: Props): JSX.Element => {
     }
   }, []);
 
+  const selectedPagesByCheckboxesChangedHandler = useCallback((selectedCount: number, totalCount: number) => {
+    const instance = selectAllControlRef.current;
+
+    if (instance == null) {
+      return;
+    }
+
+    if (selectedCount === 0) {
+      instance.deselect();
+    }
+    else if (selectedCount === totalCount) {
+      instance.select();
+    }
+    else {
+      instance.setIndeterminate();
+    }
+  }, []);
+
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
     const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
     setConfigurationsByPagination({
