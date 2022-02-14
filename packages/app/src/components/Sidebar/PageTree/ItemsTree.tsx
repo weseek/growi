@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '../../../stores/page-listing';
+import { useSWRxPageAncestorsChildren, useSWRxPageChildren, useSWRxRootPage } from '../../../stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
@@ -95,6 +95,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { t } = useTranslation();
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
+  const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -121,6 +122,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
+
+    mutateChildren();
 
     const path = pathOrPathsToDelete;
 

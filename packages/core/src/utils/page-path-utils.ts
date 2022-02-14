@@ -169,8 +169,9 @@ export const collectAncestorPaths = (path: string, ancestorPaths: string[] = [])
  * @returns omitted paths
  */
 export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
-  return paths.filter((path) => {
-    const isDuplicate = paths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
+  const uniquePaths = Array.from(new Set(paths));
+  return uniquePaths.filter((path) => {
+    const isDuplicate = uniquePaths.filter(p => (new RegExp(`^${p}\\/.+`, 'i')).test(path)).length > 0;
 
     return !isDuplicate;
   });
@@ -178,12 +179,13 @@ export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
 
 /**
  * return pages with path without duplicate area of regexp /^${path}\/.+/i
+ * if the pages' path are the same, it will NOT omit any of them since the other attributes will not be the same
  * @param paths paths to be tested
  * @returns omitted paths
  */
 export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
   return pages.filter((page) => {
-    const isDuplicate = pages.filter(p => (new RegExp(`^${p.path}\\/.+`, 'i')).test(page.path)).length > 0;
+    const isDuplicate = pages.some(p => (new RegExp(`^${p.path}\\/.+`, 'i')).test(page.path));
 
     return !isDuplicate;
   });
