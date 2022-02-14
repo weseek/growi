@@ -30,4 +30,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
+  it('/trash is successfully loaded', () => {
+    cy.visit('/trash', {  });
+    cy.screenshot(`${ssPrefix}-trash`, { capture: 'viewport' });
+  });
+
 });
