@@ -236,7 +236,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[Result<any> & MetaData, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<any>, string]> {
     let parsedQuery;
     // parse
     try {

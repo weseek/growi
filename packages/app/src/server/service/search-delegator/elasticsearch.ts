@@ -9,12 +9,14 @@ import streamToPromise from 'stream-to-promise';
 
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { PageDocument, PageModel } from '../../models/page';
+import { PageModel } from '../../models/page';
 import {
-  MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
+  SearchDelegator, SearchableData, QueryTerms,
 } from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import {
+  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
+} from '~/interfaces/search';
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -611,7 +613,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
    *   data: [ pages ...],
    * }
    */
-  async searchKeyword(query) {
+  async searchKeyword(query): Promise<IFormattedSearchResult> {
     // for debug
     if (process.env.NODE_ENV === 'development') {
       const { body: result } = await this.client.indices.validateQuery({
@@ -940,7 +942,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
+  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
 
     const from = option.offset || null;

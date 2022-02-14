@@ -13,6 +13,10 @@ export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSear
   return meta != null && 'elasticSearchResult' in meta;
 };
 
+export type ISearchResult<T > = ISearchResultMeta & {
+  data: T[],
+}
+
 export type ISearchResultMeta = {
   meta: {
     total: number
@@ -21,9 +25,7 @@ export type ISearchResultMeta = {
   },
 }
 
-export type IFormattedSearchResult = ISearchResultMeta & {
-  data: IPageWithMeta<IPageSearchMeta>[],
-}
+export type IFormattedSearchResult = ISearchResult<IPageWithMeta<IPageSearchMeta>>;
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',
