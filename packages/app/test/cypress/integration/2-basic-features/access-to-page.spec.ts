@@ -30,4 +30,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
+
+  it('/Draft page will be successfully shown', () => {
+    cy.visit('/me/drafts');
+    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
+  });
 });
