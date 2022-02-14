@@ -44,7 +44,8 @@ describe('PageService page operations with only public pages', () => {
   /**
    * Delete
    */
-  let v5PageForTrash1;
+  let v5PageForDelete1;
+  let v5PageForDelete2;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -246,7 +247,14 @@ describe('PageService page operations with only public pages', () => {
      */
     await Page.insertMany([
       {
-        path: '/trash/v5_PageForTrash1',
+        path: '/trash/v5_PageForDelete1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: childForRename5._id,
+      },
+      {
+        path: '/user/dummyUser1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
@@ -254,7 +262,8 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
-    v5PageForTrash1 = await Page.findOne({ path: '/trash/v5_PageForTrash1' });
+    v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+    v5PageForDelete2 = await Page.findOne({ path: '/user/dummyUser1' });
 
   });
 
@@ -417,7 +426,17 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT delete trashed page', async() => {
       let isThrown;
       try {
-        await deletePage(v5PageForTrash1, dummyUser1, {}, false);
+        await deletePage(v5PageForDelete1, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+      expect(isThrown).toBe(true);
+    });
+    test('Should NOT delete /user/hoge page', async() => {
+      let isThrown;
+      try {
+        await deletePage(v5PageForDelete2, dummyUser1, {}, false);
       }
       catch (err) {
         isThrown = true;
