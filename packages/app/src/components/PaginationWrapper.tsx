@@ -7,7 +7,7 @@ import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 type Props = {
   activePage: number,
-  changePage?: (number) => void,
+  changePage?: (activePage: number) => void,
   totalItemsCount: number,
   pagingLimit?: number,
   align?: string,

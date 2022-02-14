@@ -1,6 +1,6 @@
-const ssPrefix = 'access-to-page-';
 
 context('Access to page', () => {
+  const ssPrefix = 'access-to-page-';
 
   let connectSid: string | undefined;
 
@@ -30,8 +30,19 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
+  it('/Sandbox/Math is successfully loaded', () => {
+    cy.visit('/Sandbox/Math');
+    cy.screenshot(`${ssPrefix}-sandbox-math`, { capture: 'viewport' });
+  });
+
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`, { capture: 'viewport' });
   })
+
+  it('/user/admin is successfully loaded', () => {
+    cy.visit('/user/admin', {  });
+    cy.screenshot(`${ssPrefix}-user-admin`, { capture: 'viewport' });
+  });
+
 });
