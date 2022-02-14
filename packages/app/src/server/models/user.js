@@ -690,11 +690,12 @@ module.exports = function(crowi) {
     user.save();
   };
 
-  userSchema.statics.findUserBySlackId = function(slackId) {
-    if (slackId == null) {
-      return Promise.resolve(null);
+  userSchema.statics.findUserBySlackId = async function(slackId) {
+    const user = this.findOne({ slackId });
+    if (!user) {
+      throw new Error('User not found');
     }
-    return this.findOne({ slackId });
+    return user;
   };
 
   class UserUpperLimitException {
