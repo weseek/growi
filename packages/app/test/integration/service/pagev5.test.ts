@@ -23,6 +23,8 @@ describe('PageService page operations with only public pages', () => {
   let xssSpy;
 
   let rootPage;
+  let dummyUser1Page;
+
   // parents
   let parentForRename1;
   let parentForRename2;
@@ -84,6 +86,18 @@ describe('PageService page operations with only public pages', () => {
     }
     // then create new root page
     rootPage = await Page.create('/', 'body', dummyUser1._id, {});
+    // then create user's page
+    await Page.insertMany([
+      {
+        path: '/user',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+    ]);
+    dummyUser1Page = await Page.create('/user/dummyUser1', 'dummyUser1_page', dummyUser1._id, {});
+    await Page.create('/user/dummyUser2', 'dummyUser2_page', dummyUser2._id, {});
 
     // Create Pages
     await Page.insertMany([
@@ -251,19 +265,21 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: childForRename5._id,
+        parent: rootPage._id,
+        status: Page.STATUS_DELETED,
       },
       {
-        path: '/user/dummyUser1',
+        path: '/v5_PageForDelete2',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: childForRename5._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
       },
     ]);
 
     v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
-    v5PageForDelete2 = await Page.findOne({ path: '/user/dummyUser1' });
+    v5PageForDelete2 = await Page.findOne({ path: '/v5_PageForDelete2' });
 
   });
 
@@ -410,7 +426,10 @@ describe('PageService page operations with only public pages', () => {
   });
   describe('Delete', () => {
     const deletePage = async(page, user, options, isRecursively) => {
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+
+      mockedCreateAndSendNotifications.mockRestore();
       return deletedPage;
     };
     test('Should NOT delete root page', async() => {
@@ -436,12 +455,20 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT delete /user/hoge page', async() => {
       let isThrown;
       try {
-        await deletePage(v5PageForDelete2, dummyUser1, {}, false);
+        await deletePage(dummyUser1Page, dummyUser1, {}, false);
       }
       catch (err) {
         isThrown = true;
       }
       expect(isThrown).toBe(true);
+    });
+    test('Should delete single page', async() => {
+      const oldPath = v5PageForDelete2.path;
+      const deletedPage = await deletePage(v5PageForDelete2, dummyUser1, {}, false);
+
+      expect(deletedPage.path).toBe(`/trash${oldPath}`);
+      expect(deletedPage.parent).toBeNull();
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
   });
   afterAll(async() => {
