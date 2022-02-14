@@ -31,7 +31,7 @@ context('Access to page', () => {
   });
 
 
-  it('/Draft page is successfully shown', () => {
+  it('Draft page is successfully shown', () => {
     cy.visit('/me/drafts');
     cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
   });
