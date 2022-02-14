@@ -30,4 +30,9 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
+  it('/tags is successfully loaded', () => {
+    cy.visit('/tags');
+    cy.screenshot(`${ssPrefix}-tags`, { capture: 'viewport' });
+  });
+
 });
