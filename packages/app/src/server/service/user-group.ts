@@ -58,30 +58,36 @@ class UserGroupService {
       throw Error('Parent group does not exist.');
     }
 
+    /*
+     * check if able to update parent or not
+     */
 
-    // throw if parent was in its descendants
+    // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-    const descendants = descendantsWithTarget.filter(d => d._id.equals(userGroup._id));
-    if (isIncludesObjectId(descendants, parent._id)) {
+    if (isIncludesObjectId(descendantsWithTarget, parent._id)) {
       throw Error('It is not allowed to choose parent from descendant groups.');
     }
 
     // find users for comparison
     const [targetGroupUsers, parentGroupUsers] = await Promise.all(
-      [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent?._id)], // TODO 85062: consider when parent is null to update the group as the root
+      [UserGroupRelation.findUserIdsByGroupId(userGroup._id), UserGroupRelation.findUserIdsByGroupId(parent._id)],
     );
-
     const usersBelongsToTargetButNotParent = targetGroupUsers.filter(user => !parentGroupUsers.includes(user));
+
+    // save if no users exist in both target and parent groups
+    if (targetGroupUsers.length === 0 && parentGroupUsers.length === 0) {
+      userGroup.parent = parent._id;
+      return userGroup.save();
+    }
+
     // add the target group's users to all ancestors
     if (forceUpdateParents) {
       const ancestorGroups = await UserGroup.findGroupsWithAncestorsRecursively(parent);
       const ancestorGroupIds = ancestorGroups.map(group => group._id);
 
       await UserGroupRelation.createByGroupIdsAndUserIds(ancestorGroupIds, usersBelongsToTargetButNotParent);
-
-      userGroup.parent = parent?._id; // TODO 85062: consider when parent is null to update the group as the root
     }
-    // validate related users
+    // throw if any of users in the target group is NOT included in the parent group
     else {
       const isUpdatable = usersBelongsToTargetButNotParent.length === 0;
       if (!isUpdatable) {
@@ -89,6 +95,7 @@ class UserGroupService {
       }
     }
 
+    userGroup.parent = parent._id;
     return userGroup.save();
   }
 

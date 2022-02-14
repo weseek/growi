@@ -1,4 +1,6 @@
-import React, { FC, useCallback } from 'react';
+import React, {
+  FC, useCallback, useEffect, useRef,
+} from 'react';
 
 import { DropdownItem } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +12,12 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
+import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageRenameModalStatus, usePageDeleteModal } from '~/stores/ui';
+import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -40,6 +43,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   );
 };
 
+const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
+const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
@@ -48,7 +53,45 @@ type Props ={
   showPageControlDropdown?: boolean,
 }
 
+const scrollTo = (scrollElement:HTMLElement) => {
+  // use querySelector to intentionally get the first element found
+  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
+  if (highlightedKeyword != null) {
+    smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
+  }
+};
+
+const generateObserverCallback = (doScroll: ()=>void) => {
+  return (mutationRecords:MutationRecord[]) => {
+    mutationRecords.forEach((record:MutationRecord) => {
+      const target = record.target as HTMLElement;
+      const targetId = target.id as string;
+      if (targetId !== 'wiki') return;
+      doScroll();
+    });
+  };
+};
+
 export const SearchResultContent: FC<Props> = (props: Props) => {
+  const scrollElementRef = useRef(null);
+
+  // ***************************  Auto Scroll  ***************************
+  useEffect(() => {
+    const scrollElement = scrollElementRef.current as HTMLElement | null;
+    if (scrollElement == null) return;
+
+    const observerCallback = generateObserverCallback(() => {
+      scrollTo(scrollElement);
+    });
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
+    return () => {
+      observer.disconnect();
+    };
+  });
+  // *******************************  end  *******************************
+
   const {
     appContainer,
     pageWithMeta,
@@ -56,13 +99,18 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const page = pageWithMeta?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
+
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
     openRenameModal(pageId, revisionId, path);
@@ -90,6 +138,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
           />
@@ -98,7 +147,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
@@ -109,7 +158,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         page={page}
         controls={ControlComponents}
       />
-      <div className="search-result-page-content">
+      <div className="search-result-page-content" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}

@@ -7,10 +7,12 @@ import { CustomInput } from 'reactstrap';
 
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
+import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { usePageRenameModal, usePageDuplicateModal } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -58,6 +60,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }));
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -79,6 +83,16 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       onClickItem(pageData._id);
     }
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+
+  const duplicateMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal, pageData]);
+
+  const renameMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, revision: revisionId, path } = pageData;
+    openRenameModal(pageId, revisionId as string, path);
+  }, [openRenameModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -123,7 +137,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {/* page title */}
               <Clamp lines={1}>
                 <span className="h5 mb-0">
-                  <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />
+                  {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
+                  <span className="grw-page-path-hierarchical-link text-break">
+                    <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                  </span>
                 </span>
               </Clamp>
 
@@ -140,7 +157,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageId={pageData._id}
                   pageInfo={pageMeta}
                   onClickDeleteMenuItem={props.onClickDeleteButton}
+                  onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
+                  onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                 />
               </div>
             </div>

@@ -10,7 +10,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
-import { usePageRenameModalStatus, usePageRenameModalOpened } from '~/stores/ui';
+import { usePageRenameModal } from '~/stores/modal';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
@@ -29,10 +29,11 @@ const PageRenameModal = (props) => {
   } = props;
 
   const { crowi } = appContainer.config;
-  const { data: isOpened } = usePageRenameModalOpened();
-  const { data: pagesDataToRename, close: closeRenameModal } = usePageRenameModalStatus();
+  const { data: pagesDataToRename, close: closeRenameModal } = usePageRenameModal();
 
-  const { path, revisionId, pageId } = pagesDataToRename;
+  const {
+    isOpened, path, revisionId, pageId,
+  } = pagesDataToRename;
 
   const [pageNameInput, setPageNameInput] = useState('');
 

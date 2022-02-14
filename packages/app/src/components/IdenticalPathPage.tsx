@@ -5,7 +5,7 @@ import { DevidedPagePath } from '@growi/core';
 
 import { IPageHasId, IPageWithMeta } from '~/interfaces/page';
 import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
-import { useDescendantsPageListModal } from '~/stores/ui';
+import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
 import PageListIcon from './Icons/PageListIcon';

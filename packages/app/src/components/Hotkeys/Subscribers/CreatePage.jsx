@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useCreateModalStatus } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
 
 const CreatePage = React.memo((props) => {
 
-  const { open: openCreateModal } = useCreateModalStatus();
+  const { open: openCreateModal } = usePageCreateModal();
 
   // setup effect
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
@@ -9,12 +9,17 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
-  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors, usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageRenameModalStatus, usePageDeleteModal,
+  useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
+  usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+} from '~/stores/modal';
+
+
+import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import { useSWRTagsInfo } from '~/stores/page';
 
@@ -31,6 +36,7 @@ import { SubNavButtons } from './SubNavButtons';
 import PageEditorModeManager from './PageEditorModeManager';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import PresentationIcon from '../Icons/PresentationIcon';
+import CreateTemplateModal from '../CreateTemplateModal';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 
 
@@ -38,22 +44,33 @@ type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
   revisionId: string,
   isLinkSharingDisabled?: boolean,
+  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
+
 }
 
 const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { pageId, revisionId, isLinkSharingDisabled } = props;
+  const {
+    pageId, revisionId, isLinkSharingDisabled, onClickTemplateMenuItem,
+  } = props;
+
+  const openPageTemplateModalHandler = () => {
+    onClickTemplateMenuItem(true);
+  };
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { open } = usePageAccessoriesModal();
+  const { open: openPresentationModal } = usePagePresentationModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModal();
+
+  const hrefForPresentationModal = '?presentation=1';
 
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87672 */ }}>
+      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
         <i className="icon-fw"><PresentationIcon /></i>
         { t('Presentation Mode') }
       </DropdownItem>
@@ -71,7 +88,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         refs: PageAccessoriesModalControl
       */}
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.PageHistory)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.PageHistory)}
         disabled={isGuestUser || isSharedUser}
       >
         <span className="mr-1"><HistoryIcon /></span>
@@ -79,14 +96,14 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.Attachment)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
       >
         <span className="mr-1"><AttachmentIcon /></span>
         {t('attachment_data')}
       </DropdownItem>
 
       <DropdownItem
-        onClick={() => open(PageAccessoriesModalContents.ShareLink)}
+        onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
       >
         <span className="mr-1"><ShareLinkIcon /></span>
@@ -96,7 +113,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem divider />
 
       {/* Create template */}
-      <DropdownItem onClick={() => { /* TODO: implement in https://redmine.weseek.co.jp/issues/87673 */ }}>
+      <DropdownItem onClick={openPageTemplateModalHandler}>
         <i className="icon-fw icon-magic-wand"></i> { t('template.option_label.create/edit') }
       </DropdownItem>
     </>
@@ -115,6 +132,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
   const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
@@ -126,8 +144,11 @@ const GrowiContextualSubNavigation = (props) => {
 
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
-  const { open: openRenameModal } = usePageRenameModalStatus();
+  const { open: openDuplicateModal } = usePageDuplicateModal();
+  const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
     editorContainer, isCompactMode, isLinkSharingDisabled,
@@ -157,6 +178,10 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
+  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
+    openDuplicateModal(pageId, path);
+  }, [openDuplicateModal]);
+
   const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
@@ -164,6 +189,11 @@ const GrowiContextualSubNavigation = (props) => {
   const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
     openDeleteModal([pageToDelete]);
   }, [openDeleteModal]);
+
+  const templateMenuItemClickHandler = useCallback(() => {
+    setIsPageTempleteModalShown(true);
+  }, []);
+
 
   const ControlComponents = useCallback(() => {
     function onPageEditorModeButtonClicked(viewType) {
@@ -183,8 +213,15 @@ const GrowiContextualSubNavigation = (props) => {
               disableSeenUserInfoPopover={isSharedUser}
               showPageControlDropdown={isAbleToShowPageManagement}
               additionalMenuItemRenderer={props => (
-                <AdditionalMenuItems {...props} pageId={pageId} revisionId={revisionId} isLinkSharingDisabled={isLinkSharingDisabled} />
+                <AdditionalMenuItems
+                  {...props}
+                  pageId={pageId}
+                  revisionId={revisionId}
+                  isLinkSharingDisabled={isLinkSharingDisabled}
+                  onClickTemplateMenuItem={templateMenuItemClickHandler}
+                />
               )}
+              onClickDuplicateMenuItem={duplicateItemClickedHandler}
               onClickRenameMenuItem={renameItemClickedHandler}
               onClickDeleteMenuItem={deleteItemClickedHandler}
             />
@@ -200,15 +237,21 @@ const GrowiContextualSubNavigation = (props) => {
             />
           )}
         </div>
+        {currentUser != null && (
+          <CreateTemplateModal
+            path={path}
+            isOpen={isPageTemplateModalShown}
+            onClose={() => setIsPageTempleteModalShown(false)}
+          />
+        )}
       </>
     );
   }, [
-    pageId, revisionId, shareLinkId,
-    editorMode, mutateEditorMode,
-    isCompactMode, isLinkSharingDisabled,
-    isDeviceSmallerThanMd, isGuestUser, isSharedUser,
+    pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    renameItemClickedHandler, deleteItemClickedHandler, path,
+    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
+    path, templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
 

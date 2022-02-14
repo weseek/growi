@@ -7,8 +7,9 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd, useCreateModalStatus } from '~/stores/ui';
-import { useIsSearchPage } from '~/stores/context';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -23,7 +24,8 @@ type NavbarRightProps = {
 }
 const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { t } = useTranslation();
-  const { open: openCreateModal } = useCreateModalStatus();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { open: openCreateModal } = usePageCreateModal();
 
   const { currentUser } = props;
 
@@ -42,7 +44,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <button
           className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
           type="button"
-          onClick={() => openCreateModal()}
+          onClick={() => openCreateModal(currentPagePath || '')}
         >
           <i className="icon-pencil mr-2"></i>
           <span className="d-none d-lg-block">{ t('New') }</span>

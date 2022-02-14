@@ -10,6 +10,8 @@ import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/c
 const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
+const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
+
 type ObjectIdLike = mongoose.Types.ObjectId | string;
 
 type ComparableTarget = {
@@ -231,7 +233,7 @@ class PageGrantService {
       .addConditionToSortPagesByDescPath()
       .query
       .exec();
-    const testAncestor = ancestors[0];
+    const testAncestor = ancestors[0]; // TODO: consider when duplicate testAncestors exist
     if (testAncestor == null) {
       throw Error('testAncestor must exist');
     }
@@ -318,7 +320,9 @@ class PageGrantService {
 
   /**
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
-   * Only v5 schema pages will be used to compare.
+   * Only v5 schema pages will be used to compare by default (Set includeNotMigratedPages to true to include v4 schema pages as well).
+   * When comparing, it will use path regex to collect pages instead of using parent attribute of the Page model. This is reasonable since
+   * using the path attribute is safer than using the parent attribute in this case. 2022.02.13 -- Taichi Masuyama
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
@@ -342,14 +346,24 @@ class PageGrantService {
     return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
   }
 
-  async separateNormalizedAndNonNormalizedPages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+  /**
+   * Separate normalizable pages and NOT normalizable pages by PageService.prototype.isGrantNormalized method.
+   * normalizable pages = Pages which are able to run normalizeParentRecursively method (grant & userGroup rule is correct)
+   * @param pageIds pageIds to be tested
+   * @returns a tuple with the first element of normalizable pages and the second element of NOT normalizable pages
+   */
+  async separateNormalizableAndNotNormalizablePages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
-    const normalizedPages: (PageDocument & { _id: any })[] = [];
-    const nonNormalizedPages: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
+    const normalizable: (PageDocument & { _id: any })[] = [];
+    const nonNormalizable: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
 
     const builder = new PageQueryBuilder(Page.find());
     builder.addConditionToListByPageIdsArray(pageIds);
@@ -363,14 +377,14 @@ class PageGrantService {
 
       const isNormalized = await this.isGrantNormalized(path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants, shouldIncludeNotMigratedPages);
       if (isNormalized) {
-        normalizedPages.push(page);
+        normalizable.push(page);
       }
       else {
-        nonNormalizedPages.push(page);
+        nonNormalizable.push(page);
       }
     }
 
-    return [normalizedPages, nonNormalizedPages];
+    return [normalizable, nonNormalizable];
   }
 
 }

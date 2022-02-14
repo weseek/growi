@@ -107,7 +107,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   return (
     <div className={props.isShown ? 'd-block' : 'd-none'}>
       <input
-        value={inputText}
+        value={inputText || ''}
         ref={inputRef}
         type="text"
         className="form-control"

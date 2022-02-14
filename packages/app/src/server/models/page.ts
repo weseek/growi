@@ -167,7 +167,7 @@ schema.statics.createEmptyPage = async function(
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?, deleteExPageIfEmpty = false): Promise<void> {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -201,6 +201,12 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   };
 
   await this.bulkWrite([operationForNewTarget, operationsForChildren]);
+
+  const isExPageEmpty = exPage.isEmpty;
+  if (deleteExPageIfEmpty && isExPageEmpty) {
+    await this.deleteOne({ _id: exPage._id });
+    logger.warn('Deleted empty page since it was replaced with another page.');
+  }
 };
 
 /**
@@ -219,7 +225,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   /*
    * Fill parents if parent is null
    */
-  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPaths(path, [path]); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);
@@ -575,6 +581,15 @@ schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpt
   const pages = await builder.query.lean().exec();
 
   return pages;
+};
+
+schema.statics.normalizeDescendantCountById = async function(pageId) {
+  const children = await this.find({ parent: pageId });
+
+  const sumChildrenDescendantCount = children.map(d => d.descendantCount).reduce((c1, c2) => c1 + c2);
+  const sumChildPages = children.filter(p => !p.isEmpty).length;
+
+  return this.updateOne({ _id: pageId }, { $set: { descendantCount: sumChildrenDescendantCount + sumChildPages } }, { new: true });
 };
 
 export type PageCreateOptions = {
