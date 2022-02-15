@@ -56,9 +56,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     }
   }, [onPageSelected, pages]);
 
-  const clickDeleteButtonHandler = useCallback((pageId: string) => {
-    // TODO implement
-  }, []);
 
   let injectedPage;
   // inject data to list
@@ -90,11 +87,10 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             // eslint-disable-next-line no-return-assign
             ref={c => itemsRef.current[i] = c}
             page={page}
-            isEnableActions={isGuestUser}
+            isEnableActions={!isGuestUser}
             isSelected={page.pageData._id === selectedPageId}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
-            onClickDeleteButton={clickDeleteButtonHandler}
           />
         );
       })}

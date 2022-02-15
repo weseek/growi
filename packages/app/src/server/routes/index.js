@@ -186,7 +186,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
 
   app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
-  app.get('/trash/$'                  , loginRequired, injectUserUISettings, page.trashPageListShowWrapper);
+  app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
