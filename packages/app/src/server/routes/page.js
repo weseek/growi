@@ -614,7 +614,8 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    const builder = new PageQueryBuilder(Page.find({ path }));
+    // Include isEmpty page to handle _notFound
+    const builder = new PageQueryBuilder(Page.find({ path }), true);
     await Page.addConditionToFilteringByViewerForList(builder, req.user);
 
     const pages = await builder.query.lean().clone().exec('find');
