@@ -26,7 +26,7 @@ describe('V5 page migration', () => {
       jest.restoreAllMocks();
 
       // initialize pages for test
-      const pages = await Page.insertMany([
+      let pages = await Page.insertMany([
         {
           path: '/private1',
           grant: Page.GRANT_OWNER,
@@ -56,6 +56,11 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
+
+      if (!await Page.exists({ path: '/' })) {
+        const additionalPages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
+        pages = [...additionalPages, ...pages];
+      }
 
       const pageIds = pages.map(page => page._id);
       // migrate
