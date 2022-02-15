@@ -312,6 +312,7 @@ describe('PageService page operations with only public pages', () => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename3' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename3' });
       expectAllToBeTruthy([childPage, parentPage]);
+      expect(childPage.lastUpdateUser).toStrictEqual(dummyUser1._id);
 
       // rename target page
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
