@@ -58,9 +58,6 @@ describe('PageService page operations with only public pages', () => {
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
-    /*
-     * Rename
-     */
     // delete root page if any created by other test file
     const pages = await Page.find({ path: '/' });
     if (pages.length > 0) {
@@ -82,6 +79,9 @@ describe('PageService page operations with only public pages', () => {
     await Page.create('/user/dummyUser1', 'dummyUser1_page', dummyUser1._id, {});
     await Page.create('/user/dummyUser2', 'dummyUser2_page', dummyUser2._id, {});
 
+    /*
+     * Rename
+     */
     const pageIdForRename1 = new mongoose.Types.ObjectId();
     const pageIdForRename2 = new mongoose.Types.ObjectId();
     const pageIdForRename3 = new mongoose.Types.ObjectId();
