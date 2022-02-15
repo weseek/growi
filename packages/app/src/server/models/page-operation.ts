@@ -26,12 +26,11 @@ export type PageActionType = typeof PageActionType[keyof typeof PageActionType];
  */
 export interface IPageOperation {
   actionType: PageActionType,
-  pathsToBlock: string[],
+  fromPath: string,
+  toPath?: string,
   page: IPageForResuming,
   user: IUserForResuming,
   options?: IOptionsForResuming,
-  newPath?: string,
-  newTarget?: IPageForResuming,
   incForUpdatingDescendantCount?: number,
 }
 
@@ -72,18 +71,11 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
     required: true,
     index: true,
   },
-  pathsToBlock: [
-    {
-      type: String,
-      required: true,
-      validate: [v => v.length >= 1, 'Must have minimum one path'],
-    },
-  ],
+  fromPath: { type: String, required: true },
+  toPath: { type: String },
   page: { type: pageSchemaForResuming, required: true },
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
-  newPath: { type: String },
-  newTarget: { type: pageSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
 });
 
