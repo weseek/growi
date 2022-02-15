@@ -58,5 +58,15 @@ describe('Page', () => {
       expect(page.path).toBe('/v5_create1');
       expect(page.parent).toStrictEqual(rootPage._id);
     });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const grandchildPage = await Page.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+    });
+
   });
 });
