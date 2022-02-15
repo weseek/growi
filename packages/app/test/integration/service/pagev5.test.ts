@@ -377,11 +377,6 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
   });
-  afterAll(async() => {
-    // await Page.deleteMany({});
-    // await User.deleteMany({});
-    // await PageRedirect.deleteMany({});
-  });
 });
 
 describe('PageService page operations with non-public pages', () => {
