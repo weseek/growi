@@ -352,30 +352,14 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
       // find child of renamed page
-      const grandchildren = await Page.find({ parent: renamedPage._id });
-      const grandchild = grandchildren[0];
+      const grandchild = await Page.findOne({ parent: renamedPage._id });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
-      // grandchild's parent should be renamed page
+      // grandchild's parent should be the renamed page
       expect(grandchild.parent).toStrictEqual(renamedPage._id);
       expect(grandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
-    });
-
-    test('Should rename/move with same grant', async() => {
-      const parentPage = await Page.findOne({ path: '/v5_ParentForRename6' });
-      const childPage = await Page.findOne({ path: '/v5_ChildForRename6' });
-      expectAllToBeTruthy([parentPage, childPage]);
-
-      const newPath = '/v5_ParentForRename6/renamedChildForRename6';
-      expect(childPage.grant).toBe(Page.GRANT_RESTRICTED);
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
-
-      expect(xssSpy).toHaveBeenCalled();
-      expect(renamedPage.path).toBe(newPath);
-      expect(renamedPage.parent).toStrictEqual(parentPage._id);
-      expect(renamedPage.grant).toBe(Page.GRANT_RESTRICTED);
     });
 
     test('Should rename/move empty page', async() => {
@@ -396,6 +380,7 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild.parent).toStrictEqual(renamedPage._id);
       expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
     });
+
     test('Should NOT rename/move with existing path', async() => {
       const page = await Page.findOne({ path: '/v5_ParentForRename8' });
       expectAllToBeTruthy([page]);
@@ -412,6 +397,7 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
   });
+
   afterAll(async() => {
     await Page.deleteMany({});
     await User.deleteMany({});
