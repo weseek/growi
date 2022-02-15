@@ -290,7 +290,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.error('An error occured while \'rebuildIndex\', normalize indices anyway.', error);
+      logger.error('An error occured while \'rebuildIndex\'.', error);
       logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();

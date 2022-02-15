@@ -30,11 +30,6 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox-headers`, { capture: 'viewport' });
   });
 
-  it('/trash is successfully loaded', () => {
-    cy.visit('/trash', {  });
-    cy.screenshot(`${ssPrefix}-trash`, { capture: 'viewport' });
-  });
-
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
     cy.screenshot(`${ssPrefix}-sandbox-math`, { capture: 'viewport' });
@@ -50,14 +45,4 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-user-admin`, { capture: 'viewport' });
   });
 
-  it('Draft page is successfully shown', () => {
-    cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
-  });
-  
-  it('/tags is successfully loaded', () => {
-    cy.visit('/tags');
-    cy.screenshot(`${ssPrefix}-tags`, { capture: 'viewport' });
-  });
-  
 });
