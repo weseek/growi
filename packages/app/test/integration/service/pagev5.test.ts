@@ -870,20 +870,22 @@ describe('PageService page operations with only public pages', () => {
       expect(deltedRevision).toBeNull();
     });
     test('Should completely deleting page in the middle results in empty page', async() => {
-      const v5PageForDeleteCompletely6 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
-      const v5PageForDeleteCompletely7 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
-      const v5PageForDeleteCompletely8 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
-      expectAllToBeTruthy([v5PageForDeleteCompletely6, v5PageForDeleteCompletely7, v5PageForDeleteCompletely8]);
+      const parentPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
+      const childPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
+      const grandchildPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
+      expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
 
-      await deleteCompletely(v5PageForDeleteCompletely7, dummyUser1, {}, false);
-      const deletedPage = await Page.findOne({ path: v5PageForDeleteCompletely7.path });
-      const childOfDeletedPage = await Page.findOne({ parent: deletedPage._id });
+      await deleteCompletely(childPage, dummyUser1, {}, false);
+      const parentPageAfterDelete = await Page.findOne({ path: parentPage.path });
+      const childPageAfterDelete = await Page.findOne({ path: childPage.path });
+      const grandchildPageAfterDelete = await Page.findOne({ path: grandchildPage.path });
+      const childOfDeletedPage = await Page.findOne({ parent: childPageAfterDelete._id });
 
-      expect(deletedPage).toBeTruthy();
-      expect(deletedPage._id).not.toStrictEqual(v5PageForDeleteCompletely7._id);
-      expect(deletedPage.isEmpty).toBe(true);
-      expect(deletedPage.parent).toStrictEqual(v5PageForDeleteCompletely6._id);
-      expect(childOfDeletedPage._id).toStrictEqual(v5PageForDeleteCompletely8._id);
+      expectAllToBeTruthy([parentPageAfterDelete, childPageAfterDelete, grandchildPageAfterDelete]);
+      expect(childPageAfterDelete._id).not.toStrictEqual(childPage._id);
+      expect(childPageAfterDelete.isEmpty).toBe(true);
+      expect(childPageAfterDelete.parent).toStrictEqual(parentPage._id);
+      expect(childOfDeletedPage._id).toStrictEqual(grandchildPage._id);
 
     });
   });
