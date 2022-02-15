@@ -708,21 +708,23 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should duplicate multiple pages', async() => {
-      const page = await Page.findOne({ path: '/v5_PageForDuplicate3' });
-      expectAllToBeTruthy([page]);
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate3' });
+      const revision = await Revision.findOne({ pageId: basePage._id });
+      const childrenForBasePage = await Page.find({ parent: basePage._id }).populate({ path: 'revision', model: 'Revision' });
+      expectAllToBeTruthy([basePage, revision, ...childrenForBasePage]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate3';
-      const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, true);
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
 
-      const childrenForBasePage = await Page.find({ parent: page._id }).populate({ path: 'revision', model: 'Revision' });
       const childrenForDuplicatedPage = await Page.find({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
-      const revisionBodyOfChildrenForBasePage = childrenForBasePage.map(p => p.revision.body);
+      const revisionBodiesOfChildrenForBasePage = childrenForBasePage.map(p => p.revision.body);
       const revisionBodyOfChildrenForDuplicatedPage = childrenForDuplicatedPage.map(p => p.revision.body);
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
+      expect(childrenForDuplicatedPage.length).toBeGreaterThan(0);
       expect(childrenForDuplicatedPage.length).toBe(childrenForBasePage.length);
-      expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodyOfChildrenForBasePage));
+      expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodiesOfChildrenForBasePage));
     });
     test('Should duplicate multiple pages with empty child in it', async() => {
       const v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
