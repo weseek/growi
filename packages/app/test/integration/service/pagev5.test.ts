@@ -741,7 +741,6 @@ describe('PageService page operations with only public pages', () => {
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChild.isEmpty).toBe(true);
-      expect(duplicatedGrandchild).toBe(true);
       expectAllToBeTruthy([duplicatedGrandchild]);
     });
     test('Should duplicate tags', async() => {
