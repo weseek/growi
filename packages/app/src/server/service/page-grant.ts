@@ -352,23 +352,16 @@ class PageGrantService {
    * @param pageIds pageIds to be tested
    * @returns a tuple with the first element of normalizable pages and the second element of NOT normalizable pages
    */
-  async separateNormalizableAndNotNormalizablePages(pageIds: ObjectIdLike[]): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
-    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+  async separateNormalizableAndNotNormalizablePages(pages): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
+    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const { PageQueryBuilder } = Page;
     const shouldCheckDescendants = true;
     const shouldIncludeNotMigratedPages = true;
 
     const normalizable: (PageDocument & { _id: any })[] = [];
     const nonNormalizable: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
-
-    const builder = new PageQueryBuilder(Page.find());
-    builder.addConditionToListByPageIdsArray(pageIds);
-
-    const pages = await builder.query.exec();
 
     for await (const page of pages) {
       const {
