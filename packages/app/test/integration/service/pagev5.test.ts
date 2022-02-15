@@ -779,21 +779,22 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should duplicate empty page with descendants', async() => {
-      const v5PageForDuplicate7 = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
-      const basePageChild = await Page.findOne({ parent: v5PageForDuplicate7._id }).populate({ path: 'revision', model: 'Revision' });
+      const basePage = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
+      const basePageChild = await Page.findOne({ parent: basePage._id }).populate({ path: 'revision', model: 'Revision' });
       const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
-      expectAllToBeTruthy([v5PageForDuplicate7, basePageChild, basePageGrandhild]);
+      expectAllToBeTruthy([basePage, basePageChild, basePageGrandhild, basePageChild.revision, basePageGrandhild.revision]);
 
       const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
-      const duplicatedPage = await duplicate(v5PageForDuplicate7, newPagePath, dummyUser1, true);
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id }).populate({ path: 'revision', model: 'Revision' });
 
+      expectAllToBeTruthy([duplicatedPage, duplicatedChild, duplicatedGrandchild, duplicatedChild.revision, duplicatedGrandchild.revision]);
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage.isEmpty).toBe(true);
-      expect(basePageChild.revision.body).toBe(duplicatedChild.revision.body);
-      expect(basePageGrandhild.revision.body).toBe(duplicatedGrandchild.revision.body);
+      expect(duplicatedChild.revision.body).toBe(basePageChild.revision.body);
+      expect(duplicatedGrandchild.revision.body).toBe(basePageGrandhild.revision.body);
     });
   });
 
