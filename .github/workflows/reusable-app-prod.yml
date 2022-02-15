@@ -94,10 +94,12 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
         ports:
-        - 27017/tcp
+        - 9200/tcp
+        env:
+          discovery.type: single-node
 
     steps:
     - uses: actions/checkout@v2
@@ -151,13 +153,7 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
-    - name: yarn server:ci with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -194,6 +190,12 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        ports:
+        - 9200/tcp
+        env:
+          discovery.type: single-node
 
     steps:
     - uses: actions/checkout@v2
@@ -254,6 +256,7 @@ jobs:
         wait-on: 'http://localhost:3000'
       env:
         MONGO_URI: mongodb://mongodb:27017/growi-vrt
+        ELASTICSEARCH_URI: http://elasticsearch:9200/growi
 
     - name: Upload results
       if: always()
