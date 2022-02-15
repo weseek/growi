@@ -1819,7 +1819,7 @@ class PageService {
       const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
 
       // DO NOT await !!
-      this.normalizeParentRecursivelyByPageIds(pages, user);
+      this.normalizeParentRecursivelyByPages(pages, user);
 
       return;
     }
@@ -1893,7 +1893,7 @@ class PageService {
     return updatedPage;
   }
 
-  async normalizeParentRecursivelyByPageIds(pages, user): Promise<void> {
+  async normalizeParentRecursivelyByPages(pages, user): Promise<void> {
     /*
      * Main Operation
      */
@@ -1916,13 +1916,13 @@ class PageService {
     }
 
     if (normalizablePages.length === 0) {
-      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+      // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
       return;
     }
 
     if (nonNormalizablePages.length !== 0) {
       // TODO: iterate nonNormalizablePages and send socket error to client so that the user can know which path failed to migrate
-      // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
+      // socket.emit('normalizeParentRecursivelyByPages', { error: err.message }); TODO: use socket to tell user
     }
 
     /*
@@ -1931,12 +1931,12 @@ class PageService {
     const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
     (async() => {
       for await (const page of pagesToNormalize) {
-        await this.normalizeParentRecursivelyByPageIdSubOperation(page, user);
+        await this.normalizeParentRecursivelySubOperation(page, user);
       }
     })();
   }
 
-  private async normalizeParentRecursivelyByPageIdSubOperation(page, user) {
+  private async normalizeParentRecursivelySubOperation(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     // TODO: insertOne PageOperationBlock
