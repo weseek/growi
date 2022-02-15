@@ -1533,20 +1533,22 @@ class PageService {
     // TODO: resume
     if (!isRecursively) {
       // no await for revertDeletedDescendantsWithStream
-      (async() => {
-        const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process);
     }
 
     return updatedPage;
+  }
+
+  async resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process) {
+    const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
