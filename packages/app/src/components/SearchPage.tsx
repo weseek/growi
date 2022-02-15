@@ -47,16 +47,18 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const rightNum = offset + hitsCount;
 
   return (
-    <div className="d-flex align-items-center justify-content-between">
+    <div className="form-inline d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
-        <span className="search-result-keyword">{`"${searchingKeyword}"`}</span>
-        <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+        <span className="search-result-keyword">{`${searchingKeyword}`}</span>
+        { total > 0 && (
+          <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+        ) }
         { took != null && (
           <span className="ml-3 text-muted">({took}ms)</span>
         ) }
       </div>
-      <div className="input-group search-result-select-group ml-4 d-lg-flex d-none">
+      <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
         <div className="input-group-prepend">
           <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>

@@ -1,6 +1,7 @@
 import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
@@ -23,6 +24,8 @@ type Props = {
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
+  const { t } = useTranslation();
+
   const {
     appContainer,
     pages,
@@ -123,19 +126,28 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
 
             { !isLoading && (
               <>
-                <div className="my-3 px-md-4">
+                <div className="my-3 px-md-4 px-3">
                   {searchResultListHead}
                 </div>
-                <div className="page-list px-md-4">
-                  <SearchResultList
-                    ref={searchResultListRef}
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    pages={pages!}
-                    selectedPageId={selectedPageWithMeta?.pageData._id}
-                    onPageSelected={page => setSelectedPageWithMeta(page)}
-                    onCheckboxChanged={checkboxChangedHandler}
-                  />
-                </div>
+
+                { pages.length === 0 && (
+                  <div className="d-flex justify-content-center h2 text-muted my-5">
+                    0 {t('search_result.page_number_unit')}
+                  </div>
+                ) }
+
+                { pages.length > 0 && (
+                  <div className="page-list px-md-4">
+                    <SearchResultList
+                      ref={searchResultListRef}
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      pages={pages!}
+                      selectedPageId={selectedPageWithMeta?.pageData._id}
+                      onPageSelected={page => setSelectedPageWithMeta(page)}
+                      onCheckboxChanged={checkboxChangedHandler}
+                    />
+                  </div>
+                ) }
                 <div className="my-4 d-flex justify-content-center">
                   {searchPager}
                 </div>
