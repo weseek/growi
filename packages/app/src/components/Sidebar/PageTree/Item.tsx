@@ -120,7 +120,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }),
   }));
 
-  const pageItemDropHandler = async(item) => {
+  const pageItemDropHandler = async(item, monitor) => {
     if (page == null || page.path == null) {
       return;
     }
