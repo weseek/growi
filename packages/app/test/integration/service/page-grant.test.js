@@ -109,13 +109,17 @@ describe('PageGrantService', () => {
     ]);
 
     // Root page (Depth: 0)
-    await Page.insertMany([
-      {
-        path: '/',
-        grant: Page.GRANT_PUBLIC,
-      },
-    ]);
     rootPage = await Page.findOne({ path: '/' });
+    if (rootPage == null) {
+      const pages = await Page.insertMany([
+        {
+          path: '/',
+          grant: Page.GRANT_PUBLIC,
+        },
+      ]);
+      rootPage = pages[0];
+    }
+
 
     // Empty pages (Depth: 1)
     await Page.insertMany([
