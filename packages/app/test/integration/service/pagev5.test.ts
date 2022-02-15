@@ -87,7 +87,7 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename3 = new mongoose.Types.ObjectId();
     const pageIdForRename4 = new mongoose.Types.ObjectId();
     const pageIdForRename5 = new mongoose.Types.ObjectId();
-    const pageIdForRename6 = new mongoose.Types.ObjectId();
+
     const pageIdForRename7 = new mongoose.Types.ObjectId();
     const pageIdForRename8 = new mongoose.Types.ObjectId();
     const pageIdForRename9 = new mongoose.Types.ObjectId();
@@ -96,7 +96,7 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename12 = new mongoose.Types.ObjectId();
     const pageIdForRename13 = new mongoose.Types.ObjectId();
     const pageIdForRename14 = new mongoose.Types.ObjectId();
-    const pageIdForRename15 = new mongoose.Types.ObjectId();
+
     const pageIdForRename16 = new mongoose.Types.ObjectId();
 
     // Create Pages
