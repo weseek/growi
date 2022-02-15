@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
+import { pagePathUtils } from '@growi/core';
 
 import { DropdownItem } from 'reactstrap';
 
@@ -59,6 +60,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
     onClickTemplateMenuItem(true);
   };
 
+  const { isTopPage } = pagePathUtils;
+  const { data: currentPath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
@@ -70,10 +73,13 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   return (
     <>
       {/* Presentation */}
-      <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
-        <i className="icon-fw"><PresentationIcon /></i>
-        { t('Presentation Mode') }
-      </DropdownItem>
+      {!isTopPage(currentPath ?? '')
+      && (
+        <DropdownItem onClick={() => openPresentationModal(hrefForPresentationModal)}>
+          <i className="icon-fw"><PresentationIcon /></i>
+          { t('Presentation Mode') }
+        </DropdownItem>
+      )}
 
       {/* Export markdown */}
       <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
