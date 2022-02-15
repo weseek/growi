@@ -94,10 +94,6 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
-      mongodb36:
-        image: mongo:3.6
-        ports:
-        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -151,13 +147,6 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
-    - name: yarn server:ci with MongoDB 3.6
-      working-directory: ./packages/app
-      run: |
-        cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
