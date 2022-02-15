@@ -130,13 +130,15 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                   {searchResultListHead}
                 </div>
 
-                { pages.length === 0 && (
+                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                { pages!.length === 0 && (
                   <div className="d-flex justify-content-center h2 text-muted my-5">
                     0 {t('search_result.page_number_unit')}
                   </div>
                 ) }
 
-                { pages.length > 0 && (
+                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                { pages!.length > 0 && (
                   <div className="page-list px-md-4">
                     <SearchResultList
                       ref={searchResultListRef}
