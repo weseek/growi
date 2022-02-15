@@ -231,6 +231,46 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+
+    const pageIdForRevert1 = new mongoose.Types.ObjectId();
+    const revisionIdForRevert1 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdForRevert1,
+        path: '/trash/v5_revert1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForRevert1,
+        status: Page.STATUS_DELETED,
+      },
+    ]);
+
+    await Revision.insertMany([
+      {
+        _id: revisionIdForRevert1,
+        pageId: pageIdForRevert1,
+        body: 'revert1',
+        format: 'comment',
+        author: dummyUser1,
+      },
+    ]);
+
+    const tagIdRevert1 = new mongoose.Types.ObjectId();
+    await Tag.insertMany([
+      { _id: tagIdRevert1, name: 'revertTag1' },
+    ]);
+
+    await PageTagRelation.insertMany([
+      {
+        relatedPage: pageIdForRevert1,
+        relatedTag: tagIdRevert1,
+        isPageTrashed: true,
+      },
+    ]);
+
   });
 
   describe('Rename', () => {
@@ -385,8 +425,49 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
   });
-});
 
+  describe('revert', () => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+      // mock return value
+      const mockedResumableRevertDeletedDescendants = jest.spyOn(crowi.pageService, 'resumableRevertDeletedDescendants').mockReturnValue(null);
+
+      const updatedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+
+      // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
+      const argsForResumableRevertDeletedDescendants = mockedResumableRevertDeletedDescendants.mock.calls[0];
+
+      // restores the original implementation
+      mockedResumableRevertDeletedDescendants.mockRestore();
+
+      // revert descendants
+      if (isRecursively) {
+        await crowi.pageService.resumableRevertDeletedDescendants(...argsForResumableRevertDeletedDescendants);
+      }
+
+      return updatedPage;
+    };
+
+    test('revert single deleted page', async() => {
+      const deletedPage = await Page.findOne({ path: '/trash/v5_revert1' });
+      const revision = await Revision.findOne({ pageId: deletedPage._id });
+      const tag = await Tag.findOne({ name: 'revertTag1' });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
+
+      expectAllToBeTruthy([deletedPage, revision, tag, deletedPageTagRelation]);
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedPageTagRelation.isPageTrashed).toBe(true);
+
+      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
+
+      expect(revertedPage.path).toBe('/v5_revert1');
+      expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(pageTagRelation.isPageTrashed).toBe(false);
+
+    });
+  });
+
+});
 describe('PageService page operations with non-public pages', () => {
   // TODO: write test code
 });
