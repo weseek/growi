@@ -794,37 +794,35 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedPage).toBeNull();
     });
     test('Should completely delete multiple pages', async() => {
-      const v5PageForDeleteCompletely2 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
-      const v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
-      const v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
-      const tagForDeleteCompletely1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
-      const tagForDeleteCompletely2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
-      const pageTagRelationForDeleteCompletely2 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely2._id });
-      const pageTagRelationForDeleteCompletely4 = await PageTagRelation.findOne({ relatedPage: v5PageForDeleteCompletely4._id });
-      const bookmarkForDeleteCompletely2 = await Bookmark.findOne({ page: v5PageForDeleteCompletely2._id });
-      const commentForDeleteCompletely2 = await Comment.findOne({ page: v5PageForDeleteCompletely2._id });
-      const pageRedirectForDeleteCompletely2 = await PageRedirect.findOne({ toPath: v5PageForDeleteCompletely2.path });
-      const pageRedirectForDeleteCompletely4 = await PageRedirect.findOne({ toPath: v5PageForDeleteCompletely4.path });
-      const shareLinkForDeleteCompletely2 = await ShareLink.findOne({ relatedPage: v5PageForDeleteCompletely2._id });
-      const shareLinkForDeleteCompletely4 = await ShareLink.findOne({ relatedPage: v5PageForDeleteCompletely4._id });
+      const parentPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
+      const childPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
+      const grandchildPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
+      const tag1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
+      const tag2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
+      const pageTagRelation1 = await PageTagRelation.findOne({ relatedPage: parentPage._id });
+      const pageTagRelation2 = await PageTagRelation.findOne({ relatedPage: grandchildPage._id });
+      const bookmark = await Bookmark.findOne({ page: parentPage._id });
+      const comment = await Comment.findOne({ page: parentPage._id });
+      const pageRedirect1 = await PageRedirect.findOne({ toPath: parentPage.path });
+      const pageRedirect2 = await PageRedirect.findOne({ toPath: grandchildPage.path });
+      const shareLink1 = await ShareLink.findOne({ relatedPage: parentPage._id });
+      const shareLink2 = await ShareLink.findOne({ relatedPage: grandchildPage._id });
 
       expectAllToBeTruthy(
-        [v5PageForDeleteCompletely2, v5PageForDeleteCompletely3, v5PageForDeleteCompletely4, tagForDeleteCompletely1, tagForDeleteCompletely2,
-         pageTagRelationForDeleteCompletely2, pageTagRelationForDeleteCompletely4, bookmarkForDeleteCompletely2, commentForDeleteCompletely2,
-         pageRedirectForDeleteCompletely2, pageRedirectForDeleteCompletely4, shareLinkForDeleteCompletely2, shareLinkForDeleteCompletely4],
+        [parentPage, childPage, grandchildPage, tag1, tag2,
+         pageTagRelation1, pageTagRelation2, bookmark, comment,
+         pageRedirect1, pageRedirect2, shareLink1, shareLink2],
       );
 
-      await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
-      const deletedPages = await Page.find({ _id: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely3._id, v5PageForDeleteCompletely4._id] } });
-      const deletedRevisions = await Revision.find({ pageId: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
-      const tags = await Tag.find({ _id: { $in: [tagForDeleteCompletely1._id, tagForDeleteCompletely2._id] } });
-      const deletedPageTagRelations = await PageTagRelation.find({
-        _id: { $in: [pageTagRelationForDeleteCompletely2._id, pageTagRelationForDeleteCompletely4._id] },
-      });
-      const deletedBookmarks = await Bookmark.find({ _id: bookmarkForDeleteCompletely2._id });
-      const deletedComments = await Comment.find({ _id: commentForDeleteCompletely2._id });
-      const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirectForDeleteCompletely2._id, pageRedirectForDeleteCompletely4._id] } });
-      const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLinkForDeleteCompletely2._id, shareLinkForDeleteCompletely4._id] } });
+      await deleteCompletely(parentPage, dummyUser1, {}, true);
+      const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
+      const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
+      const tags = await Tag.find({ _id: { $in: [tag1._id, tag2._id] } });
+      const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1._id, pageTagRelation2._id] } });
+      const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
+      const deletedComments = await Comment.find({ _id: comment._id });
+      const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
+      const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
 
       // page should be null
       deletedPages.forEach((deletedPage) => {
