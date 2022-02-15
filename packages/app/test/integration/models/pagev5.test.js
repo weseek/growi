@@ -3,9 +3,6 @@ import mongoose from 'mongoose';
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
-// ルートの下にページ作成
-// /a/bを作成
-// 子持ち空ページのパスでcreate
   let crowi;
   let Page;
   let Revision;
