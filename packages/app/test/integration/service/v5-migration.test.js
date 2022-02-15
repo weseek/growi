@@ -26,7 +26,7 @@ describe('V5 page migration', () => {
       jest.restoreAllMocks();
 
       // initialize pages for test
-      const pages = await Page.insertMany([
+      let pages = await Page.insertMany([
         {
           path: '/private1',
           grant: Page.GRANT_OWNER,
@@ -56,6 +56,10 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
+      const rootPage = (await Page.exists({ path: '/' })) ? await Page.insertOne({ path: '/' }) : null;
+      if (rootPage != null) {
+        pages = [rootPage, ...pages];
+      }
 
       // migrate
       await crowi.pageService.normalizeParentRecursivelyByPages(pages, testUser1);
