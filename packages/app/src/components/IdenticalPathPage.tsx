@@ -109,7 +109,6 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
                   key={pageId}
                   page={pageWithMeta}
                   isSelected={false}
-                  isChecked={false}
                   isEnableActions
                   showPageUpdatedTime
                 />

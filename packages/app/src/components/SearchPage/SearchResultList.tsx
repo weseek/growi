@@ -1,36 +1,61 @@
-import React, { FC } from 'react';
-import { IPageInfoForEntity, IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
+import React, {
+  forwardRef,
+  ForwardRefRenderFunction, useCallback, useImperativeHandle, useRef,
+} from 'react';
+import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
+import { IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
+import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
 
 import { PageListItemL } from '../PageList/PageListItemL';
-import PaginationWrapper from '../PaginationWrapper';
 
 
 type Props = {
-  pages: IPageWithMeta<IPageInfoForEntity & IPageSearchMeta>[],
-  selectedPagesIdList: Set<string>
-  isEnableActions: boolean,
-  searchResultCount?: number,
-  activePage?: number,
-  pagingLimit?: number,
-  focusedSearchResultData?: IPageWithMeta<IPageSearchMeta>,
-  onPagingNumberChanged?: (activePage: number) => void,
-  onClickItem?: (pageId: string) => void,
-  onClickCheckbox?: (pageId: string) => void,
-  onClickInvoked?: (pageId: string) => void,
+  pages: IPageWithMeta<IPageSearchMeta>[],
+  selectedPageId?: string,
+  onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
+  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
 }
 
-const SearchResultList: FC<Props> = (props:Props) => {
+const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
   const {
-    pages, focusedSearchResultData, selectedPagesIdList, isEnableActions,
+    pages, selectedPageId,
+    onPageSelected,
   } = props;
 
   const pageIdsWithNoSnippet = pages
     .filter(page => (page.pageMeta?.elasticSearchResult?.snippet.length ?? 0) === 0)
     .map(page => page.pageData._id);
 
+  const { data: isGuestUser } = useIsGuestUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
+
+  const itemsRef = useRef<(ISelectable|null)[]>([]);
+
+  // publish selectAll()
+  useImperativeHandle(ref, () => ({
+    selectAll: () => {
+      const items = itemsRef.current;
+      if (items != null) {
+        items.forEach(item => item != null && item.select());
+      }
+    },
+    deselectAll: () => {
+      const items = itemsRef.current;
+      if (items != null) {
+        items.forEach(item => item != null && item.deselect());
+      }
+    },
+  }));
+
+  const clickItemHandler = useCallback((pageId: string) => {
+    if (onPageSelected != null) {
+      const selectedPage = pages.find(page => page.pageData._id === pageId);
+      onPageSelected(selectedPage);
+    }
+  }, [onPageSelected, pages]);
+
 
   let injectedPage;
   // inject data to list
@@ -53,38 +78,25 @@ const SearchResultList: FC<Props> = (props:Props) => {
     });
   }
 
-  const focusedPageId = (focusedSearchResultData != null && focusedSearchResultData.pageData != null) ? focusedSearchResultData.pageData._id : '';
   return (
     <ul className="page-list-ul list-group list-group-flush">
-      { (injectedPage ?? pages).map((page) => {
-        const isChecked = selectedPagesIdList.has(page.pageData._id);
-
+      { (injectedPage ?? pages).map((page, i) => {
         return (
           <PageListItemL
             key={page.pageData._id}
+            // eslint-disable-next-line no-return-assign
+            ref={c => itemsRef.current[i] = c}
             page={page}
-            isEnableActions={isEnableActions}
-            onClickItem={props.onClickItem}
-            onClickCheckbox={props.onClickCheckbox}
-            isChecked={isChecked}
-            isSelected={page.pageData._id === focusedPageId || false}
+            isEnableActions={isGuestUser}
+            isSelected={page.pageData._id === selectedPageId}
+            onClickItem={clickItemHandler}
+            onCheckboxChanged={props.onCheckboxChanged}
           />
         );
       })}
-      {props.searchResultCount != null && props.searchResultCount > 0 && (
-        <div className="my-4 mx-auto">
-          <PaginationWrapper
-            activePage={props.activePage || 1}
-            changePage={props.onPagingNumberChanged}
-            totalItemsCount={props.searchResultCount || 0}
-            pagingLimit={props.pagingLimit}
-          />
-        </div>
-      )}
-
     </ul>
   );
 
 };
 
-export default SearchResultList;
+export const SearchResultList = forwardRef(SearchResultListSubstance);

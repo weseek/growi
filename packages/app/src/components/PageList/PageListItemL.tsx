@@ -1,4 +1,9 @@
-import React, { memo, useCallback } from 'react';
+import React, {
+  forwardRef,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
+} from 'react';
+
+import { CustomInput } from 'reactstrap';
 
 import Clamp from 'react-multiline-clamp';
 import { format } from 'date-fns';
@@ -16,23 +21,42 @@ import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+import { ISelectable } from '~/client/interfaces/selectable-all';
 
 type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
-  isChecked?: boolean, // is checkbox of item checked
   isEnableActions?: boolean,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
-  onClickCheckbox?: (pageId: string) => void,
+  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
 }
 
-export const PageListItemL = memo((props: Props): JSX.Element => {
+const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
     // todo: refactoring variable name to clear what changed
-    page: { pageData, pageMeta }, isSelected, onClickItem, onClickCheckbox, isChecked, isEnableActions,
+    page: { pageData, pageMeta }, isSelected, isEnableActions,
     showPageUpdatedTime,
+    onClickItem, onCheckboxChanged,
   } = props;
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // publish ISelectable methods
+  useImperativeHandle(ref, () => ({
+    select: () => {
+      const input = inputRef.current;
+      if (input != null) {
+        input.checked = true;
+      }
+    },
+    deselect: () => {
+      const input = inputRef.current;
+      if (input != null) {
+        input.checked = false;
+      }
+    },
+  }));
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
   const { open: openDuplicateModal } = usePageDuplicateModal();
@@ -70,12 +94,12 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
 
-  const deleteMennuItemClickHandler = useCallback(() => {
+  const deleteMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, revision: revisionId, path } = pageData;
     openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
   }, [openDeleteModal, pageData]);
 
-  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickCheckbox != null) ? 'list-group-item-action' : '';
+  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
 
@@ -90,14 +114,14 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       >
         <div className="d-flex">
           {/* checkbox */}
-          {onClickCheckbox != null && (
-            <div className="form-check d-flex align-items-center justify-content-center px-md-2 pl-3 pr-2 search-item-checkbox">
-              <input
-                className="form-check-input position-relative m-0"
+          {onCheckboxChanged != null && (
+            <div className="d-flex align-items-center justify-content-center pl-md-2 pl-3">
+              <CustomInput
                 type="checkbox"
-                id="flexCheckDefault"
-                onChange={() => { onClickCheckbox(pageData._id) }}
-                checked={isChecked}
+                id={`cbSelect-${pageData._id}`}
+                data-testid="cb-select"
+                innerRef={inputRef}
+                onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
               />
             </div>
           )}
@@ -137,7 +161,7 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
                 <PageItemControl
                   pageId={pageData._id}
                   pageInfo={pageMeta}
-                  onClickDeleteMenuItem={deleteMennuItemClickHandler}
+                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
@@ -161,4 +185,6 @@ export const PageListItemL = memo((props: Props): JSX.Element => {
       </div>
     </li>
   );
-});
+};
+
+export const PageListItemL = memo(forwardRef(PageListItemLSubstance));
