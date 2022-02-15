@@ -298,7 +298,6 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename2' });
       expectAllToBeTruthy([childPage, parentPage]);
 
-      // rename target page
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
 
@@ -314,7 +313,6 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([childPage, parentPage]);
       expect(childPage.lastUpdateUser).toStrictEqual(dummyUser1._id);
 
-      // rename target page
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
       const oldUdpateAt = childPage.updatedAt;
       const renamedPage = await renamePage(childPage, newPath, dummyUser2, { updateMetadata: true });
@@ -350,7 +348,6 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
       expectAllToBeTruthy([parentPage, childPage]);
 
-      // rename target page
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
       // find child of renamed page
@@ -370,7 +367,6 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename6' });
       expectAllToBeTruthy([parentPage, childPage]);
 
-      // rename target page
       const newPath = '/v5_ParentForRename6/renamedChildForRename6';
       expect(childPage.grant).toBe(Page.GRANT_RESTRICTED);
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
@@ -386,7 +382,6 @@ describe('PageService page operations with only public pages', () => {
       const childPage = await Page.findOne({ path: '/v5_ChildForRename7' });
       expectAllToBeTruthy([parentPage, childPage]);
 
-      // rename target page
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
       // find child of renamed page
@@ -404,7 +399,6 @@ describe('PageService page operations with only public pages', () => {
       const page = await Page.findOne({ path: '/v5_ParentForRename8' });
       expectAllToBeTruthy([page]);
 
-      // rename target page
       const newPath = '/v5_ParentForRename9';
       let isThrown;
       try {
