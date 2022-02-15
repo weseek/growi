@@ -24,8 +24,9 @@ context('Create page modal', () => {
   it("Page create modal is shown successfully", () => {
     cy.getByTestid('newPageBtn').click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
-    cy.screenshot(`${ssPrefix}-open-page-create-modal`)
+    cy.screenshot(`${ssPrefix}-open-page-create-modal`,{ capture: 'viewport' });
+    cy.getByTestid('createPageBtn').click();
+    cy.screenshot(`${ssPrefix}-create-clicked`, {capture: 'viewport'});
   });
 
 });

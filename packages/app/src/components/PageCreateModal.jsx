@@ -211,7 +211,12 @@ const PageCreateModal = (props) => {
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
-              <button type="button" className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3" onClick={createInputPage}>
+              <button
+                type="button"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                onClick={createInputPage}
+                data-testid="createPageBtn"
+              >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
