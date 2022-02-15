@@ -23,7 +23,7 @@ type CommonProps = {
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
   onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 }
 
 type SubNavButtonsSubstanceProps= CommonProps & {
@@ -120,8 +120,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       path,
     };
 
-    onClickDeleteMenuItem(pageToDelete);
-  }, [onClickDeleteMenuItem, pageId, path, revisionId]);
+    onClickDeleteMenuItem(pageToDelete, pageInfo.isAbleToDeleteCompletely);
+    console.log('pageInfo.isAbleToDeleteCompletely', pageInfo.isAbleToDeleteCompletely);
+  }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
