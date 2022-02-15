@@ -56,6 +56,13 @@ describe('PageService page operations with only public pages', () => {
   let tagForDelete1;
   let tagForDelete2;
 
+  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
+  const expectAllToBeTruthy = (dataList) => {
+    dataList.forEach((data) => {
+      expect(data).toBeTruthy();
+    });
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
