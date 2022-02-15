@@ -118,7 +118,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult() as DropResult;
-      if (dropResult != null && dropResult.dropTarget === 'PAGE_TREE') {
+      if (dropResult != null && dropResult.dropTarget === DROP_TARGET) {
         setShouldHide(true);
       }
     },
