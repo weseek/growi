@@ -1,16 +1,18 @@
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import { IFormattedSearchResult, ISearchResult, ISearchResultMeta } from '~/interfaces/search';
+import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
+import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
-import loggerFactory from '~/utils/logger';
+import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
-import { IPageHasId } from '~/interfaces/page';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -30,18 +32,6 @@ const normalizeQueryString = (_queryString: string): string => {
 
   return queryString;
 };
-
-export type FormattedSearchResult = {
-  data: IPageHasId[]
-
-  totalCount: number
-
-  meta: {
-    total: number
-    took?: number
-    count?: number
-  }
-}
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
@@ -106,6 +96,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   generateNQDelegators(defaultDelegator: SearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
+      [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator(),
     };
   }
 
@@ -245,7 +236,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[Result<any> & MetaData, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
     let parsedQuery;
     // parse
     try {
@@ -357,11 +348,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName: SearchDelegatorName): Promise<FormattedSearchResult> {
+  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
+      const data = searchResult.data.map((page) => {
+        return {
+          pageData: page,
+          pageMeta: {},
+        };
+      });
+
       return {
-        data: searchResult.data,
-        totalCount: searchResult.data.length,
+        data,
         meta: searchResult.meta,
       };
     }
@@ -369,9 +366,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     /*
      * Format ElasticSearch result
      */
-    const Page = this.crowi.model('Page') as any; // TODO: typescriptize model
+    const Page = this.crowi.model('Page') as unknown as PageModel;
     const User = this.crowi.model('User');
-    const result = {} as FormattedSearchResult;
+    const result = {} as IFormattedSearchResult;
 
     // get page data
     const pageIds = searchResult.data.map((page) => { return page._id });
@@ -379,7 +376,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     // set meta data
     result.meta = searchResult.meta;
-    result.totalCount = findPageResult.totalCount;
 
     // set search result page data
     result.data = searchResult.data.map((data) => {
@@ -396,16 +392,22 @@ class SearchService implements SearchQueryParser, SearchResolver {
         pageData.lastUpdateUser = serializeUserSecurely(pageData.lastUpdateUser);
       }
 
+      // const data = searchResult.data.find((data) => {
+      //   return pageData.id === data._id;
+      // });
+
       // increment elasticSearchResult
       let elasticSearchResult;
       const highlightData = data._highlight;
       if (highlightData != null) {
         const snippet = highlightData['body.en'] || highlightData['body.ja'] || '';
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'] || '';
+        const isHtmlInPath = highlightData['path.en'] != null || highlightData['path.ja'] != null;
 
         elasticSearchResult = {
           snippet: filterXss.process(snippet),
           highlightedPath: filterXss.process(pathMatch),
+          isHtmlInPath,
         };
       }
 
@@ -415,7 +417,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
         elasticSearchResult,
       };
 
-      return pageData; // { pageData, pageMeta } at dev/5.0.x
+      return { pageData, pageMeta };
     });
 
     return result;

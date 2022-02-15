@@ -6,14 +6,11 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { pathUtils } from '@growi/core';
 import urljoin from 'url-join';
-import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageContainer from '~/client/services/PageContainer';
 
 const CreateTemplateModal = (props) => {
-  const { t, pageContainer } = props;
+  const { t, path } = props;
 
-  const { path } = pageContainer.state;
   const parentPath = pathUtils.addTrailingSlash(path);
 
   function generateUrl(label) {
@@ -67,18 +64,11 @@ const CreateTemplateModal = (props) => {
 };
 
 
-/**
- * Wrapper component for using unstated
- */
-const CreateTemplateModalWrapper = withUnstatedContainers(CreateTemplateModal, [PageContainer]);
-
-
 CreateTemplateModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
+  path: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(CreateTemplateModalWrapper);
+export default withTranslation()(CreateTemplateModal);

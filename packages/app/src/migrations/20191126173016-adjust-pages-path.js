@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { pathUtils, getMongoUri, mongoOptions } from '@growi/core';
-
+import getPageModel from '~/server/models/page';
 
 import loggerFactory from '~/utils/logger';
 
@@ -12,7 +12,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const Page = require('~/server/models/page')();
+    const Page = getPageModel();
 
     // retrieve target data
     const pages = await Page.find({ path: /^(?!\/)/ });

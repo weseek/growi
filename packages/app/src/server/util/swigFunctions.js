@@ -146,20 +146,12 @@ module.exports = function(crowi, req, locals) {
     return false;
   };
 
-  locals.isTrashPage = function() {
-    const path = req.path || '';
+  locals.isTrashPage = function(path = '') {
     if (path.match(/^\/trash(\/.*)?$/)) {
       return true;
     }
 
     return false;
-  };
-
-  locals.isDeletablePage = function() {
-    const Page = crowi.model('Page');
-    const path = req.path || '';
-
-    return Page.isDeletableName(path);
   };
 
   locals.userPageRoot = function(user) {
@@ -177,6 +169,10 @@ module.exports = function(crowi, req, locals) {
         revision: page.revision,
       };
     });
+  };
+
+  locals.attachTitleHeader = function(path) {
+    return pathUtils.attachTitleHeader(path);
   };
 
   locals.css = {

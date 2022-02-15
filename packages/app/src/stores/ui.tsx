@@ -1,23 +1,28 @@
-import {
+import useSWR, {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 
 import { RefObject } from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
-import { useIsEditable } from './context';
+import {
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage,
+  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath,
+} from './context';
 import { IFocusable } from '~/client/interfaces/focusable';
+import { Nullable } from '~/interfaces/common';
+
+const { isSharedPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
 const isServer = typeof window === 'undefined';
-
-type Nullable<T> = T | null;
 
 
 /** **********************************************************
@@ -37,7 +42,7 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                      for switching UI
  *********************************************************** */
 
-export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
+export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isServer ? null : 'isMobile';
 
   let configuration;
@@ -48,7 +53,7 @@ export const useIsMobile = (): SWRResponse<boolean|null, Error> => {
     };
   }
 
-  return useStaticSWR(key, null, configuration);
+  return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
 const updateBodyClassesByEditorMode = (newEditorMode: EditorMode) => {
@@ -145,7 +150,7 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   };
 };
 
-export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => {
+export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
   const key: Key = isServer ? null : 'isDeviceSmallerThanMd';
 
   const { cache, mutate } = useSWRConfig();
@@ -169,24 +174,48 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean|null, Error> => 
   return useStaticSWR(key);
 };
 
+export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
+  const key: Key = isServer ? null : 'isDeviceSmallerThanLg';
+
+  const { cache, mutate } = useSWRConfig();
+
+  if (!isServer) {
+    const lgOrAvobeHandler = function(this: MediaQueryList): void {
+      // md -> lg: matches will be true
+      // lg -> md: matches will be false
+      mutate(key, !this.matches);
+    };
+    const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
+
+    // initialize
+    if (cache.get(key) == null) {
+      document.addEventListener('DOMContentLoaded', () => {
+        mutate(key, !mql.matches);
+      });
+    }
+  }
+
+  return useStaticSWR(key);
+};
+
 export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeByUser', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('preferDrawerModeByUser', initialData, { fallbackData: false });
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeOnEditByUser', initialData ?? null, { fallbackData: true });
+  return useStaticSWR('preferDrawerModeOnEditByUser', initialData, { fallbackData: true });
 };
 
 export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarCollapsed', initialData ?? null, { fallbackData: false });
+  return useStaticSWR('isSidebarCollapsed', initialData, { fallbackData: false });
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData ?? null, { fallbackData: SidebarContentsType.RECENT });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.RECENT });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('productNavWidth', initialData ?? null, { fallbackData: 320 });
+  return useStaticSWR('productNavWidth', initialData, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
@@ -217,33 +246,90 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isDrawerOpened', isOpened || null, { fallbackData: initialData });
+  return useStaticSWR('isDrawerOpened', isOpened, { fallbackData: false });
 };
 
 export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isSidebarResizeDisabled', isDisabled || null, { fallbackData: initialData });
-};
-
-export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  const initialData = false;
-  return useStaticSWR('isPageCreateModalOpened', isOpened || null, { fallbackData: initialData });
+  return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
 
 export const useSelectedGrant = (initialData?: Nullable<number>): SWRResponse<Nullable<number>, Error> => {
-  return useStaticSWR<Nullable<number>, Error>('grant', initialData ?? null);
+  return useStaticSWR<Nullable<number>, Error>('grant', initialData);
 };
 
 export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
 };
 
 export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData ?? null);
+  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR('globalSearchTypeahead', initialData ?? null);
+  return useStaticSWR('globalSearchTypeahead', initialData);
+};
+
+export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageManagement';
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [currentPageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => isPageExist && !isTrashPage && !isSharedUser,
+  );
+};
+
+export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowTagLabel';
+  const { data: isUserPage } = useIsUserPage();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
+  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: editorMode } = useEditorMode();
+
+  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+
+  const isViewMode = editorMode === EditorMode.View;
+  const isNotFoundPage = notFoundTargetPathOrId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+  );
+};
+
+export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageEditorModeManager';
+  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden();
+  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+  );
+};
+
+export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageAuthors';
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: isUserPage } = useIsUserPage();
+
+  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
+  const isPageExist = currentPageId != null;
+
+  return useSWRImmutable(
+    includesUndefined ? null : key,
+    () => isPageExist && !isUserPage,
+  );
 };

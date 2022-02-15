@@ -11,6 +11,7 @@
   "phone":"スマホ",
   "tablet":"タブレット",
   "Click to copy": "クリックでコピー",
+  "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
   "Redirected": "リダイレクトされました",
@@ -20,6 +21,7 @@
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
+  "Description": "説明",
   "Admin": "管理",
   "administrator": "管理者",
   "Tag": "タグ",
@@ -40,6 +42,7 @@
   "Initialize": "初期化",
   "Update": "更新",
   "Update Page": "ページを更新",
+  "Error": "エラー",
   "Warning": "注意",
   "Sign in": "ログイン",
   "Sign up is here": "新規登録はこちら",
@@ -66,6 +69,7 @@
   "Include Attachment File": "添付ファイルも含める",
   "Include Comment": "コメントも含める",
   "Include Subordinated Page": "配下ページも含める",
+  "Include Subordinated Target Page": "{{target}} 下も含む",
   "All Subordinated Page": "全ての配下ページ",
   "Specify Hierarchy": "階層の深さを指定",
   "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
@@ -108,6 +112,9 @@
   "Create under": "ページを以下に作成",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
+  "V5 Page Migration": "V5 ページマイグレーション",
+  "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
+  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
@@ -117,6 +124,7 @@
   "Legacy_Slack_Integration": "Slack連携 (レガシー)",
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
+  "UserGroup": "グループ",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
@@ -152,12 +160,17 @@
   "Sidebar mode": "サイドバーモード",
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
   "No bookmarks yet": "No bookmarks yet",
+  "add_bookmark": "ブックマークに追加",
+  "remove_bookmark": "ブックマークから削除",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "Page Tree": "ページツリー",
   "original_path":"元のパス",
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
   "Link sharing is disabled": "リンクのシェアは無効化されています",
+  "successfully_saved_the_page": "ページが正常に保存されました",
+  "you_can_not_create_page_with_this_name": "この名前でページを作成することはできません",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -169,7 +182,9 @@
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
-    "invalid_syntax": "%sの構文が不正です"
+    "invalid_syntax": "%sの構文が不正です",
+    "title_required": "タイトルを入力してください",
+    "slashed_are_not_yet_supported": "スラッシュを含むタイトルにはまだ対応していません"
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
@@ -508,7 +523,10 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
+    "create_succeeded": "新しい{{target}}が作成されました",
+    "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
+    "update_failed": "{{target}}の更新に失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
@@ -597,13 +615,24 @@
     "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
-    "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
+    "result_meta": "検索結果:",
     "deletion_mode_btn_lavel": "ページを指定して削除",
     "cancel": "キャンセル",
     "delete": "削除",
     "check_all": "すべてチェック",
     "deletion_modal_header": "以下のページを削除",
-    "delete_completely": "完全に削除する"
+    "delete_completely": "完全に削除する",
+    "include_certain_path": "{{pathToInclude}}下を含む ",
+    "delete_all_selected_page" : "一括削除",
+    "currently_not_implemented":"現在未実装の機能です",
+    "search_again" : "再検索",
+    "number_of_list_to_display" : "表示件数",
+    "page_number_unit" : "件",
+    "sort_axis": {
+      "relationScore": "関連度順",
+      "createdAt": "作成日時",
+      "updatedAt": "更新日時"
+    }
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
@@ -938,5 +967,14 @@
     "success_to_send_email": "メールを送信しました",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
+  },
+  "pagetree": {
+    "private_legacy_pages": "待避所",
+    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません"
+  },
+  "duplicated_page_alert" : {
+    "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
+    "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
+    "select_page_to_see" : "以下から遷移するページを選択してください。"
   }
 }

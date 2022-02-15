@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import { pagePathUtils } from '@growi/core';
+import { usePageDeleteModal } from '~/stores/modal';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import PageDeleteModal from '../PageDeleteModal';
 import PageRenameModal from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -18,19 +18,20 @@ import PresentationIcon from '../Icons/PresentationIcon';
 const { isTopPage } = pagePathUtils;
 
 
-const PageManagement = (props) => {
+const LegacyPageManagemenet = (props) => {
   const {
-    t, appContainer, pageContainer, isCompactMode,
+    t, appContainer, isCompactMode, pageId, revisionId, path, isDeletable, isAbleToDeleteCompletely,
   } = props;
-  const { path, isDeletable, isAbleToDeleteCompletely } = pageContainer.state;
+
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const { currentUser } = appContainer;
   const isTopPagePath = isTopPage(path);
   const [isPageRenameModalShown, setIsPageRenameModalShown] = useState(false);
   const [isPageDuplicateModalShown, setIsPageDuplicateModalShown] = useState(false);
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
-  const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
   const [isPagePresentationModalShown, setIsPagePresentationModalShown] = useState(false);
+  const presentationHref = urljoin(window.location.origin, path, '?presentation=1');
 
   function openPageRenameModalHandler() {
     setIsPageRenameModalShown(true);
@@ -55,14 +56,6 @@ const PageManagement = (props) => {
     setIsPageTempleteModalShown(false);
   }
 
-  function openPageDeleteModalHandler() {
-    setIsPageDeleteModalShown(true);
-  }
-
-  function closePageDeleteModalHandler() {
-    setIsPageDeleteModalShown(false);
-  }
-
   function openPagePresentationModalHandler() {
     setIsPagePresentationModalShown(true);
   }
@@ -84,7 +77,6 @@ const PageManagement = (props) => {
   // }
 
   async function exportPageHandler(format) {
-    const { pageId, revisionId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/export', pageId));
     url.searchParams.append('format', format);
     url.searchParams.append('revisionId', revisionId);
@@ -144,16 +136,22 @@ const PageManagement = (props) => {
     );
   }
 
+  function generatePageObjectToDelete() {
+    return { pageId, revisionId, path };
+  }
+  const pageToDelete = generatePageObjectToDelete();
+
   function renderDropdownItemForDeletablePage() {
     return (
       <>
         <div className="dropdown-divider"></div>
-        <button className="dropdown-item text-danger" type="button" onClick={openPageDeleteModalHandler}>
+        <button className="dropdown-item text-danger" type="button" onClick={() => openDeleteModal([pageToDelete])}>
           <i className="icon-fw icon-fire"></i> { t('Delete') }
         </button>
       </>
     );
   }
+
 
   function renderModals() {
     if (currentUser == null) {
@@ -165,26 +163,25 @@ const PageManagement = (props) => {
         <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
+          pageId={pageId}
+          revisionId={revisionId}
           path={path}
         />
         <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
+          pageId={pageId}
+          path={path}
         />
         <CreateTemplateModal
+          path={path}
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
-        />
-        <PageDeleteModal
-          isOpen={isPageDeleteModalShown}
-          onClose={closePageDeleteModalHandler}
-          path={path}
-          isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
-          href="?presentation=1"
+          href={presentationHref}
         />
       </>
     );
@@ -195,10 +192,10 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
+          className="btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded btn-page-item-control"
           data-toggle="dropdown"
         >
-          <i className="icon-options"></i>
+          <i className="text-muted icon-options"></i>
         </button>
       </>
     );
@@ -209,10 +206,10 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
+          className="btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled"
           id="icon-options-guest-tltips"
         >
-          <i className="icon-options"></i>
+          <i className="text-muted icon-options"></i>
         </button>
         <UncontrolledTooltip placement="top" target="icon-options-guest-tltips" fade={false}>
           {t('Not available for guest')}
@@ -240,19 +237,28 @@ const PageManagement = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageManagementWrapper = withUnstatedContainers(PageManagement, [AppContainer, PageContainer]);
+const LegacyPageManagemenetWrapper = withUnstatedContainers(LegacyPageManagemenet, [AppContainer]);
 
 
-PageManagement.propTypes = {
+LegacyPageManagemenet.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  isDeletable: PropTypes.bool.isRequired,
+  isAbleToDeleteCompletely: PropTypes.bool,
 
   isCompactMode: PropTypes.bool,
 };
 
-PageManagement.defaultProps = {
+LegacyPageManagemenet.defaultProps = {
   isCompactMode: false,
 };
 
-export default withTranslation()(PageManagementWrapper);
+const PageManagement = (props) => {
+  return <LegacyPageManagemenetWrapper {...props}></LegacyPageManagemenetWrapper>;
+};
+export default withTranslation()(PageManagement);

@@ -7,7 +7,9 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
 import { IUser } from '~/interfaces/user';
-import { useIsDeviceSmallerThanMd, usePageCreateModalOpened } from '~/stores/ui';
+import { useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { usePageCreateModal } from '~/stores/modal';
+import { useIsSearchPage, useCurrentPagePath } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -22,7 +24,8 @@ type NavbarRightProps = {
 }
 const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
   const { t } = useTranslation();
-  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { open: openCreateModal } = usePageCreateModal();
 
   const { currentUser } = props;
 
@@ -41,7 +44,7 @@ const NavbarRight: FC<NavbarRightProps> = memo((props: NavbarRightProps) => {
         <button
           className="px-md-3 nav-link btn-create-page border-0 bg-transparent"
           type="button"
-          onClick={() => mutatePageCreateModalOpened(true)}
+          onClick={() => openCreateModal(currentPagePath || '')}
         >
           <i className="icon-pencil mr-2"></i>
           <span className="d-none d-lg-block">{ t('New') }</span>
@@ -90,6 +93,7 @@ const GrowiNavbar = (props) => {
   const { crowi, isSearchServiceConfigured } = appContainer.config;
 
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   return (
     <>
@@ -111,7 +115,7 @@ const GrowiNavbar = (props) => {
         <Confidential confidential={crowi.confidential}></Confidential>
       </ul>
 
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search grw-global-search-top position-absolute">
           <GlobalSearch />
         </div>

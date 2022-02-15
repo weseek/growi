@@ -10,11 +10,14 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
+import { usePageRenameModal } from '~/stores/modal';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
@@ -22,14 +25,17 @@ import DuplicatedPathsTable from './DuplicatedPathsTable';
 
 const PageRenameModal = (props) => {
   const {
-    t, appContainer, pageContainer,
+    t, appContainer,
   } = props;
 
-  const { path } = pageContainer.state;
-
   const { crowi } = appContainer.config;
+  const { data: pagesDataToRename, close: closeRenameModal } = usePageRenameModal();
 
-  const [pageNameInput, setPageNameInput] = useState(path);
+  const {
+    isOpened, path, revisionId, pageId,
+  } = pagesDataToRename;
+
+  const [pageNameInput, setPageNameInput] = useState('');
 
   const [errs, setErrs] = useState(null);
 
@@ -37,7 +43,7 @@ const PageRenameModal = (props) => {
   const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, SetIsRenameRecursively] = useState(true);
   const [isRenameRedirect, SetIsRenameRedirect] = useState(false);
-  const [isRenameMetadata, SetIsRenameMetadata] = useState(false);
+  const [isRemainMetadata, SetIsRemainMetadata] = useState(false);
   const [subordinatedError] = useState(null);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
@@ -53,13 +59,13 @@ const PageRenameModal = (props) => {
     SetIsRenameRedirect(!isRenameRedirect);
   }
 
-  function changeIsRenameMetadataHandler() {
-    SetIsRenameMetadata(!isRenameMetadata);
+  function changeIsRemainMetadataHandler() {
+    SetIsRemainMetadata(!isRemainMetadata);
   }
 
   const updateSubordinatedList = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/pages/subordinated-list', { path });
+      const res = await apiv3Get('/pages/subordinated-list', { path });
       const { subordinatedPaths } = res.data;
       setSubordinatedPages(subordinatedPaths);
     }
@@ -67,18 +73,19 @@ const PageRenameModal = (props) => {
       setErrs(err);
       toastError(t('modal_rename.label.Fail to get subordinated pages'));
     }
-  }, [appContainer, path, t]);
+  }, [path, t]);
 
   useEffect(() => {
-    if (props.isOpen) {
+    if (isOpened) {
       updateSubordinatedList();
+      setPageNameInput(path);
     }
-  }, [props.isOpen, updateSubordinatedList]);
+  }, [isOpened, path, updateSubordinatedList]);
 
 
   const checkExistPaths = async(newParentPath) => {
     try {
-      const res = await appContainer.apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
+      const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
       setExistingPaths(existPaths);
     }
@@ -90,14 +97,14 @@ const PageRenameModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
+    debounce(1000, checkExistPaths), [path],
   );
 
   useEffect(() => {
-    if (pageNameInput !== path) {
+    if (pageId != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
-  }, [pageNameInput, subordinatedPages, path, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
 
   /**
    * change pageNameInput
@@ -112,12 +119,15 @@ const PageRenameModal = (props) => {
     setErrs(null);
 
     try {
-      const response = await pageContainer.rename(
-        pageNameInput,
-        isRenameRecursively,
+      const response = await apiv3Put('/pages/rename', {
+        revisionId,
+        pageId,
+        isRecursively: isRenameRecursively,
         isRenameRedirect,
-        isRenameMetadata,
-      );
+        isRemainMetadata,
+        newPagePath: pageNameInput,
+        path,
+      });
 
       const { page } = response.data;
       const url = new URL(page.path, 'https://dummy');
@@ -134,8 +144,8 @@ const PageRenameModal = (props) => {
   }
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
@@ -192,7 +202,7 @@ const PageRenameModal = (props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && path != null && <ComparePathsTable path={path} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
@@ -215,12 +225,12 @@ const PageRenameModal = (props) => {
           <input
             className="custom-control-input"
             name="remain_metadata"
-            id="cbRenameMetadata"
+            id="cbRemainMetadata"
             type="checkbox"
-            checked={isRenameMetadata}
-            onChange={changeIsRenameMetadataHandler}
+            checked={isRemainMetadata}
+            onChange={changeIsRemainMetadataHandler}
           />
-          <label className="custom-control-label" htmlFor="cbRenameMetadata">
+          <label className="custom-control-label" htmlFor="cbRemainMetadata">
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
@@ -244,18 +254,11 @@ const PageRenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
-
+const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer]);
 
 PageRenameModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-
-  path: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(PageRenameModalWrapper);

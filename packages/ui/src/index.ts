@@ -6,3 +6,4 @@ export * from './components/PagePath/PagePathLabel';
 export * from './components/User/UserPicture';
 
 export * from './utils/browser-utils';
+export * from './components/SearchPage/FootstampIcon';
