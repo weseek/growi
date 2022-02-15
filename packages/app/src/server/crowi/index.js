@@ -22,6 +22,7 @@ import SearchService from '../service/search';
 import AttachmentService from '../service/attachment';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
+import PageOperationService from '../service/page-operation';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { InstallerService } from '../service/installer';
@@ -677,6 +678,9 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
+  }
+  if (this.pageOperationService == null) {
+    this.pageOperationService = new PageOperationService(this);
   }
 };
 

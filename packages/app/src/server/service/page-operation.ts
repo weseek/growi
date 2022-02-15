@@ -9,6 +9,23 @@ class PageOperationService {
     this.crowi = crowi;
   }
 
+  /*
+   * Block
+   */
+
+  /**
+   * Check if the operation is processable by comparing the "path" with all PageOperation documents
+   * @param path path to operate
+   * @returns Promise<boolean>
+   */
+  async shouldBlock(path: string): Promise<boolean> {
+    return true;
+  }
+
+  /*
+   * Resume
+   */
+
   async resumeAll(): Promise<void> {
     const resumers = await this.prepareResumers();
 
