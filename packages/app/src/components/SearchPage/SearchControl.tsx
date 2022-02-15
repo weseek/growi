@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchPageForm from './SearchPageForm';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
+import SearchForm from '../SearchForm';
 
 type Props = {
+  isSearchServiceReachable: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
   onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
@@ -21,6 +22,7 @@ type Props = {
 const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
+    isSearchServiceReachable,
     initialSearchConditions,
     onSearchInvoked,
     deleteAllControl,
@@ -65,6 +67,7 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
           <SearchForm
             isSearchServiceReachable={isSearchServiceReachable}
             keyword={keyword}
+            disableIncrementalSearch
             onSubmit={searchFormSubmittedHandler}
           />
         </div>
