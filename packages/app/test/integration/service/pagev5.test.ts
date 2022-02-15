@@ -101,10 +101,16 @@ describe('PageService page operations with only public pages', () => {
         _id: pageIdForRename2,
         path: '/v5_ParentForRename2',
         grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
         isEmpty: true,
+      },
+      {
+        // id not needed for this data
+        path: '/v5_ParentForRename2/dummyChild1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename2,
       },
       {
         _id: pageIdForRename3,
