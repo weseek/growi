@@ -31,7 +31,6 @@ describe('PageService page operations with only public pages', () => {
     });
   };
 
-
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -674,6 +673,8 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should duplicate single page', async() => {
       const v5PageForDuplicate1 = await Page.findOne({ path: '/v5_PageForDuplicate1' });
+      expectAllToBeTruthy([v5PageForDuplicate1]);
+
       const newPagePath = '/duplicatedv5PageForDuplicate1';
       const duplicatedPage = await duplicate(v5PageForDuplicate1, newPagePath, dummyUser1, false);
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
@@ -688,10 +689,12 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should NOT duplicate single empty page', async() => {
       const v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
-      const newPagePath = '/duplicatedv5PageForDuplicate2';
+      expectAllToBeTruthy([v5PageForDuplicate2]);
+
       let isThrown;
       let duplicatedPage;
       try {
+        const newPagePath = '/duplicatedv5PageForDuplicate2';
         duplicatedPage = await duplicate(v5PageForDuplicate2, newPagePath, dummyUser1, false);
       }
       catch (err) {
@@ -703,6 +706,8 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should duplicate multiple pages', async() => {
       const v5PageForDuplicate3 = await Page.findOne({ path: '/v5_PageForDuplicate3' });
+      expectAllToBeTruthy([v5PageForDuplicate3]);
+
       const newPagePath = '/duplicatedv5PageForDuplicate3';
       const duplicatedPage = await duplicate(v5PageForDuplicate3, newPagePath, dummyUser1, true);
       const childrenForBasePage = await Page.find({ parent: v5PageForDuplicate3._id }).populate({ path: 'revision', model: 'Revision' });
@@ -718,6 +723,8 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should duplicate multiple pages with empty child in it', async() => {
       const v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
+      expectAllToBeTruthy([v5PageForDuplicate4]);
+
       const newPagePath = '/duplicatedv5PageForDuplicate4';
       const duplicatedPage = await duplicate(v5PageForDuplicate4, newPagePath, dummyUser1, true);
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
@@ -730,6 +737,8 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should duplicate tags', async() => {
       const v5PageForDuplicate5 = await Page.findOne({ path: '/v5_PageForDuplicate5' });
+      expectAllToBeTruthy([v5PageForDuplicate5]);
+
       const newPagePath = '/duplicatedv5PageForDuplicate5';
       const duplicatedPage = await duplicate(v5PageForDuplicate5, newPagePath, dummyUser1, false);
       const duplicatedTagRelations = await PageTagRelation.find({ relatedPage: duplicatedPage._id });
@@ -740,6 +749,8 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should NOT duplicate comments', async() => {
       const v5PageForDuplicate6 = await Page.findOne({ path: '/v5_PageForDuplicate6' });
+      expectAllToBeTruthy([v5PageForDuplicate6]);
+
       const newPagePath = '/duplicatedv5PageForDuplicate6';
       const duplicatedPage = await duplicate(v5PageForDuplicate6, newPagePath, dummyUser1, false);
       const comments = await Comment.find({ page: v5PageForDuplicate6._id });
@@ -753,9 +764,11 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should duplicate empty page with descendants', async() => {
       const v5PageForDuplicate7 = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
-      const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
       const basePageChild = await Page.findOne({ parent: v5PageForDuplicate7._id }).populate({ path: 'revision', model: 'Revision' });
       const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
+      expectAllToBeTruthy([v5PageForDuplicate7, basePageChild, basePageGrandhild]);
+
+      const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
       const duplicatedPage = await duplicate(v5PageForDuplicate7, newPagePath, dummyUser1, true);
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id }).populate({ path: 'revision', model: 'Revision' });
