@@ -53,7 +53,7 @@ export class InstallerService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async createInitialPages(owner, lang: Lang): Promise<any> {
+  private async createInitialPages(owner, lang: Lang, initialPagesCreatedAt?: Date): Promise<any> {
     const { localeDir } = this.crowi;
     // create /Sandbox/*
     /*
@@ -65,6 +65,19 @@ export class InstallerService {
       this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner),
       this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner),
     ]);
+
+    // update createdAt and updatedAt fields of all pages
+    if (initialPagesCreatedAt != null) {
+      try {
+        // TODO typescriptize models/user.js and remove eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const Page = mongoose.model('Page') as any;
+        await Page.updateMany({}, { createdAt: initialPagesCreatedAt, updatedAt: initialPagesCreatedAt });
+      }
+      catch (err) {
+        logger.error('Failed to update createdAt', err);
+      }
+    }
 
     try {
       await this.initSearchIndex();
