@@ -101,8 +101,7 @@ export const SearchPage = (props: Props): JSX.Element => {
   const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
-  const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({
-  });
+  const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
   const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
     limit: INITIAL_PAGIONG_SIZE,
   });
@@ -205,15 +204,19 @@ export const SearchPage = (props: Props): JSX.Element => {
   }, [hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
+    if (!isSearchServiceReachable) {
+      return <></>;
+    }
     return (
       <SearchControl
+        isSearchServiceReachable={isSearchServiceReachable}
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
         deleteAllControl={deleteAllControl}
       >
       </SearchControl>
     );
-  }, [deleteAllControl, initialSearchConditions, searchInvokedHandler]);
+  }, [deleteAllControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
