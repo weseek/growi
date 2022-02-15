@@ -727,18 +727,22 @@ describe('PageService page operations with only public pages', () => {
       expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodiesOfChildrenForBasePage));
     });
     test('Should duplicate multiple pages with empty child in it', async() => {
-      const v5PageForDuplicate4 = await Page.findOne({ path: '/v5_PageForDuplicate4' });
-      expectAllToBeTruthy([v5PageForDuplicate4]);
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate4' });
+      const baseChild = await Page.findOne({ parent: basePage._id });
+      const baseGrandchild = await Page.findOne({ parent: baseChild._id });
+      expectAllToBeTruthy([basePage, baseChild, baseGrandchild]);
+      expect(baseChild.isEmpty).toBe(true);
 
       const newPagePath = '/duplicatedv5PageForDuplicate4';
-      const duplicatedPage = await duplicate(v5PageForDuplicate4, newPagePath, dummyUser1, true);
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
       const duplicatedGrandchild = await Page.find({ parent: duplicatedChild._id });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChild.isEmpty).toBe(true);
-      expect(duplicatedGrandchild.length).toBeGreaterThan(0);
+      expect(duplicatedGrandchild).toBe(true);
+      expectAllToBeTruthy([duplicatedGrandchild]);
     });
     test('Should duplicate tags', async() => {
       const v5PageForDuplicate5 = await Page.findOne({ path: '/v5_PageForDuplicate5' });
