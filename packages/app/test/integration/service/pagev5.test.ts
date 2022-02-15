@@ -55,11 +55,11 @@ describe('PageService page operations with only public pages', () => {
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     if (dummyUser1 == null) {
-      await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
+      dummyUser1 = await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
     }
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
     if (dummyUser2 == null) {
-      await User.create({ name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' });
+      dummyUser2 = await User.create({ name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' });
     }
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
