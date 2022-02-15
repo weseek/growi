@@ -162,8 +162,7 @@
       }
     }
 
-    .search-result-keyword {
-      font-size: 17.5px;
+    .search-result-meta {
       font-weight: bold;
     }
     .search-result-select-group {
@@ -171,14 +170,14 @@
         max-width: 8rem;
       }
     }
-
-    // list group
-    .page-list {
-      // not show top label in search result list
-      .page-list-meta {
-        .top-label {
-          display: none;
-        }
+    .search-result-list-delete-checkbox {
+      margin: 0 10px 0 0;
+      vertical-align: middle;
+    }
+    // not show top label in search result list
+    .page-list-meta {
+      .top-label {
+        display: none;
       }
     }
   }
@@ -216,6 +215,21 @@
         }
       }
     }
+  }
+}
+
+// 2021/9/22 TODO: Remove after moving to SearchResult
+.search-page-input {
+  position: sticky;
+  top: 15px;
+  // placed at front-most
+  z-index: 15;
+
+  margin-bottom: 15px;
+
+  .input-group-btn .btn {
+    height: 34px;
+    padding: 0px 10px;
   }
 }
 

@@ -34,8 +34,6 @@ export type IPageForPageDeleteModal = {
   pageId: string,
   revisionId?: string,
   path: string
-  isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
 }
 
 export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
@@ -44,40 +42,20 @@ type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
   onDeleted?: OnDeletedFunction,
-  isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
 }
 
 type DeleteModalStatusUtils = {
-  open(
-    pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
-    isAbleToDeleteCompletely?: boolean,
-    isDeleteCompletelyModal?: boolean,
-  ): Promise<DeleteModalStatus | undefined>,
+  open(pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
 
 export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
-  const initialData: DeleteModalStatus = {
-    isOpened: false,
-    pages: [],
-    onDeleted: () => {},
-    isAbleToDeleteCompletely: false,
-    isDeleteCompletelyModal: false,
-  };
+  const initialData: DeleteModalStatus = { isOpened: false, pages: [], onDeleted: () => {} };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (
-        pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
-        isAbleToDeleteCompletely?: boolean,
-        isDeleteCompletelyModal?: boolean,
-    ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isAbleToDeleteCompletely, isDeleteCompletelyModal,
-    }),
+    open: (pages?: IPageForPageDeleteModal[], onDeleted?: OnDeletedFunction) => swrResponse.mutate({ isOpened: true, pages, onDeleted }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };

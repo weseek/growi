@@ -7,22 +7,20 @@ const { DESC, ASC } = SORT_ORDER;
 type Props = {
   sort: SORT_AXIS,
   order: SORT_ORDER,
-  onChange?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
+  onChangeSortInvoked?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
 }
 
 const SortControl: FC <Props> = (props: Props) => {
 
   const { t } = useTranslation('');
 
-  const { sort, order, onChange } = props;
-
   const onClickChangeSort = (nextSortAxis: SORT_AXIS, nextSortOrder: SORT_ORDER) => {
-    if (onChange != null) {
-      onChange(nextSortAxis, nextSortOrder);
+    if (props.onChangeSortInvoked != null) {
+      props.onChangeSortInvoked(nextSortAxis, nextSortOrder);
     }
   };
 
-  const renderOrderIcon = () => {
+  const renderOrderIcon = (order: SORT_ORDER) => {
     const iconClassName = ASC === order ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc';
     return <i className={iconClassName} aria-hidden="true" />;
   };
@@ -32,7 +30,7 @@ const SortControl: FC <Props> = (props: Props) => {
       <div className="input-group">
         <div className="input-group-prepend">
           <div className="input-group-text border text-muted" id="btnGroupAddon">
-            {renderOrderIcon()}
+            {renderOrderIcon(props.order)}
           </div>
         </div>
         <div className="border rounded-right">
@@ -41,11 +39,11 @@ const SortControl: FC <Props> = (props: Props) => {
             className="btn dropdown-toggle search-sort-option-btn"
             data-toggle="dropdown"
           >
-            <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
+            <span className="mr-4 text-secondary">{t(`search_result.sort_axis.${props.sort}`)}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-right">
             {Object.values(SORT_AXIS).map((sortAxis) => {
-              const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
+              const nextOrder = (props.sort !== sortAxis || props.order === ASC) ? DESC : ASC;
               return (
                 <button
                   key={sortAxis}

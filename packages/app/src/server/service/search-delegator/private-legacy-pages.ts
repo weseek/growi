@@ -4,10 +4,9 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPage } from '~/interfaces/page';
 import {
-  SearchableData, SearchDelegator,
+  MetaData, Result, SearchableData, SearchDelegator,
 } from '../../interfaces/search';
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
-import { ISearchResult } from '~/interfaces/search';
 
 
 class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
@@ -18,7 +17,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(_data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
+  async search(_data: SearchableData | null, user, userGroups, option): Promise<Result<IPage> & MetaData> {
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -52,7 +51,6 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
       data: pages,
       meta: {
         total: pages.length,
-        hitsCount: pages.length,
       },
     };
   }

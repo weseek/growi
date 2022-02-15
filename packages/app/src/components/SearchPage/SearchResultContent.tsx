@@ -48,8 +48,8 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
-  highlightKeywords?: string[],
+  searchingKeyword:string,
+  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
   showPageControlDropdown?: boolean,
 }
 
@@ -72,7 +72,7 @@ const generateObserverCallback = (doScroll: ()=>void) => {
   };
 };
 
-export const SearchResultContent: FC<Props> = (props: Props) => {
+const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
   // ***************************  Auto Scroll  ***************************
@@ -94,8 +94,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const {
     appContainer,
-    pageWithMeta,
-    highlightKeywords,
+    focusedSearchResultData,
     showPageControlDropdown,
   } = props;
 
@@ -103,7 +102,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const page = pageWithMeta?.pageData;
+  const page = focusedSearchResultData?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -147,7 +146,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
@@ -164,9 +163,12 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pageId={page._id}
           pagePath={page.path}
           revisionId={page.revision}
-          highlightKeywords={highlightKeywords}
+          highlightKeywords={props.searchingKeyword}
         />
       </div>
     </div>
   );
 };
+
+
+export default SearchResultContent;

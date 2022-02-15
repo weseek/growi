@@ -1,12 +1,12 @@
 import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult, ISearchResult, ISearchResultMeta } from '~/interfaces/search';
+import { IFormattedSearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
 import NamedQuery from '../models/named-query';
 import {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
+  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, Result, MetaData, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
@@ -236,7 +236,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     return [this.nqDelegators[SearchDelegatorName.DEFAULT], data];
   }
 
-  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[ISearchResult<unknown>, string]> {
+  async searchKeyword(keyword: string, user, userGroups, searchOpts): Promise<[Result<any> & MetaData, string]> {
     let parsedQuery;
     // parse
     try {
@@ -348,7 +348,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   /**
    * formatting result
    */
-  async formatSearchResult(searchResult: ISearchResult<any>, delegatorName): Promise<IFormattedSearchResult> {
+  async formatSearchResult(searchResult: Result<any> & MetaData, delegatorName): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
       const data = searchResult.data.map((page) => {
         return {
@@ -359,6 +359,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
       return {
         data,
+        totalCount: data.length,
         meta: searchResult.meta,
       };
     }
@@ -376,6 +377,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     // set meta data
     result.meta = searchResult.meta;
+    result.totalCount = findPageResult.totalCount;
 
     // set search result page data
     result.data = searchResult.data.map((data) => {
