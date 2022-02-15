@@ -4,7 +4,7 @@ import mongoose, {
 import { getOrCreateModel } from '@growi/core';
 
 import {
-  IPageForResuming,
+  IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/interfaces/page-operation';
 
 type IObjectId = mongoose.Types.ObjectId;
@@ -28,6 +28,11 @@ export interface IPageOperation {
   actionType: PageActionType,
   pathsToBlock: string[],
   page: IPageForResuming,
+  user: IUserForResuming,
+  options?: IOptionsForResuming,
+  newPath?: string,
+  newTarget?: IPageForResuming,
+  incForUpdatingDescendantCount?: number,
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -36,7 +41,8 @@ export interface PageOperationModel extends Model<PageOperationDocument> {
   [x:string]: any // TODO: improve type
 }
 
-const pageArgSchema = new Schema<IPageForResuming>({
+const pageSchemaForResuming = new Schema<IPageForResuming>({
+  _id: { type: ObjectId, ref: 'Page' },
   parent: { type: ObjectId, ref: 'Page' },
   descendantCount: { type: Number },
   isEmpty: { type: Boolean },
@@ -48,7 +54,16 @@ const pageArgSchema = new Schema<IPageForResuming>({
   grantedGroup: { type: ObjectId, ref: 'UserGroup' },
   creator: { type: ObjectId, ref: 'User' },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
-}, { strict: false, strictQuery: false });
+});
+
+const userSchemaForResuming = new Schema<IUserForResuming>({
+  _id: { type: ObjectId, ref: 'User', required: true },
+});
+
+const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
+  createRedirectPage: { type: Boolean },
+  updateMetadata: { type: Boolean },
+}, { _id: false });
 
 const schema = new Schema<PageOperationDocument, PageOperationModel>({
   actionType: {
@@ -64,7 +79,12 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
       validate: [v => v.length >= 1, 'Must have minimum one path'],
     },
   ],
-  page: { type: pageArgSchema, required: true },
+  page: { type: pageSchemaForResuming, required: true },
+  user: { type: userSchemaForResuming, required: true },
+  options: { type: optionsSchemaForResuming },
+  newPath: { type: String },
+  newTarget: { type: pageSchemaForResuming },
+  incForUpdatingDescendantCount: { type: Number },
 });
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
