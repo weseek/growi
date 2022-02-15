@@ -382,10 +382,10 @@ describe('PageService page operations with only public pages', () => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename7' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename7' });
       expectAllToBeTruthy([parentPage, childPage]);
+      expect(childPage.isEmpty).toBe(true);
 
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
-      // find child of renamed page
       const grandchild = await Page.findOne({ parent: renamedPage._id });
 
       expect(xssSpy).toHaveBeenCalled();
