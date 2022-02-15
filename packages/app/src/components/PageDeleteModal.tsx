@@ -117,13 +117,6 @@ const PageDeleteModal: FC = () => {
     await deletePage();
   }
 
-  // const pagePath = deleteModalData.pages[0].path ?? '';
-
-  // const deleteModalDataHoge = deleteModalData ?? '';
-  // const pagePath = deleteModalData.pages[0]? ?? '';
-
-
-  console.log('deleteModalData.pages[0].path', firstPagePath);
   function renderDeleteRecursivelyForm() {
     return (
       <div className="custom-control custom-checkbox custom-checkbox-warning">
