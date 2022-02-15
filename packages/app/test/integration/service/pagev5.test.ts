@@ -49,12 +49,18 @@ describe('PageService page operations with only public pages', () => {
      * Common
      */
     await User.insertMany([
-      { name: 'dummyUser1', username: 'dummyUser1', email: 'dummyUser1@example.com' },
-      { name: 'dummyUser2', username: 'dummyUser2', email: 'dummyUser2@example.com' },
+      { name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' },
+      { name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' },
     ]);
 
-    dummyUser1 = await User.findOne({ username: 'dummyUser1' });
-    dummyUser2 = await User.findOne({ username: 'dummyUser2' });
+    dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
+    if (dummyUser1 == null) {
+      await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
+    }
+    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+    if (dummyUser2 == null) {
+      await User.create({ name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' });
+    }
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
@@ -331,6 +337,7 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move with descendants', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename5' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
+
       expectAllToBeTruthy([parentPage, childPage]);
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
@@ -379,10 +386,6 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
-  });
-  afterAll(async() => {
-    await Page.deleteMany({});
-    await User.deleteMany({});
   });
 });
 
