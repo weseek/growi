@@ -106,8 +106,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
-  const isLoading = pages == null;
-
   return (
     <div className="content-main">
       <div className="search-result-base d-flex" data-testid="search-result-base">
@@ -118,27 +116,29 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
 
           <div className="search-result-list-scroll">
 
-            { isLoading && (
+            {/* Loading */}
+            { pages == null && (
               <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
                 <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
               </div>
             ) }
 
-            { !isLoading && (
+            {/* Loaded */}
+            { pages != null && (
               <>
                 <div className="my-3 px-md-4 px-3">
                   {searchResultListHead}
                 </div>
 
                 {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                { pages!.length === 0 && (
+                { pages.length === 0 && (
                   <div className="d-flex justify-content-center h2 text-muted my-5">
                     0 {t('search_result.page_number_unit')}
                   </div>
                 ) }
 
                 {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                { pages!.length > 0 && (
+                { pages.length > 0 && (
                   <div className="page-list px-md-4">
                     <SearchResultList
                       ref={searchResultListRef}
