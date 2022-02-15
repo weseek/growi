@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { Collection } from 'mongodb';
-import { getMongoUriForTestV4, mongoOptions } from '@growi/core';
 
 const migrate = require('~/migrations/20210913153942-migrate-slack-app-integration-schema');
 
@@ -9,8 +8,7 @@ describe('migrate-slack-app-integration-schema', () => {
   let collection: Collection;
 
   beforeAll(async() => {
-    await mongoose.connect(getMongoUriForTestV4(), mongoOptions);
-    collection = mongoose.connection.db.collection('slackappintegrations');
+    collection = mongoose.connection.collection('slackappintegrations');
 
     await collection.insertMany([
       {
