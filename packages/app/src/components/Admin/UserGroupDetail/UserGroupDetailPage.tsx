@@ -4,49 +4,58 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupTable from '../UserGroup/UserGroupTable';
+import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
 import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
-  IUserGroup, IUserGroupHasId, IUserGroupRelation,
+  IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
-import { useSWRxUserGroupPages, useSWRxUserGroupRelations, useSWRxSelectableUserGroups } from '~/stores/user-group';
-
+import {
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
+} from '~/stores/user-group';
+import { useIsAclEnabled } from '~/stores/context';
 
 const UserGroupDetailPage: FC = () => {
-  const rootElem = document.getElementById('admin-user-group-detail');
   const { t } = useTranslation();
+  const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
-
-  // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
-  const [childUserGroups, setChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
-  const [grandChildUserGroups, setGrandChildUserGroups] = useState<IUserGroupHasId[]>([]); // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
-
-  const [childUserGroupRelations, setChildUserGroupRelations] = useState<IUserGroupRelation[]>([]); // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list
+  const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   /*
    * Fetch
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(userGroup._id, 10, 0);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([userGroup._id], true);
+  const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
+  const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
+  const childUserGroupIds = childUserGroups.map(group => group._id);
+
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
+  const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
+
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const { data: isAclEnabled } = useIsAclEnabled();
 
   /*
    * Function
@@ -66,13 +75,16 @@ const UserGroupDetailPage: FC = () => {
   }, []);
 
   const updateUserGroup = useCallback(async(param: Partial<IUserGroup>) => {
-    const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
-    const { userGroup: newUserGroup } = res.data;
-
-    setUserGroup(newUserGroup);
-
-    return newUserGroup;
-  }, [userGroup]);
+    try {
+      const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, param);
+      const { userGroup: newUserGroup } = res.data;
+      setUserGroup(newUserGroup);
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, userGroup._id, setUserGroup]);
 
   const openUserGroupUserModal = useCallback(() => {
     setUserGroupUserModalOpen(true);
@@ -112,9 +124,10 @@ const UserGroupDetailPage: FC = () => {
         name: selectedUserGroup.name,
         description: selectedUserGroup.description,
         parentId: userGroup._id,
-        forceUpdateParents: false, //  TODO 87748: Make forceUpdateParents optionally selectable
+        forceUpdateParents: false,
       });
       mutateSelectableUserGroups();
+      mutateChildUserGroups();
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
     }
     catch (err) {
@@ -126,6 +139,36 @@ const UserGroupDetailPage: FC = () => {
   const onClickCreateChildGroupButtonHandler = () => {
     console.log('button clicked!');
   };
+
+  const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
+    setSelectedUserGroup(group);
+    setDeleteModalShown(true);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
+
+  const hideDeleteModal = useCallback(() => {
+    setSelectedUserGroup(undefined);
+    setDeleteModalShown(false);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
+
+  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+    try {
+      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+        actionName,
+        transferToUserGroupId,
+      });
+
+      // sync
+      await mutateChildUserGroups();
+
+      setSelectedUserGroup(undefined);
+      setDeleteModalShown(false);
+
+      toastSuccess(`Deleted ${res.data.userGroups.length} groups.`);
+    }
+    catch (err) {
+      toastError(new Error('Unable to delete the groups'));
+    }
+  }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown]);
 
   /*
    * Dependencies
@@ -144,8 +187,6 @@ const UserGroupDetailPage: FC = () => {
       <div className="mt-4 form-box">
         <UserGroupForm
           userGroup={userGroup}
-          successedMessage={t('toaster.update_successed', { target: t('UserGroup') })}
-          failedMessage={t('toaster.update_failed', { target: t('UserGroup') })}
           submitButtonLabel={t('Update')}
           onSubmit={updateUserGroup}
         />
@@ -161,19 +202,30 @@ const UserGroupDetailPage: FC = () => {
         onClickCreateUserGroupButtonHandler={() => onClickCreateChildGroupButtonHandler()}
       />
 
+      <>
+        <UserGroupTable
+          userGroups={childUserGroups}
+          childUserGroups={grandChildUserGroups}
+          isAclEnabled={isAclEnabled}
+          onDelete={showDeleteModal}
+          userGroupRelations={childUserGroupRelations}
+        />
+        <UserGroupDeleteModal
+          userGroups={childUserGroups}
+          deleteUserGroup={selectedUserGroup}
+          onDelete={deleteChildUserGroupById}
+          isShow={isDeleteModalShown}
+          onShow={showDeleteModal}
+          onHide={hideDeleteModal}
+        />
+      </>
+
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
         <UserGroupPageList />
       </div>
     </div>
   );
-
 };
 
-
-/**
- * Wrapper component for using unstated
- */
-const UserGroupDetailPageWrapper = withUnstatedContainers(UserGroupDetailPage, [AppContainer]);
-
-export default UserGroupDetailPageWrapper;
+export default UserGroupDetailPage;
