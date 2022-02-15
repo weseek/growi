@@ -745,7 +745,7 @@ class PageService {
         /*
          * Sub Operation
          */
-        await this.duplicateDescendantsSubOperation(page, newPagePath, user, duplicatedTarget._id, nDuplicatedPages);
+        await this.duplicateDescendantsSubOperation(page, newPagePath, user, duplicatedTarget, nDuplicatedPages);
       })();
     }
 
@@ -754,7 +754,7 @@ class PageService {
     return result;
   }
 
-  async duplicateDescendantsSubOperation(page, newPagePath: string, user, duplicatedTargetId: ObjectIdLike, nDuplicatedPages: number): Promise<void> {
+  async duplicateDescendantsSubOperation(page, newPagePath: string, user, duplicatedTarget, nDuplicatedPages: number): Promise<void> {
     // normalize parent of descendant pages
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
@@ -767,7 +767,7 @@ class PageService {
         throw err;
       }
     }
-    await this.updateDescendantCountOfAncestors(duplicatedTargetId, nDuplicatedPages, false);
+    await this.updateDescendantCountOfAncestors(duplicatedTarget._id, nDuplicatedPages, false);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {

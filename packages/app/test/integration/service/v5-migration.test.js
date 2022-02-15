@@ -62,11 +62,10 @@ describe('V5 page migration', () => {
         pages = [...additionalPages, ...pages];
       }
 
-      const nroot = await Page.count({ path: '/' });
-      expect(nroot).toBe(1);
+      const rootPage = await Page.findOne({ path: '/' });
 
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPages(pages, testUser1);
+      await crowi.pageService.normalizeParentRecursivelyByPages([rootPage], testUser1);
 
       const migratedPages = await Page.find({
         path: {
