@@ -22,13 +22,11 @@ import {
 import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxSelectableUserGroups,
 } from '~/stores/user-group';
+import { useIsAclEnabled } from '~/stores/context';
 
 const UserGroupDetailPage: FC = () => {
   const { t } = useTranslation();
-
   const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
-  const isAclEnabledElem = document.getElementById('is-acl-enabled');
-  const isAclEnabled = isAclEnabledElem?.getAttribute('data-is-acl-enabled') === 'true';
 
   /*
    * State (from AdminUserGroupDetailContainer)
@@ -56,6 +54,8 @@ const UserGroupDetailPage: FC = () => {
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableUserGroups, mutate: mutateSelectableUserGroups } = useSWRxSelectableUserGroups(userGroup._id);
+
+  const { data: isAclEnabled } = useIsAclEnabled();
 
   /*
    * Function

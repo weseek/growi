@@ -131,6 +131,10 @@ export const useNotFoundTargetPathOrId = (initialData?: Nullable<NotFoundTargetP
   return useStaticSWR<Nullable<NotFoundTargetPathOrId>, Error>('notFoundTargetPathOrId', initialData);
 };
 
+export const useIsAclEnabled = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('isAclEnabled', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts

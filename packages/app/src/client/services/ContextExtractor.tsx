@@ -6,7 +6,7 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useIsAclEnabled,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -29,6 +29,11 @@ const ContextExtractorOnce: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * AdminSettings from DOM
+   */
+  const adminSettings = JSON.parse(document.getElementById('growi-context-hydrate')?.textContent || jsonNull);
 
   /*
    * UserUISettings from DOM
@@ -83,6 +88,9 @@ const ContextExtractorOnce: FC = () => {
    */
   // App
   useCurrentUser(currentUser);
+
+  // AppSetting
+  useIsAclEnabled(adminSettings?.isAclEnabled);
 
   // UserUISettings
   usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
