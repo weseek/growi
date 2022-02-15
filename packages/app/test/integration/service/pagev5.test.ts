@@ -860,12 +860,13 @@ describe('PageService page operations with only public pages', () => {
       });
     });
     test('Should completely delete trashed page', async() => {
-      const v5PageForDeleteCompletely5 = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
-      expectAllToBeTruthy([v5PageForDeleteCompletely5]);
+      const page = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
+      const revision = await Revision.findOne({ pageId: page._id });
+      expectAllToBeTruthy([page, revision]);
 
-      await deleteCompletely(v5PageForDeleteCompletely5, dummyUser1, {}, false);
-      const deltedPage = await Page.findOne({ _id: v5PageForDeleteCompletely5._id });
-      const deltedRevision = await Revision.findOne({ pageId: v5PageForDeleteCompletely5._id });
+      await deleteCompletely(page, dummyUser1, {}, false);
+      const deltedPage = await Page.findOne({ _id: page._id });
+      const deltedRevision = await Revision.findOne({ pageId: page._id });
 
       expect(deltedPage).toBeNull();
       expect(deltedRevision).toBeNull();
