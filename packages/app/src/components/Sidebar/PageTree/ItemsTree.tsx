@@ -64,7 +64,7 @@ const renderByInitialNode = (
     targetPathOrId?: string,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 ): JSX.Element => {
 
   return (
@@ -160,8 +160,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     }
   };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
-    openDeleteModal([pageToDelete], onDeletedHandler);
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
   };
 
   if (error1 != null || error2 != null) {
