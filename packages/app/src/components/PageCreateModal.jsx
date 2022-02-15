@@ -165,7 +165,12 @@ const PageCreateModal = (props) => {
             </div>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
-              <button type="button" className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3" onClick={createTodayPage}>
+              <button
+                type="button"
+                data-testid="btn-create-memo"
+                className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
+                onClick={createTodayPage}
+              >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
             </div>
@@ -179,7 +184,7 @@ const PageCreateModal = (props) => {
 
   function renderInputPageForm() {
     return (
-      <div className="row">
+      <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
           <h3 className="grw-modal-head pb-2">{t('Create under')}</h3>
 
@@ -213,9 +218,9 @@ const PageCreateModal = (props) => {
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
               <button
                 type="button"
+                data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3"
                 onClick={createInputPage}
-                data-testid="createPageBtn"
               >
                 <i className="icon-fw icon-doc"></i>{t('Create')}
               </button>
@@ -280,6 +285,7 @@ const PageCreateModal = (props) => {
       size="lg"
       isOpen={isOpened}
       toggle={() => closeCreateModal()}
+      data-testid="page-create-modal"
       className="grw-create-page"
       autoFocus={false}
     >

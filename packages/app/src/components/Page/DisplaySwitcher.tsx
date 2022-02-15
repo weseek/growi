@@ -112,7 +112,7 @@ const DisplaySwitcher = (): JSX.Element => {
         </TabPane>
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
-            <div id="page-editor">
+            <div data-testid="page-editor" id="page-editor">
               <Editor />
             </div>
           </TabPane>
