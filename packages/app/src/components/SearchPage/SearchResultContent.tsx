@@ -138,6 +138,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -159,6 +160,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           page={page}
           controls={ControlComponents}
           isCompactMode
+          additionalClasses={['px-4']}
         />
       </div>
       <div className="search-result-content-body-container" ref={scrollElementRef}>

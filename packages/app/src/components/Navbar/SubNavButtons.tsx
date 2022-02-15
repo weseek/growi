@@ -154,7 +154,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
         onBookMarkClicked={bookmarkClickHandler}
       />
-      <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+      { !isCompactMode && (
+        <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+      ) }
       { showPageControlDropdown && (
         <PageItemControl
           pageId={pageId}
