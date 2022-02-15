@@ -354,9 +354,16 @@ module.exports = function(crowi, app) {
       next();
     }
 
+    // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return next();
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
+
     }
 
     const renderVars = {};
@@ -419,8 +426,13 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      req.pagePath = page.path;
-      return _notFound(req, res);
+      // redirect to page (path) url
+      const url = new URL('https://dummy.origin');
+      url.pathname = page.path;
+      Object.entries(req.query).forEach(([key, value], i) => {
+        url.searchParams.append(key, value);
+      });
+      return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
     const { path } = page; // this must exist
