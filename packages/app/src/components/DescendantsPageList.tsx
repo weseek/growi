@@ -3,7 +3,7 @@ import {
   IPageHasId, IPageWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import { useCurrentPagePath, useIsGuestUser, useIsSharedUser } from '~/stores/context';
 
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
 
@@ -19,7 +19,7 @@ const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
   return { pageData: page };
 };
 
-const DescendantsPageList = (props: Props): JSX.Element => {
+export const DescendantsPageList = (props: Props): JSX.Element => {
   const { path } = props;
 
   const [activePage, setActivePage] = useState(1);
@@ -86,21 +86,33 @@ const DescendantsPageList = (props: Props): JSX.Element => {
     );
   }
 
+  const showPager = pagingResult.items.length > pagingResult.limit;
+
   return (
     <>
       <PageList pages={pagingResultWithMeta} isEnableActions={!isGuestUser} />
 
-      <div className="my-4">
-        <PaginationWrapper
-          activePage={activePage}
-          changePage={setPageNumber}
-          totalItemsCount={pagingResult.totalCount}
-          pagingLimit={pagingResult.limit}
-          align="center"
-        />
-      </div>
+      { showPager && (
+        <div className="my-4">
+          <PaginationWrapper
+            activePage={activePage}
+            changePage={setPageNumber}
+            totalItemsCount={pagingResult.totalCount}
+            pagingLimit={pagingResult.limit}
+            align="center"
+          />
+        </div>
+      ) }
     </>
   );
 };
 
-export default DescendantsPageList;
+export const DescendantsPageListForCurrentPath = (): JSX.Element => {
+
+  const { data: path } = useCurrentPagePath();
+
+  return path != null
+    ? <DescendantsPageList path={path} />
+    : <></>;
+
+};
