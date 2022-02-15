@@ -555,14 +555,17 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedGrandchildPage.status).toBe(Page.STATUS_DELETED);
       expect(deletedGrandchildPage.parent).toBeNull();
     });
-    test('Should delete page tags', async() => {
-      const v5PageForDelete6 = await Page.findOne({ path: '/v5_PageForDelete6' });
+    test('Should delete page tag relation', async() => {
+      const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
       const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
+      const pageRelation1 = await PageTagRelation.findOne({ name: tag1.name });
+      const pageRelation2 = await PageTagRelation.findOne({ name: tag2.name });
+      expectAllToBeTruthy([page, tag1, tag2, pageRelation1, pageRelation2]);
 
-      const deletedPage = await deletePage(v5PageForDelete6, dummyUser1, {}, false);
-      const deletedTagRelation1 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tag1._id });
-      const deletedTagRelation2 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tag2._id });
+      const deletedPage = await deletePage(page, dummyUser1, {}, false);
+      const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
+      const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
 
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
       expect(deletedTagRelation1.isPageTrashed).toBe(true);
