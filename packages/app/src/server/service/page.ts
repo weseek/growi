@@ -1439,15 +1439,15 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  async deleteMultiplePages(pagesToDelete, user, isCompletely: boolean, isRecursively: boolean): Promise<void> {
+  async deleteMultiplePages(pagesToDelete, user, options): Promise<void> {
+    const { isRecursively, isCompletely } = options;
+
     if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     // omit duplicate paths if isRecursively true, omit empty pages if isRecursively false
     const pages = isRecursively ? omitDuplicateAreaPageFromPages(pagesToDelete) : pagesToDelete.filter(p => !p.isEmpty);
-
-    // TODO: insertMany PageOperationBlock if isRecursively true
 
     if (isCompletely) {
       for await (const page of pages) {
@@ -1519,6 +1519,7 @@ class PageService {
       throw Error(`This page cannot be reverted since a page with path "${originPage.path}" already exists. Rename the existing pages first.`);
     }
 
+    // 2. Revert target
     const parent = await Page.getParentAndFillAncestors(newPath);
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
@@ -1811,7 +1812,17 @@ class PageService {
     await inAppNotificationService.emitSocketIo(targetUsers);
   }
 
-  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user): Promise<void> {
+  async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
+    if (isRecursively) {
+      const Page = mongoose.model('Page') as unknown as PageModel;
+      const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
+
+      // DO NOT await !!
+      this.normalizeParentRecursivelyByPageIds(pages, user);
+
+      return;
+    }
+
     for await (const pageId of pageIds) {
       try {
         const normalizedPage = await this.normalizeParentByPageId(pageId, user);
@@ -1830,16 +1841,12 @@ class PageService {
     }
   }
 
-  private async normalizeParentByPageId(pageId: ObjectIdLike, user) {
+  private async normalizeParentByPageId(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const target = await Page.findByIdAndViewerToEdit(pageId, user);
-    if (target == null) {
-      throw Error('target does not exist or forbidden');
-    }
 
     const {
       path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
-    } = target;
+    } = page;
 
     // check if any page exists at target path already
     const existingPage = await Page.findOne({ path });
@@ -1850,7 +1857,7 @@ class PageService {
     /*
      * UserGroup & Owner validation
      */
-    if (target.grant !== Page.GRANT_RESTRICTED) {
+    if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
         const shouldCheckDescendants = true;
@@ -1873,35 +1880,35 @@ class PageService {
 
     // replace if empty page exists
     if (existingPage != null && existingPage.isEmpty) {
-      await Page.replaceTargetWithPage(existingPage, target, true);
-      updatedPage = await Page.findById(pageId);
+      await Page.replaceTargetWithPage(existingPage, page, true);
+      updatedPage = await Page.findById(page._id);
     }
     else {
       // getParentAndFillAncestors
-      const parent = await Page.getParentAndFillAncestors(target.path);
-      updatedPage = await Page.findOneAndUpdate({ _id: pageId }, { parent: parent._id }, { new: true });
+      const parent = await Page.getParentAndFillAncestors(page.path);
+      updatedPage = await Page.findOneAndUpdate({ _id: page._id }, { parent: parent._id }, { new: true });
     }
 
     return updatedPage;
   }
 
-  // TODO: this should be resumable
-  async normalizeParentRecursivelyByPageIds(pageIds, user) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    if (pageIds == null || pageIds.length === 0) {
+  async normalizeParentRecursivelyByPageIds(pages, user): Promise<void> {
+    /*
+     * Main Operation
+     */
+    if (pages == null || pages.length === 0) {
       logger.error('pageIds is null or 0 length.');
       return;
     }
 
-    if (pageIds.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
+    if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     let normalizablePages;
     let nonNormalizablePages;
     try {
-      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pageIds);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pages);
     }
     catch (err) {
       throw err;
@@ -1917,7 +1924,16 @@ class PageService {
       // socket.emit('normalizeParentRecursivelyByPageIds', { error: err.message }); TODO: use socket to tell user
     }
 
-    const pagesToNormalize = omitDuplicateAreaPageFromPages(normalizablePages);
+    /*
+     * Sub Operation
+     */
+    await this.normalizeParentRecursivelyByPageIdsSubOperation(normalizablePages, user);
+  }
+
+  async normalizeParentRecursivelyByPageIdsSubOperation(pages, user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
     const pageIdsToNormalize = pagesToNormalize.map(p => p._id);
     const pathsToNormalize = Array.from(new Set(pagesToNormalize.map(p => p.path)));
 

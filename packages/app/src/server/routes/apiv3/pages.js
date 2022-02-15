@@ -765,7 +765,8 @@ module.exports = (crowi) => {
     }
 
     // run delete
-    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+    const options = { isCompletely, isRecursively };
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
@@ -795,17 +796,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
-    if (isRecursively) {
-      // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
+    try {
+      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
     }
-    else {
-      try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-      }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
     return res.apiv3({});
