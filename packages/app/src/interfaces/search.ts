@@ -1,11 +1,5 @@
 import { IPageInfoAll, IPageWithMeta } from './page';
 
-export enum CheckboxType {
-  NONE_CHECKED = 'noneChecked',
-  INDETERMINATE = 'indeterminate',
-  ALL_CHECKED = 'allChecked',
-}
-
 export type IPageSearchMeta = {
   bookmarkCount?: number,
   elasticSearchResult?: {
@@ -19,17 +13,19 @@ export const isIPageSearchMeta = (meta: IPageInfoAll | (IPageInfoAll & IPageSear
   return meta != null && 'elasticSearchResult' in meta;
 };
 
-export type IFormattedSearchResult = {
-  data: IPageWithMeta<IPageSearchMeta>[]
-
-  totalCount: number
-
-  meta: {
-    total: number
-    took?: number
-    count?: number
-  }
+export type ISearchResult<T > = ISearchResultMeta & {
+  data: T[],
 }
+
+export type ISearchResultMeta = {
+  meta: {
+    took?: number
+    total: number
+    hitsCount: number
+  },
+}
+
+export type IFormattedSearchResult = ISearchResult<IPageWithMeta<IPageSearchMeta>>;
 
 export const SORT_AXIS = {
   RELATION_SCORE: 'relationScore',

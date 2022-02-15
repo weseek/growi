@@ -26,23 +26,16 @@ const deleteIconAndKey = {
   },
 };
 
-type Props = {
-  isDeleteCompletelyModal: boolean,
-  isAbleToDeleteCompletely: boolean,
-  onClose?: () => void,
-}
-
-const PageDeleteModal: FC<Props> = (props: Props) => {
-  const { t } = useTranslation('');
-  const {
-    isDeleteCompletelyModal, isAbleToDeleteCompletely,
-  } = props;
+const PageDeleteModal: FC = () => {
+  const { t } = useTranslation();
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
   const pagesHoge = deleteModalData?.pages ?? false;
   const firstPagePath = pagesHoge[0]?.path ?? '';
+  const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely ?? false;
+  const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal ?? false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -154,7 +147,6 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
   // DeleteCompletely is currently disabled
   // TODO1 : Retrive isAbleToDeleteCompleltly state everywhere in the system via swr.
   // Story: https://redmine.weseek.co.jp/issues/82222
-
   // TODO2 : use toaster
   // TASK : https://redmine.weseek.co.jp/issues/82299
   function renderDeleteCompletelyForm() {
@@ -165,13 +157,10 @@ const PageDeleteModal: FC<Props> = (props: Props) => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          // disabled={!isAbleToDeleteCompletely}
-          // disabled // Todo: will be implemented at https://redmine.weseek.co.jp/issues/82222
+          disabled={!isAbleToDeleteCompletely}
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
-        {/* ↓↓ undo this comment out at https://redmine.weseek.co.jp/issues/82222 ↓↓ */}
-        {/* <label className="custom-control-label text-danger" htmlFor="deleteCompletely"> */}
         <label className="custom-control-label" htmlFor="deleteCompletely">
           { t('modal_delete.delete_completely')}
           <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>

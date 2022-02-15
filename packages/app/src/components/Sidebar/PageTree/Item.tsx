@@ -13,7 +13,9 @@ import { pathUtils, pagePathUtils } from '@growi/core';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
+import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { useShareLinkId } from '~/stores/context';
 import { IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -29,7 +31,7 @@ interface ItemProps {
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
 }
 
 // Utility to mark target
@@ -76,6 +78,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { page, children } = itemNode;
 
   const [pageTitle, setPageTitle] = useState(page.path);
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: pageInfo } = useSWRxPageInfo(page._id ?? null, shareLinkId);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -237,7 +241,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-  const onClickDeleteButton = useCallback(async(_pageId: string): Promise<void> => {
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
       return;
     }
@@ -253,9 +257,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       revisionId: revisionId as string,
       path,
     };
+    const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete);
-  }, [page, onClickDeleteMenuItem]);
+    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely);
+  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -382,7 +387,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickDeleteMenuItem={onClickDeleteButton}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
