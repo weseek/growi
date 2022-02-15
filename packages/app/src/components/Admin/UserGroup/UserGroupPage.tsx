@@ -15,6 +15,7 @@ import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
 import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { useIsAclEnabled } from '~/stores/context';
 
 type Props = {
   appContainer: AppContainer,
@@ -23,7 +24,8 @@ type Props = {
 const UserGroupPage: FC<Props> = (props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
-  const { isAclEnabled } = props.appContainer.config;
+
+  const { data: isAclEnabled } = useIsAclEnabled();
 
   /*
    * Fetch

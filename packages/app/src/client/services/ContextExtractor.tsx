@@ -31,9 +31,9 @@ const ContextExtractorOnce: FC = () => {
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
 
   /*
-   * AdminSettings from DOM
+   * Settings from context-hydrate DOM
    */
-  const adminSettings = JSON.parse(document.getElementById('growi-context-hydrate')?.textContent || jsonNull);
+  const configByContextHydrate = JSON.parse(document.getElementById('growi-context-hydrate')?.textContent || jsonNull);
 
   /*
    * UserUISettings from DOM
@@ -89,15 +89,16 @@ const ContextExtractorOnce: FC = () => {
   // App
   useCurrentUser(currentUser);
 
-  // AppSetting
-  useIsAclEnabled(adminSettings?.isAclEnabled);
-
   // UserUISettings
   usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
   usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+
+  // hydrated config
+  useIsAclEnabled(configByContextHydrate.isAclEnabled);
+
 
   // Page
   useCurrentCreatedAt(createdAt);
