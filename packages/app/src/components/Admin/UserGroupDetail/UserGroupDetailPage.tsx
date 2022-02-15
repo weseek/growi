@@ -206,7 +206,7 @@ const UserGroupDetailPage: FC = () => {
         <UserGroupTable
           userGroups={childUserGroups}
           childUserGroups={grandChildUserGroups}
-          isAclEnabled={isAclEnabled}
+          isAclEnabled={isAclEnabled ?? false}
           onDelete={showDeleteModal}
           userGroupRelations={childUserGroupRelations}
         />

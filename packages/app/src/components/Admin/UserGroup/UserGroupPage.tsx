@@ -134,7 +134,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           headerLabel={t('admin:user_group_management.group_list')}
           userGroups={userGroups}
           childUserGroups={childUserGroups}
-          isAclEnabled={isAclEnabled}
+          isAclEnabled={isAclEnabled ?? false}
           onDelete={showDeleteModal}
           userGroupRelations={userGroupRelations}
         />

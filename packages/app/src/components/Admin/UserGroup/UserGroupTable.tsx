@@ -80,7 +80,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     }
 
     props.onDelete(group);
-  }, [props.userGroups, props.onDelete]);
+  }, [props]);
 
   /*
    * useEffect
