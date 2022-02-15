@@ -1332,13 +1332,13 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    await this.deleteCompletelyOperation(ids, paths);
+
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page);
     }
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);

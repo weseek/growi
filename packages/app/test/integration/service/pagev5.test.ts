@@ -64,6 +64,9 @@ describe('PageService page operations with only public pages', () => {
   let v5PageForDeleteCompletely3;
   let v5PageForDeleteCompletely4;
   let v5PageForDeleteCompletely5;
+  let v5PageForDeleteCompletely6;
+  let v5PageForDeleteCompletely7;
+  let v5PageForDeleteCompletely8;
 
   let tagForDeleteCompletely1;
   let tagForDeleteCompletely2;
@@ -363,6 +366,9 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
     const pageIdForDeleteCompletely3 = new mongoose.Types.ObjectId();
     const pageIdForDeleteCompletely4 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely5 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely6 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely7 = new mongoose.Types.ObjectId();
 
     const revisionIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
     const revisionIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
@@ -412,6 +418,33 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        status: Page.STATUS_DELETED,
+      },
+      {
+        _id: pageIdForDeleteCompletely5,
+        path: '/v5_PageForDeleteCompletely6',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDeleteCompletely6,
+        path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDeleteCompletely5,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDeleteCompletely7,
+        path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDeleteCompletely6,
         status: Page.STATUS_PUBLISHED,
       },
     ]);
@@ -421,6 +454,9 @@ describe('PageService page operations with only public pages', () => {
     v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
     v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
     v5PageForDeleteCompletely5 = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
+    v5PageForDeleteCompletely6 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
+    v5PageForDeleteCompletely7 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
+    v5PageForDeleteCompletely8 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
 
     await Revision.insertMany([
       {
@@ -817,6 +853,18 @@ describe('PageService page operations with only public pages', () => {
 
       expect(deltedPage).toBeNull();
       expect(deltedRevision).toBeNull();
+    });
+    test('Should completely deleting page in the middle results in empty page', async() => {
+      await deleteCompletely(v5PageForDeleteCompletely7, dummyUser1, {}, false);
+      const deletedPage = await Page.findOne({ path: v5PageForDeleteCompletely7.path });
+      const childOfDeletedPage = await Page.findOne({ parent: deletedPage._id });
+
+      expect(deletedPage).toBeTruthy();
+      expect(deletedPage._id).not.toStrictEqual(v5PageForDeleteCompletely7._id);
+      expect(deletedPage.isEmpty).toBe(true);
+      expect(deletedPage.parent).toStrictEqual(v5PageForDeleteCompletely6._id);
+      expect(childOfDeletedPage._id).toStrictEqual(v5PageForDeleteCompletely8._id);
+
     });
   });
 
