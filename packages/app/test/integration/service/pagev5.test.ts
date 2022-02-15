@@ -672,21 +672,22 @@ describe('PageService page operations with only public pages', () => {
     };
 
     test('Should duplicate single page', async() => {
-      const v5PageForDuplicate1 = await Page.findOne({ path: '/v5_PageForDuplicate1' });
-      expectAllToBeTruthy([v5PageForDuplicate1]);
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate1' });
+      expectAllToBeTruthy([page]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate1';
-      const duplicatedPage = await duplicate(v5PageForDuplicate1, newPagePath, dummyUser1, false);
+      const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
-      const baseRevision = await Revision.findOne({ pageId: v5PageForDuplicate1._id });
+      const baseRevision = await Revision.findOne({ pageId: page._id });
 
       // new path
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
-      expect(duplicatedPage._id).not.toStrictEqual(v5PageForDuplicate1._id);
+      expect(duplicatedPage._id).not.toStrictEqual(page._id);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
       expect(duplicatedRevision.body).toEqual(baseRevision.body);
     });
+
     test('Should NOT duplicate single empty page', async() => {
       const v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
       expectAllToBeTruthy([v5PageForDuplicate2]);
