@@ -23,16 +23,6 @@ describe('PageService page operations with only public pages', () => {
   let xssSpy;
 
   let rootPage;
-  // parents
-  let parentForRename1;
-  let parentForRename2;
-  let parentForRename3;
-  let parentForRename4;
-  let parentForRename5;
-  let parentForRename6;
-  let parentForRename7;
-  let parentForRename8;
-  // children
   let childForRename1;
   let childForRename2;
   let childForRename3;
@@ -198,15 +188,6 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
-    // Find pages as Parent
-    parentForRename1 = await Page.findOne({ path: '/v5_ParentForRename1' });
-    parentForRename2 = await Page.findOne({ path: '/v5_ParentForRename2' });
-    parentForRename3 = await Page.findOne({ path: '/v5_ParentForRename3' });
-    parentForRename4 = await Page.findOne({ path: '/v5_ParentForRename4' });
-    parentForRename5 = await Page.findOne({ path: '/v5_ParentForRename5' });
-    parentForRename6 = await Page.findOne({ path: '/v5_ParentForRename6' });
-    parentForRename7 = await Page.findOne({ path: '/v5_ParentForRename7' });
-    parentForRename8 = await Page.findOne({ path: '/v5_ParentForRename8' });
     // Find pages as Child
     childForRename1 = await Page.findOne({ path: '/v5_ChildForRename1' });
     childForRename2 = await Page.findOne({ path: '/v5_ChildForRename2' });
@@ -273,6 +254,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should rename/move to under non-empty page', async() => {
+      const parentForRename1 = await Page.findOne({ path: '/v5_ParentForRename1' });
       // rename target page
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childForRename1, newPath, dummyUser1, {});
@@ -284,6 +266,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should rename/move to under empty page', async() => {
+      const parentForRename2 = await Page.findOne({ path: '/v5_ParentForRename2' });
       // rename target page
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
       const renamedPage = await renamePage(childForRename2, newPath, dummyUser1, {});
@@ -295,6 +278,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should rename/move with option updateMetadata: true', async() => {
+      const parentForRename3 = await Page.findOne({ path: '/v5_ParentForRename3' });
       // rename target page
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
       const oldUdpateAt = childForRename3.updatedAt;
@@ -311,6 +295,7 @@ describe('PageService page operations with only public pages', () => {
     // uncomment the next test when working on 88097
     // ******************************************
     // test('Should move with option createRedirectPage: true', async() => {
+    // const parentForRename4 = await Page.findOne({ path: '/v5_ParentForRename4' });
     //   // rename target page
     //   const newPath = '/v5_ParentForRename4/renamedChildForRename4';
     //   const renamedPage = await renamePage(childForRename4, newPath, dummyUser2, { createRedirectPage: true });
@@ -323,6 +308,7 @@ describe('PageService page operations with only public pages', () => {
     // });
 
     test('Should rename/move with descendants', async() => {
+      const parentForRename5 = await Page.findOne({ path: '/v5_ParentForRename5' });
       // rename target page
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childForRename5, newPath, dummyUser1, {});
@@ -339,6 +325,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should rename/move with same grant', async() => {
+      const parentForRename6 = await Page.findOne({ path: '/v5_ParentForRename6' });
       // rename target page
       const newPath = '/v5_ParentForRename6/renamedChildForRename6';
       expect(childForRename6.grant).toBe(Page.GRANT_RESTRICTED);
@@ -351,6 +338,7 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should rename/move empty page', async() => {
+      const parentForRename7 = await Page.findOne({ path: '/v5_ParentForRename7' });
       // rename target page
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childForRename7, newPath, dummyUser1, {});
@@ -366,6 +354,7 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
     });
     test('Should NOT rename/move with existing path', async() => {
+      const parentForRename8 = await Page.findOne({ path: '/v5_ParentForRename8' });
       // rename target page
       const newPath = '/v5_ParentForRename9';
       let isThrown;
