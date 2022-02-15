@@ -57,7 +57,7 @@ describe('V5 page migration', () => {
         },
       ]);
 
-      if (await Page.exists({ path: '/' })) {
+      if (!await Page.exists({ path: '/' })) {
         const additionalPages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
         pages = [...additionalPages, ...pages];
       }
