@@ -149,10 +149,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init() {
+  async init(): void {
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
-      return this.rebuildIndex();
+      try {
+        await this.rebuildIndex();
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
     }
     return normalizeIndices;
   }
@@ -284,7 +290,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+      logger.error('An error occured while \'rebuildIndex\', normalize indices anyway.', error);
+      logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -292,6 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
+      logger.warn('Normalize indices anyway.');
       await this.normalizeIndices();
     }
 

@@ -34,7 +34,12 @@ export class InstallerService {
       return;
     }
 
-    await searchService.rebuildIndex();
+    try {
+      await searchService.rebuildIndex();
+    }
+    catch (err) {
+      logger.error('Rebuild index failed', err);
+    }
   }
 
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
