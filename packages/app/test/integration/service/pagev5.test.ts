@@ -864,7 +864,7 @@ describe('PageService page operations with only public pages', () => {
 
       await deleteCompletely(page, dummyUser1, {}, false);
       const deltedPage = await Page.findOne({ _id: page._id });
-      const deltedRevision = await Revision.findOne({ pageId: page._id });
+      const deltedRevision = await Revision.findOne({ _id: revision._id });
 
       expect(deltedPage).toBeNull();
       expect(deltedRevision).toBeNull();
