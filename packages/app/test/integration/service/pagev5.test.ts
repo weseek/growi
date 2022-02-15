@@ -677,6 +677,7 @@ describe('PageService page operations with only public pages', () => {
 
       const newPagePath = '/duplicatedv5PageForDuplicate1';
       const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
+
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
       const baseRevision = await Revision.findOne({ pageId: page._id });
 
@@ -707,14 +708,14 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should duplicate multiple pages', async() => {
-      const v5PageForDuplicate3 = await Page.findOne({ path: '/v5_PageForDuplicate3' });
-      expectAllToBeTruthy([v5PageForDuplicate3]);
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate3' });
+      expectAllToBeTruthy([page]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate3';
-      const duplicatedPage = await duplicate(v5PageForDuplicate3, newPagePath, dummyUser1, true);
-      const childrenForBasePage = await Page.find({ parent: v5PageForDuplicate3._id }).populate({ path: 'revision', model: 'Revision' });
-      const childrenForDuplicatedPage = await Page.find({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, true);
 
+      const childrenForBasePage = await Page.find({ parent: page._id }).populate({ path: 'revision', model: 'Revision' });
+      const childrenForDuplicatedPage = await Page.find({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
       const revisionBodyOfChildrenForBasePage = childrenForBasePage.map(p => p.revision.body);
       const revisionBodyOfChildrenForDuplicatedPage = childrenForDuplicatedPage.map(p => p.revision.body);
 
