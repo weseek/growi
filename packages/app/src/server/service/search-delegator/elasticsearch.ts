@@ -149,7 +149,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init(): void {
+  async init(): Promise<void> {
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
       try {
