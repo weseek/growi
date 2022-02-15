@@ -832,7 +832,7 @@ describe('PageService page operations with only public pages', () => {
       deletedRevisions.forEach((revision) => {
         expect(revision).toBeNull();
       });
-      // tag should exist
+      // tag should NOT be null
       tags.forEach((tag) => {
         expect(tag).toBeTruthy();
       });
