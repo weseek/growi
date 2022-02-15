@@ -473,7 +473,9 @@ describe('PageService page operations with only public pages', () => {
 
       // restores the original implementation
       mockedResumableRevertDeletedDescendants.mockRestore();
-      await crowi.pageService.resumableRevertDeletedDescendants(...argsForResumableRevertDeletedDescendants);
+      if (isRecursively) {
+        await crowi.pageService.resumableRevertDeletedDescendants(...argsForResumableRevertDeletedDescendants);
+      }
 
       return revertedPage;
 
@@ -498,30 +500,30 @@ describe('PageService page operations with only public pages', () => {
 
     });
 
-    // test('revert multiple deleted page (has non existent page in the middle)', async() => {
-    //   const deletedPage1 = await Page.findOne({ path: '/trash/v5_revert2' });
-    //   const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4' });
-    //   const revision1 = await Revision.findOne({ pageId: deletedPage1._id });
-    //   const revision2 = await Revision.findOne({ pageId: deletedPage2._id });
+    test('revert multiple deleted page (has non existent page in the middle)', async() => {
+      const deletedPage1 = await Page.findOne({ path: '/trash/v5_revert2' });
+      const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4' });
+      const revision1 = await Revision.findOne({ pageId: deletedPage1._id });
+      const revision2 = await Revision.findOne({ pageId: deletedPage2._id });
 
-    //   expectAllToBeTruthy([deletedPage1, deletedPage2, revision1, revision2]);
-    //   expect(deletedPage1.status).toBe(Page.STATUS_DELETED);
-    //   expect(deletedPage2.status).toBe(Page.STATUS_DELETED);
+      expectAllToBeTruthy([deletedPage1, deletedPage2, revision1, revision2]);
+      expect(deletedPage1.status).toBe(Page.STATUS_DELETED);
+      expect(deletedPage2.status).toBe(Page.STATUS_DELETED);
 
-    //   const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
-    //   const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
-    //   const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
+      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
+      const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
+      const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
 
-    //   expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
-    //   expect(revertedPage1.path).toBe('/v5_revert2');
-    //   expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');
-    //   expect(newlyCreatedPage.parent).toBe(revertedPage1._id);
-    //   expect(revertedPage2.parent).toBe(newlyCreatedPage._id);
-    //   expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
-    //   expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
-    //   expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
+      expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
+      expect(revertedPage1.path).toBe('/v5_revert2');
+      expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');
+      expect(newlyCreatedPage.parent).toBe(revertedPage1._id);
+      expect(revertedPage2.parent).toBe(newlyCreatedPage._id);
+      expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
+      expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
+      expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
 
-    // });
+    });
   });
 
 });
