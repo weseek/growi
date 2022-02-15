@@ -7,6 +7,7 @@ import UserGroupTable from './UserGroupTable';
 import UserGroupForm from './UserGroupForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
@@ -148,4 +149,9 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   );
 };
 
-export default UserGroupPage;
+/**
+ * Wrapper component for using unstated
+ */
+const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
+
+export default UserGroupPageWrapper;
