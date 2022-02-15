@@ -153,7 +153,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   if (page == null) return <></>;
 
   return (
-    <div key={page._id} className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
+    <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
       <div className="grw-subnav-append-shadow-container">
         <GrowiSubNavigation
           page={page}

@@ -111,7 +111,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
   }, [mutateUserGroups]);
 
   return (
-    <Fragment>
+    <div data-testid="admin-user-groups">
       {
         isAclEnabled ? (
           <div className="mb-2">
@@ -147,7 +147,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           onHide={hideDeleteModal}
         />
       </>
-    </Fragment>
+    </div>
   );
 };
 

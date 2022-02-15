@@ -149,10 +149,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init() {
+  async init(): Promise<void> {
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
-      return this.rebuildIndex();
+      try {
+        await this.rebuildIndex();
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
     }
     return normalizeIndices;
   }
@@ -284,7 +290,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+      logger.error('An error occured while \'rebuildIndex\'.', error);
+      logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -292,6 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
+      logger.warn('Normalize indices anyway.');
       await this.normalizeIndices();
     }
 
@@ -325,8 +333,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
-    return this.client.indices.create({ index, body });
+    let mappings = this.isElasticsearchV6
+      ? require('^/resource/search/mappings-es6.json')
+      : require('^/resource/search/mappings-es7.json');
+
+    if (process.env.CI) {
+      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+    }
+
+    return this.client.indices.create({
+      index,
+      body: mappings,
+    });
   }
 
   /**

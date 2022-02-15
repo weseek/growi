@@ -46,7 +46,7 @@ function Customize(props) {
   }
 
   return (
-    <Fragment>
+    <div data-testid="admin-customize">
       <div className="mb-5">
         <CustomizeLayoutSetting appContainer={appContainer} />
       </div>
@@ -71,7 +71,7 @@ function Customize(props) {
       <div className="mb-5">
         <CustomizeScriptSetting />
       </div>
-    </Fragment>
+    </div>
   );
 }
 
