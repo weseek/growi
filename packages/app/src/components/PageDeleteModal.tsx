@@ -132,7 +132,6 @@ const PageDeleteModal: FC = () => {
           { t('modal_delete.delete_recursively') }
           <p className="form-text text-muted mt-0"> <code>{ firstPagePath }</code> { t('modal_delete.recursively') }</p>
         </label>
-
       </div>
     );
   }
