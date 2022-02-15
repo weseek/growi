@@ -321,14 +321,8 @@ describe('PageService page operations with only public pages', () => {
     const tagIdForDelete2 = new mongoose.Types.ObjectId();
 
     await Tag.insertMany([
-      {
-        _id: tagIdForDelete1,
-        name: 'TagForDelete1',
-      },
-      {
-        _id: tagIdForDelete2,
-        name: 'TagForDelete2',
-      },
+      { _id: tagIdForDelete1, name: 'TagForDelete1' },
+      { _id: tagIdForDelete2, name: 'TagForDelete2' },
     ]);
 
     await PageTagRelation.insertMany([
