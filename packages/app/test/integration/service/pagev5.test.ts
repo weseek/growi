@@ -64,13 +64,11 @@ describe('PageService page operations with only public pages', () => {
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
-    // delete root page if any created by other test file
-    const pages = await Page.find({ path: '/' });
-    if (pages.length > 0) {
-      await Page.deleteOne({ path: '/' });
+    rootPage = await Page.findOne({ path: '/' });
+    if (rootPage == null) {
+      const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
+      rootPage = pages[0];
     }
-    // then create new root page
-    rootPage = await Page.create('/', 'body', dummyUser1._id, {});
 
     /*
      * Rename
