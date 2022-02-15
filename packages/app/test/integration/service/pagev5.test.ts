@@ -474,8 +474,8 @@ describe('PageService page operations with only public pages', () => {
     const tagForDuplicate2 = new mongoose.Types.ObjectId();
 
     await Tag.insertMany([
-      { _id: tagForDuplicate1, name: 'Tag1' },
-      { _id: tagForDuplicate2, name: 'Tag2' },
+      { _id: tagForDuplicate1, name: 'duplicate_Tag1' },
+      { _id: tagForDuplicate2, name: 'duplicate_Tag2' },
     ]);
 
     await PageTagRelation.insertMany([
@@ -745,11 +745,16 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([duplicatedGrandchild]);
     });
     test('Should duplicate tags', async() => {
-      const v5PageForDuplicate5 = await Page.findOne({ path: '/v5_PageForDuplicate5' });
-      expectAllToBeTruthy([v5PageForDuplicate5]);
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate5' });
+      const tag1 = await Tag.findOne({ name: 'duplicate_Tag1' });
+      const tag2 = await Tag.findOne({ name:  'duplicate_Tag2' });
+      const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
+      const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
+
+      expectAllToBeTruthy([basePage, tag1, tag2, basePageTagRelation1, basePageTagRelation2]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate5';
-      const duplicatedPage = await duplicate(v5PageForDuplicate5, newPagePath, dummyUser1, false);
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
       const duplicatedTagRelations = await PageTagRelation.find({ relatedPage: duplicatedPage._id });
 
       expect(xssSpy).toHaveBeenCalled();
