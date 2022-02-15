@@ -152,7 +152,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
               appContainer={appContainer}
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
-              showPageControlDropdown={isGuestUser}
+              showPageControlDropdown={!isGuestUser}
             />
           )}
         </div>

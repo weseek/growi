@@ -2,17 +2,15 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TFunctionResult } from 'i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import Xss from '~/services/xss';
-import AppContainer from '~/client/services/AppContainer';
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 
-
 type Props = {
-  appContainer: AppContainer,
-
+  headerLabel?: TFunctionResult,
   userGroups: IUserGroupHasId[],
   userGroupRelations: IUserGroupRelation[],
   childUserGroups: IUserGroupHasId[],
@@ -82,7 +80,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     }
 
     props.onDelete(group);
-  }, [props.userGroups, props.onDelete]);
+  }, [props]);
 
   /*
    * useEffect
@@ -94,7 +92,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h2>{t('admin:user_group_management.group_list')}</h2>
+      <h2>{props.headerLabel}</h2>
 
       <table className="table table-bordered table-user-list">
         <thead>
@@ -102,7 +100,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('Child groups')}</th>
+            <th>{t('ChildUserGroup')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>
