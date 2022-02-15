@@ -56,6 +56,13 @@ describe('PageService page operations with only public pages', () => {
   let tagForDelete1;
   let tagForDelete2;
 
+  // pass unless the data is one of [false, 0, '', null, undefined, NaN]
+  const expectAllToBeTruthy = (dataList) => {
+    dataList.forEach((data) => {
+      expect(data).toBeTruthy();
+    });
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -764,6 +771,7 @@ describe('PageService page operations with only public pages', () => {
     };
 
     test('Should NOT completely delete root page', async() => {
+      expectAllToBeTruthy([rootPage]);
       let isThrown;
       try {
         await deleteCompletely(rootPage, dummyUser1, {}, false);
@@ -776,6 +784,8 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should completely delete single page', async() => {
       const v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
+      expectAllToBeTruthy([v5PageForDeleteCompletely1]);
+
       await deleteCompletely(v5PageForDeleteCompletely1, dummyUser1, {}, false);
       const deletedPage = await Page.findOne({ _id: v5PageForDeleteCompletely1._id });
 
@@ -787,6 +797,9 @@ describe('PageService page operations with only public pages', () => {
       const v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
       const tagForDeleteCompletely1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
       const tagForDeleteCompletely2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
+      expectAllToBeTruthy(
+        [v5PageForDeleteCompletely2, v5PageForDeleteCompletely3, v5PageForDeleteCompletely4, tagForDeleteCompletely1, tagForDeleteCompletely2],
+      );
 
       await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
       const deletedPages = await Page.find({ _id: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely3._id, v5PageForDeleteCompletely4._id] } });
@@ -833,6 +846,7 @@ describe('PageService page operations with only public pages', () => {
     });
     test('Should completely delete trashed page', async() => {
       const v5PageForDeleteCompletely5 = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
+      expectAllToBeTruthy([v5PageForDeleteCompletely5]);
 
       await deleteCompletely(v5PageForDeleteCompletely5, dummyUser1, {}, false);
       const deltedPage = await Page.findOne({ _id: v5PageForDeleteCompletely5._id });
@@ -845,6 +859,7 @@ describe('PageService page operations with only public pages', () => {
       const v5PageForDeleteCompletely6 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
       const v5PageForDeleteCompletely7 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
       const v5PageForDeleteCompletely8 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
+      expectAllToBeTruthy([v5PageForDeleteCompletely6, v5PageForDeleteCompletely7, v5PageForDeleteCompletely8]);
 
       await deleteCompletely(v5PageForDeleteCompletely7, dummyUser1, {}, false);
       const deletedPage = await Page.findOne({ path: v5PageForDeleteCompletely7.path });
