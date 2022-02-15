@@ -361,6 +361,7 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForDeleteCompletely5 = new mongoose.Types.ObjectId();
     const pageIdForDeleteCompletely6 = new mongoose.Types.ObjectId();
     const pageIdForDeleteCompletely7 = new mongoose.Types.ObjectId();
+    const pageIdForDeleteCompletely8 = new mongoose.Types.ObjectId();
 
     const revisionIdForDeleteCompletely1 = new mongoose.Types.ObjectId();
     const revisionIdForDeleteCompletely2 = new mongoose.Types.ObjectId();
@@ -369,6 +370,7 @@ describe('PageService page operations with only public pages', () => {
 
     await Page.insertMany([
       {
+        _id: pageIdForDeleteCompletely1,
         path: '/v5_PageForDeleteCompletely1',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -377,7 +379,7 @@ describe('PageService page operations with only public pages', () => {
         status: Page.STATUS_PUBLISHED,
       },
       {
-        _id: pageIdForDeleteCompletely1,
+        _id: pageIdForDeleteCompletely2,
         path: '/v5_PageForDeleteCompletely2',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -386,24 +388,24 @@ describe('PageService page operations with only public pages', () => {
         status: Page.STATUS_PUBLISHED,
       },
       {
-        _id: pageIdForDeleteCompletely2,
+        _id: pageIdForDeleteCompletely3,
         path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3',
         grant: Page.GRANT_PUBLIC,
-        parent: pageIdForDeleteCompletely1,
+        parent: pageIdForDeleteCompletely2,
         status: Page.STATUS_PUBLISHED,
         isEmpty: true,
       },
       {
-        _id: pageIdForDeleteCompletely3,
+        _id: pageIdForDeleteCompletely4,
         path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdForDeleteCompletely2,
+        parent: pageIdForDeleteCompletely3,
         status: Page.STATUS_PUBLISHED,
       },
       {
-        _id: pageIdForDeleteCompletely4,
+        _id: pageIdForDeleteCompletely5,
         path: '/trash/v5_PageForDeleteCompletely5',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -412,7 +414,7 @@ describe('PageService page operations with only public pages', () => {
         status: Page.STATUS_DELETED,
       },
       {
-        _id: pageIdForDeleteCompletely5,
+        _id: pageIdForDeleteCompletely6,
         path: '/v5_PageForDeleteCompletely6',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
@@ -421,21 +423,21 @@ describe('PageService page operations with only public pages', () => {
         status: Page.STATUS_PUBLISHED,
       },
       {
-        _id: pageIdForDeleteCompletely6,
+        _id: pageIdForDeleteCompletely7,
         path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdForDeleteCompletely5,
+        parent: pageIdForDeleteCompletely6,
         status: Page.STATUS_PUBLISHED,
       },
       {
-        _id: pageIdForDeleteCompletely7,
+        _id: pageIdForDeleteCompletely8,
         path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8',
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: pageIdForDeleteCompletely6,
+        parent: pageIdForDeleteCompletely7,
         status: Page.STATUS_PUBLISHED,
       },
     ]);
@@ -444,26 +446,26 @@ describe('PageService page operations with only public pages', () => {
       {
         _id: revisionIdForDeleteCompletely1,
         format: 'markdown',
-        pageId: pageIdForDeleteCompletely1,
-        body: 'pageIdForDeleteCompletely1',
+        pageId: pageIdForDeleteCompletely2,
+        body: 'pageIdForDeleteCompletely2',
       },
       {
         _id: revisionIdForDeleteCompletely2,
-        format: 'markdown',
-        pageId: pageIdForDeleteCompletely3,
-        body: 'pageIdForDeleteCompletely3',
-      },
-      {
-        _id: revisionIdForDeleteCompletely3,
         format: 'markdown',
         pageId: pageIdForDeleteCompletely4,
         body: 'pageIdForDeleteCompletely4',
       },
       {
+        _id: revisionIdForDeleteCompletely3,
+        format: 'markdown',
+        pageId: pageIdForDeleteCompletely5,
+        body: 'pageIdForDeleteCompletely5',
+      },
+      {
         _id: revisionIdForDeleteCompletely4,
         format: 'markdown',
-        pageId: pageIdForDeleteCompletely1,
-        body: 'comment_pageIdForDeleteCompletely2',
+        pageId: pageIdForDeleteCompletely2,
+        body: 'comment_pageIdForDeleteCompletely3',
       },
     ]);
 
@@ -475,17 +477,17 @@ describe('PageService page operations with only public pages', () => {
     ]);
 
     await PageTagRelation.insertMany([
-      { relatedPage: pageIdForDeleteCompletely1, relatedTag: tagForDeleteCompletely1 },
-      { relatedPage: pageIdForDeleteCompletely3, relatedTag: tagForDeleteCompletely2 },
+      { relatedPage: pageIdForDeleteCompletely2, relatedTag: tagForDeleteCompletely1 },
+      { relatedPage: pageIdForDeleteCompletely4, relatedTag: tagForDeleteCompletely2 },
     ]);
 
     await Bookmark.insertMany([
       {
-        page: pageIdForDeleteCompletely1,
+        page: pageIdForDeleteCompletely2,
         user: dummyUser1._id,
       },
       {
-        page: pageIdForDeleteCompletely1,
+        page: pageIdForDeleteCompletely2,
         user: dummyUser2._id,
       },
     ]);
@@ -494,7 +496,7 @@ describe('PageService page operations with only public pages', () => {
       {
         commentPosition: -1,
         isMarkdown: true,
-        page: pageIdForDeleteCompletely1,
+        page: pageIdForDeleteCompletely2,
         creator: dummyUser1._id,
         revision: revisionIdForDeleteCompletely4,
         comment: 'comment_ForDeleteCompletely4',
@@ -514,12 +516,12 @@ describe('PageService page operations with only public pages', () => {
 
     await ShareLink.insertMany([
       {
-        relatedPage: pageIdForDeleteCompletely1,
+        relatedPage: pageIdForDeleteCompletely2,
         expiredAt: null,
         description: 'sharlink_v5PageForDeleteCompletely2',
       },
       {
-        relatedPage: pageIdForDeleteCompletely3,
+        relatedPage: pageIdForDeleteCompletely4,
         expiredAt: null,
         description: 'sharlink_v5PageForDeleteCompletely4',
       },
