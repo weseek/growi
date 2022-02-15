@@ -135,6 +135,14 @@ export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Er
   return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
 };
 
+export const useIsSearchServiceConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSearchServiceConfigured', initialData);
+};
+
+export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts

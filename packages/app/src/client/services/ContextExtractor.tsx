@@ -6,7 +6,8 @@ import {
   useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useIsAclEnabled,
+  useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -98,6 +99,8 @@ const ContextExtractorOnce: FC = () => {
 
   // hydrated config
   useIsAclEnabled(configByContextHydrate.isAclEnabled);
+  useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
+  useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
 
 
   // Page
