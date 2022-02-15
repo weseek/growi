@@ -689,22 +689,23 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should NOT duplicate single empty page', async() => {
-      const v5PageForDuplicate2 = await Page.findOne({ path: '/v5_PageForDuplicate2' });
-      expectAllToBeTruthy([v5PageForDuplicate2]);
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate2' });
+      expectAllToBeTruthy([page]);
 
       let isThrown;
       let duplicatedPage;
       try {
         const newPagePath = '/duplicatedv5PageForDuplicate2';
-        duplicatedPage = await duplicate(v5PageForDuplicate2, newPagePath, dummyUser1, false);
+        duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
       }
       catch (err) {
         isThrown = true;
       }
 
-      expect(duplicatedPage).toBeFalsy();
+      expect(duplicatedPage).toBeUndefined();
       expect(isThrown).toBe(true);
     });
+
     test('Should duplicate multiple pages', async() => {
       const v5PageForDuplicate3 = await Page.findOne({ path: '/v5_PageForDuplicate3' });
       expectAllToBeTruthy([v5PageForDuplicate3]);
