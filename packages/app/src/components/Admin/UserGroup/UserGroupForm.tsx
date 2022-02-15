@@ -3,17 +3,12 @@ import { useTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { CustomWindow } from '~/interfaces/global';
 import Xss from '~/services/xss';
 
 type Props = {
   userGroup?: IUserGroupHasId,
-  successedMessage: TFunctionResult;
-  failedMessage: TFunctionResult;
   submitButtonLabel: TFunctionResult;
   onSubmit?: (userGroupData: Partial<IUserGroup>) => Promise<IUserGroupHasId | void>
 };
@@ -23,12 +18,14 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
+  const { userGroup, submitButtonLabel, onSubmit } = props;
+
   /*
    * State
    */
-  const [currentName, setName] = useState(props.userGroup != null ? props.userGroup.name : '');
-  const [currentDescription, setDescription] = useState(props.userGroup != null ? props.userGroup.description : '');
-  const [currentParent, setParent] = useState(props.userGroup != null ? props.userGroup.parent : '');
+  const [currentName, setName] = useState(userGroup != null ? userGroup.name : '');
+  const [currentDescription, setDescription] = useState(userGroup != null ? userGroup.description : '');
+  const [currentParent, setParent] = useState(userGroup != null ? userGroup.parent : '');
 
   /*
    * Function
@@ -44,19 +41,12 @@ const UserGroupForm: FC<Props> = (props: Props) => {
   const onSubmitHandler = useCallback(async(e) => {
     e.preventDefault(); // no reload
 
-    if (props.onSubmit == null) {
+    if (onSubmit == null) {
       return;
     }
 
-    try {
-      await props.onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
-
-      toastSuccess(props.successedMessage);
-    }
-    catch (err) {
-      toastError(props.failedMessage);
-    }
-  }, [currentName, currentDescription, currentParent, props.onSubmit, props.successedMessage, props.failedMessage]);
+    await onSubmit({ name: currentName, description: currentDescription, parent: currentParent });
+  }, [currentName, currentDescription, currentParent, onSubmit]);
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -65,10 +55,10 @@ const UserGroupForm: FC<Props> = (props: Props) => {
         <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
         {/* TODO 85062: improve style */}
         {
-          props.userGroup?.createdAt != null && (
+          userGroup?.createdAt != null && (
             <div className="form-group row">
               <p className="col-md-2 col-form-label">{t('Created')}</p>
-              <p className="col-md-4 my-auto">{dateFnsFormat(new Date(props.userGroup.createdAt), 'yyyy-MM-dd')}</p>
+              <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
             </div>
           )
         }
@@ -102,7 +92,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
         <div className="form-group row">
           <div className="offset-md-2 col-md-10">
             <button type="submit" className="btn btn-primary">
-              {props.submitButtonLabel}
+              {submitButtonLabel}
             </button>
           </div>
         </div>
@@ -111,9 +101,4 @@ const UserGroupForm: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupFormWrapper = withUnstatedContainers<unknown, Props>(UserGroupForm, [AppContainer]);
-
-export default UserGroupFormWrapper;
+export default UserGroupForm;
