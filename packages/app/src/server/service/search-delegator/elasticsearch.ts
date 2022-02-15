@@ -614,21 +614,24 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
    * }
    */
   async searchKeyword(query): Promise<IFormattedSearchResult> {
+
     // for debug
     if (process.env.NODE_ENV === 'development') {
+      logger.debug('query: ', { query });
+
       const { body: result } = await this.client.indices.validateQuery({
+        index: query.index,
+        type: query.type,
         explain: true,
         body: {
           query: query.body.query,
         },
       });
-      logger.debug('ES returns explanations: ', result.explanations);
+      // for debug
+      logger.debug('ES result: ', result);
     }
 
     const { body: result } = await this.client.search(query);
-
-    // for debug
-    logger.debug('ES result: ', result);
 
     const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
 
@@ -665,9 +668,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // eslint-disable-next-line prefer-const
     let query = {
       index: this.aliasName,
+      _source: fields,
       body: {
         query: {}, // query
-        _source: fields,
       },
     };
 
@@ -687,7 +690,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
-    query.body.sort = { [sort]: { order } };
+    query.sort = { [sort]: { order } };
   }
 
   convertSortQuery(sortAxis) {
