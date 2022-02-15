@@ -62,10 +62,10 @@ describe('V5 page migration', () => {
         pages = [...additionalPages, ...pages];
       }
 
-      const rootPage = await Page.findOne({ path: '/' });
+      const pagesToRun = await Page.find({ path: { $in: ['/private1', '/dummyParent/private1'] } });
 
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPages([rootPage], testUser1);
+      await crowi.pageService.normalizeParentRecursivelyByPages(pagesToRun, testUser1);
 
       const migratedPages = await Page.find({
         path: {
