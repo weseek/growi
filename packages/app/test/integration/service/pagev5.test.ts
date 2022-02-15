@@ -498,63 +498,62 @@ describe('PageService page operations with only public pages', () => {
     };
     test('Should NOT delete root page', async() => {
       let isThrown;
-      try {
-        await deletePage(rootPage, dummyUser1, {}, false);
-      }
-      catch (err) {
-        isThrown = true;
-      }
+      expectAllToBeTruthy([rootPage]);
+
+      try { await deletePage(rootPage, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
       expect(isThrown).toBe(true);
     });
     test('Should NOT delete trashed page', async() => {
-      const v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+      const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+      expectAllToBeTruthy([page]);
+
       let isThrown;
-      try {
-        await deletePage(v5PageForDelete1, dummyUser1, {}, false);
-      }
-      catch (err) {
-        isThrown = true;
-      }
+      try { await deletePage(page, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
       expect(isThrown).toBe(true);
     });
     test('Should NOT delete /user/hoge page', async() => {
+      expectAllToBeTruthy([dummyUser1Page]);
+
       let isThrown;
-      try {
-        await deletePage(dummyUser1Page, dummyUser1, {}, false);
-      }
-      catch (err) {
-        isThrown = true;
-      }
+      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
       expect(isThrown).toBe(true);
     });
     test('Should delete single page', async() => {
-      const v5PageForDelete2 = await Page.findOne({ path: '/v5_PageForDelete2' });
-      const oldPath = v5PageForDelete2.path;
-      const deletedPage = await deletePage(v5PageForDelete2, dummyUser1, {}, false);
+      const page = await Page.findOne({ path: '/v5_PageForDelete2' });
+      expectAllToBeTruthy([page]);
 
-      expect(deletedPage.path).toBe(`/trash${oldPath}`);
+      const deletedPage = await deletePage(page, dummyUser1, {}, false);
+
+      expect(deletedPage.path).toBe(`/trash${page.path}`);
       expect(deletedPage.parent).toBeNull();
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
     test('Should delete multiple pages including empty child', async() => {
-      const v5PageForDelete3 = await Page.findOne({ path: '/v5_PageForDelete3' });
-      const v5PageForDelete4 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
-      const v5PageForDelete5 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
+      const parentPage = await Page.findOne({ path: '/v5_PageForDelete3' });
+      const childPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
+      const grandchildPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
+      expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
 
-      const deletedPage = await deletePage(v5PageForDelete3, dummyUser1, {}, true);
-      const deletedV5PageForDelete4 = await Page.findOne({ path: `/trash${v5PageForDelete4.path}` });
-      const deletedV5PageForDelete5 = await Page.findOne({ path: `/trash${v5PageForDelete5.path}` });
+      const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
+      const deletedChildPage = await Page.findOne({ path: `/trash${childPage.path}` });
+      const deletedGrandchildPage = await Page.findOne({ path: `/trash${grandchildPage.path}` });
 
       // originally NOT empty page should exist with status 'deleted' and parent set null
-      expect(deletedPage._id).toStrictEqual(v5PageForDelete3._id);
-      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
-      expect(deletedPage.parent).toBeNull();
+      expect(deletedParentPage._id).toStrictEqual(parentPage._id);
+      expect(deletedParentPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedParentPage.parent).toBeNull();
       // originally empty page should NOT exist
-      expect(deletedV5PageForDelete4).toBeNull();
+      expect(deletedChildPage).toBeNull();
       // originally NOT empty page should exist with status 'deleted' and parent set null
-      expect(deletedV5PageForDelete5._id).toStrictEqual(v5PageForDelete5._id);
-      expect(deletedV5PageForDelete5.status).toBe(Page.STATUS_DELETED);
-      expect(deletedV5PageForDelete5.parent).toBeNull();
+      expect(deletedGrandchildPage._id).toStrictEqual(grandchildPage._id);
+      expect(deletedGrandchildPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedGrandchildPage.parent).toBeNull();
     });
     test('Should delete page tags', async() => {
       const v5PageForDelete6 = await Page.findOne({ path: '/v5_PageForDelete6' });
