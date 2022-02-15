@@ -190,7 +190,7 @@ const GrowiContextualSubNavigation = (props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
@@ -216,12 +216,11 @@ const GrowiContextualSubNavigation = (props) => {
         toastSuccess(t('deleted_single_page', { path }));
       }
     }
-  };
+  }, [mutateChildren, t]);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
     openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
-    console.log('isAbleToDeleteCompletely_contextual', isAbleToDeleteCompletely);
-  }, [openDeleteModal]);
+  }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
