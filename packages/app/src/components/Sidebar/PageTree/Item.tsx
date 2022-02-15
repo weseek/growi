@@ -8,13 +8,13 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
 
-import { pathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils } from '@growi/core';
 
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { IPageForPageDeleteModal } from '~/stores/modal';
-import { apiv3Put } from '~/client/util/apiv3-client';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -257,12 +257,38 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDeleteMenuItem(pageToDelete);
   }, [page, onClickDeleteMenuItem]);
 
-  const onPressEnterForCreateHandler = (inputText: string) => {
+  const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = `${parentPath}${inputText}`;
-    console.log(newPagePath);
-    // TODO: https://redmine.weseek.co.jp/issues/87943
+    const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
+
+    if (!isCreatable) {
+      toastWarning(t('you_can_not_create_page_with_this_name'));
+      return;
+    }
+
+    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
+    // const initBody = '';
+    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
+    // if (isEnabledAttachTitleHeader) {
+    //   initBody = pathUtils.attachTitleHeader(newPagePath);
+    // }
+
+    try {
+      await apiv3Post('/pages/', {
+        path: newPagePath,
+        body: '',
+        grant: page.grant,
+        grantUserGroupId: page.grantedGroup,
+        createFromPageTree: true,
+      });
+      mutateChildren();
+      toastSuccess(t('successfully_saved_the_page'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const inputValidator = (title: string | null): AlertInfo | null => {
