@@ -21,12 +21,18 @@ describe('V5 page migration', () => {
   });
 
 
-  describe('normalizeParentRecursivelyByPageIds()', () => {
+  describe('normalizeParentRecursivelyByPages()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
 
       // initialize pages for test
       const pages = await Page.insertMany([
+        {
+          path: '/',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser1,
+          lastUpdateUser: testUser1,
+        },
         {
           path: '/private1',
           grant: Page.GRANT_OWNER,
@@ -57,9 +63,8 @@ describe('V5 page migration', () => {
         },
       ]);
 
-      const pageIds = pages.map(page => page._id);
       // migrate
-      await crowi.pageService.normalizeParentByPageIds(pageIds, testUser1, true);
+      await crowi.pageService.normalizeParentRecursivelyByPages(pages, testUser1);
 
       const migratedPages = await Page.find({
         path: {

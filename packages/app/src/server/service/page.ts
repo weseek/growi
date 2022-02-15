@@ -1929,11 +1929,9 @@ class PageService {
      * Sub Operation (s)
      */
     const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
-    (async() => {
-      for await (const page of pagesToNormalize) {
-        await this.normalizeParentRecursivelySubOperation(page, user);
-      }
-    })();
+    for await (const page of pagesToNormalize) {
+      await this.normalizeParentRecursivelySubOperation(page, user);
+    }
   }
 
   private async normalizeParentRecursivelySubOperation(page, user) {
