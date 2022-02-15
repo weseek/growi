@@ -24,13 +24,16 @@ import {
 } from '~/stores/user-group';
 
 const UserGroupDetailPage: FC = () => {
-  const rootElem = document.getElementById('admin-user-group-detail');
   const { t } = useTranslation();
+
+  const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
+  const isAclEnabledElem = document.getElementById('is-acl-enabled');
+  const isAclEnabled = isAclEnabledElem?.getAttribute('data-is-acl-enabled') === 'true';
 
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(rootElem?.getAttribute('data-user-group') || 'null'));
+  const [userGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [isUserGroupUserModalOpen, setUserGroupUserModalOpen] = useState<boolean>(false);
   const [searchType, setSearchType] = useState<string>('partial');
@@ -203,7 +206,7 @@ const UserGroupDetailPage: FC = () => {
         <UserGroupTable
           userGroups={childUserGroups}
           childUserGroups={grandChildUserGroups}
-          isAclEnabled
+          isAclEnabled={isAclEnabled}
           onDelete={showDeleteModal}
           userGroupRelations={childUserGroupRelations}
         />
