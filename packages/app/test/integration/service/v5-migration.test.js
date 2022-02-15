@@ -56,9 +56,9 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
-      const additionalPages = (await Page.exists({ path: '/' })) ? null : await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
 
-      if (additionalPages != null) {
+      if (await Page.exists({ path: '/' })) {
+        const additionalPages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
         pages = [...additionalPages, ...pages];
       }
 
@@ -73,6 +73,7 @@ describe('V5 page migration', () => {
       const migratedPagePaths = migratedPages.filter(doc => doc.parent != null).map(doc => doc.path);
 
       const expected = ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'];
+      console.log('はあ', migratedPages, migratedPagePaths.sort(), expected.sort());
 
       expect(migratedPagePaths.sort()).toStrictEqual(expected.sort());
     });
