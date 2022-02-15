@@ -43,19 +43,6 @@ describe('PageService page operations with only public pages', () => {
   let childForRename6;
   let childForRename7;
 
-  /**
-   * Delete
-   */
-  let v5PageForDelete1;
-  let v5PageForDelete2;
-  let v5PageForDelete3;
-  let v5PageForDelete4;
-  let v5PageForDelete5;
-  let v5PageForDelete6;
-
-  let tagForDelete1;
-  let tagForDelete2;
-
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
     dataList.forEach((data) => {
@@ -330,25 +317,23 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
-
-    v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
-    v5PageForDelete2 = await Page.findOne({ path: '/v5_PageForDelete2' });
-    v5PageForDelete3 = await Page.findOne({ path: '/v5_PageForDelete3' });
-    v5PageForDelete4 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
-    v5PageForDelete5 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
-    v5PageForDelete6 = await Page.findOne({ path: '/v5_PageForDelete6' });
+    const tagIdForDelete1 = new mongoose.Types.ObjectId();
+    const tagIdForDelete2 = new mongoose.Types.ObjectId();
 
     await Tag.insertMany([
-      { name: 'TagForDelete1' },
-      { name: 'TagForDelete2' },
+      {
+        _id: tagIdForDelete1,
+        name: 'TagForDelete1',
+      },
+      {
+        _id: tagIdForDelete2,
+        name: 'TagForDelete2',
+      },
     ]);
 
-    tagForDelete1 = await Tag.findOne({ name: 'TagForDelete1' });
-    tagForDelete2 = await Tag.findOne({ name: 'TagForDelete2' });
-
     await PageTagRelation.insertMany([
-      { relatedPage: v5PageForDelete6._id, relatedTag: tagForDelete1 },
-      { relatedPage: v5PageForDelete6._id, relatedTag: tagForDelete2 },
+      { relatedPage: pageIdForDelete3, relatedTag: tagIdForDelete1 },
+      { relatedPage: pageIdForDelete3, relatedTag: tagIdForDelete2 },
     ]);
   });
 
@@ -522,6 +507,7 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Should NOT delete trashed page', async() => {
+      const v5PageForDelete1 = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
       let isThrown;
       try {
         await deletePage(v5PageForDelete1, dummyUser1, {}, false);
@@ -542,6 +528,7 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Should delete single page', async() => {
+      const v5PageForDelete2 = await Page.findOne({ path: '/v5_PageForDelete2' });
       const oldPath = v5PageForDelete2.path;
       const deletedPage = await deletePage(v5PageForDelete2, dummyUser1, {}, false);
 
@@ -550,6 +537,10 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
     test('Should delete multiple pages including empty child', async() => {
+      const v5PageForDelete3 = await Page.findOne({ path: '/v5_PageForDelete3' });
+      const v5PageForDelete4 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
+      const v5PageForDelete5 = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
+
       const deletedPage = await deletePage(v5PageForDelete3, dummyUser1, {}, true);
       const deletedV5PageForDelete4 = await Page.findOne({ path: `/trash${v5PageForDelete4.path}` });
       const deletedV5PageForDelete5 = await Page.findOne({ path: `/trash${v5PageForDelete5.path}` });
@@ -566,13 +557,17 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedV5PageForDelete5.parent).toBeNull();
     });
     test('Should delete page tags', async() => {
+      const v5PageForDelete6 = await Page.findOne({ path: '/v5_PageForDelete6' });
+      const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
+      const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
+
       const deletedPage = await deletePage(v5PageForDelete6, dummyUser1, {}, false);
-      const deletedTag1 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tagForDelete1 });
-      const deletedTag2 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tagForDelete2 });
+      const deletedTagRelation1 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tag1._id });
+      const deletedTagRelation2 = await PageTagRelation.findOne({ relatedpage: deletedPage._id, relatedTag: tag2._id });
 
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
-      expect(deletedTag1.isPageTrashed).toBe(true);
-      expect(deletedTag2.isPageTrashed).toBe(true);
+      expect(deletedTagRelation1.isPageTrashed).toBe(true);
+      expect(deletedTagRelation2.isPageTrashed).toBe(true);
     });
   });
 
