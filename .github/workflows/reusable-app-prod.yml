@@ -95,7 +95,7 @@ jobs:
         ports:
         - 27017/tcp
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
         ports:
         - 9200/tcp
         env:
@@ -191,7 +191,7 @@ jobs:
         ports:
         - 27017/tcp
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
         ports:
         - 9200/tcp
         env:
