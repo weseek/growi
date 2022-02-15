@@ -56,10 +56,10 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
-      const rootPage = (await Page.exists({ path: '/' })) ? null : await Page.insertOne({ path: '/' });
+      const additionalPages = (await Page.exists({ path: '/' })) ? null : await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
 
-      if (rootPage != null) {
-        pages = [rootPage, ...pages];
+      if (additionalPages != null) {
+        pages = [...additionalPages, ...pages];
       }
 
       // migrate
