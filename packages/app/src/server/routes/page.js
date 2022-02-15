@@ -506,8 +506,8 @@ module.exports = function(crowi, app) {
 
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
-    if (shareLink == null || shareLink.relatedPage == null) {
-      // page or sharelink are not found
+    if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+      // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
