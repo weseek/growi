@@ -32,9 +32,6 @@ describe('PageService page operations with only public pages', () => {
   };
 
 
-  let tag1;
-  let tag2;
-
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
