@@ -153,12 +153,15 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   if (page == null) return <></>;
 
   return (
-    <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <GrowiSubNavigation
-        page={page}
-        controls={ControlComponents}
-      />
-      <div className="search-result-page-content" ref={scrollElementRef}>
+    <div key={page._id} className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
+      <div className="grw-subnav-append-shadow-container">
+        <GrowiSubNavigation
+          page={page}
+          controls={ControlComponents}
+          isCompactMode
+        />
+      </div>
+      <div className="search-result-content-body-container" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}
