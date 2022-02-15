@@ -37,12 +37,31 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>'],
-      testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js'],
+      testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js',
+                  '?!<rootDir>/test/integration/service/v5.*.test.ts', '?!<rootDir>/test/integration/service/v5.*.test.js'],
 
       testEnvironment: 'node',
       globalSetup: '<rootDir>/test/integration/global-setup.js',
       globalTeardown: '<rootDir>/test/integration/global-teardown.js',
       setupFilesAfterEnv: ['<rootDir>/test/integration/setup.js'],
+
+      // Automatically clear mock calls and instances between every test
+      clearMocks: true,
+      moduleNameMapper: MODULE_NAME_MAPPING,
+    },
+    {
+      displayName: 'server-v5',
+
+      preset: 'ts-jest/presets/js-with-ts',
+
+      rootDir: '.',
+      roots: ['<rootDir>'],
+      testMatch: ['<rootDir>/test/integration/service/v5.*.test.ts', '<rootDir>/test/integration/service/v5.*.test.js'],
+
+      testEnvironment: 'node',
+      globalSetup: '<rootDir>/test/integration/v5-global-setup.js',
+      globalTeardown: '<rootDir>/test/integration/global-teardown.js',
+      setupFilesAfterEnv: ['<rootDir>/test/integration/v5-setup.js'],
 
       // Automatically clear mock calls and instances between every test
       clearMocks: true,

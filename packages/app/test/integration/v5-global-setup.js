@@ -11,6 +11,8 @@ import mongoose from 'mongoose';
 
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 
+import { getInstance } from './setup-crowi';
+
 // check env
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
@@ -18,8 +20,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 module.exports = async() => {
   initMongooseGlobalSettings();
-
-  process.env.MONGO_URI = 'mongodb://mongo/growi_test';
+  process.env.MONGO_URI = 'mongodb://mongo/growi_v5_test';
   mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database
