@@ -56,21 +56,6 @@ describe('PageService page operations with only public pages', () => {
   let tagForDelete1;
   let tagForDelete2;
 
-  /**
-   * Delete completely
-   */
-  let v5PageForDeleteCompletely1;
-  let v5PageForDeleteCompletely2;
-  let v5PageForDeleteCompletely3;
-  let v5PageForDeleteCompletely4;
-  let v5PageForDeleteCompletely5;
-  let v5PageForDeleteCompletely6;
-  let v5PageForDeleteCompletely7;
-  let v5PageForDeleteCompletely8;
-
-  let tagForDeleteCompletely1;
-  let tagForDeleteCompletely2;
-
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -375,7 +360,6 @@ describe('PageService page operations with only public pages', () => {
     const revisionIdForDeleteCompletely3 = new mongoose.Types.ObjectId();
     const revisionIdForDeleteCompletely4 = new mongoose.Types.ObjectId();
 
-
     await Page.insertMany([
       {
         path: '/v5_PageForDeleteCompletely1',
@@ -449,15 +433,6 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
-    v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
-    v5PageForDeleteCompletely2 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
-    v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
-    v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
-    v5PageForDeleteCompletely5 = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
-    v5PageForDeleteCompletely6 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
-    v5PageForDeleteCompletely7 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
-    v5PageForDeleteCompletely8 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
-
     await Revision.insertMany([
       {
         _id: revisionIdForDeleteCompletely1,
@@ -485,23 +460,26 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    const tagForDeleteCompletely1 = new mongoose.Types.ObjectId();
+    const tagForDeleteCompletely2 = new mongoose.Types.ObjectId();
     await Tag.insertMany([
       { name: 'TagForDeleteCompletely1' },
       { name: 'TagForDeleteCompletely2' },
     ]);
 
-    tagForDeleteCompletely1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
-    tagForDeleteCompletely2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
-
     await PageTagRelation.insertMany([
-      { relatedPage: v5PageForDeleteCompletely2._id, relatedTag: tagForDeleteCompletely1 },
-      { relatedPage: v5PageForDeleteCompletely4._id, relatedTag: tagForDeleteCompletely2 },
+      { relatedPage: pageIdForDeleteCompletely1, relatedTag: tagForDeleteCompletely1 },
+      { relatedPage: pageIdForDeleteCompletely3, relatedTag: tagForDeleteCompletely2 },
     ]);
 
     await Bookmark.insertMany([
       {
-        page: v5PageForDeleteCompletely2._id,
+        page: pageIdForDeleteCompletely1,
         user: dummyUser1._id,
+      },
+      {
+        page: pageIdForDeleteCompletely1,
+        user: dummyUser2._id,
       },
     ]);
 
@@ -509,7 +487,7 @@ describe('PageService page operations with only public pages', () => {
       {
         commentPosition: -1,
         isMarkdown: true,
-        page: v5PageForDeleteCompletely2._id,
+        page: pageIdForDeleteCompletely1,
         creator: dummyUser1._id,
         revision: revisionIdForDeleteCompletely4,
         comment: 'comment_ForDeleteCompletely4',
@@ -518,23 +496,23 @@ describe('PageService page operations with only public pages', () => {
 
     await PageRedirect.insertMany([
       {
-        fromPath: `/from${v5PageForDeleteCompletely2.path}`,
-        toPath: v5PageForDeleteCompletely2.path,
+        fromPath: '/from/v5_PageForDeleteCompletely2',
+        toPath: '/v5_PageForDeleteCompletely2',
       },
       {
-        fromPath: `/from${v5PageForDeleteCompletely4.path}`,
-        toPath: v5PageForDeleteCompletely4.path,
+        fromPath: '/from/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4',
+        toPath: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4',
       },
     ]);
 
     await ShareLink.insertMany([
       {
-        relatedPage: v5PageForDeleteCompletely2._id,
+        relatedPage: pageIdForDeleteCompletely1,
         expiredAt: null,
         description: 'sharlink_v5PageForDeleteCompletely2',
       },
       {
-        relatedPage: v5PageForDeleteCompletely4._id,
+        relatedPage: pageIdForDeleteCompletely3,
         expiredAt: null,
         description: 'sharlink_v5PageForDeleteCompletely4',
       },
@@ -797,12 +775,19 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Should completely delete single page', async() => {
+      const v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
       await deleteCompletely(v5PageForDeleteCompletely1, dummyUser1, {}, false);
       const deletedPage = await Page.findOne({ _id: v5PageForDeleteCompletely1._id });
 
       expect(deletedPage).toBeNull();
     });
     test('Should completely delete multiple pages', async() => {
+      const v5PageForDeleteCompletely2 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2' });
+      const v5PageForDeleteCompletely3 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3' });
+      const v5PageForDeleteCompletely4 = await Page.findOne({ path: '/v5_PageForDeleteCompletely2/v5_PageForDeleteCompletely3/v5_PageForDeleteCompletely4' });
+      const tagForDeleteCompletely1 = await Tag.findOne({ name: 'TagForDeleteCompletely1' });
+      const tagForDeleteCompletely2 = await Tag.findOne({ name: 'TagForDeleteCompletely2' });
+
       await deleteCompletely(v5PageForDeleteCompletely2, dummyUser1, {}, true);
       const deletedPages = await Page.find({ _id: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely3._id, v5PageForDeleteCompletely4._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [v5PageForDeleteCompletely2._id, v5PageForDeleteCompletely4._id] } });
@@ -847,6 +832,8 @@ describe('PageService page operations with only public pages', () => {
       });
     });
     test('Should completely delete trashed page', async() => {
+      const v5PageForDeleteCompletely5 = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
+
       await deleteCompletely(v5PageForDeleteCompletely5, dummyUser1, {}, false);
       const deltedPage = await Page.findOne({ _id: v5PageForDeleteCompletely5._id });
       const deltedRevision = await Revision.findOne({ pageId: v5PageForDeleteCompletely5._id });
@@ -855,6 +842,10 @@ describe('PageService page operations with only public pages', () => {
       expect(deltedRevision).toBeNull();
     });
     test('Should completely deleting page in the middle results in empty page', async() => {
+      const v5PageForDeleteCompletely6 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
+      const v5PageForDeleteCompletely7 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
+      const v5PageForDeleteCompletely8 = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
+
       await deleteCompletely(v5PageForDeleteCompletely7, dummyUser1, {}, false);
       const deletedPage = await Page.findOne({ path: v5PageForDeleteCompletely7.path });
       const childOfDeletedPage = await Page.findOne({ parent: deletedPage._id });
