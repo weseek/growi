@@ -62,6 +62,9 @@ describe('V5 page migration', () => {
         pages = [...additionalPages, ...pages];
       }
 
+      const nroot = await Page.count({ path: '/' });
+      expect(nroot).toBe(1);
+
       // migrate
       await crowi.pageService.normalizeParentRecursivelyByPages(pages, testUser1);
 
@@ -73,7 +76,6 @@ describe('V5 page migration', () => {
       const migratedPagePaths = migratedPages.filter(doc => doc.parent != null).map(doc => doc.path);
 
       const expected = ['/private1', '/dummyParent', '/dummyParent/private1', '/dummyParent/private1/private2', '/dummyParent/private1/private3'];
-      console.log('はあ', migratedPages, migratedPagePaths.sort(), expected.sort());
 
       expect(migratedPagePaths.sort()).toStrictEqual(expected.sort());
     });
