@@ -137,14 +137,6 @@ describe('PageService page operations with only public pages', () => {
         parent: rootPage._id,
       },
       {
-        _id: pageIdForRename6,
-        path: '/v5_ParentForRename6',
-        grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-      },
-      {
         _id: pageIdForRename7,
         path: '/v5_ParentForRename7',
         grant: Page.GRANT_PUBLIC,
@@ -206,14 +198,6 @@ describe('PageService page operations with only public pages', () => {
         _id: pageIdForRename14,
         path: '/v5_ChildForRename5',
         grant: Page.GRANT_PUBLIC,
-        creator: dummyUser1,
-        lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
-      },
-      {
-        _id: pageIdForRename15,
-        path: '/v5_ChildForRename6',
-        grant: Page.GRANT_RESTRICTED,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
@@ -380,7 +364,6 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild.parent).toStrictEqual(renamedPage._id);
       expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
     });
-
     test('Should NOT rename/move with existing path', async() => {
       const page = await Page.findOne({ path: '/v5_ParentForRename8' });
       expectAllToBeTruthy([page]);
@@ -397,7 +380,6 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
   });
-
   afterAll(async() => {
     await Page.deleteMany({});
     await User.deleteMany({});
