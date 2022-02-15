@@ -45,8 +45,8 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     });
   }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
 
-  const searchFormChangedHandler = useCallback(({ keyword }) => {
-    setKeyword(keyword as string);
+  const searchFormSubmittedHandler = useCallback((input: string) => {
+    setKeyword(input);
   }, []);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
@@ -62,9 +62,10 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchPageForm
+          <SearchForm
+            isSearchServiceReachable={isSearchServiceReachable}
             keyword={keyword}
-            onSearchFormChanged={searchFormChangedHandler}
+            onSubmit={searchFormSubmittedHandler}
           />
         </div>
 
