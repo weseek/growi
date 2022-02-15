@@ -333,8 +333,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
-    return this.client.indices.create({ index, body });
+    let mappings = this.isElasticsearchV6
+      ? require('^/resource/search/mappings-es6.json')
+      : require('^/resource/search/mappings-es7.json');
+
+    if (process.env.CI) {
+      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+    }
+
+    return this.client.indices.create({
+      index,
+      body: mappings,
+    });
   }
 
   /**
