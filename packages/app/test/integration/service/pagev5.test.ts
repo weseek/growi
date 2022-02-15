@@ -785,11 +785,11 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Should completely delete single page', async() => {
-      const v5PageForDeleteCompletely1 = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
-      expectAllToBeTruthy([v5PageForDeleteCompletely1]);
+      const page = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
+      expectAllToBeTruthy([page]);
 
-      await deleteCompletely(v5PageForDeleteCompletely1, dummyUser1, {}, false);
-      const deletedPage = await Page.findOne({ _id: v5PageForDeleteCompletely1._id });
+      await deleteCompletely(page, dummyUser1, {}, false);
+      const deletedPage = await Page.findOne({ _id: page._id });
 
       expect(deletedPage).toBeNull();
     });
