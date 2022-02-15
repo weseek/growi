@@ -726,6 +726,7 @@ describe('PageService page operations with only public pages', () => {
       expect(childrenForDuplicatedPage.length).toBe(childrenForBasePage.length);
       expect(revisionBodyOfChildrenForDuplicatedPage).toEqual(expect.arrayContaining(revisionBodiesOfChildrenForBasePage));
     });
+
     test('Should duplicate multiple pages with empty child in it', async() => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate4' });
       const baseChild = await Page.findOne({ parent: basePage._id });
@@ -743,6 +744,7 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedChild.isEmpty).toBe(true);
       expectAllToBeTruthy([duplicatedGrandchild]);
     });
+
     test('Should duplicate tags', async() => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate5' });
       const tag1 = await Tag.findOne({ name: 'duplicate_Tag1' });
@@ -760,19 +762,20 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedTagRelations.length).toBeGreaterThanOrEqual(2);
     });
+
     test('Should NOT duplicate comments', async() => {
-      const v5PageForDuplicate6 = await Page.findOne({ path: '/v5_PageForDuplicate6' });
-      expectAllToBeTruthy([v5PageForDuplicate6]);
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate6' });
+      const basePageComments = await Comment.find({ page: basePage._id });
+
+      expectAllToBeTruthy([basePage, ...basePageComments]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate6';
-      const duplicatedPage = await duplicate(v5PageForDuplicate6, newPagePath, dummyUser1, false);
-      const comments = await Comment.find({ page: v5PageForDuplicate6._id });
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
       const duplicatedComments = await Comment.find({ page: duplicatedPage._id });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
-      expect(comments.length).toBe(1);
-      expect(duplicatedComments.length).toBe(0);
+      expect(basePageComments.length).not.toBe(duplicatedComments.length);
     });
 
     test('Should duplicate empty page with descendants', async() => {
