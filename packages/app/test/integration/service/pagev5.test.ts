@@ -517,8 +517,8 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
       expect(revertedPage1.path).toBe('/v5_revert2');
       expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');
-      expect(newlyCreatedPage.parent).toBe(revertedPage1._id);
-      expect(revertedPage2.parent).toBe(newlyCreatedPage._id);
+      expect(newlyCreatedPage.parent).toStrictEqual(revertedPage1._id);
+      expect(revertedPage2.parent).toStrictEqual(newlyCreatedPage._id);
       expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
       expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
