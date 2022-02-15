@@ -107,7 +107,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
 
   return (
     <div className="content-main">
-      <div className="search-result-base d-flex">
+      <div className="search-result-base d-flex" data-testid="search-result-base">
 
         <div className="mw-0 flex-grow-1 flex-basis-0 border boder-gray search-result-list" id="search-result-list">
 

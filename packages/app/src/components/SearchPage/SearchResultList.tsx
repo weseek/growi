@@ -79,7 +79,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   }
 
   return (
-    <ul className="page-list-ul list-group list-group-flush">
+    <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">
       { (injectedPage ?? pages).map((page, i) => {
         return (
           <PageListItemL
