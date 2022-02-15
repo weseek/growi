@@ -20,7 +20,9 @@ defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    await mongoose.connect(getMongoUri(), mongoOptions);
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connect(getMongoUri(), mongoOptions);
+    }
 
     const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
