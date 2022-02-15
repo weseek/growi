@@ -15,7 +15,6 @@ jest.setTimeout(30000); // default 5000
 
 beforeAll(async() => {
   initMongooseGlobalSettings();
-  process.env.MONGO_URI = 'mongodb://mongo/growi_test';
   await mongoose.connect(getMongoUriForTestV4(), mongoOptions);
 });
 
