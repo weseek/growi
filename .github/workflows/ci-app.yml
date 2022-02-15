@@ -100,7 +100,8 @@ jobs:
       run: |
         yarn test
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+        MONGO_URI_TEST_V4: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+        MONGO_URI_TEST_V5: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test_v5
 
     - name: Upload coverage report as artifact
       uses: actions/upload-artifact@v2

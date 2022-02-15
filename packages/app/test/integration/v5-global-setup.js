@@ -9,9 +9,7 @@ import 'tsconfig-paths/register';
 
 import mongoose from 'mongoose';
 
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
-
-import { getInstance } from './setup-crowi';
+import { initMongooseGlobalSettings, getMongoUriForTestV5, mongoOptions } from '@growi/core';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
@@ -20,8 +18,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 module.exports = async() => {
   initMongooseGlobalSettings();
-  process.env.MONGO_URI = 'mongodb://mongo/growi_v5_test';
-  mongoose.connect(getMongoUri(), mongoOptions);
+  mongoose.connect(getMongoUriForTestV5(), mongoOptions);
 
   // drop database
   await mongoose.connection.dropDatabase();

@@ -21,6 +21,14 @@ export const getMongoUri = (): string => {
     || ((env.NODE_ENV === 'test') ? 'mongodb://mongo/growi_test' : 'mongodb://mongo/growi');
 };
 
+export const getMongoUriForTestV4 = (): string => {
+  return process.env.MONGO_URI_TEST_V4 || 'mongodb://mongo/growi_test';
+};
+
+export const getMongoUriForTestV5 = (): string => {
+  return process.env.MONGO_URI_TEST_V5 || 'mongodb://mongo/growi_test_v5';
+};
+
 export const getModelSafely = <T>(modelName: string): Model<T & Document> | null => {
   if (mongoose.modelNames().includes(modelName)) {
     return mongoose.model<T & Document>(modelName);
