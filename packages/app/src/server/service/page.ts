@@ -1439,6 +1439,7 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
+  // no need to separate Main Sub since it is devided into single page operations
   async deleteMultiplePages(pagesToDelete, user, options): Promise<void> {
     const { isRecursively, isCompletely } = options;
 
@@ -1925,33 +1926,24 @@ class PageService {
     }
 
     /*
-     * Sub Operation
+     * Sub Operation (s)
      */
-    await this.normalizeParentRecursivelyByPageIdsSubOperation(normalizablePages, user);
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
+    (async() => {
+      for await (const page of pagesToNormalize) {
+        await this.normalizeParentRecursivelyByPageIdSubOperation(page, user);
+      }
+    })();
   }
 
-  async normalizeParentRecursivelyByPageIdsSubOperation(pages, user): Promise<void> {
+  private async normalizeParentRecursivelyByPageIdSubOperation(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
-    const pageIdsToNormalize = pagesToNormalize.map(p => p._id);
-    const pathsToNormalize = Array.from(new Set(pagesToNormalize.map(p => p.path)));
+    // TODO: insertOne PageOperationBlock
 
-    // TODO: insertMany PageOperationBlock
-
-    // for updating descendantCount
-    const pageIdToExDescendantCountMap = new Map<ObjectIdLike, number>();
-
-    // MAIN PROCESS migrate recursively
-    const regexps = pathsToNormalize.map(p => new RegExp(`^${escapeStringRegexp(p)}`, 'i'));
+    const regexps = [new RegExp(`^${escapeStringRegexp(page.path)}`, 'i')];
     try {
       await this.normalizeParentRecursively(null, regexps);
-
-      // find pages to save descendantCount of normalized pages (only pages in pageIds parameter of this method)
-      const pagesBeforeUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
-      pagesBeforeUpdatingDescendantCount.forEach((p) => {
-        pageIdToExDescendantCountMap.set(p._id.toString(), p.descendantCount);
-      });
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -1960,22 +1952,18 @@ class PageService {
       throw err;
     }
 
-    // POST MAIN PROCESS update descendantCount
     try {
       // update descendantCount of self and descendant pages first
-      for await (const path of pathsToNormalize) {
-        await this.updateDescendantCountOfSelfAndDescendants(path);
-      }
+      await this.updateDescendantCountOfSelfAndDescendants(page.path);
 
       // find pages again to get updated descendantCount
       // then calculate inc
-      const pagesAfterUpdatingDescendantCount = await Page.findByIdsAndViewer(pageIdsToNormalize, user);
-      for await (const page of pagesAfterUpdatingDescendantCount) {
-        const exDescendantCount = pageIdToExDescendantCountMap.get(page._id.toString()) || 0;
-        const newDescendantCount = page.descendantCount;
-        const inc = newDescendantCount - exDescendantCount;
-        await this.updateDescendantCountOfAncestors(page._id, inc, false);
-      }
+      const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
+
+      const exDescendantCount = page.descendantCount;
+      const newDescendantCount = pageAfterUpdatingDescendantCount.descendantCount;
+      const inc = newDescendantCount - exDescendantCount;
+      await this.updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
       logger.error('Failed to update descendantCount after normalizing parent:', err);
@@ -2287,9 +2275,15 @@ class PageService {
   async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
     const BATCH_SIZE = 200;
     const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
 
-    const aggregateCondition = Page.getAggrConditionForPageWithProvidedPathAndDescendants(path);
-    const aggregatedPages = await Page.aggregate(aggregateCondition).cursor({ batchSize: BATCH_SIZE });
+    const builder = new PageQueryBuilder(Page.find(), true);
+    builder.addConditionAsMigrated();
+    builder.addConditionToListWithDescendants(path);
+    builder.addConditionToSortPagesByDescPath();
+
+    const aggregatedPages = await builder.query.lean().cursor({ batchSize: BATCH_SIZE });
+
 
     const recountWriteStream = new Writable({
       objectMode: true,

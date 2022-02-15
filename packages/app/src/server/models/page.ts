@@ -424,40 +424,6 @@ async function pushRevision(pageData, newRevision, user) {
 }
 
 /**
- * return aggregate condition to get following pages
- * - page that has the same path as the provided path
- * - pages that are descendants of the above page
- * pages without parent will be ignored
- */
-schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
-  let match;
-  if (isTopPage(path)) {
-    match = {
-      // https://regex101.com/r/Kip2rV/1
-      $match: { $or: [{ path: { $regex: '^/.*' }, parent: { $ne: null } }, { path: '/' }] },
-    };
-  }
-  else {
-    match = {
-      // https://regex101.com/r/mJvGrG/1
-      $match: { path: { $regex: `^${path}(/.*|$)` }, parent: { $ne: null } },
-    };
-  }
-  return [
-    match,
-    {
-      $project: {
-        path: 1,
-        parent: 1,
-        field_length: { $strLenCP: '$path' },
-      },
-    },
-    { $sort: { field_length: -1 } },
-    { $project: { field_length: 0 } },
-  ];
-};
-
-/**
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
  */
