@@ -20,7 +20,6 @@ describe('V5 page migration', () => {
     testUser1 = await User.findOne({ username: 'testUser1' });
   });
 
-
   describe('normalizeParentRecursivelyByPageIds()', () => {
     test('should migrate all pages specified by pageIds', async() => {
       jest.restoreAllMocks();
