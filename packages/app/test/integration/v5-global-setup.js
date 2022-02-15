@@ -11,8 +11,6 @@ import mongoose from 'mongoose';
 
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 
-import { getInstance } from './setup-crowi';
-
 // check env
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
