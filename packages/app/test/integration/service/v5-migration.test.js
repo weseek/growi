@@ -56,14 +56,16 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
-      const additionalPages = (await Page.exists({ path: '/' })) ? null : await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
 
-      if (additionalPages != null) {
+      if (!await Page.exists({ path: '/' })) {
+        const additionalPages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
         pages = [...additionalPages, ...pages];
       }
 
+      const pagesToRun = await Page.find({ path: { $in: ['/private1', '/dummyParent/private1'] } });
+
       // migrate
-      await crowi.pageService.normalizeParentRecursivelyByPages(pages, testUser1);
+      await crowi.pageService.normalizeParentRecursivelyByPages(pagesToRun, testUser1);
 
       const migratedPages = await Page.find({
         path: {

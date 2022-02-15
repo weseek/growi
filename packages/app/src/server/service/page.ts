@@ -745,7 +745,7 @@ class PageService {
         /*
          * Sub Operation
          */
-        await this.duplicateDescendantsSubOperation(page, newPagePath, user, duplicatedTarget._id, nDuplicatedPages);
+        await this.duplicateDescendantsSubOperation(page, newPagePath, user, duplicatedTarget, nDuplicatedPages);
       })();
     }
 
@@ -754,7 +754,7 @@ class PageService {
     return result;
   }
 
-  async duplicateDescendantsSubOperation(page, newPagePath: string, user, duplicatedTargetId: ObjectIdLike, nDuplicatedPages: number): Promise<void> {
+  async duplicateDescendantsSubOperation(page, newPagePath: string, user, duplicatedTarget, nDuplicatedPages: number): Promise<void> {
     // normalize parent of descendant pages
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
@@ -767,7 +767,7 @@ class PageService {
         throw err;
       }
     }
-    await this.updateDescendantCountOfAncestors(duplicatedTargetId, nDuplicatedPages, false);
+    await this.updateDescendantCountOfAncestors(duplicatedTarget._id, nDuplicatedPages, false);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
@@ -1906,10 +1906,12 @@ class PageService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
+
     let normalizablePages;
     let nonNormalizablePages;
     try {
-      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pages);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pagesToNormalize);
     }
     catch (err) {
       throw err;
@@ -1928,8 +1930,7 @@ class PageService {
     /*
      * Sub Operation (s)
      */
-    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
-    for await (const page of pagesToNormalize) {
+    for await (const page of normalizablePages) {
       await this.normalizeParentRecursivelySubOperation(page, user);
     }
   }
