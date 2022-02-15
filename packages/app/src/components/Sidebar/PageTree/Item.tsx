@@ -24,13 +24,6 @@ import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTe
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
-const ITEM_TYPE = 'PAGE_TREE';
-
-type DropResult = {
-  dropEffect: string
-  dropTarget: string
-}
-
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
@@ -113,12 +106,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, []);
 
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: ITEM_TYPE,
+    type: 'PAGE_TREE',
     item: { page },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
-      const dropResult = monitor.getDropResult() as DropResult;
-      if (dropResult != null && dropResult.dropTarget === ITEM_TYPE) {
+      const dropResult = monitor.getDropResult();
+      if (dropResult != null) {
         setShouldHide(true);
       }
     },
@@ -168,11 +161,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   const [{ isOver }, drop] = useDrop(() => ({
-    accept: ITEM_TYPE,
-    drop: (item) => {
-      pageItemDropHandler(item);
-      return { dropTarget: ITEM_TYPE };
-    },
+    accept: 'PAGE_TREE',
+    drop: pageItemDropHandler,
     hover: (item, monitor) => {
       // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
       if (monitor.isOver()) {
