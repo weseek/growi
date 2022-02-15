@@ -56,7 +56,8 @@ describe('V5 page migration', () => {
           grantedUsers: [testUser1._id],
         },
       ]);
-      const rootPage = (await Page.exists({ path: '/' })) ? await Page.insertOne({ path: '/' }) : null;
+      const rootPage = (await Page.exists({ path: '/' })) ? null : await Page.insertOne({ path: '/' });
+
       if (rootPage != null) {
         pages = [rootPage, ...pages];
       }
