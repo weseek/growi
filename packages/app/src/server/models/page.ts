@@ -167,7 +167,7 @@ schema.statics.createEmptyPage = async function(
  * @param exPage a page document to be replaced
  * @returns Promise<void>
  */
-schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?): Promise<void> {
+schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?, deleteExPageIfEmpty = false): Promise<void> {
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
@@ -201,6 +201,12 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   };
 
   await this.bulkWrite([operationForNewTarget, operationsForChildren]);
+
+  const isExPageEmpty = exPage.isEmpty;
+  if (deleteExPageIfEmpty && isExPageEmpty) {
+    await this.deleteOne({ _id: exPage._id });
+    logger.warn('Deleted empty page since it was replaced with another page.');
+  }
 };
 
 /**
@@ -219,7 +225,7 @@ schema.statics.getParentAndFillAncestors = async function(path: string): Promise
   /*
    * Fill parents if parent is null
    */
-  const ancestorPaths = collectAncestorPaths(path); // paths of parents need to be created
+  const ancestorPaths = collectAncestorPaths(path, [path]); // paths of parents need to be created
 
   // just create ancestors with empty pages
   await this.createEmptyPagesByPaths(ancestorPaths);
@@ -418,40 +424,6 @@ async function pushRevision(pageData, newRevision, user) {
 }
 
 /**
- * return aggregate condition to get following pages
- * - page that has the same path as the provided path
- * - pages that are descendants of the above page
- * pages without parent will be ignored
- */
-schema.statics.getAggrConditionForPageWithProvidedPathAndDescendants = function(path:string) {
-  let match;
-  if (isTopPage(path)) {
-    match = {
-      // https://regex101.com/r/Kip2rV/1
-      $match: { $or: [{ path: { $regex: '^/.*' }, parent: { $ne: null } }, { path: '/' }] },
-    };
-  }
-  else {
-    match = {
-      // https://regex101.com/r/mJvGrG/1
-      $match: { path: { $regex: `^${path}(/.*|$)` }, parent: { $ne: null } },
-    };
-  }
-  return [
-    match,
-    {
-      $project: {
-        path: 1,
-        parent: 1,
-        field_length: { $strLenCP: '$path' },
-      },
-    },
-    { $sort: { field_length: -1 } },
-    { $project: { field_length: 0 } },
-  ];
-};
-
-/**
  * add/subtract descendantCount of pages with provided paths by increment.
  * increment can be negative number
  */
@@ -575,6 +547,15 @@ schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpt
   const pages = await builder.query.lean().exec();
 
   return pages;
+};
+
+schema.statics.normalizeDescendantCountById = async function(pageId) {
+  const children = await this.find({ parent: pageId });
+
+  const sumChildrenDescendantCount = children.map(d => d.descendantCount).reduce((c1, c2) => c1 + c2);
+  const sumChildPages = children.filter(p => !p.isEmpty).length;
+
+  return this.updateOne({ _id: pageId }, { $set: { descendantCount: sumChildrenDescendantCount + sumChildPages } }, { new: true });
 };
 
 export type PageCreateOptions = {
