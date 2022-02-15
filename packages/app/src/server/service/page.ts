@@ -261,12 +261,10 @@ class PageService {
   private shouldUseV4ProcessForRevert(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
 
     return shouldUseV4Process;
   }
@@ -297,6 +295,8 @@ class PageService {
    * @param {User} viewer
    */
   private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+    console.log('generateReadStreamToOperateOnlyDescendants');
+
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -1525,13 +1525,12 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
-
     if (isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
 
     // TODO: resume
-    if (!isRecursively) {
+    if (isRecursively) {
       // no await for revertDeletedDescendantsWithStream
       this.resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process);
     }
