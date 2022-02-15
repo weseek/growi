@@ -85,7 +85,7 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang): Promise<IUser> {
+  async install(firstAdminUserToSave: IUser, globalLang: Lang, initialPagesCreatedAt?: Date): Promise<IUser> {
     await this.initDB(globalLang);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
@@ -94,7 +94,11 @@ export class InstallerService {
     const Page = mongoose.model('Page') as any;
 
     // create portal page for '/' before creating admin user
-    await this.createPage(path.join(this.crowi.localeDir, globalLang, 'welcome.md'), '/', { _id: '000000000000000000000000' }); // use 0 as a mock user id
+    await this.createPage(
+      path.join(this.crowi.localeDir, globalLang, 'welcome.md'),
+      '/',
+      { _id: '000000000000000000000000' }, // use 0 as a mock user id
+    );
 
     // create first admin user
     // TODO: with transaction
@@ -120,7 +124,7 @@ export class InstallerService {
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages
-    await this.createInitialPages(adminUser, globalLang);
+    await this.createInitialPages(adminUser, globalLang, initialPagesCreatedAt);
 
     return adminUser;
   }

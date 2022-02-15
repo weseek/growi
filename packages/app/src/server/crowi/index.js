@@ -398,11 +398,12 @@ Crowi.prototype.autoInstall = function() {
     admin: true,
   };
   const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+  const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
 
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US');
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
