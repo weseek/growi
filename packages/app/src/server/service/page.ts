@@ -1906,10 +1906,12 @@ class PageService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
+    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
+
     let normalizablePages;
     let nonNormalizablePages;
     try {
-      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pages);
+      [normalizablePages, nonNormalizablePages] = await this.crowi.pageGrantService.separateNormalizableAndNotNormalizablePages(pagesToNormalize);
     }
     catch (err) {
       throw err;
@@ -1928,8 +1930,7 @@ class PageService {
     /*
      * Sub Operation (s)
      */
-    const pagesToNormalize = omitDuplicateAreaPageFromPages(pages);
-    for await (const page of pagesToNormalize) {
+    for await (const page of normalizablePages) {
       await this.normalizeParentRecursivelySubOperation(page, user);
     }
   }
