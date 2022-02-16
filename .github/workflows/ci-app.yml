@@ -98,7 +98,7 @@ jobs:
     - name: yarn test
       working-directory: ./packages/app
       run: |
-        yarn test --selectProjects unit server
+        yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
@@ -141,7 +141,7 @@ jobs:
     - name: yarn test
       working-directory: ./packages/app
       run: |
-        yarn test --selectProjects server-v5
+        yarn test-v5
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test_v5
 
