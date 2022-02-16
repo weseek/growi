@@ -12,7 +12,7 @@ import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
 export interface IReturnSelectedPageIds {
-  getSelectedPageIds(): Set<string>,
+  getSelectedPageIds?: () => Set<string>,
 }
 
 
