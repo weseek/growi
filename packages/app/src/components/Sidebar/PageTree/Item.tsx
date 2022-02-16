@@ -15,7 +15,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useShareLinkId } from '~/stores/context';
+import { useShareLinkId, useIsEnabledAttachTitleHeader } from '~/stores/context';
 import { IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -87,6 +87,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -276,17 +277,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
-    // const initBody = '';
-    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
-    // if (isEnabledAttachTitleHeader) {
-    //   initBody = pathUtils.attachTitleHeader(newPagePath);
-    // }
+    let initBody = '';
+    if (isEnabledAttachTitleHeader) {
+      initBody = pathUtils.attachTitleHeader(newPagePath);
+    }
 
     try {
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: '',
+        body: initBody,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
