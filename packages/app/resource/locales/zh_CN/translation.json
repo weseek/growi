@@ -133,6 +133,7 @@
 	"User_Management": "用户管理",
 	"external_account_management": "外部账户管理",
   "UserGroup": "用户组",
+  "ChildUserGroup": "儿童用户组",
 	"UserGroup Management": "用户组管理",
 	"Full Text Search Management": "全文搜索管理",
 	"Import Data": "导入数据",
@@ -980,7 +981,9 @@
   },
   "pagetree": {
     "private_legacy_pages": "私人遗留页面",
-    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题"
+    "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
+    "you_cannot_move_this_page_now": "你现在不能移动这个页面",
+    "something_went_wrong_with_moving_page": "移动页面时出了问题"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",

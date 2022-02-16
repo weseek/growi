@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchPageForm from './SearchPageForm';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
+import SearchForm from '../SearchForm';
 
 type Props = {
+  isSearchServiceReachable: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
   onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
@@ -21,6 +22,7 @@ type Props = {
 const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
+    isSearchServiceReachable,
     initialSearchConditions,
     onSearchInvoked,
     deleteAllControl,
@@ -45,8 +47,8 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     });
   }, [keyword, sort, order, includeTrashPages, includeUserPages, onSearchInvoked]);
 
-  const searchFormChangedHandler = useCallback(({ keyword }) => {
-    setKeyword(keyword as string);
+  const searchFormSubmittedHandler = useCallback((input: string) => {
+    setKeyword(input);
   }, []);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
@@ -62,9 +64,11 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
     <div className="position-sticky fixed-top shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchPageForm
+          <SearchForm
+            isSearchServiceReachable={isSearchServiceReachable}
             keyword={keyword}
-            onSearchFormChanged={searchFormChangedHandler}
+            disableIncrementalSearch
+            onSubmit={searchFormSubmittedHandler}
           />
         </div>
 
