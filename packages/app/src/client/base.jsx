@@ -16,7 +16,6 @@ import PageAccessoriesModal from '../components/PageAccessoriesModal';
 import AppContainer from '~/client/services/AppContainer';
 import SocketIoContainer from '~/client/services/SocketIoContainer';
 import { DescendantsPageListModal } from '~/components/DescendantsPageListModal';
-import { LegacyPrivatePagesMigrationModal } from '~/components/LegacyPrivatePagesMigrationModal';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -53,7 +52,6 @@ const componentMappings = {
   'page-presentation-modal': <PagePresentationModal />,
   'page-accessories-modal': <PageAccessoriesModal />,
   'descendants-page-list-modal': <DescendantsPageListModal />,
-  'legacy-private-pages-migration-modal': <LegacyPrivatePagesMigrationModal />,
 
   'grw-hotkeys-manager': <HotkeysManager />,
 

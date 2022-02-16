@@ -21,6 +21,7 @@ import { OperateAllControl } from './SearchPage/OperateAllControl';
 
 import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
+import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -279,16 +280,20 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
 
   return (
-    <SearchPageBase
-      ref={searchPageBaseRef}
-      appContainer={appContainer}
-      pages={data?.data}
-      onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-      forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE]}
-      // Components
-      searchControl={searchControl}
-      searchResultListHead={searchResultListHead}
-      searchPager={searchPager}
-    />
+    <>
+      <SearchPageBase
+        ref={searchPageBaseRef}
+        appContainer={appContainer}
+        pages={data?.data}
+        onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
+        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE]}
+        // Components
+        searchControl={searchControl}
+        searchResultListHead={searchResultListHead}
+        searchPager={searchPager}
+      />
+
+      <LegacyPrivatePagesMigrationModal />
+    </>
   );
 };
