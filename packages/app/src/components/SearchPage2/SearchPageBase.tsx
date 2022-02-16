@@ -5,7 +5,7 @@ import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
@@ -33,6 +33,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   // TODO get search keywords and split
   // ref: RevisionRenderer
@@ -102,6 +104,30 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size, pages.length);
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
+
+  if (!isSearchServiceConfigured) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service is not configured in this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSearchServiceReachable) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content-main">

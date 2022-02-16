@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 import {
   ISearchConfigurations, useSWRxNamedQuerySearch,
 } from '~/stores/search';
@@ -103,9 +102,6 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll|null>(null);
 
-  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
-
   const { data, conditions } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByPagination,
@@ -180,9 +176,6 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, [hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
-    if (!isSearchServiceReachable) {
-      return <></>;
-    }
     return (
       <div className="position-sticky fixed-top shadow-sm">
         <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
@@ -192,7 +185,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
       </div>
     );
-  }, [convertAllControl, isSearchServiceReachable]);
+  }, [convertAllControl]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -226,30 +219,6 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       />
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
-
-  if (!isSearchServiceConfigured) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service is not configured in this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isSearchServiceReachable) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <SearchPageBase
