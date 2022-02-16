@@ -123,10 +123,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-    mutateChildren();
     window.location.reload();
-
-  }, [mutateChildren]);
+  }, []);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
     openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
