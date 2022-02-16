@@ -9,7 +9,7 @@ import {
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useIsSharedUser } from '~/stores/context';
 
-import DescendantsPageList from './DescendantsPageList';
+import { DescendantsPageList } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import PageListIcon from './Icons/PageListIcon';
