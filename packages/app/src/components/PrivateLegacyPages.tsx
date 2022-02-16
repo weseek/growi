@@ -7,17 +7,19 @@ import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
+import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import { toastSuccess } from '~/client/util/apiNotification';
 import {
   ISearchConfigurations, useSWRxNamedQuerySearch,
 } from '~/stores/search';
+import { ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal } from '~/stores/modal';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 
-import { SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedItems, SearchPageBase } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 
 
@@ -124,13 +126,15 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     limit: INITIAL_PAGIONG_SIZE,
   });
 
-  const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
+  const selectAllControlRef = useRef<ISelectableAndIndeterminatable & IReturnSelectedItems|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll|null>(null);
 
   const { data, conditions } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByPagination,
   });
+
+  const { open: openLegacyPrivatePagesMigrationModal, close: closeLegacyPrivatePagesMigrationModal } = useLegacyPrivatePagesMigrationModal();
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -165,6 +169,27 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     }
   }, []);
 
+  const convertMenuItemClickedHandler = useCallback(() => {
+    const instance = selectAllControlRef.current;
+
+    if (instance == null) {
+      return;
+    }
+
+    const selectedPages = instance.getItems();
+    const argPages: ILegacyPrivatePage[] = selectedPages.map((page) => {
+      return { pageId: page.pageData._id, path: page.pageData.path };
+    });
+
+    openLegacyPrivatePagesMigrationModal(
+      argPages,
+      () => {
+        toastSuccess('success');
+        closeLegacyPrivatePagesMigrationModal();
+      },
+    );
+  }, [closeLegacyPrivatePagesMigrationModal, openLegacyPrivatePagesMigrationModal]);
+
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
     const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
     setConfigurationsByPagination({
@@ -187,9 +212,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         onCheckboxChanged={selectAllCheckboxChangedHandler}
       >
         <UncontrolledButtonDropdown>
-          <DropdownToggle caret color="outline-primary">{t('private_legacy_pages.bulk_operation')}</DropdownToggle>
+          <DropdownToggle caret color="outline-primary" disabled={isDisabled}>
+            {t('private_legacy_pages.bulk_operation')}
+          </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem onClick={() => { /* TODO: implement */ }}>
+            <DropdownItem onClick={convertMenuItemClickedHandler}>
               <i className="icon-fw icon-refresh"></i>
               {t('private_legacy_pages.convert_all_selected_pages')}
             </DropdownItem>
@@ -203,7 +230,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         </UncontrolledButtonDropdown>
       </OperateAllControl>
     );
-  }, [hitsCount, selectAllCheckboxChangedHandler, t]);
+  }, [convertMenuItemClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
     return (

@@ -11,6 +11,11 @@ import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
+export interface IReturnSelectedItems {
+  getItems(): IPageWithMeta<IPageSearchMeta>[],
+}
+
+
 type Props = {
   appContainer: AppContainer,
 
@@ -25,7 +30,7 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
+const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedItems, Props> = (props:Props, ref) => {
   const {
     appContainer,
     pages,
@@ -44,7 +49,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   // ref: RevisionRenderer
   //   [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
   const [highlightKeywords, setHightlightKeywords] = useState<string[]>([]);
-  const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
+  const [selectedPagesByCheckboxes, setSelectedPagesByCheckboxes] = useState<Record<string, IPageWithMeta<IPageSearchMeta>>>({});
   // const [allPageIds] = useState<Set<string>>(new Set());
   const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
 
@@ -57,7 +62,9 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       }
 
       if (pages != null) {
-        pages.forEach(page => selectedPageIdsByCheckboxes.add(page.pageData._id));
+        pages.forEach((page) => {
+          selectedPagesByCheckboxes[page.pageData._id] = page;
+        });
       }
     },
     deselectAll: () => {
@@ -66,7 +73,10 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
         instance.deselectAll();
       }
 
-      selectedPageIdsByCheckboxes.clear();
+      setSelectedPagesByCheckboxes({});
+    },
+    getItems: () => {
+      return Object.values(selectedPagesByCheckboxes);
     },
   }));
 
@@ -76,14 +86,16 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
     }
 
     if (isChecked) {
-      selectedPageIdsByCheckboxes.add(pageId);
+      const page = pages.find(page => page.pageData._id === pageId);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      selectedPagesByCheckboxes[pageId] = page!;
     }
     else {
-      selectedPageIdsByCheckboxes.delete(pageId);
+      delete selectedPagesByCheckboxes[pageId];
     }
 
     if (onSelectedPagesByCheckboxesChanged != null) {
-      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size, pages.length);
+      onSelectedPagesByCheckboxesChanged(Object.keys(selectedPagesByCheckboxes).length, pages.length);
     }
   };
 
@@ -101,13 +113,14 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
     }
 
     if (pages.length > 0) {
-      selectedPageIdsByCheckboxes.clear();
+      // clear
+      setSelectedPagesByCheckboxes({});
     }
 
     if (onSelectedPagesByCheckboxesChanged != null) {
-      onSelectedPagesByCheckboxesChanged(selectedPageIdsByCheckboxes.size, pages.length);
+      onSelectedPagesByCheckboxesChanged(Object.keys(selectedPagesByCheckboxes).length, pages.length);
     }
-  }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
+  }, [onSelectedPagesByCheckboxesChanged, pages, selectedPagesByCheckboxes]);
 
   if (!isSearchServiceConfigured) {
     return (
