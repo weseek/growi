@@ -110,7 +110,12 @@ const GrowiSubNavigationSwitcher = (props) => {
 
   return (
     <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
-      <div id="grw-subnav-fixed-container" className="grw-subnav-fixed-container position-fixed" ref={fixedContainerRef} style={{ width }}>
+      <div
+        id="grw-subnav-fixed-container"
+        className="grw-subnav-fixed-container position-fixed grw-subnav-append-shadow-container"
+        ref={fixedContainerRef}
+        style={{ width }}
+      >
         <GrowiContextualSubNavigation isCompactMode isLinkSharingDisabled />
       </div>
     </div>

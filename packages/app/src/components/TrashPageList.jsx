@@ -21,7 +21,7 @@ const TrashPageList = (props) => {
   }, [t]);
 
   return (
-    <div className="mt-5 d-edit-none">
+    <div data-testid="trash-page-list" className="mt-5 d-edit-none">
       <CustomNavAndContents navTabMapping={navTabMapping} />
     </div>
   );

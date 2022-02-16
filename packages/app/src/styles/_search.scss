@@ -193,7 +193,7 @@
       }
     }
 
-    .search-result-page {
+    .search-result-content {
       height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width));
 
       > h2 {
@@ -206,13 +206,12 @@
         margin-top: 0;
       }
 
-      .search-result-page-content {
+      .search-result-content-body-container {
         overflow-y: auto;
 
         .wiki {
           padding: 16px;
           font-size: 13px;
-          border: solid 1px $gray-300;
         }
       }
     }

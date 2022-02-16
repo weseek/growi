@@ -14,7 +14,7 @@ class MarkDownSettingContents extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <React.Fragment>
+      <div data-testid="admin-markdown">
         {/* Line Break Setting */}
         <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
         <Card className="card well my-3">
@@ -42,7 +42,7 @@ class MarkDownSettingContents extends React.Component {
           <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
         </Card>
         <XssForm />
-      </React.Fragment>
+      </div>
     );
   }
 
