@@ -220,4 +220,4 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   );
 };
 
-export const PageListItemL = memo(forwardRef(PageListItemLSubstance)) as typeof PageListItemLSubstance;
+export const PageListItemL = memo(forwardRef(PageListItemLSubstance));
