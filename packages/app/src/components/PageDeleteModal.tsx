@@ -128,6 +128,7 @@ const PageDeleteModal: FC = () => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
