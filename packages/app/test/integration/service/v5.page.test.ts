@@ -757,7 +757,6 @@ describe('PageService page operations with only public pages', () => {
       const tag2 = await Tag.findOne({ name:  'duplicate_Tag2' });
       const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
       const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
-
       expectAllToBeTruthy([basePage, tag1, tag2, basePageTagRelation1, basePageTagRelation2]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate5';
@@ -772,7 +771,6 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT duplicate comments', async() => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate6' });
       const basePageComments = await Comment.find({ page: basePage._id });
-
       expectAllToBeTruthy([basePage, ...basePageComments]);
 
       const newPagePath = '/duplicatedv5PageForDuplicate6';
