@@ -32,8 +32,6 @@ const PageDeleteModal: FC = () => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
-  const pagesData = deleteModalData?.pages ?? [];
-  const targetPagePath = pagesData[0]?.path ?? '';
   const isAbleToDeleteCompletely = deleteModalData?.isAbleToDeleteCompletely ?? false;
   const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal ?? false;
 
@@ -130,7 +128,7 @@ const PageDeleteModal: FC = () => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
-          <p className="form-text text-muted mt-0"> <code>{ targetPagePath }</code> { t('modal_delete.recursively') }</p>
+          <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
