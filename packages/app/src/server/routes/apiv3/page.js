@@ -10,7 +10,9 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
+const {
+  convertToNewAffiliationPath, isTopPage, isUserPage, isUserNamePage,
+} = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -356,6 +358,7 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+    console.log('YOOOOOOOOOOOOOOOOOOOOOOOO');
     const { user, isSharedPage } = req;
     const { pageId } = req.query;
 
@@ -391,7 +394,7 @@ module.exports = (crowi) => {
 
       const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
       const isLiked = page.isLiked(user);
-      const isMovable = !isTopPage(page.path);
+      const isMovable = !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path) && !page.isEmpty;
       const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
 
       const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);

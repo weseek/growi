@@ -105,7 +105,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Bookmark */}
         { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
-          <DropdownItem onClick={bookmarkItemClickedHandler}>
+          <DropdownItem
+            onClick={bookmarkItemClickedHandler}
+            disabled={!pageInfo.isMovable}
+          >
             <i className="fa fa-fw fa-bookmark-o"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
@@ -120,8 +123,11 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { isEnableActions && pageInfo.isMovable && (
-          <DropdownItem onClick={renameItemClickedHandler}>
+        { isEnableActions && (
+          <DropdownItem
+            onClick={renameItemClickedHandler}
+            disabled={!pageInfo.isMovable}
+          >
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
@@ -131,12 +137,12 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { isEnableActions && pageInfo.isMovable && (
+        { isEnableActions && (
           <>
             <DropdownItem divider />
             <DropdownItem
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
-              disabled={!pageInfo.isDeletable}
+              disabled={!pageInfo.isDeletable && !pageInfo.isMovable}
               onClick={deleteItemClickedHandler}
             >
               <i className="icon-fw icon-trash"></i>
