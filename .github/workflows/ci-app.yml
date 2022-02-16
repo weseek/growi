@@ -102,7 +102,7 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
-  test-v5-compatible:
+  test-v5:
     runs-on: ubuntu-latest
 
     strategy:
