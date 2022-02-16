@@ -121,7 +121,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     };
 
     onClickDeleteMenuItem(pageToDelete, pageInfo.isAbleToDeleteCompletely);
-    console.log('pageInfo.isAbleToDeleteCompletely', pageInfo.isAbleToDeleteCompletely);
   }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
