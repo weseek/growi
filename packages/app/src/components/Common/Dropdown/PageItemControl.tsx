@@ -105,10 +105,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Bookmark */}
         { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
-          <DropdownItem
-            onClick={bookmarkItemClickedHandler}
-            disabled={!pageInfo.isMovable}
-          >
+          <DropdownItem onClick={bookmarkItemClickedHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>

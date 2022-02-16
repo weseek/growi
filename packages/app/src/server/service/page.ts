@@ -1698,7 +1698,7 @@ class PageService {
       };
     }
 
-    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path) && !page.isEmpty;
+    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];

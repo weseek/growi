@@ -393,7 +393,7 @@ module.exports = (crowi) => {
 
       const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
       const isLiked = page.isLiked(user);
-      const isMovable = !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path) && !page.isEmpty;
+      const isMovable = !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
       const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
 
       const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
