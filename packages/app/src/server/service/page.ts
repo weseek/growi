@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -95,7 +95,7 @@ class PageCursorsForDescendantsFactory {
 
     const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
-    await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
+    // await this.Page.addConditionToFilteringByViewerToEdit(builder, this.user);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
 
@@ -317,25 +317,34 @@ class PageService {
 
   async renamePage(page, newPagePath, user, options) {
     /*
-     * Main Operation
+     * Common Operation
      */
-    const Page = this.crowi.model('Page');
-
     if (isTopPage(page.path)) {
       throw Error('It is forbidden to rename the top page');
     }
 
-    // 1. Separate v4 & v5 process
+    // Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
+    /*
+     * Resumable Operation
+     */
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options);
+
+    return renamedPage;
+  }
+
+  async renameMainOperation(page, newPagePath: string, user, options) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-    // 2. UserGroup & Owner validation
+    // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
     let grant;
     let grantedUserIds;
@@ -371,7 +380,7 @@ class PageService {
       }
     }
 
-    // 3. Rename target (update parent attr)
+    // Rename target (update parent attr)
     const update: Partial<IPage> = {};
     // find or create parent
     const newParent = await Page.getParentAndFillAncestors(newPagePath);
@@ -388,12 +397,12 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameDescendantsSubOperation(page, newPagePath, user, options, renamedPage);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage);
 
     return renamedPage;
   }
 
-  async renameDescendantsSubOperation(page, newPagePath: string, user, options, renamedPage): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage): Promise<void> {
     const exParentId = page.parent;
 
     // update descendants first
@@ -660,10 +669,14 @@ class PageService {
    */
   async duplicate(page, newPagePath, user, isRecursively) {
     /*
-     * Main Operation
+     * Common Operation
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+
+    if (isRecursively && page.isEmpty) {
+      throw Error('Page not found.');
+    }
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
@@ -738,15 +751,10 @@ class PageService {
     }
 
     if (isRecursively) {
-      (async() => {
-        const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false);
-        // END Main Operation
-
-        /*
-         * Sub Operation
-         */
-        await this.duplicateDescendantsSubOperation(page, newPagePath, user, duplicatedTarget, nDuplicatedPages);
-      })();
+      /*
+       * Resumable Operation
+       */
+      this.duplicateRecursivelyMainOperation(page, newPagePath, user);
     }
 
     const result = serializePageSecurely(duplicatedTarget);
@@ -754,7 +762,9 @@ class PageService {
     return result;
   }
 
-  async duplicateDescendantsSubOperation(page, newPagePath: string, user, duplicatedTarget, nDuplicatedPages: number): Promise<void> {
+  async duplicateRecursivelyMainOperation(page, newPagePath: string, user): Promise<void> {
+    const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false);
+
     // normalize parent of descendant pages
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
@@ -767,7 +777,21 @@ class PageService {
         throw err;
       }
     }
-    await this.updateDescendantCountOfAncestors(duplicatedTarget._id, nDuplicatedPages, false);
+
+    /*
+     * Sub Operation
+     */
+    await this.duplicateRecursivelySubOperation(newPagePath, nDuplicatedPages);
+  }
+
+  async duplicateRecursivelySubOperation(newPagePath: string, nDuplicatedPages: number): Promise<void> {
+    const Page = mongoose.model('Page');
+    const newTarget = await Page.findOne({ path: newPagePath }); // only one page will be found since duplicating to existing path is forbidden
+    if (newTarget == null) {
+      throw Error('No duplicated page found. Something might have gone wrong in duplicateRecursivelyMainOperation.');
+    }
+
+    await this.updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
@@ -1036,11 +1060,10 @@ class PageService {
    */
   async deletePage(page, user, options = {}, isRecursively = false) {
     /*
-     * Main Operation
+     * Common Operation
      */
     const Page = mongoose.model('Page') as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     // 1. Separate v4 & v5 process
@@ -1049,8 +1072,9 @@ class PageService {
       return this.deletePageV4(page, user, options, isRecursively);
     }
 
-    const newPath = Page.getDeletedPageName(page.path);
-
+    if (page.isEmpty && !isRecursively) {
+      throw Error('Page not found.');
+    }
     const isTrashed = isTrashPage(page.path);
     if (isTrashed) {
       throw new Error('This method does NOT support deleting trashed pages.');
@@ -1059,6 +1083,7 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    // prepare before deletion when !isRecursively
     if (!isRecursively) {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
@@ -1074,9 +1099,8 @@ class PageService {
     }
 
     let deletedPage;
-    // update Revisions
     if (!page.isEmpty) {
-      await Revision.updateRevisionListByPageId(page._id, { pageId: page._id });
+      const newPath = Page.getDeletedPageName(page.path);
       deletedPage = await Page.findByIdAndUpdate(page._id, {
         $set: {
           path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
@@ -1092,24 +1116,31 @@ class PageService {
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
     }
+    else if (page.isEmtpy && isRecursively) {
+      // delete target (empty page)
+      await Page.deleteOne({ _id: page._id, isEmpty: true });
+
+      // delete leaf empty pages
+      const parent = await Page.findById(page.parent);
+      await this.removeLeafEmptyPages(parent);
+
+      deletedPage = page;
+    }
 
     if (isRecursively) {
       /*
        * Sub Operation
        */
-      this.deletePageDescendantsSubOperation(page, user);
+      this.deleteDescendantsMainOperation(page, user);
     }
 
     return deletedPage;
   }
 
-  async deletePageDescendantsSubOperation(page, user): Promise<void> {
-    const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, false);
+  async deleteDescendantsMainOperation(page, user): Promise<void> {
+    await this.deleteDescendantsWithStream(page, user, false);
 
-    // update descendantCount of ancestors'
-    if (page.parent != null) {
-      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-    }
+    // no sub operation available
   }
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
