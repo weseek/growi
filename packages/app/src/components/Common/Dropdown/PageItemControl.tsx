@@ -121,10 +121,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* Move/Rename */}
         { isEnableActions && (
-          <DropdownItem
-            onClick={renameItemClickedHandler}
-            disabled={!pageInfo.isMovable}
-          >
+          <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
@@ -134,12 +131,12 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { isEnableActions && (
+        { isEnableActions && !pageInfo.isMovable && (
           <>
             <DropdownItem divider />
             <DropdownItem
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
-              disabled={!pageInfo.isDeletable && !pageInfo.isMovable}
+              disabled={!pageInfo.isDeletable}
               onClick={deleteItemClickedHandler}
             >
               <i className="icon-fw icon-trash"></i>
