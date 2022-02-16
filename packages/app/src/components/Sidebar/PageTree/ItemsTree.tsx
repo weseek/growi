@@ -127,22 +127,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
     const path = pathOrPathsToDelete;
 
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
+    if (isCompletely) {
+      toastSuccess(t('deleted_pages_completely', { path }));
     }
     else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
+      toastSuccess(t('deleted_pages', { path }));
     }
   };
 
