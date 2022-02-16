@@ -1,14 +1,16 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
+import { useSWRxPageChildren } from '~/stores/page-listing';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -17,7 +19,9 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction,
+} from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -74,6 +78,7 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
+  const { t } = useTranslation();
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -99,11 +104,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const page = pageWithMeta?.pageData;
+  const { mutate: mutateChildren } = useSWRxPageChildren(pageWithMeta.pageData.path);
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const page = pageWithMeta?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -116,9 +121,37 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    mutateChildren();
+
+    const path = pathOrPathsToDelete;
+
+    if (isRecursively) {
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page_recursively', { path }));
+      }
+    }
+    else {
+      // eslint-disable-next-line no-lonely-if
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page', { path }));
+      }
+    }
+  }, [mutateChildren, t]);
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {

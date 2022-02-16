@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren, useSWRxPageChildren, useSWRxRootPage } from '../../../stores/page-listing';
+import { useSWRxPageAncestorsChildren, useSWRxPageChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
