@@ -358,7 +358,6 @@ module.exports = (crowi) => {
    *            description: Internal server error.
    */
   router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
-    console.log('YOOOOOOOOOOOOOOOOOOOOOOOO');
     const { user, isSharedPage } = req;
     const { pageId } = req.query;
 
