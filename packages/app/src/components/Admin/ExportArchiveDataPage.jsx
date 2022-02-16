@@ -210,7 +210,7 @@ class ExportArchiveDataPage extends React.Component {
     const showExportingData = (isExported || isExporting) && (progressList != null);
 
     return (
-      <Fragment>
+      <div data-testid="admin-export-archive-data">
         <h2>{t('Export Archive Data')}</h2>
 
         <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
@@ -239,7 +239,7 @@ class ExportArchiveDataPage extends React.Component {
           onClose={this.closeExportModal}
           collections={this.state.collections}
         />
-      </Fragment>
+      </div>
     );
   }
 

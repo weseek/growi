@@ -7,6 +7,7 @@ import {
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -29,6 +30,11 @@ const ContextExtractorOnce: FC = () => {
    * App Context from DOM
    */
   const currentUser = JSON.parse(document.getElementById('growi-current-user')?.textContent || jsonNull);
+
+  /*
+   * Settings from context-hydrate DOM
+   */
+  const configByContextHydrate = JSON.parse(document.getElementById('growi-context-hydrate')?.textContent || jsonNull);
 
   /*
    * UserUISettings from DOM
@@ -90,6 +96,12 @@ const ContextExtractorOnce: FC = () => {
   useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
+
+  // hydrated config
+  useIsAclEnabled(configByContextHydrate.isAclEnabled);
+  useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
+  useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
+
 
   // Page
   useCurrentCreatedAt(createdAt);

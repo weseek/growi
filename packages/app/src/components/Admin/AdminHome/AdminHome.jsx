@@ -37,7 +37,7 @@ const AdminHome = (props) => {
   }, [fetchAdminHomeData]);
 
   return (
-    <>
+    <div data-testid="admin-home">
       {
       // Alert message will be displayed in case that V5 migration has not been compleated
         (migrationStatus != null && !migrationStatus.isV5Compatible)
@@ -106,7 +106,7 @@ const AdminHome = (props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

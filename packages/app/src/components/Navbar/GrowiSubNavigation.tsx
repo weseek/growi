@@ -30,6 +30,7 @@ type Props = {
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void>,
 
   controls?: React.FunctionComponent,
+  additionalClasses?: string[],
 }
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
@@ -41,6 +42,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
     isGuestUser, isDrawerMode, isCompactMode,
     tags, tagsUpdatedHandler,
     controls: Controls,
+    additionalClasses = [],
   } = props;
 
   const {
@@ -56,7 +58,11 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
   }
 
   return (
-    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+    <div className={
+      'grw-subnav d-flex align-items-center justify-content-between'
+      + ` ${additionalClasses.join(' ')}`
+      + ` ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}
+    >
 
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
