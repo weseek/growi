@@ -9,7 +9,6 @@ import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
-import { useSWRxPageChildren } from '~/stores/page-listing';
 
 import RevisionLoader from '../Page/RevisionLoader';
 import AppContainer from '../../client/services/AppContainer';
@@ -103,7 +102,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   } = props;
 
   const page = pageWithMeta?.pageData;
-  const { mutate: mutateChildren } = useSWRxPageChildren(pageWithMeta.pageData.path);
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
