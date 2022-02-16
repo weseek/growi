@@ -372,7 +372,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && ( */}
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}

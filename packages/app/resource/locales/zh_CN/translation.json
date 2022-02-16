@@ -418,7 +418,7 @@
 		"delete_completely_restriction": "You don't have the authority to delete pages completely.",
 		"recursively": "Delete children of <code>%s</code> recursively.",
 		"completely": "Delete completely instead of putting it into trash."
-	},
+  },
 	"modal_empty": {
 		"empty_the_trash": "Empty The Trash",
 		"notice": "完全删除的页面是不可恢复的。"
