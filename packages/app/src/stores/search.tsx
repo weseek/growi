@@ -90,3 +90,12 @@ export const useSWRxFullTextSearch = (
     },
   };
 };
+
+export const useSWRxNamedQuerySearch = (
+    namedQuery: string, configurations: ISearchConfigurations,
+): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
+
+  const keyword = `[nq:${namedQuery}]`;
+  return useSWRxFullTextSearch(keyword, configurations);
+
+};
