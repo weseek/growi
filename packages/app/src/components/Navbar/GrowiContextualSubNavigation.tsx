@@ -194,8 +194,30 @@ const GrowiContextualSubNavigation = (props) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
+
     mutateChildren();
-    window.location.reload();
+
+    const path = pathOrPathsToDelete;
+
+    if (isRecursively) {
+      if (isCompletely) {
+        // redirect to not found page
+        window.location.href = path;
+      }
+      else {
+        window.location.reload();
+      }
+    }
+    else {
+      // eslint-disable-next-line no-lonely-if
+      if (isCompletely) {
+        // redirect to not found page
+        window.location.href = path;
+      }
+      else {
+        window.location.reload();
+      }
+    }
   }, [mutateChildren]);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
@@ -294,7 +316,6 @@ const GrowiContextualSubNavigation = (props) => {
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
-      additionalClasses={['container-fluid']}
     />
   );
 };
