@@ -103,6 +103,22 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Coverage Report
+        path: packages/app/coverage
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: failure()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
+        channel: '#ci'
+        isCompactMode: true
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
 
   launch-dev:
