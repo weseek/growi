@@ -497,7 +497,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
  * @param pageId ObjectIdLike
  * @returns Promise<void>
  */
-schema.statics.removeLeafEmptyPagesById = async function(pageId: ObjectIdLike): Promise<void> {
+schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectIdLike): Promise<void> {
   const self = this;
 
   const initialLeafPage = await this.findById(pageId);

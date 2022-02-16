@@ -289,9 +289,9 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     // delete leaf empty pages
-    const shouldDeleteLeafEmptyPages = !(await Page.exists({ parent: page.parent, _id: { $ne: page._id } }));
-    if (shouldDeleteLeafEmptyPages) {
-      await Page.removeLeafEmptyPagesById(page.parent);
+    const isSiblingsOrChildrenExist = await Page.exists({ parent: { $in: [page.parent, page._id] }, _id: { $ne: page._id } });
+    if (!isSiblingsOrChildrenExist) {
+      await Page.removeLeafEmptyPagesRecursively(page.parent);
     }
   }
 
@@ -1069,7 +1069,7 @@ class PageService {
     if (shouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
-    // validate
+    // Validate
     if (page.isEmpty && !isRecursively) {
       throw Error('Page not found.');
     }
@@ -1081,10 +1081,35 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    const newPath = Page.getDeletedPageName(page.path);
+    // Replace with an empty page
+    const isChildrenExist = await Page.exists({ parent: page._id });
+    const shouldReplace = !isRecursively && isChildrenExist;
+    if (shouldReplace) {
+      await Page.replaceTargetWithPage(page, null, true);
+    }
 
-    // delete target first
-    const deletedPage = await this.deleteOnlyTarget(page, user, newPath, isRecursively);
+    // Delete target
+    let deletedPage;
+    if (!page.isEmpty) {
+      deletedPage = await this.deleteNonEmptyTarget(page, user);
+    }
+    else { // always recursive
+      deletedPage = page;
+      await this.deleteEmptyTarget(page);
+    }
+
+    // 1. Update descendantCount
+    if (isRecursively) {
+      const inc = page.isEmpty ? -page.descendantCount : -(page.descendantCount + 1);
+      await this.updateDescendantCountOfAncestors(page.parent, inc, true);
+    }
+    else {
+      // update descendantCount of ancestors'
+      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+    }
+    // 2. Delete leaf empty pages
+    const parent = await Page.findById(page.parent);
+    await this.removeLeafEmptyPages(parent);
 
     if (isRecursively) {
       /*
@@ -1096,55 +1121,34 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteOnlyTarget(page, user, newPath: string, isRecursively: boolean) {
+  private async deleteNonEmptyTarget(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+    const newPath = Page.getDeletedPageName(page.path);
 
-    if (!isRecursively) {
-      // replace with an empty page
-      const shouldReplace = await Page.exists({ parent: page._id });
-      if (shouldReplace) {
-        await Page.replaceTargetWithPage(page, null, true);
-      }
+    const deletedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: {
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
+      },
+    }, { new: true });
 
-      // update descendantCount of ancestors'
-      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+    await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
+    await PageRedirect.create({ fromPath: page.path, toPath: newPath });
 
-      // delete leaf empty pages
-      await this.removeLeafEmptyPages(page);
-    }
-
-    // delete target
-    let deletedPage;
-    if (!page.isEmpty) {
-      deletedPage = await Page.findByIdAndUpdate(page._id, {
-        $set: {
-          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
-        },
-      }, { new: true });
-
-      // delete leaf empty pages
-      await this.removeLeafEmptyPages(page);
-
-      await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
-      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
-
-      this.pageEvent.emit('delete', page, user);
-      this.pageEvent.emit('create', deletedPage, user);
-    }
-    else if (page.isEmtpy && isRecursively) {
-      // delete target (empty page)
-      await Page.deleteOne({ _id: page._id, isEmpty: true });
-
-      // delete leaf empty pages
-      const parent = await Page.findById(page.parent);
-      await this.removeLeafEmptyPages(parent);
-
-      deletedPage = page;
-    }
+    this.pageEvent.emit('delete', page, user);
+    this.pageEvent.emit('create', deletedPage, user);
 
     return deletedPage;
+  }
+
+  private async deleteEmptyTarget(page): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    await Page.deleteOne({ _id: page._id, isEmpty: true });
+
+    // update descendantCount of ancestors' before removeLeafEmptyPages
+    await this.updateDescendantCountOfAncestors(page._id, -page.descendantCount, false);
   }
 
   async deleteDescendantsMainOperation(page, user): Promise<void> {
