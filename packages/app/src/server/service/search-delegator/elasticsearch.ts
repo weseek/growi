@@ -9,12 +9,14 @@ import streamToPromise from 'stream-to-promise';
 
 import { createBatchStream } from '../../util/batch-stream';
 import loggerFactory from '~/utils/logger';
-import { PageDocument, PageModel } from '../../models/page';
+import { PageModel } from '../../models/page';
 import {
-  MetaData, SearchDelegator, Result, SearchableData, QueryTerms,
+  SearchDelegator, SearchableData, QueryTerms,
 } from '../../interfaces/search';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import {
+  IFormattedSearchResult, ISearchResult, SORT_AXIS, SORT_ORDER,
+} from '~/interfaces/search';
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -147,10 +149,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async init() {
+  async init(): Promise<void> {
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
-      return this.rebuildIndex();
+      try {
+        await this.rebuildIndex();
+      }
+      catch (err) {
+        logger.error('Rebuild index on boot failed', err);
+      }
+      return;
     }
     return normalizeIndices;
   }
@@ -282,7 +290,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       await this.addAllPages();
     }
     catch (error) {
-      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+      logger.error('An error occured while \'rebuildIndex\'.', error);
+      logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
       socket.emit('rebuildingFailed', { error: error.message });
@@ -290,6 +299,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       throw error;
     }
     finally {
+      logger.warn('Normalize indices anyway.');
       await this.normalizeIndices();
     }
 
@@ -323,8 +333,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
   }
 
   async createIndex(index) {
-    const body = this.isElasticsearchV6 ? require('^/resource/search/mappings-es6.json') : require('^/resource/search/mappings-es7.json');
-    return this.client.indices.create({ index, body });
+    let mappings = this.isElasticsearchV6
+      ? require('^/resource/search/mappings-es6.json')
+      : require('^/resource/search/mappings-es7.json');
+
+    if (process.env.CI) {
+      mappings = require('^/resource/search/mappings-es6-for-ci.json');
+    }
+
+    return this.client.indices.create({
+      index,
+      body: mappings,
+    });
   }
 
   /**
@@ -611,22 +631,25 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
    *   data: [ pages ...],
    * }
    */
-  async searchKeyword(query) {
+  async searchKeyword(query): Promise<IFormattedSearchResult> {
+
     // for debug
     if (process.env.NODE_ENV === 'development') {
+      logger.debug('query: ', { query });
+
       const { body: result } = await this.client.indices.validateQuery({
+        index: query.index,
+        type: query.type,
         explain: true,
         body: {
           query: query.body.query,
         },
       });
-      logger.debug('ES returns explanations: ', result.explanations);
+      // for debug
+      logger.debug('ES result: ', result);
     }
 
     const { body: result } = await this.client.search(query);
-
-    // for debug
-    logger.debug('ES result: ', result);
 
     const totalValue = this.isElasticsearchV6 ? result.hits.total : result.hits.total.value;
 
@@ -634,7 +657,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       meta: {
         took: result.took,
         total: totalValue,
-        results: result.hits.hits.length,
+        hitsCount: result.hits.hits.length,
       },
       data: result.hits.hits.map((elm) => {
         return {
@@ -663,9 +686,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // eslint-disable-next-line prefer-const
     let query = {
       index: this.aliasName,
+      _source: fields,
       body: {
         query: {}, // query
-        _source: fields,
       },
     };
 
@@ -685,7 +708,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
-    query.body.sort = { [sort]: { order } };
+    query.sort = { [sort]: { order } };
   }
 
   convertSortQuery(sortAxis) {
@@ -940,7 +963,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
   }
 
-  async search(data: SearchableData, user, userGroups, option): Promise<Result<Data> & MetaData> {
+  async search(data: SearchableData, user, userGroups, option): Promise<ISearchResult<unknown>> {
     const { queryString, terms } = data;
 
     const from = option.offset || null;

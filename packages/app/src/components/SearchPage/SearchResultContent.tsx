@@ -48,8 +48,8 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  searchingKeyword:string,
-  focusedSearchResultData : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
 }
 
@@ -72,7 +72,7 @@ const generateObserverCallback = (doScroll: ()=>void) => {
   };
 };
 
-const SearchResultContent: FC<Props> = (props: Props) => {
+export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
 
   // ***************************  Auto Scroll  ***************************
@@ -94,7 +94,8 @@ const SearchResultContent: FC<Props> = (props: Props) => {
 
   const {
     appContainer,
-    focusedSearchResultData,
+    pageWithMeta,
+    highlightKeywords,
     showPageControlDropdown,
   } = props;
 
@@ -102,7 +103,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const page = focusedSearchResultData?.pageData;
+  const page = pageWithMeta?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -137,6 +138,7 @@ const SearchResultContent: FC<Props> = (props: Props) => {
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+            isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -146,29 +148,30 @@ const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
 
   return (
-    <div key={page._id} className="search-result-page grw-page-path-text-muted-container d-flex flex-column">
-      <GrowiSubNavigation
-        page={page}
-        controls={ControlComponents}
-      />
-      <div className="search-result-page-content" ref={scrollElementRef}>
+    <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
+      <div className="grw-subnav-append-shadow-container">
+        <GrowiSubNavigation
+          page={page}
+          controls={ControlComponents}
+          isCompactMode
+          additionalClasses={['px-4']}
+        />
+      </div>
+      <div className="search-result-content-body-container" ref={scrollElementRef}>
         <RevisionLoader
           growiRenderer={growiRenderer}
           pageId={page._id}
           pagePath={page.path}
           revisionId={page.revision}
-          highlightKeywords={props.searchingKeyword}
+          highlightKeywords={highlightKeywords}
         />
       </div>
     </div>
   );
 };
-
-
-export default SearchResultContent;
