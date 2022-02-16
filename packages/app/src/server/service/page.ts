@@ -1065,13 +1065,12 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-
-    // 1. Separate v4 & v5 process
+    // Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
-
+    // validate
     if (page.isEmpty && !isRecursively) {
       throw Error('Page not found.');
     }
@@ -1083,7 +1082,24 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    // prepare before deletion when !isRecursively
+    const newPath = Page.getDeletedPageName(page.path);
+
+    // delete target first
+    const deletedPage = await this.deleteOnlyTarget(page, user, isRecursively);
+
+    if (isRecursively) {
+      /*
+       * Sub Operation
+       */
+      this.deleteDescendantsMainOperation(page, user);
+    }
+
+    return deletedPage;
+  }
+
+  async deleteOnlyTarget(page, user, isRecursively: boolean) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     if (!isRecursively) {
       // replace with an empty page
       const shouldReplace = await Page.exists({ parent: page._id });
@@ -1098,9 +1114,9 @@ class PageService {
       await this.removeLeafEmptyPages(page);
     }
 
+    // delete target
     let deletedPage;
     if (!page.isEmpty) {
-      const newPath = Page.getDeletedPageName(page.path);
       deletedPage = await Page.findByIdAndUpdate(page._id, {
         $set: {
           path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
@@ -1125,13 +1141,6 @@ class PageService {
       await this.removeLeafEmptyPages(parent);
 
       deletedPage = page;
-    }
-
-    if (isRecursively) {
-      /*
-       * Sub Operation
-       */
-      this.deleteDescendantsMainOperation(page, user);
     }
 
     return deletedPage;
