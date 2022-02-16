@@ -46,14 +46,20 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const leftNum = offset + 1;
   const rightNum = offset + hitsCount;
 
+  if (total === 0) {
+    return (
+      <div className="d-flex justify-content-center h2 text-muted my-5">
+        0 {t('search_result.page_number_unit')}
+      </div>
+    );
+  }
+
   return (
     <div className="form-inline d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
         <span className="search-result-keyword">{`${searchingKeyword}`}</span>
-        { total > 0 && (
-          <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
-        ) }
+        <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           <span className="ml-3 text-muted">({took}ms)</span>
         ) }
