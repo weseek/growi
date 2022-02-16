@@ -1,9 +1,9 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
@@ -17,7 +17,9 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 
-import { usePageDuplicateModal, usePageRenameModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction,
+} from '~/stores/modal';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -99,11 +101,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     showPageControlDropdown,
   } = props;
 
+  const page = pageWithMeta?.pageData;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const page = pageWithMeta?.pageData;
 
   const growiRenderer = appContainer.getRenderer('searchresult');
 
@@ -116,9 +117,16 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+    window.location.reload();
+  }, []);
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+  }, [onDeletedHandler, openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
