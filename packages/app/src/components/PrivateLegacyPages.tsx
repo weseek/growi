@@ -19,7 +19,7 @@ import { ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal } from '~/store
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 
-import { IReturnSelectedItems, SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 
 
@@ -125,9 +125,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
     limit: INITIAL_PAGIONG_SIZE,
   });
+  const [isControlEnabled, setControlEnabled] = useState(false);
 
-  const selectAllControlRef = useRef<ISelectableAndIndeterminatable & IReturnSelectedItems|null>(null);
-  const searchPageBaseRef = useRef<ISelectableAll|null>(null);
+  const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
+  const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
   const { data, conditions } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
     limit: INITIAL_PAGIONG_SIZE,
@@ -145,9 +146,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
     if (isChecked) {
       instance.selectAll();
+      setControlEnabled(true);
     }
     else {
       instance.deselectAll();
+      setControlEnabled(false);
     }
   }, []);
 
@@ -160,35 +163,43 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
     if (selectedCount === 0) {
       instance.deselect();
+      setControlEnabled(false);
     }
     else if (selectedCount === totalCount) {
       instance.select();
+      setControlEnabled(true);
     }
     else {
       instance.setIndeterminate();
+      setControlEnabled(true);
     }
   }, []);
 
   const convertMenuItemClickedHandler = useCallback(() => {
-    const instance = selectAllControlRef.current;
+    const instance = searchPageBaseRef.current;
 
-    if (instance == null) {
+    if (instance == null || data == null) {
       return;
     }
 
-    const selectedPages = instance.getItems();
-    const argPages: ILegacyPrivatePage[] = selectedPages.map((page) => {
-      return { pageId: page.pageData._id, path: page.pageData.path };
-    });
+    const selectedPageIds = instance.getSelectedPageIds();
+
+    if (selectedPageIds.size === 0) {
+      return;
+    }
+
+    const selectedPages = data.data
+      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
+      .map(pageWithMeta => ({ pageId: pageWithMeta.pageData._id, path: pageWithMeta.pageData.path } as ILegacyPrivatePage));
 
     openLegacyPrivatePagesMigrationModal(
-      argPages,
+      selectedPages,
       () => {
         toastSuccess('success');
         closeLegacyPrivatePagesMigrationModal();
       },
     );
-  }, [closeLegacyPrivatePagesMigrationModal, openLegacyPrivatePagesMigrationModal]);
+  }, [closeLegacyPrivatePagesMigrationModal, data, openLegacyPrivatePagesMigrationModal]);
 
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
     const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
@@ -198,51 +209,41 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
   }, [configurationsByPagination]);
 
-  const hitsCount = data?.meta.hitsCount;
-
   const { offset, limit } = conditions;
-
-  const convertAllControl = useMemo(() => {
-    const isDisabled = hitsCount === 0;
-
-    return (
-      <OperateAllControl
-        ref={selectAllControlRef}
-        isCheckboxDisabled={isDisabled}
-        onCheckboxChanged={selectAllCheckboxChangedHandler}
-      >
-        <UncontrolledButtonDropdown>
-          <DropdownToggle caret color="outline-primary" disabled={isDisabled}>
-            {t('private_legacy_pages.bulk_operation')}
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem onClick={convertMenuItemClickedHandler}>
-              <i className="icon-fw icon-refresh"></i>
-              {t('private_legacy_pages.convert_all_selected_pages')}
-            </DropdownItem>
-            <DropdownItem onClick={() => { /* TODO: implement */ }}>
-              <span className="text-danger">
-                <i className="icon-fw icon-trash"></i>
-                {t('search_result.delete_all_selected_page')}
-              </span>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
-      </OperateAllControl>
-    );
-  }, [convertMenuItemClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 
   const searchControl = useMemo(() => {
     return (
       <div className="position-sticky fixed-top shadow-sm">
         <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
           <div className="d-flex pl-md-2">
-            {convertAllControl}
+            <OperateAllControl
+              ref={selectAllControlRef}
+              isCheckboxDisabled={!isControlEnabled}
+              onCheckboxChanged={selectAllCheckboxChangedHandler}
+            >
+              <UncontrolledButtonDropdown>
+                <DropdownToggle caret color="outline-primary" disabled={!isControlEnabled}>
+                  {t('private_legacy_pages.bulk_operation')}
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem onClick={convertMenuItemClickedHandler}>
+                    <i className="icon-fw icon-refresh"></i>
+                    {t('private_legacy_pages.convert_all_selected_pages')}
+                  </DropdownItem>
+                  <DropdownItem onClick={() => { /* TODO: implement */ }}>
+                    <span className="text-danger">
+                      <i className="icon-fw icon-trash"></i>
+                      {t('search_result.delete_all_selected_page')}
+                    </span>
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledButtonDropdown>
+            </OperateAllControl>
           </div>
         </div>
       </div>
     );
-  }, [convertAllControl]);
+  }, [convertMenuItemClickedHandler, isControlEnabled, selectAllCheckboxChangedHandler, t]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
