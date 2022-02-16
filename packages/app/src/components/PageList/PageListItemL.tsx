@@ -17,7 +17,6 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction,
 } from '~/stores/modal';
-import { useSWRxPageChildren } from '~/stores/page-listing';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -65,7 +64,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }));
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
-  const { mutate: mutateChildren } = useSWRxPageChildren(pageData.path);
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -107,8 +105,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       return;
     }
 
-    mutateChildren();
-
     const path = pathOrPathsToDelete;
 
     if (isRecursively) {
@@ -128,7 +124,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
         toastSuccess(t('deleted_single_page', { path }));
       }
     }
-  }, [mutateChildren, t]);
+  }, [t]);
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
