@@ -34,7 +34,7 @@ export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
     const { pages, onSubmited } = status;
     const pageIds = pages.map(page => page.pageId);
     try {
-      await apiv3Post<void>('/legacy-pages-migration', {
+      await apiv3Post<void>('/pages/legacy-pages-migration', {
         pageIds,
         isRecursively: isRecursively ? true : undefined,
       });
