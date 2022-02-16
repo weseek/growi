@@ -237,6 +237,8 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForDelete1 = new mongoose.Types.ObjectId();
     const pageIdForDelete2 = new mongoose.Types.ObjectId();
     const pageIdForDelete3 = new mongoose.Types.ObjectId();
+    const pageIdForDelete4 = new mongoose.Types.ObjectId();
+    const pageIdForDelete5 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -287,6 +289,23 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete4,
+        path: '/user',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDelete5,
+        path: '/user/v5DummyUser1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDelete4,
         status: Page.STATUS_PUBLISHED,
       },
     ]);
@@ -653,6 +672,7 @@ describe('PageService page operations with only public pages', () => {
 
       return deletedPage;
     };
+
     test('Should NOT delete root page', async() => {
       let isThrown;
       expectAllToBeTruthy([rootPage]);
@@ -662,6 +682,7 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
+
     test('Should NOT delete trashed page', async() => {
       const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
       expectAllToBeTruthy([page]);
@@ -672,16 +693,22 @@ describe('PageService page operations with only public pages', () => {
 
       expect(isThrown).toBe(true);
     });
+
     test('Should NOT delete /user/hoge page', async() => {
-      const dummyUser1Page = await Page.findOne({ username: 'dummyUser1' });
+      const dummyUser1Page = await Page.findOne({ path: '/user/v5DummyUser1' });
       expectAllToBeTruthy([dummyUser1Page]);
 
       let isThrown;
-      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
-      catch (err) { isThrown = true }
+      try {
+        await deletePage(dummyUser1Page, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
 
       expect(isThrown).toBe(true);
     });
+
     test('Should delete single page', async() => {
       const page = await Page.findOne({ path: '/v5_PageForDelete2' });
       expectAllToBeTruthy([page]);
@@ -692,6 +719,7 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedPage.parent).toBeNull();
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
+
     test('Should delete multiple pages including empty child', async() => {
       const parentPage = await Page.findOne({ path: '/v5_PageForDelete3' });
       const childPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
@@ -713,12 +741,13 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedGrandchildPage.status).toBe(Page.STATUS_DELETED);
       expect(deletedGrandchildPage.parent).toBeNull();
     });
+
     test('Should delete page tag relation', async() => {
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
       const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
-      const pageRelation1 = await PageTagRelation.findOne({ name: tag1.name });
-      const pageRelation2 = await PageTagRelation.findOne({ name: tag2.name });
+      const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
+      const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
       expectAllToBeTruthy([page, tag1, tag2, pageRelation1, pageRelation2]);
 
       const deletedPage = await deletePage(page, dummyUser1, {}, false);
@@ -868,13 +897,6 @@ describe('PageService page operations with only public pages', () => {
     });
   });
 
-  afterAll(async() => {
-    await Page.deleteMany({});
-    await User.deleteMany({});
-    await Bookmark.deleteMany({});
-    await Comment.deleteMany({});
-    await ShareLink.deleteMany({});
-  });
 });
 
 describe('PageService page operations with non-public pages', () => {
