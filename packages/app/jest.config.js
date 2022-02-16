@@ -59,9 +59,9 @@ module.exports = {
       testMatch: ['<rootDir>/test/integration/**/v5.*.test.ts', '<rootDir>/test/integration/**/v5.*.test.js'],
 
       testEnvironment: 'node',
-      globalSetup: '<rootDir>/test/integration/v5-global-setup.js',
+      globalSetup: '<rootDir>/test/integration/global-setup.js',
       globalTeardown: '<rootDir>/test/integration/global-teardown.js',
-      setupFilesAfterEnv: ['<rootDir>/test/integration/v5-setup.js'],
+      setupFilesAfterEnv: ['<rootDir>/test/integration/setup.js'],
 
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
