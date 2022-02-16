@@ -49,35 +49,26 @@ describe('PageService page operations with only public pages', () => {
      * Common
      */
     await User.insertMany([
-      { name: 'dummyUser1', username: 'dummyUser1', email: 'dummyUser1@example.com' },
-      { name: 'dummyUser2', username: 'dummyUser2', email: 'dummyUser2@example.com' },
+      { name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' },
+      { name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' },
     ]);
 
-    dummyUser1 = await User.findOne({ username: 'dummyUser1' });
-    dummyUser2 = await User.findOne({ username: 'dummyUser2' });
+    dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
+    if (dummyUser1 == null) {
+      dummyUser1 = await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
+    }
+    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+    if (dummyUser2 == null) {
+      dummyUser2 = await User.create({ name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' });
+    }
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
-    // delete root page if any created by other test file
-    const pages = await Page.find({ path: '/' });
-    if (pages.length > 0) {
-      await Page.deleteOne({ path: '/' });
+    rootPage = await Page.findOne({ path: '/' });
+    if (rootPage == null) {
+      const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
+      rootPage = pages[0];
     }
-    // then create new root page
-    rootPage = await Page.create('/', 'body', dummyUser1._id, {});
-    // then create user's page
-    await Page.insertMany([
-      {
-        path: '/user',
-        grant: Page.GRANT_PUBLIC,
-        isEmpty: true,
-        parent: rootPage._id,
-        status: Page.STATUS_PUBLISHED,
-      },
-    ]);
-
-    await Page.create('/user/dummyUser1', 'dummyUser1_page', dummyUser1._id, {});
-    await Page.create('/user/dummyUser2', 'dummyUser2_page', dummyUser2._id, {});
 
     /*
      * Rename
@@ -593,6 +584,7 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move with descendants', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename5' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
+
       expectAllToBeTruthy([parentPage, childPage]);
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
@@ -611,6 +603,7 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename7' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename7' });
+
       expectAllToBeTruthy([parentPage, childPage]);
       expect(childPage.isEmpty).toBe(true);
 

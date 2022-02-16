@@ -13,7 +13,7 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
 import ErrorBoundary from '../components/ErrorBoudary';
 import Sidebar from '../components/Sidebar';
-import SearchPage from '../components/SearchPage';
+import { SearchPage } from '../components/SearchPage';
 import TagsList from '../components/TagsList';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from '../components/PageEditor/OptionsSelector';
@@ -85,7 +85,7 @@ logger.info('unstated containers have been initialized');
 Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
-  'search-page': <SearchPage crowi={appContainer} />,
+  'search-page': <SearchPage appContainer={appContainer} />,
   'all-in-app-notifications': <InAppNotificationPage />,
   'identical-path-page': <IdenticalPathPage />,
 
