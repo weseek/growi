@@ -53,12 +53,13 @@ export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
       <div className="custom-control custom-checkbox custom-checkbox-warning">
         <input
           className="custom-control-input"
-          id="deleteRecursively"
+          id="convertRecursively"
           type="checkbox"
           onChange={e => setIsRecursively(e.target.checked)}
         />
-        <label className="custom-control-label" htmlFor="deleteRecursively">
-          { t('modal_delete.delete_recursively') }
+        <label className="custom-control-label" htmlFor="convertRecursively">
+          { t('private_legacy_pages.modal.convert_recursively_label') }
+          <p className="form-text text-muted mt-0"> { t('private_legacy_pages.modal.convert_recursively_desc') }</p>
         </label>
       </div>
     );
@@ -74,11 +75,11 @@ export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
   return (
     <Modal size="lg" isOpen={isOpened} toggle={close} className="grw-create-page">
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
-        Convert
+        { t('private_legacy_pages.modal.title') }
       </ModalHeader>
       <ModalBody>
         <div className="form-group grw-scrollable-modal-body pb-1">
-          <label>{ t('modal_delete.deleting_page') }:</label><br />
+          <label>{ t('private_legacy_pages.modal.converting_pages') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPageIds()}
@@ -89,7 +90,7 @@ export const LegacyPrivatePagesMigrationModal = (props: Props): JSX.Element => {
         <ApiErrorMessageList errs={errs} />
         <button type="button" className="btn btn-primary" onClick={submit}>
           <i className="icon-fw icon-refresh" aria-hidden="true"></i>
-          Convert
+          { t('private_legacy_pages.modal.button_label') }
         </button>
       </ModalFooter>
     </Modal>
