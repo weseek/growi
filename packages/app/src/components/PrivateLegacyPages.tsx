@@ -3,6 +3,10 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
+
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
@@ -181,15 +185,21 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         isCheckboxDisabled={isDisabled}
         onCheckboxChanged={selectAllCheckboxChangedHandler}
       >
-        <button
-          type="button"
-          className="btn btn-outline-danger border-0 px-2"
-          disabled={isDisabled}
-          onClick={() => null /* TODO implement */}
-        >
-          <i className="icon-fw icon-trash"></i>
-          {t('search_result.delete_all_selected_page')}
-        </button>
+        <UncontrolledButtonDropdown>
+          <DropdownToggle caret color="outline-primary">{t('private_legacy_pages.bulk_operation')}</DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem onClick={() => { /* TODO: implement */ }}>
+              <i className="icon-fw icon-refresh"></i>
+              {t('private_legacy_pages.convert_all_selected_pages')}
+            </DropdownItem>
+            <DropdownItem onClick={() => { /* TODO: implement */ }}>
+              <span className="text-danger">
+                <i className="icon-fw icon-trash"></i>
+                {t('search_result.delete_all_selected_page')}
+              </span>
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledButtonDropdown>
       </OperateAllControl>
     );
   }, [hitsCount, selectAllCheckboxChangedHandler, t]);
