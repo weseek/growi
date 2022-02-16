@@ -201,7 +201,7 @@ const GrowiContextualSubNavigation = (props) => {
 
     if (isRecursively) {
       if (isCompletely) {
-        // redirect to not found page
+        // redirect to NotFound Page
         window.location.href = path;
       }
       else {
@@ -211,7 +211,7 @@ const GrowiContextualSubNavigation = (props) => {
     else {
       // eslint-disable-next-line no-lonely-if
       if (isCompletely) {
-        // redirect to not found page
+        // redirect to NotFound Page
         window.location.href = path;
       }
       else {
