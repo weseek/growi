@@ -354,6 +354,7 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename7' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename7' });
+
       expectAllToBeTruthy([parentPage, childPage]);
       expect(childPage.isEmpty).toBe(true);
 
