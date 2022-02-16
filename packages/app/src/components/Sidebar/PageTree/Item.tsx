@@ -108,9 +108,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PAGE_TREE',
     item: { page },
-    end: () => {
+    end: (item, monitor) => {
       // in order to set d-none to dropped Item
-      setShouldHide(true);
+      const dropResult = monitor.getDropResult();
+      if (dropResult != null) {
+        setShouldHide(true);
+      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),

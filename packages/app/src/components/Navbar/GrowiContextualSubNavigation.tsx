@@ -294,6 +294,7 @@ const GrowiContextualSubNavigation = (props) => {
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
+      additionalClasses={['container-fluid']}
     />
   );
 };

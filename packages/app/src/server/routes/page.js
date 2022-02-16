@@ -536,16 +536,6 @@ module.exports = function(crowi, app) {
    * switch action by behaviorType
    */
   /* eslint-disable no-else-return */
-  actions.trashPageListShowWrapper = function(req, res) {
-    // redirect to '/trash'
-    return res.redirect('/trash');
-  };
-  /* eslint-enable no-else-return */
-
-  /**
-   * switch action by behaviorType
-   */
-  /* eslint-disable no-else-return */
   actions.trashPageShowWrapper = function(req, res) {
     // Crowi behavior for '/trash/*'
     return actions.deletedPageListShow(req, res);

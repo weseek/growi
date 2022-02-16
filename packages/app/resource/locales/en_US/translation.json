@@ -125,6 +125,7 @@
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
+  "ChildUserGroup": "ChildUserGroup",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
