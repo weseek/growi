@@ -199,24 +199,12 @@ const GrowiContextualSubNavigation = (props) => {
 
     const path = pathOrPathsToDelete;
 
-    if (isRecursively) {
-      if (isCompletely) {
-        // redirect to NotFound Page
-        window.location.href = path;
-      }
-      else {
-        window.location.reload();
-      }
+    if (isCompletely) {
+      // redirect to NotFound Page
+      window.location.href = path;
     }
     else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        // redirect to NotFound Page
-        window.location.href = path;
-      }
-      else {
-        window.location.reload();
-      }
+      window.location.reload();
     }
   }, [mutateChildren]);
 
