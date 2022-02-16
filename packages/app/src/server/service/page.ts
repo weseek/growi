@@ -1063,8 +1063,7 @@ class PageService {
      * Common Operation
      */
     const Page = mongoose.model('Page') as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+
     // Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
@@ -1085,7 +1084,7 @@ class PageService {
     const newPath = Page.getDeletedPageName(page.path);
 
     // delete target first
-    const deletedPage = await this.deleteOnlyTarget(page, user, isRecursively);
+    const deletedPage = await this.deleteOnlyTarget(page, user, newPath, isRecursively);
 
     if (isRecursively) {
       /*
@@ -1097,8 +1096,10 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteOnlyTarget(page, user, isRecursively: boolean) {
+  async deleteOnlyTarget(page, user, newPath: string, isRecursively: boolean) {
     const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     if (!isRecursively) {
       // replace with an empty page
