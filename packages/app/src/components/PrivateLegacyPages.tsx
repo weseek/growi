@@ -177,9 +177,12 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, []);
 
   const convertMenuItemClickedHandler = useCallback(() => {
-    const instance = searchPageBaseRef.current;
+    if (data == null) {
+      return;
+    }
 
-    if (instance == null || data == null) {
+    const instance = searchPageBaseRef.current;
+    if (instance == null || instance.getSelectedPageIds == null) {
       return;
     }
 
