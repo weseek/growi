@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
 
@@ -13,8 +13,9 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal,
 } from '~/stores/modal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
 
 
 import {
@@ -122,6 +123,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
 
 const GrowiContextualSubNavigation = (props) => {
+  const { t } = useTranslation();
+
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
@@ -142,6 +145,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
+  const { mutate: mutateChildren } = useSWRxPageChildren(path);
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
@@ -186,9 +190,27 @@ const GrowiContextualSubNavigation = (props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete) => {
-    openDeleteModal([pageToDelete]);
-  }, [openDeleteModal]);
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    mutateChildren();
+
+    const path = pathOrPathsToDelete;
+
+    if (isCompletely) {
+      // redirect to NotFound Page
+      window.location.href = path;
+    }
+    else {
+      window.location.reload();
+    }
+  }, [mutateChildren]);
+
+  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
+    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+  }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
@@ -282,7 +304,6 @@ const GrowiContextualSubNavigation = (props) => {
       tags={tagsInfoData?.tags || []}
       tagsUpdatedHandler={tagsUpdatedHandler}
       controls={ControlComponents}
-      additionalClasses={['container-fluid']}
     />
   );
 };
