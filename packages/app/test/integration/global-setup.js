@@ -9,7 +9,7 @@ import 'tsconfig-paths/register';
 
 import mongoose from 'mongoose';
 
-import { initMongooseGlobalSettings, getMongoUriForTestV4, mongoOptions } from '@growi/core';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'test') {
 module.exports = async() => {
   initMongooseGlobalSettings();
 
-  mongoose.connect(getMongoUriForTestV4(), mongoOptions);
+  mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database
   await mongoose.connection.dropDatabase();

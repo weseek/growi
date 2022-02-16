@@ -7,7 +7,7 @@
 
 const mongoose = require('mongoose');
 
-const { initMongooseGlobalSettings, getMongoUriForTestV4, mongoOptions } = require('@growi/core');
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('@growi/core');
 
 mongoose.Promise = global.Promise;
 
@@ -15,7 +15,7 @@ jest.setTimeout(30000); // default 5000
 
 beforeAll(async() => {
   initMongooseGlobalSettings();
-  await mongoose.connect(getMongoUriForTestV4(), mongoOptions);
+  await mongoose.connect(getMongoUri(), mongoOptions);
 });
 
 afterAll(async() => {

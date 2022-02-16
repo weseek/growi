@@ -98,10 +98,52 @@ jobs:
     - name: yarn test
       working-directory: ./packages/app
       run: |
-        yarn test
+        yarn test --selectProjects unit server
       env:
-        MONGO_URI_TEST_V4: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
-        MONGO_URI_TEST_V5: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test_v5
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+
+  test-v5-compatible:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+
+    - name: lerna bootstrap
+      run: |
+        npx lerna bootstrap -- --frozen-lockfile
+
+    - name: yarn test
+      working-directory: ./packages/app
+      run: |
+        yarn test --selectProjects server-v5
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test_v5
 
     - name: Upload coverage report as artifact
       uses: actions/upload-artifact@v2

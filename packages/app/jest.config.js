@@ -38,7 +38,7 @@ module.exports = {
       rootDir: '.',
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js',
-                  '?!<rootDir>/test/integration/service/v5.*.test.ts', '?!<rootDir>/test/integration/service/v5.*.test.js'],
+                  '?!<rootDir>/test/integration/**/v5.*.test.ts', '?!<rootDir>/test/integration/**/v5.*.test.js'],
 
       testEnvironment: 'node',
       globalSetup: '<rootDir>/test/integration/global-setup.js',
@@ -56,7 +56,7 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>'],
-      testMatch: ['<rootDir>/test/integration/service/v5.*.test.ts', '<rootDir>/test/integration/service/v5.*.test.js'],
+      testMatch: ['<rootDir>/test/integration/**/v5.*.test.ts', '<rootDir>/test/integration/**/v5.*.test.js'],
 
       testEnvironment: 'node',
       globalSetup: '<rootDir>/test/integration/v5-global-setup.js',
