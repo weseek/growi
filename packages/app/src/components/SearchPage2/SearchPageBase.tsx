@@ -6,6 +6,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
@@ -14,6 +15,8 @@ type Props = {
   appContainer: AppContainer,
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
+
+  forceHideMenuItems?: ForceHideMenuItems,
 
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
@@ -26,6 +29,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   const {
     appContainer,
     pages,
+    forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
   } = props;
@@ -160,6 +164,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       pages={pages!}
                       selectedPageId={selectedPageWithMeta?.pageData._id}
+                      forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
                     />
@@ -182,6 +187,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}
+              forceHideMenuItems={forceHideMenuItems}
             />
           )}
         </div>

@@ -18,6 +18,7 @@ import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 
 import { SearchPageBase } from './SearchPage2/SearchPageBase';
+import { MenuItemType } from './Common/Dropdown/PageItemControl';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -255,6 +256,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       appContainer={appContainer}
       pages={data?.data}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
+      forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE]}
       // Components
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
