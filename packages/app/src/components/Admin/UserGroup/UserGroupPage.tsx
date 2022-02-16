@@ -15,6 +15,7 @@ import Xss from '~/services/xss';
 import { CustomWindow } from '~/interfaces/global';
 import { apiv3Delete, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { useIsAclEnabled } from '~/stores/context';
 
 type Props = {
   appContainer: AppContainer,
@@ -23,15 +24,21 @@ type Props = {
 const UserGroupPage: FC<Props> = (props: Props) => {
   const xss: Xss = (window as CustomWindow).xss;
   const { t } = useTranslation();
-  const { isAclEnabled } = props.appContainer.config;
+
+  const { data: isAclEnabled } = useIsAclEnabled();
 
   /*
    * Fetch
    */
-  const { data: userGroups, mutate: mutateUserGroups } = useSWRxUserGroupList();
-  const userGroupIds = userGroups?.map(group => group._id);
-  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(userGroupIds);
-  const { data: childUserGroups } = useSWRxChildUserGroupList(userGroupIds);
+  const { data: userGroupList, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const userGroups = userGroupList != null ? userGroupList : [];
+  const userGroupIds = userGroups.map(group => group._id);
+
+  const { data: userGroupRelationList } = useSWRxUserGroupRelationList(userGroupIds);
+  const userGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
+
+  const { data: childUserGroupsList } = useSWRxChildUserGroupList(userGroupIds);
+  const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
 
   /*
    * State
@@ -68,21 +75,20 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     setDeleteModalShown(false);
   }, []);
 
-  const addUserGroup = useCallback(async(userGroupData: IUserGroup) => {
+  const createUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
         parent: userGroupData.parent,
       });
-
-      // sync
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
       await mutateUserGroups();
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateUserGroups]);
+  }, [t, mutateUserGroups]);
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -102,11 +108,7 @@ const UserGroupPage: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateUserGroups, mutateUserGroupRelations]);
-
-  if (userGroups == null || userGroupRelations == null || childUserGroups == null) {
-    return <></>;
-  }
+  }, [mutateUserGroups]);
 
   return (
     <Fragment>
@@ -118,10 +120,8 @@ const UserGroupPage: FC<Props> = (props: Props) => {
             </button>
             <div id="createGroupForm" className="collapse">
               <UserGroupForm
-                successedMessage={t('toaster.create_succeeded', { target: t('UserGroup') })}
-                failedMessage={t('toaster.create_failed', { target: t('UserGroup') })}
                 submitButtonLabel={t('Create')}
-                onSubmit={addUserGroup}
+                onSubmit={createUserGroup}
               />
             </div>
           </div>
@@ -129,23 +129,24 @@ const UserGroupPage: FC<Props> = (props: Props) => {
           t('admin:user_group_management.deny_create_group')
         )
       }
-      <UserGroupTable
-        appContainer={props.appContainer}
-        userGroups={userGroups}
-        childUserGroups={childUserGroups}
-        isAclEnabled={isAclEnabled}
-        onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelations}
-      />
-      <UserGroupDeleteModal
-        appContainer={props.appContainer}
-        userGroups={userGroups}
-        deleteUserGroup={selectedUserGroup}
-        onDelete={deleteUserGroupById}
-        isShow={isDeleteModalShown}
-        onShow={showDeleteModal}
-        onHide={hideDeleteModal}
-      />
+      <>
+        <UserGroupTable
+          headerLabel={t('admin:user_group_management.group_list')}
+          userGroups={userGroups}
+          childUserGroups={childUserGroups}
+          isAclEnabled={isAclEnabled ?? false}
+          onDelete={showDeleteModal}
+          userGroupRelations={userGroupRelations}
+        />
+        <UserGroupDeleteModal
+          userGroups={userGroups}
+          deleteUserGroup={selectedUserGroup}
+          onDelete={deleteUserGroupById}
+          isShow={isDeleteModalShown}
+          onShow={showDeleteModal}
+          onHide={hideDeleteModal}
+        />
+      </>
     </Fragment>
   );
 };
