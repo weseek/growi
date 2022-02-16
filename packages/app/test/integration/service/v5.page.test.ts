@@ -237,6 +237,8 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForDelete1 = new mongoose.Types.ObjectId();
     const pageIdForDelete2 = new mongoose.Types.ObjectId();
     const pageIdForDelete3 = new mongoose.Types.ObjectId();
+    const pageIdForDelete4 = new mongoose.Types.ObjectId();
+    const pageIdForDelete5 = new mongoose.Types.ObjectId();
 
     await Page.insertMany([
       {
@@ -287,6 +289,23 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete4,
+        path: '/user',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDelete5,
+        path: '/user/v5DummyUser1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDelete4,
         status: Page.STATUS_PUBLISHED,
       },
     ]);
@@ -496,12 +515,16 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
     test('Should NOT delete /user/hoge page', async() => {
-      const dummyUser1Page = await Page.findOne({ username: 'dummyUser1' });
+      const dummyUser1Page = await Page.findOne({ path: '/user/v5DummyUser1' });
       expectAllToBeTruthy([dummyUser1Page]);
 
       let isThrown;
-      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
-      catch (err) { isThrown = true }
+      try {
+        await deletePage(dummyUser1Page, dummyUser1, {}, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
 
       expect(isThrown).toBe(true);
     });
