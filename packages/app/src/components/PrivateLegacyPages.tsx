@@ -131,12 +131,12 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data, conditions } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
+  const { data, conditions, mutate } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByPagination,
   });
 
-  const { open: openLegacyPrivatePagesMigrationModal, close: closeLegacyPrivatePagesMigrationModal } = useLegacyPrivatePagesMigrationModal();
+  const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -193,14 +193,15 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.pageData._id))
       .map(pageWithMeta => ({ pageId: pageWithMeta.pageData._id, path: pageWithMeta.pageData.path } as ILegacyPrivatePage));
 
-    openLegacyPrivatePagesMigrationModal(
+    openModal(
       selectedPages,
       () => {
         toastSuccess('success');
-        closeLegacyPrivatePagesMigrationModal();
+        closeModal();
+        mutate();
       },
     );
-  }, [closeLegacyPrivatePagesMigrationModal, data, openLegacyPrivatePagesMigrationModal]);
+  }, [data, mutate, openModal, closeModal]);
 
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
     const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
