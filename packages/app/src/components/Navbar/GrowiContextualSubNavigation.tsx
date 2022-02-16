@@ -123,8 +123,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
 
 const GrowiContextualSubNavigation = (props) => {
-  const { t } = useTranslation();
-
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
