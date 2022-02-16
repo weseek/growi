@@ -2,6 +2,7 @@ import React, {
   forwardRef,
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomInput } from 'reactstrap';
 
@@ -11,8 +12,14 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
+import { toastSuccess } from '~/client/util/apiNotification';
+import { useShareLinkId } from '~/stores/context';
+import { useSWRxPageInfo } from '~/stores/page';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import { usePageRenameModal, usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction,
+} from '~/stores/modal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -33,6 +40,7 @@ type Props = {
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
+  const { t } = useTranslation();
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, isEnableActions,
@@ -59,9 +67,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }));
 
   const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { mutate: mutateChildren } = useSWRxPageChildren(pageData.path);
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: pageInfo } = useSWRxPageInfo(pageData._id ?? null, shareLinkId);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -94,10 +105,41 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
 
+
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    mutateChildren();
+
+    const path = pathOrPathsToDelete;
+
+    if (isRecursively) {
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page_recursively', { path }));
+      }
+    }
+    else {
+      // eslint-disable-next-line no-lonely-if
+      if (isCompletely) {
+        toastSuccess(t('deleted_single_page_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_single_page', { path }));
+      }
+    }
+  }, [mutateChildren, t]);
+
   const deleteMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, revision: revisionId, path } = pageData;
-    openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
-  }, [openDeleteModal, pageData]);
+    const pageToDelete = { pageId, revisionId: revisionId as string, path };
+
+    openDeleteModal([pageToDelete], onDeletedHandler, pageInfo?.isAbleToDeleteCompletely);
+  }, [onDeletedHandler, openDeleteModal, pageData, pageInfo?.isAbleToDeleteCompletely]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
