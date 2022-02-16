@@ -192,7 +192,7 @@ const SlackIntegration = (props) => {
   }
 
   return (
-    <>
+    <div data-testid="admin-slack-integration">
       <ConfirmBotChangeModal
         isOpen={selectedBotType != null}
         onConfirmClick={changeCurrentBotSettingsHandler}
@@ -246,7 +246,7 @@ const SlackIntegration = (props) => {
       </div>
 
       {settingsComponent}
-    </>
+    </div>
   );
 };
 
