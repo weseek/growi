@@ -21,6 +21,7 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { PageActionStage, PageActionType, PageOperationModel } from '../models/page-operation';
 
 const debug = require('debug')('growi:services:page');
 
@@ -332,12 +333,29 @@ class PageService {
     /*
      * Resumable Operation
      */
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options);
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: newPagePath,
+        options,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
+    }
+    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
 
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options) {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -394,15 +412,22 @@ class PageService {
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
     this.pageEvent.emit('rename', page, user);
 
+    // Set to Sub
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
+    if (pageOp == null) {
+      throw Error('PageOperation document not found');
+    }
+
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
     const exParentId = page.parent;
 
     // update descendants first
@@ -415,6 +440,9 @@ class PageService {
     // increase ancestore's descendantCount
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
+
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    await PageOperation.findByIdAndDelete(pageOpId);
   }
 
   // !!renaming always include descendant pages!!
@@ -754,7 +782,23 @@ class PageService {
       /*
        * Resumable Operation
        */
-      this.duplicateRecursivelyMainOperation(page, newPagePath, user);
+      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+      let pageOp;
+      try {
+        pageOp = await PageOperation.create({
+          actionType: PageActionType.Duplicate,
+          actionStage: PageActionStage.Main,
+          page,
+          user,
+          fromPath: page.path,
+          toPath: newPagePath,
+        });
+      }
+      catch (err) {
+        logger.error('Failed to create PageOperation document.', err);
+        throw err;
+      }
+      this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
     }
 
     const result = serializePageSecurely(duplicatedTarget);
@@ -762,7 +806,7 @@ class PageService {
     return result;
   }
 
-  async duplicateRecursivelyMainOperation(page, newPagePath: string, user): Promise<void> {
+  async duplicateRecursivelyMainOperation(page, newPagePath: string, user, pageOpId: ObjectIdLike): Promise<void> {
     const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false);
 
     // normalize parent of descendant pages
@@ -778,13 +822,20 @@ class PageService {
       }
     }
 
+    // Set to Sub
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
+    if (pageOp == null) {
+      throw Error('PageOperation document not found');
+    }
+
     /*
      * Sub Operation
      */
-    await this.duplicateRecursivelySubOperation(newPagePath, nDuplicatedPages);
+    await this.duplicateRecursivelySubOperation(newPagePath, nDuplicatedPages, pageOp._id);
   }
 
-  async duplicateRecursivelySubOperation(newPagePath: string, nDuplicatedPages: number): Promise<void> {
+  async duplicateRecursivelySubOperation(newPagePath: string, nDuplicatedPages: number, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page');
     const newTarget = await Page.findOne({ path: newPagePath }); // only one page will be found since duplicating to existing path is forbidden
     if (newTarget == null) {
@@ -792,6 +843,9 @@ class PageService {
     }
 
     await this.updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
+
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    await PageOperation.findByIdAndDelete(pageOpId);
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively) {
@@ -1112,10 +1166,27 @@ class PageService {
     await this.removeLeafEmptyPages(parent);
 
     if (isRecursively) {
+      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+      const newPath = Page.getDeletedPageName(page.path);
+      let pageOp;
+      try {
+        pageOp = await PageOperation.create({
+          actionType: PageActionType.Delete,
+          actionStage: PageActionStage.Main,
+          page,
+          user,
+          fromPath: page.path,
+          toPath: newPath,
+        });
+      }
+      catch (err) {
+        logger.error('Failed to create PageOperation document.', err);
+        throw err;
+      }
       /*
-       * Sub Operation
+       * Resumable Operation
        */
-      this.deleteRecursivelyMainOperation(page, user);
+      this.deleteRecursivelyMainOperation(page, user, pageOp._id);
     }
 
     return deletedPage;
@@ -1151,8 +1222,11 @@ class PageService {
     await this.updateDescendantCountOfAncestors(page._id, -page.descendantCount, false);
   }
 
-  async deleteRecursivelyMainOperation(page, user): Promise<void> {
+  async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteDescendantsWithStream(page, user, false);
+
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    await PageOperation.findByIdAndDelete(pageOpId);
 
     // no sub operation available
   }
@@ -1403,17 +1477,36 @@ class PageService {
     }
 
     if (isRecursively) {
+      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+      let pageOp;
+      try {
+        pageOp = await PageOperation.create({
+          actionType: PageActionType.DeleteCompletely,
+          actionStage: PageActionStage.Main,
+          page,
+          user,
+          fromPath: page.path,
+          options,
+        });
+      }
+      catch (err) {
+        logger.error('Failed to create PageOperation document.', err);
+        throw err;
+      }
       /*
        * Main Operation
        */
-      this.deleteCompletelyRecursivelyMainOperation(page, user, options);
+      this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
     }
 
     return;
   }
 
-  async deleteCompletelyRecursivelyMainOperation(page, user, options): Promise<void> {
+  async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
+
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    await PageOperation.findByIdAndDelete(pageOpId);
 
     // no sub operation available
   }
@@ -1585,16 +1678,33 @@ class PageService {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
     else {
+      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+      let pageOp;
+      try {
+        pageOp = await PageOperation.create({
+          actionType: PageActionType.Revert,
+          actionStage: PageActionStage.Main,
+          page,
+          user,
+          fromPath: page.path,
+          toPath: newPath,
+          options,
+        });
+      }
+      catch (err) {
+        logger.error('Failed to create PageOperation document.', err);
+        throw err;
+      }
       /*
-       * Sub Operation
+       * Resumable Operation
        */
-      this.revertRecursivelyMainOperation(page, user, options);
+      this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
     }
 
     return updatedPage;
   }
 
-  async revertRecursivelyMainOperation(page, user, options): Promise<void> {
+  async revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     await this.revertDeletedDescendantsWithStream(page, user, options, false);
@@ -1613,10 +1723,20 @@ class PageService {
       }
     }
 
-    await this.revertRecursivelySubOperation(page, newPath);
+    // Set to Sub
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
+    if (pageOp == null) {
+      throw Error('PageOperation document not found');
+    }
+
+    /*
+     * Sub Operation
+     */
+    await this.revertRecursivelySubOperation(page, newPath, pageOp._id);
   }
 
-  async revertRecursivelySubOperation(page, newPath: string): Promise<void> {
+  async revertRecursivelySubOperation(page, newPath: string, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const newTarget = await Page.findOne({ path: newPath }); // only one page will be found since duplicating to existing path is forbidden
@@ -1627,6 +1747,9 @@ class PageService {
 
     // update descendantCount of ancestors'
     await this.updateDescendantCountOfAncestors(page.parent, newTarget.descendantCount + 1, true);
+
+    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
+    await PageOperation.findByIdAndDelete(pageOpId);
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
