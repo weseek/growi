@@ -96,7 +96,7 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
-  'trash-page-list': <TrashPageList />,
+  'trash-page-list-container': <TrashPageList />,
 
   'not-found-page': <NotFoundPage />,
 
