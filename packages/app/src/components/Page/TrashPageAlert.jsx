@@ -7,7 +7,6 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import { useSWRxPageChildren } from '~/stores/page-listing';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 
@@ -23,7 +22,6 @@ const TrashPageAlert = (props) => {
   const { data: shareLinkId } = useShareLinkId();
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
   const { data: updatedAt } = useCurrentUpdatedAt();
-  const { mutate: mutateChildren } = useSWRxPageChildren(path);
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
@@ -56,11 +54,10 @@ const TrashPageAlert = (props) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-    mutateChildren();
 
     const path = pathOrPathsToDelete;
     window.location.href = path;
-  }, [mutateChildren]);
+  }, []);
 
   function openPageDeleteModalHandler() {
     const pageToDelete = {
