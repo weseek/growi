@@ -3,7 +3,6 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
 import loggerFactory from '~/utils/logger';
@@ -25,7 +24,7 @@ type CommonProps = {
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -80,7 +79,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       logger.warn('This page could not be deleted.');
       return;
     }
-    await onClickDeleteMenuItem(pageId);
+    await onClickDeleteMenuItem(pageId, pageInfo);
   }, [onClickDeleteMenuItem, pageId, pageInfo]);
 
   let contents = <></>;
@@ -167,7 +166,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   const {
     pageId, pageInfo: presetPageInfo, fetchOnInit,
     children,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -204,6 +203,13 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     await onClickRenameMenuItem(pageId);
   }, [onClickRenameMenuItem, pageId]);
 
+  const deleteMenuItemClickHandler = useCallback(async() => {
+    if (onClickDeleteMenuItem == null || fetchedPageInfo == null) {
+      return;
+    }
+    await onClickDeleteMenuItem(pageId, fetchedPageInfo);
+  }, [onClickDeleteMenuItem, pageId, fetchedPageInfo]);
+
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
 
@@ -220,6 +226,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickRenameMenuItem={renameMenuItemClickHandler}
+        onClickDeleteMenuItem={deleteMenuItemClickHandler}
       />
     </Dropdown>
   );

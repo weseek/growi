@@ -13,8 +13,6 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { toastSuccess } from '~/client/util/apiNotification';
-import { useShareLinkId } from '~/stores/context';
-import { useSWRxPageInfo } from '~/stores/page';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction,
@@ -71,8 +69,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: shareLinkId } = useShareLinkId();
-  const { data: pageInfo } = useSWRxPageInfo(pageData._id ?? null, shareLinkId);
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -134,12 +130,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     }
   }, [mutateChildren, t]);
 
-  const deleteMenuItemClickHandler = useCallback(() => {
+  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
     const pageToDelete = { pageId, revisionId: revisionId as string, path };
-
-    openDeleteModal([pageToDelete], onDeletedHandler, pageInfo?.isAbleToDeleteCompletely);
-  }, [onDeletedHandler, openDeleteModal, pageData, pageInfo?.isAbleToDeleteCompletely]);
+    openDeleteModal([pageToDelete], onDeletedHandler, pageInfo.isAbleToDeleteCompletely);
+  }, [onDeletedHandler, openDeleteModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -203,10 +198,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <PageItemControl
                   pageId={pageData._id}
                   pageInfo={pageMeta}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   isEnableActions={isEnableActions}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                 />
               </div>
             </div>
@@ -229,4 +224,4 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   );
 };
 
-export const PageListItemL = memo(forwardRef(PageListItemLSubstance));
+export const PageListItemL = memo(forwardRef(PageListItemLSubstance)) as typeof PageListItemLSubstance;
