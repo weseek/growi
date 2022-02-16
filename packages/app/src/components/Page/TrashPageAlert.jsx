@@ -32,7 +32,6 @@ const TrashPageAlert = (props) => {
     if (pageInfo != null) {
       setIsAbleToDeleteCompletely(pageInfo.isAbleToDeleteCompletely);
     }
-
   }, [pageInfo]);
 
   const { open: openDeleteModal } = usePageDeleteModal();
