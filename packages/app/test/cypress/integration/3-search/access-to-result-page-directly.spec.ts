@@ -20,14 +20,19 @@ context('Access to search result page directly', () => {
   });
 
   it('/_search with "q" param is successfully loaded', () => {
-    cy.visit('/_search', { qs: { q: 'sandbox headers blockquotes' } });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.visit('/_search', { qs: { q: 'bootstrap4' } });
+
+    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-with-q`, { capture: 'viewport' });
   });
 
   it('checkboxes behaviors', () => {
-    cy.visit('/_search', { qs: { q: 'sandbox headers blockquotes' } });
+    cy.visit('/_search', { qs: { q: 'bootstrap4' } });
+
+    cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-list').should('be.visible');
 
     cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}-the-first-checkbox-on`, { capture: 'viewport' });

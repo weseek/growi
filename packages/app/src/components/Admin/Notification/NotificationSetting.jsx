@@ -144,7 +144,7 @@ function NotificationSetting(props) {
   const isSlackLegacyEnabled = !isSlackbotConfigured && isSlackLegacyConfigured;
 
   return (
-    <>
+    <div data-testid="admin-notification">
       <h2 className="admin-setting-header">{t('admin:external_notification.header_status')}</h2>
       <ul className="list-group">
         { !isMounted && <SkeltonListItem />}
@@ -170,7 +170,7 @@ function NotificationSetting(props) {
           {activeComponents.has('global_notification') && <GlobalNotification />}
         </TabPane>
       </TabContent>
-    </>
+    </div>
   );
 }
 

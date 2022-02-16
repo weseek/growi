@@ -16,6 +16,8 @@ describe('V5 page migration', () => {
     Page = mongoose.model('Page');
     User = mongoose.model('User');
 
+    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+
     await User.insertMany([{ name: 'testUser1', username: 'testUser1', email: 'testUser1@example.com' }]);
     testUser1 = await User.findOne({ username: 'testUser1' });
   });
