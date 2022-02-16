@@ -4,7 +4,6 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { DropdownItem } from 'reactstrap';
-import { toastSuccess } from '~/client/util/apiNotification';
 
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
@@ -78,7 +77,6 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const scrollElementRef = useRef(null);
-  const { t } = useTranslation();
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -125,29 +123,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-
     mutateChildren();
+    window.location.reload();
 
-    const path = pathOrPathsToDelete;
-
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
-    }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
-    }
-  }, [mutateChildren, t]);
+  }, [mutateChildren]);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
     openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
