@@ -96,6 +96,10 @@ export const useSWRxNamedQuerySearch = (
 ): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
 
   const keyword = `[nq:${namedQuery}]`;
-  return useSWRxFullTextSearch(keyword, configurations);
+  return useSWRxFullTextSearch(keyword, {
+    ...configurations,
+    includeTrashPages: true,
+    includeUserPages: true,
+  });
 
 };

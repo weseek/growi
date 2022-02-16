@@ -105,7 +105,6 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   const { data, conditions } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByPagination,
-    includeUserPages: true,
   });
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
