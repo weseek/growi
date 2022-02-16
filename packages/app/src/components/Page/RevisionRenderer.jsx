@@ -62,13 +62,18 @@ class LegacyRevisionRenderer extends React.PureComponent {
    * @param {string} body html strings
    * @param {string} keywords
    */
-  getHighlightedBody(body, keywords) {
+  getHighlightedBody(body, _keywords) {
+    const keywords = Array.isArray(_keywords)
+      ? _keywords
+      : [_keywords];
+
     const normalizedKeywordsArray = [];
     // !!TODO!!: add test code refs: https://redmine.weseek.co.jp/issues/86841
     // Separate keywords
     // - Surrounded by double quotation
     // - Split by both full-width and half-width spaces
-    [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    // [...keywords.match(/"[^"]+"|[^\u{20}\u{3000}]+/ug)].forEach((keyword, i) => {
+    keywords.forEach((keyword, i) => {
       if (keyword === '') {
         return;
       }
@@ -138,7 +143,7 @@ class LegacyRevisionRenderer extends React.PureComponent {
     await interceptorManager.process('prePostProcess', context);
     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-    if (highlightKeywords != null) {
+    if (highlightKeywords != null && highlightKeywords.length > 0) {
       context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
     }
     await interceptorManager.process('postPostProcess', context);
@@ -167,7 +172,7 @@ LegacyRevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
 };
 
@@ -185,7 +190,7 @@ const RevisionRenderer = (props) => {
 RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
+  highlightKeywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   additionalClassName: PropTypes.string,
 };
 

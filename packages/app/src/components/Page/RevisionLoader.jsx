@@ -126,7 +126,7 @@ LegacyRevisionLoader.propTypes = {
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   onRevisionLoaded: PropTypes.func,
-  highlightKeywords: PropTypes.string,
+  highlightKeywords: PropTypes.arrayOf(PropTypes.string),
 };
 
 const RevisionLoader = (props) => {
