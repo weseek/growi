@@ -104,27 +104,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-
-    const path = pathOrPathsToDelete;
-
-    if (isRecursively) {
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_recursively_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page_recursively', { path }));
-      }
-    }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (isCompletely) {
-        toastSuccess(t('deleted_single_page_completely', { path }));
-      }
-      else {
-        toastSuccess(t('deleted_single_page', { path }));
-      }
-    }
-  }, [t]);
+    window.location.reload();
+  }, []);
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
