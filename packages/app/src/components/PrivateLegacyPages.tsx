@@ -44,7 +44,18 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const rightNum = offset + hitsCount;
 
   if (total === 0) {
-    return <div className="alert alert-success mt-3">(TBD) zero</div>;
+    return (
+      <div className="card border-success mt-3">
+        <div className="card-body">
+          <h2 className="card-title text-success">{t('private_legacy_pages.nopages_title')}</h2>
+          <p className="card-text">
+            {t('private_legacy_pages.nopages_desc1')}<br />
+            {/* eslint-disable-next-line react/no-danger */}
+            <span dangerouslySetInnerHTML={{ __html: t('private_legacy_pages.detail_info') }}></span>
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -73,7 +84,16 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
           </select>
         </div>
       </div>
-      <div className="alert alert-warning mt-3">(TBD) warning</div>
+      <div className="card border-warning mt-3">
+        <div className="card-body">
+          <h2 className="card-title text-warning">{t('private_legacy_pages.alert_title')}</h2>
+          <p className="card-text">
+            {t('private_legacy_pages.alert_desc1', { delete_all_selected_page: t('search_result.delete_all_selected_page') })}<br />
+            {/* eslint-disable-next-line react/no-danger */}
+            <span dangerouslySetInnerHTML={{ __html: t('private_legacy_pages.detail_info') }}></span>
+          </p>
+        </div>
+      </div>
     </>
   );
 });
