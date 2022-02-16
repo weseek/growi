@@ -57,18 +57,10 @@ const TrashPageAlert = (props) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-
     mutateChildren();
 
     const path = pathOrPathsToDelete;
-
-    if (isCompletely) {
-      // redirect to NotFound Page
-      window.location.href = path;
-    }
-    else {
-      window.location.reload();
-    }
+    window.location.href = path;
   }, [mutateChildren]);
 
   function openPageDeleteModalHandler() {
