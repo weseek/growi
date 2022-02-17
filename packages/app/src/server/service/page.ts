@@ -351,7 +351,6 @@ class PageService {
   }
 
   async renamePage(page, newPagePath, user, options) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
     /*
      * Common Operation
      */
