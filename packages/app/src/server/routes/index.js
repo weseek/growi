@@ -195,9 +195,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
+    .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
     .get('/', forgotPassword.forgotPassword)
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
-    .use(forgotPassword.handleHttpErrosMiddleware));
+    .use(forgotPassword.handleErrosMiddleware));
 
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)

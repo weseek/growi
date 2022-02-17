@@ -1,10 +1,12 @@
 import rateLimit from 'express-rate-limit';
 
-import { resolveTxt } from 'dns';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
+
+import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password';
+import httpErrorHandler from '../../middlewares/http-error-handler';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
@@ -41,20 +43,7 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
-  const checkPassportStrategyMiddleware = (req, res, next) => {
-    const isPasswordResetEnabled = configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
-    const isLocalStrategySetup = crowi.passportService.isLocalStrategySetup ?? false;
-
-    const isEnabled = isLocalStrategySetup && isPasswordResetEnabled;
-
-    if (!isEnabled) {
-      const message = 'Forgot-password function is unavailable because neither LocalStrategy and LdapStrategy is not setup.';
-      logger.error(message);
-      return next(new Error(message));
-    }
-
-    next();
-  };
+  const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
 
   async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
@@ -126,6 +115,7 @@ module.exports = (crowi) => {
   });
 
   // middleware to handle error
+  router.use(httpErrorHandler);
   router.use((error, req, res, next) => {
     if (error != null) {
       return res.apiv3Err(new ErrorV3(error.message, error.code));
