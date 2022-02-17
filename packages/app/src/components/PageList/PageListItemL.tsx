@@ -13,7 +13,7 @@ import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageMOdal,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageMOdal,
 } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
@@ -99,10 +99,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
 
-  const deleteMenuItemClickHandler = useCallback(() => {
+
+  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
-    openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
-  }, [openDeleteModal, pageData]);
+    const pageToDelete = { pageId, revisionId: revisionId as string, path };
+    openDeleteModal([pageToDelete], pageInfo.isAbleToDeleteCompletely);
+  }, [pageData, openDeleteModal]);
 
   const revertMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, path } = pageData;
@@ -173,9 +175,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageInfo={pageMeta}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>

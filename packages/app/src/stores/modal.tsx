@@ -44,16 +44,16 @@ export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
-  onDeleted?: OnDeletedFunction,
   isAbleToDeleteCompletely?: boolean,
+  onDeleted?: OnDeletedFunction,
   isDeleteCompletelyModal?: boolean,
 }
 
 type DeleteModalStatusUtils = {
   open(
     pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
     isAbleToDeleteCompletely?: boolean,
+    onDeleted?: OnDeletedFunction,
     isDeleteCompletelyModal?: boolean,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
@@ -73,11 +73,11 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     ...swrResponse,
     open: (
         pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
         isAbleToDeleteCompletely?: boolean,
+        onDeleted?: OnDeletedFunction,
         isDeleteCompletelyModal?: boolean,
     ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isAbleToDeleteCompletely, isDeleteCompletelyModal,
+      isOpened: true, pages, isAbleToDeleteCompletely, onDeleted, isDeleteCompletelyModal,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
