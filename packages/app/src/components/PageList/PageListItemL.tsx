@@ -12,7 +12,9 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import { usePageRenameModal, usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageMOdal,
+} from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
@@ -64,6 +66,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openPutBackPageModal } = usePutBackPageMOdal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -96,10 +99,17 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
 
-  const deleteMenuItemClickHandler = useCallback(() => {
+
+  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
-    openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
-  }, [openDeleteModal, pageData]);
+    const pageToDelete = { pageId, revisionId: revisionId as string, path };
+    openDeleteModal([pageToDelete], pageInfo.isAbleToDeleteCompletely);
+  }, [pageData, openDeleteModal]);
+
+  const revertMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openPutBackPageModal(pageId, path);
+  }, [openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -165,9 +175,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageInfo={pageMeta}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                  onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
             </div>

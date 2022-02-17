@@ -7,11 +7,11 @@ import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import PutbackPageModal from '../PutbackPageModal';
+
 import EmptyTrashModal from '../EmptyTrashModal';
 
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
-import { usePageDeleteModal } from '~/stores/modal';
+import { usePageDeleteModal, usePutBackPageMOdal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
 const TrashPageAlert = (props) => {
@@ -30,7 +30,6 @@ const TrashPageAlert = (props) => {
 
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
-  const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
 
   useEffect(() => {
@@ -40,6 +39,7 @@ const TrashPageAlert = (props) => {
   }, [pageInfo]);
 
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openPutBackPageModal } = usePutBackPageMOdal();
 
   function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
@@ -50,11 +50,7 @@ const TrashPageAlert = (props) => {
   }
 
   function openPutbackPageModalHandler() {
-    setIsPutbackPageModalShown(true);
-  }
-
-  function closePutbackPageModalHandler() {
-    setIsPutbackPageModalShown(false);
+    openPutBackPageModal(pageId, path);
   }
 
   const onDeletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -73,7 +69,7 @@ const TrashPageAlert = (props) => {
       path,
     };
     const isDeleteCompletelyModal = true;
-    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely, isDeleteCompletelyModal);
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler, isDeleteCompletelyModal);
   }
 
   function renderEmptyButton() {
@@ -119,12 +115,6 @@ const TrashPageAlert = (props) => {
         <EmptyTrashModal
           isOpen={isEmptyTrashModalShown}
           onClose={closeEmptyTrashModalHandler}
-        />
-        <PutbackPageModal
-          isOpen={isPutbackPageModalShown}
-          onClose={closePutbackPageModalHandler}
-          pageId={pageId}
-          path={path}
         />
       </>
     );

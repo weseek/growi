@@ -673,7 +673,7 @@ export default (crowi: Crowi): any => {
     // Delete PageRedirect if exists
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     try {
-      await PageRedirect.deleteOne({ from: path });
+      await PageRedirect.deleteOne({ fromPath: path });
       logger.warn(`Deleted page redirect after creating a new page at path "${path}".`);
     }
     catch (err) {
