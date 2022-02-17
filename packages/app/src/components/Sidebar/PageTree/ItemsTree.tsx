@@ -88,24 +88,7 @@ const renderByInitialNode = (
 const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + page tree's header + some space)
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
-const mutationObserverCallback = (mutationRecords : MutationRecord[], mutationObserver: MutationObserver) => {
-  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-  if (scrollElement == null) return;
-  mutationRecords.forEach((record) => {
-    const elem = record.target as HTMLElement;
-    // target li could be only one at most.
-    const target = elem.getElementsByClassName('list-group-item grw-pagetree-is-target')[0];
-    if (target != null) {
-      if (elem.contains(target)) {
-        smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
-        // disconnect to prevent unnecessary scroll
-        // i.e) when you open pages children in pagetree, new DOM is inserted to the DOM currently monitored.
-        //      then observer detects changes then repeat "find target to scroll" process.
-        mutationObserver.disconnect();
-      }
-    }
-  });
-};
+
 // --- end ---
 
 
@@ -120,7 +103,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { t } = useTranslation();
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
+  // const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
@@ -128,18 +111,29 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   // ***************************  Auto Scroll  ***************************
 
-  useEffect(() => {
-    const elementToObserve = document.querySelector('ul.grw-pagetree');
-    if (elementToObserve == null) {
+  const mutationObserverCallback = (records: MutationRecord[], mutationObserver: MutationObserver) => {
+    const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+    if (scrollElement == null) {
       return;
     }
-    const observer = new MutationObserver(mutationObserverCallback);
-    observer.observe(elementToObserve, MUTATION_OBSERVER_CONFIG);
-    // component did unmount
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+    const target = document.getElementById('grw-pagetree-is-target');
+    if (target != null) {
+      smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
+      // disconnect to prevent unnecessary scroll
+      // i.e) when you open pages children in pagetree, new DOM is inserted to the DOM currently monitored.
+      //      then observer detects changes then repeat "find target to scroll" process.
+      mutationObserver.disconnect();
+      return;
+    }
+  };
+
+  useEffect(() => {
+    const elementToObserve = document.getElementsByClassName('grw-pagetree')[0];
+    if (elementToObserve != null) {
+      const observer = new MutationObserver(mutationObserverCallback);
+      observer.observe(elementToObserve, MUTATION_OBSERVER_CONFIG);
+    }
+  }, [ancestorsChildrenData]);
 
   // *******************************  end  *******************************
 
@@ -156,7 +150,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       return;
     }
 
-    mutateChildren();
+    // mutateChildren();
 
     const path = pathOrPathsToDelete;
 
