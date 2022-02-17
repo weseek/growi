@@ -1332,13 +1332,13 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    await this.deleteCompletelyOperation(ids, paths);
+
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page);
     }
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
@@ -1354,17 +1354,19 @@ class PageService {
     // TODO: resume
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
-      (async() => {
-        const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-        }
-      })();
+      this.resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process);
     }
 
     return;
+  }
+
+  async resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+    }
   }
 
   private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
