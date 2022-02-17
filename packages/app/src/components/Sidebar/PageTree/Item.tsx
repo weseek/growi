@@ -31,7 +31,8 @@ interface ItemProps {
   isOpen?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback: VoidFunction): void
+  mutateSiblings?: VoidFunction
 }
 
 // Utility to mark target
@@ -73,6 +74,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    mutateSiblings,
   } = props;
 
   const { page, children } = itemNode;
@@ -261,8 +263,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     };
     const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely);
-  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely]);
+    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely, async() => {
+      if (mutateSiblings != null) await mutateSiblings();
+    });
+  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely, mutateSiblings]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -423,6 +427,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
+              mutateSiblings={async() => { await mutateChildren() }}
             />
           </div>
         ))

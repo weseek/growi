@@ -39,7 +39,7 @@ export type IPageForPageDeleteModal = {
   isDeleteCompletelyModal?: boolean,
 }
 
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
+export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>, callback: VoidFunction) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
