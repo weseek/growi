@@ -222,6 +222,22 @@ export class PageQueryBuilder {
     return this;
   }
 
+  async addConditionAsMigratablePages(user) {
+    this.query = this.query
+      .and({
+        $or: [
+          { grant: { $ne: GRANT_RESTRICTED } },
+          { grant: { $ne: GRANT_SPECIFIED } },
+        ],
+      });
+    this.addConditionAsNotMigrated();
+    this.addConditionAsNonRootPage();
+    this.addConditionToExcludeTrashed();
+    await this.addConditionForParentNormalization(user);
+
+    return this;
+  }
+
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
     const grantConditions = [
       { grant: null },
