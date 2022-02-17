@@ -111,7 +111,6 @@ describe('PageGrantService', () => {
     // Root page (Depth: 0)
     rootPage = await Page.findOne({ path: '/' });
 
-
     // Empty pages (Depth: 1)
     await Page.insertMany([
       {
