@@ -226,7 +226,7 @@ class PageService {
     let page: PageModel & PageDocument & HasObjectId;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
-      pagePath = page.path;
+      pagePath = page?.path;
     }
     else {
       page = await Page.findByPathAndViewer(pagePath, user);
@@ -314,20 +314,6 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     return page.grant !== Page.GRANT_RESTRICTED && page.grant !== Page.GRANT_SPECIFIED;
-  }
-
-  /**
-   * Remove all empty pages at leaf position by page whose parent will change or which will be deleted.
-   * @param page Page whose parent will change or which will be deleted
-   */
-  async removeLeafEmptyPages(page): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    // delete leaf empty pages
-    const isSiblingsOrChildrenExist = await Page.exists({ parent: { $in: [page.parent, page._id] }, _id: { $ne: page._id } });
-    if (!isSiblingsOrChildrenExist) {
-      await Page.removeLeafEmptyPagesRecursively(page.parent);
-    }
   }
 
   /**
@@ -455,6 +441,10 @@ class PageService {
       update.updatedAt = new Date();
     }
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+
+    // remove empty pages at leaf position
+    await Page.removeLeafEmptyPagesRecursively(page.parent);
+
     this.pageEvent.emit('rename', page, user);
 
     // Set to Sub
@@ -1208,8 +1198,7 @@ class PageService {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
     }
     // 2. Delete leaf empty pages
-    const parent = await Page.findById(page.parent);
-    await this.removeLeafEmptyPages(parent);
+    await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     if (isRecursively) {
       const newPath = Page.getDeletedPageName(page.path);
@@ -1528,8 +1517,7 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     // delete leaf empty pages
-    const parent = await Page.findById(page.parent);
-    await this.removeLeafEmptyPages(parent);
+    await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     if (!page.isEmpty && !preventEmitting) {
       this.pageEvent.emit('deleteCompletely', page, user);
