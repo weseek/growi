@@ -7,7 +7,7 @@ import {
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useSlackChannels, useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath,
-  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
 } from '../../stores/context';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
@@ -101,6 +101,7 @@ const ContextExtractorOnce: FC = () => {
   useIsAclEnabled(configByContextHydrate.isAclEnabled);
   useIsSearchServiceConfigured(configByContextHydrate.isSearchServiceConfigured);
   useIsSearchServiceReachable(configByContextHydrate.isSearchServiceReachable);
+  useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
 
 
   // Page

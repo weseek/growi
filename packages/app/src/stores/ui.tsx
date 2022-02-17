@@ -299,7 +299,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, editorMode],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => !isUserPage && !isSharedPage(currentPagePath!) && !isIdenticalPath && !(isViewMode && isNotFoundPage),
   );

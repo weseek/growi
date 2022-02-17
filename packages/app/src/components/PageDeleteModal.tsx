@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -36,7 +36,7 @@ const PageDeleteModal: FC = () => {
   const isDeleteCompletelyModal = deleteModalData?.isDeleteCompletelyModal ?? false;
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
-  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
+  const [isDeleteCompletely, setIsDeleteCompletely] = useState(false);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,6 +45,10 @@ const PageDeleteModal: FC = () => {
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
   }
+
+  useEffect(() => {
+    setIsDeleteCompletely(isDeleteCompletelyModal && isAbleToDeleteCompletely);
+  }, [isAbleToDeleteCompletely, isDeleteCompletelyModal]);
 
   function changeIsDeleteCompletelyHandler() {
     if (!isAbleToDeleteCompletely) {
@@ -128,6 +132,7 @@ const PageDeleteModal: FC = () => {
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
           { t('modal_delete.delete_recursively') }
+          <p className="form-text text-muted mt-0"> { t('modal_delete.recursively') }</p>
         </label>
       </div>
     );
