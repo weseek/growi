@@ -12,7 +12,6 @@ import urljoin from 'url-join';
 
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
-import { toastSuccess } from '~/client/util/apiNotification';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction,
@@ -38,7 +37,6 @@ type Props = {
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
-  const { t } = useTranslation();
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, isEnableActions,
