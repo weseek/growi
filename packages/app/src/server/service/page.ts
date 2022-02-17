@@ -242,6 +242,7 @@ class PageService {
           isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
+          isRevertible: false,
         },
       };
     }
@@ -703,6 +704,11 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
+      throw new Error('Cannot find or duplicate the empty page');
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
@@ -1124,7 +1130,14 @@ class PageService {
       }, { new: true });
       await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      try {
+        await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      }
+      catch (err) {
+        if (err.code !== 11000) {
+          throw err;
+        }
+      }
 
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
@@ -1181,7 +1194,14 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-    await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    try {
+      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw err;
+      }
+    }
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
@@ -1364,13 +1384,13 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    await this.deleteCompletelyOperation(ids, paths);
+
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page);
     }
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
@@ -1386,17 +1406,19 @@ class PageService {
     // TODO: resume
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
-      (async() => {
-        const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-        }
-      })();
+      this.resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process);
     }
 
     return;
+  }
+
+  async resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+    }
   }
 
   private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
@@ -1737,6 +1759,7 @@ class PageService {
         isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
+        isRevertible: false,
       };
     }
 
@@ -1752,6 +1775,7 @@ class PageService {
       isMovable,
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
+      isRevertible: isTrashPage(page.path),
     };
 
   }
