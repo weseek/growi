@@ -314,7 +314,7 @@ class PageService {
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
 
-    const isExist = await Page.count({ path: newPagePath }) > 0;
+    const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
       // if page found, cannot rename to that path
       throw new Error('the path already exists');
