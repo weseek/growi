@@ -15,7 +15,7 @@ import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction,
@@ -33,15 +33,11 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { pageId, revisionId } = props;
 
   return (
-    <>
-      <DropdownItem divider />
-
-      {/* Export markdown */}
-      <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-        <i className="icon-fw icon-cloud-download"></i>
-        {t('export_bulk.export_page_markdown')}
-      </DropdownItem>
-    </>
+    // Export markdown
+    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
+      <i className="icon-fw icon-cloud-download"></i>
+      {t('export_bulk.export_page_markdown')}
+    </DropdownItem>
   );
 };
 
@@ -53,6 +49,7 @@ type Props ={
   pageWithMeta : IPageWithMeta<IPageSearchMeta>,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
 }
 
 const scrollTo = (scrollElement:HTMLElement) => {
@@ -99,6 +96,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     pageWithMeta,
     highlightKeywords,
     showPageControlDropdown,
+    forceHideMenuItems,
   } = props;
 
   const page = pageWithMeta?.pageData;
@@ -145,6 +143,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             revisionId={revisionId}
             path={page.path}
             showPageControlDropdown={showPageControlDropdown}
+            forceHideMenuItems={forceHideMenuItems}
             additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
             isCompactMode
             onClickDuplicateMenuItem={duplicateItemClickedHandler}

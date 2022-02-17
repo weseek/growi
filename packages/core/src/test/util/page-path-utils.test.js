@@ -94,6 +94,11 @@ describe('isCreatablePage test', () => {
     expect(isCreatablePage('http://demo.growi.org/hoge')).toBeFalsy();
     expect(isCreatablePage('https://demo.growi.org/hoge')).toBeFalsy();
 
+    expect(isCreatablePage('/_search')).toBeFalsy();
+    expect(isCreatablePage('/_search/foo')).toBeFalsy();
+    expect(isCreatablePage('/_private-legacy-pages')).toBeFalsy();
+    expect(isCreatablePage('/_private-legacy-pages/foo')).toBeFalsy();
+
     expect(isCreatablePage('/ the / path / with / space')).toBeFalsy();
 
     const forbidden = ['installer', 'register', 'login', 'logout',

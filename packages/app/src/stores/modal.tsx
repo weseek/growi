@@ -1,6 +1,7 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
 import { Nullable } from '~/interfaces/common';
+import { IPageInfo } from '~/interfaces/page';
 
 
 /*
@@ -176,6 +177,45 @@ export const usePagePresentationModal = (
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+
+/*
+ * LegacyPrivatePagesMigrationModal
+ */
+
+export type ILegacyPrivatePage = { pageId: string, path: string };
+
+export type LegacyPrivatePagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
+
+type LegacyPrivatePagesMigrationModalStatus = {
+  isOpened: boolean,
+  pages?: ILegacyPrivatePage[],
+  onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler,
+}
+
+type LegacyPrivatePagesMigrationModalStatusUtils = {
+  open(pages: ILegacyPrivatePage[], onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+  close(): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+}
+
+export const useLegacyPrivatePagesMigrationModal = (
+    status?: LegacyPrivatePagesMigrationModalStatus,
+): SWRResponse<LegacyPrivatePagesMigrationModalStatus, Error> & LegacyPrivatePagesMigrationModalStatusUtils => {
+  const initialData: LegacyPrivatePagesMigrationModalStatus = {
+    isOpened: false,
+    pages: [],
+  };
+  const swrResponse = useStaticSWR<LegacyPrivatePagesMigrationModalStatus, Error>('legacyPrivatePagesMigrationModal', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pages, onSubmited?) => swrResponse.mutate({
+      isOpened: true, pages, onSubmited,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false, pages: [], onSubmited: undefined }),
+  };
+};
+
 
 /*
 * DescendantsPageListModal
