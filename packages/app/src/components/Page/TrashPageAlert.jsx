@@ -32,12 +32,6 @@ const TrashPageAlert = (props) => {
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
 
-  useEffect(() => {
-    if (pageInfo != null) {
-      setIsAbleToDeleteCompletely(pageInfo.isAbleToDeleteCompletely);
-    }
-  }, [pageInfo]);
-
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageMOdal();
 
@@ -68,8 +62,14 @@ const TrashPageAlert = (props) => {
       revisionId,
       path,
     };
-    const isDeleteCompletelyModal = true;
-    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler, isDeleteCompletelyModal);
+    openDeleteModal(
+      [pageToDelete],
+      {
+        isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+        forceDeleteCompletelyMode: true,
+        onDeletedHandler,
+      },
+    );
   }
 
   function renderEmptyButton() {

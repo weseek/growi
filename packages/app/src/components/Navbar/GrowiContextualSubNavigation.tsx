@@ -13,7 +13,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal, IPageForPageDeleteModal,
 } from '~/stores/modal';
 
 
@@ -202,8 +202,8 @@ const GrowiContextualSubNavigation = (props) => {
     }
   }, []);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
-    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler);
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageForPageDeleteModal) => {
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
