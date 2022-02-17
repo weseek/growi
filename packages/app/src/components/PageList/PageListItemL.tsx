@@ -101,12 +101,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
+    if (typeof pathOrPathsToDelete !== 'string' || onPageOperated == null) {
       return;
     }
-    if (onPageOperated != null) {
-      onPageOperated();
-    }
+    onPageOperated();
   }, [onPageOperated]);
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
