@@ -1690,7 +1690,6 @@ class PageService {
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
-    const isRevertible = isTrashPage(page.path);
 
     if (page.isEmpty) {
       return {
@@ -1706,6 +1705,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     const Page = this.crowi.model('Page');
+    const isRevertible = isTrashPage(page.path);
     return {
       isEmpty: false,
       sumOfLikers: page.liker.length,

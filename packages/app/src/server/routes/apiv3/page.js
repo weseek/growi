@@ -10,7 +10,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTrashPage } = pagePathUtils;
+const { convertToNewAffiliationPath } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
