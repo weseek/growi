@@ -144,18 +144,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
       // force open
       setIsOpen(true);
-
-      toastSuccess('TODO: i18n Successfully moved pages.');
     }
     catch (err) {
       // display the dropped item
       displayDroppedItemByPageId(droppedPage._id);
 
       if (err.code === 'operation__blocked') {
-        toastWarning('TODO: i18n You cannot move this page now.');
+        toastWarning(t('pagetree.you_cannot_move_this_page_now'));
       }
       else {
-        toastError('TODO: i18n Something went wrong with moving page.');
+        toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
   };
@@ -374,7 +372,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && ( */}
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}
