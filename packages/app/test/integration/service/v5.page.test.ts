@@ -687,17 +687,23 @@ describe('PageService page operations with only public pages', () => {
       try { await deletePage(rootPage, dummyUser1, {}, false) }
       catch (err) { isThrown = true }
 
+      const page = await Page.findOne({ path: '/' });
+
       expect(isThrown).toBe(true);
+      expect(page).toBeTruthy();
     });
 
     test('Should NOT delete trashed page', async() => {
-      const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
-      expectAllToBeTruthy([page]);
+      const trashedPage = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+      expectAllToBeTruthy([trashedPage]);
 
       let isThrown;
-      try { await deletePage(page, dummyUser1, {}, false) }
+      try { await deletePage(trashedPage, dummyUser1, {}, false) }
       catch (err) { isThrown = true }
 
+      const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+
+      expect(page).toBeTruthy();
       expect(isThrown).toBe(true);
     });
 
@@ -706,23 +712,24 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([dummyUser1Page]);
 
       let isThrown;
-      try {
-        await deletePage(dummyUser1Page, dummyUser1, {}, false);
-      }
-      catch (err) {
-        isThrown = true;
-      }
+      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
 
+      const page = await Page.findOne({ path: '/user/v5DummyUser1' });
+
+      expect(page).toBeTruthy();
       expect(isThrown).toBe(true);
     });
 
     test('Should delete single page', async() => {
+      const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete2' });
+      expectAllToBeTruthy([pageToDelete]);
+
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
       const page = await Page.findOne({ path: '/v5_PageForDelete2' });
-      expectAllToBeTruthy([page]);
 
-      const deletedPage = await deletePage(page, dummyUser1, {}, false);
-
-      expect(deletedPage.path).toBe(`/trash${page.path}`);
+      expect(page).toBeNull();
+      expect(deletedPage.path).toBe(`/trash${pageToDelete.path}`);
       expect(deletedPage.parent).toBeNull();
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
     });
@@ -750,17 +757,19 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('Should delete page tag relation', async() => {
-      const page = await Page.findOne({ path: '/v5_PageForDelete6' });
+      const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete6' });
       const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
       const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
       const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
       const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
-      expectAllToBeTruthy([page, tag1, tag2, pageRelation1, pageRelation2]);
+      expectAllToBeTruthy([pageToDelete, tag1, tag2, pageRelation1, pageRelation2]);
 
-      const deletedPage = await deletePage(page, dummyUser1, {}, false);
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
+      const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
       const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
 
+      expect(page).toBe(null);
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
       expect(deletedTagRelation1.isPageTrashed).toBe(true);
       expect(deletedTagRelation2.isPageTrashed).toBe(true);
