@@ -105,7 +105,7 @@
     "extensible-custom-error": "^0.0.7",
     "graceful-fs": "^4.1.11",
     "helmet": "^4.6.0",
-    "http-errors": "~1.8.0",
+    "http-errors": "^2.0.0",
     "i18next": "^20.3.2",
     "i18next-express-middleware": "^2.0.0",
     "i18next-node-fs-backend": "^2.1.3",
