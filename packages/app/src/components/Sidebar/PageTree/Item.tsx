@@ -32,7 +32,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback: VoidFunction): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback?: VoidFunction): void
   mutateSiblings?: VoidFunction
 }
 
