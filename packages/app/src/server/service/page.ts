@@ -314,6 +314,12 @@ class PageService {
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
 
+    const isExist = await Page.exists({ path: newPagePath });
+    if (isExist) {
+      // if page found, cannot rename to that path
+      throw new Error('the path already exists');
+    }
+
     if (isTopPage(page.path)) {
       throw Error('It is forbidden to rename the top page');
     }
@@ -1095,20 +1101,22 @@ class PageService {
     // TODO: resume
     // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
     if (isRecursively) {
-      (async() => {
-        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableDeleteDescendants(page, user, shouldUseV4Process);
     }
 
     return deletedPage;
+  }
+
+  async resumableDeleteDescendants(page, user, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
@@ -1261,7 +1269,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return nDeletedNonEmptyPages;
   }
