@@ -372,6 +372,7 @@ module.exports = (crowi) => {
           isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
+          isRevertible: false,
         };
       }
 

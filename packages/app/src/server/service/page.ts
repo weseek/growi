@@ -1707,6 +1707,7 @@ class PageService {
         isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
+        isRevertible: false,
       };
     }
 
@@ -1714,6 +1715,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     const Page = this.crowi.model('Page');
+    const isRevertible = isTrashPage(page.path);
     return {
       isEmpty: false,
       sumOfLikers: page.liker.length,
@@ -1723,6 +1725,7 @@ class PageService {
       isMovable,
       isDeletable: Page.isDeletableName(page.path),
       isAbleToDeleteCompletely: false,
+      isRevertible,
     };
 
   }
