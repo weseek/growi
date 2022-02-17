@@ -542,10 +542,12 @@ describe('PageService page operations with only public pages', () => {
 
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename1' });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
+      expect(childPageBeforeRename).toBeNull();
 
     });
 
@@ -557,11 +559,13 @@ describe('PageService page operations with only public pages', () => {
 
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename2' });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(parentPage.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
+      expect(childPageBeforeRename).toBeNull();
     });
 
     test('Should rename/move with option updateMetadata: true', async() => {
@@ -603,20 +607,23 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move with descendants', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename5' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
+      const grandchild = await Page.findOne({ parent: childPage._id });
 
       expectAllToBeTruthy([parentPage, childPage]);
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
       // find child of renamed page
-      const grandchild = await Page.findOne({ parent: renamedPage._id });
+      const renamedGrandchild = await Page.findOne({ parent: renamedPage._id });
+      const grandchildBeforeRename = await Page.findOne({ path: grandchild.path });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
+      expect(grandchildBeforeRename).toBeNull();
       // grandchild's parent should be the renamed page
-      expect(grandchild.parent).toStrictEqual(renamedPage._id);
-      expect(grandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
+      expect(renamedGrandchild.parent).toStrictEqual(renamedPage._id);
+      expect(renamedGrandchild.path).toBe('/v5_ParentForRename5/renamedChildForRename5/v5_GrandchildForRename5');
     });
 
     test('Should rename/move empty page', async() => {
