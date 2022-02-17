@@ -1,21 +1,21 @@
+const pattern = /:[^:\s]+/;
+
 class EmojiPickerHelper {
+
+  editor;
 
   constructor(editor) {
     this.editor = editor;
-    this.getSearchCursor = this.getSearchCursor.bind(this);
-    this.addEmojiOnSearch = this.addEmojiOnSearch.bind(this);
-    this.addEmoji = this.addEmoji.bind(this);
   }
 
   getSearchCursor() {
-    const pattern = /:[^:\s]+/;
     const currentPos = this.editor.getCursor();
     const sc = this.editor.getSearchCursor(pattern, currentPos, { multiline: false });
     return sc;
   }
 
   // Add emoji when triggered by search
-  addEmojiOnSearch(emoji) {
+  addEmojiOnSearch(emoji): void {
     const currentPos = this.editor.getCursor();
     const sc = this.getSearchCursor();
     if (sc.findPrevious()) {
@@ -26,7 +26,7 @@ class EmojiPickerHelper {
   }
 
   // Add emoji when triggered by click emoji icon on top of editor
-  addEmoji(emoji) {
+  addEmoji(emoji):void {
     const currentPos = this.editor.getCursor();
     const doc = this.editor.getDoc();
     doc.replaceRange(emoji.colons, currentPos);
@@ -35,9 +35,8 @@ class EmojiPickerHelper {
   }
 
   getEmoji() {
-    const cm = this.editor;
     const sc = this.getSearchCursor();
-    const currentPos = cm.getCursor();
+    const currentPos = this.editor.getCursor();
 
     if (sc.findPrevious()) {
       const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
@@ -58,7 +57,7 @@ class EmojiPickerHelper {
 
   }
 
-
 }
+
 
 export default EmojiPickerHelper;
