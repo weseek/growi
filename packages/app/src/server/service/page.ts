@@ -1097,7 +1097,14 @@ class PageService {
       }, { new: true });
       await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      try {
+        await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      }
+      catch (err) {
+        if (err.code !== 11000) {
+          throw err;
+        }
+      }
 
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
@@ -1154,7 +1161,14 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-    await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    try {
+      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw err;
+      }
+    }
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
