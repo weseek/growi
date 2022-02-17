@@ -10,7 +10,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
+const { convertToNewAffiliationPath } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -391,14 +391,12 @@ module.exports = (crowi) => {
 
       const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
       const isLiked = page.isLiked(user);
-      const isMovable = !isTopPage(page.path);
       const isAbleToDeleteCompletely = pageService.canDeleteCompletely(page.creator?._id, user);
 
       const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
       const responseBody = {
         ...responseBodyForGuest,
-        isMovable,
         isAbleToDeleteCompletely,
         isBookmarked,
         isLiked,

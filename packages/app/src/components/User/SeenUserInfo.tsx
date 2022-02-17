@@ -9,13 +9,14 @@ import UserPictureList from './UserPictureList';
 
 interface Props {
   seenUsers: IUser[],
+  sumOfSeenUsers?: number,
   disabled?: boolean,
 }
 
 const SeenUserInfo: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const { seenUsers, disabled } = props;
+  const { seenUsers, sumOfSeenUsers, disabled } = props;
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
@@ -25,7 +26,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />
         </span>
-        <span className="seen-user-count">{seenUsers.length}</span>
+        <span className="seen-user-count">{sumOfSeenUsers || seenUsers.length}</span>
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>
         <PopoverBody className="user-list-popover">

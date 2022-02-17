@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages, isUserPage, isUserNamePage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -314,7 +314,7 @@ class PageService {
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
 
-    const isExist = await Page.count({ path: newPagePath }) > 0;
+    const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
       // if page found, cannot rename to that path
       throw new Error('the path already exists');
@@ -1101,20 +1101,22 @@ class PageService {
     // TODO: resume
     // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
     if (isRecursively) {
-      (async() => {
-        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableDeleteDescendants(page, user, shouldUseV4Process);
     }
 
     return deletedPage;
+  }
+
+  async resumableDeleteDescendants(page, user, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
@@ -1267,7 +1269,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return nDeletedNonEmptyPages;
   }
@@ -1330,13 +1332,13 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    await this.deleteCompletelyOperation(ids, paths);
+
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page);
     }
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
@@ -1352,17 +1354,19 @@ class PageService {
     // TODO: resume
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
-      (async() => {
-        const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-        }
-      })();
+      this.resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process);
     }
 
     return;
+  }
+
+  async resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+    }
   }
 
   private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
@@ -1696,16 +1700,16 @@ class PageService {
   }
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
+
     if (page.isEmpty) {
       return {
         isEmpty: true,
-        isMovable: true,
+        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
       };
     }
-
-    const isMovable = isGuestUser ? false : !isTopPage(page.path);
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
@@ -2254,10 +2258,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.count(), false);
-    builder.addConditionAsNotMigrated();
-    builder.addConditionAsNonRootPage();
-    builder.addConditionToExcludeTrashed();
-    await builder.addConditionForParentNormalization(user);
+    await builder.addConditionAsMigratablePages(user);
 
     const nMigratablePages = await builder.query.exec();
 
