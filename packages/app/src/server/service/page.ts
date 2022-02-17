@@ -1690,6 +1690,7 @@ class PageService {
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
+    const isRevertible = isTrashPage(page.path);
 
     if (page.isEmpty) {
       return {
@@ -1697,6 +1698,7 @@ class PageService {
         isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
+        isRevertible: false,
       };
     }
 
@@ -1713,6 +1715,7 @@ class PageService {
       isMovable,
       isDeletable: Page.isDeletableName(page.path),
       isAbleToDeleteCompletely: false,
+      isRevertible,
     };
 
   }

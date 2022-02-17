@@ -150,6 +150,31 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
   };
 };
 
+type PutBackPageModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  path?: string,
+}
+
+type PutBackPageModalUtils = {
+  open(pageId: string, path: string): Promise<PutBackPageModalStatus | undefined>
+  close():Promise<PutBackPageModalStatus | undefined>
+}
+
+export const usePutBackPageMOdal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
+  const initialData = { isOpened: false, pageId: '', path: '' };
+  const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, path: string) => swrResponse.mutate({
+      isOpened: true, pageId, path,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
 /*
 * PagePresentationModal
 */

@@ -10,7 +10,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath } = pagePathUtils;
+const { convertToNewAffiliationPath, isTrashPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -372,6 +372,7 @@ module.exports = (crowi) => {
           isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
+          isRevertible: false,
         };
       }
 
