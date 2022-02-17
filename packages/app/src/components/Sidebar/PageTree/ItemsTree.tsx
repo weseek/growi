@@ -70,8 +70,6 @@ const renderByInitialNode = (
     onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 ): JSX.Element => {
 
-  console.log(isEnabledAttachTitleHeader);
-
   return (
     <ul className="grw-pagetree list-group p-3">
       <Item

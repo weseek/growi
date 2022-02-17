@@ -77,8 +77,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
-  console.log(isEnabledAttachTitleHeader);
-
   const { page, children } = itemNode;
 
   const [pageTitle, setPageTitle] = useState(page.path);
