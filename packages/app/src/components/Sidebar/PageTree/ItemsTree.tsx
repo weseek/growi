@@ -67,7 +67,7 @@ const renderByInitialNode = (
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, onItemDeleted: VoidFunction) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal, onItemDeleted: VoidFunction) => void,
 ): JSX.Element => {
 
   return (
@@ -122,7 +122,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely, onItemDeleted: VoidFunction) => {
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, onItemDeleted: VoidFunction) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -140,7 +140,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       }
     };
 
-    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler);
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   };
 
   if (error1 != null || error2 != null) {
