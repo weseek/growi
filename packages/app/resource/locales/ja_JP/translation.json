@@ -637,6 +637,22 @@
       "updatedAt": "更新日時"
     }
   },
+  "private_legacy_pages": {
+    "bulk_operation": "一括操作",
+    "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
+    "alert_title": "古い v4 互換形式のプライベートページを表示しています",
+    "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
+    "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
+    "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード  <i class='icon-share-alt'></i></a> を参照ください。",
+    "modal": {
+      "title": "新しい v5 互換形式への変換",
+      "converting_pages": "以下のページを変換します",
+      "convert_recursively_label": "再起的に変換",
+      "convert_recursively_desc": "このページの配下のページを再起的に変換します",
+      "button_label": "変換"
+    }
+  },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
@@ -972,7 +988,7 @@
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
   "pagetree": {
-    "private_legacy_pages": "待避所",
+    "private_legacy_pages": "旧形式のプライベートページ",
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
     "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"

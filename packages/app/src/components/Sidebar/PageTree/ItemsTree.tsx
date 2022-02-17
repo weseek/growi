@@ -4,13 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren, useSWRxPageChildren, useSWRxRootPage } from '~/stores/page-listing';
+import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
   OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 
 /*
  * Utility to generate initial node
@@ -62,9 +64,10 @@ const renderByInitialNode = (
     initialNode: ItemNode,
     isEnableActions: boolean,
     targetPathOrId?: string,
+    isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, onItemDeleted: VoidFunction) => void,
 ): JSX.Element => {
 
   return (
@@ -74,6 +77,7 @@ const renderByInitialNode = (
         targetPathOrId={targetPathOrId}
         itemNode={initialNode}
         isOpen
+        isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
         isEnableActions={isEnableActions}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickRenameMenuItem={onClickRenameMenuItem}
@@ -103,8 +107,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { t } = useTranslation();
 
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
-  // const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -145,24 +149,24 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely, onItemDeleted: VoidFunction) => {
+    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
 
-    // mutateChildren();
+      onItemDeleted();
 
-    const path = pathOrPathsToDelete;
+      const path = pathOrPathsToDelete;
 
-    if (isCompletely) {
-      toastSuccess(t('deleted_pages_completely', { path }));
-    }
-    else {
-      toastSuccess(t('deleted_pages', { path }));
-    }
-  };
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+    };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely) => {
     openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
   };
 
@@ -177,7 +181,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   /*
@@ -185,7 +191,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   return null;

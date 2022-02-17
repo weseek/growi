@@ -1,20 +1,27 @@
 import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { IPageWithMeta } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
+
+export interface IReturnSelectedPageIds {
+  getSelectedPageIds?: () => Set<string>,
+}
+
 
 type Props = {
   appContainer: AppContainer,
 
   pages?: IPageWithMeta<IPageSearchMeta>[],
+
+  forceHideMenuItems?: ForceHideMenuItems,
 
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
@@ -23,12 +30,11 @@ type Props = {
   searchPager: React.ReactNode,
 }
 
-const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
-  const { t } = useTranslation();
-
+const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
   const {
     appContainer,
     pages,
+    forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
     searchControl, searchResultListHead, searchPager,
   } = props;
@@ -36,6 +42,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   // TODO get search keywords and split
   // ref: RevisionRenderer
@@ -64,6 +72,9 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
       }
 
       selectedPageIdsByCheckboxes.clear();
+    },
+    getSelectedPageIds: () => {
+      return selectedPageIdsByCheckboxes;
     },
   }));
 
@@ -106,6 +117,30 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
+  if (!isSearchServiceConfigured) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service is not configured in this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSearchServiceReachable) {
+    return (
+      <div className="grw-container-convertible">
+        <div className="row mt-5">
+          <div className="col text-muted">
+            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="content-main">
       <div className="search-result-base d-flex" data-testid="search-result-base">
@@ -130,14 +165,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                   {searchResultListHead}
                 </div>
 
-                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                { pages.length === 0 && (
-                  <div className="d-flex justify-content-center h2 text-muted my-5">
-                    0 {t('search_result.page_number_unit')}
-                  </div>
-                ) }
-
-                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
                 { pages.length > 0 && (
                   <div className="page-list px-md-4">
                     <SearchResultList
@@ -145,6 +172,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       pages={pages!}
                       selectedPageId={selectedPageWithMeta?.pageData._id}
+                      forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
                     />
@@ -167,6 +195,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll, Props> =
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}
+              forceHideMenuItems={forceHideMenuItems}
             />
           )}
         </div>

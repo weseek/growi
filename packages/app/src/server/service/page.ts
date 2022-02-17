@@ -26,7 +26,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages, isUserPage, isUserNamePage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -1689,16 +1689,16 @@ class PageService {
   }
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
+
     if (page.isEmpty) {
       return {
         isEmpty: true,
-        isMovable: true,
+        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
       };
     }
-
-    const isMovable = isGuestUser ? false : !isTopPage(page.path);
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];

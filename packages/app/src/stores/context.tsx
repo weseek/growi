@@ -143,6 +143,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+};
+
 
 /** **********************************************************
  *                     Computed contexts
