@@ -1,7 +1,9 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core';
+import escapeStringRegexp from 'escape-string-regexp';
 
-import PageOperation, { PageActionType } from '~/server/models/page-operation';
+import PageOperation from '~/server/models/page-operation';
 
+const { addTrailingSlash } = pathUtils;
 const { isTrashPage } = pagePathUtils;
 
 class PageOperationService {
@@ -16,38 +18,77 @@ class PageOperationService {
   }
 
   /**
-   * Check if the operation is operatable by comparing paths with all PageOperation documents
+   * Check if the operation is operatable by comparing paths with all Main PageOperation documents
    * @param fromPath The path to operate from
    * @param toPath The path to operate to
    * @param actionType The action type of the operation
    * @returns Promise<boolean>
    */
-  async canOperate(fromPath: string, toPath: string, actionType: PageActionType): Promise<boolean> {
-    // 1. Block when toPath is already reserved by other toPath
-    // 2. Block when toPath is already reserved by fromPath of "Delete" or "DeleteCompletely"
-    if (toPath != null) {
-      const isPageOpsExist = await PageOperation.exists({ toPath });
-      const isToPathTrash = isTrashPage(toPath);
-      const isForbidden1 = isPageOpsExist && !isToPathTrash;
+  async canOperate(isRecursively: boolean, fromPathToOp?: string, toPathToOp?: string): Promise<boolean> {
+    const mainOps = await PageOperation.findMainOps();
+    const toPaths = mainOps.map(op => op.toPath).filter((p): p is string => p != null);
 
-      if (isForbidden1) {
-        return false;
+    if (isRecursively) {
+
+      if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
+        const flag = toPaths.some(p => this.isEitherOfPathAreaOverlap(p, fromPathToOp));
+        if (flag) return false;
       }
 
-      const pageOps = await PageOperation.findMainOps({ actionType: { $in: [PageActionType.Delete, PageActionType.DeleteCompletely] } });
-      const fromPathsToBlock = pageOps.map(po => po.fromPath);
-      const isForbidden2 = fromPathsToBlock.includes(toPath);
-
-      if (isForbidden2) {
-        return false;
+      if (toPathToOp != null && !isTrashPage(toPathToOp)) {
+        const flag = toPaths.some(p => this.isEitherOfPathAreaOverlap(p, toPathToOp));
+        if (flag) return false;
       }
+
     }
+    else {
 
-    if (fromPath != null) {
-      return true;
+      if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
+        const flag = toPaths.some(p => this.isPathAreaOverlap(p, fromPathToOp));
+        if (flag) return false;
+      }
+
+      if (toPathToOp != null && !isTrashPage(toPathToOp)) {
+        const flag = toPaths.some(p => this.isPathAreaOverlap(p, toPathToOp));
+        if (flag) return false;
+      }
+
     }
 
     return true;
+  }
+
+  private isEitherOfPathAreaOverlap(path1: string, path2: string): boolean {
+    if (path1 === path2) {
+      return true;
+    }
+
+    const path1WithSlash = addTrailingSlash(path1);
+    const path2WithSlash = addTrailingSlash(path2);
+
+    const path1Area = new RegExp(`^${escapeStringRegexp(path1WithSlash)}`);
+    const path2Area = new RegExp(`^${escapeStringRegexp(path2WithSlash)}`);
+
+    if (path1Area.test(path2) || path2Area.test(path1)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private isPathAreaOverlap(pathToTest: string, pathToBeTested: string): boolean {
+    if (pathToTest === pathToBeTested) {
+      return true;
+    }
+
+    const pathWithSlash = addTrailingSlash(pathToTest);
+
+    const pathAreaToTest = new RegExp(`^${escapeStringRegexp(pathWithSlash)}`);
+    if (pathAreaToTest.test(pathToBeTested)) {
+      return true;
+    }
+
+    return false;
   }
 
 }
