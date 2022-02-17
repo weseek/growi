@@ -7,7 +7,7 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import { usePutBackPageMOdal } from '~/stores/modal';
+import { usePutBackPageModal } from '~/stores/modal';
 import { apiPost } from '~/client/util/apiv1-client';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
@@ -17,7 +17,7 @@ const PutBackPageModal = (props) => {
     t,
   } = props;
 
-  const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageMOdal();
+  const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
   const { isOpened, pageId, path } = pageDataToRevert;
 
   const [errs, setErrs] = useState(null);

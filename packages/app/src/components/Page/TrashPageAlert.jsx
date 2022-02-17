@@ -11,7 +11,7 @@ import PageContainer from '~/client/services/PageContainer';
 import EmptyTrashModal from '../EmptyTrashModal';
 
 import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
-import { usePageDeleteModal, usePutBackPageMOdal } from '~/stores/modal';
+import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
 const TrashPageAlert = (props) => {
@@ -32,14 +32,8 @@ const TrashPageAlert = (props) => {
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
 
-  useEffect(() => {
-    if (pageInfo != null) {
-      setIsAbleToDeleteCompletely(pageInfo.isAbleToDeleteCompletely);
-    }
-  }, [pageInfo]);
-
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { open: openPutBackPageModal } = usePutBackPageMOdal();
+  const { open: openPutBackPageModal } = usePutBackPageModal();
 
   function openEmptyTrashModalHandler() {
     setIsEmptyTrashModalShown(true);
@@ -68,8 +62,14 @@ const TrashPageAlert = (props) => {
       revisionId,
       path,
     };
-    const isDeleteCompletelyModal = true;
-    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler, isDeleteCompletelyModal);
+    openDeleteModal(
+      [pageToDelete],
+      {
+        isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
+        forceDeleteCompletelyMode: true,
+        onDeletedHandler,
+      },
+    );
   }
 
   function renderEmptyButton() {

@@ -18,7 +18,7 @@ import { SubNavButtons } from '../Navbar/SubNavButtons';
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import {
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 
 
@@ -115,16 +115,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageId, revisionId, path);
   }, [openRenameModal]);
 
-  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-    window.location.reload();
-  }, []);
-
-  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
-    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler);
-  }, [onDeletedHandler, openDeleteModal]);
+  const deleteItemClickedHandler = useCallback((pageToDelete) => {
+    openDeleteModal([pageToDelete]);
+  }, [openDeleteModal]);
 
   const ControlComponents = useCallback(() => {
     if (page == null) {
@@ -155,7 +148,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         </div>
       </>
     );
-  }, [page, showPageControlDropdown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page is null
   if (page == null) return <></>;
