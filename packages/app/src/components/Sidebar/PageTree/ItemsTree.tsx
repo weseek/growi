@@ -92,7 +92,22 @@ const renderByInitialNode = (
 const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + page tree's header + some space)
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
-
+const mutationObserverCallback = (records: MutationRecord[], mutationObserver: MutationObserver) => {
+  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+  if (scrollElement != null) {
+    for (let i = 0; i < records.length; i++) {
+      const elem = records[i].target as HTMLElement;
+      const target = document.getElementById('grw-pagetree-is-target');
+      if (target != null) {
+        if (elem.contains(target)) {
+          smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
+          mutationObserver.disconnect();
+          return;
+        }
+      }
+    }
+  }
+};
 // --- end ---
 
 
@@ -115,29 +130,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   // ***************************  Auto Scroll  ***************************
 
-  const mutationObserverCallback = (records: MutationRecord[], mutationObserver: MutationObserver) => {
-    const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-    if (scrollElement == null) {
-      return;
-    }
-    const target = document.getElementById('grw-pagetree-is-target');
-    if (target != null) {
-      smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
-      // disconnect to prevent unnecessary scroll
-      // i.e) when you open pages children in pagetree, new DOM is inserted to the DOM currently monitored.
-      //      then observer detects changes then repeat "find target to scroll" process.
-      mutationObserver.disconnect();
-      return;
-    }
-  };
-
   useEffect(() => {
     const elementToObserve = document.getElementsByClassName('grw-pagetree')[0];
     if (elementToObserve != null) {
       const observer = new MutationObserver(mutationObserverCallback);
       observer.observe(elementToObserve, MUTATION_OBSERVER_CONFIG);
     }
-  }, [ancestorsChildrenData]);
+  }, []);
 
   // *******************************  end  *******************************
 
