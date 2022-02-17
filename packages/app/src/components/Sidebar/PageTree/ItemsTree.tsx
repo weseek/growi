@@ -85,7 +85,7 @@ const renderByInitialNode = (
 
 // --- Auto scroll related utils and vars ---
 
-const SCROLL_OFFSET_TOP = 80; // approximate height of (navigation + page tree's header)
+const SCROLL_OFFSET_TOP = 60; // approximate height of (navigation + page tree's header)
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 // const scrollTo = (scrollElement:HTMLElement) => {
