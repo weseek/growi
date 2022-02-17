@@ -88,24 +88,20 @@ const renderByInitialNode = (
 const SCROLL_OFFSET_TOP = 60; // approximate height of (navigation + page tree's header)
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
-// const scrollTo = (scrollElement:HTMLElement) => {
-//   const target = scrollElement.querySelector('li.grw-pagetree-is-target');
-//   if (target != null) {
-//     smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement);
-//   }
-// };
-
-// const generateObserverCallback = (doScroll: ()=>void) => {
-//   return (mutationRecords:MutationRecord[]) => {
-//     mutationRecords.forEach((record:MutationRecord) => {
-//       const node = record.target as HTMLElement;
-//       if (node.contains(node.querySelector('li.grw-pagetree-is-target'))) {
-//         doScroll();
-//       }
-//     });
-//   };
-// };
-
+const mutationObserverCallback = (mutationRecords : MutationRecord[], mutationObserver: MutationObserver) => {
+  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+  if (scrollElement == null) return;
+  mutationRecords.forEach((record) => {
+    const elem = record.target as HTMLElement;
+    const target = elem.querySelector('li.grw-pagetree-is-target');
+    if (target != null) {
+      if (elem.contains(target)) {
+        smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
+        mutationObserver.disconnect();
+      }
+    }
+  });
+};
 // --- end ---
 
 
@@ -128,45 +124,18 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
 
   // ***************************  Auto Scroll  ***************************
 
-  const smoothScrollFlag = false;
-  const callback = (mutationRecords : MutationRecord[], mutationObserver: MutationObserver) => {
-    const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
-    if (scrollElement == null) return;
-    for (let i = 0; i < mutationRecords.length; i++) {
-      const elem = mutationRecords[i].target as HTMLElement;
-      const target = elem.querySelector('li.grw-pagetree-is-target');
-      if (target != null) {
-        if (elem.contains(target)) {
-          console.log(target);
-          smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
-          mutationObserver.disconnect();
-          break;
-        }
-      }
-    }
-    // mutationRecords.forEach((record) => {
-    //   const element = record.target as HTMLElement;
-    //   const target = element.querySelector('li.grw-pagetree-is-target');
-    //   if (element.contains(target)) {
-    //     console.log(target);
-    //     smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
-    //   }
-    // });
-  };
   useEffect(() => {
     const elementToObserve = document.querySelector('ul.grw-pagetree');
     if (elementToObserve == null) {
       return;
     }
-    // const observerCallback = generateObserverCallback(() => {
-    //   scrollTo(elementToObserve as HTMLElement);
-    // });
-    const observer = new MutationObserver(callback);
+    const observer = new MutationObserver(mutationObserverCallback);
     observer.observe(elementToObserve, MUTATION_OBSERVER_CONFIG);
+    // component did unmount
     return () => {
       observer.disconnect();
     };
-  }, [targetPathOrId]);
+  }, []);
 
   // *******************************  end  *******************************
 
