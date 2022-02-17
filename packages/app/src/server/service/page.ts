@@ -221,15 +221,12 @@ class PageService {
 
     const Page = this.crowi.model('Page');
 
-    let pagePath = path;
-
     let page: PageModel & PageDocument & HasObjectId;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
-      pagePath = page?.path;
     }
     else {
-      page = await Page.findByPathAndViewer(pagePath, user);
+      page = await Page.findByPathAndViewer(path, user);
     }
 
     if (page == null) {
