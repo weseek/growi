@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useMemo } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -11,6 +11,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { isTrashPage } from '^/../core/src/utils/page-path-utils';
 
 
 const deleteIconAndKey = {
@@ -32,11 +33,24 @@ const PageDeleteModal: FC = () => {
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
 
   const isOpened = deleteModalData?.isOpened ?? false;
-  const forceDeleteCompletelyMode = deleteModalData?.opts?.forceDeleteCompletelyMode ?? false;
+
+  const isAbleToDeleteCompletely = useMemo(() => {
+    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+      return deleteModalData.pages.every(page => page.isAbleToDeleteCompletely);
+    }
+    return true;
+  }, [deleteModalData]);
+
+  const forceDeleteCompletelyMode = useMemo(() => {
+    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
+      return deleteModalData.pages.every(page => isTrashPage(page.path));
+    }
+    return false;
+  }, [deleteModalData]);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(forceDeleteCompletelyMode);
-  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+  const deleteMode = forceDeleteCompletelyMode || isDeleteCompletely ? 'completely' : 'temporary';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
@@ -89,7 +103,7 @@ const PageDeleteModal: FC = () => {
     else {
       try {
         const recursively = isDeleteRecursively === true ? true : undefined;
-        const completely = isDeleteCompletely === true ? true : undefined;
+        const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
         const page = deleteModalData.pages[0];
 
@@ -136,13 +150,6 @@ const PageDeleteModal: FC = () => {
   }
 
   function renderDeleteCompletelyForm() {
-    let isAbleToDeleteCompletely = false;
-
-    // modify isAbleToDeleteCompletely value if every page allows completely deletion
-    if (deleteModalData != null && deleteModalData.pages != null) {
-      isAbleToDeleteCompletely = deleteModalData.pages.every(page => page.isAbleToDeleteCompletely);
-    }
-
     return (
       <div className="custom-control custom-checkbox custom-checkbox-danger">
         <input
@@ -189,7 +196,7 @@ const PageDeleteModal: FC = () => {
           {renderPagePathsToDelete()}
         </div>
         {renderDeleteRecursivelyForm()}
-        {!forceDeleteCompletelyMode && renderDeleteCompletelyForm()}
+        { !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />

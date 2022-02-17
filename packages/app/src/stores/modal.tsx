@@ -39,7 +39,6 @@ export type IPageForPageDeleteModal = {
 
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
-  forceDeleteCompletelyMode?: boolean,
 }
 
 export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
@@ -73,7 +72,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
     }),
-    close: () => swrResponse.mutate({ isOpened: false, pages: [], opts: undefined }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
