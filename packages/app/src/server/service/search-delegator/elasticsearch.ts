@@ -386,7 +386,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
     };
 
     const bookmarkCount = page.bookmarkCount || 0;
-    const seenUsersCount = page.seenUsers.length || 0;
+    const seenUsersCount = page.seenUsers?.length || 0;
     let document = {
       path: page.path,
       body: page.revision.body,
@@ -396,7 +396,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data> {
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
-      like_count: page.liker.length || 0,
+      like_count: page.liker?.length || 0,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,

@@ -1,11 +1,10 @@
-import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
-const { pathUtils } = require('@growi/core');
+const { pathUtils, pagePathUtils } = require('@growi/core');
 const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
@@ -485,7 +484,7 @@ module.exports = (crowi) => {
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
-      // if page found, cannot cannot rename to that path
+      // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
@@ -636,6 +635,11 @@ module.exports = (crowi) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);
+
+    const isCreatable = isCreatablePage(newPagePath);
+    if (!isCreatable) {
+      return res.apiv3Err(new ErrorV3('This page path is invalid', 'invalid_path'), 400);
+    }
 
     // check page existence
     const isExist = (await Page.count({ path: newPagePath })) > 0;
