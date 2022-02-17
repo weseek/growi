@@ -29,7 +29,7 @@ type CommonProps = {
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 }
 
-type SubNavButtonsSubstanceProps= CommonProps & {
+type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string,
@@ -132,7 +132,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 
   const {
-    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
@@ -161,7 +161,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         onBookMarkClicked={bookmarkClickHandler}
       />
       { !isCompactMode && (
-        <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+        <SeenUserInfo
+          seenUsers={seenUsers}
+          sumOfSeenUsers={sumOfSeenUsers}
+          disabled={disableSeenUserInfoPopover}
+        />
       ) }
       { showPageControlDropdown && (
         <PageItemControl
