@@ -37,3 +37,13 @@ Cypress.Commands.add('login', (username, password) => {
     cy.getByTestid('btnSubmitForLogin').click();
   });
 });
+
+Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
+  cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
+    const isCurrentCollapsed = $contents.hasClass('d-none');
+    // toggle when the current state and isCoolapsed is not match
+    if (isCurrentCollapsed !== isCollapsed) {
+      cy.getByTestid("grw-navigation-resize-button").click();
+    }
+  });
+});
