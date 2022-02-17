@@ -33,11 +33,9 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     const { PageQueryBuilder } = Page;
 
     const queryBuilder = new PageQueryBuilder(Page.find());
+    await queryBuilder.addConditionAsMigratablePages(user);
 
     const _pages: PageDocument[] = await queryBuilder
-      .addConditionAsNonRootPage()
-      .addConditionAsNotMigrated()
-      .addConditionToFilteringByViewer(user, userGroups)
       .addConditionToPagenate(offset, limit)
       .query
       .populate('lastUpdateUser')
