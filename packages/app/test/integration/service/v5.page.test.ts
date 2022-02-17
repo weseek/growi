@@ -509,7 +509,6 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
         revision: revisionIdForRevert1,
         status: Page.STATUS_DELETED,
       },
@@ -989,18 +988,16 @@ describe('PageService page operations with only public pages', () => {
     };
 
     test('revert single deleted page', async() => {
-      const deletedPage = await Page.findOne({ path: '/trash/v5_revert1' });
+      const deletedPage = await Page.findOne({ path: '/trash/v5_revert1', status: Page.STATUS_DELETED });
       const revision = await Revision.findOne({ pageId: deletedPage._id });
       const tag = await Tag.findOne({ name: 'revertTag1' });
-      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
-
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id, isPageTrashed: true });
       expectAllToBeTruthy([deletedPage, revision, tag, deletedPageTagRelation]);
-      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
-      expect(deletedPageTagRelation.isPageTrashed).toBe(true);
 
       const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
 
+      expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.path).toBe('/v5_revert1');
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(pageTagRelation.isPageTrashed).toBe(false);
@@ -1008,20 +1005,18 @@ describe('PageService page operations with only public pages', () => {
     });
 
     test('revert multiple deleted page (has non existent page in the middle)', async() => {
-      const deletedPage1 = await Page.findOne({ path: '/trash/v5_revert2' });
-      const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4' });
+      const deletedPage1 = await Page.findOne({ path: '/trash/v5_revert2', status: Page.STATUS_DELETED });
+      const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4', status: Page.STATUS_DELETED });
       const revision1 = await Revision.findOne({ pageId: deletedPage1._id });
       const revision2 = await Revision.findOne({ pageId: deletedPage2._id });
-
       expectAllToBeTruthy([deletedPage1, deletedPage2, revision1, revision2]);
-      expect(deletedPage1.status).toBe(Page.STATUS_DELETED);
-      expect(deletedPage2.status).toBe(Page.STATUS_DELETED);
 
       const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
       const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
       const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
 
       expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
+      expect(revertedPage1.parent).toStrictEqual(rootPage._id);
       expect(revertedPage1.path).toBe('/v5_revert2');
       expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');
       expect(newlyCreatedPage.parent).toStrictEqual(revertedPage1._id);
