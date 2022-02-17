@@ -774,19 +774,19 @@ describe('PageService page operations with only public pages', () => {
 
     const renamePage = async(page, newPagePath, user, options) => {
     // mock return value
-      const mockedResumableRenameDescendants = jest.spyOn(crowi.pageService, 'resumableRenameDescendants').mockReturnValue(null);
+      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
 
-      // retrieve the arguments passed when calling method resumableRenameDescendants inside renamePage method
-      const argsForResumableRenameDescendants = mockedResumableRenameDescendants.mock.calls[0];
+      // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
+      const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
       // restores the original implementation
-      mockedResumableRenameDescendants.mockRestore();
+      mockedRenameSubOperation.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
-      await crowi.pageService.resumableRenameDescendants(...argsForResumableRenameDescendants);
+      await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
 
       return renamedPage;
     };
@@ -939,20 +939,20 @@ describe('PageService page operations with only public pages', () => {
 
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
-      const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockReturnValue(null);
+      const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
-      // retrieve the arguments passed when calling method resumableDuplicateDescendants inside duplicate method
-      const argsForResumableDuplicateDescendants = mockedResumableDuplicateDescendants.mock.calls[0];
+      // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
+      const argsForDuplicateRecursivelyMainOperation = mockedDuplicateRecursivelyMainOperation.mock.calls[0];
 
       // restores the original implementation
-      mockedResumableDuplicateDescendants.mockRestore();
+      mockedDuplicateRecursivelyMainOperation.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
       if (isRecursively) {
-        await crowi.pageService.resumableDuplicateDescendants(...argsForResumableDuplicateDescendants);
+        await crowi.pageService.duplicateRecursivelyMainOperation(...argsForDuplicateRecursivelyMainOperation);
       }
 
       return duplicatedPage;
@@ -1100,18 +1100,18 @@ describe('PageService page operations with only public pages', () => {
   });
   describe('Delete', () => {
     const deletePage = async(page, user, options, isRecursively) => {
-      const mockedResumableDeleteDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteDescendants').mockReturnValue(null);
+      const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
       const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
 
-      const argsForResumableDeleteDescendants = mockedResumableDeleteDescendants.mock.calls[0];
+      const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
 
-      mockedResumableDeleteDescendants.mockRestore();
+      mockedDeleteRecursivelyMainOperation.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
-        await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
+        await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
       }
 
       return deletedPage;
@@ -1215,18 +1215,18 @@ describe('PageService page operations with only public pages', () => {
 
   describe('Delete completely', () => {
     const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
-      const mockedResumableDeleteCompletelyDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteCompletelyDescendants').mockReturnValue(null);
+      const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
       const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
       await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
 
-      const argsForResumableDeleteDescendants = mockedResumableDeleteCompletelyDescendants.mock.calls[0];
+      const argsForDeleteCompletelyRecursivelyMainOperation = mockedDeleteCompletelyRecursivelyMainOperation.mock.calls[0];
 
-      mockedResumableDeleteCompletelyDescendants.mockRestore();
+      mockedDeleteCompletelyRecursivelyMainOperation.mockRestore();
       mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
-        await crowi.pageService.resumableDeleteCompletelyDescendants(...argsForResumableDeleteDescendants);
+        await crowi.pageService.resumableDeleteCompletelyDescendants(...argsForDeleteCompletelyRecursivelyMainOperation);
       }
 
       return;
