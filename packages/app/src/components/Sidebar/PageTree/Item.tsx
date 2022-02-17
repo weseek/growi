@@ -87,6 +87,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -317,6 +318,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     return null;
   };
+
+  useEffect(() => {
+    if (!isScrolled && page.isTarget) {
+      document.dispatchEvent(new CustomEvent('targetItemRendered'));
+      setIsScrolled(true);
+    }
+  }, [isScrolled, page.isTarget]);
 
   // didMount
   useEffect(() => {
