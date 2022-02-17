@@ -13,7 +13,7 @@ import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageMOdal,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
@@ -66,7 +66,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { open: openPutBackPageModal } = usePutBackPageMOdal();
+  const { open: openPutBackPageModal } = usePutBackPageModal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
