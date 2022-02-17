@@ -54,6 +54,7 @@ import PersonalContainer from '~/client/services/PersonalContainer';
 
 import { appContainer, componentMappings } from './base';
 import { toastError } from './util/apiNotification';
+import { PrivateLegacyPages } from '~/components/PrivateLegacyPages';
 
 const logger = loggerFactory('growi:cli:app');
 
@@ -86,6 +87,8 @@ Object.assign(componentMappings, {
   'grw-sidebar-wrapper': <Sidebar />,
 
   'search-page': <SearchPage appContainer={appContainer} />,
+  'private-regacy-pages': <PrivateLegacyPages appContainer={appContainer} />,
+
   'all-in-app-notifications': <InAppNotificationPage />,
   'identical-path-page': <IdenticalPathPage />,
 

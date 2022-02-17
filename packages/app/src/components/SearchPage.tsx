@@ -8,7 +8,7 @@ import { parse as parseQuerystring } from 'querystring';
 import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
+import { useIsSearchServiceReachable } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxFullTextSearch } from '~/stores/search';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -46,14 +46,20 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const leftNum = offset + 1;
   const rightNum = offset + hitsCount;
 
+  if (total === 0) {
+    return (
+      <div className="d-flex justify-content-center h2 text-muted my-5">
+        0 {t('search_result.page_number_unit')}
+      </div>
+    );
+  }
+
   return (
     <div className="form-inline d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
         {t('search_result.result_meta')}
         <span className="search-result-keyword">{`${searchingKeyword}`}</span>
-        { total > 0 && (
-          <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
-        ) }
+        <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           <span className="ml-3 text-muted">({took}ms)</span>
         ) }
@@ -111,7 +117,6 @@ export const SearchPage = (props: Props): JSX.Element => {
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll|null>(null);
 
-  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   const { data, conditions } = useSWRxFullTextSearch(keyword, {
@@ -253,30 +258,6 @@ export const SearchPage = (props: Props): JSX.Element => {
       />
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
-
-  if (!isSearchServiceConfigured) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service is not configured in this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isSearchServiceReachable) {
-    return (
-      <div className="grw-container-convertible">
-        <div className="row mt-5">
-          <div className="col text-muted">
-            <h1>Search service occures errors. Please contact to administrators of this system.</h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <SearchPageBase

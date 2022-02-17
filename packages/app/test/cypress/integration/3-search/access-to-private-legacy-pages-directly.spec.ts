@@ -1,5 +1,5 @@
-context('Access to /me page', () => {
-  const ssPrefix = 'access-to-me-page-';
+context('Access to legacy private pages directly', () => {
+  const ssPrefix = 'access-to-legacy-private-pages-directly-';
 
   let connectSid: string | undefined;
 
@@ -19,14 +19,12 @@ context('Access to /me page', () => {
     }
   });
 
-  it('/me is successfully loaded', () => {
-    cy.visit('/me', {  });
-    cy.screenshot(`${ssPrefix}-me`, { capture: 'viewport' });
-  });
+  it('/_private-legacy-pages is successfully loaded', () => {
+    cy.visit('/_private-legacy-pages');
 
-  it('Draft page is successfully shown', () => {
-    cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`, { capture: 'viewport' });
+    cy.getByTestid('search-result-base').should('be.visible');
+
+    cy.screenshot(`${ssPrefix}-shown`, { capture: 'viewport' });
   });
 
 });

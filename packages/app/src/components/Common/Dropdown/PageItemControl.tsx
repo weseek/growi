@@ -15,12 +15,23 @@ import { useSWRxPageInfo } from '~/stores/page';
 const logger = loggerFactory('growi:cli:PageItemControl');
 
 
+export const MenuItemType = {
+  BOOKMARK: 'bookmark',
+  DUPLICATE: 'duplicate',
+  RENAME: 'rename',
+  DELETE: 'delete',
+} as const;
+export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
+
+export type ForceHideMenuItems = MenuItemType[];
+
 export type AdditionalMenuItemsRendererProps = { pageInfo: IPageInfoAll };
 
 type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
-  showBookmarkMenuItem?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
+
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
@@ -40,7 +51,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   const {
     pageId, isLoading,
-    pageInfo, isEnableActions, showBookmarkMenuItem,
+    pageInfo, isEnableActions, forceHideMenuItems,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
@@ -92,6 +103,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     );
   }
   else if (pageId != null && pageInfo != null) {
+
+    const showDeviderBeforeAdditionalMenuItems = (forceHideMenuItems?.length ?? 0) < 3;
+    const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
+
     contents = (
       <>
         { !isEnableActions && (
@@ -103,7 +118,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Bookmark */}
-        { showBookmarkMenuItem && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+        { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
           <DropdownItem onClick={bookmarkItemClickedHandler}>
             <i className="fa fa-fw fa-bookmark-o"></i>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -111,7 +126,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Duplicate */}
-        { isEnableActions && (
+        { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && (
           <DropdownItem onClick={duplicateItemClickedHandler}>
             <i className="icon-fw icon-docs"></i>
             {t('Duplicate')}
@@ -119,20 +134,25 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { isEnableActions && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && pageInfo.isMovable && (
           <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
           </DropdownItem>
         ) }
 
-        { AdditionalMenuItems && <AdditionalMenuItems pageInfo={pageInfo} /> }
+        { AdditionalMenuItems && (
+          <>
+            { showDeviderBeforeAdditionalMenuItems && <DropdownItem divider /> }
+            <AdditionalMenuItems pageInfo={pageInfo} />
+          </>
+        ) }
 
         {/* divider */}
         {/* Delete */}
-        { isEnableActions && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && pageInfo.isMovable && (
           <>
-            <DropdownItem divider />
+            { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
               className={`pt-2 ${pageInfo.isDeletable ? 'text-danger' : ''}`}
               disabled={!pageInfo.isDeletable}

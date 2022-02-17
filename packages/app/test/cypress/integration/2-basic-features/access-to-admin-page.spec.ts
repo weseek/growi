@@ -1,5 +1,3 @@
-const ssPrefix = 'access-to-admin-page-';
-
 const adminMenues = [
   'app', // App
   'security', // Security
@@ -15,6 +13,7 @@ const adminMenues = [
 ];
 
 context('Access to Admin page', () => {
+  const ssPrefix = 'access-to-admin-page-';
 
   let connectSid: string | undefined;
 

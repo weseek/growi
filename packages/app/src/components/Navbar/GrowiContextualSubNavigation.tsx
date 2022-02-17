@@ -122,8 +122,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
 
 const GrowiContextualSubNavigation = (props) => {
-  const { t } = useTranslation();
-
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
@@ -218,9 +216,11 @@ const GrowiContextualSubNavigation = (props) => {
       mutateEditorMode(viewType);
     }
 
+    const className = `d-flex flex-column align-items-end justify-content-center ${isViewMode ? ' h-50' : ''}`;
+
     return (
       <>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={className}>
           { pageId != null && isViewMode && (
             <SubNavButtons
               isCompactMode={isCompactMode}
@@ -245,7 +245,7 @@ const GrowiContextualSubNavigation = (props) => {
             />
           ) }
         </div>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
+        <div className={className}>
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
               onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
