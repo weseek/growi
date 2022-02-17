@@ -35,7 +35,7 @@ type CommonProps = {
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll) => Promise<void> | void,
+  onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -224,11 +224,11 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickRenameMenuItem, pageId]);
 
   const deleteMenuItemClickHandler = useCallback(async() => {
-    if (onClickDeleteMenuItem == null || fetchedPageInfo == null) {
+    if (onClickDeleteMenuItem == null) {
       return;
     }
-    await onClickDeleteMenuItem(pageId, fetchedPageInfo);
-  }, [onClickDeleteMenuItem, pageId, fetchedPageInfo]);
+    await onClickDeleteMenuItem(pageId, fetchedPageInfo ?? presetPageInfo);
+  }, [onClickDeleteMenuItem, pageId, fetchedPageInfo, presetPageInfo]);
 
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
