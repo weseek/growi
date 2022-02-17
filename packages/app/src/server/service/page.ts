@@ -2247,10 +2247,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.count(), false);
-    builder.addConditionAsNotMigrated();
-    builder.addConditionAsNonRootPage();
-    builder.addConditionToExcludeTrashed();
-    await builder.addConditionForParentNormalization(user);
+    await builder.addConditionAsMigratablePages(user);
 
     const nMigratablePages = await builder.query.exec();
 
