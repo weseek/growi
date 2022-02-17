@@ -35,11 +35,11 @@ services:
       - /data/db
 
   ogp:
-  image: ghcr.io/weseek/growi-unique-ogp:latest
-  ports:
-    - 8088:8088
-  restart: unless-stopped
-  tty: true
+    image: ghcr.io/weseek/growi-unique-ogp:latest
+    ports:
+      - 8088:8088
+    restart: unless-stopped
+    tty: true
 
   # This container requires '../../growi-docker-compose' repository
   #   cloned from https://github.com/weseek/growi-docker-compose.git
