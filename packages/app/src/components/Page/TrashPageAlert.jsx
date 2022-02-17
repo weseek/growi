@@ -20,7 +20,14 @@ const TrashPageAlert = (props) => {
     pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
   const { data: shareLinkId } = useShareLinkId();
+
+  /*
+  * TODO: Do not use useSWRxPageInfo on this component
+  * Ideal: use useSWRxPageInfo on TrashPage after applying Next.js
+  * Reference: https://github.com/weseek/growi/pull/5359#discussion_r808381329
+  */
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
