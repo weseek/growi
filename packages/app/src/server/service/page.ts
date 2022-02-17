@@ -732,7 +732,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
   }
 
   /*
