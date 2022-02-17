@@ -822,7 +822,7 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([page]);
 
       await deleteCompletely(page, dummyUser1, {}, false);
-      const deletedPage = await Page.findOne({ _id: page._id });
+      const deletedPage = await Page.findOne({ _id: page._id, path: '/v5_PageForDeleteCompletely1' });
 
       expect(deletedPage).toBeNull();
     });
