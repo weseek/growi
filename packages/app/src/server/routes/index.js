@@ -50,6 +50,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
+  const ogp = require('./ogp')(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -196,11 +197,12 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
+    .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
     .get('/', forgotPassword.forgotPassword)
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
-    .use(forgotPassword.handleHttpErrosMiddleware));
+    .use(forgotPassword.handleErrosMiddleware));
 
-  app.use('/private-legacy-pages', express.Router()
+  app.use('/_private-legacy-pages', express.Router()
     .get('/', privateLegacyPages.renderPrivateLegacyPages));
   app.use('/user-activation', express.Router()
     .get('/:token', apiLimiter, applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
@@ -208,6 +210,8 @@ module.exports = function(crowi, app) {
   app.post('/user-activation/register', apiLimiter, applicationInstalled, csrf, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   app.get('/share/:linkId', page.showSharedPage);
+
+  app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , injectUserUISettings, page.showPage);
 

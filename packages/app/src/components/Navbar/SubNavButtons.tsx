@@ -13,20 +13,23 @@ import LikeButtons from '../LikeButtons';
 import BookmarkButtons from '../BookmarkButtons';
 import SeenUserInfo from '../User/SeenUserInfo';
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
-import { AdditionalMenuItemsRendererProps, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import {
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+} from '../Common/Dropdown/PageItemControl';
 
 
 type CommonProps = {
   isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
   onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 }
 
-type SubNavButtonsSubstanceProps= CommonProps & {
+type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string,
@@ -38,7 +41,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId,
-    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, additionalMenuItemRenderer,
+    isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
   } = props;
 
@@ -129,8 +132,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 
   const {
-    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
   } = pageInfo;
+
+  const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
+  forceHideMenuItemsWithBookmark.push(MenuItemType.BOOKMARK);
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
@@ -155,13 +161,18 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         onBookMarkClicked={bookmarkClickHandler}
       />
       { !isCompactMode && (
-        <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+        <SeenUserInfo
+          seenUsers={seenUsers}
+          sumOfSeenUsers={sumOfSeenUsers}
+          disabled={disableSeenUserInfoPopover}
+        />
       ) }
       { showPageControlDropdown && (
         <PageItemControl
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
+          forceHideMenuItems={forceHideMenuItemsWithBookmark}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}

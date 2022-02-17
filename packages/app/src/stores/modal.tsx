@@ -1,6 +1,7 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
 import { Nullable } from '~/interfaces/common';
+import { IPageInfo } from '~/interfaces/page';
 
 
 /*
@@ -43,16 +44,16 @@ export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
-  onDeleted?: OnDeletedFunction,
   isAbleToDeleteCompletely?: boolean,
+  onDeleted?: OnDeletedFunction,
   isDeleteCompletelyModal?: boolean,
 }
 
 type DeleteModalStatusUtils = {
   open(
     pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
     isAbleToDeleteCompletely?: boolean,
+    onDeleted?: OnDeletedFunction,
     isDeleteCompletelyModal?: boolean,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
@@ -72,11 +73,11 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     ...swrResponse,
     open: (
         pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
         isAbleToDeleteCompletely?: boolean,
+        onDeleted?: OnDeletedFunction,
         isDeleteCompletelyModal?: boolean,
     ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isAbleToDeleteCompletely, isDeleteCompletelyModal,
+      isOpened: true, pages, isAbleToDeleteCompletely, onDeleted, isDeleteCompletelyModal,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
@@ -149,6 +150,31 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
   };
 };
 
+type PutBackPageModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  path?: string,
+}
+
+type PutBackPageModalUtils = {
+  open(pageId: string, path: string): Promise<PutBackPageModalStatus | undefined>
+  close():Promise<PutBackPageModalStatus | undefined>
+}
+
+export const usePutBackPageMOdal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
+  const initialData = { isOpened: false, pageId: '', path: '' };
+  const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, path: string) => swrResponse.mutate({
+      isOpened: true, pageId, path,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+
 /*
 * PagePresentationModal
 */
@@ -176,6 +202,45 @@ export const usePagePresentationModal = (
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+
+/*
+ * LegacyPrivatePagesMigrationModal
+ */
+
+export type ILegacyPrivatePage = { pageId: string, path: string };
+
+export type LegacyPrivatePagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
+
+type LegacyPrivatePagesMigrationModalStatus = {
+  isOpened: boolean,
+  pages?: ILegacyPrivatePage[],
+  onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler,
+}
+
+type LegacyPrivatePagesMigrationModalStatusUtils = {
+  open(pages: ILegacyPrivatePage[], onSubmited?: LegacyPrivatePagesMigrationModalSubmitedHandler): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+  close(): Promise<LegacyPrivatePagesMigrationModalStatus | undefined>,
+}
+
+export const useLegacyPrivatePagesMigrationModal = (
+    status?: LegacyPrivatePagesMigrationModalStatus,
+): SWRResponse<LegacyPrivatePagesMigrationModalStatus, Error> & LegacyPrivatePagesMigrationModalStatusUtils => {
+  const initialData: LegacyPrivatePagesMigrationModalStatus = {
+    isOpened: false,
+    pages: [],
+  };
+  const swrResponse = useStaticSWR<LegacyPrivatePagesMigrationModalStatus, Error>('legacyPrivatePagesMigrationModal', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pages, onSubmited?) => swrResponse.mutate({
+      isOpened: true, pages, onSubmited,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false, pages: [], onSubmited: undefined }),
+  };
+};
+
 
 /*
 * DescendantsPageListModal

@@ -15,7 +15,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
-const { isTopPage, isTrashPage, isUserNamePage } = pagePathUtils;
+const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
@@ -218,6 +218,22 @@ export class PageQueryBuilder {
       .and({
         $or: grantConditions,
       });
+
+    return this;
+  }
+
+  async addConditionAsMigratablePages(user) {
+    this.query = this.query
+      .and({
+        $or: [
+          { grant: { $ne: GRANT_RESTRICTED } },
+          { grant: { $ne: GRANT_SPECIFIED } },
+        ],
+      });
+    this.addConditionAsNotMigrated();
+    this.addConditionAsNonRootPage();
+    this.addConditionToExcludeTrashed();
+    await this.addConditionForParentNormalization(user);
 
     return this;
   }
@@ -594,10 +610,6 @@ export const getPageSchema = (crowi) => {
 
   pageSchema.statics.getRevertDeletedPageName = function(path) {
     return path.replace('/trash', '');
-  };
-
-  pageSchema.statics.isDeletableName = function(path) {
-    return !isTopPage(path) && !isUserNamePage(path);
   };
 
   pageSchema.statics.fixToCreatableName = function(path) {
