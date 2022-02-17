@@ -165,6 +165,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
+          dataTestId="grw-subnav-container-page-item-control"
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}

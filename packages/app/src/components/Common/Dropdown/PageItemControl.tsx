@@ -31,6 +31,7 @@ type CommonProps = {
   pageInfo?: IPageInfoAll,
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
+  dataTestId?: string
 
   onClickBookmarkMenuItem?: (pageId: string, newValue?: boolean) => Promise<void>,
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
@@ -50,6 +51,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
+    dataTestId,
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
     onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
@@ -168,7 +170,11 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
+    <DropdownMenu
+      data-testid={dataTestId || ''}
+      positionFixed
+      modifiers={{ preventOverflow: { boundariesElement: undefined } }}
+    >
       {contents}
     </DropdownMenu>
   );
