@@ -13,7 +13,7 @@ import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageModal,
 } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
@@ -33,6 +33,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageDeleted?: OnDeletedFunction,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -41,7 +42,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { pageData, pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged,
+    onClickItem, onCheckboxChanged, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -107,8 +108,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     const pageToDelete = {
       pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
     };
-    openDeleteModal([pageToDelete]);
-  }, [pageData, openDeleteModal]);
+
+    // open modal
+    openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
+  }, [pageData, openDeleteModal, onPageDeleted]);
 
   const revertMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, path } = pageData;
