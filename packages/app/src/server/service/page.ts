@@ -9,7 +9,7 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
-  CreateMethod, generateGrantCondition, PageCreateOptions, PageDocument, PageModel,
+  CreateMethod, generateGrantCondition, PageCreateOptions, PageModel,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import ActivityDefine from '../util/activityDefine';
@@ -27,7 +27,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, collectAncestorPaths, omitDuplicateAreaPageFromPages,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -2113,21 +2113,18 @@ class PageService {
     }
 
     /*
-     * Sub Operation (s)
+     * Main Operation (s)
      */
     for await (const page of normalizablePages) {
-      await this.normalizeParentRecursivelySubOperation(page, user);
+      await this.normalizeParentRecursivelyMainOperation(page, user);
     }
   }
 
-  private async normalizeParentRecursivelySubOperation(page, user) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
+  async normalizeParentRecursivelyMainOperation(page, user): Promise<void> {
     // TODO: insertOne PageOperationBlock
 
-    const regexps = [new RegExp(`^${escapeStringRegexp(page.path)}`, 'i')];
     try {
-      await this.normalizeParentRecursively(null, regexps);
+      await this.normalizeParentRecursively([page.path]);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2135,6 +2132,12 @@ class PageService {
 
       throw err;
     }
+
+    await this.normalizeParentRecursivelySubOperation(page, user);
+  }
+
+  async normalizeParentRecursivelySubOperation(page, user): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
 
     try {
       // update descendantCount of self and descendant pages first
@@ -2212,8 +2215,7 @@ class PageService {
 
     // then migrate
     try {
-      const Page = mongoose.model('Page') as unknown as PageModel;
-      await this.normalizeParentRecursively(Page.GRANT_PUBLIC, null, true);
+      await this.normalizeParentRecursively(['/'], true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -2249,16 +2251,21 @@ class PageService {
   }
 
   private async normalizeParentAndDescendantCountOfDescendants(path: string): Promise<void> {
-    const escapedPath = escapeStringRegexp(path);
-    const regexps = [new RegExp(`^${escapedPath}`, 'i')];
-    await this.normalizeParentRecursively(null, regexps);
+    await this.normalizeParentRecursively([path]);
 
     // update descendantCount of descendant pages
     await this.updateDescendantCountOfSelfAndDescendants(path);
   }
 
+  async normalizeParentRecursively(paths: string[], publicOnly = false): Promise<void> {
+    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p));
+    const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(p)}`, 'i'));
+
+    return this._normalizeParentRecursively(regexps, ancestorPaths, publicOnly);
+  }
+
   // TODO: use websocket to show progress
-  private async normalizeParentRecursively(grant, regexps, publicOnly = false): Promise<void> {
+  private async _normalizeParentRecursively(regexps: RegExp[], pathsToInclude: string[], publicOnly: boolean): Promise<void> {
     const BATCH_SIZE = 100;
     const PAGES_LIMIT = 1000;
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -2272,8 +2279,8 @@ class PageService {
       ],
     };
 
-    if (grant != null) { // add grant condition if not null
-      grantFilter.$and = [...grantFilter.$and, { grant }];
+    if (publicOnly) { // add grant condition if not null
+      grantFilter.$and = [...grantFilter.$and, { grant: Page.GRANT_PUBLIC }];
     }
 
     // generate filter
@@ -2286,11 +2293,18 @@ class PageService {
         },
       ],
     };
-    if (regexps != null && regexps.length !== 0) {
+    let pathCondition: (RegExp | string)[] = [];
+    if (regexps.length > 0) {
+      pathCondition = [...regexps];
+    }
+    if (pathsToInclude.length > 0) {
+      pathCondition = [...pathCondition, ...pathsToInclude];
+    }
+    if (pathCondition.length > 0) {
       filter.$and.push({
         parent: null,
         status: Page.STATUS_PUBLISHED,
-        path: { $in: regexps },
+        path: { $in: pathCondition },
       });
     }
 
@@ -2353,8 +2367,8 @@ class PageService {
             // ex. /parent/any_child OR /any_level1
             path: { $regex: new RegExp(`^${parentPath}(\\/[^/]+)\\/?$`, 'i') },
           };
-          if (grant != null) {
-            filter.grant = grant;
+          if (publicOnly) {
+            filter.grant = Page.GRANT_PUBLIC;
           }
 
           return {
@@ -2403,7 +2417,7 @@ class PageService {
 
     const existsFilter = { $and: [...grantFilter.$and, ...filter.$and] };
     if (await Page.exists(existsFilter) && shouldContinue) {
-      return this.normalizeParentRecursively(grant, regexps, publicOnly);
+      return this._normalizeParentRecursively(regexps, pathsToInclude, publicOnly);
     }
 
   }
