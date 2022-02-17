@@ -29,3 +29,22 @@ export function useStaticSWR<Data, Error>(
 
   return swrResponse;
 }
+
+
+export type ITermNumberManagerUtil = {
+  advance(): void,
+}
+
+export const useTermNumberManager = (key: Key) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  const swrResult = useStaticSWR<number, Error>(key, undefined, { fallbackData: 0 });
+
+  return {
+    ...swrResult,
+    advance: () => {
+      const { data: currentNum } = swrResult;
+      if (currentNum != null) {
+        swrResult.mutate(currentNum + 1);
+      }
+    },
+  };
+};

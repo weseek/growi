@@ -5,6 +5,13 @@ import { apiGet } from '~/client/util/apiv1-client';
 
 import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
+import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
+
+
+export const useFullTextSearchTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
+};
+
 
 export type ISearchConfigurations = {
   limit: number,
@@ -44,8 +51,9 @@ const createSearchQuery = (keyword: string, includeTrashPages: boolean, includeU
 };
 
 export const useSWRxFullTextSearch = (
-    keyword: string, configurations: ISearchConfigurations,
+    keyword: string, configurations: ISearchConfigurations, disableTermManager = false,
 ): SWRResponse<IFormattedSearchResult, Error> & { conditions: ISearchConditions } => {
+  const { data: termNumber } = useFullTextSearchTermManager(disableTermManager);
 
   const {
     limit, offset, sort, order, includeTrashPages, includeUserPages,
@@ -62,7 +70,7 @@ export const useSWRxFullTextSearch = (
   const rawQuery = createSearchQuery(keyword, fixedConfigurations.includeTrashPages, fixedConfigurations.includeUserPages);
 
   const swrResult = useSWRImmutable(
-    ['/search', keyword, fixedConfigurations],
+    ['/search', keyword, fixedConfigurations, termNumber],
     (endpoint, keyword, fixedConfigurations) => {
       const {
         limit, offset, sort, order,
