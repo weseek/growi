@@ -385,7 +385,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
-            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
