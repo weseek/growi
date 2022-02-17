@@ -440,6 +440,8 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
+  "deleted_pages": "ページをゴミ箱に入れました",
+  "deleted_pages_completely": "ページを完全に削除しました",
   "modal_empty":{
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
@@ -971,7 +973,9 @@
   },
   "pagetree": {
     "private_legacy_pages": "待避所",
-    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません"
+    "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
+    "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
+    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
   },
   "duplicated_page_alert" : {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
