@@ -568,8 +568,8 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
 
       const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
-      const deletedChildPage = await Page.findOne({ path: `/trash${childPage.path}` });
-      const deletedGrandchildPage = await Page.findOne({ path: `/trash${grandchildPage.path}` });
+      const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
+      const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
 
       // originally NOT empty page should exist with status 'deleted' and parent set null
       expect(deletedParentPage._id).toStrictEqual(parentPage._id);
