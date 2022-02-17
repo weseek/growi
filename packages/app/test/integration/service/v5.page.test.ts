@@ -231,6 +231,97 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    /**
+     * Delete
+     */
+    const pageIdForDelete1 = new mongoose.Types.ObjectId();
+    const pageIdForDelete2 = new mongoose.Types.ObjectId();
+    const pageIdForDelete3 = new mongoose.Types.ObjectId();
+    const pageIdForDelete4 = new mongoose.Types.ObjectId();
+    const pageIdForDelete5 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        path: '/trash/v5_PageForDelete1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_DELETED,
+      },
+      {
+        path: '/v5_PageForDelete2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete1,
+        path: '/v5_PageForDelete3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete2,
+        path: '/v5_PageForDelete3/v5_PageForDelete4',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdForDelete1,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDelete2,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete3,
+        path: '/v5_PageForDelete6',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+      },
+      {
+        _id: pageIdForDelete4,
+        path: '/user',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        status: Page.STATUS_PUBLISHED,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDelete5,
+        path: '/user/v5DummyUser1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDelete4,
+        status: Page.STATUS_PUBLISHED,
+      },
+    ]);
+
+    const tagIdForDelete1 = new mongoose.Types.ObjectId();
+    const tagIdForDelete2 = new mongoose.Types.ObjectId();
+
+    await Tag.insertMany([
+      { _id: tagIdForDelete1, name: 'TagForDelete1' },
+      { _id: tagIdForDelete2, name: 'TagForDelete2' },
+    ]);
+
+    await PageTagRelation.insertMany([
+      { relatedPage: pageIdForDelete3, relatedTag: tagIdForDelete1 },
+      { relatedPage: pageIdForDelete3, relatedTag: tagIdForDelete2 },
+    ]);
   });
 
   describe('Rename', () => {
@@ -397,6 +488,121 @@ describe('PageService page operations with only public pages', () => {
       expect(isThrown).toBe(true);
     });
   });
+  describe('Delete', () => {
+    const deletePage = async(page, user, options, isRecursively) => {
+      const mockedResumableDeleteDescendants = jest.spyOn(crowi.pageService, 'resumableDeleteDescendants').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+
+      const argsForResumableDeleteDescendants = mockedResumableDeleteDescendants.mock.calls[0];
+
+      mockedResumableDeleteDescendants.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      if (isRecursively) {
+        await crowi.pageService.resumableDeleteDescendants(...argsForResumableDeleteDescendants);
+      }
+
+      return deletedPage;
+    };
+
+    test('Should NOT delete root page', async() => {
+      let isThrown;
+      expectAllToBeTruthy([rootPage]);
+
+      try { await deletePage(rootPage, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
+      const page = await Page.findOne({ path: '/' });
+
+      expect(isThrown).toBe(true);
+      expect(page).toBeTruthy();
+    });
+
+    test('Should NOT delete trashed page', async() => {
+      const trashedPage = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+      expectAllToBeTruthy([trashedPage]);
+
+      let isThrown;
+      try { await deletePage(trashedPage, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
+      const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
+
+      expect(page).toBeTruthy();
+      expect(isThrown).toBe(true);
+    });
+
+    test('Should NOT delete /user/hoge page', async() => {
+      const dummyUser1Page = await Page.findOne({ path: '/user/v5DummyUser1' });
+      expectAllToBeTruthy([dummyUser1Page]);
+
+      let isThrown;
+      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+
+      const page = await Page.findOne({ path: '/user/v5DummyUser1' });
+
+      expect(page).toBeTruthy();
+      expect(isThrown).toBe(true);
+    });
+
+    test('Should delete single page', async() => {
+      const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete2' });
+      expectAllToBeTruthy([pageToDelete]);
+
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
+      const page = await Page.findOne({ path: '/v5_PageForDelete2' });
+
+      expect(page).toBeNull();
+      expect(deletedPage.path).toBe(`/trash${pageToDelete.path}`);
+      expect(deletedPage.parent).toBeNull();
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+    });
+
+    test('Should delete multiple pages including empty child', async() => {
+      const parentPage = await Page.findOne({ path: '/v5_PageForDelete3' });
+      const childPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4' });
+      const grandchildPage = await Page.findOne({ path: '/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
+      expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
+
+      const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
+      const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
+      const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
+
+      // originally NOT empty page should exist with status 'deleted' and parent set null
+      expect(deletedParentPage._id).toStrictEqual(parentPage._id);
+      expect(deletedParentPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedParentPage.parent).toBeNull();
+      // originally empty page should NOT exist
+      expect(deletedChildPage).toBeNull();
+      // originally NOT empty page should exist with status 'deleted' and parent set null
+      expect(deletedGrandchildPage._id).toStrictEqual(grandchildPage._id);
+      expect(deletedGrandchildPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedGrandchildPage.parent).toBeNull();
+    });
+
+    test('Should delete page tag relation', async() => {
+      const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete6' });
+      const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
+      const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
+      const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
+      const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
+      expectAllToBeTruthy([pageToDelete, tag1, tag2, pageRelation1, pageRelation2]);
+
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
+      const page = await Page.findOne({ path: '/v5_PageForDelete6' });
+      const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
+      const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
+
+      expect(page).toBe(null);
+      expect(deletedPage.status).toBe(Page.STATUS_DELETED);
+      expect(deletedTagRelation1.isPageTrashed).toBe(true);
+      expect(deletedTagRelation2.isPageTrashed).toBe(true);
+    });
+  });
+
 });
 
 describe('PageService page operations with non-public pages', () => {
