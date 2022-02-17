@@ -317,6 +317,7 @@ class PageService {
   }
 
   async renamePage(page, newPagePath, user, options) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
     /*
      * Common Operation
      */
@@ -328,6 +329,10 @@ class PageService {
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
+    }
+
+    if (await Page.exists({ path: newPagePath })) {
+      throw Error(`Page already exists at ${newPagePath}`);
     }
 
     /*
@@ -1399,7 +1404,7 @@ class PageService {
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
       Revision.deleteMany({ pageId: { $in: pageIds } }),
       Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
-      PageRedirect.deleteMany({ $or: [{ toPath: { $in: pagePaths } }] }),
+      PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths }, toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
@@ -1569,7 +1574,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return nDeletedNonEmptyPages;
   }
