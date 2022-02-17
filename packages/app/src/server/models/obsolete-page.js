@@ -15,7 +15,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 const { pathUtils } = require('@growi/core');
 const escapeStringRegexp = require('escape-string-regexp');
 
-const { isTopPage, isTrashPage, isUserNamePage } = pagePathUtils;
+const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
@@ -610,10 +610,6 @@ export const getPageSchema = (crowi) => {
 
   pageSchema.statics.getRevertDeletedPageName = function(path) {
     return path.replace('/trash', '');
-  };
-
-  pageSchema.statics.isDeletableName = function(path) {
-    return !isTopPage(path) && !isUserNamePage(path);
   };
 
   pageSchema.statics.fixToCreatableName = function(path) {

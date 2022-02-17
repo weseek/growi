@@ -28,8 +28,6 @@ type Props = {
   searchControl: React.ReactNode,
   searchResultListHead: React.ReactNode,
   searchPager: React.ReactNode,
-
-  onPageOperated?: () => void,
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
@@ -38,7 +36,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     pages,
     forceHideMenuItems,
     onSelectedPagesByCheckboxesChanged,
-    searchControl, searchResultListHead, searchPager, onPageOperated,
+    searchControl, searchResultListHead, searchPager,
   } = props;
 
   const searchResultListRef = useRef<ISelectableAll|null>(null);
@@ -177,7 +175,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                       forceHideMenuItems={forceHideMenuItems}
                       onPageSelected={page => setSelectedPageWithMeta(page)}
                       onCheckboxChanged={checkboxChangedHandler}
-                      onPageOperated={onPageOperated}
                     />
                   </div>
                 ) }

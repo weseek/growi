@@ -119,12 +119,11 @@ export const SearchPage = (props: Props): JSX.Element => {
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions, mutate: mutateSWRxFullTextSearch } = useSWRxFullTextSearch(keyword, {
+  const { data, conditions } = useSWRxFullTextSearch(keyword, {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
     ...configurationsByPagination,
   });
-
 
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
@@ -260,7 +259,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
 
-
   return (
     <SearchPageBase
       ref={searchPageBaseRef}
@@ -271,7 +269,6 @@ export const SearchPage = (props: Props): JSX.Element => {
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      onPageOperated={mutateSWRxFullTextSearch}
     />
   );
 };

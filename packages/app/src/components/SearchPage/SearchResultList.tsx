@@ -18,7 +18,6 @@ type Props = {
   forceHideMenuItems?: ForceHideMenuItems,
   onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
-  onPageOperated?: () => void,
 }
 
 const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props> = (props:Props, ref) => {
@@ -96,7 +95,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
-            onPageOperated={props.onPageOperated}
           />
         );
       })}
