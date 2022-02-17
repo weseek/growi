@@ -6,6 +6,7 @@ import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { Ref } from '~/interfaces/common';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
