@@ -155,7 +155,7 @@ type PutBackPageModalUtils = {
   close():Promise<PutBackPageModalStatus | undefined>
 }
 
-export const usePutBackPageMOdal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
+export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
   const initialData = { isOpened: false, pageId: '', path: '' };
   const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
 
