@@ -119,7 +119,7 @@ export const SearchPage = (props: Props): JSX.Element => {
 
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
-  const { data, conditions, mutate: mutateSWRxFullTextSearch } = useSWRxFullTextSearch(keyword, {
+  const { data, conditions } = useSWRxFullTextSearch(keyword, {
     limit: INITIAL_PAGIONG_SIZE,
     ...configurationsByControl,
     ...configurationsByPagination,
@@ -271,7 +271,6 @@ export const SearchPage = (props: Props): JSX.Element => {
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      onPageOperated={mutateSWRxFullTextSearch}
     />
   );
 };

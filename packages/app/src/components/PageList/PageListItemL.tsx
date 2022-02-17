@@ -33,7 +33,6 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
-  onPageOperated?: () => void,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -42,7 +41,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { pageData, pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageOperated,
+    onClickItem, onCheckboxChanged,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -102,11 +101,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
 
   const pageDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string' || onPageOperated == null) {
+    if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-    onPageOperated();
-  }, [onPageOperated]);
+  }, []);
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
