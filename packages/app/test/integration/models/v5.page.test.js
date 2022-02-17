@@ -39,15 +39,6 @@ describe('Page', () => {
     }
 
     rootPage = await Page.findOne({ path: '/' });
-    if (rootPage == null) {
-      const pages = await Page.insertMany([
-        {
-          path: '/',
-          grant: Page.GRANT_PUBLIC,
-        },
-      ]);
-      rootPage = pages[0];
-    }
 
     const createPageId1 = new mongoose.Types.ObjectId();
 
@@ -81,6 +72,7 @@ describe('Page', () => {
       const grandchildPage = await Page.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
       const childPage = await Page.findOne({ path: '/v5_empty_create2' });
 
+      expect(childPage.isEmpty).toBe(true);
       expect(grandchildPage).toBeTruthy();
       expect(childPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
@@ -96,6 +88,7 @@ describe('Page', () => {
 
       expect(childPage).toBeTruthy();
       expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
       expect(grandchildPage).toBeTruthy();
       expect(childPage.parent).toStrictEqual(rootPage._id);
       expect(grandchildPage.parent).toStrictEqual(childPage._id);
