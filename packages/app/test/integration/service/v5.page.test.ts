@@ -325,12 +325,12 @@ describe('PageService page operations with only public pages', () => {
       const oldPath = childPage.path;
       const newPath = '/v5_ParentForRename4/renamedChildForRename4';
       const renamedPage = await renamePage(childPage, newPath, dummyUser2, { createRedirectPage: true });
-      const pageRedirect = await PageRedirect.find({ fromPath: oldPath, toPath: renamedPage.path });
+      const pageRedirect = await PageRedirect.findOne({ fromPath: oldPath, toPath: renamedPage.path });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
-      expect(pageRedirect.length).toBeGreaterThan(0);
+      expect(pageRedirect).toBeTruthy();
     });
 
     test('Should rename/move with descendants', async() => {
