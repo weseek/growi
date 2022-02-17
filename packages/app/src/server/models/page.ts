@@ -571,7 +571,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null || crowi.pageOperationService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -579,6 +579,11 @@ export default (crowi: Crowi): any => {
     // v4 compatible process
     if (!isV5Compatible) {
       return this.createV4(path, body, user, options);
+    }
+
+    const canOperate = await crowi.pageOperationService.canOperate(false, null, path);
+    if (!canOperate) {
+      throw Error(`Cannot operate create to path "${path}" right now.`);
     }
 
     const Page = this;

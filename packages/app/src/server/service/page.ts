@@ -362,6 +362,11 @@ class PageService {
       throw Error(`Page already exists at ${newPagePath}`);
     }
 
+    const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, newPagePath);
+    if (!canOperate) {
+      throw Error(`Cannot operate rename to path "${newPagePath}" right now.`);
+    }
+
     /*
      * Resumable Operation
      */
@@ -750,6 +755,11 @@ class PageService {
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
+    }
+
+    const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPagePath);
+    if (!canOperate) {
+      throw Error(`Cannot operate duplicate to path "${newPagePath}" right now.`);
     }
 
     // 2. UserGroup & Owner validation
@@ -1171,6 +1181,13 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    const newPath = Page.getDeletedPageName(page.path);
+
+    const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPath);
+    if (!canOperate) {
+      throw Error(`Cannot operate delete to path "${newPath}" right now.`);
+    }
+
     // Replace with an empty page
     const isChildrenExist = await Page.exists({ parent: page._id });
     const shouldReplace = !isRecursively && isChildrenExist;
@@ -1201,7 +1218,6 @@ class PageService {
     await Page.removeLeafEmptyPagesRecursively(page.parent);
 
     if (isRecursively) {
-      const newPath = Page.getDeletedPageName(page.path);
       let pageOp;
       try {
         pageOp = await PageOperation.create({
@@ -1492,6 +1508,11 @@ class PageService {
       return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
     }
 
+    const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, null);
+    if (!canOperate) {
+      throw Error(`Cannot operate deleteCompletely from path "${page.path}" right now.`);
+    }
+
     const ids = [page._id];
     const paths = [page.path];
 
@@ -1702,6 +1723,12 @@ class PageService {
     }
 
     const newPath = Page.getRevertDeletedPageName(page.path);
+
+    const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPath);
+    if (!canOperate) {
+      throw Error(`Cannot operate revert from path "${page.path}" right now.`);
+    }
+
     const includeEmpty = true;
     const originPage = await Page.findByPath(newPath, includeEmpty);
 
@@ -2042,8 +2069,9 @@ class PageService {
   }
 
   async normalizeParentByPageIds(pageIds: ObjectIdLike[], user, isRecursively: boolean): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
     if (isRecursively) {
-      const Page = mongoose.model('Page') as unknown as PageModel;
       const pages = await Page.findByPageIdsToEdit(pageIds, user, false);
 
       // DO NOT await !!
@@ -2053,7 +2081,17 @@ class PageService {
     }
 
     for await (const pageId of pageIds) {
+      const page = await Page.findById(pageId);
+      if (page == null) {
+        continue;
+      }
+
       try {
+        const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
+        if (!canOperate) {
+          throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
+        }
+
         const normalizedPage = await this.normalizeParentByPageId(pageId, user);
 
         if (normalizedPage == null) {
@@ -2159,11 +2197,30 @@ class PageService {
      * Main Operation (s)
      */
     for await (const page of normalizablePages) {
-      await this.normalizeParentRecursivelyMainOperation(page, user);
+      const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
+      if (!canOperate) {
+        throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
+      }
+
+      let pageOp;
+      try {
+        pageOp = await PageOperation.create({
+          actionType: PageActionType.NormalizeParent,
+          actionStage: PageActionStage.Main,
+          page,
+          user,
+          toPath: page.path,
+        });
+      }
+      catch (err) {
+        logger.error('Failed to create PageOperation document.', err);
+        throw err;
+      }
+      await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
     }
   }
 
-  async normalizeParentRecursivelyMainOperation(page, user): Promise<void> {
+  async normalizeParentRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
     // TODO: insertOne PageOperationBlock
 
     try {
@@ -2176,10 +2233,16 @@ class PageService {
       throw err;
     }
 
-    await this.normalizeParentRecursivelySubOperation(page, user);
+    // Set to Sub
+    const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
+    if (pageOp == null) {
+      throw Error('PageOperation document not found');
+    }
+
+    await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id);
   }
 
-  async normalizeParentRecursivelySubOperation(page, user): Promise<void> {
+  async normalizeParentRecursivelySubOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     try {
@@ -2199,6 +2262,8 @@ class PageService {
       logger.error('Failed to update descendantCount after normalizing parent:', err);
       throw Error(`Failed to update descendantCount after normalizing parent: ${err}`);
     }
+
+    await PageOperation.findByIdAndDelete(pageOpId);
   }
 
   async _isPagePathIndexUnique() {

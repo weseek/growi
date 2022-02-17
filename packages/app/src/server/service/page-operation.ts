@@ -24,7 +24,7 @@ class PageOperationService {
    * @param actionType The action type of the operation
    * @returns Promise<boolean>
    */
-  async canOperate(isRecursively: boolean, fromPathToOp?: string, toPathToOp?: string): Promise<boolean> {
+  async canOperate(isRecursively: boolean, fromPathToOp: string | null, toPathToOp: string | null): Promise<boolean> {
     const mainOps = await PageOperation.findMainOps();
     const toPaths = mainOps.map(op => op.toPath).filter((p): p is string => p != null);
 
