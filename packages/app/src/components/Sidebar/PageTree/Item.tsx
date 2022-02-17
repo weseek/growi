@@ -15,7 +15,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useShareLinkId, useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useShareLinkId } from '~/stores/context';
 import { IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -29,6 +29,7 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
+  isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
   onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
@@ -72,8 +73,11 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
+
+  console.log(isEnabledAttachTitleHeader);
 
   const { page, children } = itemNode;
 
@@ -87,7 +91,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -420,6 +423,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}

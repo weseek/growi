@@ -12,6 +12,8 @@ import {
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+
 /*
  * Utility to generate initial node
  */
@@ -62,10 +64,13 @@ const renderByInitialNode = (
     initialNode: ItemNode,
     isEnableActions: boolean,
     targetPathOrId?: string,
+    isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
     onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
 ): JSX.Element => {
+
+  console.log(isEnabledAttachTitleHeader);
 
   return (
     <ul className="grw-pagetree list-group p-3">
@@ -74,6 +79,7 @@ const renderByInitialNode = (
         targetPathOrId={targetPathOrId}
         itemNode={initialNode}
         isOpen
+        isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
         isEnableActions={isEnableActions}
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickRenameMenuItem={onClickRenameMenuItem}
@@ -97,6 +103,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { data: ancestorsChildrenData, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { mutate: mutateChildren } = useSWRxPageChildren(targetPathOrId);
   const { data: rootPageData, error: error2 } = useSWRxRootPage();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -150,7 +157,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   /*
@@ -158,7 +167,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
    */
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
-    return renderByInitialNode(initialNode, isEnableActions, targetPathOrId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem);
+    return renderByInitialNode(
+      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    );
   }
 
   return null;
