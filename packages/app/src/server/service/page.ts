@@ -21,7 +21,7 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import { PageActionStage, PageActionType, PageOperationModel } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType, PageOperationModel } from '../models/page-operation';
 
 const debug = require('debug')('growi:services:page');
 
@@ -333,7 +333,6 @@ class PageService {
     /*
      * Resumable Operation
      */
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     let pageOp;
     try {
       pageOp = await PageOperation.create({
@@ -413,7 +412,6 @@ class PageService {
     this.pageEvent.emit('rename', page, user);
 
     // Set to Sub
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
       throw Error('PageOperation document not found');
@@ -441,7 +439,6 @@ class PageService {
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
     await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
@@ -782,7 +779,6 @@ class PageService {
       /*
        * Resumable Operation
        */
-      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
       let pageOp;
       try {
         pageOp = await PageOperation.create({
@@ -823,7 +819,6 @@ class PageService {
     }
 
     // Set to Sub
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
       throw Error('PageOperation document not found');
@@ -844,7 +839,6 @@ class PageService {
 
     await this.updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
 
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
@@ -1166,7 +1160,6 @@ class PageService {
     await this.removeLeafEmptyPages(parent);
 
     if (isRecursively) {
-      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
       const newPath = Page.getDeletedPageName(page.path);
       let pageOp;
       try {
@@ -1225,7 +1218,6 @@ class PageService {
   async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteDescendantsWithStream(page, user, false);
 
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     await PageOperation.findByIdAndDelete(pageOpId);
 
     // no sub operation available
@@ -1477,7 +1469,6 @@ class PageService {
     }
 
     if (isRecursively) {
-      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
       let pageOp;
       try {
         pageOp = await PageOperation.create({
@@ -1505,7 +1496,6 @@ class PageService {
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
 
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     await PageOperation.findByIdAndDelete(pageOpId);
 
     // no sub operation available
@@ -1678,7 +1668,6 @@ class PageService {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
     else {
-      const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
       let pageOp;
       try {
         pageOp = await PageOperation.create({
@@ -1724,7 +1713,6 @@ class PageService {
     }
 
     // Set to Sub
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
       throw Error('PageOperation document not found');
@@ -1748,7 +1736,6 @@ class PageService {
     // update descendantCount of ancestors'
     await this.updateDescendantCountOfAncestors(page.parent, newTarget.descendantCount + 1, true);
 
-    const PageOperation = mongoose.model('PageOperation') as unknown as PageOperationModel;
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
