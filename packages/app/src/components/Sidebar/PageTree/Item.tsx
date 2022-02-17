@@ -29,9 +29,11 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
+  isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback?: VoidFunction): void
+  onSelfDeleted?: VoidFunction
 }
 
 // Utility to mark target
@@ -72,7 +74,8 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions, onSelfDeleted,
   } = props;
 
   const { page, children } = itemNode;
@@ -260,8 +263,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     };
     const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely);
-  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely]);
+    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely, async() => {
+      if (onSelfDeleted != null) await onSelfDeleted();
+    });
+  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely, onSelfDeleted]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -274,17 +279,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    // TODO 88261: Get the isEnabledAttachTitleHeader by SWR
-    // const initBody = '';
-    // const { isEnabledAttachTitleHeader } = props.appContainer.getConfig();
-    // if (isEnabledAttachTitleHeader) {
-    //   initBody = pathUtils.attachTitleHeader(newPagePath);
-    // }
+    let initBody = '';
+    if (isEnabledAttachTitleHeader) {
+      initBody = pathUtils.attachTitleHeader(newPagePath);
+    }
 
     try {
       await apiv3Post('/pages/', {
         path: newPagePath,
-        body: '',
+        body: initBody,
         grant: page.grant,
         grantUserGroupId: page.grantedGroup,
         createFromPageTree: true,
@@ -372,7 +375,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           />
         )}
         { !isRenameInputShown && ( */}
-        <a href={page._id} className="grw-pagetree-title-anchor flex-grow-1">
+        <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
           <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(pageTitle as string) || '/'}</p>
         </a>
         {/* )} */}
@@ -385,7 +388,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
-            showBookmarkMenuItem
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
@@ -422,9 +424,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
+              onSelfDeleted={async() => { await mutateChildren() }}
             />
           </div>
         ))

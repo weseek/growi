@@ -18,7 +18,7 @@ import {
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 
-import { PageItemControl } from '../Common/Dropdown/PageItemControl';
+import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 import { ISelectable } from '~/client/interfaces/selectable-all';
@@ -27,6 +27,7 @@ type Props = {
   page: IPageWithMeta | IPageWithMeta<IPageInfoAll & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
+  forceHideMenuItems?: ForceHideMenuItems,
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
@@ -36,6 +37,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const {
     // todo: refactoring variable name to clear what changed
     page: { pageData, pageMeta }, isSelected, isEnableActions,
+    forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged,
   } = props;
@@ -161,9 +163,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <PageItemControl
                   pageId={pageData._id}
                   pageInfo={pageMeta}
+                  isEnableActions={isEnableActions}
+                  forceHideMenuItems={forceHideMenuItems}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
-                  isEnableActions={isEnableActions}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                 />
               </div>
