@@ -103,7 +103,7 @@ const PageDeleteModal: FC = () => {
     else {
       try {
         const recursively = isDeleteRecursively === true ? true : undefined;
-        const completely = isDeleteCompletely === true ? true : undefined;
+        const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
         const page = deleteModalData.pages[0];
 
