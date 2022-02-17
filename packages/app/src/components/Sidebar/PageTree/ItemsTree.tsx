@@ -140,7 +140,7 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       }
     };
 
-    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler);
   };
 
   if (error1 != null || error2 != null) {

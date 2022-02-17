@@ -203,7 +203,7 @@ const GrowiContextualSubNavigation = (props) => {
   }, []);
 
   const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
-    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+    openDeleteModal([pageToDelete], isAbleToDeleteCompletely, onDeletedHandler);
   }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {

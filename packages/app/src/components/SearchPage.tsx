@@ -125,7 +125,6 @@ export const SearchPage = (props: Props): JSX.Element => {
     ...configurationsByPagination,
   });
 
-
   const searchInvokedHandler = useCallback((_keyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
     setKeyword(_keyword);
     setConfigurationsByControl(newConfigurations);
@@ -259,7 +258,6 @@ export const SearchPage = (props: Props): JSX.Element => {
       />
     );
   }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
-
 
   return (
     <SearchPageBase
