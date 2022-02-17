@@ -21,13 +21,14 @@ import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
 import { Ref } from '~/interfaces/common';
 import { HasObjectId } from '~/interfaces/has-object-id';
-import PageOperation, { PageActionStage, PageActionType, PageOperationModel } from '../models/page-operation';
+import PageOperation, { PageActionStage, PageActionType } from '../models/page-operation';
 
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, collectAncestorPaths, omitDuplicateAreaPageFromPages,
+  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPageFromPages,
+  isUserPage, isUserNamePage, collectAncestorPaths,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -1869,16 +1870,16 @@ class PageService {
   }
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
+
     if (page.isEmpty) {
       return {
         isEmpty: true,
-        isMovable: true,
+        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
       };
     }
-
-    const isMovable = isGuestUser ? false : !isTopPage(page.path);
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
