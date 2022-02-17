@@ -83,9 +83,9 @@ const renderByInitialNode = (
   );
 };
 
-// --- Auto scroll related utils and vars ---
+// --- Auto scroll related vars and util ---
 
-const SCROLL_OFFSET_TOP = 60; // approximate height of (navigation + page tree's header)
+const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + page tree's header + some space)
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 const mutationObserverCallback = (mutationRecords : MutationRecord[], mutationObserver: MutationObserver) => {
@@ -93,10 +93,14 @@ const mutationObserverCallback = (mutationRecords : MutationRecord[], mutationOb
   if (scrollElement == null) return;
   mutationRecords.forEach((record) => {
     const elem = record.target as HTMLElement;
-    const target = elem.querySelector('li.grw-pagetree-is-target');
+    // target li could be only one at most.
+    const target = elem.getElementsByClassName('list-group-item grw-pagetree-is-target')[0];
     if (target != null) {
       if (elem.contains(target)) {
         smoothScrollIntoView(target as HTMLElement, SCROLL_OFFSET_TOP, scrollElement as HTMLElement);
+        // disconnect to prevent unnecessary scroll
+        // i.e) when you open pages children in pagetree, new DOM is inserted to the DOM currently monitored.
+        //      then observer detects changes then repeat "find target to scroll" process.
         mutationObserver.disconnect();
       }
     }
