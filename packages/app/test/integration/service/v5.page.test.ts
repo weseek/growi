@@ -249,7 +249,6 @@ describe('PageService page operations with only public pages', () => {
         grant: Page.GRANT_PUBLIC,
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
-        parent: rootPage._id,
         status: Page.STATUS_DELETED,
       },
       {
