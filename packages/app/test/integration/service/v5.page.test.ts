@@ -616,19 +616,21 @@ describe('PageService page operations with only public pages', () => {
     test('Should rename/move with descendants', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename5' });
       const childPage = await Page.findOne({ path: '/v5_ChildForRename5' });
-      const grandchild = await Page.findOne({ parent: childPage._id });
+      const grandchild = await Page.findOne({ parent: childPage._id, path: '/v5_ChildForRename5/v5_GrandchildForRename5' });
 
-      expectAllToBeTruthy([parentPage, childPage]);
+      expectAllToBeTruthy([parentPage, childPage, grandchild]);
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
       // find child of renamed page
       const renamedGrandchild = await Page.findOne({ parent: renamedPage._id });
+      const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename5' });
       const grandchildBeforeRename = await Page.findOne({ path: grandchild.path });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
+      expect(childPageBeforeRename).toBeNull();
       expect(grandchildBeforeRename).toBeNull();
       // grandchild's parent should be the renamed page
       expect(renamedGrandchild.parent).toStrictEqual(renamedPage._id);
@@ -637,22 +639,24 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should rename/move empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_ParentForRename7' });
-      const childPage = await Page.findOne({ path: '/v5_ChildForRename7' });
+      const childPage = await Page.findOne({ path: '/v5_ChildForRename7', isEmpty: true });
+      const grandchild = await Page.findOne({ parent: childPage._id, path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
-      expectAllToBeTruthy([parentPage, childPage]);
-      expect(childPage.isEmpty).toBe(true);
+      expectAllToBeTruthy([parentPage, childPage, grandchild]);
 
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
       const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
-      const grandchild = await Page.findOne({ parent: renamedPage._id });
+      const grandchildAfterRename = await Page.findOne({ parent: renamedPage._id });
+      const grandchildBeforeRename = await Page.findOne({ path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
+      expect(grandchildBeforeRename).toBeNull();
       // grandchild's parent should be renamed page
-      expect(grandchild.parent).toStrictEqual(renamedPage._id);
-      expect(grandchild.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
+      expect(grandchildAfterRename.parent).toStrictEqual(renamedPage._id);
+      expect(grandchildAfterRename.path).toBe('/v5_ParentForRename7/renamedChildForRename7/v5_GrandchildForRename7');
     });
     test('Should NOT rename/move with existing path', async() => {
       const page = await Page.findOne({ path: '/v5_ParentForRename8' });
@@ -750,8 +754,8 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
 
       const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
-      const deletedChildPage = await Page.findOne({ path: `/trash${childPage.path}` });
-      const deletedGrandchildPage = await Page.findOne({ path: `/trash${grandchildPage.path}` });
+      const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
+      const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
 
       // originally NOT empty page should exist with status 'deleted' and parent set null
       expect(deletedParentPage._id).toStrictEqual(parentPage._id);

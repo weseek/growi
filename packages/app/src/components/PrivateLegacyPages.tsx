@@ -218,7 +218,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
 
   const searchControl = useMemo(() => {
     return (
-      <div className="position-sticky fixed-top shadow-sm">
+      <div className="shadow-sm">
         <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
           <div className="d-flex pl-md-2">
             <OperateAllControl
