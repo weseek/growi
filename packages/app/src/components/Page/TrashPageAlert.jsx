@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -10,17 +10,34 @@ import PageContainer from '~/client/services/PageContainer';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 
-import { useCurrentUpdatedAt } from '~/stores/context';
+import { useCurrentUpdatedAt, useShareLinkId } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
+import { useSWRxPageInfo } from '~/stores/page';
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt, isAbleToDeleteCompletely,
+    pageId, revisionId, path, isDeleted, lastUpdateUsername, deletedUserName, deletedAt,
   } = pageContainer.state;
+  const { data: shareLinkId } = useShareLinkId();
+
+  /*
+  * TODO: Do not use useSWRxPageInfo on this component
+  * Ideal: use useSWRxPageInfo on TrashPage after applying Next.js
+  * Reference: https://github.com/weseek/growi/pull/5359#discussion_r808381329
+  */
+  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+
   const { data: updatedAt } = useCurrentUpdatedAt();
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
+  const [isAbleToDeleteCompletely, setIsAbleToDeleteCompletely] = useState(false);
+
+  useEffect(() => {
+    if (pageInfo != null) {
+      setIsAbleToDeleteCompletely(pageInfo.isAbleToDeleteCompletely);
+    }
+  }, [pageInfo]);
 
   const { open: openDeleteModal } = usePageDeleteModal();
 
@@ -40,13 +57,23 @@ const TrashPageAlert = (props) => {
     setIsPutbackPageModalShown(false);
   }
 
+  const onDeletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return;
+    }
+
+    const path = pathOrPathsToDelete;
+    window.location.href = path;
+  }, []);
+
   function openPageDeleteModalHandler() {
     const pageToDelete = {
       pageId,
       revisionId,
       path,
     };
-    openDeleteModal([pageToDelete]);
+    const isDeleteCompletelyModal = true;
+    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely, isDeleteCompletelyModal);
   }
 
   function renderEmptyButton() {
