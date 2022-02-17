@@ -1,6 +1,8 @@
 {% extends 'base/layout.html' %}
 
 {% block html_additional_headers %}
+  {% parent %}
+
   <!-- OGP -->
   <meta property="og:site_name" content="{{ appService.getAppTitle() | preventXss }}" />
   <meta property="og:title" content="{{ page.path | preventXss }}" />
