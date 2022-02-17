@@ -13,7 +13,7 @@ import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageMOdal,
 } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
@@ -67,6 +67,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openPutBackPageModal } = usePutBackPageMOdal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
@@ -112,6 +113,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     const pageToDelete = { pageId, revisionId: revisionId as string, path };
     openDeleteModal([pageToDelete], pageDeletedHandler, pageInfo.isAbleToDeleteCompletely);
   }, [pageData, openDeleteModal, pageDeletedHandler]);
+
+  const revertMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openPutBackPageModal(pageId, path);
+  }, [openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
@@ -180,6 +186,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                  onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
             </div>
