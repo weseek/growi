@@ -62,14 +62,14 @@ export class InstallerService {
     const { localeDir } = this.crowi;
     // create /Sandbox/*
     /*
-     * Keep in this order to avoid creating the same pages
+     * Keep in this order to
+     *   1. avoid creating the same pages
+     *   2. avoid difference for order in VRT
      */
     await this.createPage(path.join(localeDir, lang, 'sandbox.md'), '/Sandbox', owner);
-    await Promise.all([
-      this.createPage(path.join(localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner),
-      this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner),
-      this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner),
-    ]);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4', owner);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner);
+    await this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner);
 
     // update createdAt and updatedAt fields of all pages
     if (initialPagesCreatedAt != null) {

@@ -890,7 +890,7 @@ module.exports = function(crowi, app) {
    * - If revision_id is not specified => force update by the new contents.
    */
   api.update = async function(req, res) {
-    const pageBody = body ?? null;
+    const pageBody = req.body.body ?? null;
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
