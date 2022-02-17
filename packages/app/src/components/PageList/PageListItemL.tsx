@@ -33,6 +33,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageOperated?: () => void,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -41,7 +42,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { pageData, pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged,
+    onClickItem, onCheckboxChanged, onPageOperated,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -99,18 +100,20 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }, [openRenameModal, pageData]);
 
 
-  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
+  const pageDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }
-    window.location.reload();
-  }, []);
+    if (onPageOperated != null) {
+      onPageOperated();
+    }
+  }, [onPageOperated]);
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
     const pageToDelete = { pageId, revisionId: revisionId as string, path };
-    openDeleteModal([pageToDelete], onDeletedHandler, pageInfo.isAbleToDeleteCompletely);
-  }, [onDeletedHandler, openDeleteModal, pageData]);
+    openDeleteModal([pageToDelete], pageDeletedHandler, pageInfo.isAbleToDeleteCompletely);
+  }, [pageData, openDeleteModal, pageDeletedHandler]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
