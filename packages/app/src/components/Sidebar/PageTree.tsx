@@ -7,7 +7,7 @@ import {
 } from '~/stores/context';
 
 import ItemsTree from './PageTree/ItemsTree';
-import PrivateLegacyPages from './PageTree/PrivateLegacyPages';
+import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -76,7 +76,7 @@ const PageTree: FC = memo(() => {
 
       {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
         <div className="grw-pagetree-footer border-top p-3 w-100">
-          <PrivateLegacyPages />
+          <PrivateLegacyPagesLink />
         </div>
       )}
     </>

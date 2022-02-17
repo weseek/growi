@@ -20,7 +20,7 @@ context('Access to search result page directly', () => {
   });
 
   it('/_search with "q" param is successfully loaded', () => {
-    cy.visit('/_search', { qs: { q: 'bootstrap4' } });
+    cy.visit('/_search', { qs: { q: 'bootstrap4 labels alerts' } });
 
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -29,7 +29,7 @@ context('Access to search result page directly', () => {
   });
 
   it('checkboxes behaviors', () => {
-    cy.visit('/_search', { qs: { q: 'bootstrap4' } });
+    cy.visit('/_search', { qs: { q: 'bootstrap4 labels alerts' } });
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
