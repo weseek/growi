@@ -13,12 +13,13 @@ import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, OnDeletedFunction, usePutBackPageModal,
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
@@ -173,6 +174,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                         <a
                           className="page-segment"
                           href={encodeURI(urljoin('/', pageData._id))}
+                          // eslint-disable-next-line react/no-danger
                           dangerouslySetInnerHTML={{ __html: linkedPagePathLatter.pathName }}
                         >
                         </a>

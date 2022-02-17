@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 
 import { DropdownItem } from 'reactstrap';
 
+import { OnDeletedFunction } from '~/interfaces/ui';
+import { IPageHasId } from '~/interfaces/page';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '~/client/services/EditorContainer';
 import {
@@ -13,7 +16,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal, IPageForPageDeleteModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
 } from '~/stores/modal';
 
 
@@ -26,7 +29,6 @@ import { useSWRTagsInfo } from '~/stores/page';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { IPageHasId } from '~/interfaces/page';
 
 import HistoryIcon from '../Icons/HistoryIcon';
 import AttachmentIcon from '../Icons/AttachmentIcon';
