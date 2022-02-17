@@ -37,9 +37,8 @@ module.exports = {
 
       rootDir: '.',
       roots: ['<rootDir>'],
-      testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js',
-                  '?!<rootDir>/test/integration/**/v5.*.test.ts', '?!<rootDir>/test/integration/**/v5.*.test.js'],
-
+      testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js'],
+      testPathIgnorePatterns: ['<rootDir>/test/integration/**/v5.*.test.ts', '<rootDir>/test/integration/**/v5.*.test.js'],
       testEnvironment: 'node',
       globalSetup: '<rootDir>/test/integration/global-setup.js',
       globalTeardown: '<rootDir>/test/integration/global-teardown.js',
