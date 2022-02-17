@@ -224,6 +224,273 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    /*
+     * Duplicate
+     */
+    // page ids
+    const pageIdForDuplicate1 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate2 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate3 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate4 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate5 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate6 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate7 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate8 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate9 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate10 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate11 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate12 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate13 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate14 = new mongoose.Types.ObjectId();
+    const pageIdForDuplicate15 = new mongoose.Types.ObjectId();
+
+    // revision ids
+    const revisionIdForDuplicate1 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate2 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate3 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate4 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate5 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate6 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate7 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate8 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate9 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate10 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate11 = new mongoose.Types.ObjectId();
+    const revisionIdForDuplicate12 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdForDuplicate1,
+        path: '/v5_PageForDuplicate1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForDuplicate1,
+      },
+      {
+        _id: pageIdForDuplicate2,
+        path: '/v5_PageForDuplicate2',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDuplicate3,
+        path: '/v5_PageForDuplicate2/v5_ChildForDuplicate2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate2,
+        revision: revisionIdForDuplicate2,
+      },
+      {
+        _id: pageIdForDuplicate4,
+        path: '/v5_PageForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForDuplicate3,
+      },
+      {
+        _id: pageIdForDuplicate5,
+        path: '/v5_PageForDuplicate3/v5_Child_1_ForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate4,
+        revision: revisionIdForDuplicate4,
+      },
+      {
+        _id: pageIdForDuplicate6,
+        path: '/v5_PageForDuplicate3/v5_Child_2_ForDuplicate3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate4,
+        revision: revisionIdForDuplicate5,
+      },
+      {
+        _id: pageIdForDuplicate7,
+        path: '/v5_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForDuplicate6,
+      },
+      {
+        _id: pageIdForDuplicate8,
+        path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        parent: pageIdForDuplicate7,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDuplicate9,
+        path: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate8,
+        revision: revisionIdForDuplicate7,
+      },
+      {
+        _id: pageIdForDuplicate10,
+        path: '/v5_PageForDuplicate5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForDuplicate8,
+      },
+      {
+        _id: pageIdForDuplicate11,
+        path: '/v5_PageForDuplicate6',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdForDuplicate9,
+      },
+      {
+        _id: pageIdForDuplicate13,
+        path: '/v5_empty_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        _id: pageIdForDuplicate14,
+        path: '/v5_empty_PageForDuplicate7/v5_child_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate13,
+        revision: revisionIdForDuplicate11,
+      },
+      {
+        _id: pageIdForDuplicate15,
+        path: '/v5_empty_PageForDuplicate7/v5_child_PageForDuplicate7/v5_grandchild_PageForDuplicate7',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForDuplicate14,
+        revision: revisionIdForDuplicate12,
+      },
+    ]);
+
+    await Revision.insertMany([
+      {
+        _id: revisionIdForDuplicate1,
+        body: 'body1',
+        format: 'markdown',
+        pageId: pageIdForDuplicate1,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate2,
+        body: 'body3',
+        format: 'markdown',
+        pageId: pageIdForDuplicate3,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate3,
+        body: 'parent_page_body4',
+        format: 'markdown',
+        pageId: pageIdForDuplicate4,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate4,
+        body: 'revision_id_4_child_page_body',
+        format: 'markdown',
+        pageId: pageIdForDuplicate5,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate5,
+        body: 'revision_id_5_child_page_body',
+        format: 'markdown',
+        pageId: pageIdForDuplicate6,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate6,
+        body: '/v5_PageForDuplicate4',
+        format: 'markdown',
+        pageId: pageIdForDuplicate7,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate7,
+        body: '/v5_PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4',
+        format: 'markdown',
+        pageId: pageIdForDuplicate9,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate8,
+        body: '/v5_PageForDuplicate5',
+        format: 'markdown',
+        pageId: pageIdForDuplicate10,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate9,
+        body: '/v5_PageForDuplicate6',
+        format: 'markdown',
+        pageId: pageIdForDuplicate11,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate10,
+        body: '/v5_PageForDuplicate6',
+        format: 'comment',
+        pageId: pageIdForDuplicate12,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate11,
+        body: '/v5_child_PageForDuplicate7',
+        format: 'markdown',
+        pageId: pageIdForDuplicate14,
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForDuplicate12,
+        body: '/v5_grandchild_PageForDuplicate7',
+        format: 'markdown',
+        pageId: pageIdForDuplicate15,
+        author: dummyUser1,
+      },
+    ]);
+    const tagForDuplicate1 = new mongoose.Types.ObjectId();
+    const tagForDuplicate2 = new mongoose.Types.ObjectId();
+
+    await Tag.insertMany([
+      { _id: tagForDuplicate1, name: 'duplicate_Tag1' },
+      { _id: tagForDuplicate2, name: 'duplicate_Tag2' },
+    ]);
+
+    await PageTagRelation.insertMany([
+      { relatedPage: pageIdForDuplicate10, relatedTag: tagForDuplicate1 },
+      { relatedPage: pageIdForDuplicate10._id, relatedTag: tagForDuplicate2 },
+    ]);
+
+    await Comment.insertMany([
+      {
+        commentPosition: -1,
+        isMarkdown: true,
+        page: pageIdForDuplicate11,
+        creator: dummyUser1._id,
+        revision: revisionIdForDuplicate10,
+        comment: 'this is comment',
+      },
+    ]);
+
     /**
      * Delete
      */
@@ -733,6 +1000,170 @@ describe('PageService page operations with only public pages', () => {
       }
 
       expect(isThrown).toBe(true);
+    });
+  });
+
+  describe('Duplicate', () => {
+
+    const duplicate = async(page, newPagePath, user, isRecursively) => {
+      // mock return value
+      const mockedResumableDuplicateDescendants = jest.spyOn(crowi.pageService, 'resumableDuplicateDescendants').mockReturnValue(null);
+      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
+      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
+
+      // retrieve the arguments passed when calling method resumableDuplicateDescendants inside duplicate method
+      const argsForResumableDuplicateDescendants = mockedResumableDuplicateDescendants.mock.calls[0];
+
+      // restores the original implementation
+      mockedResumableDuplicateDescendants.mockRestore();
+      mockedCreateAndSendNotifications.mockRestore();
+
+      // duplicate descendants
+      if (isRecursively) {
+        await crowi.pageService.resumableDuplicateDescendants(...argsForResumableDuplicateDescendants);
+      }
+
+      return duplicatedPage;
+    };
+
+    test('Should duplicate single page', async() => {
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate1' });
+      expectAllToBeTruthy([page]);
+
+      const newPagePath = '/duplicatedv5PageForDuplicate1';
+      const duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
+
+      const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
+      const baseRevision = await Revision.findOne({ pageId: page._id });
+
+      // new path
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedPage._id).not.toStrictEqual(page._id);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
+      expect(duplicatedRevision.body).toEqual(baseRevision.body);
+    });
+
+    test('Should NOT duplicate single empty page', async() => {
+      const page = await Page.findOne({ path: '/v5_PageForDuplicate2' });
+      expectAllToBeTruthy([page]);
+
+      let isThrown;
+      let duplicatedPage;
+      try {
+        const newPagePath = '/duplicatedv5PageForDuplicate2';
+        duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
+      }
+      catch (err) {
+        isThrown = true;
+      }
+
+      expect(duplicatedPage).toBeUndefined();
+      expect(isThrown).toBe(true);
+    });
+
+    test('Should duplicate multiple pages', async() => {
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate3' });
+      const revision = await Revision.findOne({ pageId: basePage._id });
+      const childPage1 = await Page.findOne({ path: '/v5_PageForDuplicate3/v5_Child_1_ForDuplicate3' }).populate({ path: 'revision', model: 'Revision' });
+      const childPage2 = await Page.findOne({ path: '/v5_PageForDuplicate3/v5_Child_2_ForDuplicate3' }).populate({ path: 'revision', model: 'Revision' });
+      const revisionForChild1 = childPage1.revision;
+      const revisionForChild2 = childPage2.revision;
+      expectAllToBeTruthy([basePage, revision, childPage1, childPage2, revisionForChild1, revisionForChild2]);
+
+      const newPagePath = '/duplicatedv5PageForDuplicate3';
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
+      const duplicatedChildPage1 = await Page.findOne({ parent: duplicatedPage._id, path: '/duplicatedv5PageForDuplicate3/v5_Child_1_ForDuplicate3' })
+        .populate({ path: 'revision', model: 'Revision' });
+      const duplicatedChildPage2 = await Page.findOne({ parent: duplicatedPage._id, path: '/duplicatedv5PageForDuplicate3/v5_Child_2_ForDuplicate3' })
+        .populate({ path: 'revision', model: 'Revision' });
+      const revisionForDuplicatedPage = await Revision.findOne({ pageId: duplicatedPage._id });
+      const revisionBodyForDupChild1 = duplicatedChildPage1.revision;
+      const revisionBodyForDupChild2 = duplicatedChildPage2.revision;
+
+      expectAllToBeTruthy([duplicatedPage, duplicatedChildPage1, duplicatedChildPage2,
+                           revisionForDuplicatedPage, revisionBodyForDupChild1, revisionBodyForDupChild2]);
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedChildPage1.path).toBe('/duplicatedv5PageForDuplicate3/v5_Child_1_ForDuplicate3');
+      expect(duplicatedChildPage2.path).toBe('/duplicatedv5PageForDuplicate3/v5_Child_2_ForDuplicate3');
+
+    });
+
+    test('Should duplicate multiple pages with empty child in it', async() => {
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate4' });
+      const baseChild = await Page.findOne({ parent: basePage._id, isEmpty: true });
+      const baseGrandchild = await Page.findOne({ parent: baseChild._id });
+      expectAllToBeTruthy([basePage, baseChild, baseGrandchild]);
+
+      const newPagePath = '/duplicatedv5PageForDuplicate4';
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
+      const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
+      const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expectAllToBeTruthy([duplicatedPage, duplicatedGrandchild]);
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedChild.path).toBe('/duplicatedv5PageForDuplicate4/v5_empty_PageForDuplicate4');
+      expect(duplicatedGrandchild.path).toBe('/duplicatedv5PageForDuplicate4/v5_empty_PageForDuplicate4/v5_grandchild_PageForDuplicate4');
+      expect(duplicatedChild.isEmpty).toBe(true);
+      expect(duplicatedGrandchild.parent).toStrictEqual(duplicatedChild._id);
+      expect(duplicatedChild.parent).toStrictEqual(duplicatedPage._id);
+
+    });
+
+    test('Should duplicate tags', async() => {
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate5' });
+      const tag1 = await Tag.findOne({ name: 'duplicate_Tag1' });
+      const tag2 = await Tag.findOne({ name:  'duplicate_Tag2' });
+      const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
+      const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
+      expectAllToBeTruthy([basePage, tag1, tag2, basePageTagRelation1, basePageTagRelation2]);
+
+      const newPagePath = '/duplicatedv5PageForDuplicate5';
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
+      const duplicatedTagRelations = await PageTagRelation.find({ relatedPage: duplicatedPage._id });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedTagRelations.length).toBeGreaterThanOrEqual(2);
+    });
+
+    test('Should NOT duplicate comments', async() => {
+      const basePage = await Page.findOne({ path: '/v5_PageForDuplicate6' });
+      const basePageComments = await Comment.find({ page: basePage._id });
+      expectAllToBeTruthy([basePage, ...basePageComments]);
+
+      const newPagePath = '/duplicatedv5PageForDuplicate6';
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
+      const duplicatedComments = await Comment.find({ page: duplicatedPage._id });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(basePageComments.length).not.toBe(duplicatedComments.length);
+    });
+
+    test('Should duplicate empty page with descendants', async() => {
+      const basePage = await Page.findOne({ path: '/v5_empty_PageForDuplicate7' });
+      const basePageChild = await Page.findOne({ parent: basePage._id }).populate({ path: 'revision', model: 'Revision' });
+      const basePageGrandhild = await Page.findOne({ parent: basePageChild._id }).populate({ path: 'revision', model: 'Revision' });
+      expectAllToBeTruthy([basePage, basePageChild, basePageGrandhild, basePageChild.revision, basePageGrandhild.revision]);
+
+      const newPagePath = '/duplicatedv5EmptyPageForDuplicate7';
+      const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, true);
+      const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id }).populate({ path: 'revision', model: 'Revision' });
+
+      expectAllToBeTruthy([duplicatedPage, duplicatedChild, duplicatedGrandchild, duplicatedChild.revision, duplicatedGrandchild.revision]);
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage.path).toBe(newPagePath);
+      expect(duplicatedPage.isEmpty).toBe(true);
+      expect(duplicatedChild.revision.body).toBe(basePageChild.revision.body);
+      expect(duplicatedGrandchild.revision.body).toBe(basePageGrandhild.revision.body);
+      expect(duplicatedChild.path).toBe('/duplicatedv5EmptyPageForDuplicate7/v5_child_PageForDuplicate7');
+      expect(duplicatedGrandchild.path).toBe('/duplicatedv5EmptyPageForDuplicate7/v5_child_PageForDuplicate7/v5_grandchild_PageForDuplicate7');
+      expect(duplicatedGrandchild.parent).toStrictEqual(duplicatedChild._id);
+      expect(duplicatedChild.parent).toStrictEqual(duplicatedPage._id);
     });
   });
   describe('Delete', () => {

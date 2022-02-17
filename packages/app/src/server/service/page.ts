@@ -671,6 +671,11 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
+      throw new Error('Cannot find or duplicate the empty page');
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
@@ -1708,6 +1713,7 @@ class PageService {
         isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
+        isRevertible: false,
       };
     }
 
@@ -1715,6 +1721,7 @@ class PageService {
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
     const Page = this.crowi.model('Page');
+    const isRevertible = isTrashPage(page.path);
     return {
       isEmpty: false,
       sumOfLikers: page.liker.length,
@@ -1724,6 +1731,7 @@ class PageService {
       isMovable,
       isDeletable: Page.isDeletableName(page.path),
       isAbleToDeleteCompletely: false,
+      isRevertible,
     };
 
   }

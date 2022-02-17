@@ -20,6 +20,7 @@ export const MenuItemType = {
   DUPLICATE: 'duplicate',
   RENAME: 'rename',
   DELETE: 'delete',
+  REVERT: 'revert',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -36,6 +37,7 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickRenameMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
 }
@@ -52,7 +54,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading,
     pageInfo, isEnableActions, forceHideMenuItems,
-    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems,
   } = props;
 
@@ -80,6 +82,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickRenameMenuItem(pageId);
   }, [onClickRenameMenuItem, pageId]);
+
+  const revertItemClickedHandler = useCallback(async() => {
+    if (onClickRevertMenuItem == null) {
+      return;
+    }
+    await onClickRevertMenuItem(pageId);
+  }, [onClickRevertMenuItem]);
+
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
@@ -138,6 +148,14 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem onClick={renameItemClickedHandler}>
             <i className="icon-fw  icon-action-redo"></i>
             {t('Move/Rename')}
+          </DropdownItem>
+        ) }
+
+        {/* Revert */}
+        { !forceHideMenuItems?.includes(MenuItemType.REVERT) && isEnableActions && pageInfo.isRevertible && (
+          <DropdownItem onClick={revertItemClickedHandler}>
+            <i className="icon-fw  icon-action-undo"></i>
+            {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
 
