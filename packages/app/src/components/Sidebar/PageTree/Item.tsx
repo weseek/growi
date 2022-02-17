@@ -346,6 +346,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
