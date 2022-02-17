@@ -1,33 +1,39 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageHasId, IPageWithMeta,
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
-import { useCurrentPagePath, useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import { OnDeletedFunction } from '~/interfaces/ui';
+import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 
-import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
+import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
 
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 
-type Props = {
-  path: string,
-}
 
+type SubstanceProps = {
+  pagingResult: IPagingResult<IPageHasId> | undefined,
+  activePage: number,
+  setActivePage: (activePage: number) => void,
+  onPagesDeleted?: OnDeletedFunction,
+}
 
 const convertToIPageWithEmptyMeta = (page: IPageHasId): IPageWithMeta => {
   return { pageData: page };
 };
 
-export const DescendantsPageList = (props: Props): JSX.Element => {
-  const { path } = props;
+export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
 
-  const [activePage, setActivePage] = useState(1);
+  const { t } = useTranslation();
+
+  const {
+    pagingResult, activePage, setActivePage, onPagesDeleted,
+  } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isSharedUser } = useIsSharedUser();
-
-  const { data: pagingResult, error } = useSWRxPageList(isSharedUser ? null : path, activePage);
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);
@@ -64,16 +70,16 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
     };
   }
 
+  const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
+    toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
+
+    if (onPagesDeleted != null) {
+      onPagesDeleted(...args);
+    }
+  }, [onPagesDeleted, t]);
+
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
-  }
-
-  if (error != null) {
-    return (
-      <div className="my-5">
-        <div className="text-danger">{error.message}</div>
-      </div>
-    );
   }
 
   if (pagingResult == null || pagingResultWithMeta == null) {
@@ -90,7 +96,11 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
 
   return (
     <>
-      <PageList pages={pagingResultWithMeta} isEnableActions={!isGuestUser} />
+      <PageList
+        pages={pagingResultWithMeta}
+        isEnableActions={!isGuestUser}
+        onPagesDeleted={pageDeletedHandler}
+      />
 
       { showPager && (
         <div className="my-4">
@@ -107,12 +117,57 @@ export const DescendantsPageList = (props: Props): JSX.Element => {
   );
 };
 
+type Props = {
+  path: string,
+}
+
+export const DescendantsPageList = (props: Props): JSX.Element => {
+  const { path } = props;
+
+  const [activePage, setActivePage] = useState(1);
+
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const { data: pagingResult, error, mutate } = useSWRxPageList(isSharedUser ? null : path, activePage);
+
+  if (error != null) {
+    return (
+      <div className="my-5">
+        <div className="text-danger">{error.message}</div>
+      </div>
+    );
+  }
+
+  return (
+    <DescendantsPageListSubstance
+      pagingResult={pagingResult}
+      activePage={activePage}
+      setActivePage={setActivePage}
+      onPagesDeleted={() => mutate()}
+    />
+  );
+};
+
 export const DescendantsPageListForCurrentPath = (): JSX.Element => {
 
-  const { data: path } = useCurrentPagePath();
+  const [activePage, setActivePage] = useState(1);
+  const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage);
 
-  return path != null
-    ? <DescendantsPageList path={path} />
-    : <></>;
+  if (error != null) {
+    return (
+      <div className="my-5">
+        <div className="text-danger">{error.message}</div>
+      </div>
+    );
+  }
+
+  return (
+    <DescendantsPageListSubstance
+      pagingResult={pagingResult}
+      activePage={activePage}
+      setActivePage={setActivePage}
+      onPagesDeleted={() => mutate()}
+    />
+  );
 
 };
