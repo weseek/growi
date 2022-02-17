@@ -1,5 +1,6 @@
 import rateLimit from 'express-rate-limit';
 
+import { resolveTxt } from 'dns';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
@@ -40,6 +41,21 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
+  const checkPassportStrategyMiddleware = (req, res, next) => {
+    const isPasswordResetEnabled = configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
+    const isLocalStrategySetup = crowi.passportService.isLocalStrategySetup ?? false;
+
+    const isEnabled = isLocalStrategySetup && isPasswordResetEnabled;
+
+    if (!isEnabled) {
+      const message = 'Forgot-password function is unavailable because neither LocalStrategy and LdapStrategy is not setup.';
+      logger.error(message);
+      return next(new Error(message));
+    }
+
+    next();
+  };
+
   async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
@@ -53,7 +69,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, async(req, res) => {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
@@ -81,7 +97,8 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', apiLimiter, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/', apiLimiter, checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
