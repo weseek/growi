@@ -30,7 +30,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback?: VoidFunction): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal, callback?: VoidFunction): void
   onSelfDeleted?: VoidFunction
 }
 
@@ -256,10 +256,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       pageId,
       revisionId: revisionId as string,
       path,
+      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
     };
-    const { isAbleToDeleteCompletely } = pageInfo;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely, async() => {
+    onClickDeleteMenuItem(pageToDelete, async() => {
       if (onSelfDeleted != null) await onSelfDeleted();
     });
   }, [onClickDeleteMenuItem, page, onSelfDeleted]);

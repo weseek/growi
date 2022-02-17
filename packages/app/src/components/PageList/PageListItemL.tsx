@@ -102,8 +102,11 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
-    const pageToDelete = { pageId, revisionId: revisionId as string, path };
-    openDeleteModal([pageToDelete], pageInfo.isAbleToDeleteCompletely);
+    const isAbleToDeleteCompletely = pageInfo.isAbleToDeleteCompletely;
+    const pageToDelete = {
+      pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
+    };
+    openDeleteModal([pageToDelete]);
   }, [pageData, openDeleteModal]);
 
   const revertMenuItemClickHandler = useCallback(() => {
