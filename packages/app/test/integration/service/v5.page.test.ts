@@ -24,19 +24,13 @@ describe('PageService page operations with only public pages', () => {
 
   let rootPage;
 
-  /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expectAllToBeNull", "expectAllToBeTruthy"] }] */
+  /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expectAllToBeTruthy"] }] */
   // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
 
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
     dataList.forEach((data) => {
       expect(data).toBeTruthy();
-    });
-  };
-  // pass if data is null
-  const expectAllToBeNull = (dataList) => {
-    dataList.forEach((data) => {
-      expect(data).toBeNull();
     });
   };
 
@@ -858,21 +852,21 @@ describe('PageService page operations with only public pages', () => {
       const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
 
       // page should be null
-      expectAllToBeNull(deletedPages);
+      expect(deletedPages.length).toBe(0);
       // revision should be null
-      expectAllToBeNull(deletedRevisions);
+      expect(deletedRevisions.length).toBe(0);
       // tag should be Truthy
       expectAllToBeTruthy(tags);
       // pageTagRelation should be null
-      expectAllToBeNull(deletedPageTagRelations);
+      expect(deletedPageTagRelations.length).toBe(0);
       // bookmark should be null
-      expectAllToBeNull(deletedBookmarks);
+      expect(deletedBookmarks.length).toBe(0);
       // comment should be null
-      expectAllToBeNull(deletedComments);
+      expect(deletedComments.length).toBe(0);
       // pageRedirect should be null
-      expectAllToBeNull(deletedPageRedirects);
+      expect(deletedPageRedirects.length).toBe(0);
       // sharelink should be null
-      expectAllToBeNull(deletedShareLinks);
+      expect(deletedShareLinks.length).toBe(0);
     });
     test('Should completely delete trashed page', async() => {
       const page = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
