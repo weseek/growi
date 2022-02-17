@@ -24,10 +24,19 @@ describe('PageService page operations with only public pages', () => {
 
   let rootPage;
 
+  /* eslint jest/expect-expect: ["error", { "assertFunctionNames": ["expectAllToBeNull", "expectAllToBeTruthy"] }] */
+  // https://github.com/jest-community/eslint-plugin-jest/blob/v24.3.5/docs/rules/expect-expect.md#assertfunctionnames
+
   // pass unless the data is one of [false, 0, '', null, undefined, NaN]
   const expectAllToBeTruthy = (dataList) => {
     dataList.forEach((data) => {
       expect(data).toBeTruthy();
+    });
+  };
+  // pass if data is null
+  const expectAllToBeNull = (dataList) => {
+    dataList.forEach((data) => {
+      expect(data).toBeNull();
     });
   };
 
@@ -798,13 +807,10 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT completely delete root page', async() => {
       expectAllToBeTruthy([rootPage]);
       let isThrown;
-      try {
-        await deleteCompletely(rootPage, dummyUser1, {}, false);
-      }
-      catch (err) {
-        isThrown = true;
-      }
-
+      try { await deleteCompletely(rootPage, dummyUser1, {}, false) }
+      catch (err) { isThrown = true }
+      const page = await Page.findOne({ path: '/' });
+      expect(page).toBeTruthy();
       expect(isThrown).toBe(true);
     });
     test('Should completely delete single page', async() => {
@@ -848,37 +854,21 @@ describe('PageService page operations with only public pages', () => {
       const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
 
       // page should be null
-      deletedPages.forEach((deletedPage) => {
-        expect(deletedPage).toBeNull();
-      });
+      expectAllToBeNull(deletedPages);
       // revision should be null
-      deletedRevisions.forEach((revision) => {
-        expect(revision).toBeNull();
-      });
-      // tag should NOT be null
-      tags.forEach((tag) => {
-        expect(tag).toBeTruthy();
-      });
+      expectAllToBeNull(deletedRevisions);
+      // tag should be Truthy
+      expectAllToBeTruthy(tags);
       // pageTagRelation should be null
-      deletedPageTagRelations.forEach((PTRelation) => {
-        expect(PTRelation).toBeNull();
-      });
+      expectAllToBeNull(deletedPageTagRelations);
       // bookmark should be null
-      deletedBookmarks.forEach((bookmark) => {
-        expect(bookmark).toBeNull();
-      });
+      expectAllToBeNull(deletedBookmarks);
       // comment should be null
-      deletedComments.forEach((comment) => {
-        expect(comment).toBeNull();
-      });
+      expectAllToBeNull(deletedComments);
       // pageRedirect should be null
-      deletedPageRedirects.forEach((pRedirect) => {
-        expect(pRedirect).toBeNull();
-      });
+      expectAllToBeNull(deletedPageRedirects);
       // sharelink should be null
-      deletedShareLinks.forEach((sharelnk) => {
-        expect(sharelnk).toBeNull();
-      });
+      expectAllToBeNull(deletedShareLinks);
     });
     test('Should completely delete trashed page', async() => {
       const page = await Page.findOne({ path: '/trash/v5_PageForDeleteCompletely5' });
@@ -892,7 +882,7 @@ describe('PageService page operations with only public pages', () => {
       expect(deltedPage).toBeNull();
       expect(deltedRevision).toBeNull();
     });
-    test('Should completely deleting page in the middle results in empty page', async() => {
+    test('Should completely deleting page in the middle results in having an empty page', async() => {
       const parentPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
       const childPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
       const grandchildPage = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
