@@ -171,7 +171,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       ) }
       { showPageControlDropdown && (
         <PageItemControl
-          dataTestId="sub-nav-buttons-page-item-control"
+          dataTestId="open-page-item-control-button"
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
