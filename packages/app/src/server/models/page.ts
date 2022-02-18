@@ -478,6 +478,9 @@ schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
   const self = this;
   const target = await this.findById(pageId);
+  if (target == null) {
+    throw Error('Target not found');
+  }
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {
     const parent = await self.findOne({ _id: target.parent });
@@ -500,41 +503,38 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
 schema.statics.removeLeafEmptyPagesRecursively = async function(pageId: ObjectIdLike): Promise<void> {
   const self = this;
 
-  const initialLeafPage = await this.findById(pageId);
+  const initialPage = await this.findById(pageId);
 
-  if (initialLeafPage == null) {
+  if (initialPage == null) {
     return;
   }
 
-  if (!initialLeafPage.isEmpty) {
+  if (!initialPage.isEmpty) {
     return;
   }
 
-  async function generatePageIdsToRemove(page, pageIds: ObjectIdLike[]): Promise<ObjectIdLike[]> {
+  async function generatePageIdsToRemove(childPage, page, pageIds: ObjectIdLike[] = []): Promise<ObjectIdLike[]> {
+    if (!page.isEmpty) {
+      return pageIds;
+    }
+
+    const isChildrenOtherThanTargetExist = await self.exists({ _id: { $ne: childPage?._id }, parent: page._id });
+    if (isChildrenOtherThanTargetExist) {
+      return pageIds;
+    }
+
+    pageIds.push(page._id);
+
     const nextPage = await self.findById(page.parent);
 
     if (nextPage == null) {
       return pageIds;
     }
 
-    // delete leaf empty pages
-    const isNextPageEmpty = nextPage.isEmpty;
-
-    if (!isNextPageEmpty) {
-      return pageIds;
-    }
-
-    const isSiblingsExist = await self.exists({ parent: nextPage.parent, _id: { $ne: nextPage._id } });
-    if (isSiblingsExist) {
-      return pageIds;
-    }
-
-    return generatePageIdsToRemove(nextPage, [...pageIds, nextPage._id]);
+    return generatePageIdsToRemove(page, nextPage, pageIds);
   }
 
-  const initialPageIdsToRemove = [initialLeafPage._id];
-
-  const pageIdsToRemove = await generatePageIdsToRemove(initialLeafPage, initialPageIdsToRemove);
+  const pageIdsToRemove = await generatePageIdsToRemove(null, initialPage);
 
   await this.deleteMany({ _id: { $in: pageIdsToRemove } });
 };
@@ -574,7 +574,7 @@ export default (crowi: Crowi): any => {
   }
 
   schema.statics.create = async function(path: string, body: string, user, options: PageCreateOptions = {}) {
-    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null) {
+    if (crowi.pageGrantService == null || crowi.configManager == null || crowi.pageService == null || crowi.pageOperationService == null) {
       throw Error('Crowi is not setup');
     }
 
@@ -582,6 +582,11 @@ export default (crowi: Crowi): any => {
     // v4 compatible process
     if (!isV5Compatible) {
       return this.createV4(path, body, user, options);
+    }
+
+    const canOperate = await crowi.pageOperationService.canOperate(false, null, path);
+    if (!canOperate) {
+      throw Error(`Cannot operate create to path "${path}" right now.`);
     }
 
     const Page = this;

@@ -1,5 +1,5 @@
 import mongoose, {
-  Schema, Model, Document,
+  Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
 import { getOrCreateModel } from '@growi/core';
 
@@ -43,8 +43,11 @@ export interface IPageOperation {
 
 export interface PageOperationDocument extends IPageOperation, Document {}
 
+export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectIdLike };
+
 export interface PageOperationModel extends Model<PageOperationDocument> {
-  [x:string]: any // TODO: improve type
+  findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
+  findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -92,10 +95,24 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   incForUpdatingDescendantCount: { type: Number },
 });
 
-schema.statics.findByIdAndUpdatePageActionStage = async function(pageOpId: ObjectIdLike, stage: PageActionStage) {
+schema.statics.findByIdAndUpdatePageActionStage = async function(
+    pageOpId: ObjectIdLike, stage: PageActionStage,
+): Promise<PageOperationDocumentHasId | null> {
+
   return this.findByIdAndUpdate(pageOpId, {
     $set: { actionStage: stage },
   }, { new: true });
+};
+
+schema.statics.findMainOps = async function(
+    filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions,
+): Promise<PageOperationDocumentHasId[]> {
+
+  return this.find(
+    { ...filter, actionStage: PageActionStage.Main },
+    projection,
+    options,
+  );
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);
