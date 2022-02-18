@@ -578,7 +578,7 @@ schema.statics.findByPageIdsToEdit = async function(ids, user, shouldIncludeEmpt
 
   await this.addConditionToFilteringByViewerToEdit(builder, user);
 
-  const pages = await builder.query.lean().exec();
+  const pages = await builder.query.exec();
 
   return pages;
 };
