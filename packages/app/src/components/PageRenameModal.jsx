@@ -83,9 +83,6 @@ const PageRenameModal = (props) => {
 
 
   const checkExistPaths = useCallback(async(newParentPath) => {
-    if (path == null) {
-      return;
-    }
     try {
       const res = await apiv3Get('/page/exist-paths', { fromPath: path, toPath: newParentPath });
       const { existPaths } = res.data;
@@ -99,17 +96,14 @@ const PageRenameModal = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkExistPathsDebounce = useCallback(() => {
-    if (path == null) {
-      return;
-    }
     debounce(1000, checkExistPaths);
-  }, [checkExistPaths, path]);
+  }, [checkExistPaths]);
 
   useEffect(() => {
     if (path == null) {
       return;
     }
-    if (pageId != null && pageNameInput !== path) {
+    if (pageId != null && path != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
   }, [pageNameInput, subordinatedPages, pageId, path, checkExistPathsDebounce]);
