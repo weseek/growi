@@ -26,6 +26,7 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
+  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
@@ -317,6 +318,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  useEffect(() => {
+    if (!props.isScrolled && page.isTarget) {
+      document.dispatchEvent(new CustomEvent('targetItemRendered'));
+    }
+  }, [props.isScrolled, page.isTarget]);
+
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -348,6 +355,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
@@ -422,6 +430,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
