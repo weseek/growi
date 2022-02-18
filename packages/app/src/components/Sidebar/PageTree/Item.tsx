@@ -23,6 +23,7 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import { ItemNode } from './ItemNode';
 
 interface ItemProps {
+  canDrag?:boolean
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
@@ -103,9 +104,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     }, 500);
   }, []);
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [{ canDrag }, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
+    canDrag: (monitor) => {
+      const item = monitor.getItem();
+      console.log('dragitem', item);
+      return false;
+    },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
@@ -115,8 +121,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
+      canDrag: monitor.canDrag(),
     }),
-  }));
+  });
+
+  console.log('canDrag', canDrag);
 
   const pageItemDropHandler = async(item, monitor) => {
     if (page == null || page.path == null) {
@@ -342,7 +351,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [data, isOpen, targetPathOrId]);
 
   return (
-    <div id={`pagetree-item-${page._id}`} className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`}>
+    <div
+      id={`pagetree-item-${page._id}`}
+      className={`grw-pagetree-item-container
+    ${isOver ? 'grw-pagetree-is-over' : ''}
+    ${shouldHide ? 'd-none' : ''}`}
+    >
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
@@ -390,13 +404,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
+            <DropdownToggle className="btn btn-transparent border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0"
+            className="border-0 rounded btn btn-transparent btn-page-item-control p-0"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
