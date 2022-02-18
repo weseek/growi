@@ -7,6 +7,8 @@ import { IPageWithMeta, isIPageInfoForListing } from '~/interfaces/page';
 import { IPageSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useFullTextSearchTermManager } from '~/stores/search';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from '../PageList/PageListItemL';
@@ -34,6 +36,10 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   const { data: isGuestUser } = useIsGuestUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet);
 
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+
   const itemsRef = useRef<(ISelectable|null)[]>([]);
 
   // publish selectAll()
@@ -58,7 +64,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
       onPageSelected(selectedPage);
     }
   }, [onPageSelected, pages]);
-
 
   let injectedPage;
   // inject data to list
@@ -95,6 +100,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             forceHideMenuItems={forceHideMenuItems}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
+            onPageDeleted={() => { advancePt(); advanceFts() }}
           />
         );
       })}

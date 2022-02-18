@@ -19,6 +19,7 @@ import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
@@ -33,6 +34,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageDeleted?: OnDeletedFunction,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -41,7 +43,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { pageData, pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged,
+    onClickItem, onCheckboxChanged, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -111,8 +113,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     const pageToDelete = {
       pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
     };
-    openDeleteModal([pageToDelete]);
-  }, [pageData, openDeleteModal]);
+
+    // open modal
+    openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
+  }, [pageData, openDeleteModal, onPageDeleted]);
 
   const revertMenuItemClickHandler = useCallback(() => {
     const { _id: pageId, path } = pageData;
@@ -174,6 +178,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                         <a
                           className="page-segment"
                           href={encodeURI(urljoin('/', pageData._id))}
+                          // eslint-disable-next-line react/no-danger
                           dangerouslySetInnerHTML={{ __html: linkedPagePathLatter.pathName }}
                         >
                         </a>

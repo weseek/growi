@@ -30,8 +30,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal, callback?: VoidFunction): void
-  onSelfDeleted?: VoidFunction
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -73,7 +72,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions, onSelfDeleted,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
@@ -248,10 +247,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   }, [onClickRenameMenuItem, page]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-
     const { _id: pageId, revision: revisionId, path } = page;
 
     if (pageId == null || revisionId == null || path == null) {
@@ -265,10 +260,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
     };
 
-    onClickDeleteMenuItem(pageToDelete, async() => {
-      if (onSelfDeleted != null) await onSelfDeleted();
-    });
-  }, [onClickDeleteMenuItem, page, onSelfDeleted]);
+    if (onClickDeleteMenuItem != null) {
+      onClickDeleteMenuItem(pageToDelete);
+    }
+  }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -430,7 +425,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
-              onSelfDeleted={async() => { await mutateChildren() }}
             />
           </div>
         ))

@@ -1,6 +1,6 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { Nullable } from '~/interfaces/common';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 
 /*
@@ -40,8 +40,6 @@ export type IPageForPageDeleteModal = {
 export type IDeleteModalOption = {
   onDeleted?: OnDeletedFunction,
 }
-
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
 
 type DeleteModalStatus = {
   isOpened: boolean,
