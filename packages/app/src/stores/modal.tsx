@@ -114,33 +114,46 @@ export type IPageForPageRenameModal = {
   path: string
 }
 
+export type IRenameModalOption = {
+  onDeleted?: OnDeletedFunction,
+}
+
 type RenameModalStatus = {
   isOpened: boolean,
-  pageId?: string,
-  revisionId?: string
-  path?: string,
+  page?: IPageForPageRenameModal,
+  opts?: IRenameModalOption
 }
 
 type RenameModalStatusUtils = {
-  open(pageId: string, revisionId: string, path: string): Promise<RenameModalStatus | undefined>
+  open(
+    page?: IPageForPageRenameModal,
+    opts?: IRenameModalOption
+    ): Promise<RenameModalStatus | undefined>
   close(): Promise<RenameModalStatus | undefined>
 }
 
 export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
   const initialData: RenameModalStatus = {
-    isOpened: false, pageId: '', revisionId: '', path: '',
+    isOpened: false, page: { pageId: '', revisionId: '', path: '' },
   };
   const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pageId: string, revisionId: string, path: string) => swrResponse.mutate({
-      isOpened: true, pageId, revisionId, path,
+    open: (
+        page?: IPageForPageRenameModal,
+        opts?: IRenameModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, page, opts,
     }),
-    close: () => swrResponse.mutate({ isOpened: false }),
+    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', revisionId: '', path: '' } }),
   };
 };
 
+
+/*
+* PutBackPageModal
+*/
 type PutBackPageModalStatus = {
   isOpened: boolean,
   pageId?: string,

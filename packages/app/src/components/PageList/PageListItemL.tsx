@@ -98,8 +98,12 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }, [openDuplicateModal, pageData]);
 
   const renameMenuItemClickHandler = useCallback(() => {
-    const { _id: pageId, revision: revisionId, path } = pageData;
-    openRenameModal(pageId, revisionId as string, path);
+    const page = {
+      pageId: pageData._id,
+      revisionId: pageData.revision as string,
+      path: pageData.path,
+    };
+    openRenameModal(page);
   }, [openRenameModal, pageData]);
 
 

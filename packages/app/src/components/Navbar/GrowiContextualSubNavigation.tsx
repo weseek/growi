@@ -16,7 +16,7 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
+  usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
 } from '~/stores/modal';
 
 
@@ -184,8 +184,8 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(pageId, path);
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(pageId, revisionId, path) => {
-    openRenameModal(pageId, revisionId, path);
+  const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {
+    openRenameModal(page);
   }, [openRenameModal]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
