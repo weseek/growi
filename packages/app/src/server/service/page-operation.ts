@@ -36,7 +36,7 @@ class PageOperationService {
       }
 
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
-        const flag = toPaths.some(p => this.isEitherOfPathAreaOverlap(p, toPathToOp));
+        const flag = toPaths.some(p => this.isPathAreaOverlap(p, toPathToOp));
         if (flag) return false;
       }
 
