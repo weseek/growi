@@ -130,11 +130,16 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
+  const scrollItem = () => {
+    scrollTargetItem();
+    setIsScrolled(true);
+  };
+
   useEffect(() => {
-    document.addEventListener('targetItemRendered', () => {
-      scrollTargetItem();
-      setIsScrolled(true);
-    });
+    document.addEventListener('targetItemRendered', scrollItem);
+    return () => {
+      document.removeEventListener('targetItemRendered', scrollItem);
+    };
   }, []);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
