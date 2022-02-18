@@ -145,11 +145,9 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
         toastSuccess(t('deleted_pages', { path }));
       }
 
-      setTimeout(() => {
-        advancePt();
-        advanceFts();
-        advanceDpl();
-      }, 800);
+      advancePt();
+      advanceFts();
+      advanceDpl();
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
