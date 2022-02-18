@@ -18,6 +18,7 @@ import SearchControl from './SearchPage/SearchControl';
 import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
 import { IPageForPageDeleteModal, usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
+import { toastSuccess } from '~/client/util/apiNotification';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -218,12 +219,13 @@ export const SearchPage = (props: Props): JSX.Element => {
       } as IPageForPageDeleteModal));
 
     openDeleteModal(selectedPages, {
-      onDeleted: () => {
+      onDeleted: (idOrpaths, isRecursively, isCompletely) => {
+        toastSuccess(isCompletely ? t('deleted_pages_completely') : t('deleted_pages'));
         mutate();
         advancePt();
       },
     });
-  }, [advancePt, data, mutate, openDeleteModal]);
+  }, [advancePt, data, mutate, openDeleteModal, t]);
 
   // push state
   useEffect(() => {
