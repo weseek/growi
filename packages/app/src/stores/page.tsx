@@ -8,8 +8,10 @@ import {
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { apiGet } from '../client/util/apiv1-client';
-
 import { IPageTagsInfo } from '../interfaces/pageTagsInfo';
+
+import { useCurrentPagePath } from './context';
+import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
 export const useSWRxPageByPath = (path: string, initialData?: IPageHasId): SWRResponse<IPageHasId, Error> => {
@@ -32,15 +34,15 @@ export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => 
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
   const key = path != null
-    ? `/pages/list?path=${path}&page=${pageNumber ?? 1}`
+    ? [`/pages/list?path=${path}&page=${pageNumber ?? 1}`, termNumber]
     : null;
 
   return useSWR(
     key,
-    endpoint => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
+    (endpoint: string) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
       return {
         items: response.data.pages,
         totalCount: response.data.totalCount,
@@ -48,6 +50,21 @@ export const useSWRxPageList = (path: string | null, pageNumber?: number): SWRRe
       };
     }),
   );
+};
+
+export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
+};
+
+export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
+
+  const path = currentPagePath == null || termNumber == null
+    ? null
+    : currentPagePath;
+
+  return useSWRxPageList(path, pageNumber, termNumber);
 };
 
 export const useSWRTagsInfo = (pageId: string | null | undefined): SWRResponse<IPageTagsInfo, Error> => {
