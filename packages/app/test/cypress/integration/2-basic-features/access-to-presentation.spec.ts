@@ -1,5 +1,5 @@
 
-context('Access to page', () => {
+context('Open presentation modal', () => {
   const ssPrefix = 'access-to-presentation-modal-';
 
   let connectSid: string | undefined;
@@ -22,7 +22,7 @@ context('Access to page', () => {
 
   it('Successfully loaded the presentation modal in /.', () => {
     cy.visit('/');
-    cy.getByTestid('grw-subnav-container-page-item-control').click();
+    cy.getByTestid('sub-nav-buttons-page-item-control').click();
     cy.getByTestid('open-presentation-modal-btn').click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
