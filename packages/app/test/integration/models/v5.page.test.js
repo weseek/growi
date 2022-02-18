@@ -34,9 +34,6 @@ describe('Page', () => {
     PageRedirect = mongoose.model('PageRedirect');
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
-    if (dummyUser1 == null) {
-      dummyUser1 = await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
-    }
 
     rootPage = await Page.findOne({ path: '/' });
 

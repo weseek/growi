@@ -51,19 +51,9 @@ describe('PageService page operations with only public pages', () => {
     /*
      * Common
      */
-    await User.insertMany([
-      { name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' },
-      { name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' },
-    ]);
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
-    if (dummyUser1 == null) {
-      dummyUser1 = await User.create({ name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' });
-    }
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
-    if (dummyUser2 == null) {
-      dummyUser2 = await User.create({ name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' });
-    }
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
@@ -768,6 +758,84 @@ describe('PageService page operations with only public pages', () => {
       },
     ]);
 
+    /**
+     * Revert
+     */
+    const pageIdForRevert1 = new mongoose.Types.ObjectId();
+    const pageIdForRevert2 = new mongoose.Types.ObjectId();
+    const pageIdForRevert3 = new mongoose.Types.ObjectId();
+
+    const revisionIdForRevert1 = new mongoose.Types.ObjectId();
+    const revisionIdForRevert2 = new mongoose.Types.ObjectId();
+    const revisionIdForRevert3 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdForRevert1,
+        path: '/trash/v5_revert1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdForRevert1,
+        status: Page.STATUS_DELETED,
+      },
+      {
+        _id: pageIdForRevert2,
+        path: '/trash/v5_revert2',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdForRevert2,
+        status: Page.STATUS_DELETED,
+      },
+      {
+        _id: pageIdForRevert3,
+        path: '/trash/v5_revert2/v5_revert3/v5_revert4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        revision: revisionIdForRevert3,
+        status: Page.STATUS_DELETED,
+      },
+    ]);
+
+    await Revision.insertMany([
+      {
+        _id: revisionIdForRevert1,
+        pageId: pageIdForRevert1,
+        body: 'revert1',
+        format: 'comment',
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForRevert2,
+        pageId: pageIdForRevert2,
+        body: 'revert2',
+        format: 'comment',
+        author: dummyUser1,
+      },
+      {
+        _id: revisionIdForRevert3,
+        pageId: pageIdForRevert3,
+        body: 'revert3',
+        format: 'comment',
+        author: dummyUser1,
+      },
+    ]);
+
+    const tagIdRevert1 = new mongoose.Types.ObjectId();
+    await Tag.insertMany([
+      { _id: tagIdRevert1, name: 'revertTag1' },
+    ]);
+
+    await PageTagRelation.insertMany([
+      {
+        relatedPage: pageIdForRevert1,
+        relatedTag: tagIdRevert1,
+        isPageTrashed: true,
+      },
+    ]);
+
   });
 
   describe('Rename', () => {
@@ -1331,8 +1399,67 @@ describe('PageService page operations with only public pages', () => {
     });
   });
 
-});
 
+  describe('revert', () => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+      // mock return value
+      const mockedResumableRevertDeletedDescendants = jest.spyOn(crowi.pageService, 'resumableRevertDeletedDescendants').mockReturnValue(null);
+      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+
+      const argsForResumableRevertDeletedDescendants = mockedResumableRevertDeletedDescendants.mock.calls[0];
+
+      // restores the original implementation
+      mockedResumableRevertDeletedDescendants.mockRestore();
+      if (isRecursively) {
+        await crowi.pageService.resumableRevertDeletedDescendants(...argsForResumableRevertDeletedDescendants);
+      }
+
+      return revertedPage;
+
+    };
+
+    test('revert single deleted page', async() => {
+      const deletedPage = await Page.findOne({ path: '/trash/v5_revert1', status: Page.STATUS_DELETED });
+      const revision = await Revision.findOne({ pageId: deletedPage._id });
+      const tag = await Tag.findOne({ name: 'revertTag1' });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      expectAllToBeTruthy([deletedPage, revision, tag, deletedPageTagRelation]);
+
+      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
+
+      expect(revertedPage.parent).toStrictEqual(rootPage._id);
+      expect(revertedPage.path).toBe('/v5_revert1');
+      expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(pageTagRelation.isPageTrashed).toBe(false);
+
+    });
+
+    test('revert multiple deleted page (has non existent page in the middle)', async() => {
+      const deletedPage1 = await Page.findOne({ path: '/trash/v5_revert2', status: Page.STATUS_DELETED });
+      const deletedPage2 = await Page.findOne({ path: '/trash/v5_revert2/v5_revert3/v5_revert4', status: Page.STATUS_DELETED });
+      const revision1 = await Revision.findOne({ pageId: deletedPage1._id });
+      const revision2 = await Revision.findOne({ pageId: deletedPage2._id });
+      expectAllToBeTruthy([deletedPage1, deletedPage2, revision1, revision2]);
+
+      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
+      const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
+      const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
+
+      expectAllToBeTruthy([revertedPage1, revertedPage2, newlyCreatedPage]);
+      expect(revertedPage1.parent).toStrictEqual(rootPage._id);
+      expect(revertedPage1.path).toBe('/v5_revert2');
+      expect(revertedPage2.path).toBe('/v5_revert2/v5_revert3/v5_revert4');
+      expect(newlyCreatedPage.parent).toStrictEqual(revertedPage1._id);
+      expect(revertedPage2.parent).toStrictEqual(newlyCreatedPage._id);
+      expect(revertedPage1.status).toBe(Page.STATUS_PUBLISHED);
+      expect(revertedPage2.status).toBe(Page.STATUS_PUBLISHED);
+      expect(newlyCreatedPage.status).toBe(Page.STATUS_PUBLISHED);
+
+    });
+  });
+
+});
 describe('PageService page operations with non-public pages', () => {
   // TODO: write test code
 });
