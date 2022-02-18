@@ -177,7 +177,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       return emptyLabel;
     }
 
-    return false;
+    return <></>;
   };
 
   const defaultSelected = (keywordOnInit !== '')
