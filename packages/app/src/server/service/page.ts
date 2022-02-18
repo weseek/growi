@@ -2206,6 +2206,7 @@ class PageService {
           actionStage: PageActionStage.Main,
           page,
           user,
+          fromPath: page.path,
           toPath: page.path,
         });
       }
