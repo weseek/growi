@@ -20,30 +20,30 @@ context('Open presentation modal', () => {
     }
   });
 
-  it('Successfully loaded the presentation modal in /', () => {
+  it('PageCreateModal for "/" is shown successfully', () => {
     cy.visit('/');
     cy.getByTestid('sub-nav-buttons-page-item-control').first().click();
     cy.getByTestid('open-presentation-modal-btn').first().click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-top`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-opne-top`, { capture: 'viewport' });
   });
 
-  it('Successfully loaded the presentation modal in "/Sandbox/Bootstrap4"', () => {
+  it('PageCreateModal for "/Sandbox/Bootstrap4" is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4');
     cy.getByTestid('sub-nav-buttons-page-item-control').first().click();
     cy.getByTestid('open-presentation-modal-btn').first().click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-sandbox`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-open-bootstrap4`, { capture: 'viewport' });
   });
 
-  it('Successfully loaded the presentation modal in "/Sandbox/Bootstrap4#Cards"', () => {
+  it('PageCreateModal for /Sandbox/Bootstrap4#Cards" is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4#Cards');
     cy.getByTestid('sub-nav-buttons-page-item-control').first().click();
     cy.getByTestid('open-presentation-modal-btn').first().click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-Bootstrap4-with-anker-lint`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-open-bootstrap4-with-ancker-link`, { capture: 'viewport' });
   });
 });
