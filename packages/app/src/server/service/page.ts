@@ -333,6 +333,7 @@ class PageService {
    * @param {User} viewer
    */
   private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -1799,6 +1800,18 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  async resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process) {
+    const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
+  }
+
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
@@ -1863,7 +1876,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return count;
   }
