@@ -295,7 +295,6 @@ class PageService {
    * @param {User} viewer
    */
   private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
-    console.log('generateReadStreamToOperateOnlyDescendants');
 
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
