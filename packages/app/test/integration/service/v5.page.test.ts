@@ -1385,9 +1385,9 @@ describe('PageService page operations with only public pages', () => {
       expectAllToBeTruthy([parentPage, childPage, grandchildPage]);
 
       await deleteCompletely(childPage, dummyUser1, {}, false);
-      const parentPageAfterDelete = await Page.findOne({ path: parentPage.path });
-      const childPageAfterDelete = await Page.findOne({ path: childPage.path });
-      const grandchildPageAfterDelete = await Page.findOne({ path: grandchildPage.path });
+      const parentPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
+      const childPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
+      const grandchildPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
       const childOfDeletedPage = await Page.findOne({ parent: childPageAfterDelete._id });
 
       expectAllToBeTruthy([parentPageAfterDelete, childPageAfterDelete, grandchildPageAfterDelete]);
