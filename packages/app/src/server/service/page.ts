@@ -1783,10 +1783,10 @@ class PageService {
     /*
      * Sub Operation
      */
-    await this.revertRecursivelySubOperation(page, newPath, pageOp._id);
+    await this.revertRecursivelySubOperation(newPath, pageOp._id);
   }
 
-  async revertRecursivelySubOperation(page, newPath: string, pageOpId: ObjectIdLike): Promise<void> {
+  async revertRecursivelySubOperation(newPath: string, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const newTarget = await Page.findOne({ path: newPath }); // only one page will be found since duplicating to existing path is forbidden
@@ -1796,7 +1796,7 @@ class PageService {
     }
 
     // update descendantCount of ancestors'
-    await this.updateDescendantCountOfAncestors(page.parent, newTarget.descendantCount + 1, true);
+    await this.updateDescendantCountOfAncestors(newTarget.parent as ObjectIdLike, newTarget.descendantCount + 1, true);
 
     await PageOperation.findByIdAndDelete(pageOpId);
   }
