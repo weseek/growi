@@ -5,7 +5,12 @@ import { apiv3Get } from '../client/util/apiv3-client';
 import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
+import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
+
+export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
+};
 
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
   return useSWR(
@@ -36,8 +41,10 @@ export const useSWRxPageAncestorsChildren = (
 export const useSWRxPageChildren = (
     id?: string | null,
 ): SWRResponse<ChildrenResult, Error> => {
+  const { data: termNumber } = usePageTreeTermManager();
+
   return useSWR(
-    id ? `/page-listing/children?id=${id}` : null,
+    id ? [`/page-listing/children?id=${id}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         children: response.data.children,
