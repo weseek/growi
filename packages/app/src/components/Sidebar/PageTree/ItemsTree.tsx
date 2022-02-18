@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IPageHasId } from '../../../interfaces/page';
@@ -66,6 +66,7 @@ type ItemsTreeProps = {
 const renderByInitialNode = (
     initialNode: ItemNode,
     isEnableActions: boolean,
+    isScrolled: boolean,
     targetPathOrId?: string,
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
@@ -85,10 +86,24 @@ const renderByInitialNode = (
         onClickDuplicateMenuItem={onClickDuplicateMenuItem}
         onClickRenameMenuItem={onClickRenameMenuItem}
         onClickDeleteMenuItem={onClickDeleteMenuItem}
+        isScrolled={isScrolled}
       />
     </ul>
   );
 };
+
+// --- Auto scroll related vars and util ---
+
+const SCROLL_OFFSET_TOP = window.innerHeight / 2;
+
+const scrollTargetItem = () => {
+  const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
+  const target = document.getElementById('grw-pagetree-is-target');
+  if (scrollElement != null && target != null) {
+    smoothScrollIntoView(target, SCROLL_OFFSET_TOP, scrollElement);
+  }
+};
+// --- end ---
 
 
 /*
@@ -107,20 +122,25 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const [isScrolled, setIsScrolled] = useState(false);
+
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
 
+  const scrollItem = () => {
+    scrollTargetItem();
+    setIsScrolled(true);
+  };
+
   useEffect(() => {
-    const startFrom = document.getElementById('grw-sidebar-contents-scroll-target');
-    const targetElem = document.getElementsByClassName('grw-pagetree-is-target');
-    //  targetElem is HTML collection but only one HTML element in it all the time
-    if (targetElem[0] != null && startFrom != null) {
-      smoothScrollIntoView(targetElem[0] as HTMLElement, 0, startFrom);
-    }
-  }, [ancestorsChildrenData]);
+    document.addEventListener('targetItemRendered', scrollItem);
+    return () => {
+      document.removeEventListener('targetItemRendered', scrollItem);
+    };
+  }, []);
 
   const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
     openDuplicateModal(pageToDuplicate);
@@ -165,7 +185,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   if (ancestorsChildrenData != null && rootPageData != null) {
     const initialNode = generateInitialNodeAfterResponse(ancestorsChildrenData.ancestorsChildren, new ItemNode(rootPageData.rootPage));
     return renderByInitialNode(
-      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+      // eslint-disable-next-line max-len
+      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
     );
   }
 
@@ -175,7 +196,8 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   if (targetAndAncestorsData != null) {
     const initialNode = generateInitialNodeBeforeResponse(targetAndAncestorsData.targetAndAncestors);
     return renderByInitialNode(
-      initialNode, isEnableActions, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+      // eslint-disable-next-line max-len
+      initialNode, isEnableActions, isScrolled, targetPathOrId, isEnabledAttachTitleHeader, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
     );
   }
 

@@ -26,6 +26,7 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
+  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
@@ -317,6 +318,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     return null;
   };
 
+  useEffect(() => {
+    if (!props.isScrolled && page.isTarget) {
+      document.dispatchEvent(new CustomEvent('targetItemRendered'));
+    }
+  }, [props.isScrolled, page.isTarget]);
+
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -348,6 +355,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       <li
         ref={(c) => { drag(c); drop(c) }}
         className={`list-group-item list-group-item-action border-0 py-1 d-flex align-items-center ${page.isTarget ? 'grw-pagetree-is-target' : ''}`}
+        id={page.isTarget ? 'grw-pagetree-is-target' : `grw-pagetree-list-${page._id}`}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
@@ -383,7 +391,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <ItemCount descendantCount={page.descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-none">
+        <div className="grw-pagetree-control d-flex">
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
@@ -392,13 +400,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0"
+            className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
@@ -422,6 +430,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}

@@ -32,10 +32,14 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
 
-    const queryBuilder = new PageQueryBuilder(Page.find());
-    await queryBuilder.addConditionAsMigratablePages(user);
+    const countQueryBuilder = new PageQueryBuilder(Page.find());
+    await countQueryBuilder.addConditionAsMigratablePages(user);
+    const findQueryBuilder = new PageQueryBuilder(Page.find());
+    await findQueryBuilder.addConditionAsMigratablePages(user);
 
-    const _pages: PageDocument[] = await queryBuilder
+    const total = await countQueryBuilder.query.count();
+
+    const _pages: PageDocument[] = await findQueryBuilder
       .addConditionToPagenate(offset, limit)
       .query
       .populate('lastUpdateUser')
@@ -49,7 +53,7 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     return {
       data: pages,
       meta: {
-        total: pages.length,
+        total,
         hitsCount: pages.length,
       },
     };
