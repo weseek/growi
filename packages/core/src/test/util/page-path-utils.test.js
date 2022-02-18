@@ -1,5 +1,5 @@
 import {
-  isTopPage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
+  isTopPage, isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths,
 } from '~/utils/page-path-utils';
 
 describe('TopPage Path test', () => {
@@ -21,6 +21,16 @@ describe('TopPage Path test', () => {
   });
 });
 
+describe('isMovablePage test', () => {
+  test('should decide deletable or not', () => {
+    expect(isMovablePage('/')).toBeFalsy();
+    expect(isMovablePage('/hoge')).toBeTruthy();
+    expect(isMovablePage('/user')).toBeFalsy();
+    expect(isMovablePage('/user/xxx')).toBeFalsy();
+    expect(isMovablePage('/user/xxx123')).toBeFalsy();
+    expect(isMovablePage('/user/xxx/hoge')).toBeTruthy();
+  });
+});
 
 describe('convertToNewAffiliationPath test', () => {
   test('Child path is not converted normally', () => {

@@ -484,7 +484,7 @@ module.exports = (crowi) => {
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
-      // if page found, cannot cannot rename to that path
+      // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
@@ -649,7 +649,7 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
     if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');
@@ -769,7 +769,8 @@ module.exports = (crowi) => {
     }
 
     // run delete
-    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, isCompletely, isRecursively);
+    const options = { isCompletely, isRecursively };
+    crowi.pageService.deleteMultiplePages(pagesCanBeDeleted, req.user, options);
 
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
@@ -799,17 +800,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`The maximum number of pages you can select is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`, 'exceeded_maximum_number'), 400);
     }
 
-    if (isRecursively) {
-      // this method innerly uses socket to send message
-      crowi.pageService.normalizeParentRecursivelyByPageIds(pageIds, req.user);
+    try {
+      await crowi.pageService.normalizeParentByPageIds(pageIds, req.user, isRecursively);
     }
-    else {
-      try {
-        await crowi.pageService.normalizeParentByPageIds(pageIds, req.user);
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-      }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
     return res.apiv3({});

@@ -6,7 +6,7 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageDeleteModal, IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -24,12 +24,12 @@ type CommonProps = {
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
-  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
-  onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean) => void,
+  onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
+  onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
+  onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
 }
 
-type SubNavButtonsSubstanceProps= CommonProps & {
+type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string,
@@ -100,16 +100,17 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickDuplicateMenuItem == null || path == null) {
       return;
     }
+    const page: IPageForPageDuplicateModal = { pageId, path };
 
-    onClickDuplicateMenuItem(pageId, path);
+    onClickDuplicateMenuItem(page);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
-
-    onClickRenameMenuItem(pageId, revisionId, path);
+    const page: IPageForPageRenameModal = { pageId, revisionId, path };
+    onClickRenameMenuItem(page);
   }, [onClickRenameMenuItem, pageId, path, revisionId]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
@@ -121,9 +122,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       pageId,
       revisionId,
       path,
+      isAbleToDeleteCompletely: pageInfo.isAbleToDeleteCompletely,
     };
 
-    onClickDeleteMenuItem(pageToDelete, pageInfo.isAbleToDeleteCompletely);
+    onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo.isAbleToDeleteCompletely, path, revisionId]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
@@ -132,7 +134,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
 
   const {
-    sumOfLikers, isLiked, bookmarkCount, isBookmarked,
+    sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
   } = pageInfo;
 
   const forceHideMenuItemsWithBookmark = forceHideMenuItems ?? [];
@@ -161,7 +163,11 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         onBookMarkClicked={bookmarkClickHandler}
       />
       { !isCompactMode && (
-        <SeenUserInfo seenUsers={seenUsers} disabled={disableSeenUserInfoPopover} />
+        <SeenUserInfo
+          seenUsers={seenUsers}
+          sumOfSeenUsers={sumOfSeenUsers}
+          disabled={disableSeenUserInfoPopover}
+        />
       ) }
       { showPageControlDropdown && (
         <PageItemControl

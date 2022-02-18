@@ -635,10 +635,7 @@ describe('PageService', () => {
       expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyPageSpy).toHaveBeenCalledWith({
-        $or: [{ path: { $in: [parentForDeleteCompletely.path] } },
-              { _id: { $in: [parentForDeleteCompletely._id] } }],
-      });
+      expect(deleteManyPageSpy).toHaveBeenCalledWith({ _id: { $in: [parentForDeleteCompletely._id] } });
       expect(removeAllAttachmentsSpy).toHaveBeenCalled();
     });
 

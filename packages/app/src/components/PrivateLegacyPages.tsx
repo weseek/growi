@@ -14,12 +14,14 @@ import { toastSuccess } from '~/client/util/apiNotification';
 import {
   ISearchConfigurations, useSWRxNamedQuerySearch,
 } from '~/stores/search';
-import { ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal } from '~/stores/modal';
+import {
+  ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
+} from '~/stores/modal';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 
-import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
 
@@ -176,6 +178,9 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     }
   }, []);
 
+  // for bulk deletion
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate);
+
   const convertMenuItemClickedHandler = useCallback(() => {
     if (data == null) {
       return;
@@ -214,16 +219,19 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
   }, [configurationsByPagination]);
 
+  const hitsCount = data?.meta.hitsCount;
   const { offset, limit } = conditions;
 
   const searchControl = useMemo(() => {
+    const isCheckboxDisabled = hitsCount === 0;
+
     return (
-      <div className="position-sticky fixed-top shadow-sm">
+      <div className="shadow-sm">
         <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
           <div className="d-flex pl-md-2">
             <OperateAllControl
               ref={selectAllControlRef}
-              isCheckboxDisabled={!isControlEnabled}
+              isCheckboxDisabled={isCheckboxDisabled}
               onCheckboxChanged={selectAllCheckboxChangedHandler}
             >
               <UncontrolledButtonDropdown>
@@ -235,7 +243,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
                     <i className="icon-fw icon-refresh"></i>
                     {t('private_legacy_pages.convert_all_selected_pages')}
                   </DropdownItem>
-                  <DropdownItem onClick={() => { /* TODO: implement */ }}>
+                  <DropdownItem onClick={deleteAllButtonClickedHandler}>
                     <span className="text-danger">
                       <i className="icon-fw icon-trash"></i>
                       {t('search_result.delete_all_selected_page')}
@@ -248,7 +256,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
       </div>
     );
-  }, [convertMenuItemClickedHandler, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+  }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -290,7 +298,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         appContainer={appContainer}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE]}
+        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT]}
         // Components
         searchControl={searchControl}
         searchResultListHead={searchResultListHead}

@@ -13,10 +13,8 @@ import { pathUtils, pagePathUtils } from '@growi/core';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
-import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useShareLinkId, useIsEnabledAttachTitleHeader } from '~/stores/context';
-import { IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal, IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -29,9 +27,10 @@ interface ItemProps {
   itemNode: ItemNode
   targetPathOrId?: string
   isOpen?: boolean
-  onClickDuplicateMenuItem?(pageId: string, path: string): void
-  onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean): void
+  isEnabledAttachTitleHeader?: boolean
+  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
+  onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -72,14 +71,13 @@ const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
 
   const [pageTitle, setPageTitle] = useState(page.path);
-  const { data: shareLinkId } = useShareLinkId();
-  const { data: pageInfo } = useSWRxPageInfo(page._id ?? null, shareLinkId);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -87,7 +85,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -200,7 +197,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and path must not be null.');
     }
 
-    onClickDuplicateMenuItem(pageId, path);
+    const pageToDuplicate = { pageId, path };
+
+    onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
 
@@ -240,14 +239,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and revisionId and path must not be null.');
     }
 
-    onClickRenameMenuItem(pageId, revisionId as string, path);
+    const pageToRename: IPageForPageRenameModal = {
+      pageId,
+      revisionId: revisionId as string,
+      path,
+    };
+
+    onClickRenameMenuItem(pageToRename);
   }, [onClickRenameMenuItem, page]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
     const { _id: pageId, revision: revisionId, path } = page;
 
     if (pageId == null || revisionId == null || path == null) {
@@ -258,11 +259,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       pageId,
       revisionId: revisionId as string,
       path,
+      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
     };
-    const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely);
-  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely]);
+    if (onClickDeleteMenuItem != null) {
+      onClickDeleteMenuItem(pageToDelete);
+    }
+  }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -386,8 +389,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             isEnableActions={isEnableActions}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
@@ -420,6 +423,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               itemNode={node}
               isOpen={false}
               targetPathOrId={targetPathOrId}
+              isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
