@@ -12,7 +12,7 @@ import AppContainer from '~/client/services/AppContainer';
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  ISearchConfigurations, useSWRxNamedQuerySearch,
+  useSWRxNamedQuerySearch,
 } from '~/stores/search';
 import {
   ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
@@ -125,17 +125,17 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   } = props;
 
 
-  const [configurationsByPagination, setConfigurationsByPagination] = useState<Partial<ISearchConfigurations>>({
-    limit: INITIAL_PAGIONG_SIZE,
-  });
+  const [offset, setOffset] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+
   const [isControlEnabled, setControlEnabled] = useState(false);
 
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
   const { data, conditions, mutate } = useSWRxNamedQuerySearch('PrivateLegacyPages', {
-    limit: INITIAL_PAGIONG_SIZE,
-    ...configurationsByPagination,
+    offset,
+    limit,
   });
 
   const { open: openModal, close: closeModal } = useLegacyPrivatePagesMigrationModal();
@@ -179,7 +179,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
   }, []);
 
   // for bulk deletion
-  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate);
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
 
   const convertMenuItemClickedHandler = useCallback(() => {
     if (data == null) {
@@ -211,16 +211,18 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     );
   }, [data, mutate, openModal, closeModal]);
 
+  const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
+    setOffset(0);
+    setLimit(pagingSize);
+    mutate();
+  }, [mutate]);
+
   const pagingNumberChangedHandler = useCallback((activePage: number) => {
-    const currentLimit = configurationsByPagination.limit ?? INITIAL_PAGIONG_SIZE;
-    setConfigurationsByPagination({
-      ...configurationsByPagination,
-      offset: (activePage - 1) * currentLimit,
-    });
-  }, [configurationsByPagination]);
+    setOffset((activePage - 1) * limit);
+    mutate();
+  }, [limit, mutate]);
 
   const hitsCount = data?.meta.hitsCount;
-  const { offset, limit } = conditions;
 
   const searchControl = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
@@ -267,10 +269,10 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         searchResult={data}
         offset={offset}
         pagingSize={limit}
-        onPagingSizeChanged={() => {}}
+        onPagingSizeChanged={pagingSizeChangedHandler}
       />
     );
-  }, [data, limit, offset]);
+  }, [data, limit, offset, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
@@ -285,11 +287,11 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
       <PaginationWrapper
         activePage={Math.floor(offset / limit) + 1}
         totalItemsCount={total}
-        pagingLimit={configurationsByPagination?.limit}
+        pagingLimit={limit}
         changePage={pagingNumberChangedHandler}
       />
     );
-  }, [conditions, configurationsByPagination?.limit, data, pagingNumberChangedHandler]);
+  }, [conditions, data, pagingNumberChangedHandler]);
 
   return (
     <>
