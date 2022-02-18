@@ -4,15 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { IPageHasId } from '../../../interfaces/page';
 import { ItemNode } from './ItemNode';
 import Item from './Item';
-import { useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
+import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
 import { TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  OnDeletedFunction, IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+  IPageForPageDeleteModal, usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 
 import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useFullTextSearchTermManager } from '~/stores/search';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 /*
  * Utility to generate initial node
@@ -68,7 +71,7 @@ const renderByInitialNode = (
     isEnabledAttachTitleHeader?: boolean,
     onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
     onClickRenameMenuItem?: (pageId: string, revisionId: string, path: string) => void,
-    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, onItemDeleted: VoidFunction) => void,
+    onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
 ): JSX.Element => {
 
   return (
@@ -122,6 +125,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
 
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
+  const { advance: advanceFts } = useFullTextSearchTermManager();
+  const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+
   useEffect(() => {
     document.addEventListener('targetItemRendered', () => {
       scrollTargetItem();
@@ -137,13 +145,11 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
     openRenameModal(pageId, revisionId, path);
   };
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal, isAbleToDeleteCompletely, onItemDeleted: VoidFunction) => {
+  const onClickDeleteMenuItem = (pageToDelete: IPageForPageDeleteModal) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
       }
-
-      onItemDeleted();
 
       const path = pathOrPathsToDelete;
 
@@ -153,9 +159,13 @@ const ItemsTree: FC<ItemsTreeProps> = (props: ItemsTreeProps) => {
       else {
         toastSuccess(t('deleted_pages', { path }));
       }
+
+      advancePt();
+      advanceFts();
+      advanceDpl();
     };
 
-    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   };
 
   if (error1 != null || error2 != null) {

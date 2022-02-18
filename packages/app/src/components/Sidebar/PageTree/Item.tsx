@@ -13,9 +13,7 @@ import { pathUtils, pagePathUtils } from '@growi/core';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
-import { useSWRxPageInfo } from '~/stores/page';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { useShareLinkId } from '~/stores/context';
 import { IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -33,8 +31,7 @@ interface ItemProps {
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
   onClickRenameMenuItem?(pageId: string, revisionId: string, path: string): void
-  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal | null, isAbleToDeleteCompletely: boolean, callback?: VoidFunction): void
-  onSelfDeleted?: VoidFunction
+  onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal): void
 }
 
 // Utility to mark target
@@ -76,14 +73,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false, isEnabledAttachTitleHeader,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions, onSelfDeleted,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, isEnableActions,
   } = props;
 
   const { page, children } = itemNode;
 
   const [pageTitle, setPageTitle] = useState(page.path);
-  const { data: shareLinkId } = useShareLinkId();
-  const { data: pageInfo } = useSWRxPageInfo(page._id ?? null, shareLinkId);
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
@@ -246,11 +241,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     onClickRenameMenuItem(pageId, revisionId as string, path);
   }, [onClickRenameMenuItem, page]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
-    if (onClickDeleteMenuItem == null) {
-      return;
-    }
-
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo): Promise<void> => {
     const { _id: pageId, revision: revisionId, path } = page;
 
     if (pageId == null || revisionId == null || path == null) {
@@ -261,13 +252,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       pageId,
       revisionId: revisionId as string,
       path,
+      isAbleToDeleteCompletely: pageInfo?.isAbleToDeleteCompletely,
     };
-    const isAbleToDeleteCompletely = pageInfo?.isAbleToDeleteCompletely ?? false;
 
-    onClickDeleteMenuItem(pageToDelete, isAbleToDeleteCompletely, async() => {
-      if (onSelfDeleted != null) await onSelfDeleted();
-    });
-  }, [onClickDeleteMenuItem, page, pageInfo?.isAbleToDeleteCompletely, onSelfDeleted]);
+    if (onClickDeleteMenuItem != null) {
+      onClickDeleteMenuItem(pageToDelete);
+    }
+  }, [onClickDeleteMenuItem, page]);
 
   const onPressEnterForCreateHandler = async(inputText: string) => {
     setNewPageInputShown(false);
@@ -398,8 +389,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             isEnableActions={isEnableActions}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
@@ -437,7 +428,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickRenameMenuItem={onClickRenameMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}
-              onSelfDeleted={async() => { await mutateChildren() }}
             />
           </div>
         ))

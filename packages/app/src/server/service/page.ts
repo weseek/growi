@@ -5,28 +5,29 @@ import streamToPromise from 'stream-to-promise';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import { serializePageSecurely } from '../models/serializers/page-serializer';
+import { HasObjectId } from '~/interfaces/has-object-id';
+import { Ref } from '~/interfaces/common';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import {
   CreateMethod, generateGrantCondition, PageCreateOptions, PageDocument, PageModel,
 } from '~/server/models/page';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
-import ActivityDefine from '../util/activityDefine';
 import {
-  IPage, IPageInfo, IPageInfoForEntity,
+  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
+import { serializePageSecurely } from '../models/serializers/page-serializer';
 import { PageRedirectModel } from '../models/page-redirect';
+import Subscription from '../models/subscription';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { IUserHasId } from '~/interfaces/user';
-import { Ref } from '~/interfaces/common';
-import { HasObjectId } from '~/interfaces/has-object-id';
+import ActivityDefine from '../util/activityDefine';
 
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isCreatablePage, isTrashPage, isTopPage, isDeletablePage, omitDuplicateAreaPathFromPaths, omitDuplicateAreaPageFromPages, isUserPage, isUserNamePage,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, isMovablePage,
 } = pagePathUtils;
 
 const BULK_REINDEX_SIZE = 100;
@@ -213,41 +214,70 @@ class PageService {
     return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.creator, user));
   }
 
-  async findPageAndMetaDataByViewer({ pageId, path, user }) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, isSharedPage = false): Promise<IPageWithMeta|null> {
 
     const Page = this.crowi.model('Page');
 
-    let pagePath = path;
-
-    let page;
+    let page: PageModel & PageDocument & HasObjectId;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user);
-      pagePath = page.path;
     }
     else {
-      page = await Page.findByPathAndViewer(pagePath, user);
+      page = await Page.findByPathAndViewer(path, user);
     }
-
-    const result: any = {};
 
     if (page == null) {
-      const isExist = await Page.count({ $or: [{ _id: pageId }, { pat: pagePath }] }) > 0;
-      result.isForbidden = isExist;
-      result.isNotFound = !isExist;
-      result.isCreatable = isCreatablePage(pagePath);
-      result.page = page;
-
-      return result;
+      return null;
     }
 
-    result.page = page;
-    result.isForbidden = false;
-    result.isNotFound = false;
-    result.isCreatable = false;
-    result.isDeletable = isDeletablePage(pagePath);
-    result.isDeleted = page.isDeleted();
+    if (isSharedPage) {
+      return {
+        pageData: page,
+        pageMeta: {
+          isEmpty: page.isEmpty,
+          isMovable: false,
+          isDeletable: false,
+          isAbleToDeleteCompletely: false,
+          isRevertible: false,
+        },
+      };
+    }
 
-    return result;
+    const isGuestUser = user == null;
+    const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
+
+    const Bookmark = this.crowi.model('Bookmark');
+    const bookmarkCount = await Bookmark.countByPageId(pageId);
+
+    const metadataForGuest = {
+      ...pageInfo,
+      bookmarkCount,
+    };
+
+    if (isGuestUser) {
+      return {
+        pageData: page,
+        pageMeta: metadataForGuest,
+      };
+    }
+
+    const isBookmarked = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+    const isLiked = page.isLiked(user);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely((page.creator as IUserHasId)?._id, user);
+
+    const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+
+    return {
+      pageData: page,
+      pageMeta: {
+        ...metadataForGuest,
+        isAbleToDeleteCompletely,
+        isBookmarked,
+        isLiked,
+        subscriptionStatus: subscription?.status,
+      },
+    };
   }
 
   private shouldUseV4Process(page): boolean {
@@ -261,12 +291,10 @@ class PageService {
   private shouldUseV4ProcessForRevert(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const isPageMigrated = page.parent != null;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
-    const shouldUseV4Process = !isRoot && !isPageRestricted && (!isV5Compatible || !isPageMigrated);
+    const shouldUseV4Process = !isPageRestricted && !isV5Compatible;
 
     return shouldUseV4Process;
   }
@@ -297,6 +325,7 @@ class PageService {
    * @param {User} viewer
    */
   private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -313,6 +342,12 @@ class PageService {
 
   async renamePage(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
+
+    const isExist = await Page.exists({ path: newPagePath });
+    if (isExist) {
+      // if page found, cannot rename to that path
+      throw new Error('the path already exists');
+    }
 
     if (isTopPage(page.path)) {
       throw Error('It is forbidden to rename the top page');
@@ -389,6 +424,11 @@ class PageService {
     // * rename target page
     // *************************
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+    // create page redirect
+    if (options.createRedirectPage) {
+      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+      await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
+    }
     this.pageEvent.emit('rename', page, user);
 
     // *************************
@@ -665,6 +705,11 @@ class PageService {
    * Duplicate
    */
   async duplicate(page, newPagePath, user, isRecursively) {
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
+    if (page == null || isEmptyAndNotRecursively) {
+      throw new Error('Cannot find or duplicate the empty page');
+    }
+
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
@@ -1057,7 +1102,7 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (!Page.isDeletableName(page.path)) {
+    if (!isMovablePage(page.path)) {
       throw new Error('Page is not deletable.');
     }
 
@@ -1086,7 +1131,14 @@ class PageService {
       }, { new: true });
       await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      try {
+        await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+      }
+      catch (err) {
+        if (err.code !== 11000) {
+          throw err;
+        }
+      }
 
       this.pageEvent.emit('delete', page, user);
       this.pageEvent.emit('create', deletedPage, user);
@@ -1095,20 +1147,22 @@ class PageService {
     // TODO: resume
     // no await for deleteDescendantsWithStream and updateDescendantCountOfAncestors
     if (isRecursively) {
-      (async() => {
-        const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableDeleteDescendants(page, user, shouldUseV4Process);
     }
 
     return deletedPage;
+  }
+
+  async resumableDeleteDescendants(page, user, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteDescendantsWithStream(page, user, shouldUseV4Process); // use the same process in both version v4 and v5
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
@@ -1124,7 +1178,7 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (!Page.isDeletableName(page.path)) {
+    if (!isMovablePage(page.path)) {
       throw new Error('Page is not deletable.');
     }
 
@@ -1141,7 +1195,14 @@ class PageService {
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: true } });
 
-    await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    try {
+      await PageRedirect.create({ fromPath: page.path, toPath: newPath });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw err;
+      }
+    }
 
     this.pageEvent.emit('delete', page, user);
     this.pageEvent.emit('create', deletedPage, user);
@@ -1261,7 +1322,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return nDeletedNonEmptyPages;
   }
@@ -1324,13 +1385,13 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
+    await this.deleteCompletelyOperation(ids, paths);
+
     // replace with an empty page
     const shouldReplace = !isRecursively && !isTrashPage(page.path) && await Page.exists({ parent: page._id });
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page);
     }
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(page.parent, -1, true);
@@ -1346,17 +1407,19 @@ class PageService {
     // TODO: resume
     if (isRecursively) {
       // no await for deleteCompletelyDescendantsWithStream
-      (async() => {
-        const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
-        }
-      })();
+      this.resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process);
     }
 
     return;
+  }
+
+  async resumableDeleteCompletelyDescendants(page, user, options, shouldUseV4Process) {
+    const deletedDescendantCount = await this.deleteCompletelyDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, (deletedDescendantCount + 1) * -1, true);
+    }
   }
 
   private async deleteCompletelyV4(page, user, options = {}, isRecursively = false, preventEmitting = false) {
@@ -1519,28 +1582,29 @@ class PageService {
       },
     }, { new: true });
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
-
     if (isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
     }
 
     // TODO: resume
-    if (!isRecursively) {
+    if (isRecursively) {
       // no await for revertDeletedDescendantsWithStream
-      (async() => {
-        const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
-
-        // update descendantCount of ancestors'
-        if (page.parent != null) {
-          await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
-
-          // delete leaf empty pages
-          await this.removeLeafEmptyPages(page);
-        }
-      })();
+      this.resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process);
     }
 
     return updatedPage;
+  }
+
+  async resumableRevertDeletedDescendants(page, user, options, shouldUseV4Process) {
+    const revertedDescendantCount = await this.revertDeletedDescendantsWithStream(page, user, options, shouldUseV4Process);
+
+    // update descendantCount of ancestors'
+    if (page.parent != null) {
+      await this.updateDescendantCountOfAncestors(page.parent, revertedDescendantCount + 1, true);
+
+      // delete leaf empty pages
+      await this.removeLeafEmptyPages(page);
+    }
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
@@ -1623,7 +1687,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return count;
   }
@@ -1689,7 +1753,7 @@ class PageService {
   }
 
   constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
-    const isMovable = isGuestUser ? false : !isTopPage(page.path) && !isUserPage(page.path) && !isUserNamePage(page.path);
+    const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
       return {
@@ -1697,13 +1761,13 @@ class PageService {
         isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
+        isRevertible: false,
       };
     }
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
-    const Page = this.crowi.model('Page');
     return {
       isEmpty: false,
       sumOfLikers: page.liker.length,
@@ -1711,8 +1775,9 @@ class PageService {
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
       isMovable,
-      isDeletable: Page.isDeletableName(page.path),
+      isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
+      isRevertible: isTrashPage(page.path),
     };
 
   }
@@ -2247,10 +2312,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.count(), false);
-    builder.addConditionAsNotMigrated();
-    builder.addConditionAsNonRootPage();
-    builder.addConditionToExcludeTrashed();
-    await builder.addConditionForParentNormalization(user);
+    await builder.addConditionAsMigratablePages(user);
 
     const nMigratablePages = await builder.query.exec();
 

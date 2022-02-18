@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -214,16 +214,19 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     });
   }, [configurationsByPagination]);
 
+  const hitsCount = data?.meta.hitsCount;
   const { offset, limit } = conditions;
 
   const searchControl = useMemo(() => {
+    const isCheckboxDisabled = hitsCount === 0;
+
     return (
       <div className="shadow-sm">
         <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
           <div className="d-flex pl-md-2">
             <OperateAllControl
               ref={selectAllControlRef}
-              isCheckboxDisabled={!isControlEnabled}
+              isCheckboxDisabled={isCheckboxDisabled}
               onCheckboxChanged={selectAllCheckboxChangedHandler}
             >
               <UncontrolledButtonDropdown>
@@ -248,7 +251,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
       </div>
     );
-  }, [convertMenuItemClickedHandler, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+  }, [convertMenuItemClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -290,7 +293,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         appContainer={appContainer}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE]}
+        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT]}
         // Components
         searchControl={searchControl}
         searchResultListHead={searchResultListHead}

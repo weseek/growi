@@ -12,11 +12,14 @@ import urljoin from 'url-join';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { DevidedPagePath } from '@growi/core';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
-import { usePageRenameModal, usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
+import {
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+} from '~/stores/modal';
 import {
   IPageInfoAll, IPageWithMeta, isIPageInfoForEntity, isIPageInfoForListing,
 } from '~/interfaces/page';
 import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import LinkedPagePath from '~/models/linked-page-path';
@@ -31,6 +34,7 @@ type Props = {
   showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
   onClickItem?: (pageId: string) => void,
+  onPageDeleted?: OnDeletedFunction,
 }
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
@@ -39,7 +43,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     page: { pageData, pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged,
+    onClickItem, onCheckboxChanged, onPageDeleted,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -64,15 +68,17 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openPutBackPageModal } = usePutBackPageModal();
 
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
-  const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, true);
+  const dPagePath: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
+
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -96,14 +102,28 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openRenameModal(pageId, revisionId as string, path);
   }, [openRenameModal, pageData]);
 
-  const deleteMenuItemClickHandler = useCallback(() => {
+
+  const deleteMenuItemClickHandler = useCallback((_id, pageInfo) => {
     const { _id: pageId, revision: revisionId, path } = pageData;
-    openDeleteModal([{ pageId, revisionId: revisionId as string, path }]);
-  }, [openDeleteModal, pageData]);
+    const isAbleToDeleteCompletely = pageInfo.isAbleToDeleteCompletely;
+    const pageToDelete = {
+      pageId, revisionId: revisionId as string, path, isAbleToDeleteCompletely,
+    };
+
+    // open modal
+    openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
+  }, [pageData, openDeleteModal, onPageDeleted]);
+
+  const revertMenuItemClickHandler = useCallback(() => {
+    const { _id: pageId, path } = pageData;
+    openPutBackPageModal(pageId, path);
+  }, [openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
+
+  const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath.length > 0;
 
   return (
     <li
@@ -131,7 +151,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           <div className="flex-grow-1 p-md-3 pl-2 py-3 pr-3">
             <div className="d-flex justify-content-between">
               {/* page path */}
-              <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+              <PagePathHierarchicalLink
+                linkedPagePath={linkedPagePathFormer}
+                shouldDangerouslySetInnerHTML={shouldDangerouslySetInnerHTMLForPaths}
+              />
               { showPageUpdatedTime && (
                 <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
               ) }
@@ -146,7 +169,18 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                    {shouldDangerouslySetInnerHTMLForPaths
+                      ? (
+                        <a
+                          className="page-segment"
+                          href={encodeURI(urljoin('/', pageData._id))}
+                          // eslint-disable-next-line react/no-danger
+                          dangerouslySetInnerHTML={{ __html: linkedPagePathLatter.pathName }}
+                        >
+                        </a>
+                      )
+                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathLatter.pathName}</a>
+                    }
                   </span>
                 </span>
               </Clamp>
@@ -165,9 +199,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   pageInfo={pageMeta}
                   isEnableActions={isEnableActions}
                   forceHideMenuItems={forceHideMenuItems}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRenameMenuItem={renameMenuItemClickHandler}
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                  onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
             </div>

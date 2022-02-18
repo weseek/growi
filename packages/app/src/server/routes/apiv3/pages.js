@@ -484,7 +484,7 @@ module.exports = (crowi) => {
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
-      // if page found, cannot cannot rename to that path
+      // if page found, cannot rename to that path
       return res.apiv3Err(new ErrorV3(`${newPagePath} already exists`, 'already_exists'), 409);
     }
 
@@ -649,7 +649,7 @@ module.exports = (crowi) => {
 
     const page = await Page.findByIdAndViewerToEdit(pageId, req.user, true);
 
-    const isEmptyAndNotRecursively = page?.isEmpty && isRecursively;
+    const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
     if (page == null || isEmptyAndNotRecursively) {
       res.code = 'Page is not found';
       logger.error('Failed to find the pages');

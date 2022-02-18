@@ -1,3 +1,5 @@
+import { Nullable } from './common';
+
 export const SidebarContentsType = {
   CUSTOM: 'custom',
   RECENT: 'recent',
@@ -17,3 +19,6 @@ export type ICustomTabContent = {
 };
 
 export type ICustomNavTabMappings = { [key: string]: ICustomTabContent };
+
+
+export type OnDeletedFunction = (idOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;

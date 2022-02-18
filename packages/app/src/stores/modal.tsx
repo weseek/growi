@@ -1,7 +1,6 @@
 import { SWRResponse } from 'swr';
 import { useStaticSWR } from './use-static-swr';
-import { Nullable } from '~/interfaces/common';
-import { IPageInfo } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
 
 
 /*
@@ -36,25 +35,22 @@ export type IPageForPageDeleteModal = {
   revisionId?: string,
   path: string
   isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
 }
 
-export type OnDeletedFunction = (pathOrPaths: string | string[], isRecursively: Nullable<true>, isCompletely: Nullable<true>) => void;
+export type IDeleteModalOption = {
+  onDeleted?: OnDeletedFunction,
+}
 
 type DeleteModalStatus = {
   isOpened: boolean,
   pages?: IPageForPageDeleteModal[],
-  onDeleted?: OnDeletedFunction,
-  isAbleToDeleteCompletely?: boolean,
-  isDeleteCompletelyModal?: boolean,
+  opts?: IDeleteModalOption,
 }
 
 type DeleteModalStatusUtils = {
   open(
     pages?: IPageForPageDeleteModal[],
-    onDeleted?: OnDeletedFunction,
-    isAbleToDeleteCompletely?: boolean,
-    isDeleteCompletelyModal?: boolean,
+    opts?: IDeleteModalOption,
   ): Promise<DeleteModalStatus | undefined>,
   close(): Promise<DeleteModalStatus | undefined>,
 }
@@ -63,9 +59,6 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
   const initialData: DeleteModalStatus = {
     isOpened: false,
     pages: [],
-    onDeleted: () => {},
-    isAbleToDeleteCompletely: false,
-    isDeleteCompletelyModal: false,
   };
   const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
@@ -73,11 +66,9 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     ...swrResponse,
     open: (
         pages?: IPageForPageDeleteModal[],
-        onDeleted?: OnDeletedFunction,
-        isAbleToDeleteCompletely?: boolean,
-        isDeleteCompletelyModal?: boolean,
+        opts?: IDeleteModalOption,
     ) => swrResponse.mutate({
-      isOpened: true, pages, onDeleted, isAbleToDeleteCompletely, isDeleteCompletelyModal,
+      isOpened: true, pages, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
@@ -149,6 +140,31 @@ export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<Rena
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+type PutBackPageModalStatus = {
+  isOpened: boolean,
+  pageId?: string,
+  path?: string,
+}
+
+type PutBackPageModalUtils = {
+  open(pageId: string, path: string): Promise<PutBackPageModalStatus | undefined>
+  close():Promise<PutBackPageModalStatus | undefined>
+}
+
+export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
+  const initialData = { isOpened: false, pageId: '', path: '' };
+  const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (pageId: string, path: string) => swrResponse.mutate({
+      isOpened: true, pageId, path,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
 
 /*
 * PagePresentationModal
