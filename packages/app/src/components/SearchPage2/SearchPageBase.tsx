@@ -117,11 +117,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
-  useEffect(() => {
-    if (searchResultListHead?.props.highlightKeywords) {
-      console.log('called');
-    }
-  }, []);
   if (!isSearchServiceConfigured) {
     return (
       <div className="grw-container-convertible">
