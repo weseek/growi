@@ -1468,7 +1468,7 @@ class PageService {
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
       Revision.deleteMany({ pageId: { $in: pageIds } }),
       Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { _id: { $in: pageIds } }] }),
-      PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths }, toPath: { $in: pagePaths } }] }),
+      PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
@@ -1516,8 +1516,6 @@ class PageService {
     const paths = [page.path];
 
     logger.debug('Deleting completely', paths);
-
-    await this.deleteCompletelyOperation(ids, paths);
 
     // replace with an empty page
     const shouldReplace = !isRecursively && await Page.exists({ parent: page._id });
