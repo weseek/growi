@@ -478,6 +478,9 @@ schema.statics.recountDescendantCount = async function(id: ObjectIdLike):Promise
 schema.statics.findAncestorsUsingParentRecursively = async function(pageId: ObjectIdLike, shouldIncludeTarget: boolean) {
   const self = this;
   const target = await this.findById(pageId);
+  if (target == null) {
+    throw Error('Target not found');
+  }
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {
     const parent = await self.findOne({ _id: target.parent });

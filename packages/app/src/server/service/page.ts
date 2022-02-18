@@ -792,6 +792,9 @@ class PageService {
       }
     }
 
+    // copy & populate (reason why copy: SubOperation only allows non-populated page document)
+    const copyPage = { ...page };
+
     // 3. Duplicate target
     const options: PageCreateOptions = {
       grant: page.grant,
@@ -803,10 +806,7 @@ class PageService {
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
     }
     else {
-      console.log('ははははh？', page);
-      // copy & populate (reason why copy: SubOperation only allows non-populated page document)
-      const copyPage = { ...page };
-      await copyPage.populate({ path: 'revision', model: 'Revision', select: 'body' });
+      await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
       duplicatedTarget = await (Page.create as CreateMethod)(
         newPagePath, copyPage.revision.body, user, options,
       );
@@ -830,7 +830,7 @@ class PageService {
         pageOp = await PageOperation.create({
           actionType: PageActionType.Duplicate,
           actionStage: PageActionStage.Main,
-          page,
+          page: copyPage,
           user,
           fromPath: page.path,
           toPath: newPagePath,
