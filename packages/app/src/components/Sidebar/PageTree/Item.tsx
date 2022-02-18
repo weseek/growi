@@ -14,7 +14,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotific
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageRenameModal, IPageForPageDeleteModal } from '~/stores/modal';
+import { IPageForPageRenameModal, IPageForPageDuplicateModal, IPageForPageDeleteModal } from '~/stores/modal';
 
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
@@ -28,7 +28,7 @@ interface ItemProps {
   targetPathOrId?: string
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onClickDuplicateMenuItem?(pageId: string, path: string): void
+  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickRenameMenuItem?(pageToRename: IPageForPageRenameModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageForPageDeleteModal, callback?: VoidFunction): void
   onSelfDeleted?: VoidFunction
@@ -198,7 +198,9 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       throw Error('Any of _id and path must not be null.');
     }
 
-    onClickDuplicateMenuItem(pageId, path);
+    const pageToDuplicate = { pageId, path };
+
+    onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
 

@@ -84,25 +84,35 @@ export type IPageForPageDuplicateModal = {
   path: string
 }
 
+export type IDuplicateModalOption = {
+  onDeleted?: OnDeletedFunction,
+}
+
 type DuplicateModalStatus = {
   isOpened: boolean,
-  pageId?: string,
-  path?: string,
+  page?: IPageForPageDuplicateModal,
+  opts?: IDuplicateModalOption,
 }
 
 type DuplicateModalStatusUtils = {
-  open(pageId: string, path: string): Promise<DuplicateModalStatus | undefined>
+  open(
+    page?: IPageForPageDuplicateModal,
+    opts?: IRenameModalOption
+  ): Promise<DuplicateModalStatus | undefined>
   close(): Promise<DuplicateModalStatus | undefined>
 }
 
 export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
-  const initialData: DuplicateModalStatus = { isOpened: false, pageId: '', path: '' };
+  const initialData: DuplicateModalStatus = { isOpened: false, page: { pageId: '', path: '/' } };
   const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    open: (pageId: string, path: string) => swrResponse.mutate({ isOpened: true, pageId, path }),
-    close: () => swrResponse.mutate({ isOpened: false }),
+    open: (
+        page?: IPageForPageDuplicateModal,
+        opts?: IDuplicateModalOption,
+    ) => swrResponse.mutate({ isOpened: true, page, opts }),
+    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '/' } }),
   };
 };
 
