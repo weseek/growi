@@ -15,7 +15,7 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 import {
-  usePageAccessoriesModal, PageAccessoriesModalContents,
+  usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, IPageForPageRenameModal, usePageDeleteModal, usePagePresentationModal, IPageForPageDeleteModal,
 } from '~/stores/modal';
 
@@ -180,8 +180,8 @@ const GrowiContextualSubNavigation = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId]);
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
+    openDuplicateModal(page);
   }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageForPageRenameModal) => {

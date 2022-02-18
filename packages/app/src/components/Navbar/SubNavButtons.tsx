@@ -6,7 +6,7 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxUsersList } from '../../stores/user';
 import { useIsGuestUser } from '~/stores/context';
-import { IPageForPageDeleteModal, IPageForPageRenameModal } from '~/stores/modal';
+import { IPageForPageDeleteModal, IPageForPageRenameModal, IPageForPageDuplicateModal } from '~/stores/modal';
 
 import SubscribeButton from '../SubscribeButton';
 import LikeButtons from '../LikeButtons';
@@ -24,7 +24,7 @@ type CommonProps = {
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
-  onClickDuplicateMenuItem?: (pageId: string, path: string) => void,
+  onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageForPageRenameModal) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageForPageDeleteModal) => void,
 }
@@ -100,8 +100,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (onClickDuplicateMenuItem == null || path == null) {
       return;
     }
+    const page: IPageForPageDuplicateModal = { pageId, path };
 
-    onClickDuplicateMenuItem(pageId, path);
+    onClickDuplicateMenuItem(page);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
   const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {

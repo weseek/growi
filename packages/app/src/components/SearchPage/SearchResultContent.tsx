@@ -107,8 +107,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const growiRenderer = appContainer.getRenderer('searchresult');
 
 
-  const duplicateItemClickedHandler = useCallback(async(pageId, path) => {
-    openDuplicateModal(pageId, path);
+  const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
+    openDuplicateModal(pageToDuplicate);
   }, [openDuplicateModal]);
 
   const renameItemClickedHandler = useCallback(async(pageToRename) => {
