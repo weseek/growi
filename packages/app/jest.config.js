@@ -39,7 +39,7 @@ module.exports = {
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js'],
       // https://regex101.com/r/nErofj/1
-      modulePathIgnorePatterns: ['<rootDir>/test/integration//*.*/v5(..*)*.[t|j]s'],
+      modulePathIgnorePatterns: ['<rootDir>/test/integration/*.*/v5(..*)*.[t|j]s'],
       testEnvironment: 'node',
       globalSetup: '<rootDir>/test/integration/global-setup.js',
       globalTeardown: '<rootDir>/test/integration/global-teardown.js',
