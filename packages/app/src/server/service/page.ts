@@ -219,16 +219,16 @@ class PageService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, isSharedPage = false): Promise<IPageWithMeta|null> {
+  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false): Promise<IPageWithMeta|null> {
 
     const Page = this.crowi.model('Page');
 
     let page: PageModel & PageDocument & HasObjectId;
     if (pageId != null) { // prioritized
-      page = await Page.findByIdAndViewer(pageId, user);
+      page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
     else {
-      page = await Page.findByPathAndViewer(path, user);
+      page = await Page.findByPathAndViewer(path, user, null, includeEmpty);
     }
 
     if (page == null) {
