@@ -79,7 +79,7 @@ const PageDuplicateModal = (props) => {
    */
   function inputChangeHandler(value) {
     setErrs(null);
-    setPageNameInput(value ?? '');
+    setPageNameInput(value);
   }
 
   function changeIsDuplicateRecursivelyHandler() {
