@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useMemo, useRef, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,12 +14,14 @@ import { toastSuccess } from '~/client/util/apiNotification';
 import {
   ISearchConfigurations, useSWRxNamedQuerySearch,
 } from '~/stores/search';
-import { ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal } from '~/stores/modal';
+import {
+  ILegacyPrivatePage, useLegacyPrivatePagesMigrationModal,
+} from '~/stores/modal';
 
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 
-import { IReturnSelectedPageIds, SearchPageBase } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { LegacyPrivatePagesMigrationModal } from './LegacyPrivatePagesMigrationModal';
 
@@ -176,6 +178,9 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
     }
   }, []);
 
+  // for bulk deletion
+  const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate);
+
   const convertMenuItemClickedHandler = useCallback(() => {
     if (data == null) {
       return;
@@ -238,7 +243,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
                     <i className="icon-fw icon-refresh"></i>
                     {t('private_legacy_pages.convert_all_selected_pages')}
                   </DropdownItem>
-                  <DropdownItem onClick={() => { /* TODO: implement */ }}>
+                  <DropdownItem onClick={deleteAllButtonClickedHandler}>
                     <span className="text-danger">
                       <i className="icon-fw icon-trash"></i>
                       {t('search_result.delete_all_selected_page')}
@@ -251,7 +256,7 @@ export const PrivateLegacyPages = (props: Props): JSX.Element => {
         </div>
       </div>
     );
-  }, [convertMenuItemClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
+  }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isControlEnabled, selectAllCheckboxChangedHandler, t]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {

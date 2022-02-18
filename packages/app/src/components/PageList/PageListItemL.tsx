@@ -93,13 +93,20 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
 
   const duplicateMenuItemClickHandler = useCallback(() => {
-    const { _id: pageId, path } = pageData;
-    openDuplicateModal(pageId, path);
+    const page = {
+      pageId: pageData._id,
+      path: pageData.path,
+    };
+    openDuplicateModal(page);
   }, [openDuplicateModal, pageData]);
 
   const renameMenuItemClickHandler = useCallback(() => {
-    const { _id: pageId, revision: revisionId, path } = pageData;
-    openRenameModal(pageId, revisionId as string, path);
+    const page = {
+      pageId: pageData._id,
+      revisionId: pageData.revision as string,
+      path: pageData.path,
+    };
+    openRenameModal(page);
   }, [openRenameModal, pageData]);
 
 
