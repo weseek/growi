@@ -808,7 +808,7 @@ class PageService {
     else {
       await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
       duplicatedTarget = await (Page.create as CreateMethod)(
-        newPagePath, copyPage.revision.body, user, options,
+        newPagePath, page.revision.body, user, options,
       );
     }
 
