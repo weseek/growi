@@ -1294,7 +1294,7 @@ describe('PageService page operations with only public pages', () => {
       mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
-        await crowi.pageService.resumableDeleteCompletelyDescendants(...argsForDeleteCompletelyRecursivelyMainOperation);
+        await crowi.pageService.deleteCompletelyRecursivelyMainOperation(...argsForDeleteCompletelyRecursivelyMainOperation);
       }
 
       return;
@@ -1411,7 +1411,7 @@ describe('PageService page operations with only public pages', () => {
       // restores the original implementation
       mockedRevertRecursivelyMainOperation.mockRestore();
       if (isRecursively) {
-        await crowi.pageService.resumableRevertDeletedDescendants(...argsForRecursivelyMainOperation);
+        await crowi.pageService.revertRecursivelyMainOperation(...argsForRecursivelyMainOperation);
       }
 
       return revertedPage;

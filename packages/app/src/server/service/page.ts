@@ -744,7 +744,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
-    if (isRecursively && page.isEmpty) {
+    if (!isRecursively && page.isEmpty) {
       throw Error('Page not found.');
     }
 
@@ -803,6 +803,7 @@ class PageService {
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
     }
     else {
+      console.log('ははははh？', page);
       // copy & populate (reason why copy: SubOperation only allows non-populated page document)
       const copyPage = { ...page };
       await copyPage.populate({ path: 'revision', model: 'Revision', select: 'body' });
