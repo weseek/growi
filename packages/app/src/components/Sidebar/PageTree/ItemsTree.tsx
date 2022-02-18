@@ -94,7 +94,7 @@ const renderByInitialNode = (
 
 // --- Auto scroll related vars and util ---
 
-const SCROLL_OFFSET_TOP = 150; // approximate height of (navigation + page tree's header + some space)
+const SCROLL_OFFSET_TOP = window.innerHeight / 2;
 
 const scrollTargetItem = () => {
   const scrollElement = document.getElementById('grw-sidebar-contents-scroll-target');
