@@ -28,6 +28,7 @@ interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
   targetPathOrId?: string
+  isScrolled: boolean,
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onClickDuplicateMenuItem?(pageId: string, path: string): void
@@ -87,7 +88,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   // const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -320,11 +320,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   };
 
   useEffect(() => {
-    if (!isScrolled && page.isTarget) {
+    if (!props.isScrolled && page.isTarget) {
       document.dispatchEvent(new CustomEvent('targetItemRendered'));
-      setIsScrolled(true);
     }
-  }, [isScrolled, page.isTarget]);
+  }, [props.isScrolled, page.isTarget]);
 
   // didMount
   useEffect(() => {
@@ -432,6 +431,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
+              isScrolled={props.isScrolled}
               targetPathOrId={targetPathOrId}
               isEnabledAttachTitleHeader={isEnabledAttachTitleHeader}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
