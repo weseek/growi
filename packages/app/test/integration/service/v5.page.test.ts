@@ -1403,15 +1403,15 @@ describe('PageService page operations with only public pages', () => {
   describe('revert', () => {
     const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
       // mock return value
-      const mockedResumableRevertDeletedDescendants = jest.spyOn(crowi.pageService, 'resumableRevertDeletedDescendants').mockReturnValue(null);
+      const mockedRevertRecursivelyMainOperation= jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
       const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
 
-      const argsForResumableRevertDeletedDescendants = mockedResumableRevertDeletedDescendants.mock.calls[0];
+      const argsForRecursivelyMainOperation = mockedRevertRecursivelyMainOperation.mock.calls[0];
 
       // restores the original implementation
-      mockedResumableRevertDeletedDescendants.mockRestore();
+      mockedRevertRecursivelyMainOperation.mockRestore();
       if (isRecursively) {
-        await crowi.pageService.resumableRevertDeletedDescendants(...argsForResumableRevertDeletedDescendants);
+        await crowi.pageService.resumableRevertDeletedDescendants(...argsForRecursivelyMainOperation);
       }
 
       return revertedPage;
