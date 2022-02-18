@@ -9,6 +9,7 @@ import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
 
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
@@ -39,6 +40,9 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIds);
 
   let pagingResultWithMeta: IPagingResult<IPageWithMeta> | undefined;
+
+  // for mutation
+  const { advance: advancePt } = usePageTreeTermManager();
 
   // initial data
   if (pagingResult != null) {
@@ -73,10 +77,12 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const pageDeletedHandler: OnDeletedFunction = useCallback((...args) => {
     toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
 
+    setTimeout(() => advancePt(), 800);
+
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
-  }, [onPagesDeleted, t]);
+  }, [advancePt, onPagesDeleted, t]);
 
   function setPageNumber(selectedPageNumber) {
     setActivePage(selectedPageNumber);
