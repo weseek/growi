@@ -391,7 +391,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <ItemCount descendantCount={page.descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-none">
+        <div className="grw-pagetree-control d-flex">
           <PageItemControl
             pageId={page._id}
             isEnableActions={isEnableActions}
@@ -400,13 +400,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0">
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover">
               <i className="icon-options fa fa-rotate-90 text-muted p-1"></i>
             </DropdownToggle>
           </PageItemControl>
           <button
             type="button"
-            className="border-0 rounded btn-page-item-control p-0"
+            className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover"
             onClick={onClickPlusButton}
           >
             <i className="icon-plus text-muted d-block p-1" />
