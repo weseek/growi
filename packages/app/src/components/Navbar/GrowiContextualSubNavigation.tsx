@@ -13,9 +13,8 @@ import {
 } from '~/stores/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, OnDeletedFunction, usePagePresentationModal, IPageForPageDeleteModal,
 } from '~/stores/modal';
-import { useSWRxPageChildren } from '~/stores/page-listing';
 
 
 import {
@@ -143,7 +142,6 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateChildren } = useSWRxPageChildren(path);
   const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRTagsInfo(pageId);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
@@ -193,8 +191,6 @@ const GrowiContextualSubNavigation = (props) => {
       return;
     }
 
-    mutateChildren();
-
     const path = pathOrPathsToDelete;
 
     if (isCompletely) {
@@ -204,10 +200,10 @@ const GrowiContextualSubNavigation = (props) => {
     else {
       window.location.reload();
     }
-  }, [mutateChildren]);
+  }, []);
 
-  const deleteItemClickedHandler = useCallback(async(pageToDelete, isAbleToDeleteCompletely) => {
-    openDeleteModal([pageToDelete], onDeletedHandler, isAbleToDeleteCompletely);
+  const deleteItemClickedHandler = useCallback((pageToDelete: IPageForPageDeleteModal) => {
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
