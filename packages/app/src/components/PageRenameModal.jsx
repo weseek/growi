@@ -100,9 +100,6 @@ const PageRenameModal = (props) => {
   }, [checkExistPaths]);
 
   useEffect(() => {
-    if (path == null) {
-      return;
-    }
     if (pageId != null && path != null && pageNameInput !== path) {
       checkExistPathsDebounce(pageNameInput, subordinatedPages);
     }
