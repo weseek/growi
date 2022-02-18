@@ -26,7 +26,7 @@ type Props = {
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
   searchControl: React.ReactNode,
-  searchResultListHead: React.ReactNode,
+  searchResultListHead: React.ReactElement,
   searchPager: React.ReactNode,
 }
 
@@ -117,6 +117,11 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     }
   }, [onSelectedPagesByCheckboxesChanged, pages, selectedPageIdsByCheckboxes]);
 
+  useEffect(() => {
+    if (searchResultListHead != null && searchResultListHead.props != null) {
+      setHightlightKeywords(searchResultListHead.props.searchingKeyword);
+    }
+  }, [searchResultListHead]);
   if (!isSearchServiceConfigured) {
     return (
       <div className="grw-container-convertible">
