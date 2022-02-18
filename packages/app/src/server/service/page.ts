@@ -2366,7 +2366,7 @@ class PageService {
   }
 
   async normalizeParentRecursively(paths: string[], publicOnly = false): Promise<void> {
-    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p));
+    const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, [p]));
     const regexps = paths.map(p => new RegExp(`^${escapeStringRegexp(addTrailingSlash(p))}`, 'i'));
 
     return this._normalizeParentRecursively(regexps, ancestorPaths, publicOnly);
